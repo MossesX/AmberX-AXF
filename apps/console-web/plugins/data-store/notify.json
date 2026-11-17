@@ -1,0 +1,27 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "data-store.backup",
+      "label": "Data backup failed or late",
+      "group": "health",
+      "app": "console",
+      "source": "Data store",
+      "description": "The axf-data backup failed its verify, or the newest one is over a day old (the axf-data systems check item, which also runs the Auto fix). One alert per episode; a tap opens Settings → Plugins → Data store.",
+      "match": { "source": "system", "key": "system:axf-data" },
+      "setting": "notify.dataStoreBackup",
+      "priority": "high"
+    },
+    {
+      "id": "data-store.drift",
+      "label": "Data drift in shadow",
+      "group": "health",
+      "app": "console",
+      "source": "Data store",
+      "description": "A namespace in shadow mode logged a difference between the local files and axf-data (or a mirror write failed): the cutover waits until it is read and accepted. A tap opens the drift log.",
+      "match": { "source": "data-store", "kind": "drift" },
+      "setting": "notify.dataStoreDrift",
+      "priority": "normal"
+    }
+  ]
+}

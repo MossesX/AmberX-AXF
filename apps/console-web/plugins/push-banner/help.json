@@ -195,6 +195,13 @@
         "text": "Where you set “PRs in one batch”. Change it and the app uses the new value. Part of Push banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "show-tracking-file-handling-on-the-merge-queue",
+        "title": "Show tracking-file handling on the merge queue",
+        "text": "Turns “Show tracking-file handling on the merge queue” on or off. It takes effect straight away and is remembered. Part of Push banner.",
+        "kind": "toggle",
+        "draft": true
       }
     ],
     "intros": []

@@ -20,6 +20,8 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
     GET  /land | GET /land/blocked  auto-land: every finished build in landing order (PR, head, state, reason) | only the
                                     blocked ones (land/land.mjs writes land.json on the VPS host every 3 minutes)
     POST /land/now | /land/hold | /land/release {build, why?}
+    GET  /land/tracking[?build=]    what the lander did with each build's tracking files (last reset / take-main / regenerate)
+    POST /land/tracking/show {show} show that on the merge queue rows (setting landShowTracking, off by default)
                                     land one now (next round, first) | keep it from landing | let it land again; the
                                     same land.mjs command the CLI runs (commands declared once in land/land-core.mjs)
     GET  /detail?repo=&number= | ?repo=&branch=
@@ -240,6 +242,9 @@ class Pushes:
                 "autoLand": raw.get("autoLand") is True,
                 # UI Review stays the gate: a held PR waits and merges by itself once Brett approves. On unless off.
                 "landWaitUi": raw.get("landWaitUi") is not False,
+                # Tracking files (build stop-auto-lander-committing-tracking): show, on each merge queue row, when the lander
+                # last reset a build's tracking files, took main's copy in a merge or regenerated generated files. Off by default.
+                "landShowTracking": raw.get("landShowTracking") is True,
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
                 "mergeQueue": raw.get("mergeQueue") is not False,
@@ -251,7 +256,7 @@ class Pushes:
                 "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "landShowTracking", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -268,7 +273,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "landShowTracking", "mergeQueue"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -395,6 +400,16 @@ class Pushes:
                 "holds": holds, "now": ctl.get("now") if isinstance(ctl.get("now"), list) else [],
                 "order": [n for n in st.get("order", []) if isinstance(n, int)] if isinstance(st.get("order"), list) else [],
                 "managed": [n for n in st.get("managed", []) if isinstance(n, int)] if isinstance(st.get("managed"), list) else []}
+
+    def land_tracking(self, build: str = "") -> dict[str, Any]:
+        """What the lander did with each build's tracking files (tracking-paths@1): last reset to main's base copy, last
+        take-main in a merge, last regenerate. Read from land.json (land/land.mjs writes item.tracking)."""
+        if build and not LAND_ID.match(build):
+            raise HTTPException(400, "build is a build id")
+        st = self.land()
+        rows = [{"build": x.get("id"), "pr": x.get("pr"), "branch": x.get("branch"), "tracking": x.get("tracking") or {},
+                 "show": "function:push-banner.queue"} for x in st["items"] if not build or x.get("id") == build]
+        return {"$axf": "auto-land-tracking@1", "show": self.config()["landShowTracking"], "at": st.get("at"), "items": rows}
 
     def land_command(self, cmd: str, body: Any) -> dict[str, Any]:
         """now | hold | release: one implementation, land/land.mjs (the same file the CLI and the host runner use)."""
@@ -1548,6 +1563,19 @@ def land_list() -> dict[str, Any]:
 def land_blocked() -> dict[str, Any]:
     st = PUSHES.land()
     return {**st, "items": [x for x in st["items"] if x.get("state") == "blocked"]}
+
+
+@router.get("/land/tracking")
+def land_tracking(build: str = "") -> dict[str, Any]:
+    return PUSHES.land_tracking(build)
+
+
+@router.post("/land/tracking/show")
+def land_tracking_show(body: Any = Body(None)) -> dict[str, Any]:
+    if not isinstance(body, dict) or set(body) - {"show"} or not isinstance(body.get("show"), bool):
+        raise HTTPException(400, "send {show: true|false}")
+    PUSHES.save_config({"landShowTracking": body["show"]})
+    return PUSHES.land_tracking()
 
 
 @router.get("/ui-hold")
