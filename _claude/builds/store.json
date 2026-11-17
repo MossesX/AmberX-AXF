@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7407,
- "updatedAt": "2026-11-17T12:37:15.579Z",
+ "rev": 7408,
+ "updatedAt": "2026-11-17T12:37:40.691Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -248753,7 +248753,7 @@
    "pr": "#778",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-17T12:35:42.773Z",
+   "updatedAt": "2026-11-17T12:37:15.479Z",
    "builtAt": "2026-11-17T12:35:01.131Z",
    "notes": [
     {
@@ -248807,6 +248807,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-17T12:35:32.703Z"
+    },
+    {
+     "text": "Session axf-auto-lander-grid-one-row-per-build--paulie on hulu0241 ended (exit 0); the build was already built.",
+     "at": "2026-11-17T12:37:15.479Z"
     }
    ],
    "approvals": [],
@@ -248827,14 +248831,23 @@
     "queuedAt": "2026-11-16T19:19:15.405Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-auto-lander-grid-one-row-per-build--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T12:28:56.306Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-17T12:37:10.665Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "hulu0241",
+     "session": "axf-auto-lander-grid-one-row-per-build--paulie",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-16T19:21:53.865Z",
      "by": "orchestrator",
@@ -248982,7 +248995,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -259611,7 +259624,7 @@
    "title": "Stop the auto-lander committing tracking files into builds",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (its step s24). Before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl. That commit turns CI red on every build (#733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches; keep it on the hub/data store only; reset or ignore those files in worktrees. When the lander merges main into a build, take main's copy of tracking files and regenerate generated files (apps/console-web/scripts/control-inventory.mjs, tracker) instead of stopping on conflict. Journal files are ~70 MB on GitHub: move them out of git. Small and urgent. Land through the orchestrator.",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -259619,8 +259632,8 @@
    "pr": "#765",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:49:24.334Z",
-   "builtAt": "2026-11-17T00:48:43.807Z",
+   "updatedAt": "2026-11-17T12:37:18.358Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -259723,6 +259736,28 @@
     "heldWhy": ""
    },
    "steps": [
+    {
+     "id": "s15",
+     "uid": "st-mwkoga0v01topv",
+     "title": "",
+     "text": "Merge origin/main into this branch (PR #765). Real conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres with data-files/DataStoreError/StoreConflict; this branch moved the journal home and worktree store home), apps/console-web/plugins/push-banner/land/land-core.mjs + land.test.mjs, framework/spec/PORTING.md, .github/workflows/android.yml. Keep BOTH: main's axf-data store path wins where they overlap; keep this branch's 'never stage tracking files' behaviour on top. If main's Postgres store already keeps tracking files out of build branches, drop the now-redundant parts and say so. Tests green, push, then merge the PR directly (merge queue is off).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T12:37:18.359Z",
+     "updatedAt": "2026-11-17T12:37:18.655Z"
+    },
     {
      "id": "s1",
      "uid": "st-mwjxnxrp01o9mq",
@@ -260092,7 +260127,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

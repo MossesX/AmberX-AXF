@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T12:37:15.579Z",
+ "updatedAt": "2026-11-17T12:37:40.691Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162428,7 +162428,7 @@
    "pr": "#778",
    "priority": "P0",
    "createdAt": "2026-11-16T19:19:11.374Z",
-   "updatedAt": "2026-11-17T12:35:42.773Z",
+   "updatedAt": "2026-11-17T12:37:15.479Z",
    "builtAt": "2026-11-17T12:35:01.131Z",
    "notes": [
     {
@@ -162482,6 +162482,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-17T12:35:32.703Z"
+    },
+    {
+     "text": "Session axf-auto-lander-grid-one-row-per-build--paulie on hulu0241 ended (exit 0); the build was already built.",
+     "at": "2026-11-17T12:37:15.479Z"
     }
    ],
    "approvals": [],
@@ -168014,7 +168018,7 @@
    "title": "Stop the auto-lander committing tracking files into builds",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (its step s24). Before landing, the auto-lander commits 'synced files left in the worktree (auto-land)' onto each build branch: _claude/builds/store.json, orchestrator.json, origins.json, journal jsonl. That commit turns CI red on every build (#733: 98f6c0d0 green, 41e3e2ac red). Stop committing orchestrator/build-tracking data into build branches; keep it on the hub/data store only; reset or ignore those files in worktrees. When the lander merges main into a build, take main's copy of tracking files and regenerate generated files (apps/console-web/scripts/control-inventory.mjs, tracker) instead of stopping on conflict. Journal files are ~70 MB on GitHub: move them out of git. Small and urgent. Land through the orchestrator.",
-   "status": "built",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168022,8 +168026,8 @@
    "pr": "#765",
    "priority": "P0",
    "createdAt": "2026-11-17T00:04:33.299Z",
-   "updatedAt": "2026-11-17T00:49:24.334Z",
-   "builtAt": "2026-11-17T00:48:43.807Z",
+   "updatedAt": "2026-11-17T12:37:18.358Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -168090,6 +168094,25 @@
     "addenda": []
    },
    "steps": [
+    {
+     "id": "s15",
+     "text": "Merge origin/main into this branch (PR #765). Real conflicts: framework/cli/builds-store.mjs (main moved the store onto axf-data/Postgres with data-files/DataStoreError/StoreConflict; this branch moved the journal home and worktree store home), apps/console-web/plugins/push-banner/land/land-core.mjs + land.test.mjs, framework/spec/PORTING.md, .github/workflows/android.yml. Keep BOTH: main's axf-data store path wins where they overlap; keep this branch's 'never stage tracking files' behaviour on top. If main's Postgres store already keeps tracking files out of build branches, drop the now-redundant parts and say so. Tests green, push, then merge the PR directly (merge queue is off).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwkoga0v01topv",
+     "createdAt": "2026-11-17T12:37:18.359Z"
+    },
     {
      "id": "s1",
      "text": "Design the move of the builds journal out of git: journal lives only on the hub data store (/projects/amberx-axf/_data/builds/journal), repo keeps a pointer + checksum; write the migration contract (what builds-store.mjs verify/history/restore read, fallback when /projects is not mounted) in _claude/builds/README.md and framework/spec/ notes",
