@@ -289,7 +289,22 @@
   },
   "tokens": {
     "$axf": "token-registry@1",
-    "uses": [],
+    "uses": [
+      "--fx-accent",
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-danger",
+      "--fx-dens-gap-lg",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-sm",
+      "--fx-dens-gap-xs",
+      "--fx-font-mono",
+      "--fx-muted",
+      "--fx-radius-md",
+      "--fx-space",
+      "--fx-type-scale-sm",
+      "--fx-warning"
+    ],
     "defines": []
   },
   "builtWith": {

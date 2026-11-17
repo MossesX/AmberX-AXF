@@ -66,6 +66,13 @@ await t('control: add, remove, move, kick; reasons and ETA', () => {
   c = q.applyQueueControl(c, 'add', '#7'); assert.equal(c.removed[7], undefined); assert.deepEqual(c.added, [7]);
   c = q.applyQueueControl(c, 'move', 9, { to: 0, current: [7, 8, 9] }); assert.deepEqual(c.order, [9, 7, 8]);
   c = q.applyQueueControl(c, 'move', 7, { to: 5, current: [9, 7, 8] }); assert.deepEqual(c.order, [9, 8, 7]);
+  // two moves before the next round: the second keeps the first (the round's order is older than the manual one)
+  let m = q.applyQueueControl({}, 'move', 9, { to: 0, current: [7, 8, 9], currentAt: '2026-11-16T10:00:00Z', at: '2026-11-16T10:01:00Z' });
+  m = q.applyQueueControl(m, 'move', 10, { to: 1, current: [7, 8, 9], currentAt: '2026-11-16T10:00:00Z', at: '2026-11-16T10:02:00Z' });
+  assert.deepEqual(m.order, [9, 10, 7, 8]);
+  // a round after the move: its order leads again
+  m = q.applyQueueControl(m, 'move', 8, { to: 0, current: [9, 10, 7, 8], currentAt: '2026-11-16T10:03:00Z', at: '2026-11-16T10:04:00Z' });
+  assert.deepEqual(m.order, [8, 9, 10, 7]);
   assert.throws(() => q.applyQueueControl(c, 'move', 7, { to: -1 }), /index/);
   assert.throws(() => q.applyQueueControl(c, 'add', 'x'), /PR number/);
   assert.deepEqual(q.pruneControl(c, [9]).order, [9]);
