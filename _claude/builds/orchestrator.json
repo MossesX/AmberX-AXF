@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-17T22:44:44.396Z",
+ "updatedAt": "2026-11-17T22:45:16.567Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -209877,12 +209877,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:42:26.247Z",
-   "updatedAt": "2026-11-17T22:43:19.179Z",
+   "updatedAt": "2026-11-17T22:45:13.312Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-17T22:43:19.179Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (3 Fable).",
+     "at": "2026-11-17T22:45:13.312Z"
     }
    ],
    "approvals": [],
@@ -209899,7 +209903,337 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design build-manifest status contract: add VPS-owned `status` (building|on-hold|stopped|done|…) with `setBy:'vps'`, `setAt`, `reason` (stopped/killed/crashed/paused/kicked-out) to the build manifest schema in framework/schemas and the builds@1 record; document in framework/spec/BUILD-STATUS.md (VPS is sole writer, orchestrator read-only)",
+     "model": "Fable",
+     "why": "Schema + cross-app status contract design",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/build-manifest.json",
+      "framework/spec/BUILD-STATUS.md",
+      "framework/core/build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s01n7ha",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write the status→tab mapping core: pure function fileTab(manifest) in framework/core/build-status-tabs.mjs (building or on-hold when returned => hold; never pending; queued => queue; done => built/complete) plus migration note for existing store records without manifest status",
+     "model": "Fable",
+     "why": "Engine internals the orchestrator, dispatcher and console all read",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-status-tabs.mjs",
+      "framework/spec/BUILD-STATUS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s02o3a4",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s3",
+     "text": "Migration: builds-store.mjs reads legacy status as manifest status once (setBy:'migration'), journalled; verify keeps every build; add fixture framework/spec/fixtures/build-status-tabs.json",
+     "model": "Fable",
+     "why": "Store migration design",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/spec/fixtures/build-status-tabs.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s03mbmq",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s4",
+     "text": "VPS side: deploy/claude-headless.sh sets manifest status=building through a new framework/cli/build-manifest.mjs `set-status <id> building --by vps` the moment a session starts",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/build-manifest.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s049h20",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s5",
+     "text": "VPS side: on session exit (stop, kill, crash, pause, kick-out) the launcher trap records the return reason on the manifest and hands it back to the orchestrator via build-manifest.mjs `return <id> --reason …` without changing status",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/build-manifest.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s05biwt",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s6",
+     "text": "Orchestrator: remove its own status computation in pipeline.mjs / orchestrator.mjs; on return it reads manifest status and files the build with fileTab() (building/on-hold => Hold); never Pending, never requeue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s06cqks",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s7",
+     "text": "Dispatcher guard: pipeline.mjs tick skips any build whose manifest status is on-hold or filed in Hold, and drops the 'crash → back to Queue, 3 runs' path (fixes the flagship-professional-skin-covering-2 relaunch)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s07rtmu",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s8",
+     "text": "Hold on running builds: build-manifest.mjs `hold <id>` asks the VPS to stop the session (agent-slots / headless pid), keeps branch and ticked steps, VPS sets status=on-hold, orchestrator files to Hold",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/build-manifest.mjs",
+      "framework/cli/agent-slots.mjs",
+      "deploy/claude-headless.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s08u4w1",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s9",
+     "text": "Console server routes: GET /api/plugins/build-orchestrator/manifest/<id> (status read), POST …/hold and …/release (release moves Hold → Pending only by Brett's call); console_show target for the Hold tab and a build row",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s094wb5",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s10",
+     "text": "Console UI: Pipeline tab shows tab from manifest status, a Hold button on running rows (confirm), a 'set by VPS · reason' line on held rows; register control targets (data-axf-target)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/PipelineTab.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s0atxwl",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s11",
+     "text": "API parity: MCP plugin commands (pipeline-hold, pipeline-release, manifest-status), axf CLI `axf builds hold|release|status`, AmberX voice actions; all calling the same routes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/build-orchestrator/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s0bnenb",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s12",
+     "text": "Tests: framework/spec/check-build-status-tabs.mjs (fixture; started build returned => Hold for every reason; on-hold returned => Hold; never Pending); orchestrator refuses to write status itself",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-build-status-tabs.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s0cp3bo",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s13",
+     "text": "Tests: dispatcher test — held build never relaunched over N ticks, running-build hold stops the fake session and keeps branch + ticked steps; wire both checks into CI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/pipeline-hold.test.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s0dh8nf",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s14",
+     "text": "Coordinate with move-server-side-console-parts-onto-vps: add a note on that build naming the shared manifest contract; update builds README and decisions.md with the VPS-only status rule",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/README.md",
+      "_claude/memory/decisions.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s0eq3jb",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    },
+    {
+     "id": "s15",
+     "text": "Run all checks (builds-store verify, check-builds-store, check-build-status-tabs, pipeline tests, console-control, check-theme), write _claude/builds/reports/vps-sets-every-build-status-manifest.md (API reach per feature), THREADS row, UI Review submission, open PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/vps-sets-every-build-status-manifest.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwla621s0fi5g6",
+     "createdAt": "2026-11-17T22:45:13.312Z"
+    }
+   ]
   }
  ]
 }
