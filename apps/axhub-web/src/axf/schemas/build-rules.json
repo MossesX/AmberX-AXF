@@ -1,0 +1,82 @@
+{
+  "schema": "build-rules@1",
+  "version": 1,
+  "rule": "build-rule@1",
+  "store": "build-rules-store@1",
+  "history": "build-rule-history@1",
+  "briefBlocks": "brief-blocks@1",
+  "doers": [
+    "vps",
+    "session"
+  ],
+  "kinds": [
+    "mechanical",
+    "judgement"
+  ],
+  "phases": [
+    "before",
+    "dispatch",
+    "after",
+    "gate"
+  ],
+  "briefBlockNames": [
+    "look",
+    "api",
+    "checkpoints",
+    "rules"
+  ],
+  "applies": [
+    "builds",
+    "interactive",
+    "all"
+  ],
+  "checkKinds": [
+    "none",
+    "command",
+    "checker"
+  ],
+  "fixers": [
+    "home-card",
+    "scale-adopt",
+    "ui-review-submit",
+    "glossary-catalog",
+    "tracker",
+    "chrome-settings-backfill",
+    "shared-assets-bake",
+    "builds-live-link",
+    "help-stub",
+    "shipped-features",
+    "api-parity",
+    "tracker-threads",
+    "run-ci-checks",
+    "pr-open-link"
+  ],
+  "historyActions": [
+    "seed",
+    "migrate",
+    "add",
+    "edit",
+    "toggle",
+    "remove",
+    "restore"
+  ],
+  "idPattern": "^[a-z0-9][a-z0-9-]{0,47}$",
+  "rulesMax": 400,
+  "titleMax": 160,
+  "textMax": 4000,
+  "sourcesMax": 40,
+  "keywordsMax": 20,
+  "reasonMax": 600,
+  "storeDir": {
+    "env": "AXF_BUILD_RULES_DIR",
+    "now": "/projects/amberx-axf/_data/build-rules",
+    "later": "axf-data",
+    "fallback": "~/.axf/build-rules"
+  },
+  "files": {
+    "store": "store.json",
+    "history": "history.jsonl",
+    "lock": "store.lock"
+  },
+  "seed": "_claude/builds/build-rules/seed.json"
+}
