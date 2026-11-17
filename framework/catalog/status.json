@@ -728,12 +728,6 @@
     "wave": 1,
     "module": "axf-ui"
   },
-  "ui.opacity.surfaces": {
-    "status": "built",
-    "wave": 1,
-    "module": "axf-ui",
-    "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred."
-  },
   "ui.a11y": {
     "status": "built",
     "wave": 1,
@@ -2295,6 +2289,18 @@
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
   },
+  "cx.settings.opendialog": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings",
+    "notes": "Every settings interface always opens as a floating glass popup (core/engines/settingsopen.ts; Brett Nov 13 + Nov 16 2026). app.settings / settings.open[:tab] → dialog; the page / pane / floating choice (axf.settings.opensAs, settings.opensas, settings.page, Open as page) is removed and saved values are dropped on load; CI framework/spec/check-settings-open.mts fails code that navigates to the Settings page or brings any such option back. Kotlin twin deferred."
+  },
+  "ui.opacity.surfaces": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred."
+  },
   "cx.contextmenu.consolesettings": {
     "status": "built",
     "wave": 1,
@@ -2330,6 +2336,84 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.datastore": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Built on branch claude/data-container-axf-data-holds-all (PR #704): contract, service, deploy, backups, clients, migration, modes, UI + API parity, axHub route, drill. Every namespace starts local; moving one is staged (shadow, then cutover once drift is zero). Console infrastructure: no Kotlin twin (PORTING.md)."
+  },
+  "cx.datastore.contract": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/core/data-store.mjs + data-store-mode.mjs, spec DATA-STORE.md, check-data-store.mjs (incl. --http live replay)."
+  },
+  "cx.datastore.service": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "services/axf-data: test_store.py (CRUD, conflicts, append-only triggers, history/restore, watch, auth, backups, MCP, live Node contract). Store engine: Postgres (cx.datastore.postgres); SQLite stays for an install that has not moved yet."
+  },
+  "cx.datastore.postgres": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build axf-data-postgres-real-tables-own (Nov 15 2026; Brett: \"migrate everything to a database in its own container … follow it up with Postgres\"). services/axf-data/pg.py + tables.py: keys, records (JSONB), blobs, append-only journal (trigger, entry JSONB, view build_journal), history, feed; domain tables builds + build_steps, ui_review_items, planner_items, settings, notes, control_targets + control_tabs, store_heads; mirrors ledger_* / chats_* from the SQLite files (mirror_runs). Same data-store@1 on the wire (test_pg.py replays the whole contract suite on Postgres; check-data-store.mjs --http against it). Postgres 16 in its own container axf-data-db, volume axf-data-pg (compose.yaml, deploy/install-data.sh). Live builds store: 931 builds → rows and back equal."
+  },
+  "cx.datastore.postgres.move": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "engine.py: sqlite → shadow → postgres inside the service (data-engine@1; GET/POST /v1/_meta/engine, axf data engine, plugin engine / engine-move, voice); migrate_pg.py copies a SQLite axf-data over with backup first and refuses unless counts, journal lines and every manifest match; backup.py pg_dump + pg_restore --list verify + counts, daily cron, mirror_sync.py nightly. The VPS install is fresh (no SQLite store moved yet): it starts on Postgres directly."
+  },
+  "cx.datastore.registry": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "apps/console-web/src/control/inventory.json is generated (scripts/control-inventory.mjs --check writes it), untracked (.gitignore) and published by the console server to axf-data as console/control/inventory.json → the control_targets / control_tabs tables. Builds no longer clash on the file."
+  },
+  "cx.datastore.deploy": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "deploy/install-data.sh + services/axf-data/compose.yaml; image built and health-checked here; the VPS install runs after the merge."
+  },
+  "cx.datastore.backups": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "backup.py run/verify/restore/prune, deploy/axf-data-backup.cron, systems-check item axf-data with Auto fix (veto calls)."
+  },
+  "cx.datastore.clients": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data_store.py (test_data_store.py), data-files.mjs, builds-store (check-builds-store-data.mjs: lock = rev check in cutover), claude-settings, plan-studio, ui-review, notes-browser, changes log, shipped-features + chat-viewer SQLite as blobs."
+  },
+  "cx.datastore.migrate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data-migrate.mjs, check-data-migrate.mjs on a seeded copy of real data (migrate, verify, roll back, idempotent, forced mismatch fails)."
+  },
+  "cx.datastore.modes": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "data-mode.mjs status|shadow|cutover|rollback|local; mode + drift log on axf-data (_meta/mode, _meta/drift/<ns>)."
+  },
+  "cx.datastore.ui": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Data store plugin: three layout options waiting in UI Review; REST state/drift/backup/verify/mode/voice, plugin commands, axf data, deep link view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=data-store."
+  },
+  "cx.datastore.hub": {
+    "status": "partial",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "services/axf-data/mcp.py + deploy/axhub/axf-data.downstream.json (axHub repo registers the downstream); deploy/dryrun/console-down-drill.sh passed (results/console-down-drill.json)."
   },
   "cx.gate": {
     "status": "built",
