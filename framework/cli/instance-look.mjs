@@ -19,7 +19,7 @@
  * and control@1 `tokens.looks` call, so the four ways in cannot drift. Undo lives beside the documents
  * (`looks/.instance-look-undo.json`), one per instance.
  */
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { chownSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { BORDER_STEPS, INSTANCE_LOOK_KEYS, INSTANCE_LOOK_KEY_IDS, INSTANCE_LOOK_KINDS, RADIUS_STEPS, SPACE_STEPS, TEXT_STEPS, colourTokensOf, instanceLookKeyError, instanceLookStored, isInstanceLookId, isInstanceLookKind, normalizeInstanceLook } from '../core/engines/instance-look-rules.mjs';
@@ -115,6 +115,8 @@ function writeUndo(map) {
   const tmp = `${undoFile()}.${process.pid}.tmp`;
   writeFileSync(tmp, `${JSON.stringify(map)}\n`);
   renameSync(tmp, undoFile());
+  // the hub's data server owns the folder: a file written as root stays writable by it (as skins.mjs writeLook does)
+  try { const { uid, gid } = statSync(looksDir()); chownSync(undoFile(), uid, gid); } catch { /* not root: the file is already ours */ }
 }
 
 /** Reset to skin: drop the record (kept for one undo). { changed, dropped }. */

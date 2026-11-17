@@ -138,7 +138,7 @@
     "status": "built",
     "wave": 1,
     "module": "axf-kernel",
-    "notes": "component-tokens@1 (Nov 13 2026, build own-token-sets-for-grids-and-tab-groups): grids / tables (--fx-grid-*, 32 tokens) and tab groups (--fx-tab-*, 58 tokens) have their own token families (core/engines/component-tokens.mjs: kind, level, description, default = today's general token), set by the style theme (grid.* / tabs.*), control@1 tokens.style, and per instance (axf.tokens.instances, tokens.instances; Restore previous edit / Restore from axHub). CI spec/check-component-tokens.mjs. Kotlin twin deferred."
+    "notes": "component-tokens@1 (Nov 13 2026, build own-token-sets-for-grids-and-tab-groups): grids / tables (--fx-grid-*, 32 tokens) and tab groups (--fx-tab-*, 58 tokens) have their own token families (core/engines/component-tokens.mjs: kind, level, description, default = today's general token), set by the style theme (grid.* / tabs.*), control@1 tokens.style, and per instance (axf.tokens.instances, tokens.instances; Restore previous edit / Restore from axHub). CI spec/check-component-tokens.mjs. Kotlin twin deferred. instance-look@1 (Nov 17 2026, build own-look-per-grid-and-tab-group): every grid and tab row can carry its own look, ten keys of token refs or steps only (axf.chrome.<kind>.<id>.look; skin -> app -> instance), Settings -> Look with live sample and Reset to skin, grid is a chrome kind (right-click, settings/chrome-grid), control@1 tokens.looks, theme-manager /instance-look routes, axf look, actions chrome.look.*. CI spec/check-instance-look.mts."
   },
   "f.locals": {
     "status": "built",

@@ -1,6 +1,6 @@
 # Own look per grid and tab group
 
-Build `own-look-per-grid-and-tab-group` · contract `instance-look@1` · Phase 1 (Fable): design, schema, engine, storage, fixtures.
+Build `own-look-per-grid-and-tab-group` · contract `instance-look@1` · Phase 1 (Fable): design, schema, engine, storage, fixtures · Phase 2 (Opus): wiring, dialogs, API, tests, review.
 
 ## Brett asked (Nov 16 2026, verbatim)
 
@@ -129,11 +129,75 @@ The four surfaces call the same engine functions (`setInstanceLookKey`, `resetIn
 
 The migration moves a legacy per-row value only when it binds to a look key, is a token ref, and the look record does not already hold that key. A raw colour, a shadow, a weight, a px length, or a token the record already covers stays in `axf.tokens.instances` and keeps applying through component-tokens@1; the console log line says how many moved and how many were kept.
 
+## Phase 2 (Opus): what shipped
+
+**Result:** every framework tab row (`TabGroup`) and every framework grid (lib-datagrid `DataGrid`) draws its own look when one is
+set, follows the skin when not, and can be reset to the skin with one undo, from the UI and from every API.
+
+- **s6 TabGroup** reads `runtime.instanceLook('tab-group', id)` (skin's style-theme maps with token overrides → `axf.chrome.tab-group.look`
+  → `axf.chrome.tab-group.<id>.look`) through `react/instanceLook.ts` (`useInstanceLook`): the root gets the `--fx-inst-*` vars, the bound
+  `--fx-tab-*` family tokens and `data-fx-inst="<keys set>"`. `axf.css` has tab-group rules gated on `[data-fx-inst~='<key>']` that read only
+  `--fx-inst-*`; an unset key falls through to the family tokens (the skin cascade). No `var()` fallbacks. New family tokens
+  `tabs.fontSize`, `grid.fontSize`, `grid.borderW` (defaults `inherit` / `--fx-border-w`: nothing moves until set).
+- **s7 DataGrid** the same; every grid line reads `--fx-grid-border-w`, text reads `--fx-grid-font-size`; spacing moves column gap and
+  inline padding only. The column template is set after the look, so cell widths stay the columns' own (pinned in the check and the e2e).
+- **s8 grid is a chrome kind** (`chrome-settings-rules`: target `grid`, header prefix `axf-grid-header:<id>`, many, no moves, one
+  instance-only field Compact rows). It has no asset type of its own: `CHROME_PICK_TYPE.grid = 'instance-look'`, so **Change grid look…**
+  copies a named look into the grid's record. Default `settings/chrome-grid` + per-app copies (backfill: console-web, axhub-web,
+  amberx-droid, molly, expenses). **Move** is not offered on a grid: it has nowhere to move.
+- **s9 Look section** (`InstanceLookPanel`): a framework `SelectField` per key offering only what the rules accept, "Skin" to drop a key,
+  the source of each value, a live sample drawn with the resolved look (the instance on screen restyles as you pick), Show it, **Reset to
+  skin** (danger, confirm) and **Undo reset**. Levels: `levelOf.instanceLook` and `look.<key>` in both settings assets (row, selected, text
+  size, spacing at Simple; the rest at Basic). The legacy per-row token editor moved to Developer.
+- **s10–s12 API** (below), **s13** re-bake, **s14** tests, **s15** review.
+
+## How each feature is reached
+
+| Feature | Deep link / UI | REST | MCP | CLI | Voice / console actions |
+|---|---|---|---|---|---|
+| Open a grid's / tab row's Look | right-click → Settings… → Look; `console_show action:chrome.look.open:<kind>:<id>` | — | `console_show` / `console_action` | `axf console do function:chrome.look.open grid:<id>` | "open the look of the builds grid" → `chrome.look.open` |
+| Read its look | the Look section (value + source per key) | `GET /api/plugins/theme-manager/instance-look/<kind>/<id>` | `theme_manager_instance_look_*` (plugin-commands, auto), `control` `get tokens.looks <kind>.<id>` | `axf look get <kind> <id>` | `chrome.look.get:<kind>:<id>[:<key>]` |
+| List every own look | — | `GET …/instance-look?app=` | plugin-commands; `control list tokens.looks` | `axf look list [<app>]` | `chrome.look.list` |
+| Set one key | the key's picker | `PUT …/instance-look/<kind>/<id>` `{values:{rowBg:"surface2"}}` | plugin-commands; `control set tokens.looks <kind>.<id>.<key>`; console-control `setting:chrome.<kind>.<id>.look.<key>` | `axf look set <kind> <id> rowBg=surface2` | `chrome.look.set:<kind>:<id>:<key>:<value>` |
+| Reset to skin | Reset to skin (confirm) | `DELETE …/instance-look/<kind>/<id>` | plugin-commands; `control reset tokens.looks <kind>.<id>`; `function:chrome.look.reset` (needs confirm) | `axf look reset <kind> <id>` | `chrome.look.reset:<kind>:<id>` |
+| Undo the reset | Undo reset | `POST …/instance-look/<kind>/<id>/undo` | plugin-commands; `control act tokens.looks <kind>.<id> undo` | `axf look undo <kind> <id>` | `chrome.look.undo:<kind>:<id>` |
+| Pick a named grid look | right-click → Change grid look… | — | `console_action chrome.swap:grid:<id>:<look>` | `axf console do function:chrome.swap grid:<id>:<look>` | `chrome.swap:grid:<id>:<look|next>` |
+| Grid settings (Compact rows) | right-click → Grid settings… | — | `console_action chrome.set:grid:<id>:compact:on` | same via `axf console do` | `chrome.set:grid:<id>:compact:on` |
+
+`<kind>` = `tab-group` | `grid`; `<id>` = the TabGroup / DataGrid id (`-` = every one of the kind in the app); REST, MCP and CLI take
+`app` (default `axf-console`) and write the app's look document on the hub (`own.settings`), which every open screen of that app follows
+live. One library under all of them: `framework/cli/instance-look.mjs` (REST and control@1 call it; the open console calls the runtime's
+`setInstanceLook` / `resetInstanceLook` / `undoInstanceLookReset`, which use the same engine).
+
+## Checks (phase 2)
+
+`check-instance-look` (860: + skin swap restyles, reset returns to the skin, CSS reads `--fx-inst-*` only under a gate and never with a
+fallback, fixed cell widths, CLI round-trip), `theme-manager/test/test_instance_look.py` (24 route checks; CI runs `plugins/*/test/test_*.py`),
+`scripts/instance-look.e2e.mjs` (27 browser checks, desktop + phone, built console), `check-skin-coverage` (56 types, 0 uncovered),
+`check-chrome-settings` (330), `chrome-settings check` (7 kinds × 5 apps), `check-chrome-assets` (within baseline), `check-control` (402,
+26 targets), `check-console-control`, `check-theme`, `check-controls`, `check-toolbars`, `check-component-tokens`, `check-skin`,
+`check-tapconfirm`, `shared-assets check --all`, `validate --framework`, `tracker --check`, token-control and plugin-commands tests,
+console `npm run build` (tsc + vite).
+
+## Review
+
+UI Review item `r-20261117-avs9i01` (group "Own look per grid and tab group"): desktop + phone shots of a grid and a tab row on the skin,
+with an own look, the Look section, and after Reset to skin; three choices (owner theme-manager, `plugins/theme-manager/assets/instance-look/`):
+**Quiet ledger**, **Soft cards**, **High contrast**. They ship either way (Change grid look… lists them). Shots: `own-look-per-grid-and-tab-group/shots/`.
+
+## Notes and what it cost
+
+- The console build failed on the phase-1 engine under the console's strict index rules (6 errors in `instance-look.ts`); fixed in the
+  framework, behaviour unchanged.
+- Re-bake: the four shared apps' baked copies were behind the framework with stale lock hashes, so `rebake apply` refused them as
+  "edited". Checked first (no app-only content, only older framework lines), then `--force`. `apps/demo` and `walkthrough-studio` are
+  still stale; they are not shared-assets apps.
+- The UI Review item went straight to the live UI Review folder (`/opt/axf/.axf-console/plugins/ui-review`): this session had no
+  `AXF_TOKEN` / `AXF_CONSOLE_URL` for `--console`.
+- Undo of a reset is one per instance: in the open console it lasts the session; through REST / CLI it is kept beside the look documents
+  (`looks/.instance-look-undo.json`).
+
 ## Open
 
-- Wiring (phase 2): TabGroup and DataGrid apply `resolve().vars + bind`; the `--fx-grid-font-size`, `--fx-tab-font-size`,
-  `--fx-grid-border-w` family tokens and their CSS reads; the settings dialog tab and the grid header entry; control@1
-  `looks.instances`; the three UI Review choices for the dialog.
-- The legacy per-instance token editor (component-tokens@1 "colours & style (this one)") stays until the look dialog ships; then
-  it moves behind the advanced level.
 - Kotlin twin: deferred (framework/spec/PORTING.md, s5).
+- `.fx-table` hosts (plain tables) have no settings id yet, so they take the grid family tokens but no own look.
