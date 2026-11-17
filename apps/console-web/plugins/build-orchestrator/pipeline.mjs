@@ -809,7 +809,8 @@ export function reapBuilds({ sl = slotsNow(), now = Date.now(), env = process.en
   for (const b of live(loadStore())) {
     const p = b.pipeline;
     if (!(b.status === 'running' || b.status === 'waiting') || !p?.account || p.session) continue;
-    if ((p.slot && held.has(p.slot)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < GONE_GRACE_MS) continue;
+    const entry = BP.slotEntry(p);
+    if ((entry && held.has(entry)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < GONE_GRACE_MS) continue;
     // confirm it is really dead (tmux + claude pids, not the lock: a lock with no session behind it is what we reap)
     const l = buildLive(b.id, { env, useLock: false });
     if (l.live) {
@@ -818,10 +819,11 @@ export function reapBuilds({ sl = slotsNow(), now = Date.now(), env = process.en
       continue;
     }
     lock.release(b.id, { dir: worktreeOf(b.id, env) });
-    const note = `Self-check: ${b.id} was marked running on ${p.account} with no session${p.slot ? ` and agent slot ${p.slot} gone` : ''}: released and back in the Queue.`;
-    setPipeline(b.id, { account: '', slot: '', session: '', note: 'released by the self-check (nothing ran): back in the Queue' }, { status: 'queued', note, action: 'pipeline:reap' });
-    logLine({ event: 'reaped', build: b.id, account: p.account, slot: p.slot || '' });
-    out.push({ id: b.id, account: p.account, slot: p.slot || '' });
+    // nothing ran, so the build keeps its hold (it is still one of the running builds): only the dead agent-slots entry goes
+    const note = `Self-check: ${b.id} was marked running on ${p.account} with no session${entry ? ` and agent slot ${entry} gone` : ''}: released and back in the Queue.`;
+    setPipeline(b.id, { account: '', slot: BP.handoffSlot(p.slot), session: '', note: 'released by the self-check (nothing ran): back in the Queue' }, { status: 'queued', note, action: 'pipeline:reap' });
+    logLine({ event: 'reaped', build: b.id, account: p.account, slot: entry });
+    out.push({ id: b.id, account: p.account, slot: entry });
   }
   return out;
 }
@@ -924,7 +926,8 @@ export function tick({ env = process.env } = {}) {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
       const runs = (b.pipeline?.runs ?? 0) + 1;
       const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, phase: l.phase || '', launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+      // the build takes its slot on the first launch and keeps it across phases (build-pipeline@1 slot hold)
+      setPipeline(b.id, { account: l.account, session: r.session, slot: BP.takeSlot(b.pipeline?.slot, { id: b.id, account: l.account, model: l.model, entry: r.slot, at: nowIso() }), model: l.model, phase: l.phase || '', launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });

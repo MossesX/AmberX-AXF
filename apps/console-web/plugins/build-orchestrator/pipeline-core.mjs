@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder, slotAfterExit } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
@@ -412,9 +412,11 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
   let status = r.status;
   if (r.outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
   const note = outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run);
-  // the patch never touches queuedAt: a requeued build keeps its place in the Queue
-  const patch = { lastRun: run, crashes: r.crashes, session: '', slot: '', note: r.outcome === 'finished' ? '' : note };
-  return { outcome: r.outcome, status, reason: r.reason, run, crashes: r.crashes, keepQueue: r.keepQueue, patch, note };
+  // the patch never touches queuedAt: a requeued build keeps its place in the Queue. The slot hold stays (build-pipeline@1
+  // slot hold: phase-done and crash hand off to the next session in the same slot); only complete or the crash limit release it
+  const slot = slotAfterExit(b.pipeline?.slot, r, { status, at: now });
+  const patch = { lastRun: run, crashes: r.crashes, session: '', slot, note: r.outcome === 'finished' ? '' : note };
+  return { outcome: r.outcome, status, reason: r.reason, run, crashes: r.crashes, keepQueue: r.keepQueue, slot: r.slot, state: r.state, patch, note };
 }
 
 /**

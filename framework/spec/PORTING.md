@@ -236,6 +236,14 @@ Nov 14 2026 (build `fix-build-whose-session-finishes-phase-e`): the exit transit
 crash-limited build in Pending; golden cases in `spec/fixtures/build-pipeline-exit.json` (`check-build-pipeline.mjs`).
 Same deferral: no Kotlin twin while Android is on hold; a port replays the fixture's `transition` block.
 
+Nov 17 2026 (build `builds-keep-their-slot-across-phases`, spec `BUILD-PIPELINE.md`): the slot hold. `pipeline.slot` is now
+`{ holder, account, model, since, entry, released }` (a string on older records reads as no hold); `PIPELINE_STATES` with
+`phase-handoff` and `landing` (`stateOf`, `isHandoff`), `nextStatusOnExit()` answers `slot: keep | release` and `state`,
+`takeSlot` / `handoffSlot` / `releaseSlot` / `slotAfterExit` / `releaseOnStatus`, `migrateSlots()`, `pickNext()` /
+`holders()` / `handoffs()` / `freeSlots()` (hand-off builds before the Queue, free = max − holders), the `release-slot`
+action (`canReleaseSlot`, `RELEASING_ACTIONS`, `actionReleasesSlot`). Same deferral: no Kotlin twin while Android is on
+hold; a port replays the fixture's `transition`, `slots` and `dispatch` blocks.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:

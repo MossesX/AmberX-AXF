@@ -131,7 +131,7 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
   assert.equal(P.endOutcome(done, { exit: 0 }).status, 'complete');
   assert.equal(P.endOutcome({ ...done, pr: '12' }, { exit: 0 }).status, 'built');
   const crashed = P.endOutcome(build('c', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, account: 'w-pro' } }), { exit: 1 });
-  assert.equal(crashed.status, 'queued'); assert.match(crashed.note, /back in the Queue/);
+  assert.equal(crashed.status, 'queued'); assert.match(crashed.note, /keeps its slot, retried ahead of the Queue/);
   const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
   assert.equal(stopped.status, 'pending'); assert.match(stopped.note, /back in Pending for Brett/);
   const phase = P.endOutcome(build('p', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Fable' } }), { exit: 0 });
@@ -143,7 +143,7 @@ t('endOutcome: a phase done with steps left goes back to the Queue whatever the 
   const ph = (id, phase, model, done = false) => ({ ...step(id, model, done), phase });
   // B: Opus "Phase 1" → Opus "Phase 2"
   const sameModel = P.endOutcome(build('b', 'running', [ph('s1', 'Phase 1', 'Opus', true), ph('s2', 'Phase 2', 'Opus')], { pipeline: { runs: 1, model: 'Opus', phase: 'Phase 1', launchedAt: '2026-11-08T00:30:00.000Z' } }), { exit: 0 });
-  assert.deepEqual([sameModel.status, sameModel.reason, sameModel.run.phase], ['queued', 'phase-done', 'Phase 1']); assert.match(sameModel.note, /finished phase Phase 1 .*back in the Queue at its place/);
+  assert.deepEqual([sameModel.status, sameModel.reason, sameModel.run.phase], ['queued', 'phase-done', 'Phase 1']); assert.match(sameModel.note, /finished phase Phase 1 .*keeps its slot \(phase hand-off, ahead of the Queue\)/);
   // C: Fable → Opus with no model and no phase on the record (a run from before the dispatcher stored them)
   const bare = P.endOutcome(build('c', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1 } }), { exit: 0 });
   assert.deepEqual([bare.status, bare.reason], ['queued', 'phase-done']);
@@ -533,7 +533,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(find('alpha').pipeline.lastRun.exit, 1); assert.equal(find('alpha').pipeline.lastRun.outcome, 'requeued');
     // the account it freed takes it again in the same tick: run 2
     assert.deepEqual(r.launched.map((l) => l.id), ['alpha']); assert.equal(find('alpha').status, 'running'); assert.equal(find('alpha').pipeline.runs, 2);
-    assert.match(find('alpha').notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
+    assert.match(find('alpha').notes.map((x) => x.text).join('\n'), /retried ahead of the Queue \(run 1\)/);
     // beta's session ticks its step and ends cleanly
     orch('act', 'step', 'beta', 's1', 'done');
     writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');

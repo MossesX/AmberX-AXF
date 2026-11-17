@@ -76,8 +76,8 @@ eq(BP.tabOf({ status: 'queued', steps, pipeline: { runs: 2, lastRun: { ...run, o
 
 // ---------------- the note lines
 const b = { pipeline: { runs: 2 }, steps: [{ id: 's1', done: true, model: 'Fable' }, { id: 's2', done: false, model: 'Opus' }] };
-ok(/finished phase Schema with 2 steps left: back in the Queue at its place, the next phase \(Opus\) starts by itself/.test(BP.outcomeLine(b, run)), `phase-done line: ${BP.outcomeLine(b, run)}`);
-ok(/back in the Queue \(run 2\)/.test(BP.outcomeLine(b, { ...run, exit: 1, reason: 'crash' })), 'crash line');
+ok(/finished phase Schema with 2 steps left: keeps its slot \(phase hand-off, ahead of the Queue\), the next phase \(Opus\) starts by itself/.test(BP.outcomeLine(b, run)), `phase-done line: ${BP.outcomeLine(b, run)}`);
+ok(/keeps its slot, retried ahead of the Queue \(run 2\)/.test(BP.outcomeLine(b, { ...run, exit: 1, reason: 'crash' })), 'crash line');
 ok(/needs Brett's approval/.test(BP.outcomeLine(b, { ...run, outcome: 'returned', reason: 'upgrade-blocked' })), 'blocked upgrade line');
 ok(/needs Brett: back in Pending/.test(BP.outcomeLine(b, { ...run, outcome: 'returned', reason: 'needs-brett' })), 'needs-brett line');
 ok(/stopped on its own .* back in Pending for Brett/.test(BP.outcomeLine(b, { ...run, outcome: 'returned', reason: 'stopped' })), 'stopped line');
@@ -92,7 +92,7 @@ for (const c of fixture.sessions) {
   const r = P.endOutcome(fullBuild(c), { exit: c.exit, now: NOW, needsBrett: !!c.needsBrett }, P.normSettings({ maxRuns }));
   const got = { status: r.status, outcome: r.outcome, reason: r.reason, crashes: r.crashes, keepQueue: r.keepQueue, phase: r.run.phase, queuedAtKept: !('queuedAt' in r.patch) };
   if (WRITE) c.out = got; else eq(got, c.out, `session: ${c.name}`);
-  eq([r.run.reason, r.run.outcome, r.patch.crashes, r.patch.session, r.patch.slot], [r.reason, r.outcome, r.crashes, '', ''], `session: ${c.name}: lastRun and the patch agree`);
+  eq([r.run.reason, r.run.outcome, r.patch.crashes, r.patch.session, r.patch.slot.entry], [r.reason, r.outcome, r.crashes, '', ''], `session: ${c.name}: lastRun and the patch agree (the live slot entry cleared)`);
   ok(r.note.length > 10 && (r.outcome === 'finished' ? r.patch.note === '' : r.patch.note === r.note), `session: ${c.name}: note on the record unless finished`);
 }
 setUpgradePolicy({ approvalRequired: false, source: 'check-build-pipeline' });

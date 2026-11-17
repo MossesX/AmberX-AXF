@@ -9,17 +9,29 @@
  *
  *   status flow:  pending → queued → running (Building) → built → complete
  *                 a session that ends with steps left: nextStatusOnExit(). Its phase done (any model, Fable → Opus or
- *                 Opus → Fable with the upgrade policy satisfied) = back to queued, same queue position, the next phase
- *                 starts by itself ('phase-done'). A crash = queued again ('crash') until maxRuns crashes, then pending
- *                 ('crash-limit'). Pending only for a real stop: the crash limit, the next phase is an upgrade Brett has
- *                 not approved while "Fable upgrades need my approval" is on ('upgrade-blocked'), the session needs
- *                 Brett ('needs-brett'), or it stopped mid-phase on purpose: a question, UI Review ('stopped').
+ *                 Opus → Fable with the upgrade policy satisfied) = 'phase-done': status queued, but the build keeps its
+ *                 slot and sits in the phase-handoff state (stateOf), ahead of every Queue build; the next phase starts
+ *                 by itself in that slot. A crash = the same ('crash', the slot kept) until maxRuns crashes, then pending
+ *                 ('crash-limit', the slot released). Pending only for a real stop: the crash limit, the next phase is an
+ *                 upgrade Brett has not approved while "Fable upgrades need my approval" is on ('upgrade-blocked'), the
+ *                 session needs Brett ('needs-brett'), or it stopped mid-phase on purpose: a question, UI Review ('stopped').
+ *
+ *   slot hold (Brett, Nov 17 2026: "They didn't go back online. They finished. That is retarded. I want the 8 that are
+ *   running to finish before the rest go."): a build keeps its agent slot from its first launch until it is merged. A
+ *   phase end is a hand-off between two sessions of the same build, never a return to the Queue; a slot held between
+ *   phases is not free (freeSlots = max − holders), and pickNext() puts hand-off builds before every queued one. The slot
+ *   is released only on merged / complete, failed (the crash limit) or a Brett action (unqueue, hold, archive, delete,
+ *   release-slot). Spec: framework/spec/BUILD-PIPELINE.md.
  *
  * `pipeline` on a build (kept across orchestrator, Pending and queue writes; only the dispatcher and the queue
  * actions change it):
  *   queuedAt   ISO: when it entered the Queue ('' in Pending)        queuedBy  who queued it (brett | auto | console | …)
  *   account    the Claude account the current / last run is on       session   its tmux session (axf-<id>--<agent>)
- *   slot       the agent-slots entry id of the current run           model     the model that run started on
+ *   slot       the slot hold { holder, account, model, since, entry, released }: holder = the build id while it holds a
+ *              slot ('' = none), since = ISO of the first launch, entry = the agent-slots entry id of the live session
+ *              ('' between sessions), released = the last release { at, by, why } or null. A string (records before
+ *              Nov 17 2026) reads as no hold with the string as entry.
+ *   model      the model that run started on
  *   phase      the phase name that run was launched for ('' before the dispatcher recorded phases)
  *   launchedAt ISO of the current / last launch                      runs      how many sessions have run it
  *   crashes    sessions that ended with a failed exit (the crash limit counts these, never a clean phase end)
@@ -42,10 +54,22 @@
  */
 
 export const SCHEMA = 'build-pipeline@1';
-/** The pipeline table: what each builds@1 status shows as. */
+/** The pipeline table: what each builds@1 status shows as (a queued build holding a slot shows as building: tableOf). */
 export const TABLE = Object.freeze({ pending: 'pending', queued: 'queued', running: 'building', waiting: 'building' });
 export const TABLE_STATES = ['pending', 'queued', 'building'];
 export const TABLE_LABEL = Object.freeze({ pending: 'Pending', queued: 'Queue', building: 'Building' });
+/**
+ * The pipeline state (stateOf): the builds@1 status read together with the slot hold.
+ *   pending         in Pending                                    queued    in the Queue, no slot held
+ *   phase-handoff   queued and holding a slot: a phase ended (or a session crashed) and the next session has not started
+ *   building        running or waiting on an approval             landing   built (every step done), the slot held until the PR merges
+ */
+export const PIPELINE_STATES = ['pending', 'queued', 'phase-handoff', 'building', 'landing'];
+export const STATE_LABEL = Object.freeze({ pending: 'Pending', queued: 'Queue', 'phase-handoff': 'Phase hand-off', building: 'Building', landing: 'Landing' });
+/** Why a slot was released: the PR merged (complete), the build failed (the crash limit), or Brett cancelled it (an action). */
+export const SLOT_RELEASES = ['merged', 'failed', 'cancelled'];
+/** The build actions that take the slot back (Brett cancels the run: the build is no longer one of the running ones). */
+export const RELEASING_ACTIONS = ['unqueue', 'hold', 'archive', 'delete', 'release-slot'];
 export const OUTCOMES = ['finished', 'requeued', 'returned', 'failed'];
 /** Why a run ended the way it did (lastRun.reason): the exit transition's reason code. */
 export const EXIT_REASONS = ['all-done', 'phase-done', 'crash', 'crash-limit', 'upgrade-blocked', 'needs-brett', 'stopped'];
@@ -60,8 +84,25 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 /** A saved Claude account name (deploy/claude-login.mjs), or ''. */
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
+/** No slot held, nothing released. */
+export function emptySlot() {
+  return { holder: '', account: '', model: '', since: '', entry: '', released: null };
+}
+
+/**
+ * The slot hold in shape. An object keeps holder / account / model / since / entry / released; a string (the agent-slots
+ * entry id, records before Nov 17 2026) reads as no hold with the string as entry; anything else as no hold.
+ */
+export function normSlot(v) {
+  if (typeof v === 'string') return { ...emptySlot(), entry: str(v, 60) };
+  if (!v || typeof v !== 'object') return emptySlot();
+  const holder = NAME_RE.test(str(v.holder, 40)) || /^[a-z0-9][a-z0-9._-]{0,79}$/i.test(str(v.holder, 80)) ? str(v.holder, 80) : '';
+  const rel = v.released && typeof v.released === 'object' && iso(v.released.at) ? { at: iso(v.released.at), by: str(v.released.by, 80), why: SLOT_RELEASES.includes(v.released.why) ? v.released.why : 'cancelled' } : null;
+  return { holder, account: holder ? accountName(v.account) : '', model: holder ? str(v.model, 20) : '', since: holder ? iso(v.since) : '', entry: str(v.entry, 60), released: rel };
+}
+
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', phase: '', launchedAt: '', runs: 0, crashes: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: emptySlot(), model: '', phase: '', launchedAt: '', runs: 0, crashes: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -72,7 +113,7 @@ export function normPipeline(p) {
   const pl = p.planned && typeof p.planned === 'object' ? p.planned : null;
   const out = {
     queuedAt: iso(p.queuedAt), queuedBy: str(p.queuedBy, 80),
-    account: accountName(p.account), session: str(p.session, 120), slot: str(p.slot, 60), model: str(p.model, 20), phase: str(p.phase, 80),
+    account: accountName(p.account), session: str(p.session, 120), slot: normSlot(p.slot), model: str(p.model, 20), phase: str(p.phase, 80),
     launchedAt: iso(p.launchedAt), runs: Number.isInteger(p.runs) && p.runs > 0 ? p.runs : 0, crashes: Number.isInteger(p.crashes) && p.crashes > 0 ? p.crashes : 0,
     lastRun: lr ? { at: iso(lr.at), exit: Number.isInteger(lr.exit) ? lr.exit : null, outcome: OUTCOMES.includes(lr.outcome) ? lr.outcome : 'finished', reason: EXIT_REASONS.includes(lr.reason) ? lr.reason : '', stepsLeft: Number.isInteger(lr.stepsLeft) ? lr.stepsLeft : 0, account: accountName(lr.account), session: str(lr.session, 120), phase: str(lr.phase, 80) } : null,
     split: sp ? { at: iso(sp.at), by: str(sp.by, 80), provider: SPLIT_PROVIDERS.includes(sp.provider) ? sp.provider : 'hand', steps: Number.isInteger(sp.steps) ? sp.steps : 0, note: str(sp.note, 400) } : null,
@@ -86,8 +127,84 @@ export function normPipeline(p) {
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
 }
 
-/** Which table a build sits in ('' for builds the table does not show: built, complete, failed, blocked, archived). */
-export const tableOf = (b) => TABLE[b?.status] ?? '';
+// ------------------------------------------------------------------ the slot hold
+
+/** Does this build hold an agent slot? (its slot.holder is set; a string slot of an older record holds nothing) */
+export const holdsSlot = (b) => !!b && !b.deleted && !!normSlot(b.pipeline?.slot).holder;
+/** The agent-slots entry id of the live session ('' between sessions), whatever shape the record has. */
+export const slotEntry = (p) => normSlot(p?.slot).entry;
+
+/**
+ * A session starts: the build takes (or keeps) its slot. The first launch starts the hold (`since`); every later launch
+ * of the same build keeps it and records the new account, model and agent-slots entry.
+ */
+export function takeSlot(slot, { id, account = '', model = '', entry = '', at = new Date().toISOString() } = {}) {
+  const s = normSlot(slot);
+  const holder = str(id, 80) || s.holder;
+  if (!holder) return s;
+  return { holder, account: accountName(account) || (s.holder ? s.account : ''), model: str(model, 20) || (s.holder ? s.model : ''), since: s.holder && s.since ? s.since : iso(at) || new Date().toISOString(), entry: str(entry, 60), released: null };
+}
+
+/** A session ended with the build going on (phase done, a crash under the limit, a stop for Brett): the hold stays, the live entry is cleared. */
+export function handoffSlot(slot) {
+  const s = normSlot(slot);
+  return s.holder ? { ...s, entry: '' } : s;
+}
+
+/** The slot is released: merged, failed, or cancelled by Brett (why in SLOT_RELEASES). The release is kept on the record. */
+export function releaseSlot(slot, { at = new Date().toISOString(), by = 'pipeline', why = 'cancelled' } = {}) {
+  const s = normSlot(slot);
+  if (!s.holder) return { ...s, entry: '' };
+  return { ...emptySlot(), released: { at: iso(at) || new Date().toISOString(), by: str(by, 80), why: SLOT_RELEASES.includes(why) ? why : 'cancelled' } };
+}
+
+/** The release a status change implies: complete (merged) → merged, failed → failed, else '' (the hold stays). */
+export const releaseOnStatus = (status) => (status === 'complete' || status === 'archived' ? 'merged' : status === 'failed' ? 'failed' : '');
+
+/** The slot hold a running build gets from the migration (its first launch, account and model as recorded). */
+function migratedSlot(b, now) {
+  const p = b.pipeline ?? {};
+  const live = b.status === 'running' || b.status === 'waiting';
+  const since = iso(p.launchedAt) || iso(p.lastRun?.at) || iso(now) || new Date().toISOString();
+  return { holder: b.id, account: accountName(p.account) || accountName(p.lastRun?.account), model: str(p.model, 20), since, entry: live ? slotEntry(p) : '', released: null };
+}
+
+/**
+ * The migration to the slot-hold rule: one patch { id, slot } per build that was running when the rule landed and holds
+ * nothing yet. Running and waiting builds qualify, and queued builds the old exit rule sent back to the Queue after a
+ * phase end or a crash (lastRun.outcome requeued, at least one run): they were the running ones. Idempotent.
+ */
+export function migrateSlots(builds, now = new Date().toISOString()) {
+  const out = [];
+  for (const b of Array.isArray(builds) ? builds : []) {
+    if (!b || b.deleted || !str(b.id)) continue;
+    if (holdsSlot(b)) continue;
+    const p = b.pipeline ?? {};
+    const live = b.status === 'running' || b.status === 'waiting';
+    const requeued = b.status === 'queued' && p.lastRun?.outcome === 'requeued' && (Number(p.runs) || 0) > 0 && openSteps(b).length > 0;
+    if (!live && !requeued) continue;
+    out.push({ id: b.id, slot: migratedSlot(b, now) });
+  }
+  return out;
+}
+
+/**
+ * The pipeline state (PIPELINE_STATES): the builds@1 status read with the slot hold. '' for builds the pipeline does not
+ * show (complete, failed, blocked, archived, deleted).
+ */
+export function stateOf(b) {
+  if (!b || b.deleted) return '';
+  if (b.status === 'running' || b.status === 'waiting') return 'building';
+  if (b.status === 'queued') return holdsSlot(b) ? 'phase-handoff' : 'queued';
+  if (b.status === 'pending') return 'pending';
+  if (b.status === 'built') return holdsSlot(b) ? 'landing' : '';
+  return '';
+}
+/** Phase hand-off: queued with a slot held, waiting for its next session (next in line, ahead of the Queue). */
+export const isHandoff = (b) => stateOf(b) === 'phase-handoff';
+
+/** Which table a build sits in ('' for builds the table does not show: built, complete, failed, blocked, archived). A hand-off build is in Building: it is one of the running builds. */
+export const tableOf = (b) => (isHandoff(b) ? 'building' : TABLE[b?.status] ?? '');
 
 /** The orchestrator's tabs, in screen order. */
 export const TABS = ['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted'];
@@ -112,7 +229,7 @@ export function tabOf(b) {
   const p = b.pipeline ?? {};
   if (b.status === 'failed' || /^launch failed/.test(str(p.note, 40))) return 'errors';
   if (b.status === 'pending' && p.lastRun?.outcome === 'failed') return 'errors'; // the crash limit sent it back to Pending
-  if (b.status === 'running' || b.status === 'waiting') return 'active';
+  if (b.status === 'running' || b.status === 'waiting' || isHandoff(b)) return 'active';
   if (b.status === 'queued') return 'queue';
   if (b.status === 'built') return 'complete';
   if (b.status === 'blocked') return 'incomplete';
@@ -140,8 +257,10 @@ export function unarchivedStatus(b) {
   if (!left && (b?.steps ?? []).length) return str(b?.mergedAt) ? 'complete' : 'built';
   return 'pending';
 }
-/** The actions the Build orchestrator offers on a build (Queue: back to Pending, hold / release, archive, delete). */
-export const BUILD_ACTIONS = ['unqueue', 'hold', 'release', 'archive', 'unarchive', 'delete', 'restore'];
+/** Brett may take the slot back: the build holds one and has no live session (phase-handoff, landing, or Pending with a hold). */
+export const canReleaseSlot = (b) => !!b && !b.deleted && holdsSlot(b) && !isLive(b);
+/** The actions the Build orchestrator offers on a build (Queue: back to Pending, hold / release, archive, delete, release the slot). */
+export const BUILD_ACTIONS = ['unqueue', 'hold', 'release', 'archive', 'unarchive', 'delete', 'restore', 'release-slot'];
 export function actionsFor(b) {
   if (!b) return [];
   if (b.deleted) return ['restore'];
@@ -152,8 +271,11 @@ export function actionsFor(b) {
   if (canArchive(b)) out.push('archive');
   if (b.status === 'archived') out.push('unarchive');
   if (canDelete(b)) out.push('delete');
+  if (canReleaseSlot(b)) out.push('release-slot');
   return out;
 }
+/** Does this action release the build's slot? (Brett cancels the run: RELEASING_ACTIONS) */
+export const actionReleasesSlot = (action) => RELEASING_ACTIONS.includes(action);
 
 /** Builds of the Queue in start order: priority first (P0 before P3), then the moment they were queued. */
 export function queueOrder(builds, priorityOf = () => 'P2') {
@@ -175,14 +297,16 @@ export const nextModel = (b) => openSteps(b)[0]?.model ?? '';
  *   phaseDone       the phase the run was launched for is done (its steps ticked), whatever the models involved
  *   upgradeBlocked  the next phase is an upgrade Brett has not approved while "Fable upgrades need my approval" is on
  *   needsBrett      the session said it needs Brett (a question, UI Review wait, a build left waiting)
- * Out: { status, outcome, reason, crashes, keepQueue }. `keepQueue` = the build stays in the Queue at its position.
+ * Out: { status, outcome, reason, crashes, keepQueue, slot, state }. `keepQueue` = the build stays in the Queue at its
+ * position; `slot` = keep | release (the slot hold); `state` = the pipeline state after the exit (PIPELINE_STATES).
  *   all-done         nothing left                         → built    (the caller makes it complete when there is no open PR)
- *   crash            a failed exit, crashes under maxRuns → queued   the Queue takes it again
- *   crash-limit      a failed exit, crashes at maxRuns    → pending  Brett decides (Errors tab)
- *   upgrade-blocked  clean exit, next phase needs Brett   → pending
- *   needs-brett      clean exit, the session asked        → pending
- *   phase-done       clean exit, its phase done           → queued   the next phase launches by itself; not a crash
- *   stopped          clean exit mid-phase                 → pending  a question, UI Review, a step marked for a new session
+ *                                                                    slot kept until the merge (landing); complete releases it
+ *   crash            a failed exit, crashes under maxRuns → queued   slot kept: phase-handoff, the retry runs in the same slot
+ *   crash-limit      a failed exit, crashes at maxRuns    → pending  slot released (failed); Brett decides (Errors tab)
+ *   upgrade-blocked  clean exit, next phase needs Brett   → pending  slot kept: when Brett answers, it goes on ahead of the Queue
+ *   needs-brett      clean exit, the session asked        → pending  slot kept
+ *   phase-done       clean exit, its phase done           → queued   slot kept: phase-handoff, the next phase launches by itself; not a crash
+ *   stopped          clean exit mid-phase                 → pending  slot kept; a question, UI Review, a step marked for a new session
  */
 export function nextStatusOnExit(run, maxRuns = DEFAULT_MAX_RUNS) {
   const r = run && typeof run === 'object' ? run : {};
@@ -193,13 +317,28 @@ export function nextStatusOnExit(run, maxRuns = DEFAULT_MAX_RUNS) {
   const clean = exit === 0;
   const crashes = clean ? before : before + 1;
   const max = Number.isInteger(maxRuns) && maxRuns > 0 ? maxRuns : DEFAULT_MAX_RUNS;
-  const out = (status, outcome, reason) => ({ status, outcome, reason, crashes, keepQueue: status === 'queued' });
+  const out = (status, outcome, reason) => ({
+    status, outcome, reason, crashes, keepQueue: status === 'queued',
+    slot: outcome === 'failed' ? 'release' : 'keep',
+    state: status === 'queued' ? 'phase-handoff' : status === 'built' ? 'landing' : 'pending',
+  });
   if (!stepsLeft) return out('built', 'finished', 'all-done');
   if (!clean) return crashes >= max ? out('pending', 'failed', 'crash-limit') : out('queued', 'requeued', 'crash');
   if (r.upgradeBlocked) return out('pending', 'returned', 'upgrade-blocked');
   if (r.needsBrett) return out('pending', 'returned', 'needs-brett');
   if (r.phaseDone) return out('queued', 'requeued', 'phase-done');
   return out('pending', 'returned', 'stopped');
+}
+
+/**
+ * The slot after a run's end, from the record's slot and the exit result: kept (entry cleared) or released. `status` is
+ * the status the caller settles on (complete releases as merged even when the exit said built).
+ */
+export function slotAfterExit(slot, result, { status = result?.status ?? '', at = new Date().toISOString(), by = 'pipeline' } = {}) {
+  const implied = releaseOnStatus(status);
+  if (result?.slot === 'release') return releaseSlot(slot, { at, by, why: 'failed' });
+  if (implied) return releaseSlot(slot, { at, by, why: implied });
+  return handoffSlot(slot);
 }
 
 /** The outcome alone (older callers). `phaseSwitch` is the phase-done signal. */
@@ -219,8 +358,8 @@ export function outcomeLine(b, run) {
   switch (run.outcome) {
     case 'finished': return `Session ${run.session || ''}${where} finished: ${left}.`.replace('  ', ' ');
     case 'requeued':
-      if (run.reason === 'phase-done') return `Session${where} finished ${phase} with ${left}: back in the Queue at its place, the next phase${next ? ` (${next})` : ''} starts by itself.`;
-      return `Session${where} ended (exit ${run.exit}) with ${left}: back in the Queue (run ${runs}).`;
+      if (run.reason === 'phase-done') return `Session${where} finished ${phase} with ${left}: keeps its slot (phase hand-off, ahead of the Queue), the next phase${next ? ` (${next})` : ''} starts by itself.`;
+      return `Session${where} ended (exit ${run.exit}) with ${left}: keeps its slot, retried ahead of the Queue (run ${runs}).`;
     case 'returned':
       if (run.reason === 'upgrade-blocked') return `Session${where} finished ${phase} with ${left}: the next phase upgrades to ${next || 'a higher model'} and needs Brett's approval (Fable upgrades need my approval is on): back in Pending.`;
       if (run.reason === 'needs-brett') return `Session${where} stopped with ${left} and needs Brett: back in Pending.`;

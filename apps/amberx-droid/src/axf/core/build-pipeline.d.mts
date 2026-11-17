@@ -11,8 +11,18 @@ export type ExitReason = 'all-done' | 'phase-done' | 'crash' | 'crash-limit' | '
 export const EXIT_REASONS: ExitReason[];
 export interface PipelineRun { at: string; exit: number | null; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; reason: ExitReason | ''; stepsLeft: number; account: string; session: string; phase: string }
 export interface PipelineSplit { at: string; by: string; provider: 'claude' | 'rules' | 'hand'; steps: number; note: string }
+export type PipelineState = 'pending' | 'queued' | 'phase-handoff' | 'building' | 'landing';
+export const PIPELINE_STATES: PipelineState[];
+export const STATE_LABEL: Readonly<Record<PipelineState, string>>;
+export type SlotRelease = 'merged' | 'failed' | 'cancelled';
+export const SLOT_RELEASES: SlotRelease[];
+export const RELEASING_ACTIONS: BuildAction[];
+/** The slot hold: holder = the build id while it holds an agent slot ('' = none); since = the first launch; entry = the live agent-slots id ('' between sessions). */
+export interface SlotHold { holder: string; account: string; model: string; since: string; entry: string; released: { at: string; by: string; why: SlotRelease } | null }
 export interface BuildPipeline {
-  queuedAt: string; queuedBy: string; account: string; session: string; slot: string; model: string; phase: string; launchedAt: string; runs: number;
+  queuedAt: string; queuedBy: string; account: string; session: string;
+  /** The slot hold (a string on records before Nov 17 2026 reads as no hold with the string as entry). */
+  slot: SlotHold; model: string; phase: string; launchedAt: string; runs: number;
   /** Failed exits so far: the crash limit counts these, never a clean phase end. */
   crashes: number;
   lastRun: PipelineRun | null; split: PipelineSplit | null; splitRequested: string; note: string;
@@ -24,9 +34,23 @@ export interface BuildPipeline {
 }
 export interface PipelinePlan { model: string; account: string; kind: '' | 'api' | 'subscription'; at: string; why: string }
 export type PipelineTab = 'pending' | 'queue' | 'active' | 'incomplete' | 'complete' | 'errors' | 'archive' | 'deleted';
-export type BuildAction = 'unqueue' | 'hold' | 'release' | 'archive' | 'unarchive' | 'delete' | 'restore';
+export type BuildAction = 'unqueue' | 'hold' | 'release' | 'archive' | 'unarchive' | 'delete' | 'restore' | 'release-slot';
 export const BUILD_ACTIONS: BuildAction[];
-type BuildLike = { status?: string; deleted?: boolean; hidden?: boolean; mergedAt?: string; steps?: { done?: boolean; skip?: boolean }[]; pipeline?: Partial<BuildPipeline> | null } | null | undefined;
+type BuildLike = { id?: string; status?: string; deleted?: boolean; hidden?: boolean; mergedAt?: string; steps?: { done?: boolean; skip?: boolean }[]; pipeline?: Partial<BuildPipeline> | null } | null | undefined;
+export function emptySlot(): SlotHold;
+export function normSlot(v: unknown): SlotHold;
+export function holdsSlot(b: BuildLike): boolean;
+export function slotEntry(p: { slot?: unknown } | null | undefined): string;
+export function takeSlot(slot: unknown, o: { id: string; account?: string; model?: string; entry?: string; at?: string }): SlotHold;
+export function handoffSlot(slot: unknown): SlotHold;
+export function releaseSlot(slot: unknown, o?: { at?: string; by?: string; why?: SlotRelease }): SlotHold;
+export function releaseOnStatus(status: string): SlotRelease | '';
+export function slotAfterExit(slot: unknown, result: ExitResult, o?: { status?: string; at?: string; by?: string }): SlotHold;
+export function migrateSlots(builds: BuildLike[], now?: string): Array<{ id: string; slot: SlotHold }>;
+export function stateOf(b: BuildLike): '' | PipelineState;
+export function isHandoff(b: BuildLike): boolean;
+export function canReleaseSlot(b: BuildLike): boolean;
+export function actionReleasesSlot(action: string): boolean;
 export function isHeld(b: BuildLike): boolean;
 export function canHold(b: BuildLike): boolean;
 export function isLive(b: BuildLike): boolean;
@@ -47,7 +71,7 @@ export function queueOrder<T extends { status: string; createdAt?: string; pipel
 export function openSteps<T extends { done?: boolean; skip?: boolean }>(b: { steps?: T[] } | null | undefined): T[];
 export function nextModel(b: { steps?: Array<{ done?: boolean; skip?: boolean; model?: string }> } | null | undefined): string;
 export interface ExitInput { exit: number | null; stepsLeft: number; runs?: number; crashes?: number; phaseDone?: boolean; upgradeBlocked?: boolean; needsBrett?: boolean }
-export interface ExitResult { status: 'built' | 'queued' | 'pending'; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; reason: ExitReason; crashes: number; keepQueue: boolean }
+export interface ExitResult { status: 'built' | 'queued' | 'pending'; outcome: 'finished' | 'requeued' | 'returned' | 'failed'; reason: ExitReason; crashes: number; keepQueue: boolean; slot: 'keep' | 'release'; state: PipelineState }
 /** The exit transition, pure: a phase done with steps left is queued again ('phase-done'); Pending only for a real stop. */
 export function nextStatusOnExit(run: ExitInput, maxRuns?: number): ExitResult;
 export function outcomeOf(run: ExitInput & { phaseSwitch?: boolean }, maxRuns?: number): 'finished' | 'requeued' | 'returned' | 'failed';
