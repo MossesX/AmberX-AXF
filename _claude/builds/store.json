@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 7846,
- "updatedAt": "2026-11-17T20:39:53.198Z",
+ "rev": 7847,
+ "updatedAt": "2026-11-17T20:40:13.414Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -268143,7 +268143,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -268151,7 +268151,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T20:39:47.868Z",
+   "updatedAt": "2026-11-17T20:40:00.151Z",
    "builtAt": "",
    "notes": [
     {
@@ -268205,6 +268205,10 @@
     {
      "text": "Brief only: brief is 28133 characters (~7034 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-17T20:39:47.868Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 3) with 25 steps left: back in the Queue (run 2).",
+     "at": "2026-11-17T20:40:00.151Z"
     }
    ],
    "approvals": [],
@@ -268225,22 +268229,22 @@
     "queuedAt": "2026-11-17T20:38:05.061Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-rebuild-fresh-main-phone-connect-small--rhonda",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T20:39:27.512Z",
     "runs": 2,
-    "crashes": 0,
+    "crashes": 1,
     "lastRun": {
-     "at": "2026-11-17T17:05:09.307Z",
-     "exit": 0,
-     "outcome": "returned",
-     "reason": "",
+     "at": "2026-11-17T20:39:54.810Z",
+     "exit": 3,
+     "outcome": "requeued",
+     "reason": "crash",
      "stepsLeft": 25,
      "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--gina",
-     "phase": ""
+     "session": "axf-rebuild-fresh-main-phone-connect-small--rhonda",
+     "phase": "Phase 1"
     },
     "split": {
      "at": "2026-11-17T16:54:55.110Z",
@@ -268250,7 +268254,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 ended (exit 3) with 25 steps left: back in the Queue (run 2).",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -268947,7 +268951,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -280395,6 +280399,105 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-17T19:45:27.870Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "toolbars-1-5-build-orchestrator-incl",
+   "title": "Toolbars 1/5: Build orchestrator (incl. merge queue), Gate & rules, Terminal",
+   "category": "",
+   "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Build orchestrator pages (Pipeline/Pending/Queue, with merge-queue buttons folded in), Gate & rules, Terminal/sessions. API targets + one test. No Molly/AmberX/axHub web/Expenses. Land when done.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-17T20:39:55.233Z",
+   "updatedAt": "2026-11-17T20:39:57.457Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
+    "at": "2026-11-17T20:39:55.233Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 968
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "toolbars-2-5-plan-studio-ui-review",
+   "title": "Toolbars 2/5: Plan Studio, UI Review, Plugin Manager",
+   "category": "",
+   "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Plan Studio, UI Review (Approve/Reject stay person-only), Plugin Manager. API targets + one test. Land when done.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-17T20:40:07.679Z",
+   "updatedAt": "2026-11-17T20:40:07.680Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Split the toolbar build into multiple builds, about three plugins each, so they run on multiple slots. Land the foundation first.",
+    "at": "2026-11-17T20:40:07.679Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 969
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

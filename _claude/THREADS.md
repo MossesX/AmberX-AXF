@@ -829,9 +829,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 19:11 UTC · `blueprint-notes-tasks` → fixing, note (all) · pipeline
-- 2026-11-17 19:11 UTC · `skins-as-packages-of-slices-every-section-its-ow` → fixing, note (all) · pipeline
-- 2026-11-17 19:11 UTC · `full-api-cli-control-of-everything-plus-an-offli` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `pass-approval-hook-deep-link-amberx-notification` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `open-any-website-by-voice-on-the-phone-optionall` → fixing, note (all) · pipeline
 - 2026-11-17 19:11 UTC · `amberx-build-notifications-for-every-stage-start` → fixing, note (all) · pipeline
@@ -1229,6 +1226,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · pipeline
 - 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 - 2026-11-17 20:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-17 20:39 UTC · `toolbars-1-5-build-orchestrator-incl` added (0 steps) (all) · console
+- 2026-11-17 20:40 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-17 20:40 UTC · `toolbars-2-5-plan-studio-ui-review` added (0 steps) (all) · console
 
 ## Token passes (log)
 
