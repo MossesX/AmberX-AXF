@@ -89,16 +89,71 @@ Reset is never immediate. The UI asks in a confirm dialog that carries:
   settings panel's changed-assets table shows, from one engine.
 
 `planSettingsReset(scope, includeAssets, state)` in `core/engines/settings-reset.ts` returns that plan; the confirm
-dialog renders it, and the action that runs after the confirm applies exactly the plan (keys cleared, assets back to
-their defaults). A plan for a plugin never names a console key or another plugin's key; a plan for the console never
-names a plugin's key. The contract, cases and expected rows are in `fixtures/settings-reset.json` (section 5 of this
-file is written with that step).
+dialog renders it, and the action that runs after the confirm applies exactly the plan. The contract, cases and
+expected rows are in `fixtures/settings-reset.json` (`check-settings-reset.mts`).
+
+### What goes in
+
+`ResetState`: the saved values (`SettingsRegistry.savedValues()`), the registered tabs and groups (which keys are whose),
+the app's app-look@1 document (or, with no document yet, the active slot ids and the manifest defaults), and an optional
+name lookup for asset ids.
+
+### Whose key is it
+
+`keyOwner(key, state)`: a key registered in one of a plugin's groups (`pluginSettingsGroups`, section 2), the plugin's
+look key `axf.plugin.<id>.look`, or a key under the plugin's own prefix `<id>.` belongs to that plugin; everything else
+is the console's. `isLookKey(key)` marks the keys that hold look or asset state rather than a setting (`axf.hide.*`,
+`axf.roll.slot.*`, `axf.widgets.arrange.*`, `axf.chrome.*`, `axf.tokens.*`, `axf.appearance.*`, `axf.lock.hubskin*`,
+`axf.plugin.<id>.look`, and the document key `axf.skin.look`): those are never settings rows and are cleared only with
+the switch. The app-look document itself is never cleared; it is restored (below).
+
+### The rows
+
+- `settings`: every saved, non-look key in the scope, with its registered label, group and default when registered,
+  sorted by key.
+- `assets`: `changedAssets(state)` filtered to the scope. `changedAssets` is the one source of the changed-assets table:
+  slot picks that differ from the snapshot (`slot`), hidden chrome (`hidden`), spacing (`spacing`), the app skin on or
+  following axHub (`skin`) and its overrides and colour theme (`skin-override`), every `ui:` / `plugin:` scope's skin
+  (`scope-skin`) and overrides (`scope-override`), every plugin's theme override (`plugin-look`) and every saved look
+  setting (`look-setting`). Every row carries `scope` (`console` or `plugin:<id>`), a label, the current value and the
+  default it goes back to. Sorted console first, then by kind, then by type. The rows are listed in the plan even while
+  the switch is off (the dialog shows them greyed, "kept"); they are cleared only when it is on.
+
+### What the action does (`apply`)
+
+- `clear`: the settings rows' keys, plus, with the switch on, the scope's look keys.
+- `look`: with the switch on, `restore` for the console (own picks back to the snapshot, skin off, `ui:` scopes dropped,
+  every `plugin:` scope kept: those are the plugins' own) or `drop-scope` for a plugin (only `plugin:<id>` dropped);
+  `null` otherwise. `applyResetToLook(look, plan, at)` is the pure document change and records the one undo
+  (`undo.action = settings.reset`, `undo.scope`). With no document yet, `restore` means the runtime's slot reset.
+- `scopes`: the scope keys dropped.
+
+`empty` is true when there is nothing to clear and no look change (the dialog's confirm is disabled; `summary` reads
+"Nothing to reset"); otherwise `summary` is one line, "3 settings · 2 assets" (or "… 2 assets kept" with the switch off).
+`tableRows` (8) is how many rows show before the table scrolls; the dialog never grows past it.
+
+### Scope isolation (checked by `check-settings-reset.mts` over every fixture plan)
+
+A plugin's plan never names a console key, another plugin's key, or another scope; the console's plan never names a
+plugin's key and never drops a plugin's skin scope. Without the switch no look key is cleared and the look is untouched.
+
+### API
+
+| What | How |
+| --- | --- |
+| The plan | action `settings.reset.plan` `{ scope, includeAssets }` → `ResetPlan`; REST `GET /api/console-control?address=action:settings.reset.plan&scope=…&includeAssets=…`; MCP `console_control_act`; CLI `axf console act settings.reset.plan --scope plugin:<id> --include-assets`; voice "reset <plugin>'s settings" opens the dialog |
+| The reset | action `settings.reset` `{ scope, includeAssets }`, destructive: needs `confirm` on every surface (the dialog in the UI, `confirm: true` through control) |
+| Request errors | `resetRequestErrors(raw)`: a bad scope or a non-boolean switch is a 400 with these lines |
 
 ## 5. Checks
 
 - `npx -y tsx framework/spec/check-settings-ui.mts`: the `settings` type's enums (including `scope`) survive the engine,
   every starter validates, scope / owner / for errors fire.
 - `npx -y tsx framework/spec/check-plugin-settings.mts`: replays `fixtures/plugin-settings.json` against
-  `plugin-settings.ts` (added with the engine step).
+  `plugin-settings.ts`; the framework's starters have no plugin-settings@1 errors; no plugin resolves to
+  `settings/console`.
+- `npx -y tsx framework/spec/check-settings-reset.mts`: replays `fixtures/settings-reset.json` against
+  `settings-reset.ts`; scope isolation and the applied look over every plan.
+- `npx -y tsx framework/spec/gen-fixtures.mts` regenerates both fixtures with every other one.
 - `node framework/cli/axf.mjs schemas` regenerates `framework/schemas/json/settings.schema.json` (scope enum, owner
   pattern, for enum, extends, toolbar, levels).

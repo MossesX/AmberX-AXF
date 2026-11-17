@@ -34,6 +34,8 @@ import { LIVE_KINDS, LIVE_STATES, LiveEventLog, reduceLiveState } from '../core/
 import { PROVIDER_KINDS, batchTitle, clampUserParams, emptyLiveReply, applyStreamEvent, contextExtra, frameToEvent, normalizeChatContext, parseSseText, permissionAllows, profileChain, reconnectDelayMs, redactSecrets, settingsAllowedFor, summarizeArgs, titleFromText, wireHistory, ownerKind, type Message, type StreamEvent } from '../core/assistant';
 import { buildPluginInventory, pluginGraph, pluginRecord, PLUGIN_HEALTHS, DEPENDENCY_LABEL, PLUGIN_INVENTORY_FRAME, type InventoryContext } from '../core/engines/plugins';
 import { ASSET_TYPES } from '../core/types';
+import { APP_LOOK_SETTING_KEY, LOOK_KEY_PATTERNS, SETTINGS_RESET_ACTION, SETTINGS_RESET_CONTRACT, SETTINGS_RESET_INCLUDE_ASSETS_DEFAULT, SETTINGS_RESET_PLAN_ACTION, SETTINGS_RESET_TABLE_ROWS, applyResetToLook, changedAssets, isLookKey, keyOwner, parseResetScope, planSettingsReset, resetRequestErrors, resetScopeKey, type ResetScope, type ResetState } from '../core/engines/settings-reset';
+import type { SettingValue } from '../core/settings';
 import { GENERATED_LEVEL, PLUGIN_SETTINGS_CONTRACT, PLUGIN_SETTINGS_PREFIX, SETTINGS_INTERFACE_KEY, generatedPluginSettings, isPluginSettingsAsset, parseSettingsOwner, pluginSettingsErrors, pluginSettingsGroups, pluginSettingsId, pluginSettingsTabs, pluginSlug, resolveSettingsInterface, settingsInterfaceId, settingsInterfaceIsOwn, settingsOwnerKey, settingsOwnerOf, type ResolveSettingsEnv, type SettingsOwner } from '../core/engines/plugin-settings';
 import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITEM_FIELDS, MENU_MAX_DEPTH, PROVIDER_MAX, appMenuSearchEntries, buildAppMenu, chromeToggleItems, chromeToggleTypes, compileAppMenu, compileProviderItems, mergeAppMenu, parseChecked, resolveChecked, titleFromId, truthy, validateMenuItems, type AppMenuContribution, type AppMenuEnv } from '../core/engines/appmenu';
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
@@ -2606,5 +2608,67 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     generated: { 'molly-guide': generatedPluginSettings('molly-guide', tabs, groups), 'feature-matrix': generatedPluginSettings('feature-matrix', tabs, groups), none: generatedPluginSettings('none', tabs, groups) },
     resolve: cases.map((c) => { const r = resolveSettingsInterface(c.owner, c.env); return { name: c.name, owner: c.owner, appPick: c.env.appPick ?? null, assets: c.env.assets.map((a) => a.id), result: r, own: settingsInterfaceIsOwn(r) }; }),
     errors: { all: pluginSettingsErrors(assets, 'console'), badPick: pluginSettingsErrors(assets, 'plugin-molly-guide'), clean: pluginSettingsErrors(assets.slice(0, 4), 'console'), twoForOne: pluginSettingsErrors([...assets.slice(0, 4), { id: 'plugin-molly-guide-2', data: { ...base, scope: 'plugin', owner: 'molly-guide' } }], 'console') },
+  });
+}
+// settings-reset@1: the plan a reset shows before it asks (core/engines/settings-reset.ts; spec/PLUGIN-SETTINGS.md §4, Nov 17 2026).
+{
+  const tabs = [
+    { id: 'appearance', label: 'Appearance', icon: 'palette', order: 10 },
+    { id: 'plugins', label: 'Plugins', icon: 'package', order: 40 },
+    { id: 'molly-guide', label: 'Gizmo guide', icon: 'sparkles', order: 60, parent: 'plugins', plugin: 'molly-guide' },
+    { id: 'feature-matrix', label: 'Feature matrix', icon: 'grid', order: 50, parent: 'plugins', plugin: 'feature-matrix' },
+  ];
+  const groups = [
+    { id: 'axf.display', label: 'Display', tab: 'appearance', settings: [{ key: 'axf.display.fontScale', label: 'Text size', kind: 'slider', default: 1 }, { key: 'axf.display.animations', label: 'Animations', kind: 'toggle', default: true }] },
+    { id: 'molly-guide.general', label: 'General', tab: 'molly-guide', settings: [{ key: 'molly-guide.autoplay', label: 'Autoplay', kind: 'toggle', default: false }, { key: 'guide.voice', label: 'Voice', kind: 'text' }] },
+    { id: 'feature-matrix.view', label: 'View', tab: 'feature-matrix', settings: [{ key: 'feature-matrix.compact', label: 'Compact', kind: 'toggle' }] },
+  ] as never[];
+  const values = {
+    'axf.display.fontScale': 1.2, 'axf.settings.level': 'developer', 'axf.hide.toolbar': true, 'axf.chrome.settings.toolbar': 'chrome-toolbar-console',
+    'molly-guide.autoplay': true, 'guide.voice': 'amber', 'molly-guide.unregistered': 3, 'axf.plugin.molly-guide.look': '{"on":true}',
+    'feature-matrix.compact': false, 'axf.skin.look': '{"$axf":"app-look@1"}', 'axf.nothing': null,
+  } as Record<string, SettingValue>;
+  const look = {
+    default: { slots: { 'color-theme': 'soft-studio', layout: 'standard', toolbar: 'standard' }, spacing: 'comfortable', hidden: { banner: false }, settings: { 'axf.display.animations': true } },
+    own: { slots: { 'color-theme': 'midnight', layout: 'standard' }, spacing: 'compact', hidden: { banner: true, toolbar: false }, settings: { 'axf.display.animations': false } },
+    skin: { use: true, inherit: false, id: 'amber-glass', overrides: { toolbar: 'slim' }, colorTheme: 'midnight' },
+    scopes: { 'ui:settings': { use: 'on', id: 'paper', overrides: {} }, 'plugin:molly-guide': { use: 'inherit', id: '', overrides: { 'tab-group': 'chips' }, colorTheme: 'dusk' }, 'plugin:feature-matrix': { use: 'off', id: '', overrides: {} } },
+  };
+  const nameOf = (type: string, id: string) => ({ 'color-theme:midnight': 'Midnight', 'skin:amber-glass': 'Amber glass' } as Record<string, string>)[`${type}:${id}`];
+  const full: ResetState = { values, groups, tabs, look, nameOf };
+  const noLook: ResetState = { values, groups, tabs, look: null, active: { 'color-theme': 'midnight', layout: 'standard' }, defaults: { 'color-theme': 'soft-studio', layout: 'standard' } };
+  const clean: ResetState = { values: { 'axf.nothing': null }, groups, tabs, look: { default: look.default, own: {}, skin: { use: false, inherit: false, id: '', overrides: {} }, scopes: {} } };
+  const scopes: unknown[] = ['console', 'app', '', 'plugin:molly-guide', 'molly-guide', 'plugin:', 'bad id', 7, null, { kind: 'console' }, { kind: 'plugin', id: 'x' }, { kind: 'plugin' }];
+  const plans = [
+    ['console, settings only', { kind: 'console' }, false, full],
+    ['console, with assets', { kind: 'console' }, true, full],
+    ['plugin molly-guide, settings only', { kind: 'plugin', id: 'molly-guide' }, false, full],
+    ['plugin molly-guide, with assets', { kind: 'plugin', id: 'molly-guide' }, true, full],
+    ['plugin feature-matrix, with assets (scope off, one setting)', { kind: 'plugin', id: 'feature-matrix' }, true, full],
+    ['plugin unknown, with assets: nothing', { kind: 'plugin', id: 'wake-listener' }, true, full],
+    ['console, with assets, no look document (active vs defaults)', { kind: 'console' }, true, noLook],
+    ['console, with assets, nothing changed', { kind: 'console' }, true, clean],
+    ['console, settings only, nothing saved', { kind: 'console' }, false, clean],
+  ] as [string, ResetScope, boolean, ResetState][];
+  const strip = (s: ResetState) => ({ values: s.values, look: s.look ?? null, ...(s.active ? { active: s.active, defaults: s.defaults } : {}) });
+  write('settings-reset.json', {
+    contract: SETTINGS_RESET_CONTRACT,
+    actions: { reset: SETTINGS_RESET_ACTION, plan: SETTINGS_RESET_PLAN_ACTION },
+    includeAssetsDefault: SETTINGS_RESET_INCLUDE_ASSETS_DEFAULT,
+    tableRows: SETTINGS_RESET_TABLE_ROWS,
+    lookKeyPatterns: LOOK_KEY_PATTERNS.map(String),
+    appLookKey: APP_LOOK_SETTING_KEY,
+    scopes: scopes.map((s) => ({ input: s, scope: parseResetScope(s), key: parseResetScope(s) ? resetScopeKey(parseResetScope(s)!) : null })),
+    lookKeys: Object.keys(values).map((k) => ({ key: k, look: isLookKey(k), owner: keyOwner(k, full) })),
+    tabs, groups,
+    states: { full: strip(full), noLook: strip(noLook), clean: strip(clean) },
+    changed: { full: changedAssets(full), noLook: changedAssets(noLook), clean: changedAssets(clean) },
+    plans: plans.map(([name, scope, includeAssets, state]) => ({ name, state: state === full ? 'full' : state === noLook ? 'noLook' : 'clean', plan: planSettingsReset(scope, includeAssets, state) })),
+    applied: {
+      console: applyResetToLook(look, planSettingsReset({ kind: 'console' }, true, full), '2026-11-17T19:00:00Z'),
+      plugin: applyResetToLook(look, planSettingsReset({ kind: 'plugin', id: 'molly-guide' }, true, full), '2026-11-17T19:00:00Z'),
+      untouched: applyResetToLook(look, planSettingsReset({ kind: 'console' }, false, full), '2026-11-17T19:00:00Z'),
+    },
+    requestErrors: [{}, { scope: 'console' }, { scope: 'plugin:molly-guide', includeAssets: true }, { scope: 'bad id' }, { scope: 'console', includeAssets: 'yes' }, 'console', null].map((r) => ({ input: r, errors: resetRequestErrors(r) })),
   });
 }
