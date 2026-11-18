@@ -838,9 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:52 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
 - 2026-11-18 01:52 UTC · `one-true-source-for-every-setting` s7 done (all) · orchestrator
 - 2026-11-18 01:53 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
 - 2026-11-18 01:53 UTC · `one-landing-line-pull-main-merge-one` note (all) · foreign-write
@@ -1238,6 +1235,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:18 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
 - 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s11 done (all) · orchestrator
 - 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s12 done (all) · orchestrator
+- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
+- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
+- 2026-11-18 13:22 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 
