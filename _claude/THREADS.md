@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:16 UTC · `every-plugin-screen-gets-a-settings-gear` → landed, note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:26 UTC · `move-everything-axhub-web-console` s24 done, s25 done (all) · foreign-write
 - 2026-11-18 01:27 UTC · `move-everything-axhub-web-console` s24 done, s25 done (all) · foreign-write
 - 2026-11-18 01:28 UTC · `move-everything-axhub-web-console` s26 done (all) · orchestrator
+- 2026-11-18 01:28 UTC · `move-everything-axhub-web-console` s26 done (all) · foreign-write
 
 ## Token passes (log)
 
