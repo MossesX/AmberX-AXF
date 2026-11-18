@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:22:46.598Z",
+ "updatedAt": "2026-11-18T01:22:57.598Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168236,12 +168236,12 @@
      "at": "2026-11-18T01:21:39.478Z"
     },
     {
-     "text": "Brief only: brief is 32335 characters (~8084 tokens), over the 24000-character budget: trim it to what this job needs",
-     "at": "2026-11-18T01:22:17.133Z"
-    },
-    {
      "text": "Claude account: hulu0241 (axf-move-server-side-console-parts-onto-vps--lenny, shared account login)",
      "at": "2026-11-18T01:22:01.418Z"
+    },
+    {
+     "text": "Brief only: brief is 32335 characters (~8084 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-18T01:22:17.133Z"
     }
    ],
    "approvals": [
@@ -179571,7 +179571,7 @@
    "mergedAt": "2026-11-17T22:34:43Z",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-18T01:11:00.767Z",
+   "updatedAt": "2026-11-18T01:22:46.670Z",
    "builtAt": "",
    "notes": [
     {
@@ -179825,6 +179825,10 @@
     {
      "text": "move-server-side-console-parts-onto-vps (PR #828) draws the orchestrator-demo page toolbar asset in DemoView (<PageToolbar view=\"orchestrator-demo\"> with the old Start/Summary bar as fallback) because check-page-toolbars failed on every PR from main. Keep it when you merge main.",
      "at": "2026-11-18T01:11:00.767Z"
+    },
+    {
+     "text": "fix-ci-red-main-watchdog-test-vs-done touched orchestrator-demo to clear main CI: added web/menu.ts, a tokens block in plugin.json, a page head and <PageToolbar view=\"orchestrator-demo\"/> on DemoView (replacing the hand-drawn Start/Summary row), and the voice inventory entries. Merge main before the last step.",
+     "at": "2026-11-18T01:22:46.670Z"
     }
    ],
    "approvals": [

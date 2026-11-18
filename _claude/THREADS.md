@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:16 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
-- 2026-11-18 00:16 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `molly-ri-court-records` note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:21 UTC · `move-server-side-console-parts-onto-vps` → running, note (all) · pipeline
 - 2026-11-18 01:22 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
 - 2026-11-18 01:21 UTC · `move-everything-axhub-web-console` s23 done (all) · foreign-write
+- 2026-11-18 01:22 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-18 01:22 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 
 ## Token passes (log)
 
