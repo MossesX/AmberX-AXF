@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8836,
- "updatedAt": "2026-11-18T04:28:38.934Z",
+ "rev": 8837,
+ "updatedAt": "2026-11-18T04:29:44.746Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -316978,7 +316978,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T04:25:49.118Z",
+   "updatedAt": "2026-11-18T04:27:35.430Z",
    "builtAt": "",
    "notes": [
     {
@@ -316992,6 +316992,10 @@
     {
      "text": "Launch failed on hulu0241, mossesx-max-: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (8/8 builds running). Nothing started. Running: axf-one-true-source-for-every-setting--earl, axf-move-server-side-console-parts-onto-vps--lenny, axf-watchdogs-combined-land--rhonda, axf-refresh-fix-land--paulie, axf-launcher-fix-land--ear",
      "at": "2026-11-18T01:55:46.226Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: launcher exit null: claude-headless: origin: approval-pass-covers-every-call ← \"Why do I keep getting approvals when I set a pass?\"",
+     "at": "2026-11-18T04:27:35.430Z"
     }
    ],
    "approvals": [],
@@ -317028,7 +317032,7 @@
      "note": "Split by Claude into 12 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (8/8 builds running). Nothing started. Running: axf-one-true-source-for-every-setting--earl, axf-move-server-side-console-parts-onto-vps--lenny, axf-watchdogs-combined-land--rhonda, axf-refresh-fix-land--paulie, axf-launc",
+    "note": "launch failed: launcher exit null: claude-headless: origin: approval-pass-covers-every-call ← \"Why do I keep getting approvals when I set a pass?\"",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -317321,7 +317325,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

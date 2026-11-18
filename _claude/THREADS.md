@@ -834,7 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `auto-lander-never-wait-missing-ui-review` added (17 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `one-true-source-for-every-setting` added (20 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `vps-sets-every-build-status-manifest` added (15 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `api-fully-drives-every-field-type-forms` added (18 steps) (all) · foreign-write
@@ -1234,6 +1233,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 04:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 04:27 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
 - 2026-11-18 04:27 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-18 04:27 UTC · `approval-pass-covers-every-call` note (all) · pipeline
 
 ## Token passes (log)
 
