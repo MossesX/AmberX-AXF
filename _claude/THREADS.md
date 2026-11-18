@@ -833,12 +833,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `orchestrator-settings-collapsible-split` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `console-app-part-2-native-floating` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `group-chat-audio-hear-agents-talk-while` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `banner-widget-shapes-plus-change-icon` s16 done, s17 done, s18 done, s19 done, → complete, note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
@@ -1233,6 +1227,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:55 UTC · `approval-pass-covers-every-call` note (all) · pipeline
 - 2026-11-18 02:02 UTC · `one-true-source-for-every-setting` s8 done (all) · orchestrator
 - 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
+- 2026-11-18 02:03 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
+- 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
+- 2026-11-18 02:03 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s1 undone, s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, note (all) · foreign-write
+- 2026-11-18 02:03 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
+- 2026-11-18 02:03 UTC · `one-landing-line-pull-main-merge-one` added (40 steps) (all) · foreign-write
+- 2026-11-18 02:03 UTC · `fix-refreshing-console-jumps-back` → landing (all) · builds-live
 
 ## Token passes (log)
 
