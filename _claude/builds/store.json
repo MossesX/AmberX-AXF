@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8993,
- "updatedAt": "2026-11-18T13:56:17.608Z",
+ "rev": 8994,
+ "updatedAt": "2026-11-18T13:57:44.312Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -276777,12 +276777,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:18:29.714Z",
-   "updatedAt": "2026-11-17T19:22:21.900Z",
+   "updatedAt": "2026-11-18T13:57:02.232Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Claude Code could not save all of this session's transcript under /root/.claude-accounts/.shared/mossesx-max- because the disk is full (ENOSPC). If you resume this session, part ): one step per line of the request, review the steps.",
      "at": "2026-11-17T19:22:21.900Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:57:02.232Z"
     }
    ],
    "approvals": [],
@@ -276914,7 +276918,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284738,7 +284742,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:56:58.377Z",
+   "updatedAt": "2026-11-18T13:57:24.630Z",
    "builtAt": "",
    "notes": [
     {
@@ -284772,6 +284776,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 4 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:56:58.377Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:57:24.630Z"
     }
    ],
    "approvals": [],
@@ -284948,7 +284956,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {

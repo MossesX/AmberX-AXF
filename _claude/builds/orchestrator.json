@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T13:56:17.608Z",
+ "updatedAt": "2026-11-18T13:57:44.312Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -178911,12 +178911,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:18:29.714Z",
-   "updatedAt": "2026-11-17T19:22:21.900Z",
+   "updatedAt": "2026-11-18T13:57:02.232Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Claude Code could not save all of this session's transcript under /root/.claude-accounts/.shared/mossesx-max- because the disk is full (ENOSPC). If you resume this session, part ): one step per line of the request, review the steps.",
      "at": "2026-11-17T19:22:21.900Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:57:02.232Z"
     }
    ],
    "approvals": [],
@@ -181749,7 +181753,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:56:58.377Z",
+   "updatedAt": "2026-11-18T13:57:24.630Z",
    "builtAt": "",
    "notes": [
     {
@@ -181783,6 +181787,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 4 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:56:58.377Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:57:24.630Z"
     }
    ],
    "approvals": [],
