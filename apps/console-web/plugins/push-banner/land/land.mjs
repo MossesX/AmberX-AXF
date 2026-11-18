@@ -137,6 +137,17 @@ export function makeConsole(s) {
 
 // ------------------------------------------------------------------ state files (the push banner's data folder)
 
+/**
+ * vps-reaper@1: the VPS's ghost check before a land or merge round (framework/cli/reaper.mjs first: throttled, off under
+ * tests and off the host). Run as a CLI so this folder keeps importing only node built-ins. Never fails the round.
+ */
+export function reapFirst(by, repo = settings().repo) {
+  const cli = join(repo, 'framework/cli/reaper.mjs');
+  if (!existsSync(cli)) return null;
+  const r = spawnSync('node', [cli, 'first', '--by', by, '--json'], { encoding: 'utf8', timeout: 120000 });
+  try { return JSON.parse(r.stdout); } catch { return null; }
+}
+
 /** A section event in the crew's group chat, as its owner (framework/cli/crew-say.mjs). Never fails the round. */
 export function crewSay(section, event, text, { ref = '', repo = SELF_REPO, dedupeMin } = {}) {
   if (process.env.AXF_CREW_SAY === 'off') return false;
@@ -634,6 +645,8 @@ export async function main(argv) {
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const known = core.LAND_COMMANDS.find((c) => c.cli === cmd);
   if (cmd === 'run') {
+    // vps-reaper@1: ghosts go before a land / merge round (finished sessions handed on, dead slots freed)
+    if (!dry) reapFirst('auto-land', s.repo);
     const gh = makeGitHub(s); // one client per run: one ETag cache, one count
     const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
     // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready

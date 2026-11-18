@@ -102,6 +102,7 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
+import { reapFirstSync } from '../../../../framework/cli/reaper.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -637,6 +638,8 @@ export function fitBriefFor(b, rules, { account, model, kind = '', retry = '', m
 
 /** Start one headless session for a queued build on an account. */
 export function launch(b, { account, model, kind = '', phase = '', retry = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+  // vps-reaper@1: ghosts (finished sessions still running, dead slots, leftover servers) go before anything starts
+  reapFirstSync('launch', { env });
   const { dir } = ensureWorktree(b.id, env);
   // the dispatch gate (build-lock@1): never a second session on a build or its worktree. Throws code 'live' (not a
   // launch failure) while a tmux session, a claude pid or a fresh lock says the build is still running.
@@ -1269,6 +1272,9 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
 // ------------------------------------------------------------------ the tick
 
 export function tick({ env = process.env } = {}) {
+  // vps-reaper@1: the orchestrator runs the same check as the VPS cron before it decides anything (throttled)
+  const reaped = reapFirstSync('dispatcher', { env });
+  if (reaped?.ran && reaped.actions?.length) logLine({ event: 'reaped-ghosts', by: 'dispatcher', title: reaped.summary?.title ?? '', actions: reaped.actions.map((a) => `${a.type} ${a.what}: ${a.why}`).slice(0, 40) });
   loadUpgradePolicy();
   const consoleApi = makeConsole(env);
   const state = loadState();
