@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9136,
- "updatedAt": "2026-11-18T19:58:52.949Z",
+ "rev": 9137,
+ "updatedAt": "2026-11-18T19:59:20.735Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321768,7 +321768,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T19:58:46.532Z",
+   "updatedAt": "2026-11-18T19:59:06.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -321836,7 +321836,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-18T19:59:06.129Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-urgent-all-data-to-postgres-builds-store--lenny",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
