@@ -834,7 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `active-tab-stop-button-grid-alignment` added (12 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `auto-lander-never-wait-missing-ui-review` s7 done (all) · foreign-write
@@ -1234,6 +1233,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 04:34 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
 - 2026-11-18 04:34 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
 - 2026-11-18 04:31 UTC · `approval-pass-covers-every-call` note (all) · builds-live
+- 2026-11-18 04:58 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 
 ## Token passes (log)
 
