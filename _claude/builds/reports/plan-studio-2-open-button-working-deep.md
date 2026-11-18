@@ -90,3 +90,20 @@ every control target, so nothing the old dialog found is lost.
 - Its look is a `dialog` asset of the console (`src/assets/dialog/command-palette*.json`, three options for UI Review),
   picked with the console setting `console.palette.look`. A per-dialog asset pick in the framework (any dialog choosing
   its own dialog asset) would need an asset-contract change (Fable); recorded as a follow-up, not done here.
+
+### Tests and checks (s13)
+
+| Suite | Before | After |
+| --- | --- | --- |
+| `apps/console-web/scripts/deeplink.test.mjs` (new, in CI) | did not exist; failed first (s5) | 12 checks pass |
+| `apps/console-web/scripts/palette.test.mjs` (new, in CI) | did not exist | 7 checks pass |
+| `apps/console-web/plugins/plan-studio-2/test.mjs` | 17 checks | 17 checks, Open via CLI / api / voice and the manifest commands added inside them |
+| `apps/console-web/server/tests/test_console_control.py` | 10 tests | 11 tests (resolve, open, voice "open <link>", MCP `LINK_RE`) |
+| `apps/console-web/server/test_mcp_tools.py` | pass | 222 checks pass |
+| `apps/console-web/src/native/nativeRules.test.mjs` | 7 | 7 (its `?axf-open=` now runs through the resolver) |
+| `tsc --noEmit` (console-web) | clean | clean |
+| check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets | pass | pass |
+| shared-assets, chrome-settings, plugin-commands, check-plugin-settings, check-plugin-pages, help-coverage --check | pass | pass |
+
+`apps/console-web/scripts/console-control-parity.mjs` fails with `fetch failed` on this VPS on this branch **and on
+origin/main** (checked in a clean worktree): an environment problem of the harness here, not a change from this build.
