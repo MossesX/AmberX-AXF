@@ -21,7 +21,7 @@
       {
         "target": "gate",
         "title": "Gate settings",
-        "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
+        "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, which tab it opens on, and Held PR alert after (minutes): once a PR the lander holds is older than this, the systems check's held-prs item turns red with the PR, its build, the reason and how long, and offers Land now. Same values through axf gate settings set heldAlertMin 90, MCP gate_settings_set and voice (set the gate held alert to 90)."
       },
       {
         "target": "rules",

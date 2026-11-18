@@ -219,13 +219,13 @@
         "route": "GET /settings",
         "title": "Gate: plugin settings",
         "readOnly": true,
-        "description": "The plugin's settings: refreshSec, historySize, defaultTab."
+        "description": "The plugin's settings: refreshSec, historySize, defaultTab, heldAlertMin (minutes a lander-held PR may wait before the systems check's held-prs item turns red)."
       },
       {
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history), heldAlertMin (5-10080, default 60: minutes a lander-held PR may wait before the held-prs systems check turns red)."
       },
       {
         "id": "build-rules-list",

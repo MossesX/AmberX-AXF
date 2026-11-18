@@ -161,7 +161,8 @@ try {
     assert.equal(g.run('check_pr', { snapshot: { number: 9, ci: 'success' } }).pass, true);
   });
   t('settings: defaults, validation, saved', () => {
-    assert.deepEqual(g.run('settings_get').settings, { refreshSec: 30, historySize: 2000, defaultTab: 'rules' });
+    assert.deepEqual(g.run('settings_get').settings, { refreshSec: 30, historySize: 2000, defaultTab: 'rules', heldAlertMin: 60 });
+    assert.equal(g.run('settings_set', { settings: { heldAlertMin: 2 } }).code, 'invalid'); assert.equal(g.run('settings_set', { heldAlertMin: '90' }).settings.heldAlertMin, 90); assert.equal(g.run('settings_get').schema.heldAlertMin.title, 'Held PR alert after (minutes)');
     assert.equal(g.run('settings_set', { settings: { refreshSec: 2 } }).code, 'invalid');
     assert.equal(g.run('settings_set', { refreshSec: '60' }).settings.refreshSec, 60);
   });

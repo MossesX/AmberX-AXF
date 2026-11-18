@@ -9,7 +9,7 @@
  *   node gate.mjs check <pr>
  *   node gate.mjs history [--kind rule|lander] [--since …] [--pr …] [--rule …] [--limit n]
  *   node gate.mjs lander status|waiting|runs|mode [on|off]|land-now <pr> [--confirm t]|pause [--why …]|resume
- *   node gate.mjs settings [get] | settings set <key> <value>
+ *   node gate.mjs settings [get] | settings set <key> <value>        (refreshSec, historySize, defaultTab, heldAlertMin)
  *   add --json for the record itself; --by and --reason say who and why (History).
  *
  * Ops (`run`): rules_list, rules_get, rules_set, rules_toggle, rules_reset, check_pr, history, lander_status,
@@ -47,6 +47,8 @@ export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
   defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'history'], default: 'rules', title: 'Tab it opens on' },
+  // Nov 18 2026 (build auto-lander-never-wait-missing-ui-review): the systems check's held-prs item turns red once a lander-held PR is older than this
+  heldAlertMin: { type: 'integer', min: 5, max: 10080, default: 60, title: 'Held PR alert after (minutes)' },
 });
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });

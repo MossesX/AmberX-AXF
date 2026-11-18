@@ -16,7 +16,7 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   GET  lander/mode · POST lander/mode {mergeQueue}   the one Merge queue on/off switch (takes effect at once)
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
   POST lander/pause {why?} · POST lander/resume
-  GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
+  GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?, heldAlertMin?}
   Server auto-lander (auto-lander@1, framework/spec/AUTO-LANDER.md; deploy/auto-lander/auto-lander.mjs):
   GET  auto-lander                      service up, current build, queue, per-build state and attempts, escalations
   GET  auto-lander/builds/<build>       one build's record and attempt log
@@ -461,13 +461,13 @@ async def auto_lander_settings_set(request: Request) -> JSONResponse:
 
 @router.get("/settings")
 async def settings_get() -> JSONResponse:
-    """The plugin's settings: refreshSec, historySize, defaultTab."""
+    """The plugin's settings: refreshSec, historySize, defaultTab, heldAlertMin."""
     return await _read("settings_get", {})
 
 
 @router.put("/settings")
 async def settings_set(request: Request) -> JSONResponse:
-    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|auto-lander|history)."""
+    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|build-rules|auto-lander|history, heldAlertMin 5-10080)."""
     return await _write("settings_set", request)
 
 

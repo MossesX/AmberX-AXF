@@ -47,6 +47,8 @@ Doc: `_claude/memory/docs/auto-lander.md`.
 
 ## Lifecycle (plugin-lifecycle@1)
 Data: `.axf-console/plugins/gate/` (`rules.json`, `history.jsonl`, `lander.json`, `confirms.json`, `settings.json`).
+
+Settings (Settings → Plugins → Gate; `GET`/`PUT /api/plugins/gate/settings`, MCP `gate_settings` / `gate_settings_set`, `axf gate settings set <key> <value>`, voice `gate.setting:<key>:<value>`, console-control `setting:gate.<key>`): `refreshSec`, `historySize`, `defaultTab`, and `heldAlertMin` (Nov 18 2026, default 60): minutes a lander-held PR may wait before the systems check's `held-prs` item turns red.
 The server auto-lander's data (`<shared data>/auto-lander/`: state, attempt logs, control, escalations) belongs to the
 VPS service and stays on uninstall; `systemctl disable --now axf-auto-lander.timer` stops it.
 The lander keys mirrored into the merge-queue provider's `config.json` belong to that plugin and stay on uninstall.

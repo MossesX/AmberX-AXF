@@ -2,7 +2,8 @@
  * Settings → Plugins → Gate (a sub-tab: the settings library draws the tab's level toolbar above it). The plugin's own
  * settings live on the server (GET / PUT settings), so the CLI (`axf gate settings set refreshSec 60`), MCP
  * (gate_settings, gate_settings_set), voice (`gate.setting:refreshSec:60`, "set the gate refresh to 60") and this panel
- * read and write the same values. console-control@1: `setting:gate.refreshSec | gate.historySize | gate.defaultTab`.
+ * read and write the same values. console-control@1: `setting:gate.refreshSec | gate.historySize | gate.defaultTab | gate.heldAlertMin`.
+ * heldAlertMin (Nov 18 2026): the systems check's held-prs item turns red once a lander-held PR is older than this (`axf gate settings set heldAlertMin 90`).
  */
 import { useEffect, useState } from 'react';
 import { Button, SelectField, TextField, useRuntime } from '@console/axf/react';
@@ -15,14 +16,15 @@ export function GateSettings() {
   const [refresh, setRefresh] = useState('');
   const [size, setSize] = useState('');
   const [tab, setTab] = useState('rules');
+  const [heldMin, setHeldMin] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-  const fill = (s: Settings) => { setCur(s); setRefresh(String(s.refreshSec)); setSize(String(s.historySize)); setTab(s.defaultTab); };
+  const fill = (s: Settings) => { setCur(s); setRefresh(String(s.refreshSec)); setSize(String(s.historySize)); setTab(s.defaultTab); setHeldMin(String(s.heldAlertMin)); };
   useEffect(() => { void loadSettings().then(fill, (e: Error) => setError(e.message)); }, []);
-  const changed = !!cur && (refresh !== String(cur.refreshSec) || size !== String(cur.historySize) || tab !== cur.defaultTab);
+  const changed = !!cur && (refresh !== String(cur.refreshSec) || size !== String(cur.historySize) || tab !== cur.defaultTab || heldMin !== String(cur.heldAlertMin));
   const save = async () => {
     setBusy(true); setError('');
-    try { fill(await saveSettings({ refreshSec: Number(refresh), historySize: Number(size), defaultTab: tab as Settings['defaultTab'] })); rt.toast('Gate settings saved.', 'success', 'Gate'); }
+    try { fill(await saveSettings({ refreshSec: Number(refresh), historySize: Number(size), defaultTab: tab as Settings['defaultTab'], heldAlertMin: Number(heldMin) })); rt.toast('Gate settings saved.', 'success', 'Gate'); }
     catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   };
   if (!cur && !error) return <p className="axp-gate__sub">Loading…</p>;
@@ -31,6 +33,7 @@ export function GateSettings() {
       <TextField label="Refresh every (seconds)" type="number" value={refresh} onChange={setRefresh} hint="How often the open tab asks the lander again (5 to 600)." />
       <TextField label="History size (entries kept)" type="number" value={size} onChange={setSize} hint="The oldest entries go once History holds more than this (50 to 20000)." />
       <SelectField label="Tab it opens on" value={tab} onChange={setTab} options={[{ value: 'rules', label: 'Rules' }, { value: 'auto-lander', label: 'Auto-lander' }, { value: 'history', label: 'History' }]} hint="Unless you were on another tab last time (the tab row remembers it)." />
+      <TextField label="Held PR alert after (minutes)" type="number" value={heldMin} onChange={setHeldMin} hint="The systems check's held-prs item turns red once a PR the lander holds is older than this (5 to 10080); it lists each one with Land now." />
       {error && <p className="axp-gate__err" role="alert">{error}</p>}
       <div className="axp-gate__bar"><Button id="gate-settings-save" tone="primary" icon="save" busy={busy} disabled={!changed} onClick={() => void save()}>Save</Button></div>
     </div>
