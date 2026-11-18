@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8977,
- "updatedAt": "2026-11-18T13:38:52.316Z",
+ "rev": 8978,
+ "updatedAt": "2026-11-18T13:40:20.840Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319030,7 +319030,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:46:19.234Z",
+   "updatedAt": "2026-11-18T13:39:22.115Z",
    "builtAt": "",
    "notes": [
     {
@@ -319064,6 +319064,10 @@
     {
      "text": "Launch failed on mossesx-max-, hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T12:46:19.234Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T13:39:22.115Z"
     }
    ],
    "approvals": [],
@@ -319108,7 +319112,6 @@
      "why": "subscription account hulu0241"
     },
     "tried": [
-     "mossesx-max-",
      "hulu0241"
     ],
     "pickedAt": "2026-11-18T12:39:46.830Z",
@@ -319261,7 +319264,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
