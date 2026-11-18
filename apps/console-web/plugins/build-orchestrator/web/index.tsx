@@ -14,6 +14,8 @@ import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipelin
 import { registerWatchdogActions } from './watchdogActions';
 import { WatchdogPanel, registerWatchdogTargets } from './WatchdogPanel';
 import voiceDoc from '../voice.json';
+import { controlRegistry } from '@console/axf/react';
+import { rowExpanded } from './pipeline';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
@@ -103,6 +105,35 @@ function registerSplitActions(rt: AxfRuntime, open: (arg?: string) => Promise<vo
   setInterval(refresh, 5 * 60_000);
 }
 
+/*
+ * console-control@1 targets for split runs (deep links; console_show / console_open):
+ *   view:builds/tab:pending   the Pending tab (builds being split read Splitting there)
+ *   row:<build>               a Pending, Queued or Active build's row: open expands it (the Queue's rolled-up split row
+ *                             with its parts); state is its status, run, roll-up badge and whether it is expanded
+ *   row:<build>/part:<pN>     one part of a split build: open expands the row; state is the part (slot, branch, status)
+ * Rendered rows carry the same addresses through data-axf-target (split.tsx), so a row on screen and a deep link agree.
+ */
+type SplitTargetRow = TabRow & { split?: { run: string; badge: { label: string }; parts: { id: string; status: string; slot: string; branch: string; account: string }[] } | null };
+function registerSplitTargets(rt: AxfRuntime, open: (arg?: string) => Promise<void>) {
+  const reg = controlRegistry(rt);
+  reg.register({ address: 'view:builds/tab:pending', kind: 'tab', label: 'Pending builds (Splitting)', keywords: ['pending', 'splitting', 'split', 'builds'], open: () => void open('pending'), get: () => ({ tab: 'pending', builds: rows.filter((b) => b.tab === 'pending').map((b) => ({ id: b.id, status: b.status })) }) });
+  let removers: (() => void)[] = [];
+  const sync = (all: SplitTargetRow[]) => {
+    removers.forEach((f) => f()); removers = [];
+    for (const b of all.filter((x) => ['pending', 'queue', 'active'].includes(x.tab))) {
+      removers.push(reg.register({ address: `row:${b.id}`, kind: 'row', label: b.title || b.id, keywords: [b.id, 'build', b.tab], open: () => void open(b.id),
+        get: () => ({ id: b.id, tab: b.tab, status: b.status, run: b.split?.run ?? null, badge: b.split?.badge?.label ?? null, parts: b.split?.parts.length ?? 0, expanded: rowExpanded(b.id) }) }));
+      for (const p of b.split?.parts ?? []) {
+        removers.push(reg.register({ address: `row:${b.id}/part:${p.id}`, kind: 'part', label: `${b.id} part ${p.id}`, keywords: [b.id, p.id, 'part', p.status], open: () => void open(b.id),
+          get: () => ({ build: b.id, id: p.id, status: p.status, slot: p.slot, branch: p.branch, account: p.account }) }));
+      }
+    }
+  };
+  const refresh = () => void loadRows(true).then((all) => sync(all as SplitTargetRow[]), () => { /* the server part may be off */ });
+  refresh();
+  setInterval(refresh, 60_000);
+}
+
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.build-orchestrator',
   label: 'Build orchestrator',
@@ -130,6 +161,7 @@ export const plugin: AxfWebLibrary = {
     registerWatchdogActions(rt);
     registerWatchdogTargets(rt);
     registerSplitActions(rt, open);
+    registerSplitTargets(rt, open);
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     // the build watchdog (build-watchdog@1) for voice and console actions: the same calls as REST / MCP / `axf watchdog`

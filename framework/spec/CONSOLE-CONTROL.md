@@ -53,6 +53,7 @@ view:plan-studio/function:plan-studio.focus
 | `panel` | a titled card / section / settings group or panel | the anchor id (`settings-group:axf.display`) |
 | `scroll` | a scroll container by name (the main pane is `scroll:main`) | the container's id |
 | `toolbar` | a page toolbar (page-toolbar@1, `framework/core/engines/toolbar-actions.ts`); its buttons sit under it: `toolbar:gate.auto-lander/button:run` | the toolbar's settings id (`<scope id>[.<slot>]`: `gate`, `gate.auto-lander`; the frame toolbar is `app`) |
+| `part` | one part of a split build (split-plan@1), under the build's row: `row:<build>/part:p2` | the part id (`p1` … `p64`) |
 
 Rules:
 

@@ -291,6 +291,8 @@ function rowWhen(r: Row): string { const p = r.pipeline; return p?.launchedAt ? 
  * full build detail with its steps as a sub-grid. Expanded rows are kept per tab for the session.
  */
 const OPEN: Partial<Record<BuildTab, string[]>> = {};
+/** Whether a build's row is expanded on any tab right now (console-control state of `row:<build>`). */
+export const rowExpanded = (id: string): boolean => Object.values(OPEN).some((ids) => !!ids?.includes(id));
 function PipelineTable({ view, rows, sel, toggle, focusId, detail }: { view: BuildTab; rows: Row[]; sel: Set<string>; toggle: (id: string, on: boolean) => void; focusId: string; detail: (r: Row) => ReactNode }) {
   const [open, setOpen] = useState<string[]>(() => OPEN[view] ?? []);
   useEffect(() => { setOpen(OPEN[view] ?? []); }, [view]);
