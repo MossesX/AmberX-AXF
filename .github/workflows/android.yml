@@ -266,6 +266,8 @@ jobs:
           sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
           # and ships its locked settings default like every plugin (settings-iface@1: default-<folder>.json)
           (cd ../.. && node framework/cli/settings-iface.mjs defaults --write)
+          # and its locked default toolbar (toolbar-owner@1: assets/toolbar/default-<folder>-toolbar.json)
+          (cd ../.. && node framework/cli/toolbar-owner.mjs defaults --write)
           npm ci && npm run build
       - name: axhub-web — re-bake the framework into it and build it
         if: ${{ needs.scope.outputs.axhubweb == 'true' }}
@@ -335,6 +337,7 @@ jobs:
             node framework/spec/check-skin-modes.mjs                    # skin-modes@1: every skin ships a light and a dark colour theme (shipped, right scheme, own theme is one of them)
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
             node framework/spec/check-settings-iface.mjs                # settings-iface@1: every asset type + plugin ships its locked default-<name>, every settings asset has a valid builtFor, picker lists only its owner's
+            node framework/spec/check-toolbar-owner.mjs                 # toolbar-owner@1: every plugin ships its locked default-<plugin>-toolbar, every toolbar is generic or built for one screen, the picker lists only generic + that screen's, picks and overrides change the look only
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
             node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator

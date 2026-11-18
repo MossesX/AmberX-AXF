@@ -2,35 +2,71 @@
   "$axf": "asset@1",
   "type": "toolbar",
   "id": "default-wake-listener-toolbar",
-  "name": "Wake listener toolbar (default)",
+  "name": "Wake word",
   "version": "1.0.0",
-  "description": "The default toolbar of the Wake listener plugin: locked until another toolbar (generic, or built for this screen) is picked; a pick changes the look only, never the buttons (toolbar-owner@1).",
+  "description": "The wake word toolbar: switch listening on or off, and let Claude understand what was heard (on or off). Runs the wake-listener plugin's own commands.",
   "author": "AmberX AXF",
   "tags": [
     "default",
     "toolbar-owner@1",
-    "plugin",
-    "placeholder"
+    "page",
+    "wake-listener",
+    "voice"
   ],
   "data": {
-    "scope": "plugin:wake-listener",
-    "builtFor": "plugin:wake-listener",
+    "scope": "view:wake-listener",
     "variant": "icons-labels",
     "align": "start",
     "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
     "groups": [
       {
-        "id": "plugin",
-        "label": "Wake listener",
+        "id": "listen",
+        "label": "Listening",
         "items": [
           {
-            "id": "settings",
-            "icon": "settings",
-            "label": "Settings",
-            "action": "plugin.settings.open:wake-listener"
+            "id": "on",
+            "icon": "mic",
+            "label": "Listen",
+            "action": "command:wake-listener/on",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "off",
+            "icon": "pause",
+            "label": "Stop listening",
+            "action": "command:wake-listener/off",
+            "priority": 280,
+            "overflow": "never"
+          }
+        ]
+      },
+      {
+        "id": "claude",
+        "label": "Claude",
+        "items": [
+          {
+            "id": "claude-on",
+            "icon": "sparkles",
+            "label": "Claude understands",
+            "action": "command:wake-listener/claude-on",
+            "priority": 200
+          },
+          {
+            "id": "claude-off",
+            "icon": "x",
+            "label": "Rules only",
+            "action": "command:wake-listener/claude-off",
+            "priority": 180
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "plugin:wake-listener"
   }
 }

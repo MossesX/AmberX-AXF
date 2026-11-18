@@ -145,7 +145,9 @@ export function pluginToolbarAssets(): string[] {
     for (const p of readdirSync(base)) {
       const d = join(base, p, 'assets', 'toolbar');
       // UI Review options (tag ui-choice) are looks of the same toolbar, used once picked: checked with their page's asset, not listed on their own
-      if (existsSync(d)) for (const f of readdirSync(d)) if (f.endsWith('.json') && !(JSON.parse(read(join(d, f)) || '{}').tags ?? []).includes('ui-choice')) out.push(join(d, f));
+      // placeholder defaults (toolbar-owner@1: default-<plugin>-toolbar with only the Settings button) are not drawn by a page
+      // until the plugin builds its own toolbar; framework/cli/toolbar-owner.mjs check holds them
+      if (existsSync(d)) for (const f of readdirSync(d)) { if (!f.endsWith('.json')) continue; const tags: string[] = JSON.parse(read(join(d, f)) || '{}').tags ?? []; if (!tags.includes('ui-choice') && !tags.includes('placeholder')) out.push(join(d, f)); }
     }
   }
   return out.sort();

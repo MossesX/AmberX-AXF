@@ -2,35 +2,75 @@
   "$axf": "asset@1",
   "type": "toolbar",
   "id": "default-codebase-changes-toolbar",
-  "name": "Codebase changes banner toolbar (default)",
+  "name": "Codebase changes",
   "version": "1.0.0",
-  "description": "The default toolbar of the Codebase changes banner plugin: locked until another toolbar (generic, or built for this screen) is picked; a pick changes the look only, never the buttons (toolbar-owner@1).",
+  "description": "The Codebase changes toolbar: show only the changes running now, copy the open entry's resume prompt, open its branch on GitHub, and show the areas (folders) it touched. Runs the codebase-changes entry routes.",
   "author": "AmberX AXF",
   "tags": [
     "default",
     "toolbar-owner@1",
-    "plugin",
-    "placeholder"
+    "page",
+    "codebase-changes",
+    "builds"
   ],
   "data": {
-    "scope": "plugin:codebase-changes",
-    "builtFor": "plugin:codebase-changes",
+    "scope": "view:codebase-changes",
     "variant": "icons-labels",
     "align": "start",
     "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
     "groups": [
       {
-        "id": "plugin",
-        "label": "Codebase changes banner",
+        "id": "log",
+        "label": "Log",
         "items": [
           {
-            "id": "settings",
-            "icon": "settings",
-            "label": "Settings",
-            "action": "plugin.settings.open:codebase-changes"
+            "id": "live",
+            "icon": "play",
+            "label": "Filter live",
+            "action": "handler:codebase-changes.filter-live",
+            "checked": "state:live",
+            "badge": "state:running",
+            "priority": 300,
+            "overflow": "never"
+          }
+        ]
+      },
+      {
+        "id": "entry",
+        "label": "Open entry",
+        "items": [
+          {
+            "id": "resume",
+            "icon": "copy",
+            "label": "Resume",
+            "action": "handler:codebase-changes.resume",
+            "enabledWhen": "selection.id",
+            "priority": 260
+          },
+          {
+            "id": "branch",
+            "icon": "branch",
+            "label": "Open branch",
+            "action": "handler:codebase-changes.open-branch",
+            "enabledWhen": "selection.id",
+            "priority": 220
+          },
+          {
+            "id": "areas",
+            "icon": "folder",
+            "label": "Show areas",
+            "action": "handler:codebase-changes.areas",
+            "enabledWhen": "selection.id",
+            "priority": 200
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "plugin:codebase-changes"
   }
 }

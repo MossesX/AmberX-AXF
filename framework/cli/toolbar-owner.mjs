@@ -5,6 +5,8 @@
  *
  *   node framework/cli/toolbar-owner.mjs defaults [--write]   default-<plugin>-toolbar of every console plugin
  *                                                             (apps/console-web/plugins/<folder>/assets/toolbar)
+ *   node framework/cli/toolbar-owner.mjs migrate [--write]    a plugin's own main-slot page toolbar becomes its
+ *                                                             default-<plugin>-toolbar (file + id renamed, scope kept)
  *   node framework/cli/toolbar-owner.mjs backfill [--write]   data.builtFor on every toolbar asset that lacks it
  *   node framework/cli/toolbar-owner.mjs list [--json]        every toolbar with who it is built for
  *   node framework/cli/toolbar-owner.mjs choices <view> [<plugin>] [--json]   what a screen's picker offers
@@ -15,7 +17,7 @@
  * Plugin folders are found by listing the plugins directory, never by name. Baked copies (src/axf/assets) are left
  * to shared-assets bake.
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CHROME_FIELDS } from '../core/engines/chrome-settings-rules.mjs';
@@ -92,10 +94,33 @@ export function backfill(root = ROOT, write = false) {
   return changed;
 }
 
+/**
+ * A plugin's own main-slot page toolbar (scoped to one of its views, not a UI Review option, not a placeholder) becomes
+ * its default: the file and id are renamed to default-<plugin>-toolbar, builtFor is the plugin, scope and buttons stay.
+ * The page draws the same toolbar (the settings id comes from the scope, so every override and pick is kept).
+ */
+export function migrate(root = ROOT, write = false) {
+  const moved = [];
+  for (const f of pluginFolders(root)) {
+    const dir = join(root, 'apps/console-web/plugins', f, 'assets/toolbar');
+    if (!existsSync(dir)) continue;
+    const did = pluginToolbarDefaultId(f);
+    const target = join(dir, `${did}.json`);
+    if (existsSync(target)) { try { if (!(readJson(target).tags ?? []).includes('placeholder')) continue; } catch { continue; } }
+    const own = readdirSync(dir).filter((n) => n.endsWith('.json') && n !== `${did}.json`).map((n) => ({ n, a: readJson(join(dir, n)) }))
+      .find(({ a }) => a.type === 'toolbar' && !(a.tags ?? []).includes('ui-choice') && !(a.tags ?? []).includes('placeholder') && (a.data?.slot ?? 'main') === 'main' && /^(view|plugin):/.test(a.data?.scope ?? ''));
+    if (!own) continue;
+    const next = { ...own.a, id: did, tags: [...new Set(['default', 'toolbar-owner@1', ...(own.a.tags ?? [])])], data: { ...own.a.data, builtFor: `plugin:${f}` } };
+    moved.push({ plugin: f, from: posix(relative(root, join(dir, own.n))), to: posix(relative(root, target)), was: own.a.id });
+    if (write) { writeJson(target, next); rmSync(join(dir, own.n)); }
+  }
+  return moved;
+}
+
 export function writeDefaults(root = ROOT, write = false) {
   const changed = [];
   for (const { file, asset } of plannedDefaults(root)) {
-    if (existsSync(file)) { try { const cur = readJson(file); if (cur.id === asset.id && cur.data?.builtFor === asset.data.builtFor) continue; } catch { /* rewrite */ } }
+    if (existsSync(file)) { try { const cur = readJson(file); if (cur.id === asset.id && cur.data?.builtFor === asset.data.builtFor) continue; if (!(cur.tags ?? []).includes('placeholder')) continue; } catch { /* rewrite */ } }
     changed.push(posix(relative(root, file)));
     if (write) writeJson(file, asset);
   }
@@ -118,6 +143,7 @@ export function check(root = ROOT) {
     if (a.id !== asset.id) problems.push(`${rel}: id must be ${asset.id}`);
     if (a.data?.builtFor !== `plugin:${plugin}`) problems.push(`${rel}: data.builtFor must be plugin:${plugin}`);
   }
+  for (const m of migrate(root, false)) problems.push(`${m.from}: plugin ${m.plugin}'s own page toolbar must be its default ${m.to} (node framework/cli/toolbar-owner.mjs migrate --write)`);
   for (const f of toolbarFiles(root)) {
     const rel = posix(relative(root, f));
     const a = readJson(f);
@@ -144,11 +170,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const write = flags.has('--write');
   const print = (v, text) => console.log(json ? JSON.stringify(v, null, 2) : text);
   if (cmd === 'defaults') { const c = writeDefaults(ROOT, write); print(c, c.length ? `${write ? 'wrote' : 'would write'} ${c.length}:\n${c.join('\n')}` : 'every plugin default toolbar is in place'); }
+  else if (cmd === 'migrate') { const m = migrate(ROOT, write); print(m, m.length ? `${write ? 'moved' : 'would move'} ${m.length}:\n${m.map((x) => `${x.was} → ${x.to}`).join('\n')}` : 'every plugin page toolbar is its default already'); }
   else if (cmd === 'backfill') { const c = backfill(ROOT, write); print(c, c.length ? `${write ? 'set' : 'would set'} builtFor on ${c.length}:\n${c.map((x) => `${x.file} → ${x.builtFor}`).join('\n')}` : 'every toolbar has a builtFor'); }
   else if (cmd === 'list') { const l = list(ROOT); print(l, l.map((x) => `${x.builtFor === TOOLBAR_GENERIC ? 'generic ' : 'screen  '} ${x.id.padEnd(44)} ${x.builtFor}`).join('\n')); }
   else if (cmd === 'choices') {
     const [view = '', plugin = ''] = args;
-    const assets = toolbarFiles(ROOT).map(readJson).filter((a) => !(a.tags ?? []).includes('ui-choice'));
+    // what the console loads: the shared starters, the console's own and overrides, its plugins' toolbars (later wins by id)
+    const mine = (f) => { const r = posix(relative(ROOT, f)); return r.startsWith('framework/assets/') || r.startsWith('apps/console-web/'); };
+    const assets = [...new Map(toolbarFiles(ROOT).filter(mine).map(readJson).filter((a) => !(a.tags ?? []).includes('ui-choice')).map((a) => [a.id, a])).values()];
     const c = toolbarChoices({ view: view || null, plugin: plugin || null }, assets);
     print(c, c.map((x) => `${x.isDefault ? '* ' : '  '}${x.generic ? 'generic' : 'screen '} ${x.id}`).join('\n') || 'nothing to offer');
   } else if (cmd === 'check') {
@@ -156,5 +185,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     if (json) console.log(JSON.stringify({ ok: !p.length, problems: p }, null, 2));
     else console.log(p.length ? `toolbar-owner@1: ${p.length} problem(s)\n${p.join('\n')}` : `toolbar-owner@1: ok (${plannedDefaults(ROOT).length} plugin defaults, ${toolbarFiles(ROOT).length} toolbars)`);
     process.exit(p.length ? 1 : 0);
-  } else { console.error('usage: toolbar-owner.mjs defaults|backfill|list|choices|check [--write] [--json]'); process.exit(2); }
+  } else { console.error('usage: toolbar-owner.mjs defaults|migrate|backfill|list|choices|check [--write] [--json]'); process.exit(2); }
 }
