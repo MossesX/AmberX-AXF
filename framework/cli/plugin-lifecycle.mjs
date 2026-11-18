@@ -54,9 +54,7 @@ const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (se
 const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
 // Generated fixtures that snapshot real data: the shipped-features manifest (files a build shipped, history) and the
 // demonstration fixture generated from a glossary entry. A plugin removed later only leaves a stale snapshot behind.
-// The toolbar and live-demo fixtures (framework/spec/gen-fixtures.mts, with the cases they are generated from) use real
-// plugin ids and routes as test values: data, like the snapshots above.
-const SNAPSHOT_FIXTURE = /^framework\/spec\/(fixtures\/(shipped-manifest|demo|toolbar-actions|toolbar-migrate|live-demo)\.json|toolbar-actions-cases\.ts)$/;
+const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo|toolbar-actions|toolbar-migrate|live-demo)\.json$/;
 // data-store@1 maps every plugin's data folder to a namespace key (the path map, its fixtures), names the SQLite files it
 // mirrors as tables (the data-store plugin, the axf data CLIs, the axf-data service), and its specs and tests seed plugin
 // data files as fixtures: a plugin removed later leaves a line that maps nothing, data, not a reference.
@@ -139,25 +137,13 @@ export function namesHostPlugin(line, folder, id = '') {
   return line.includes(`${basename(CONSOLE_APP_DIR)}/plugins/${folder}`) || line.includes(`axf-plugin:${folder}`) || (!!id && line.includes(id));
 }
 
-/** True when `needle` occurs in `line` and, if it ends in a name character, is not followed by one (a-z, 0-9, -, _). */
-export function includesName(line, needle) {
-  if (!/[a-z0-9_-]$/i.test(needle)) return line.includes(needle);
-  for (let at = line.indexOf(needle); at !== -1; at = line.indexOf(needle, at + 1)) {
-    if (!/[a-z0-9_-]/i.test(line[at + needle.length] ?? '')) return true;
-  }
-  return false;
-}
-
-/** The JSON-quoted entries of a plugin.json's lifecycle.mentions (empty when it has none or does not parse). */
-function otherMentions(text) {
-  try { return new Set((JSON.parse(text).lifecycle?.mentions ?? []).map((m) => JSON.stringify(m))); } catch { return new Set(); }
-}
-
 /** Every line outside the plugin's folder that names it. Marker lines in listed mention files are "managed", the rest "stale". */
 export function scanReferences(p) {
   const id = p.manifest?.id;
-  const needles = [`plugins/${p.folder}/`, `plugins/${p.folder}'`, `plugins/${p.folder}"`, `axf-plugin:${p.folder}`];
-  if (id) needles.push(id);
+  const needles = [`plugins/${p.folder}/`, `plugins/${p.folder}'`, `plugins/${p.folder}"`];
+  // the marker and the plugin id name this plugin only as a whole word: `plan-studio` is not `plan-studio-2`
+  const whole = [`axf-plugin:${p.folder}`, ...(id ? [id] : [])].map((w) => new RegExp(`${w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w-])`));
+  const marked = (line, word) => new RegExp(`${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\w-])`).test(line);
   const quoted = [`'${p.folder}'`, `"${p.folder}"`]; // only meaningful inside other plugins' code
   const mentions = new Set((p.lifecycle.mentions ?? []).map((m) => resolve(ROOT, m)));
   const hits = [];
@@ -181,23 +167,17 @@ export function scanReferences(p) {
     // that app, e.g. Expenses' own plugin-manager) is that app's code, not a reference to a console plugin that happens
     // to share the name: only a path that reaches the console's plugins folder counts there.
     const inOtherApp = file.startsWith(APPS_DIR + '/') && !file.startsWith(CONSOLE_APP_DIR + '/');
-    const text = readFileSync(file, 'utf8');
-    const lines = text.split('\n');
-    // Another plugin's lifecycle.mentions may list a file inside this plugin's folder: that is the other plugin's own
-    // bookkeeping (the lines it marks there), not a reference to this one.
-    const ownMentions = file.startsWith(PLUGINS_DIR + '/') && basename(file) === 'plugin.json' ? otherMentions(text) : null;
+    const lines = readFileSync(file, 'utf8').split('\n');
+    // a plugin's own lifecycle.mentions list names the files that mention it (paths, maybe inside this plugin): a list, not a reference
+    const ownMentions = file.startsWith(PLUGINS_DIR + '/') && file.endsWith('/plugin.json') ? (() => { try { return new Set(JSON.parse(lines.join('\n'))?.lifecycle?.mentions ?? []); } catch { return new Set(); } })() : null;
     lines.forEach((line, i) => {
-      // A needle ending in a name only counts at a name boundary: `plan-studio` is not named by `plan-studio-2`.
-      let hit = needles.some((n) => includesName(line, n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
-      if (hit && ownMentions?.size) {
-        const rest = [...ownMentions].reduce((l, m) => l.split(m).join('""'), line);
-        hit = needles.some((n) => includesName(rest, n)) || (inOtherPlugin && quoted.some((q) => rest.includes(q)));
-      }
+      if (ownMentions?.has(line.trim().replace(/,$/, '').replace(/^"|"$/g, ''))) return;
+      let hit = needles.some((n) => line.includes(n)) || whole.some((w) => w.test(line)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
       // a line that uses the folder name as a plain word of its own vocabulary says so: `axf-not-plugin:<folder>`
-      if (hit && line.includes(`axf-not-plugin:${p.folder}`)) hit = false;
+      if (hit && marked(line, `axf-not-plugin:${p.folder}`)) hit = false;
       if (hit && inOtherApp && !namesHostPlugin(line, p.folder, id)) hit = false;
       if (!hit) return;
-      const managed = line.includes(`axf-plugin:${p.folder}`) && mentions.has(file);
+      const managed = marked(line, `axf-plugin:${p.folder}`) && mentions.has(file);
       hits.push({ file: relative(ROOT, file), line: i + 1, text: line.trim().slice(0, 200), managed });
     });
   }

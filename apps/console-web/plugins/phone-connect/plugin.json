@@ -61,101 +61,119 @@
       {
         "route": "GET /status",
         "id": "status",
-        "title": "Phone Connect status: the paired phone's presence, the pending pairing code, feature switches and the recorder", "description": "Whether the paired phone is online, any pending pairing code, which phone features are on, and what the recorder is doing.",
-        "readOnly": true
+        "title": "Phone Connect status: the paired phone's presence, the pending pairing code, feature switches and the recorder",
+        "readOnly": true,
+        "description": "Reads Phone Connect in short: whether the paired phone is online, the pairing code still waiting to be claimed, which phone features are switched on, and the recorder's last state."
       },
       {
         "route": "GET /state",
         "id": "state",
-        "title": "Everything Settings → Plugins → Phone Connect shows, in one read, with the console-control addresses that open each part", "description": "Everything the Phone Connect settings tab shows, in one read, with the console-control address that opens each part.",
-        "readOnly": true
+        "title": "Everything Settings → Plugins → Phone Connect shows, in one read, with the console-control addresses that open each part",
+        "readOnly": true,
+        "description": "Reads everything the Phone Connect settings tab shows in one answer (phones, pairing, feature switches, recent commands), with the console-control address that opens each part."
       },
       {
         "route": "GET /devices",
         "id": "devices",
-        "title": "Every paired, pending or revoked phone with its presence (never its token)", "description": "Every paired, pending or revoked phone and whether it is online. Device tokens are never returned.",
-        "readOnly": true
+        "title": "Every paired, pending or revoked phone with its presence (never its token)",
+        "readOnly": true,
+        "description": "Lists every phone that is paired, waiting to pair or revoked, with its presence and last contact. Device tokens are never returned."
       },
       {
         "route": "GET /devices/{device_id}",
         "id": "device",
-        "title": "One phone by its device id", "description": "One phone by its device id: name, status, presence and its settings.",
-        "readOnly": true
+        "title": "One phone by its device id",
+        "readOnly": true,
+        "description": "Reads one phone by its device id: name, presence, last contact and its own settings. Device tokens are never returned."
       },
       {
         "route": "GET /pair",
         "id": "pairing",
-        "title": "The pending pairing code, if any", "description": "The pending pairing code, if one has been issued and not yet claimed or cancelled.",
-        "readOnly": true
+        "title": "The pending pairing code, if any",
+        "readOnly": true,
+        "description": "Reads the pairing code that is waiting to be claimed, with its expiry, or nothing when no pairing is pending."
       },
       {
         "route": "POST /pair/start",
         "id": "pair",
-        "title": "Issue a pairing code for the Phone Connect app (cancels the pending one); Brett claims it on the phone with his hub sign-in", "description": "Issues a new pairing code for the Phone Connect app and cancels any pending one. The owner claims it on the phone with their hub sign-in."
+        "title": "Issue a pairing code for the Phone Connect app (cancels the pending one); Brett claims it on the phone with his hub sign-in",
+        "description": "Issues a new pairing code for the Phone Connect app and cancels any code still pending. Brett claims it on the phone, signed in to the hub."
       },
       {
         "route": "POST /pair/cancel",
         "id": "pair-cancel",
-        "title": "Cancel the pending pairing code", "description": "Cancels the pending pairing code so it can no longer be claimed."
+        "title": "Cancel the pending pairing code",
+        "description": "Cancels the pairing code that is waiting to be claimed, so it can no longer pair a phone."
       },
       {
         "route": "POST /open",
         "id": "open-url",
-        "title": "Open a page on the phone (https, inside the phone's url policy)", "description": "Opens an https page on the phone, if the phone's URL policy allows it."
+        "title": "Open a page on the phone (https, inside the phone's url policy)",
+        "description": "Asks the paired phone to open an https page, if the phone's url policy allows that address. The answer carries the phone's ack."
       },
       {
         "route": "POST /notify",
         "id": "notify",
-        "title": "Show a notification on the phone (kind fyi|fix|alert, title, body, url); it asks the Notifications panel first", "description": "Shows a notification on the phone (kind fyi, fix or alert, with title, body and url), after the Notifications panel allows it."
+        "title": "Show a notification on the phone (kind fyi|fix|alert, title, body, url); it asks the Notifications panel first",
+        "description": "Shows a notification on the paired phone (kind fyi, fix or alert, with title, body and an optional link). The Notifications panel's rules are checked first."
       },
       {
         "route": "POST /recorder/start",
         "id": "recorder-start",
-        "title": "Start the phone's audio-output recorder (needs approvalId: Brett's confirm; the phone asks Android's consent)", "description": "Starts the phone's audio-output recorder. Needs an approvalId from the owner's confirm, and Android asks for consent on the phone."
+        "title": "Start the phone's audio-output recorder (needs approvalId: Brett's confirm; the phone asks Android's consent)",
+        "description": "Starts the phone's audio-output recorder. Needs an approvalId from Brett's confirm, and the phone still asks for Android's screen-capture consent."
       },
       {
         "route": "POST /recorder/stop",
         "id": "recorder-stop",
-        "title": "Stop the phone's audio-output recorder", "description": "Stops the phone's audio-output recorder."
+        "title": "Stop the phone's audio-output recorder",
+        "description": "Stops the phone's audio-output recorder and keeps what it recorded."
       },
       {
         "route": "GET /recorder/status",
         "id": "recorder-status",
-        "title": "The recorder state the phone last reported (ask=1 asks it again)", "description": "The recorder state the phone last reported; ask=1 asks the phone for a fresh one.",
-        "readOnly": true
+        "title": "The recorder state the phone last reported (ask=1 asks it again)",
+        "readOnly": true,
+        "description": "Reads the recorder state the phone last reported. With ask=1 the phone is asked for a fresh state first."
       },
       {
         "route": "POST /voice",
         "id": "voice",
-        "title": "Say a line on the phone (mode say, text) or listen once (mode listen, timeoutSeconds)", "description": "Speaks a line on the phone (mode say, with text) or listens once (mode listen, with timeoutSeconds)."
+        "title": "Say a line on the phone (mode say, text) or listen once (mode listen, timeoutSeconds)",
+        "description": "Uses the phone's voice: mode say speaks a line of text, mode listen hears one answer (timeoutSeconds) and returns what was said."
       },
       {
         "route": "POST /command",
         "id": "command",
-        "title": "Queue any phone-connect@1 command (open_url, notify, approval, recorder.*, voice); approval only shows a prompt, it never decides", "description": "Queues any phone-connect@1 command (open_url, notify, approval, recorder.*, voice). An approval only shows a prompt on the phone; it never decides."
+        "title": "Queue any phone-connect@1 command (open_url, notify, approval, recorder.*, voice); approval only shows a prompt, it never decides",
+        "description": "Queues any phone-connect@1 command for the phone (open_url, notify, approval, recorder.* or voice). An approval only shows the prompt on the phone; it never decides it."
       },
       {
         "route": "GET /commands",
         "id": "commands",
-        "title": "Recent commands sent to the phone with their ack and result", "description": "Recent commands sent to the phone, each with its acknowledgement and result.",
-        "readOnly": true
+        "title": "Recent commands sent to the phone with their ack and result",
+        "readOnly": true,
+        "description": "Lists the recent commands sent to the phone, newest first, each with its ack and result."
       },
       {
         "route": "GET /commands/{cid}",
         "id": "command-result",
-        "title": "One command with its ack and result (wait=<s> holds until it is done)", "description": "One command with its acknowledgement and result; wait=<seconds> holds the reply until it is done.",
-        "readOnly": true
+        "title": "One command with its ack and result (wait=<s> holds until it is done)",
+        "readOnly": true,
+        "description": "Reads one command with its ack and result. With wait=<seconds> the call holds until the phone has finished it or the wait runs out."
       },
       {
         "route": "GET /settings",
         "id": "settings",
-        "title": "The per-feature switches (open_url, notify, approval, recorder, voice)", "description": "The per-feature switches: open_url, notify, approval, recorder and voice.",
-        "readOnly": true
+        "title": "The per-feature switches (open_url, notify, approval, recorder, voice)",
+        "readOnly": true,
+        "description": "Reads the per-feature switches that say which commands the phone accepts: open_url, notify, approval, recorder and voice."
       },
       {
         "route": "POST /settings",
         "id": "set-features",
-        "title": "Switch phone features on or off: {features: {open_url|notify|approval|recorder|voice: bool}}", "description": "Turns phone features on or off: {features: {open_url|notify|approval|recorder|voice: true or false}}."
+        "title": "Switch phone features on or off: {features: {open_url|notify|approval|recorder|voice: bool}}",
+        "description": "Switches phone features on or off ({features: {open_url, notify, approval, recorder, voice: true or false}}). A feature that is off refuses its commands."
       },
       {
         "route": "POST /pair/confirm",

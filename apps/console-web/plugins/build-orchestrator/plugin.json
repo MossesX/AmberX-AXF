@@ -58,7 +58,9 @@
       "apps/console-web/plugins/orchestrator-demo/deps.mjs",
       "apps/console-web/plugins/orchestrator-demo/test.mjs",
       "deploy/auto-lander/fix-session.mjs",
-      "framework/spec/LIVE-DEMO.md"
+      "deploy/test/claude-headless-brief.test.sh",
+      "framework/spec/LIVE-DEMO.md",
+      "framework/spec/check-landing-line.mjs"
     ]
   },
   "commands": {
@@ -295,6 +297,98 @@
           }
         },
         "output": "{ apply, found: [{ id, phase, next, why }], moved: [id] }"
+      },
+      {
+        "id": "pipeline-launch-state",
+        "route": "GET /launch-state/{build}",
+        "title": "A build's launches and bounces",
+        "description": "What the dispatcher knows about a build's launches: runs, crashes, the launch-retry record (lastLaunchError, retries, retryAt, gaveUp after 3 launch crashes in a row) and the last land-clash bounce (bounceReason, the merge-main step it added). Say 'why won't skins start' or 'did skins crash at launch'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, runs, crashes, lastRun, launchRetry, lastLaunchError, retries, retryAt, gaveUp, bounce, bounceReason }"
+      },
+      {
+        "id": "pipeline-requeue",
+        "route": "POST /pipeline/requeue-launch",
+        "title": "Requeue a build that crashed at launch",
+        "description": "Put a build that crashed at launch (E2BIG, a launcher error, a session that died before its first output) back in the Queue now, with its launch retries reset, including one that stopped retrying by itself. Say 'requeue skins' or 'try starting skins again'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id or alias"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, status }"
+      },
+      {
+        "id": "pipeline-clash-bounce",
+        "route": "POST /pipeline/clash-bounce",
+        "title": "Bounce a clashing build back to the Queue",
+        "description": "A build with every step done whose branch clashes with main gets one Opus step 'Merge main into <branch> and resolve conflicts in <files>' and goes back to the Queue so the dispatcher runs it. Without files the server works the clash out with git; the same clash never adds a second step. The dispatcher does this by itself when the lander reports a conflict. Say 'phone connect clashes with main, send it back'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id or alias"
+            },
+            "files": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional: the conflicting files (default: worked out by git merge-tree)"
+            },
+            "head": {
+              "type": "string",
+              "description": "Optional: the branch head the clash is on"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, bounced: { id, step, text, status } | null, files, head, clash? }"
+      },
+      {
+        "id": "pipeline-dedupe",
+        "route": "POST /pipeline/dedupe-steps",
+        "title": "Collapse repeated build steps",
+        "description": "Collapse steps a build has more than once (a done copy wins, order of first appearance), one journal revision per build. Without apply it only counts them. Every store write already refuses repeats; this cleans what was stored before. Say 'dedupe the build steps' or 'how many repeated steps are there'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "apply": {
+              "type": "boolean",
+              "description": "Write it (true) or only count (false, the default)"
+            },
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Optional: only these builds"
+            }
+          }
+        },
+        "output": "{ apply, builds: [{ id, before, after, renamed }], total: { before, after } }"
       },
       {
         "id": "pipeline-tab",

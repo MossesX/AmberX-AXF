@@ -471,7 +471,7 @@ def state(at: str = "") -> dict[str, Any]:
     devs = devices(at)
     return {"ok": True, "$axf": "phone-connect-state@1", "status": status(at), "devices": devs, "settings": S.settings(),
             "commands": [command_view(c) for c in S.commands(limit=20)],
-            "links": {"settings": SETTINGS_ADDRESS, "tabs": {t: f"tab:phone-connect.tabs={t}" for t in ("pair", "phones", "features", "activity")},  # axf-not-plugin:activity (a tab name)
+            "links": {"settings": SETTINGS_ADDRESS, "tabs": {t: f"tab:phone-connect.tabs={t}" for t in ("pair", "phones", "features", "activity")},  # axf-not-plugin:activity (a tab of this panel)
                       "devices": {d["deviceId"]: f"row:device/{d['deviceId']}" for d in devs},
                       "features": {k: f"setting:phone-connect.feature.{k}" for k in S.FEATURES},
                       "actions": {"open": "phone.open", "device": "phone.device:<deviceId>", "tab": "phone.tab:<pair|phones|features|activity>"}}}
@@ -599,7 +599,7 @@ def health_fix(at: str = "") -> dict[str, Any]:
     at = at or now()
     paired = S.paired()
     if not paired:
-        p = current_pairing(at) or pair_start({"kind": "service", "who": "systems-check", "via": "console"}, at)["pairing"]  # axf-not-plugin:systems-check
+        p = current_pairing(at) or pair_start({"kind": "service", "who": "systems-check", "via": "console"}, at)["pairing"]  # axf-not-plugin:systems-check (actor name)
         _alert("pair", "notice", f"Pair your phone: code {p['code']} in the Phone Connect app (10 min)", "warning")
         return {"state": "done", "message": f"Pairing code {p['code']} issued and sent as a notice.", "link": SETTINGS_ADDRESS}
     d = sorted(paired, key=lambda x: x.get("lastSeenAt") or "", reverse=True)[0]

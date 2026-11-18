@@ -149,11 +149,69 @@ export function normStep(s, i = 0, ctx = {}) {
   };
 }
 
+/**
+ * The key two steps are compared by (step-dedupe): the model prefix dropped, case and whitespace folded. Steps with the
+ * same key in one build are the same step.
+ */
+export const stepKey = (t) => plain(t).toLowerCase().replace(/\s+/g, ' ');
+
+/**
+ * Steps with repeats collapsed (step-dedupe). Two copies of one store that gave the same step different uids used to
+ * merge into both copies, doubling the list on every publish / pull / absorb (Nov 17 2026: 16 steps grew to 2,682). A
+ * step keeps its place of first appearance; a done copy wins over a pending one (its id, uid and doneAt come along);
+ * a step with no text is never collapsed. Pure: returns { steps, dropped }.
+ */
+export function dedupeSteps(steps) {
+  const out = []; const at = new Map(); let dropped = 0;
+  for (const s of Array.isArray(steps) ? steps : []) {
+    const k = stepKey(s?.text);
+    if (!k) { out.push(s); continue; }
+    const i = at.get(k);
+    if (i === undefined) { at.set(k, out.length); out.push(s); continue; }
+    dropped += 1;
+    if (s?.done && !out[i]?.done) out[i] = s;
+  }
+  return { steps: out, dropped };
+}
+
+/**
+ * The store with repeated steps collapsed (step-dedupe). `ids` limits it to those builds (the save guard passes the
+ * builds a write changed); undefined = every build (the one-shot cleanup). Mutates and returns
+ * { store, report: [{ id, before, after }] } for the builds that had repeats.
+ */
+export function dedupeStoreSteps(store, { ids } = {}) {
+  const want = ids ? new Set(ids) : null; const report = [];
+  for (const b of store?.builds ?? []) {
+    if (want && !want.has(b.id)) continue;
+    const d = dedupeSteps(b.steps);
+    const dd = dedupeSteps(b.defaultSteps);
+    if (!d.dropped && !dd.dropped) continue;
+    report.push({ id: b.id, before: (b.steps ?? []).length, after: d.steps.length });
+    b.steps = d.steps; if (Array.isArray(b.defaultSteps)) b.defaultSteps = dd.steps;
+  }
+  return { store, report };
+}
+
+/**
+ * Step ids left by the old collision fix-up (`s65-64`) put back to plain `s<n>` where that id is free in the build, so
+ * nothing a session or a link holds by id breaks (ids in use are never moved). Mutates; returns how many it renamed.
+ */
+export function tidyStepIds(b) {
+  const taken = new Set((b.steps ?? []).map((s) => s.id)); let n = 0;
+  (b.steps ?? []).forEach((s, i) => {
+    if (!/^s\d+-\d+$/.test(s.id)) return;
+    const want = `s${i + 1}`; if (taken.has(want)) return;
+    taken.delete(s.id); s.id = want; taken.add(want); n += 1;
+  });
+  return n;
+}
+
 export function normBuild(b, ctx = {}) {
   const o = b && typeof b === 'object' ? b : {};
   const at = ctx.now || nowIso();
   const id = str(o.id, 80) || newBuildId(o.title);
-  const steps = (Array.isArray(o.steps) ? o.steps : []).map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }));
+  // every write and every merge goes through here, so no writer can store a step twice (step-dedupe)
+  const steps = dedupeSteps(Array.isArray(o.steps) ? o.steps : []).steps.map((s, i) => normStep(s, i, { ...ctx, seed: ctx.seed ? `${ctx.seed}/${id}` : '' }));
   const seen = new Set();
   steps.forEach((s, i) => { if (seen.has(s.id)) s.id = `s${i + 1}-${i}`; seen.add(s.id); });
   const named = [...new Set((Array.isArray(o.profiles) ? o.profiles : [o.profile || ctx.profile || BASE_PROFILE]).map((p) => str(p, 40)).filter(Boolean))];
@@ -209,7 +267,7 @@ export function normBuild(b, ctx = {}) {
     deletedAt: o.deleted === true ? str(o.deletedAt, 40) : '',
     pending: o.pending && typeof o.pending === 'object' ? clone(o.pending) : null,
     queue: o.queue && typeof o.queue === 'object' ? clone(o.queue) : null,
-    defaultSteps: Array.isArray(o.defaultSteps) ? o.defaultSteps.map((s, i) => normStep(s, i, ctx)) : steps.map((s) => ({ ...s })),
+    defaultSteps: Array.isArray(o.defaultSteps) ? dedupeSteps(o.defaultSteps).steps.map((s, i) => normStep(s, i, ctx)) : steps.map((s) => ({ ...s })),
     defaultAt: str(o.defaultAt, 40) || (steps.length ? at : ''),
     rearranged: o.rearranged === true,
     removedSteps: Array.isArray(o.removedSteps) ? o.removedSteps.map((r) => ({ step: normStep(r?.step, 0, ctx), at: str(r?.at, 40), why: str(r?.why, 300), by: str(r?.by, 80) })) : [],

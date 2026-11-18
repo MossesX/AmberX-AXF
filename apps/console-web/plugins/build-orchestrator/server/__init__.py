@@ -387,13 +387,45 @@ def escalated_probe(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
 
 def _retry_escalated() -> dict[str, Any]:
     try:
-        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")  # axf-not-plugin:systems-check
+        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")  # axf-not-plugin:systems-check (actor name)
     except Exception as e:  # noqa: BLE001
         return {"state": "failed", "message": str(e)[:200]}
     done = r.get("retried") if isinstance(r, dict) else None
     if not isinstance(done, list):
         return {"state": "failed", "message": str((r or {}).get("error") or "retry failed")[:200]}
     return {"state": "done", "message": f"Retrying {len(done)} build(s): the ladder starts over."}
+
+
+LAUNCH_CRASH_ID = "builds-launch-crash"
+
+
+def launch_crash_probe() -> dict[str, Any]:
+    """launch-retry: red while a build stopped retrying after LAUNCH_RETRY_MAX launch crashes in a row (E2BIG, a launcher
+    error, a session that died before its first output): what broke and since when. Requeue = the auto fix."""
+    try:
+        r = _pipeline("launch-crashed")
+    except Exception:  # noqa: BLE001 — the probe answers unknown, never throws
+        return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    rows = r.get("crashed") if isinstance(r, dict) else None
+    if not isinstance(rows, list):
+        return {"status": "unknown", "summary": "Couldn't read the builds store.", "unreachable": True}
+    if not rows:
+        return {"status": "ok", "summary": "No build is stuck crashing at launch."}
+    lines = [f"{x.get('id')}: {x.get('retries')} launch crashes in a row, last error: {x.get('lastLaunchError') or 'none printed'} (since {(x.get('launchRetry') or {}).get('at', '?')})." for x in rows[:10]]
+    names = ", ".join(str(x.get("id")) for x in rows[:5]) + ("…" if len(rows) > 5 else "")
+    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} keep{'s' if len(rows) == 1 else ''} crashing at launch: {names}. Fix the launcher error, then Requeue.",
+            "details": lines, "link": f"row:{rows[0].get('id')}/tab:attempts"}
+
+
+def _requeue_launch_crashed() -> dict[str, Any]:
+    try:
+        r = _pipeline("launch-crashed", "--requeue", "--by", "systems-check")  # axf-not-plugin:systems-check (actor name)
+    except Exception as e:  # noqa: BLE001
+        return {"state": "failed", "message": str(e)[:200]}
+    done = r.get("requeued") if isinstance(r, dict) else None
+    if not isinstance(done, list):
+        return {"state": "failed", "message": str((r or {}).get("error") or "requeue failed")[:200]}
+    return {"state": "done", "message": f"Requeued {len(done)} build(s) with fresh launch retries."}
 
 
 _health_done = False
@@ -425,6 +457,14 @@ def ensure_health() -> bool:
                       "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}],
                       "instructions": ["`node apps/console-web/plugins/build-orchestrator/pipeline.mjs escalated` lists them with every try.",
                                        "`… pipeline.mjs retry <build> [strategy]` retries one (the ladder starts over); `retry-all` retries every one."]}, FOLDER)
+        reg.register({"id": LAUNCH_CRASH_ID, "label": "Builds crashing at launch", "service": "builds", "order": 53, "severity": "error",
+                      "run": lambda: launch_crash_probe(), "interval": 120,
+                      "breaks": "A queued build never gets started: every launch died before Claude ran (E2BIG, a launcher error), so it stopped retrying.",
+                      "fix": {"type": "action", "label": "Requeue"},
+                      "autoFix": {"label": "Requeue", "run": _requeue_launch_crashed, "mode": "ask"},
+                      "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}],
+                      "instructions": ["`node apps/console-web/plugins/build-orchestrator/pipeline.mjs launch-crashed` lists them with the last error.",
+                                       "`… pipeline.mjs requeue-launch <build>` puts one back in the Queue with fresh retries; `launch-crashed --requeue` all."]}, FOLDER)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health item
         return False
     _health_done = True
@@ -687,6 +727,47 @@ async def build_retry(build: str, request: Request) -> dict[str, Any]:
     if why.strip():
         args += ["--why", why]
     return _pipeline(*args)
+
+
+@router.get("/launch-state/{build}")
+def build_launch_state(build: str) -> dict[str, Any]:
+    """launch-retry + land-clash bounce: runs, crashes, the launch-retry record (lastLaunchError, retries, retryAt,
+    gaveUp) and the last bounce (bounceReason, the merge-main step) of one build (pipeline.mjs launch-state)."""
+    return _pipeline("launch-state", _build_id(build))
+
+
+@router.post("/pipeline/requeue-launch")
+async def pipeline_requeue_launch(request: Request) -> dict[str, Any]:
+    """{id}: put a build that crashed at launch back in the Queue now, launch retries reset (pipeline.mjs requeue-launch)."""
+    body = await _json_body(request)
+    return _pipeline("requeue-launch", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/clash-bounce")
+async def pipeline_clash_bounce(request: Request) -> dict[str, Any]:
+    """{id, files?: [path…], head?}: a build with every step done that clashes with main gets one merge-main step and goes
+    back to the Queue. Without files the server works the clash out with git merge-tree (pipeline.mjs clash-bounce)."""
+    body = await _json_body(request)
+    args = ["clash-bounce", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80]]
+    files = body.get("files")
+    if isinstance(files, list) and files:
+        args += ["--files", ",".join(str(f)[:200] for f in files[:20] if str(f).strip())]
+    head = str(body.get("head") or "").strip()
+    if head:
+        if not re.fullmatch(r"[0-9a-f]{7,40}", head):
+            raise HTTPException(400, "head is a commit sha")
+        args += ["--head", head]
+    return _pipeline(*args)
+
+
+@router.post("/pipeline/dedupe-steps")
+async def pipeline_dedupe_steps(request: Request) -> dict[str, Any]:
+    """{apply?: bool, ids?: [id…]}: collapse repeated steps (a done copy wins), one journal revision per build; a dry run
+    without apply (pipeline.mjs dedupe-steps = builds-store.mjs dedupe-steps)."""
+    body = await _json_body(request)
+    raw = body.get("ids")
+    ids = [_build_id(x) for x in raw[:200]] if isinstance(raw, list) else []
+    return _pipeline("dedupe-steps", *ids, *(["--apply"] if body.get("apply") is True else []), "--by", (brett_click(request) or "console")[:80])
 
 
 @router.post("/pipeline/split")

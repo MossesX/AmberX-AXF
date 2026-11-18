@@ -1,18 +1,19 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "plugin-screen-settings-g-mwjz4jca-icon",
- "name": "plugin-screen-settings-g-mwjz4jca: Gear icon at the right of the header row",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "One gear icon at the right end of a slim row above every plugin screen. Smallest; tap-to-confirm on phone like every toolbar. This is what ships now (axf.plugins.settingsGear.placement = icon).",
- "tags": [
-  "ui-choice",
-  "choice-set:plugin-screen-settings-g-mwjz4jca",
-  "choice-option:icon"
- ],
- "data": {
-  "placement": "icon",
-  "setting": "axf.plugins.settingsGear.placement"
- }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "plugin-screen-settings-g-mwjz4jca-icon",
+  "name": "plugin-screen-settings-g-mwjz4jca: Gear icon at the right of the header row",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "One gear icon at the right end of a slim row above every plugin screen. Smallest; tap-to-confirm on phone like every toolbar. This is what ships now (axf.plugins.settingsGear.placement = icon).",
+  "tags": [
+    "ui-choice",
+    "choice-set:plugin-screen-settings-g-mwjz4jca",
+    "choice-option:icon"
+  ],
+  "data": {
+    "placement": "icon",
+    "setting": "axf.plugins.settingsGear.placement",
+    "builtFor": "plugin:plugin-manager"
+  }
 }

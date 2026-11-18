@@ -75,9 +75,14 @@
       {
         "target": "action:orchestrator-demo.open",
         "title": "Start the orchestrator demo",
-        "text": "Starts the orchestrator demo. Part of Orchestrator demo.",
-        "kind": "menu-item",
-        "draft": true
+        "text": "Opens the demo's start overlay: Continue plays the guided run on throwaway demo builds, Pause opens it held at the first act.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:orchestrator-demo.summary",
+        "title": "Orchestrator demo summary",
+        "text": "Opens the summary of the last demo run: every act with pass, fail or skipped, and what failed.",
+        "kind": "menu-item"
       }
     ]
   }

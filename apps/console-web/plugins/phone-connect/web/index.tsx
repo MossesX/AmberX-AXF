@@ -15,6 +15,7 @@ export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.phone-connect',
   label: 'Phone Connect',
   version: '0.1.0',
+  appMenu,
   register(rt) {
     const open = () => rt.dispatch(`plugin.settings.open:${TAB}`);
     registerActions(rt, open);
@@ -30,5 +31,4 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: TAB, label: 'Phone Connect', icon: 'smartphone', order: 30, parent: 'plugins', description: 'Pair the Phone Connect app, see and revoke phones, switch phone features on or off, recent commands.' }],
   settingsPanels: panels,
-  appMenu,
 };

@@ -401,17 +401,15 @@
       },
       {
         "target": "reset-this",
-        "title": "Reset this ()",
-        "text": "Resets this (). Your own changes go.",
-        "kind": "button",
-        "draft": true
+        "title": "Reset this chrome",
+        "text": "Puts this toolbar, menu, nav, tab group or banner back to its default settings. The number is how many of its settings you changed; those changes go.",
+        "kind": "button"
       },
       {
         "target": "this-settings-window-every",
-        "title": "This settings window (every )",
-        "text": "Shows “This settings window (every )”.",
-        "kind": "button",
-        "draft": true
+        "title": "This settings window",
+        "text": "Opens the choice of which settings interface every settings window of this kind uses, the shared default or a custom copy. It changes the settings window, not the chrome.",
+        "kind": "button"
       }
     ],
     "intros": []

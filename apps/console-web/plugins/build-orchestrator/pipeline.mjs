@@ -20,6 +20,13 @@
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
  *   … requeue-stuck [--apply]       Pending builds whose last run ended phase-done with steps left (parked by the old rule):
  *                                  list them (dry run), --apply moves them back to the Queue, journalled
+ *   … launch-state <id>            runs, crashes, launch retries (lastLaunchError, retryAt, gaveUp) and the last clash bounce
+ *   … launch-crashed [--requeue]   builds that stopped retrying after launch crashes (the systems check item); --requeue all
+ *   … requeue-launch <id>          back to the Queue now, launch retries reset (REST POST /pipeline/requeue-launch, MCP and
+ *                                  voice pipeline-requeue)
+ *   … clash-bounce <id> [--files a,b] [--head sha]   a done build that clashes with main: one merge-main step, back to the
+ *                                  Queue (files worked out by git merge-tree when not given; MCP / voice pipeline-clash-bounce)
+ *   … dedupe-steps [--apply] [id…] collapse repeated steps (builds-store.mjs dedupe-steps; MCP / voice pipeline-dedupe)
  *   … exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p]   a session ended (claude-headless.sh
  *                                  calls it): end the run now and, when it is back in the Queue, run one tick in-process so the
  *                                  next phase starts at once. Under the dispatcher's lock (flock AXF_PIPELINE_LOCK, default
@@ -131,6 +138,7 @@ export function loadSettings(env = process.env) {
   const fromClaude = {};
   if (file.parallelPerAccount === undefined && Number.isFinite(Number(cs['builds.maxParallel']))) fromClaude.parallelPerAccount = Number(cs['builds.maxParallel']);
   if (typeof cs['builds.launchWithoutAsking'] === 'boolean') fromClaude.autoQueue = cs['builds.launchWithoutAsking'];
+  if (file.briefMaxBytes === undefined && Number.isFinite(Number(cs['builds.briefMaxBytes']))) fromClaude.briefMaxBytes = Number(cs['builds.briefMaxBytes']);
   let patch = {}; try { patch = env.AXF_PIPELINE_SETTINGS ? JSON.parse(env.AXF_PIPELINE_SETTINGS) : {}; } catch { patch = {}; }
   return P.normSettings({ ...fromClaude, ...file, ...patch });
 }
@@ -582,20 +590,49 @@ export function runBuildRules(id, phase, { env = process.env, by = 'dispatcher' 
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief, then the rules. */
-export function briefFor(b, rules, { account, model, kind = '', retry = '' }, { blocks = storeBlocks(b) } = {}) {
+export function briefFor(b, rules, opts, more = {}) { return fitBriefFor(b, rules, opts, more).text; }
+
+const bytes = (t) => Buffer.byteLength(t, 'utf8');
+/** `t` cut to at most `max` bytes on a character boundary. */
+const cutBytes = (t, max) => { if (bytes(t) <= max) return t; let s = Buffer.from(t, 'utf8').subarray(0, Math.max(0, max)).toString('utf8'); if (s.endsWith('�')) s = s.slice(0, -1); return s; };
+
+/**
+ * The brief and how it was fitted under the byte cap (opts.maxBytes, default settings briefMaxBytes): { text, bytes,
+ * maxBytes, trimmed: [what was cut] }. Trimmed in this order until it fits: fewer steps listed (40 → 20 → 10 → 5), the
+ * rules block, then the end of the phase brief. "Brett said (verbatim)", the addenda, the header and the Pipeline
+ * paragraph are never cut.
+ */
+export function fitBriefFor(b, rules, { account, model, kind = '', retry = '', maxBytes = 0 }, { blocks = storeBlocks(b) } = {}) {
+  const cap = maxBytes > 0 ? maxBytes : P.DEFAULTS.briefMaxBytes;
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
-  return [
-    `# Build: ${b.id}`, '',
-    saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
-    '## What to build', orch.brief(b, rules, { blocks }), '',
-    `## Pipeline`,
-    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
-    // the session's rules from the Build rules tab; with this block the launcher appends no second one
-    ...(blocks?.blocks?.rules ? ['', blocks.blocks.rules] : []),
-    // done-means-merged@1: a relaunch by the retry runner says what failed, what was tried and what to do differently
-    ...(retry ? ['', retry] : []),
-  ].join('\n');
+  const head = [`# Build: ${b.id}`, '', saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '', '## What to build'].join('\n');
+  const pipeline = ['', '## Pipeline',
+    `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`].join('\n');
+  // the session's rules from the Build rules tab; with this block the launcher appends no second one
+  let rulesText = blocks?.blocks?.rules ? `\n\n${blocks.blocks.rules}` : '';
+  // done-means-merged@1: a relaunch by the retry runner says what failed, what was tried and what to do differently
+  const retryText = retry ? `\n\n${retry}` : '';
+  const compose = (body) => `${head}\n${body}\n${pipeline}${rulesText}${retryText}`;
+  const trimmed = [];
+  let body = orch.brief(b, rules, { blocks });
+  let text = compose(body);
+  for (const lim of [20, 10, 5]) {
+    if (bytes(text) <= cap) break;
+    body = orch.brief(b, rules, { blocks, stepLimit: lim }); text = compose(body); trimmed.push(`step list to ${lim} open steps`);
+  }
+  if (bytes(text) > cap && rulesText) {
+    const room = cap - bytes(compose(body)) + bytes(rulesText);
+    const note = '\n… (rules block trimmed to fit the brief size cap, builds.briefMaxBytes)';
+    rulesText = room > bytes(note) + 200 ? `${cutBytes(rulesText, room - bytes(note))}${note}` : '';
+    text = compose(body); trimmed.push('rules block');
+  }
+  if (bytes(text) > cap) {
+    const note = '\n… (phase brief trimmed to fit the brief size cap, builds.briefMaxBytes)';
+    const room = cap - bytes(compose('')) - bytes(note);
+    body = `${cutBytes(body, Math.max(0, room))}${note}`; text = compose(body); trimmed.push('phase brief');
+  }
+  return { text, bytes: bytes(text), maxBytes: cap, trimmed };
 }
 
 /** Start one headless session for a queued build on an account. */
@@ -607,7 +644,14 @@ export function launch(b, { account, model, kind = '', phase = '', retry = '' },
   // the VPS's own 'before' rules (Build rules tab): run beside the launch, results in History
   runBuildRules(b.id, 'before', { env });
   const briefFile = join(dir, '.axf-brief.md');
-  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind, retry })}\n`);
+  const fit = fitBriefFor(b, rules, { account, model, kind, retry, maxBytes: loadSettings(env).briefMaxBytes });
+  if (fit.trimmed.length) {
+    const why = `Launch brief trimmed to ${fit.bytes} bytes (cap ${fit.maxBytes}, builds.briefMaxBytes): ${fit.trimmed.join(', ')}.`;
+    logLine({ event: 'brief-trimmed', build: b.id, bytes: fit.bytes, cap: fit.maxBytes, trimmed: fit.trimmed });
+    process.stderr.write(`pipeline: ${b.id}: ${why}\n`);
+    try { withStore((s) => { const r = storeCore.findBuild(s, b.id); if (r) { r.notes.push({ text: why, at: nowIso() }); r.updatedAt = nowIso(); } return s; }, { by: 'pipeline', action: 'pipeline:brief-trimmed', note: b.id }); } catch { /* the note is best effort */ }
+  }
+  writeFileSync(briefFile, `${fit.text}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
   const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
@@ -651,8 +695,55 @@ function tmuxHas(name) {
  * signs in again (authWaitsTick). `log` is the run's log file (for the failure reason), `vanished` = no end event at all.
  * Returns { id, outcome, status, reason, exit, phase, next, auth? }.
  */
+/**
+ * launch-retry: did this run die at launch (pipeline-core launchCrashOf)? Reads the run log's tail and whether the run's
+ * stream file got any output since the launch (the launcher truncates it as claude starts). → { why } or null.
+ */
+export function launchCrashFor(b, { exit, kind = '', log = '', env = process.env } = {}) {
+  const wt = worktreeOf(b.id, env);
+  const logFile = log ? (log.startsWith('/') ? log : join(wt, log)) : join(wt, `${b.id}.log`);
+  let streamBytes = -1;
+  try {
+    const st = statSync(join(wt, `${b.id}.jsonl`));
+    // the launcher truncates it as claude starts: written since this launch and still empty = no first output;
+    // older than this launch or missing = unknown (the run may not have reached the launcher at all)
+    streamBytes = st.mtimeMs >= Date.parse(b.pipeline?.launchedAt || 0) - 5000 ? st.size : -1;
+  } catch { streamBytes = -1; }
+  return P.launchCrashOf({ exit, kind, tail: tailOf(logFile), streamBytes });
+}
+
+/**
+ * A launch crash goes back to the Queue by itself after a backoff (1, 4, 16 min), outside the maxRuns cap, the reason
+ * on the build. After LAUNCH_RETRY_MAX in a row it stops retrying: the record says gaveUp, a banner alert says why, and
+ * the run is ended the normal way (returns null). Returns the endRun result when requeued.
+ */
+export function requeueLaunchCrash(b, why, { alert = () => {}, env = process.env, now = Date.now() } = {}) {
+  const count = (b.pipeline?.launchRetry?.count ?? 0) + 1;
+  const at = new Date(now).toISOString();
+  if (count > BP.LAUNCH_RETRY_MAX) {
+    setPipeline(b.id, { launchRetry: { count: count - 1, lastError: why, at, retryAt: '', gaveUp: true } }, { note: `Launch crashed again (${why}): ${count - 1} launch retries used, no more by itself. Retry by hand once the launcher error is fixed.`, action: 'pipeline:launch-retry' });
+    alert('launch-crash', { id: b.id, title: b.title, count: count - 1, why, account: b.pipeline?.account });
+    logLine({ event: 'launch-crash', build: b.id, count: count - 1, why, gaveUp: true });
+    return null;
+  }
+  const mins = P.launchBackoffMin(count);
+  const retryAt = new Date(now + mins * 60e3).toISOString();
+  const runs = Math.max(0, (b.pipeline?.runs ?? 1) - 1); // a launch crash is not a run: it never counts towards maxRuns
+  setPipeline(b.id, { session: '', slot: '', runs, launchRetry: { count, lastError: why, at, retryAt, gaveUp: false }, note: `launch crashed: retry ${count}/${BP.LAUNCH_RETRY_MAX} at ${retryAt}` },
+    { status: 'queued', note: `Launch crashed (${why}). Back in the Queue: retry ${count} of ${BP.LAUNCH_RETRY_MAX} in ${mins} min (not counted as a run).`, action: 'pipeline:launch-retry' });
+  lock.release(b.id, { dir: worktreeOf(b.id, env) });
+  logLine({ event: 'launch-crash', build: b.id, count, why, retryAt });
+  return { id: b.id, outcome: 'requeued', status: 'queued', reason: 'launch-crash', exit: null, phase: b.pipeline?.phase ?? '', next: BP.nextModel(b), launchRetry: { count, why, retryAt } };
+}
+
 export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = false, alert = () => {}, settings = loadSettings(), env = process.env } = {}) {
   const settled = SETTLED.includes(b.status);
+  // launch-retry: a run that died at launch is requeued with a backoff, separate from the maxRuns session cap
+  let gaveUp = null;
+  if (!settled) {
+    const lc = launchCrashFor(b, { exit, kind, log, env });
+    if (lc) { const rq = requeueLaunchCrash(b, lc.why, { alert, env }); if (rq) return rq; b = storeCore.findBuild(loadStore(), b.id) ?? b; gaveUp = b.pipeline?.launchRetry ?? null; }
+  }
   // the wrapper's kind wins over the bare code: a crash is never a clean end; phase-done / stopped are clean ends whose
   // phase the store still has to confirm (a phase-done claim with its phase's steps open lands as 'stopped' in Pending)
   const code = kind === 'crash' ? (exit || 1) : kind === 'phase-done' || kind === 'stopped' ? 0 : exit;
@@ -668,7 +759,7 @@ export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = fa
   const next = BP.nextModel(b);
   const journal = r.reason === 'phase-done' && !auth ? `phase ${r.run.phase || '?'} done, requeued for ${next || '?'}: ${r.note}` : r.note;
   // a run cut off by the login is not the build's fault: it does not count towards maxRuns
-  setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: journal, action: r.reason === 'phase-done' && !auth ? 'pipeline:requeue' : 'pipeline:end' });
+  setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note, launchRetry: gaveUp, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: journal, action: r.reason === 'phase-done' && !auth ? 'pipeline:requeue' : 'pipeline:end' });
   lock.release(b.id, { dir: worktreeOf(b.id, env) });
   // done-means-merged@1: a retry run that got its phase (or the whole build) done closes its attempt ok and the failure;
   // a run that failed again is closed as failed by the detector in the same tick (recordFailure)
@@ -763,6 +854,67 @@ export function beatOf(b, env = process.env) {
 }
 
 /**
+ * land-clash bounce (pipeline-core clashBounceStep): append the merge-main step (Opus, deduped by its text) to a build
+ * with every step done, move it back to the Queue (runs reset, the open failure cleared) and record pipeline.bounce
+ * { at, why, head, files, step, count }. Returns { id, step, status } or null when there is nothing to add.
+ */
+export function bounceClash(id, { files = [], head = '', why = '', now = Date.now(), by = 'pipeline' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const st = P.clashBounceStep(b, { files, head });
+  if (!st) return null;
+  const at = new Date(now).toISOString();
+  let added = null;
+  withStore((s) => {
+    const r = storeCore.findBuild(s, id); if (!r) return s;
+    const again = P.clashBounceStep(r, { files, head }); if (!again) return s; // a writer got there first
+    const taken = new Set(r.steps.map((x) => x.id)); let k = r.steps.length + 1; while (taken.has(`s${k}`)) k += 1;
+    added = storeCore.normStep({ ...again, id: `s${k}`, createdAt: at }, r.steps.length, { now: at });
+    r.steps.push(added);
+    r.status = 'queued'; r.builtAt = ''; delete r.failure;
+    r.pipeline = BP.normPipeline({ ...(r.pipeline ?? {}), queuedAt: r.pipeline?.queuedAt || at, session: '', slot: '', runs: 0, crashes: 0, note: `clash with main: ${added.id} merges main in`,
+      bounce: { at, why: str(why || `merging main in conflicts in ${files.join(', ') || 'code'}`, 300), head, files, step: added.id, count: (r.pipeline?.bounce?.count ?? 0) + 1 } }) ?? r.pipeline;
+    r.notes.push({ text: `Clashes with main${files.length ? ` in ${files.slice(0, 6).join(', ')}` : ''}: added ${added.id} (merge main in, resolve, push) and moved it back to the Queue.`, at });
+    r.updatedAt = at;
+    return s;
+  }, { by, action: 'pipeline:clash-bounce', note: id });
+  if (!added) return null;
+  logLine({ event: 'clash-bounce', build: id, step: added.id, head, files });
+  crewSay('dispatcher', 'start', `${id} clashes with main: added "${str(added.text, 120)}" and put it back in the Queue.`, { ref: id });
+  return { id, step: added.id, text: added.text, status: 'queued' };
+}
+
+/**
+ * The clash a build's branch has with main right now, worked out by git itself (merge-tree, nothing checked out):
+ * { files, head, clash } (clash false = it merges clean). Fetches main and the branch first.
+ */
+export function clashOf(b, { cwd = REPO_ROOT } = {}) {
+  const branch = str(b.branch, 200) || `claude/${b.id}`;
+  spawnSync('git', ['fetch', '-q', 'origin', 'main', branch], { cwd, encoding: 'utf8', timeout: 120e3 });
+  const head = (spawnSync('git', ['rev-parse', `origin/${branch}`], { cwd, encoding: 'utf8' }).stdout || '').trim();
+  if (!head) throw Object.assign(new Error(`${b.id}: no branch origin/${branch}`), { code: 2 });
+  const r = spawnSync('git', ['merge-tree', '--write-tree', '--name-only', '--no-messages', 'origin/main', `origin/${branch}`], { cwd, encoding: 'utf8', timeout: 120e3 });
+  if (r.status !== 0 && r.status !== 1) throw new Error(`git merge-tree failed: ${str(r.stderr, 300)}`);
+  const files = r.status === 1 ? r.stdout.split('\n').slice(1).map((x) => x.trim()).filter(Boolean) : [];
+  return { files, head, clash: r.status === 1 };
+}
+
+/** Clear a build's launch-retry record (a given-up one too) and put it back in the Queue now: the hand's Retry. */
+export function requeueLaunch(id, { by = 'cli' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (SETTLED.includes(b.status) || ['running', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to requeue`), { code: 2 });
+  setPipeline(b.id, { launchRetry: null, session: '', slot: '', queuedAt: b.pipeline?.queuedAt || nowIso() }, { status: 'queued', note: `Requeued by ${by}: launch retries reset${b.pipeline?.launchRetry?.lastError ? ` (last launch error: ${b.pipeline.launchRetry.lastError})` : ''}.`, by, action: 'pipeline:requeue-launch' });
+  return { id: b.id, status: 'queued' };
+}
+
+/** What the dispatcher knows about a build's launches, crashes and bounces (readable through REST / MCP / CLI / voice). */
+export function launchState(b) {
+  const p = b.pipeline ?? {};
+  return { id: b.id, status: b.status, runs: p.runs ?? 0, crashes: p.crashes ?? 0, lastRun: p.lastRun ?? null, launchRetry: p.launchRetry ?? null,
+    lastLaunchError: p.launchRetry?.lastError ?? '', retries: p.launchRetry?.count ?? 0, retryAt: p.launchRetry?.retryAt ?? '', gaveUp: p.launchRetry?.gaveUp === true,
+    bounce: p.bounce ?? null, bounceReason: p.bounce?.why ?? '' };
+}
+
+/**
  * Classify every build the server still owes work on (pipeline-core classifyFailure): a crash, red CI, a clash, a push
  * that failed, a stalled run, a build that fell back to Pending. Each one found is written on the build in one journalled
  * store write (failure, status fixing, the open attempt closed, a note) and logged. → [{ id, failure }]
@@ -774,7 +926,18 @@ export function detectFailures({ ended = [], env = process.env, now = Date.now()
   for (const b of store.builds) {
     if (b.deleted) continue;
     const f = P.classifyFailure(b, { ended: endedBy.get(b.id) ?? null, land: land.get(b.id) ?? null, beatAt: beatOf(b, env), now, stalledAfterMin: policy.stalledAfterMin });
-    if (f) found.push({ id: b.id, failure: f });
+    if (!f) continue;
+    // land-clash bounce: a done build that clashes with main gets a merge-main step and goes back to the Queue (the
+    // dispatcher runs it) instead of sitting in fixing; only a live lander fix agent on this very head is waited for
+    if (f.kind === 'clash') {
+      const li = land.get(b.id) ?? null;
+      const open = b.pipeline?.bounce?.step && b.steps.some((x) => x.id === b.pipeline.bounce.step && !x.done && !x.skip);
+      if (open) continue; // already bounced: its merge-main step is queued or running
+      if (P.landerAgentLive(li, { now, attemptTimeoutMin: policy.attemptTimeoutMin })) continue;
+      const bounced = bounceClash(b.id, { files: li?.reason?.files ?? [], head: li?.head || f.head || '', why: f.why, now });
+      if (bounced) continue;
+    }
+    found.push({ id: b.id, failure: f });
   }
   if (!found.length) return [];
   const at = new Date(now).toISOString();
@@ -1465,6 +1628,36 @@ async function main(argv) {
     const r = retryBuild(rest[0], { strategy: st, by, why: flag('why') });
     return out({ ok: true, ...r }, `${r.id}: ${r.status}${r.strategy ? ` (${r.strategy})` : ''}${r.launch ? ` · ${r.launch.action}${r.launch.account ? ` on ${r.launch.account}` : ''}${r.launch.why ? `: ${r.launch.why}` : ''}` : ' · the next tick relaunches it'}`);
   }
+  // launch-retry / land-clash bounce / step-dedupe: the same calls as REST, MCP and voice (pipeline-requeue, pipeline-dedupe)
+  if (cmd === 'launch-state') {
+    const b = storeCore.findBuild(loadStore(), rest[0] || ''); if (!b) throw Object.assign(new Error(`launch-state <build>: no build "${rest[0] || ''}"`), { code: 2 });
+    const v = launchState(b);
+    return out({ ok: true, ...v }, `${v.id}: ${v.status} · run ${v.runs} · launch retries ${v.retries}${v.gaveUp ? ' (gave up)' : ''}${v.lastLaunchError ? ` · last launch error: ${v.lastLaunchError}` : ''}${v.retryAt ? ` · next try ${v.retryAt}` : ''}${v.bounce ? ` · bounced ${v.bounce.count}× (${v.bounce.step}): ${v.bounceReason}` : ''}`);
+  }
+  if (cmd === 'launch-crashed') { // builds that stopped retrying after launch crashes (the systems check item)
+    const rows = loadStore().builds.filter((b) => !b.deleted && b.pipeline?.launchRetry?.gaveUp && !['archived', ...SETTLED].includes(b.status)).map(launchState);
+    if (has('requeue')) { const done = rows.map((r) => requeueLaunch(r.id, { by })); return out({ ok: true, requeued: done }, done.map((x) => `${x.id}: queued`).join('\n') || 'nothing to requeue'); }
+    return out({ ok: true, crashed: rows }, rows.map((r) => `${r.id}: ${r.retries} launch crashes · ${r.lastLaunchError}`).join('\n') || 'no build is stuck crashing at launch');
+  }
+  if (cmd === 'requeue-launch') {
+    if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('requeue-launch <build>'), { code: 2 });
+    const r = requeueLaunch(rest[0], { by }); return out({ ok: true, ...r }, `${r.id}: back in the Queue, launch retries reset`);
+  }
+  if (cmd === 'clash-bounce') {
+    if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('clash-bounce <build> [--files a,b] [--head sha]'), { code: 2 });
+    const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });
+    const given = flag('files') ? flag('files').split(',').map((x) => x.trim()).filter(Boolean) : null;
+    const c = given ? { files: given, head: flag('head') || '', clash: true } : clashOf(b);
+    if (!c.clash) return out({ ok: true, id: b.id, bounced: null, clash: false }, `${b.id}: merges clean with main, nothing to bounce`);
+    const r = bounceClash(b.id, { files: c.files, head: flag('head') || c.head, why: flag('why') || `merging main in conflicts in ${c.files.join(', ')}`, by });
+    return out({ ok: true, id: b.id, bounced: r, files: c.files, head: c.head }, r ? `${b.id}: ${r.step} added (${str(r.text, 140)}); back in the Queue` : `${b.id}: not bounced (steps still open, or this clash already has its step)`);
+  }
+  if (cmd === 'dedupe-steps') {
+    const S = await import('../../../../framework/cli/builds-store.mjs');
+    const ids = rest.filter((a, i) => !a.startsWith('--') && !['--by', '--why'].includes(rest[i - 1]));
+    const r = S.dedupeStepsNow({ apply: has('apply'), ids, by });
+    return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s), ${r.total.before} → ${r.total.after} steps`);
+  }
   if (cmd === 'retry-all') { const done = escalated().map((x) => retryBuild(x.id, { by, why: flag('why') || 'Retry from the systems check' })); return out({ ok: true, retried: done }, done.map((x) => `${x.id}: ${x.status}`).join('\n') || 'nothing escalated'); }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
@@ -1523,7 +1716,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | launch-crashed [--requeue] | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

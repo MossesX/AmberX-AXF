@@ -1,21 +1,22 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "phone-connect-settings-s-mwl9dru5-split",
- "name": "phone-connect-settings-s-mwl9dru5: Phone on top",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "The paired phone (or the pairing code) always on top, Features and Activity as tabs below. The phone's state never hides.",
- "tags": [
-  "ui-choice",
-  "choice-set:phone-connect-settings-s-mwl9dru5",
-  "choice-option:split"
- ],
- "data": {
-  "view": "split",
-  "settingKey": "phone-connect.layout",
-  "appliesTo": [
-   "phone-connect"
-  ]
- }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "phone-connect-settings-s-mwl9dru5-split",
+  "name": "phone-connect-settings-s-mwl9dru5: Phone on top",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The paired phone (or the pairing code) always on top, Features and Activity as tabs below. The phone's state never hides.",
+  "tags": [
+    "ui-choice",
+    "choice-set:phone-connect-settings-s-mwl9dru5",
+    "choice-option:split"
+  ],
+  "data": {
+    "view": "split",
+    "settingKey": "phone-connect.layout",
+    "appliesTo": [
+      "phone-connect"
+    ],
+    "builtFor": "plugin:phone-connect"
+  }
 }

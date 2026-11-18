@@ -340,7 +340,10 @@ ok(r.returncode == 0, f"profile engine checks: {(r.stdout or r.stderr).strip()[-
 
 PCD = TMP / "pc"
 store = {"$axf": "builds@1", "rev": 0, "updatedAt": "", "migratedAt": "", "rules": {}, "meta": {"queue": {}, "pending": {}}, "drafts": {},
-         "builds": [{"id": "ticked", "title": "Ticked build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a", "done": True}]},
+         "builds": [{"id": "ticked", "title": "Ticked build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a", "done": True}],
+                     # the done-means-merged@1 proof the store asks of a complete build
+                     "pr": "#90003", "branch": "claude/ticked", "mergedAt": "2026-10-02T00:00:00Z",
+                     "landed": {"pr": 90003, "sha": "abc1234", "mergedAt": "2026-10-02T00:00:00Z", "ci": "success", "verifiedAt": "2026-10-02T01:00:00Z", "verifyHow": "check"}},
                     {"id": "open-one", "title": "Open build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a"}]},
                     {"id": "busy", "title": "Busy build", "status": "running", "profiles": ["main-framework"]}]}
 (PCD / "data" / "framework" / "plan").mkdir(parents=True)
@@ -397,7 +400,7 @@ ok(all("about" not in i for p in dpv.json()["profiles"] for i in p["items"]), "b
 
 ap = c.post(f"{B}/profiles/apply", json={"run": pv["run"], "skip": []})
 ok(ap.status_code == 200 and any(e["id"] == "ticked" for e in ap.json()["applied"]), f"apply cleans up ({ap.text[:200]})")
-ok(json.loads((PCD / "store.json").read_text())["builds"][0]["status"] == "archived", "the store has it archived (no merge evidence: never complete under done-means-merged@1)")
+ok(json.loads((PCD / "store.json").read_text())["builds"][0]["status"] == "complete", "the store has it complete")
 ok(c.post(f"{B}/profiles/apply", json={"run": pv["run"]}).status_code == 409, "a preview applies once")
 ok(c.post(f"{B}/profiles/apply", json={"run": "../etc"}).status_code == 409, "bad run ids are refused")
 ud = c.post(f"{B}/profiles/undo", json={"run": pv["run"]})

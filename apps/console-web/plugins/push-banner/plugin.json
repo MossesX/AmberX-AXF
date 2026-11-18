@@ -256,11 +256,11 @@
       "_claude/THREADS.md",
       "deploy/install-console.sh",
       ".github/workflows/android.yml",
-      "framework/spec/DONE-MEANS-MERGED.md",
       "deploy/auto-lander/auto-lander.mjs",
       "deploy/auto-lander/ci-status.mjs",
       "deploy/auto-lander/escalate.mjs",
-      "deploy/auto-lander/merge-main.mjs"
+      "deploy/auto-lander/merge-main.mjs",
+      "framework/spec/DONE-MEANS-MERGED.md"
     ]
   },
   "opens": false
