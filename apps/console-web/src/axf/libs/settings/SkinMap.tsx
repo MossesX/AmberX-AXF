@@ -166,12 +166,12 @@ export function SkinMapView() {
   ];
   const groups = (surface === 'all' ? surfaces : surfaces.filter((s) => s.id === surface)).map((s) => ({ id: s.id, title: s.label, icon: s.icon, rows: bySurface.get(s.id)!, groups: [], counts: `${bySurface.get(s.id)!.filter((r) => r.filled).length} / ${bySurface.get(s.id)!.length} set` }));
   const columns = [
-    { id: 'slot', label: 'Slot', width: 'minmax(calc(var(--fx-space) * 22), 2fr)', fixed: true, sortable: true, sortValue: (r: MapRow) => r.slot, render: (r: MapRow) => <span className="axf-skinmap__slot"><strong>{r.label}</strong><span className="fx-mono fx-muted">{r.slot}</span></span> },
-    { id: 'value', label: skinId ? `Set by ${skinId}` : 'Set by the skin', width: 'minmax(calc(var(--fx-space) * 18), 2fr)', render: (r: MapRow) => (r.filled ? <span className="axf-skinmap__value">{shownValue(r.value)}</span> : <span className="fx-muted">level below</span>) },
-    { id: 'controls', label: 'Controls', width: 'minmax(calc(var(--fx-space) * 12), 1fr)', render: (r: MapRow) => <span className="fx-row fx-row--wrap fx-row--tight">{r.controls.map((c) => <Chip key={c}>{c}</Chip>)}</span> },
+    { id: 'slot', label: 'Slot', width: 'calc(var(--fx-space) * 26)', fixed: true, sortable: true, sortValue: (r: MapRow) => r.slot, render: (r: MapRow) => <span className="axf-skinmap__slot"><strong>{r.label}</strong><span className="fx-mono fx-muted">{r.slot}</span></span> },
+    { id: 'value', label: skinId ? `Set by ${skinId}` : 'Set by the skin', width: 'calc(var(--fx-space) * 22)', render: (r: MapRow) => (r.filled ? <span className="axf-skinmap__value">{shownValue(r.value)}</span> : <span className="fx-muted">level below</span>) },
+    { id: 'controls', label: 'Controls', width: 'calc(var(--fx-space) * 17)', render: (r: MapRow) => <span className="fx-row fx-row--wrap fx-row--tight">{r.controls.map((c) => <Chip key={c}>{c}</Chip>)}</span> },
     { id: 'tokens', label: 'Tokens', width: 'calc(var(--fx-space) * 9)', align: 'end' as const, sortable: true, sortValue: (r: MapRow) => r.tokens.length, render: (r: MapRow) => <span className="fx-mono">{r.tokens.length}</span> },
-    { id: 'readers', label: 'Read by', width: 'minmax(calc(var(--fx-space) * 18), 2fr)', render: (r: MapRow) => <span className="fx-muted axf-skinmap__clip">{r.components.slice(0, 3).join(', ')}</span> },
-    { id: 'lives', label: 'Lives in', width: 'minmax(calc(var(--fx-space) * 22), 3fr)', render: (r: MapRow) => <span className="fx-mono fx-muted axf-skinmap__clip">{livesText(r.lives)}</span> },
+    { id: 'readers', label: 'Read by', width: 'calc(var(--fx-space) * 24)', render: (r: MapRow) => <span className="fx-muted axf-skinmap__clip">{r.components.slice(0, 3).join(', ')}</span> },
+    { id: 'lives', label: 'Lives in', width: 'calc(var(--fx-space) * 40)', render: (r: MapRow) => <span className="fx-mono fx-muted axf-skinmap__clip">{livesText(r.lives)}</span> },
   ];
   const detail = (r: MapRow) => (
     <div className="axf-skinmap__detail">
