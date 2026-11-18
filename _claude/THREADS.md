@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `merge-main-land-server-gate-one-session` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `merge-main-land-console-app-part-2` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `merge-main-land-console-axhub-retry` → complete, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `auto-lander-controls-in-the-gate-plugin` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `data-container-axf-data-holds-all` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `gate-rules-plugin-in-the-console` note (all) · foreign-write
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:18 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 16:18 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
 - 2026-11-18 16:18 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
+- 2026-11-18 16:16 UTC · `attach-widgets-to-any-toolbar-banner` s15 done, s16 done (all) · foreign-write
+- 2026-11-18 16:17 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 16:17 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 16:17 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 16:17 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
