@@ -875,7 +875,7 @@
     "src/axf/schemas/deploy-log.json": "e6674986dc9c676a",
     "src/axf/schemas/feature-ledger.json": "bd89509eabca511e",
     "src/axf/schemas/gate-rules.json": "50077c891e846971",
-    "src/axf/schemas/hub-console.json": "4ac8abb8d7c3e670",
+    "src/axf/schemas/hub-console.json": "d3e3b062c883f809",
     "src/axf/schemas/icon-sets.json": "84be8de92e3f9b5c",
     "src/axf/schemas/json/action-button.schema.json": "c192be97524c1f34",
     "src/axf/schemas/json/agent-card.schema.json": "6990ae625c447b32",

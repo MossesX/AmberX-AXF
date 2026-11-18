@@ -227,6 +227,15 @@
           "effect": "read",
           "hub": null,
           "tool": "hub_approvals_check"
+        },
+        {
+          "id": "notify-phone",
+          "label": "Tell the phone about the waiting calls now",
+          "who": "command",
+          "effect": "write",
+          "hub": null,
+          "channel": "console",
+          "tool": "hub_approvals_notify_phone"
         }
       ],
       "settings": [
@@ -263,6 +272,12 @@
             "idleMs": 10000,
             "heldMs": 3000
           }
+        },
+        {
+          "key": "axf.hub.phone.notices",
+          "kind": "toggle",
+          "label": "Hub notices open the console on the phone (Phone Connect)",
+          "default": true
         }
       ]
     },

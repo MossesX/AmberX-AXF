@@ -25,6 +25,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import threading
 import time
 from pathlib import Path
 from typing import Any, Callable
@@ -1283,6 +1284,151 @@ async def post_log_download(request: Request) -> dict[str, Any]:
     out = {"ok": True, "via": r["via"], "log": r["json"], "message": "The hub's approval log."} if r["ok"] else r
     _audit({"by": _caller(request), "screen": "log", "action": "download", "row": None, "who": "command", "ok": out["ok"], "code": out.get("code", ""), "via": out.get("via", "")})
     return {"screen": "log", "action": "download", **out}
+
+
+# ---------------------------------------------------------------- Phone Connect (s26): hub notices open the console's Approvals screen on the phone
+
+PHONE_CAP = "axf.phone@1"
+NOTIFY_CAP = "axf.notify@1"
+NOTICE_TYPE = "hub.notice"
+CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
+NOTICES_SETTING = "axf.hub.phone.notices"
+NOTICE_POLL_S = float(os.environ.get("AXF_HUB_NOTICE_POLL_S") or 15)
+_notified_cache: dict[str, Any] = {}
+
+
+def approvals_deep_link(aid: str, console_url: str = CONSOLE_URL) -> str:
+    """The console deep link that opens Hub → Approvals on one request (the console runs hub.open:approvals:<id>)."""
+    return f"{console_url}/?axf-open=hub.open:approvals:{aid}"
+
+
+def _notified_file() -> Path:
+    return _data() / "phone-notices.json"
+
+
+def _notified() -> dict[str, str]:
+    f = _notified_file()
+    if _notified_cache.get("file") != str(f) or not _notified_cache.get("ids"):
+        try:
+            d = json.loads(f.read_text(encoding="utf-8")) if f.exists() else {}
+        except ValueError:
+            d = {}
+        _notified_cache.update(file=str(f), ids=d if isinstance(d, dict) else {})
+    return _notified_cache["ids"]
+
+
+def _remember(ids: dict[str, str]) -> None:
+    keep = dict(sorted(ids.items(), key=lambda kv: kv[1])[-500:])
+    _notified_cache.update(ids=keep)
+    try:
+        d = _data()
+        d.mkdir(parents=True, exist_ok=True)
+        _notified_file().write_text(json.dumps(keep), encoding="utf-8")
+    except OSError:
+        pass
+
+
+def notices_on() -> bool:
+    """The registered setting axf.hub.phone.notices (the console's hub-settings document when it is in reach), default on."""
+    v = os.environ.get("AXF_HUB_PHONE_NOTICES")
+    if v is not None:
+        return v.strip().lower() not in ("0", "off", "false", "no")
+    try:
+        projects = os.environ.get("AXHUB_PROJECTS_DIR") or "/projects"
+        f = Path(projects) / "_shared" / "_data" / "settings" / "apps" / "axf-console.json"
+        if f.exists():
+            val = (json.loads(f.read_text(encoding="utf-8")).get("values") or {}).get(NOTICES_SETTING)
+            if isinstance(val, bool):
+                return val
+    except (OSError, ValueError):
+        pass
+    return True
+
+
+def send_phone_notices(items: list[dict[str, Any]], phone: Any, gate: Any = None, console_url: str = CONSOLE_URL, now: str | None = None) -> list[dict[str, Any]]:
+    """Tells the phone about every waiting call it has not heard of: → the notices sent (pure apart from the remembered ids)."""
+    if phone is None or not callable(getattr(phone, "notify", None)):
+        return []
+    if gate is not None and callable(getattr(gate, "allowed", None)) and not gate.allowed(NOTICE_TYPE, "phone"):
+        return []
+    seen = _notified()
+    sent: list[dict[str, Any]] = []
+    for it in items:
+        if not isinstance(it, dict):
+            continue
+        aid = str(it.get("id") or "")
+        if not aid or aid in seen or it.get("status") not in ("pending", "held"):
+            continue
+        held = it.get("status") == "held" and isinstance(it.get("veto"), dict)
+        title = str(it.get("title") or f"Run {it.get('tool', 'a call')}")[:120]
+        left = (it.get("veto") or {}).get("secondsLeft") if held else None
+        body = f"{'Runs in ' + str(int(left)) + ' s unless you deny it' if isinstance(left, (int, float)) else 'Waiting for your approval'} · {it.get('tool', '')}".strip(" ·")
+        url = approvals_deep_link(aid, console_url)
+        try:
+            r = phone.notify("hub.veto" if held else "hub.approval", title, body, notify_id=f"hub:{aid}", url=url, priority="high" if held else "normal", by={"kind": "console", "who": FOLDER})
+        except Exception as e:  # noqa: BLE001 — the phone being away never stops the screens
+            r = {"ok": False, "message": str(e)[:200]}
+        seen[aid] = now or _now()
+        sent.append({"id": aid, "held": held, "url": url, "ok": bool(isinstance(r, dict) and r.get("ok", True)), "message": str((r or {}).get("message", ""))[:200] if isinstance(r, dict) else ""})
+    if sent:
+        _remember(seen)
+    return sent
+
+
+def phone_notice_round(request: Request | None = None) -> dict[str, Any]:
+    """One round: read what waits (the console's own hub session), tell the phone about the new ones."""
+    phone = plugin_services.get(PHONE_CAP)
+    if phone is None or not notices_on():
+        return {"ok": True, "sent": [], "skipped": "phone-connect is off" if phone is None else "notices are off"}
+    relay = plugin_services.get(RELAY_CAP)
+    if relay is None:
+        return {"ok": False, "code": "relay_off", "sent": [], "message": "no hub session to read the waiting calls with"}
+    fake = request if request is not None else _ServerRequest()
+    r = relay.read(fake, "/auth/api/approvals", {"status": "pending", "page": 1}, timeout=TIMEOUT_S)
+    if not r.get("ok"):
+        return {"ok": False, "code": r.get("code", "hub_error"), "sent": [], "message": r.get("message", "")}
+    items = (r.get("json") or {}).get("items") or []
+    return {"ok": True, "sent": send_phone_notices(items, phone, plugin_services.get(NOTIFY_CAP))}
+
+
+class _ServerRequest:
+    """What the relay needs of a request when the server itself asks (no browser): no cookies, no wall headers."""
+    cookies: dict[str, str] = {}
+    headers: dict[str, str] = {}
+    state = type("S", (), {"axf_user": None})()
+
+
+_notice_thread: threading.Thread | None = None
+
+
+def start_phone_notices() -> None:
+    """The watcher: every NOTICE_POLL_S, one round, while the console runs (tests set AXF_HUB_NOTICE_POLL_S=0 to leave it off)."""
+    global _notice_thread
+    if _notice_thread is not None or NOTICE_POLL_S <= 0:
+        return
+
+    def loop() -> None:
+        time.sleep(5)
+        while True:
+            try:
+                phone_notice_round()
+            except Exception:  # noqa: BLE001 — a round that fails waits for the next
+                pass
+            time.sleep(NOTICE_POLL_S)
+
+    _notice_thread = threading.Thread(target=loop, name="hub-admin-phone-notices", daemon=True)
+    _notice_thread.start()
+
+
+@router.post("/approvals/notify-phone")
+async def post_notify_phone(request: Request) -> dict[str, Any]:
+    """Tell the phone about the waiting calls it has not heard of, now (what the watcher does every round)."""
+    out = await run_in_threadpool(phone_notice_round, request)
+    _audit({"by": _caller(request), "screen": "approvals", "action": "notify-phone", "row": None, "who": "command", "ok": out.get("ok", False), "code": out.get("code", ""), "via": ""})
+    return {"screen": "approvals", "action": "notify-phone", **out}
+
+
+start_phone_notices()
 
 
 # ---------------------------------------------------------------- systems check: can the console read the hub?

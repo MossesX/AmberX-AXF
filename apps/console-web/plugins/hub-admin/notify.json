@@ -1,0 +1,28 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "hub.notice",
+      "label": "Hub approval and veto notices on the phone",
+      "group": "approvals",
+      "app": "console",
+      "source": "Hub",
+      "description": "A new call waiting on axHub (an approval, or a held call counting down) is sent once to the phone through Phone Connect; the notice opens the console's Hub \u2192 Approvals screen on that request. Deciding stays your own tap.",
+      "only": [
+        "phone"
+      ]
+    },
+    {
+      "id": "hub.pass-request",
+      "label": "A session asked for a pass",
+      "group": "approvals",
+      "app": "console",
+      "source": "Hub",
+      "description": "A session asked for a timed pass; it waits on Hub \u2192 Passes for your Grant.",
+      "only": [
+        "phone",
+        "popup"
+      ]
+    }
+  ]
+}

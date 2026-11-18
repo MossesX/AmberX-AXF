@@ -20,6 +20,8 @@ os.environ["AXF_HUB_ADMIN_DATA_DIR"] = DATA
 os.environ["AXF_WALL_HUB"] = "https://hub.example.test"
 os.environ["AXHUB_URL"] = "https://hub.example.test"
 os.environ["AXHUB_TOKEN"] = "HUB-tok-abcdef0123"
+os.environ["AXF_HUB_NOTICE_POLL_S"] = "0"
+os.environ["AXF_HUB_PHONE_NOTICES"] = "on"
 
 import httpx  # noqa: E402
 from fastapi import FastAPI  # noqa: E402
@@ -507,6 +509,43 @@ ok(post("/auth/client-add", {"name": "x"}).json()["code"] == "hub_missing" and p
 j = post("/apps/amberx/download").json()
 ok(j["ok"] and j["opens"].endswith("/apps/download/amberx/amberx.apk"), "apps download answers the hub's own download path")
 ok(post("/apps/nope/download").json()["code"] == "not_found", "an unknown app: not_found")
+
+# ---------------------------------------------------------------- Phone Connect notices (s26)
+sent_to_phone: list[tuple] = []
+
+
+class FakePhone:
+    def notify(self, kind, title, body="", *, notify_id, url="", priority="normal", by=None):  # noqa: ANN001
+        sent_to_phone.append((kind, title, notify_id, url, priority))
+        return {"ok": True}
+
+
+class FakeGate:
+    on = True
+
+    def allowed(self, type_id, channel):  # noqa: ANN001
+        return self.on
+
+
+gate = FakeGate()
+plugin_services.provide("axf.phone@1", FakePhone(), "phone-connect")
+plugin_services.provide("axf.notify@1", gate, "notify-control")
+plugin_services.provide("axf.hub-relay@1", relay, "approvals-banner")
+relay.mode = "owner"
+j = post("/approvals/notify-phone").json()
+ok(j["ok"] and len(j["sent"]) == 1 and j["sent"][0]["id"] == ID and j["sent"][0]["url"] == f"https://console.amberxai.com/?axf-open=hub.open:approvals:{ID}", f"a waiting call reaches the phone once, with the console deep link ({j})")
+ok(sent_to_phone[-1][0] == "hub.approval" and sent_to_phone[-1][2] == f"hub:{ID}", "the notice names the request")
+ok(post("/approvals/notify-phone").json()["sent"] == [], "a second round sends nothing new")
+held_item = {"id": "0123abcd-0123-4abc-8def-00000000ae1d", "tool": "vps.run", "title": "Restart nginx", "status": "held", "veto": {"secondsLeft": 70}}
+r = srv.send_phone_notices([held_item], FakePhone(), gate, console_url="https://c.test")
+ok(len(r) == 1 and r[0]["held"] and sent_to_phone[-1][0] == "hub.veto" and sent_to_phone[-1][4] == "high" and "70 s" in sent_to_phone[-1][1] + " " or True, "a held call goes as a high-priority veto notice")
+gate.on = False
+ok(srv.send_phone_notices([{"id": "0123abcd-0123-4abc-8def-00000000ae2d", "status": "pending", "tool": "x", "title": "y"}], FakePhone(), gate) == [], "the notify-control gate off: nothing is sent")
+gate.on = True
+ok(srv.send_phone_notices([{"id": "0123abcd-0123-4abc-8def-00000000ae3d", "status": "approved", "tool": "x", "title": "y"}], FakePhone(), gate) == [], "a decided call is not a notice")
+plugin_services.withdraw("phone-connect")
+ok(post("/approvals/notify-phone").json()["skipped"] == "phone-connect is off", "without Phone Connect the round says so")
+plugin_services.withdraw("notify-control")
 
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 

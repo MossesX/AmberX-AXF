@@ -34,7 +34,9 @@
   "optional": [
     "plugin:approvals-banner",
     "plugin:claude-settings",
-    "plugin:systems-check"
+    "plugin:systems-check",
+    "plugin:phone-connect",
+    "plugin:notify-control"
   ],
   "scopes": [
     "ROUTES"
@@ -50,7 +52,10 @@
       "AXF_HUB_RELAY_USER",
       "AXF_HUB_RELAY_PASSWORD",
       "AXF_HUB_RELAY_OWNERS",
-      "AXF_HUB_ADMIN_DATA_DIR"
+      "AXF_HUB_ADMIN_DATA_DIR",
+      "AXF_CONSOLE_PUBLIC_URL",
+      "AXF_HUB_NOTICE_POLL_S",
+      "AXF_HUB_PHONE_NOTICES"
     ],
     "mentions": [
       "CLAUDE.md",
@@ -669,6 +674,13 @@
         "title": "Apps: download",
         "tool": "hub_apps_download",
         "description": "Answers the hub's own download address of an app's latest build (a navigate)."
+      },
+      {
+        "id": "approvals-notify-phone",
+        "route": "POST /approvals/notify-phone",
+        "title": "Approvals: tell the phone now",
+        "tool": "hub_approvals_notify_phone",
+        "description": "Sends every waiting call the phone has not heard of to Phone Connect, each with the console deep link that opens Hub → Approvals on that request."
       }
     ]
   },

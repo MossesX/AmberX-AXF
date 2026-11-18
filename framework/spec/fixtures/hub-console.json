@@ -35,12 +35,12 @@
   ],
   "counts": {
     "screens": 10,
-    "actions": 47,
+    "actions": 48,
     "person": 15,
-    "commands": 32,
+    "commands": 33,
     "missing": 9,
-    "tools": 46,
-    "settings": 8,
+    "tools": 47,
+    "settings": 9,
     "deferred": 6
   },
   "invalid": [
@@ -583,7 +583,8 @@
       "users/delete",
       "connectors/policy",
       "handoff/send",
-      "apps/download"
+      "apps/download",
+      "approvals/notify-phone"
     ],
     "confirm": [
       "passes/revoke",
