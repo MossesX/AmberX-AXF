@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T21:26:37.278Z",
+ "updatedAt": "2026-11-18T21:29:26.567Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195095,12 +195095,135 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T21:26:24.655Z",
-   "updatedAt": "2026-11-18T21:26:24.655Z",
+   "updatedAt": "2026-11-18T21:27:59.161Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T21:27:59.161Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett (voice, Nov 18 2026): the console Android app (apps/console-droid, console-app-debug.apk) shows huge text, especially in Samsung DeX on a monitor; Ctrl+minus does nothing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmmukzd01t6zf",
+     "createdAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s2",
+     "text": "He mainly needs the app for the overlay, but wants this fixed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmmukzd02riia",
+     "createdAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s3",
+     "text": "Likely cause: the WebView follows the system font scale / density (textZoom).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmmukzd03yp01",
+     "createdAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fix: lock WebView text zoom to 100% (or a setting), size correctly for DeX desktop windows, keep the overlay unaffected.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmmukzd04vdba",
+     "createdAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s5",
+     "text": "Full API control per the usual rule.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmmukzd05wvr7",
+     "createdAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tests green, report _claude/builds/reports/console-app-text-way-too-big-system-font.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-app-text-way-too-big-system-font.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmmukzd064mcr",
+     "createdAt": "2026-11-18T21:27:59.161Z"
+    }
+   ]
   }
  ]
 }
