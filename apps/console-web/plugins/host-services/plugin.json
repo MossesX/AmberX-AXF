@@ -1,0 +1,17 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.host-services",
+  "name": "Host services",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The console parts that run on the VPS host as systemd services (host-service@1, framework/spec/HOST-SERVICES.md).",
+  "targets": ["axf-console"],
+  "provides": ["settings-tab:host-services", "service:axf.host-services@1"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "optional": ["service:axf.health@1"],
+  "banner": false,
+  "tabable": false
+}
