@@ -2611,7 +2611,7 @@
         "revoke": {},
         "undo": {}
       },
-      "doc": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered."
+      "doc": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered. Every record carries covers (axHub decision #120): \"all\" (default) or a list of <service>, <service>.<tool>, scope:<target> entries; a covering pass lifts every policy class (veto, confirm, explicit approval) and every covered run is logged ranUnder: <pass id>; older records with no field read as all."
     },
     "plugins.commands": {
       "domain": "plugins",
@@ -4924,7 +4924,7 @@
         "paths": "host"
       },
       "pass.scopes": {
-        "description": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered.",
+        "description": "Timed veto passes (control-pass@1): \"allow everything for the next 30 minutes\". path = the scope: all (the default: every command on every target and every call axHub holds, ordinary deletes included; irreversible deletes only with include_irreversible) or a narrow token scope (tokens.theme, tokens.style, tokens.layout, tokens.*: set / reset only). grant files a request the owner approves once; revoke ends it; undo rolls back what can be rolled back and lists what can't. The pass target itself is never covered. Every record carries covers (axHub decision #120): \"all\" (default) or a list of <service>, <service>.<tool>, scope:<target> entries; a covering pass lifts every policy class (veto, confirm, explicit approval) and every covered run is logged ranUnder: <pass id>; older records with no field read as all.",
         "ops": [
           "list",
           "get",

@@ -13,7 +13,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, writeF
 import { join } from 'node:path';
 import {
   PASS_APPROVED_VIA, PASS_FRAME, PASS_MAX_MINUTES, PASS_REQUEST_TTL_MS, PASS_SCOPES, PASS_SCOPE_IDS, passActive, passCommandChange, passCovering,
-  passCoveringCall, passMinutes, passNotUndoable, passPending, passPublic, passPublication, passScopeOf, passSentence, passStateAt, passUndoPlan, passWithChange,
+  passCoveringCall, passCoversForScope, passMinutes, passNotUndoable, passPending, passPublic, passPublication, passScopeOf, passSentence, passStateAt, passUndoPlan, passWithChange,
 } from '../../../../../framework/core/engines/control-pass.mjs';
 import { controlIrreversible } from '../../../../../framework/core/engines/control-rules.mjs';
 import { ControlError, DATA_DIR, ROOT, audit } from './common.mjs';
@@ -89,7 +89,8 @@ const THREADS_HEAD = '## Token passes (log)';
 /** One line in THREADS.md (under its Token passes section, added at the end once) and one audit row. */
 export function logLine(p, text, extra = {}) {
   const line = `- ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC · pass \`${p.id}\` (${p.scope}) · ${text}`;
-  audit({ by: extra.by || p.approvedBy || p.requestedBy || 'unknown', op: 'pass', target: 'pass.scopes', path: p.scope, action: extra.action ?? 'log', pass: p.id, text, ...(extra.change ? { change: extra.change } : {}) });
+  // `pass` names the pass the line is about; `ranUnder` (decision #120) is set on the lines for commands that ran under it
+  audit({ by: extra.by || p.approvedBy || p.requestedBy || 'unknown', op: 'pass', target: 'pass.scopes', path: p.scope, action: extra.action ?? 'log', pass: p.id, ...(extra.action === 'change' ? { ranUnder: p.id } : {}), text, ...(extra.change ? { change: extra.change } : {}) });
   const f = threadsFile();
   if (!f) return;
   try {
@@ -187,7 +188,9 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       // a waiting request for the same scope is replaced (one request per scope)
       for (const p of d.passes) if (p.scope === c.path && passPending(p, now)) { p.state = 'lapsed'; p.endedAt = new Date(now).toISOString(); p.endedBy = 'replaced'; }
       const irr = c.path === 'all' && input.include_irreversible === true;
-      const req = { id: newId(), scope: c.path, state: 'pending', minutes, reason: String(input.reason ?? c.reason ?? '').slice(0, 300), ...(irr ? { includeIrreversible: true } : {}), requestedBy: by, requestedAt: new Date(now).toISOString(), changes: [] };
+      // decision #120: every new record says what it covers (`all` unless the grant names entries; see passCoversOf for older records)
+      const covers = input.covers !== undefined ? input.covers : passCoversForScope(c.path);
+      const req = { id: newId(), scope: c.path, covers, state: 'pending', minutes, reason: String(input.reason ?? c.reason ?? '').slice(0, 300), ...(irr ? { includeIrreversible: true } : {}), requestedBy: by, requestedAt: new Date(now).toISOString(), changes: [] };
       d.passes.unshift(req);
       const owner = ownerOf(approver, proof, req, now);
       if (owner) {
@@ -273,7 +276,7 @@ export function recordPassCommand(passId, command, what = '', now = Date.now()) 
   const d = readStore();
   const p = d.passes.find((x) => x.id === passId);
   if (!p) return null;
-  const ch = passCommandChange(command, now, what);
+  const ch = { ...passCommandChange(command, now, what), ranUnder: p.id };
   Object.assign(p, passWithChange(p, ch));
   writeStore(d);
   logLine(p, `${ch.by}: ${ch.what}`, { by: ch.by, action: 'change', change: { target: ch.target, ...(ch.path ? { path: ch.path } : {}), op: ch.op, undoable: false } });
@@ -289,7 +292,7 @@ export function recordPassChanges(passId, command, before, after, now = Date.now
   for (const [id, b] of Object.entries(before)) {
     const a = after[id];
     if (!a || (a.overridden === b.overridden && JSON.stringify(a.value) === JSON.stringify(b.value))) continue;
-    changed.push({ at: new Date(now).toISOString(), by: command.by || 'unknown', target: command.target, path: id, op: command.op, before: b, after: a });
+    changed.push({ at: new Date(now).toISOString(), by: command.by || 'unknown', target: command.target, path: id, op: command.op, before: b, after: a, ranUnder: p.id });
   }
   let next = p;
   for (const ch of changed) next = passWithChange(next, ch);

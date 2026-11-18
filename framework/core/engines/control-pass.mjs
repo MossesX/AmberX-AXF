@@ -19,12 +19,22 @@
  *   - Expiry is the server's clock: `passActive(p, now)` is the only answer to "is it on?".
  *   - Minutes 1..max (default 30; max PASS_MAX_MINUTES, lowered by the console's setting, never raised).
  *
+ * Coverage (Brett, Nov 18 2026, build approval-pass-covers-every-call; axHub decision #120, docs/veto-pass.md §1a-2d):
+ *   "Why do I keep getting approvals when I set a pass?" Every pass says what it covers in ONE field, `covers`:
+ *   `all` (the default: every target, every axHub service and tool, every policy class: veto countdown, straight
+ *   approval and explicit approval, vps.run and console_terminal_sessions_stop included) or a list of entries, each
+ *   `<service>`, `<service>.<tool>` (first dot; `*` matches any run of characters) or `scope:<control@1 target>`. An
+ *   entry covers what it names whatever the tool's policy class. The only things no pass covers: a deny, the pass
+ *   target / owner-grant tools, and an irreversible command unless includeIrreversible. Every covered run is logged
+ *   with `ranUnder: <pass id>` (and the class it lifted, `skippedPolicy`). A record stored before the field reads
+ *   through `passCoversOf`: scope `all` → `all`, a token scope → `scope:<target>` per target (never wider).
+ *
  * The record (control-pass@1):
- *   { id, scope, state: pending | active | revoked | expired | lapsed | denied, minutes, reason, includeIrreversible?,
- *     requestedBy, requestedAt, approvedBy?, approvedVia?, grantedAt?, expiresAt?, endedAt?, endedBy?, undoneAt?,
- *     changes: [change…] }
- *   token change = { at, by, target, path, op, before: { overridden, value }, after: { overridden, value } }
- *   other change = { at, by, target, path?, op, action?, undoable: false, what }   (logged; undo lists it, can't put it back)
+ *   { id, scope, covers: 'all' | [entry…], state: pending | active | revoked | expired | lapsed | denied, minutes, reason,
+ *     includeIrreversible?, requestedBy, requestedAt, approvedBy?, approvedVia?, grantedAt?, expiresAt?, endedAt?, endedBy?,
+ *     undoneAt?, changes: [change…] }
+ *   token change = { at, by, target, path, op, before: { overridden, value }, after: { overridden, value }, ranUnder }
+ *   other change = { at, by, target, path?, op, action?, undoable: false, what, ranUnder }   (logged; undo lists it, can't put it back)
  */
 
 export const PASS_FRAME = 'control-pass@1';
@@ -44,6 +54,53 @@ export const PASS_COVERABLE_OPS = ['set', 'reset'];
 export const PASS_ALL_OPS = ['set', 'reset', 'add', 'remove', 'act'];
 /** Targets no pass ever covers (a pass can't grant, approve or widen a pass). */
 export const PASS_EXCLUDED_TARGETS = [PASS_TARGET];
+
+/* ---- coverage: `covers` (axHub decision #120; the hub's twin is packages/core/src/passes.ts → passCoversOf) */
+
+/** `covers` of a pass for everything. */
+export const PASS_COVERS_ALL = 'all';
+/** One `covers` entry: `<service>`, `<service>.<tool>` or `scope:<target>`; tool and scope characters plus `*`. */
+export const PASS_COVERS_ENTRY = /^(scope:)?[A-Za-z0-9_.\-/*@]{1,128}$/;
+export const PASS_COVERS_MAX = 40;
+/** The policy classes a pass lifts; what a `ranUnder` log line names as `skippedPolicy`. A deny is never lifted. */
+export const PASS_SKIPPED_POLICIES = ['veto', 'confirm', 'explicit'];
+
+/** Reads one entry → { kind: 'scope', scope } | { kind: 'tool', service, tool } | { kind: 'service', service } | null. */
+export function passCoversEntry(entry) {
+  if (typeof entry !== 'string' || !PASS_COVERS_ENTRY.test(entry)) return null;
+  if (entry.startsWith('scope:')) { const scope = entry.slice(6); return scope ? { kind: 'scope', scope } : null; }
+  const dot = entry.indexOf('.');
+  if (dot < 0) return { kind: 'service', service: entry };
+  const service = entry.slice(0, dot); const tool = entry.slice(dot + 1);
+  return service && tool ? { kind: 'tool', service, tool } : null;
+}
+
+/** Problems with a `covers` input (empty = fine): `all`, or 1..PASS_COVERS_MAX well-formed entries. */
+export function passCoversErrors(covers) {
+  if (covers === undefined || covers === PASS_COVERS_ALL) return [];
+  if (!Array.isArray(covers) || !covers.length) return [`covers must be "${PASS_COVERS_ALL}" or a list of 1-${PASS_COVERS_MAX} entries (<service>, <service>.<tool>, scope:<target>)`];
+  if (covers.length > PASS_COVERS_MAX) return [`covers takes at most ${PASS_COVERS_MAX} entries`];
+  return covers.filter((e) => !passCoversEntry(e)).map((e) => `covers entry ${JSON.stringify(e)} is not <service>, <service>.<tool> or scope:<target>`);
+}
+
+/**
+ * What a pass covers (migration for records stored before the field): the stored `covers`; else `all` for the `all`
+ * scope; else `scope:<target>` per target of its token scope. A narrow pass never widens by migration.
+ */
+export function passCoversOf(p) {
+  if (!p) return PASS_COVERS_ALL;
+  if (p.covers === PASS_COVERS_ALL) return PASS_COVERS_ALL;
+  if (Array.isArray(p.covers) && p.covers.length) return [...p.covers];
+  if (p.scope === PASS_DEFAULT_SCOPE || p.scope === undefined) return PASS_COVERS_ALL;
+  const targets = PASS_SCOPES[p.scope]?.targets ?? [p.scope];
+  return targets.includes('*') ? PASS_COVERS_ALL : targets.map((t) => `scope:${t}`);
+}
+
+/** The `covers` a grant on `scope` is stored with when the grant names none (so every new record carries the field). */
+export const passCoversForScope = (scope) => passCoversOf({ scope });
+
+/** One log entry's pass fields: every record of a run under a pass carries them (console audit, THREADS, axHub log). */
+export const passRanUnder = (p, skippedPolicy = 'veto') => ({ ranUnder: p?.id ?? '', pass: p?.id ?? '', skippedPolicy: PASS_SKIPPED_POLICIES.includes(skippedPolicy) ? skippedPolicy : 'veto' });
 
 /**
  * The scopes. `targets`: the control@1 targets it covers (`*` = every target and every axHub call); `ops`: which ops
@@ -124,6 +181,7 @@ export function passGrantErrors(scope, input, max = PASS_MAX_MINUTES) {
   if (i.reason !== undefined && typeof i.reason !== 'string') errors.push('reason must be a string');
   if (i.include_irreversible !== undefined && typeof i.include_irreversible !== 'boolean') errors.push('include_irreversible must be true or false');
   if (i.include_irreversible === true && passScopeId(scope) !== 'all') errors.push('include_irreversible only goes with the all scope');
+  errors.push(...passCoversErrors(i.covers));
   return errors;
 }
 
@@ -252,7 +310,8 @@ export function passPublic(p, now = Date.now(), timeZone) {
     remainingMs: passRemainingMs(p, now), warn: state === 'active' && passRemainingMs(p, now) <= PASS_WARN_MS,
     label: PASS_SCOPES[p.scope]?.label ?? p.scope, include_irreversible: p.includeIrreversible === true,
     changes: Array.isArray(p.changes) ? p.changes.length : 0, undoable: passUndoPlan(p).length, notUndoable: passNotUndoable(p).length,
-    covers: PASS_SCOPES[p.scope]?.targets ?? [], ops: PASS_SCOPES[p.scope]?.ops ?? [],
+    // decision #120: `covers` is the owner's words ('all' or entries); `targets` + `ops` are the scope's compiled form
+    covers: passCoversOf(p), targets: PASS_SCOPES[p.scope]?.targets ?? [], ops: PASS_SCOPES[p.scope]?.ops ?? [],
     text: passSentence(p, now, timeZone),
   };
 }
@@ -267,6 +326,8 @@ export function passPublication(passes, now = Date.now(), timeZone) {
     pending: list.filter((p) => passPending(p, now)).map((p) => passPublic(p, now, timeZone)),
     scopes: Object.fromEntries(Object.entries(PASS_SCOPES).map(([id, s]) => [id, { label: s.label, targets: s.targets, ops: s.ops, ...(s.includes ? { includes: s.includes } : {}) }])),
     default: PASS_DEFAULT_SCOPE,
+    // decision #120: every pass carries `covers` ('all' by default); a covered run is logged `ranUnder: <pass id>`
+    coversDefault: PASS_COVERS_ALL, skippedPolicies: PASS_SKIPPED_POLICIES,
     // what no pass covers: the pass target itself; irreversible calls only under an all pass with include_irreversible
     excluded: PASS_EXCLUDED_TARGETS,
     irreversible: 'covered only by an active all pass with include_irreversible: true',
