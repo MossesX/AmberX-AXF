@@ -840,10 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `vps-sets-every-build-status-manifest` added (15 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `api-fully-drives-every-field-type-forms` added (18 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `fix-launcher-crash-duplicate-steps-brief` added (16 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `active-tab-stop-button-grid-alignment` added (192 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `axhub-routes-for-console-hub` added (684 steps) (all) · foreign-write
@@ -1240,6 +1236,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 18:13 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 - 2026-11-18 18:15 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 - 2026-11-18 18:18 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
+- 2026-11-18 18:21 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 18:21 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 18:21 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 18:21 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
