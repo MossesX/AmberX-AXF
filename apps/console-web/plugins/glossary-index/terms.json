@@ -686,10 +686,10 @@
       "aka": [
         "hub-console@1",
         "Hub plugin",
-        "hub-admin"
+        "Hub plugin (console)"
       ],
       "summary": "Every axHub page as a console screen under Hub: one route table names each screen's address, read, actions (who may run each: person / confirm / command) and settings; the plugin, the server, the MCP tools, the CLI and voice are projections of it.",
-      "detail": "framework/schemas/hub-console.json is the single source; framework/core/hub-console.mjs validates it and derives addresses (view:hub/tab:hub.tabs=<screen>, grid:hub.<screen>/row:<id>, button:<action>), reaches (REST /api/plugins/hub-admin/<screen>, MCP hub_<screen>_…, CLI axf hub <screen>, voice hub.<screen>) and the retired axHub web hash routes. Decisions are Brett's own tap through the approvals-banner relay (personOnly); confirm actions take a token; hub routes the hub lacks answer hub_missing. Spec framework/spec/HUB-CONSOLE.md; check framework/cli/check-hub-parity.mjs."
+      "detail": "framework/schemas/hub-console.json is the single source; framework/core/hub-console.mjs validates it and derives addresses (view:hub/tab:hub.tabs=<screen>, grid:hub.<screen>/row:<id>, button:<action>), reaches (REST under the Hub plugin's own routes (/api/plugins/<hub plugin>/<screen>), MCP hub_<screen>_…, CLI axf hub <screen>, voice hub.<screen>) and the retired axHub web hash routes. Decisions are Brett's own tap through the approvals-banner relay (personOnly); confirm actions take a token; hub routes the hub lacks answer hub_missing. Spec framework/spec/HUB-CONSOLE.md; check framework/cli/check-hub-parity.mjs."
     }
   ]
 }

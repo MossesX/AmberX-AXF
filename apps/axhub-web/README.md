@@ -1,6 +1,6 @@
 # AXHub
 
-> **Retired (Nov 18 2026).** Every page of this app lives in the Dev Console's Hub screens (`apps/console-web/plugins/hub-admin`, hub-console@1,
+> **Retired (Nov 18 2026).** Every page of this app lives in the Dev Console's Hub screens (the Hub plugin, hub-console@1,
 > `framework/spec/HUB-CONSOLE.md`). axhub.amberxai.com serves only `deploy/redirect.html`, which sends the old `#/<route>` addresses to the console's
 > deep links (`deploy/redirect.mjs` writes it from the route table). The source stays for history; the axHub server is backend + MCP only.
 
