@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9058,
- "updatedAt": "2026-11-18T15:18:52.812Z",
+ "rev": 9059,
+ "updatedAt": "2026-11-18T15:19:49.832Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252571,7 +252571,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T15:18:40.823Z",
+   "updatedAt": "2026-11-18T15:18:58.418Z",
    "builtAt": "",
    "notes": [
     {
@@ -252625,6 +252625,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-attach-widgets-to-any-toolbar-banner--earl.",
      "at": "2026-11-18T15:18:40.823Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-attach-widgets-to-any-toolbar-banner--earl, shared account login)",
+     "at": "2026-11-18T15:18:58.418Z"
     }
    ],
    "approvals": [],
@@ -253166,7 +253170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
