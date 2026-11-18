@@ -24,7 +24,7 @@
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mergeMain as landMergeMain, settings as landSettings } from '../../apps/console-web/plugins/push-banner/land/land.mjs';
+import { mergeMain as landMergeMain, settings as landSettings } from '../../apps/console-web/plugins/push-banner/land/land.mjs';  // axf-plugin:push-banner
 import * as attempts from './attempts.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));

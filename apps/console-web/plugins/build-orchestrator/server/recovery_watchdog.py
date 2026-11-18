@@ -95,12 +95,12 @@ def _reinstall(reg: Any) -> dict[str, Any]:
     cmd = f"cd {HOST_DIR} && node {w} install-cron --dir {HOST_DIR} && node {w} run"
     if getattr(reg, "vps_run", None):
         return reg.vps_run(cmd)
-    run_cli("request", actor="systems-check")
+    run_cli("request", actor="systems-check")  # axf-not-plugin:systems-check: the actor name
     return {"state": "failed", "message": f"Can't reach the VPS from here (no axHub vps.run). Run on the VPS: {cmd}"}
 
 
 def _requeue() -> dict[str, Any]:
-    r = run_cli("requeue", actor="systems-check")
+    r = run_cli("requeue", actor="systems-check")  # axf-not-plugin:systems-check: the actor name
     if not r.get("ok"):
         return {"state": "failed", "message": str(r.get("error") or r.get("failed") or "requeue failed")[:300]}
     return {"state": "done", "message": f"Back in the Queue: {', '.join(r.get('requeued') or []) or 'nothing to requeue'}."}
