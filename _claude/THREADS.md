@@ -840,10 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:38 UTC · `one-build-time-always-split-split-id` added (0 steps) (all) · Brett
-- 2026-11-18 12:39 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
-- 2026-11-18 12:39 UTC · `every-app-gets-own-locked-default` → running, note (all) · pipeline
-- 2026-11-18 12:40 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
 - 2026-11-18 12:40 UTC · `every-app-gets-own-locked-default` → running, note (all) · foreign-write
 - 2026-11-18 12:40 UTC · `one-build-time-always-split-to-fill` added (0 steps) (all) · Brett
 - 2026-11-18 12:41 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · Brett
@@ -1240,6 +1236,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 23:20 UTC · `deep-links-to-plugin-s-settings-don-t` added (0 steps) (all) · voice session
 - 2026-11-18 23:20 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · orchestrator
 - 2026-11-18 23:21 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · builds-live
+- 2026-11-18 23:21 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 23:21 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 23:21 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 23:21 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
