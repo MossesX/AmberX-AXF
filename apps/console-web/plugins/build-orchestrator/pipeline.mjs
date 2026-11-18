@@ -20,6 +20,13 @@
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
  *   … requeue-stuck [--apply]       Pending builds whose last run ended phase-done with steps left (parked by the old rule):
  *                                  list them (dry run), --apply moves them back to the Queue, journalled
+ *   … launch-state <id>            runs, crashes, launch retries (lastLaunchError, retryAt, gaveUp) and the last clash bounce
+ *   … launch-crashed [--requeue]   builds that stopped retrying after launch crashes (the systems check item); --requeue all
+ *   … requeue-launch <id>          back to the Queue now, launch retries reset (REST POST /pipeline/requeue-launch, MCP and
+ *                                  voice pipeline-requeue)
+ *   … clash-bounce <id> [--files a,b] [--head sha]   a done build that clashes with main: one merge-main step, back to the
+ *                                  Queue (files worked out by git merge-tree when not given; MCP / voice pipeline-clash-bounce)
+ *   … dedupe-steps [--apply] [id…] collapse repeated steps (builds-store.mjs dedupe-steps; MCP / voice pipeline-dedupe)
  *   … exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p]   a session ended (claude-headless.sh
  *                                  calls it): end the run now and, when it is back in the Queue, run one tick in-process so the
  *                                  next phase starts at once. Under the dispatcher's lock (flock AXF_PIPELINE_LOCK, default
@@ -1627,6 +1634,11 @@ async function main(argv) {
     const v = launchState(b);
     return out({ ok: true, ...v }, `${v.id}: ${v.status} · run ${v.runs} · launch retries ${v.retries}${v.gaveUp ? ' (gave up)' : ''}${v.lastLaunchError ? ` · last launch error: ${v.lastLaunchError}` : ''}${v.retryAt ? ` · next try ${v.retryAt}` : ''}${v.bounce ? ` · bounced ${v.bounce.count}× (${v.bounce.step}): ${v.bounceReason}` : ''}`);
   }
+  if (cmd === 'launch-crashed') { // builds that stopped retrying after launch crashes (the systems check item)
+    const rows = loadStore().builds.filter((b) => !b.deleted && b.pipeline?.launchRetry?.gaveUp && !['archived', ...SETTLED].includes(b.status)).map(launchState);
+    if (has('requeue')) { const done = rows.map((r) => requeueLaunch(r.id, { by })); return out({ ok: true, requeued: done }, done.map((x) => `${x.id}: queued`).join('\n') || 'nothing to requeue'); }
+    return out({ ok: true, crashed: rows }, rows.map((r) => `${r.id}: ${r.retries} launch crashes · ${r.lastLaunchError}`).join('\n') || 'no build is stuck crashing at launch');
+  }
   if (cmd === 'requeue-launch') {
     if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('requeue-launch <build>'), { code: 2 });
     const r = requeueLaunch(rest[0], { by }); return out({ ok: true, ...r }, `${r.id}: back in the Queue, launch retries reset`);
@@ -1642,7 +1654,8 @@ async function main(argv) {
   }
   if (cmd === 'dedupe-steps') {
     const S = await import('../../../../framework/cli/builds-store.mjs');
-    const r = S.dedupeStepsNow({ apply: has('apply'), ids: rest.filter((a) => !a.startsWith('--')), by });
+    const ids = rest.filter((a, i) => !a.startsWith('--') && !['--by', '--why'].includes(rest[i - 1]));
+    const r = S.dedupeStepsNow({ apply: has('apply'), ids, by });
     return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s), ${r.total.before} → ${r.total.after} steps`);
   }
   if (cmd === 'retry-all') { const done = escalated().map((x) => retryBuild(x.id, { by, why: flag('why') || 'Retry from the systems check' })); return out({ ok: true, retried: done }, done.map((x) => `${x.id}: ${x.status}`).join('\n') || 'nothing escalated'); }
@@ -1703,7 +1716,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | launch-crashed [--requeue] | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
