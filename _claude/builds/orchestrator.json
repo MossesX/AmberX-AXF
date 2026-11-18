@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T18:51:13.905Z",
+ "updatedAt": "2026-11-18T19:19:20.811Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162658,7 +162658,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T18:48:56.373Z",
+   "updatedAt": "2026-11-18T19:18:52.523Z",
    "builtAt": "",
    "notes": [
     {
@@ -162736,6 +162736,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-18T18:48:56.373Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T19:18:52.523Z"
     }
    ],
    "approvals": [
