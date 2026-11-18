@@ -99,6 +99,33 @@ export function passCoversOf(p) {
 /** The `covers` a grant on `scope` is stored with when the grant names none (so every new record carries the field). */
 export const passCoversForScope = (scope) => passCoversOf({ scope });
 
+/** The console's own axHub namespace: what a `<service>` entry names for control@1 commands run here. */
+export const PASS_CONSOLE_SERVICE = 'axf-console';
+
+/** `*` matches any run of characters; everything else is literal (the hub's passPatternMatches). */
+export function passPatternMatches(pattern, value) {
+  if (typeof pattern !== 'string' || typeof value !== 'string') return false;
+  const rx = new RegExp(`^${pattern.split('*').map((x) => x.replace(/[.+?^${}()|[\]\\]/g, '\\$&')).join('.*')}$`);
+  return rx.test(value);
+}
+
+/**
+ * Does a `covers` value name this call? `all` names everything; else any entry naming its service (`<service>`), its
+ * tool (`<service>.<tool>`) or its control@1 target (`scope:<target>`). `call` = { service?, tool?, target? }.
+ */
+export function passCoversCall(covers, call = {}) {
+  if (covers === PASS_COVERS_ALL) return true;
+  if (!Array.isArray(covers)) return false;
+  const c = isObj(call) ? call : {};
+  return covers.some((raw) => {
+    const e = passCoversEntry(raw);
+    if (!e) return false;
+    if (e.kind === 'scope') return typeof c.target === 'string' && passPatternMatches(e.scope, c.target);
+    if (typeof c.service !== 'string' || !passPatternMatches(e.service, c.service)) return false;
+    return e.kind === 'service' || (typeof c.tool === 'string' && passPatternMatches(e.tool, c.tool));
+  });
+}
+
 /** One log entry's pass fields: every record of a run under a pass carries them (console audit, THREADS, axHub log). */
 export const passRanUnder = (p, skippedPolicy = 'veto') => ({ ranUnder: p?.id ?? '', pass: p?.id ?? '', skippedPolicy: PASS_SKIPPED_POLICIES.includes(skippedPolicy) ? skippedPolicy : 'veto' });
 
@@ -205,20 +232,24 @@ export function passStateAt(p, now = Date.now()) {
  * marks it per target): only an `all` pass with include_irreversible covers it.
  */
 export function passCovering(passes, command, now = Date.now(), opts = {}) {
-  const scopes = passScopesFor(command);
-  if (!scopes.length) return null;
-  return (Array.isArray(passes) ? passes : []).find((p) => scopes.includes(p.scope) && passActive(p, now) && (!opts.irreversible || passReachesIrreversible(p))) ?? null;
+  if (!passScopeOf(command)) return null;
+  const c = isObj(command) ? command : {};
+  // decision #120: matched by `covers` (service, tool or scope), not by scope id; a token scope keeps its ops
+  const call = { service: opts.service ?? PASS_CONSOLE_SERVICE, tool: opts.tool, target: c.target };
+  return (Array.isArray(passes) ? passes : []).find((p) => passActive(p, now) && (PASS_SCOPES[p.scope]?.ops ?? PASS_ALL_OPS).includes(c.op)
+    && passCoversCall(passCoversOf(p), call) && (!opts.irreversible || passReachesIrreversible(p))) ?? null;
 }
 
 /**
  * The active pass covering a call axHub holds (any service, any tool), or null: what axHub asks before it skips the
- * hold. `call` = { service?, tool?, irreversible? }; only an `all` pass covers a call that isn't a control@1 command
- * (a control@1 command through axHub can go through passCovering for its narrow scope too).
+ * hold. `call` = { service?, tool?, target?, irreversible? }; covered when the pass's `covers` names it (decision #120).
+ * Never the pass target or a pass_* tool; an irreversible call only under an all pass with include_irreversible.
  */
 export function passCoveringCall(passes, call = {}, now = Date.now()) {
   const c = isObj(call) ? call : {};
-  if (c.target === PASS_TARGET) return null;
-  return (Array.isArray(passes) ? passes : []).find((p) => p.scope === 'all' && passActive(p, now) && (!c.irreversible || passReachesIrreversible(p))) ?? null;
+  if (c.target === PASS_TARGET || PASS_EXCLUDED_TARGETS.includes(c.target) || /(^|\.)pass_/.test(String(c.tool ?? ''))) return null;
+  // decision #120: any pass whose `covers` names the call's service, tool or scope (an `all` pass names everything)
+  return (Array.isArray(passes) ? passes : []).find((p) => passActive(p, now) && passCoversCall(passCoversOf(p), c) && (!c.irreversible || passReachesIrreversible(p))) ?? null;
 }
 
 /** "10:42 AM" in Brett's time (America/New_York unless the console says otherwise). */
