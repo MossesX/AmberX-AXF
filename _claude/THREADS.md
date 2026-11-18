@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `vps-sets-every-build-status-manifest` added (390 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `api-fully-drives-every-field-type-forms` added (684 steps) (all) · foreign-write
 - 2026-11-17 23:07 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-17 23:07 UTC · `move-everything-axhub-web-console` s3 done (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:15 UTC · `move-server-side-console-parts-onto-vps` s21 done (all) · orchestrator
 - 2026-11-18 00:15 UTC · `move-server-side-console-parts-onto-vps` s21 done (all) · foreign-write
 - 2026-11-18 00:16 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
+- 2026-11-18 00:16 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 
 ## Token passes (log)
 

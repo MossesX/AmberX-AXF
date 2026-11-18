@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:16:15.276Z",
+ "updatedAt": "2026-11-18T00:16:27.996Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171073,7 +171073,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-18T00:16:11.557Z",
+   "updatedAt": "2026-11-18T00:16:18.310Z",
    "builtAt": "",
    "notes": [
     {
@@ -171451,6 +171451,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T00:16:11.557Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s55): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T00:16:18.310Z"
     }
    ],
    "approvals": [
