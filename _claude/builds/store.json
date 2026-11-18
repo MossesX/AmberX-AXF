@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8848,
- "updatedAt": "2026-11-18T05:30:28.228Z",
+ "rev": 8849,
+ "updatedAt": "2026-11-18T05:33:30.949Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -316970,15 +316970,15 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/approval-pass-covers-every-call",
-   "pr": "",
+   "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:28:58.541Z",
+   "updatedAt": "2026-11-18T05:30:03.941Z",
    "builtAt": "",
    "notes": [
     {
@@ -317028,6 +317028,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T05:27:18.149Z"
+    },
+    {
+     "text": "Reconciler: PR #836",
+     "at": "2026-11-18T05:30:03.941Z"
     },
     {
      "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s2): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
@@ -317099,20 +317103,6 @@
    "recoveries": [
     {
      "at": "2026-11-18T05:21:02.546Z",
-     "buildId": "approval-pass-covers-every-call",
-     "phase": "",
-     "step": "s2",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-18T05:26:59.929Z",
      "buildId": "approval-pass-covers-every-call",
      "phase": "",
      "step": "s2",
