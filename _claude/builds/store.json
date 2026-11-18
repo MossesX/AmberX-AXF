@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9002,
- "updatedAt": "2026-11-18T14:03:49.923Z",
+ "rev": 9003,
+ "updatedAt": "2026-11-18T14:04:47.619Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290131,14 +290131,14 @@
    "title": "Settings fix part 2: blank toolbars, locked settings layout",
    "category": "",
    "detail": "Follow-up to PR #822 (fix-banner-settings-interface-tab), which finished before Brett's later notes. 1) Strip EVERY page toolbar in the console to blank: remove all buttons (New, Open, Save, Undo, Redo, Cut, Theme, etc. from PR #817); each keeps only one small gear that opens its settings. 2) Gizmo X AI Studio is the one fixed interface for every settings window: remove the settings-interface picker, the 'This settings window' fold and any way to edit the settings window's own layout or look. 3) Each toolbar's settings: Override switch next to the settings row, OFF by default (locked to Gizmo X AI Studio, greyed, sections collapsed); ON makes it editable and sections expandable; turning it OFF resets to defaults; a toolbar shows as edited in main Settings only while Override is on. 4) Console toolbars use the same shared toolbar asset axHub uses. 5) Owner must be allowed every chrome reset (fix 'Permission denied ... reset a chrome piece'). Everything token-driven. Console only. Skins must not restyle toolbars.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "settings-fix-part-2-blank-toolbars",
    "branch": "claude/settings-fix-part-2-blank-toolbars",
    "pr": "#826",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-18T13:59:57.222Z",
+   "updatedAt": "2026-11-18T14:01:53.926Z",
    "builtAt": "",
    "notes": [
     {
@@ -290206,6 +290206,10 @@
      "at": "2026-11-18T13:55:53.135Z"
     },
     {
+     "text": "Watchdog fixed Settings fix part 2: blank toolbars, locked settings layout (step s3): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T14:01:53.926Z"
+    },
+    {
      "text": "Self-check: settings-fix-part-2-blank-toolbars was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-18T13:59:57.222Z"
     }
@@ -290227,7 +290231,7 @@
    "pipeline": {
     "queuedAt": "2026-11-17T22:26:29.126Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "hulu0241",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -290253,7 +290257,7 @@
      "note": "Split by Claude into 21 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on hulu0241 stopped on its own with 19 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-17T22:28:58.757Z",
     "planned": {
@@ -290269,6 +290273,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T13:59:30.516Z",
+     "buildId": "settings-fix-part-2-blank-toolbars",
+     "phase": "",
+     "step": "s3",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "",
+     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
