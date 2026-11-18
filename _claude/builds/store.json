@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9089,
- "updatedAt": "2026-11-18T16:20:56.735Z",
+ "rev": 9090,
+ "updatedAt": "2026-11-18T16:23:29.717Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319851,12 +319851,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:32:49.331Z",
-   "updatedAt": "2026-11-18T12:33:23.845Z",
+   "updatedAt": "2026-11-18T15:46:35.752Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:33:23.845Z"
+    },
+    {
+     "text": "Coordinate with one-build-time-always-split-to-fill (PR #846): its gate rule 'require-split-id' (Gate & rules, on by default) already refuses any build start without an orchestrator build ID or a valid split ID (claude-headless.sh + model-gate.mjs launch, exit 3) and sends the refusal to the Failed tab with gateReason. Reuse that rule (settings.checks includes 'build-id') instead of adding a second one; this build's remaining scope is vps.build_start and Molly enforcing the same rule.",
+     "at": "2026-11-18T15:46:35.752Z"
     }
    ],
    "approvals": [],
@@ -320020,10 +320024,26 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "Brett",
+    "planId": "",
+    "createdAt": "2026-11-18T12:32:49.331Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwm3r3id01kviw": "2026-11-18T12:33:23.845Z",
+     "st-mwm3r3id02dwgc": "2026-11-18T12:33:23.845Z",
+     "st-mwm3r3id030dzi": "2026-11-18T12:33:23.845Z",
+     "st-mwm3r3id04dhy9": "2026-11-18T12:33:23.845Z",
+     "st-mwm3r3id05l5wc": "2026-11-18T12:33:23.845Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T12:33:23.845Z",
    "rearranged": false,
@@ -320329,7 +320349,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T15:38:56.332Z",
+   "updatedAt": "2026-11-18T15:51:25.152Z",
    "builtAt": "",
    "notes": [
     {
@@ -320443,7 +320463,7 @@
     "session": "axf-one-build-time-always-split-to-fill--sully",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 2",
+    "phase": "",
     "launchedAt": "2026-11-18T15:16:24.217Z",
     "runs": 1,
     "crashes": 0,
@@ -320748,12 +320768,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:41:42.126Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:22:28.737Z"
     },
     {
      "id": "s12",
@@ -320773,12 +320793,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:46:59.629Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:22:28.737Z"
     },
     {
      "id": "s13",
@@ -320798,12 +320818,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:49:26.224Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:22:28.737Z"
     },
     {
      "id": "s14",
@@ -320823,12 +320843,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:51:25.152Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:22:28.737Z"
     },
     {
      "id": "s15",
@@ -321162,10 +321182,48 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "Brett",
+    "planId": "",
+    "createdAt": "2026-11-18T12:40:40.117Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwm47ohv01anqh": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv02ikii": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv03wof6": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv04c0c6": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv055rz4": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv065wz8": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv07kc1h": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv08pozq": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv09j2zv": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0arwvm": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0b7cya": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0cw2xp": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0desix": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0edrps": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0fyl45": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0gm5nr": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0hxwna": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0i0nlc": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0jh99k": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0kcgn5": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0lme4i": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0m3g2q": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0nxup9": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0o53mj": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0pbcxv": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0qb5bo": "2026-11-18T12:46:17.539Z",
+     "st-mwm47ohv0rmlwt": "2026-11-18T12:46:17.539Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T12:46:17.539Z",
    "rearranged": false,
