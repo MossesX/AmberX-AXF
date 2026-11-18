@@ -21,8 +21,8 @@ asks the owner, and a copy is a bug the CI catches.
 |---|---|
 | **setting key** | the setting's one global name, dotted lower-case segments (`accounts.mossesx-max-.use`, `claude.builds.defaultModel`, `pipeline.parallelPerAccount`). The key names the setting, not where it lives |
 | **key pattern** | a registry entry's key with `*` (one segment, captured as `{1}`, `{2}` …) and a trailing `**` (the rest, captured as `{rest}`). `accounts.*.use` matches `accounts.mossesx-max-.use`; `claude.**` matches every key under `claude.` |
-| **store** | the one document that holds the setting: `kind: data-store` = a data-store@1 key (`ns` + `path`, the file data-store-paths.json puts it in today, axf-data once cut over), or `kind: browser` = a SettingsRegistry saved under `storageKey` in one app's localStorage |
-| **pointer** | a JSON pointer inside the owner document, with the captures substituted (`/perAccount/{1}/use`). `/` = the whole document |
+| **store** | the one document that holds the setting: `kind: data-store` = a data-store@1 key (`ns` + `path`; `file` is a template over the four data roots for where it is today, `envDir` / `envFile` the owner's own env overrides; axf-data once cut over), or `kind: browser` = a SettingsRegistry saved under `storageKey` in one app's localStorage |
+| **pointer** | a JSON pointer inside the owner document, with the captures substituted (`/perAccount/{1}/use`; `{rest}` = one segment with its dots, `{rest/}` = nested). `""` = the whole document |
 | **owner** | the plugin or module the store belongs to (`plugin:claude-accounts`, `framework:skins`). Only it writes the store |
 | **readers / writers** | who reads the key (through the owner) and who may write it. A writer not on the list, or writing another store, is refused |
 | **mirrors** | always `[]`. The field exists so the check can assert it: a copy is never registered, it is removed |
@@ -30,8 +30,9 @@ asks the owner, and a copy is a bug the CI catches.
 
 ## The rules
 
-1. **One owner per key.** Exactly one registry entry matches a key: an exact entry beats a `*` entry, which beats a `**`
-   entry; among patterns the one with more literal segments wins. Two entries that could both own one key fail the check.
+1. **One owner per key.** The best-ranked matching entry owns a key: an exact entry beats a `*` entry, which beats a
+   `**` entry; among patterns more fixed segments win, then more literal ones (`rankOf`). Two entries of the same rank
+   that could both match one key are `ambiguous` and fail the check; a catch-all under a specific entry is fine.
 2. **Readers resolve through the owner.** A module that needs a value calls `readSetting(key)` (Node) or
    `settings_source.read(key)` (Python), which opens the owner store through the data layer (`data-files.mjs` /
    `data_store.py`, so modes and axf-data apply) and follows the pointer. A reader never opens another module's file.
