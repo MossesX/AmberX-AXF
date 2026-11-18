@@ -1,0 +1,1803 @@
+{
+ "$axf": "settings-audit@1",
+ "scope": "framework",
+ "at": "2026-11-18T01:37:58.025Z",
+ "note": "Audit pass 3: framework + axHub side. SettingsRegistry keys declared or written in framework/react, framework/libs, framework/core and the web apps (browser stores), the hub settings documents under /projects/_shared/_data/settings (appearance@1, app-look@1, skins, apps), other shared documents, the axHub web app's settings code and the Kotlin twins (listed, not scanned).",
+ "counts": {
+  "webFiles": 710,
+  "rows": 83,
+  "hubDocs": 8,
+  "sharedDocs": 17
+ },
+ "hubDocs": [
+  {
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "store": "settings/appearance.json",
+   "frame": "appearance@1",
+   "keys": [
+    "slots",
+    "spacing",
+    "hidden",
+    "palette",
+    "settings",
+    "updatedBy",
+    "updatedAt",
+    "skin"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  },
+  {
+   "file": "/projects/_shared/_data/settings/apps/amberx-droid.json",
+   "store": "settings/apps/amberx-droid.json",
+   "frame": "hub-settings@1",
+   "keys": [
+    "values",
+    "updatedAt",
+    "updatedBy"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  },
+  {
+   "file": "/projects/_shared/_data/settings/apps/axf-console.json",
+   "store": "settings/apps/axf-console.json",
+   "frame": "hub-settings@1",
+   "keys": [
+    "values",
+    "updatedAt",
+    "updatedBy"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  },
+  {
+   "file": "/projects/_shared/_data/settings/apps/axhub-web.json",
+   "store": "settings/apps/axhub-web.json",
+   "frame": "hub-settings@1",
+   "keys": [
+    "values",
+    "updatedAt",
+    "updatedBy"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  },
+  {
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "store": "settings/looks/amberx-droid.json",
+   "frame": "app-look@1",
+   "keys": [
+    "app",
+    "default",
+    "own",
+    "skin",
+    "scopes",
+    "undo",
+    "migrated",
+    "legacy",
+    "updatedBy",
+    "updatedAt"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  },
+  {
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "store": "settings/looks/axf-console.json",
+   "frame": "app-look@1",
+   "keys": [
+    "app",
+    "default",
+    "own",
+    "skin",
+    "scopes",
+    "undo",
+    "migrated",
+    "legacy",
+    "updatedBy",
+    "updatedAt"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  },
+  {
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "store": "settings/looks/axhub-web.json",
+   "frame": "app-look@1",
+   "keys": [
+    "app",
+    "default",
+    "own",
+    "skin",
+    "scopes",
+    "undo",
+    "migrated",
+    "legacy",
+    "updatedBy",
+    "updatedAt"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  },
+  {
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "store": "settings/looks/molly.json",
+   "frame": "app-look@1",
+   "keys": [
+    "app",
+    "default",
+    "own",
+    "skin",
+    "scopes",
+    "undo",
+    "migrated",
+    "legacy",
+    "updatedBy",
+    "updatedAt"
+   ],
+   "owner": "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+  }
+ ],
+ "sharedDocs": [
+  {
+   "file": "/projects/_shared/_data/claude/settings.json",
+   "frame": "claude-settings@1",
+   "keys": [
+    "updatedAt",
+    "values",
+    "changed"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/claude/views.json",
+   "frame": "claude-settings-view@1",
+   "keys": [
+    "devices"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/index.json",
+   "frame": "claude-handoff-results@1",
+   "keys": [
+    "updatedAt",
+    "runs"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261022-154213-881i/files/context/project.manifest.json",
+   "frame": "",
+   "keys": [
+    "$manifest",
+    "name",
+    "displayName",
+    "description",
+    "kind",
+    "status",
+    "version",
+    "platforms",
+    "framework",
+    "repo",
+    "location",
+    "deploy",
+    "data",
+    "owners",
+    "created",
+    "links",
+    "notes"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261022-154213-881i/files/handoff.json",
+   "frame": "claude-handoff@1",
+   "keys": [
+    "generatedAt",
+    "project",
+    "displayName",
+    "repo",
+    "branch",
+    "commit",
+    "fingerprint",
+    "sources",
+    "machines",
+    "claudeAi",
+    "files"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261022-154213-881i/files/sources/claude-ai.json",
+   "frame": "claude-handoff-claude-ai@1",
+   "keys": [
+    "items",
+    "memory",
+    "projectInstructions",
+    "updatedAt"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261022-154213-881i/files/user/console/settings-summary.json",
+   "frame": "",
+   "keys": [
+    "settings",
+    "mcp",
+    "secretsPresent"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261022-154213-881i/run.json",
+   "frame": "claude-handoff-results@1",
+   "keys": [
+    "id",
+    "at",
+    "project",
+    "repo",
+    "commit",
+    "prompt",
+    "note",
+    "current",
+    "published",
+    "instructions",
+    "files",
+    "run",
+    "failed"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261023-001832-b171/files/context/project.manifest.json",
+   "frame": "",
+   "keys": [
+    "$manifest",
+    "name",
+    "displayName",
+    "description",
+    "kind",
+    "status",
+    "version",
+    "platforms",
+    "framework",
+    "repo",
+    "location",
+    "deploy",
+    "data",
+    "owners",
+    "created",
+    "links",
+    "notes"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261023-001832-b171/files/handoff.json",
+   "frame": "claude-handoff@1",
+   "keys": [
+    "generatedAt",
+    "project",
+    "displayName",
+    "repo",
+    "branch",
+    "commit",
+    "fingerprint",
+    "sources",
+    "machines",
+    "claudeAi",
+    "files"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261023-001832-b171/files/sources/claude-ai.json",
+   "frame": "claude-handoff-claude-ai@1",
+   "keys": [
+    "items",
+    "memory",
+    "projectInstructions",
+    "updatedAt"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261023-001832-b171/files/user/console/settings-summary.json",
+   "frame": "",
+   "keys": [
+    "settings",
+    "mcp",
+    "secretsPresent"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/handoff/runs/20261023-001832-b171/run.json",
+   "frame": "claude-handoff-results@1",
+   "keys": [
+    "id",
+    "at",
+    "project",
+    "repo",
+    "commit",
+    "prompt",
+    "note",
+    "current",
+    "published",
+    "instructions",
+    "files",
+    "run",
+    "failed",
+    "steps",
+    "report"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/notifications/inbox/2026/11/1794230067342-fb5e210a76.json",
+   "frame": "hub-notification@1",
+   "keys": [
+    "id",
+    "app",
+    "source",
+    "about",
+    "kind",
+    "state",
+    "title",
+    "body",
+    "url",
+    "priority",
+    "at"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/notifications/inbox/2026/11/1794230092132-fb5e210a76.json",
+   "frame": "hub-notification@1",
+   "keys": [
+    "id",
+    "app",
+    "source",
+    "about",
+    "kind",
+    "state",
+    "title",
+    "body",
+    "url",
+    "priority",
+    "at"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/notifications/inbox/2026/11/vps-refused-mwa2gzefbb46f8.json",
+   "frame": "hub-notification@1",
+   "keys": [
+    "id",
+    "app",
+    "source",
+    "about",
+    "kind",
+    "state",
+    "title",
+    "body",
+    "url",
+    "priority",
+    "at"
+   ]
+  },
+  {
+   "file": "/projects/_shared/_data/notifications/inbox/2026/11/vps-refused-mwa2h1k3486bc2.json",
+   "frame": "hub-notification@1",
+   "keys": [
+    "id",
+    "app",
+    "source",
+    "about",
+    "kind",
+    "state",
+    "title",
+    "body",
+    "url",
+    "priority",
+    "at"
+   ]
+  }
+ ],
+ "registryReads": [
+  "axf.appearance.spacing",
+  "axf.banners.group",
+  "axf.banners.look",
+  "axf.banners.lookLevel",
+  "axf.banners.prefs",
+  "axf.display.animations",
+  "axf.display.fontScale",
+  "axf.hub.appearance.follow",
+  "axf.inspector.shown",
+  "axf.lock.appearance",
+  "axf.lock.hubskin",
+  "axf.lock.hubskin.overridden",
+  "axf.lock.hubskin.override",
+  "axf.nav.collapsed",
+  "axf.nav.width",
+  "axf.pluginTheme.toolbar",
+  "axf.pluginTheme.view",
+  "axf.plugins.settingsGear.placement",
+  "axf.refs.links",
+  "axf.settings.lastTab",
+  "axf.skin.look",
+  "axf.skin.whereLayout",
+  "axf.skinConfig.layout",
+  "axf.toolbar.collapsed",
+  "beep.on"
+ ],
+ "axhubWebFiles": [
+  "apps/axhub-web/src/axf/core/engines/appearance.ts",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/look-migration.mjs",
+  "apps/axhub-web/src/axf/core/engines/looktokens.ts",
+  "apps/axhub-web/src/axf/core/engines/settingsopen.ts",
+  "apps/axhub-web/src/axf/core/engines/settingsui.ts",
+  "apps/axhub-web/src/axf/core/engines/skin-config-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/skin-coverage.mjs",
+  "apps/axhub-web/src/axf/core/engines/skin-modes.mjs",
+  "apps/axhub-web/src/axf/core/engines/skin-rules.mjs",
+  "apps/axhub-web/src/axf/core/engines/skin-switch.mjs",
+  "apps/axhub-web/src/axf/core/engines/skin.ts",
+  "apps/axhub-web/src/axf/core/settings.ts",
+  "apps/axhub-web/src/axf/libs/settings/SkinConfigPanel.tsx",
+  "apps/axhub-web/src/axf/libs/settings/skinwhere.tsx",
+  "apps/axhub-web/src/axf/libs/workspace/look.ts",
+  "apps/axhub-web/src/axf/react/components/BannerSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/HubSkinLock.tsx",
+  "apps/axhub-web/src/axf/react/components/LookEditor.tsx",
+  "apps/axhub-web/src/axf/react/components/NavStyleSettings.tsx",
+  "apps/axhub-web/src/axf/react/components/SkinScope.tsx",
+  "apps/axhub-web/src/axf/react/hubAppLook.ts",
+  "apps/axhub-web/src/axf/react/hubAppearance.ts"
+ ],
+ "kotlinFiles": [
+  "framework/android/axf-kernel/src/main/kotlin/ai/amberx/axf/kernel/engine/AppearanceEngine.kt",
+  "framework/android/axf-kernel/src/test/kotlin/ai/amberx/axf/kernel/AppearanceConformanceTest.kt",
+  "framework/android/axf-ui/src/main/kotlin/ai/amberx/axf/ui/settings/SettingsGroupView.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/HubAppearanceSource.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/HubClient.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/HubCredentials.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/HubModule.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/HubRules.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/HubSignIn.kt",
+  "framework/android/lib-hub/src/main/kotlin/ai/amberx/axf/hub/HubState.kt",
+  "framework/android/lib-hub/src/test/kotlin/ai/amberx/axf/hub/HubAppearanceSourceTest.kt",
+  "framework/android/lib-hub/src/test/kotlin/ai/amberx/axf/hub/HubConformanceTest.kt",
+  "framework/android/lib-settings/src/main/kotlin/ai/amberx/axf/settings/SettingsModule.kt",
+  "framework/android/lib-settings/src/main/kotlin/ai/amberx/axf/settings/SettingsScreen.kt"
+ ],
+ "rows": [
+  {
+   "key": "axf.pluginTheme.toolbar",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/plugintheme/index.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/plugintheme/index.tsx:444",
+   "writers": [
+    "framework/libs/plugintheme/index.tsx:444",
+    "apps/console-web/src/axf/libs/plugintheme/index.tsx:444",
+    "apps/axhub-web/src/axf/libs/plugintheme/index.tsx:444"
+   ],
+   "routes": [],
+   "editor": "view:settings/setting:axf.pluginTheme.toolbar",
+   "api": "console-control console_set / control@1 tokens",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.display.fontScale",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/settings/index.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/settings/index.tsx:1162",
+   "writers": [
+    "framework/libs/settings/index.tsx:1162",
+    "apps/console-web/src/axf/libs/settings/index.tsx:1162",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx:1162"
+   ],
+   "routes": [],
+   "editor": "view:settings/setting:axf.display.fontScale",
+   "api": "console-control console_set / control@1 tokens",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.display.animations",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/settings/index.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/settings/index.tsx:1163",
+   "writers": [
+    "framework/libs/settings/index.tsx:1163",
+    "apps/console-web/src/axf/libs/settings/index.tsx:1163",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx:1163"
+   ],
+   "routes": [],
+   "editor": "view:settings/setting:axf.display.animations",
+   "api": "console-control console_set / control@1 tokens",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.help.intros.reset",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/settings/index.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/settings/index.tsx:1178",
+   "writers": [
+    "framework/libs/settings/index.tsx:1178",
+    "apps/console-web/src/axf/libs/settings/index.tsx:1178",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx:1178"
+   ],
+   "routes": [],
+   "editor": "view:settings/setting:axf.help.intros.reset",
+   "api": "console-control console_set / control@1 tokens",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.lock.hubskin",
+   "store": "browser:axf.settings.<app>",
+   "file": "apps/console-web/src/hubAppearance.tsx",
+   "kind": "browser",
+   "writer": "apps/console-web/src/hubAppearance.tsx:106",
+   "writers": [
+    "apps/console-web/src/hubAppearance.tsx:106",
+    "framework/core/runtime.ts:420",
+    "framework/core/runtime.ts:2186",
+    "apps/console-web/src/axf/core/runtime.ts:420",
+    "apps/console-web/src/axf/core/runtime.ts:2186",
+    "apps/axhub-web/src/axf/core/runtime.ts:420",
+    "apps/axhub-web/src/axf/core/runtime.ts:2186"
+   ],
+   "routes": [],
+   "editor": "view:settings/setting:axf.lock.hubskin",
+   "api": "console-control console_set / control@1 tokens",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.lock.hubskin.override",
+   "store": "browser:axf.settings.<app>",
+   "file": "apps/console-web/src/hubAppearance.tsx",
+   "kind": "browser",
+   "writer": "apps/console-web/src/hubAppearance.tsx:108",
+   "writers": [
+    "apps/console-web/src/hubAppearance.tsx:108",
+    "framework/core/runtime.ts:2205",
+    "framework/core/runtime.ts:2231",
+    "apps/console-web/src/axf/core/runtime.ts:2205",
+    "apps/console-web/src/axf/core/runtime.ts:2231",
+    "apps/axhub-web/src/axf/core/runtime.ts:2205",
+    "apps/axhub-web/src/axf/core/runtime.ts:2231"
+   ],
+   "routes": [],
+   "editor": "view:settings/setting:axf.lock.hubskin.override",
+   "api": "console-control console_set / control@1 tokens",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.banners.group",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/react/components/BannerGroup.tsx",
+   "kind": "browser",
+   "writer": "framework/react/components/BannerGroup.tsx:53",
+   "writers": [
+    "framework/react/components/BannerGroup.tsx:53",
+    "apps/console-web/src/axf/react/components/BannerGroup.tsx:53",
+    "apps/axhub-web/src/axf/react/components/BannerGroup.tsx:53",
+    "apps/demo/src/axf/react/components/BannerGroup.tsx:53"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.banners.prefs",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/react/components/BannerSettings.tsx",
+   "kind": "browser",
+   "writer": "framework/react/components/BannerSettings.tsx:126",
+   "writers": [
+    "framework/react/components/BannerSettings.tsx:126",
+    "framework/react/components/BannerSettings.tsx:131",
+    "framework/react/components/BannerSettings.tsx:295",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx:126",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx:131",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx:295",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx:126",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx:131",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx:295",
+    "apps/demo/src/axf/react/components/BannerSettings.tsx:122",
+    "apps/demo/src/axf/react/components/BannerSettings.tsx:127",
+    "apps/demo/src/axf/react/components/BannerSettings.tsx:271"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.banners.look",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/react/components/BannerSettings.tsx",
+   "kind": "browser",
+   "writer": "framework/react/components/BannerSettings.tsx:562",
+   "writers": [
+    "framework/react/components/BannerSettings.tsx:562",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx:562",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx:562",
+    "apps/demo/src/axf/react/components/BannerSettings.tsx:541"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.banners.lookLevel",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/react/components/BannerSettings.tsx",
+   "kind": "browser",
+   "writer": "framework/react/components/BannerSettings.tsx:568",
+   "writers": [
+    "framework/react/components/BannerSettings.tsx:568",
+    "apps/console-web/src/axf/react/components/BannerSettings.tsx:568",
+    "apps/axhub-web/src/axf/react/components/BannerSettings.tsx:568",
+    "apps/demo/src/axf/react/components/BannerSettings.tsx:547"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "beep.on",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/hubstore/index.ts",
+   "kind": "browser",
+   "writer": "framework/libs/hubstore/index.ts:5",
+   "writers": [
+    "framework/libs/hubstore/index.ts:5",
+    "apps/console-web/src/axf/libs/hubstore/index.ts:5",
+    "apps/axhub-web/src/axf/libs/hubstore/index.ts:5"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.pluginTheme.view",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/plugintheme/index.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/plugintheme/index.tsx:193",
+   "writers": [
+    "framework/libs/plugintheme/index.tsx:193",
+    "apps/console-web/src/axf/libs/plugintheme/index.tsx:193",
+    "apps/axhub-web/src/axf/libs/plugintheme/index.tsx:193"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.skinConfig.layout",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/settings/SkinConfigPanel.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/settings/SkinConfigPanel.tsx:207",
+   "writers": [
+    "framework/libs/settings/SkinConfigPanel.tsx:207",
+    "apps/console-web/src/axf/libs/settings/SkinConfigPanel.tsx:207",
+    "apps/axhub-web/src/axf/libs/settings/SkinConfigPanel.tsx:207"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.settings.lastTab",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/settings/index.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/settings/index.tsx:482",
+   "writers": [
+    "framework/libs/settings/index.tsx:482",
+    "framework/libs/settings/index.tsx:1104",
+    "apps/console-web/src/axf/libs/settings/index.tsx:482",
+    "apps/console-web/src/axf/libs/settings/index.tsx:1104",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx:482",
+    "apps/axhub-web/src/axf/libs/settings/index.tsx:1104"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.skin.whereLayout",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/libs/settings/skinwhere.tsx",
+   "kind": "browser",
+   "writer": "framework/libs/settings/skinwhere.tsx:199",
+   "writers": [
+    "framework/libs/settings/skinwhere.tsx:199",
+    "apps/console-web/src/axf/libs/settings/skinwhere.tsx:199",
+    "apps/axhub-web/src/axf/libs/settings/skinwhere.tsx:199"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.hub.appearance.follow",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/core/runtime.ts",
+   "kind": "browser",
+   "writer": "framework/core/runtime.ts:518",
+   "writers": [
+    "framework/core/runtime.ts:518",
+    "apps/console-web/src/axf/core/runtime.ts:518",
+    "apps/axhub-web/src/axf/core/runtime.ts:518",
+    "apps/demo/src/axf/core/runtime.ts:408"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.inspector.shown",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/core/runtime.ts",
+   "kind": "browser",
+   "writer": "framework/core/runtime.ts:548",
+   "writers": [
+    "framework/core/runtime.ts:548",
+    "apps/console-web/src/axf/core/runtime.ts:548",
+    "apps/axhub-web/src/axf/core/runtime.ts:548",
+    "apps/demo/src/axf/core/runtime.ts:396"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.appearance.spacing",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/core/runtime.ts",
+   "kind": "browser",
+   "writer": "framework/core/runtime.ts:635",
+   "writers": [
+    "framework/core/runtime.ts:635",
+    "framework/core/runtime.ts:1909",
+    "apps/console-web/src/axf/core/runtime.ts:635",
+    "apps/console-web/src/axf/core/runtime.ts:1909",
+    "apps/axhub-web/src/axf/core/runtime.ts:635",
+    "apps/axhub-web/src/axf/core/runtime.ts:1909",
+    "apps/demo/src/axf/core/runtime.ts:485",
+    "apps/demo/src/axf/core/runtime.ts:1168"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.skin.look",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/core/runtime.ts",
+   "kind": "browser",
+   "writer": "framework/core/runtime.ts:730",
+   "writers": [
+    "framework/core/runtime.ts:730",
+    "apps/console-web/src/axf/core/runtime.ts:730",
+    "apps/axhub-web/src/axf/core/runtime.ts:730"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.toolbar.collapsed",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/core/runtime.ts",
+   "kind": "browser",
+   "writer": "framework/core/runtime.ts:1831",
+   "writers": [
+    "framework/core/runtime.ts:1831",
+    "framework/core/runtime.ts:1832",
+    "apps/console-web/src/axf/core/runtime.ts:1831",
+    "apps/console-web/src/axf/core/runtime.ts:1832",
+    "apps/axhub-web/src/axf/core/runtime.ts:1831",
+    "apps/axhub-web/src/axf/core/runtime.ts:1832",
+    "apps/demo/src/axf/core/runtime.ts:1090",
+    "apps/demo/src/axf/core/runtime.ts:1091"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.lock.hubskin.overridden",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/core/runtime.ts",
+   "kind": "browser",
+   "writer": "framework/core/runtime.ts:2225",
+   "writers": [
+    "framework/core/runtime.ts:2225",
+    "framework/core/runtime.ts:2232",
+    "apps/console-web/src/axf/core/runtime.ts:2225",
+    "apps/console-web/src/axf/core/runtime.ts:2232",
+    "apps/axhub-web/src/axf/core/runtime.ts:2225",
+    "apps/axhub-web/src/axf/core/runtime.ts:2232"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "axf.lock.appearance",
+   "store": "browser:axf.settings.<app>",
+   "file": "framework/core/runtime.ts",
+   "kind": "browser",
+   "writer": "framework/core/runtime.ts:2254",
+   "writers": [
+    "framework/core/runtime.ts:2254",
+    "apps/console-web/src/axf/core/runtime.ts:2254",
+    "apps/axhub-web/src/axf/core/runtime.ts:2254",
+    "apps/demo/src/axf/core/runtime.ts:1413"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "console-control console_set",
+   "frame": "SettingsRegistry",
+   "source": "declared"
+  },
+  {
+   "key": "<this.key>",
+   "store": "browser:<this.key>",
+   "file": "framework/libs/docstore/index.ts",
+   "kind": "browser",
+   "writer": "framework/libs/docstore/index.ts:50",
+   "writers": [
+    "framework/libs/docstore/index.ts:50",
+    "framework/libs/workspace/store.ts:66",
+    "apps/console-web/src/axf/libs/docstore/index.ts:50",
+    "apps/console-web/src/axf/libs/workspace/store.ts:66",
+    "apps/axhub-web/src/axf/libs/docstore/index.ts:50",
+    "apps/axhub-web/src/axf/libs/workspace/store.ts:66"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "",
+   "frame": "localStorage",
+   "source": "declared"
+  },
+  {
+   "key": "<this.indexKey>",
+   "store": "browser:<this.indexKey>",
+   "file": "framework/libs/docstore/index.ts",
+   "kind": "browser",
+   "writer": "framework/libs/docstore/index.ts:53",
+   "writers": [
+    "framework/libs/docstore/index.ts:53",
+    "framework/libs/docstore/index.ts:55",
+    "apps/console-web/src/axf/libs/docstore/index.ts:53",
+    "apps/console-web/src/axf/libs/docstore/index.ts:55",
+    "apps/axhub-web/src/axf/libs/docstore/index.ts:53",
+    "apps/axhub-web/src/axf/libs/docstore/index.ts:55"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "",
+   "frame": "localStorage",
+   "source": "declared"
+  },
+  {
+   "key": "axf-console:",
+   "store": "browser:axf-console:",
+   "file": "apps/console-web/src/api.ts",
+   "kind": "browser",
+   "writer": "apps/console-web/src/api.ts:82",
+   "writers": [
+    "apps/console-web/src/api.ts:82"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "",
+   "frame": "localStorage",
+   "source": "declared"
+  },
+  {
+   "key": "<key>",
+   "store": "browser:<key>",
+   "file": "apps/console-web/src/pluginLoader.tsx",
+   "kind": "browser",
+   "writer": "apps/console-web/src/pluginLoader.tsx:99",
+   "writers": [
+    "apps/console-web/src/pluginLoader.tsx:99"
+   ],
+   "routes": [],
+   "editor": "",
+   "api": "",
+   "frame": "localStorage",
+   "source": "declared"
+  },
+  {
+   "key": "slots",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "spacing",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "hidden",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "palette",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "settings",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "skin",
+   "store": "settings/appearance.json",
+   "file": "/projects/_shared/_data/settings/appearance.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "appearance@1",
+   "source": "live"
+  },
+  {
+   "key": "values",
+   "store": "settings/apps/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/apps/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/apps/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/apps/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/apps/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/apps/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "values",
+   "store": "settings/apps/axf-console.json",
+   "file": "/projects/_shared/_data/settings/apps/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/apps/axf-console.json",
+   "file": "/projects/_shared/_data/settings/apps/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/apps/axf-console.json",
+   "file": "/projects/_shared/_data/settings/apps/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "values",
+   "store": "settings/apps/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/apps/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/apps/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/apps/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/apps/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/apps/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "hub-settings@1",
+   "source": "live"
+  },
+  {
+   "key": "app",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "default",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "own",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "skin",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "scopes",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "undo",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "migrated",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "legacy",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/looks/amberx-droid.json",
+   "file": "/projects/_shared/_data/settings/looks/amberx-droid.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "app",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "default",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "own",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "skin",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "scopes",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "undo",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "migrated",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "legacy",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/looks/axf-console.json",
+   "file": "/projects/_shared/_data/settings/looks/axf-console.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "app",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "default",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "own",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "skin",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "scopes",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "undo",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "migrated",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "legacy",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/looks/axhub-web.json",
+   "file": "/projects/_shared/_data/settings/looks/axhub-web.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "app",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "default",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "own",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "skin",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "scopes",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "undo",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "migrated",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "legacy",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedBy",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  },
+  {
+   "key": "updatedAt",
+   "store": "settings/looks/molly.json",
+   "file": "/projects/_shared/_data/settings/looks/molly.json",
+   "kind": "data-store",
+   "writer": "framework/react/hubAppearance.ts + framework/cli/skins.mjs",
+   "writers": [
+    "framework/react/hubAppearance.ts + framework/cli/skins.mjs"
+   ],
+   "routes": [],
+   "editor": "view:settings/tab:appearance",
+   "api": "",
+   "frame": "app-look@1",
+   "source": "live"
+  }
+ ],
+ "caveats": [
+  "browser:axf.settings.<app> rows are SettingsRegistry keys (localStorage per app). axf.appearance.spacing, axf.skin.look, axf.lock.* are the runtime's applied/working copies of hub documents (APPEARANCE-SOURCE.md): the hub document is the owner.",
+  "settings/appearance.json still carries slots / spacing / hidden / palette beside skin / defaultSkin / settings (token overrides); each app's looks/<app>.json owns slots, spacing and hidden (app-look@1). Android (lib-hub HubAppearanceSource, AppearanceEngine) reads only appearance.json: a Kotlin twin of app-look@1 is a deferred gap, so the shared slots stay until it exists.",
+  "settings/apps/<app>.json (hub-settings@1, framework/libs/hubstore) is a per-app hub copy of SettingsRegistry values (fontScale, alerts-bell.*, axf.appearance.spacing, axf.dev.defaultModel \u2026), last written Oct 31 2026: a stale snapshot of what the browser registry owns.",
+  "Chrome settings (axf.chrome.<kind>.<instance>, axf.chrome.settings.<kind>) and tap-to-confirm (SettingSpec.confirm) are registry keys applied from the composed skin (skin.chrome) and own.settings of the look document: no second store found.",
+  "The axhub-adapter-axf plugin lives in the axHub repo (MossesX/axHub), not here; its hub settings documents are the ones under /projects/_shared/_data/settings listed above.",
+  "Kotlin files are listed, not scanned (no new Android work: PORTING.md records the twin as a deferred gap)."
+ ]
+}
