@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:21:38.238Z",
+ "updatedAt": "2026-11-18T12:22:09.539Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192067,6 +192067,30 @@
    "updatedAt": "2026-11-18T12:21:16.238Z",
    "builtAt": "",
    "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
+  },
+  {
+   "id": "vps-never-gives-up-fix-land-every-build",
+   "title": "VPS never gives up: fix and land every build until all options are exhausted",
+   "category": "",
+   "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
+   "status": "queued",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T12:21:38.935Z",
+   "updatedAt": "2026-11-18T12:21:54.428Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:21:54.428Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": []
