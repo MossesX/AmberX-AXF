@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s6 done (all) · orchestrator
 - 2026-11-18 01:43 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
 - 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · builds-live
 - 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · builds-live
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:30 UTC · `every-plugin-gets-own-default-toolbar` added (0 steps) (all) · Brett
 - 2026-11-18 12:30 UTC · `every-plugin-gets-own-default-toolbar` → queued, note (all) · Brett
 - 2026-11-18 12:31 UTC · `vps-never-gives-up-fix-land-every-build` → running, note (all) · pipeline
+- 2026-11-18 12:31 UTC · `vps-never-gives-up-fix-land-every-build` branch claude/vps-never-gives-up-fix-land-every-build (all) · pipeline
 
 ## Token passes (log)
 

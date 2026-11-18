@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8925,
- "updatedAt": "2026-11-18T12:31:31.836Z",
+ "rev": 8926,
+ "updatedAt": "2026-11-18T12:32:05.749Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318706,7 +318706,7 @@
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/vps-never-gives-up-fix-land-every-build",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
    "updatedAt": "2026-11-18T12:31:12.439Z",
