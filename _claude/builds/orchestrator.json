@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:51:37.024Z",
+ "updatedAt": "2026-11-18T12:52:48.938Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193366,7 +193366,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T12:50:12.225Z",
+   "updatedAt": "2026-11-18T12:51:54.012Z",
    "builtAt": "",
    "notes": [
     {
@@ -193388,6 +193388,10 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:47:50.917Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for one-build-time-always-split-to-fill: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:51:54.012Z"
     }
    ],
    "approvals": [],
