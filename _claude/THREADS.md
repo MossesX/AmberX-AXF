@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:16 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `icon-picker-every-banner-settings-widget` s11 done, s12 done, → complete, note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `flagship-professional-skin-covering-2` s24 done, s25 done, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:30 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-18 01:30 UTC · `move-everything-axhub-web-console` s24 done, s25 done, s26 done (all) · foreign-write
 - 2026-11-18 01:30 UTC · `one-true-source-for-every-setting` s1 done, s2 done (all) · foreign-write
+- 2026-11-18 01:31 UTC · `one-true-source-for-every-setting` s2 done (all) · foreign-write
 
 ## Token passes (log)
 
