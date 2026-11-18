@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8790,
- "updatedAt": "2026-11-18T01:45:40.313Z",
+ "rev": 8791,
+ "updatedAt": "2026-11-18T01:46:05.943Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -327072,6 +327072,336 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwlglnbd01j3hh",
+     "title": "",
+     "text": "Design the vps-automation@1 contract: one record per VPS automation (id, timer/cron, owner = watchdog, rules, enabled switch, log and FYI channels) and the settings migration map from the old Build orchestrator / gate / agent-slots keys to the Watchdog plugin's single settings source; write it to framework/spec/VPS-AUTOMATION.md and framework/schemas/vps-automation.json",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwlglnbd02mtf1",
+     "title": "",
+     "text": "Add the vps-automation@1 reader/validator plus a migration that moves old setting keys into the Watchdog settings source with no loss (old keys read through a one-time shim), with a fixture of before/after settings",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwlglnbd03wbjo",
+     "title": "",
+     "text": "Inventory every VPS timer and cron (axf-auto-lander, axf-watchdog, stale-row, the agent-slots sweeper, axf-pipeline and any other in deploy/ and the plugins) and register each one in the Watchdog plugin's automation registry with its default rules and on/off state",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwlglnbd044ymy",
+     "title": "",
+     "text": "Move the recovery-watchdog settings and rules out of Build orchestrator settings into the Watchdog plugin, reading them through the single settings source (vps-automation.mjs)",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwlglnbd05mhmr",
+     "title": "",
+     "text": "Move the stale-row watchdog settings, rules, logs and FYIs out of Build orchestrator into the Watchdog plugin; the orchestrator keeps only a read of the result",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwlglnbd06r7b8",
+     "title": "",
+     "text": "Move the auto-lander controls (enable, rules, schedule) from the gate / push-banner settings into the Watchdog plugin; axf-auto-lander cron reads its switch and rules from the Watchdog settings source",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwlglnbd07e47y",
+     "title": "",
+     "text": "Move the slot sweeper's settings and on/off switch from Agent cap into the Watchdog plugin; agent-slots.mjs sweep reads them from the Watchdog settings source",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwlglnbd0842ix",
+     "title": "",
+     "text": "Gate every VPS cron entry (axf-auto-lander, axf-watchdog, stale-row, sweeper, pipeline) on its Watchdog switch: a switched-off automation exits at once and logs one skip line to the Watchdog log",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwlglnbd09v7f1",
+     "title": "",
+     "text": "Watchdog server routes: list automations, read state + last runs + logs/FYIs, toggle on/off, read/set rules per automation, all through the single settings source",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwlglnbd0a86qi",
+     "title": "",
+     "text": "Watchdog tab UI: one row per automation (switch, schedule, last run, status), a rules editor and a log/FYI pane per automation, built from framework controls and tokens only (TabGroup, DataGrid, Switch); remove the old watchdog tab from Build orchestrator settings",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwlglnbd0bw0xs",
+     "title": "",
+     "text": "API part of the tab: console-control targets and deep links (view:settings/tab:plugins/watchdog, row:<automation>), MCP plugin commands and console actions for list/state/toggle/rules, CLI `axf watchdog list|get|on|off|rules`, voice action names; all four call the same routes",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwlglnbd0cue60",
+     "title": "",
+     "text": "Point the old Build orchestrator, gate and agent-cap settings spots to the Watchdog tab (a link row, no duplicated controls); update lifecycle markers, install/uninstall and help so uninstall leaves nothing",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwlglnbd0dcqr8",
+     "title": "",
+     "text": "CI check framework/cli/check-vps-automation.mjs: fails when a cron/timer in deploy/ or a plugin is not registered in the Watchdog registry, or when a VPS automation setting key is defined outside the Watchdog plugin; wire it into the CI workflow",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwlglnbd0el76r",
+     "title": "",
+     "text": "Tests: migration fixture check, route tests for toggle/rules, a cron-skip test with a switched-off automation, and the new CI check run against the repo",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwlglnbd0fxylv",
+     "title": "",
+     "text": "UI Review: shoot the Watchdog tab desktop + phone with at least 3 options as assets and submit through review.mjs; run validate, tracker --check, check-theme, check-controls, check-console-control, the new check; write _claude/builds/reports/watchdog-plugin-owns-every-vps.md, add the THREADS row and open the PR saying how each feature is reached by REST, MCP, CLI and voice",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:45:17.683Z",
+     "updatedAt": "2026-11-18T01:45:18.409Z"
+    },
+    {
+     "id": "s16-15",
      "uid": "st-mwlgkfoe017hn1",
      "title": "",
      "text": "Design the vps-automation@1 contract: one record per VPS automation (id, timer/cron, owner = watchdog, rules, enabled switch, log and FYI channels) and the settings migration map from the old Build orchestrator / gate / agent-slots keys to the Watchdog plugin's single settings source; write it to framework/spec/VPS-AUTOMATION.md and framework/schemas/vps-automation.json",
@@ -327093,7 +327423,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s2",
+     "id": "s17-16",
      "uid": "st-mwlgkfof026xaa",
      "title": "",
      "text": "Add the vps-automation@1 reader/validator plus a migration that moves old setting keys into the Watchdog settings source with no loss (old keys read through a one-time shim), with a fixture of before/after settings",
@@ -327115,7 +327445,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s3",
+     "id": "s18-17",
      "uid": "st-mwlgkfof03ch2w",
      "title": "",
      "text": "Inventory every VPS timer and cron (axf-auto-lander, axf-watchdog, stale-row, the agent-slots sweeper, axf-pipeline and any other in deploy/ and the plugins) and register each one in the Watchdog plugin's automation registry with its default rules and on/off state",
@@ -327137,7 +327467,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s4",
+     "id": "s19-18",
      "uid": "st-mwlgkfof04rfef",
      "title": "",
      "text": "Move the recovery-watchdog settings and rules out of Build orchestrator settings into the Watchdog plugin, reading them through the single settings source (vps-automation.mjs)",
@@ -327159,7 +327489,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s5",
+     "id": "s20-19",
      "uid": "st-mwlgkfof05hvrp",
      "title": "",
      "text": "Move the stale-row watchdog settings, rules, logs and FYIs out of Build orchestrator into the Watchdog plugin; the orchestrator keeps only a read of the result",
@@ -327181,7 +327511,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s6",
+     "id": "s21-20",
      "uid": "st-mwlgkfof06azjs",
      "title": "",
      "text": "Move the auto-lander controls (enable, rules, schedule) from the gate / push-banner settings into the Watchdog plugin; axf-auto-lander cron reads its switch and rules from the Watchdog settings source",
@@ -327203,7 +327533,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s7",
+     "id": "s22-21",
      "uid": "st-mwlgkfof07lkoj",
      "title": "",
      "text": "Move the slot sweeper's settings and on/off switch from Agent cap into the Watchdog plugin; agent-slots.mjs sweep reads them from the Watchdog settings source",
@@ -327225,7 +327555,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s8",
+     "id": "s23-22",
      "uid": "st-mwlgkfof08ozq7",
      "title": "",
      "text": "Gate every VPS cron entry (axf-auto-lander, axf-watchdog, stale-row, sweeper, pipeline) on its Watchdog switch: a switched-off automation exits at once and logs one skip line to the Watchdog log",
@@ -327247,7 +327577,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s9",
+     "id": "s24-23",
      "uid": "st-mwlgkfof0924ds",
      "title": "",
      "text": "Watchdog server routes: list automations, read state + last runs + logs/FYIs, toggle on/off, read/set rules per automation, all through the single settings source",
@@ -327269,7 +327599,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s10",
+     "id": "s25-24",
      "uid": "st-mwlgkfof0a5xyr",
      "title": "",
      "text": "Watchdog tab UI: one row per automation (switch, schedule, last run, status), a rules editor and a log/FYI pane per automation, built from framework controls and tokens only (TabGroup, DataGrid, Switch); remove the old watchdog tab from Build orchestrator settings",
@@ -327291,7 +327621,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s11",
+     "id": "s26-25",
      "uid": "st-mwlgkfof0bsuum",
      "title": "",
      "text": "API part of the tab: console-control targets and deep links (view:settings/tab:plugins/watchdog, row:<automation>), MCP plugin commands and console actions for list/state/toggle/rules, CLI `axf watchdog list|get|on|off|rules`, voice action names; all four call the same routes",
@@ -327313,7 +327643,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s12",
+     "id": "s27-26",
      "uid": "st-mwlgkfof0cvjyz",
      "title": "",
      "text": "Point the old Build orchestrator, gate and agent-cap settings spots to the Watchdog tab (a link row, no duplicated controls); update lifecycle markers, install/uninstall and help so uninstall leaves nothing",
@@ -327335,7 +327665,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s13",
+     "id": "s28-27",
      "uid": "st-mwlgkfof0dzgcz",
      "title": "",
      "text": "CI check framework/cli/check-vps-automation.mjs: fails when a cron/timer in deploy/ or a plugin is not registered in the Watchdog registry, or when a VPS automation setting key is defined outside the Watchdog plugin; wire it into the CI workflow",
@@ -327357,7 +327687,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s14",
+     "id": "s29-28",
      "uid": "st-mwlgkfof0ez90d",
      "title": "",
      "text": "Tests: migration fixture check, route tests for toggle/rules, a cron-skip test with a switched-off automation, and the new CI check run against the repo",
@@ -327379,7 +327709,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s15",
+     "id": "s30-29",
      "uid": "st-mwlgkfof0fgnoq",
      "title": "",
      "text": "UI Review: shoot the Watchdog tab desktop + phone with at least 3 options as assets and submit through review.mjs; run validate, tracker --check, check-theme, check-controls, check-console-control, the new check; write _claude/builds/reports/watchdog-plugin-owns-every-vps.md, add the THREADS row and open the PR saying how each feature is reached by REST, MCP, CLI and voice",
@@ -327401,7 +327731,7 @@
      "updatedAt": "2026-11-18T01:44:21.855Z"
     },
     {
-     "id": "s16-15",
+     "id": "s31-30",
      "uid": "st-mwlgkmw201e3ne",
      "title": "",
      "text": "Design the vps-automation@1 contract: one record per VPS automation (id, timer/cron, owner = watchdog, rules, enabled switch, log and FYI channels) and the settings migration map from the old Build orchestrator / gate / agent-slots keys to the Watchdog plugin's single settings source; write it to framework/spec/VPS-AUTOMATION.md and framework/schemas/vps-automation.json",
@@ -327423,7 +327753,7 @@
      "updatedAt": "2026-11-18T01:44:31.202Z"
     },
     {
-     "id": "s17-16",
+     "id": "s32-31",
      "uid": "st-mwlgkmw202xclb",
      "title": "",
      "text": "Add the vps-automation@1 reader/validator plus a migration that moves old setting keys into the Watchdog settings source with no loss (old keys read through a one-time shim), with a fixture of before/after settings",
@@ -327445,7 +327775,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s18-17",
+     "id": "s33-32",
      "uid": "st-mwlgkmw803dtkc",
      "title": "",
      "text": "Inventory every VPS timer and cron (axf-auto-lander, axf-watchdog, stale-row, the agent-slots sweeper, axf-pipeline and any other in deploy/ and the plugins) and register each one in the Watchdog plugin's automation registry with its default rules and on/off state",
@@ -327467,7 +327797,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s19-18",
+     "id": "s34-33",
      "uid": "st-mwlgkmw804fjls",
      "title": "",
      "text": "Move the recovery-watchdog settings and rules out of Build orchestrator settings into the Watchdog plugin, reading them through the single settings source (vps-automation.mjs)",
@@ -327489,7 +327819,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s20-19",
+     "id": "s35-34",
      "uid": "st-mwlgkmw805ey1e",
      "title": "",
      "text": "Move the stale-row watchdog settings, rules, logs and FYIs out of Build orchestrator into the Watchdog plugin; the orchestrator keeps only a read of the result",
@@ -327511,7 +327841,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s21-20",
+     "id": "s36-35",
      "uid": "st-mwlgkmw8067spb",
      "title": "",
      "text": "Move the auto-lander controls (enable, rules, schedule) from the gate / push-banner settings into the Watchdog plugin; axf-auto-lander cron reads its switch and rules from the Watchdog settings source",
@@ -327533,7 +327863,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s22-21",
+     "id": "s37-36",
      "uid": "st-mwlgkmw807gyrw",
      "title": "",
      "text": "Move the slot sweeper's settings and on/off switch from Agent cap into the Watchdog plugin; agent-slots.mjs sweep reads them from the Watchdog settings source",
@@ -327555,7 +327885,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s23-22",
+     "id": "s38-37",
      "uid": "st-mwlgkmw8085ui0",
      "title": "",
      "text": "Gate every VPS cron entry (axf-auto-lander, axf-watchdog, stale-row, sweeper, pipeline) on its Watchdog switch: a switched-off automation exits at once and logs one skip line to the Watchdog log",
@@ -327577,7 +327907,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s24-23",
+     "id": "s39-38",
      "uid": "st-mwlgkmw809k2wm",
      "title": "",
      "text": "Watchdog server routes: list automations, read state + last runs + logs/FYIs, toggle on/off, read/set rules per automation, all through the single settings source",
@@ -327599,7 +327929,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s25-24",
+     "id": "s40-39",
      "uid": "st-mwlgkmw80a7cmu",
      "title": "",
      "text": "Watchdog tab UI: one row per automation (switch, schedule, last run, status), a rules editor and a log/FYI pane per automation, built from framework controls and tokens only (TabGroup, DataGrid, Switch); remove the old watchdog tab from Build orchestrator settings",
@@ -327621,7 +327951,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s26-25",
+     "id": "s41-40",
      "uid": "st-mwlgkmw80b87h6",
      "title": "",
      "text": "API part of the tab: console-control targets and deep links (view:settings/tab:plugins/watchdog, row:<automation>), MCP plugin commands and console actions for list/state/toggle/rules, CLI `axf watchdog list|get|on|off|rules`, voice action names; all four call the same routes",
@@ -327643,7 +327973,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s27-26",
+     "id": "s42-41",
      "uid": "st-mwlgkmw80cy9z8",
      "title": "",
      "text": "Point the old Build orchestrator, gate and agent-cap settings spots to the Watchdog tab (a link row, no duplicated controls); update lifecycle markers, install/uninstall and help so uninstall leaves nothing",
@@ -327665,7 +327995,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s28-27",
+     "id": "s43-42",
      "uid": "st-mwlgkmw80do9ky",
      "title": "",
      "text": "CI check framework/cli/check-vps-automation.mjs: fails when a cron/timer in deploy/ or a plugin is not registered in the Watchdog registry, or when a VPS automation setting key is defined outside the Watchdog plugin; wire it into the CI workflow",
@@ -327687,7 +328017,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s29-28",
+     "id": "s44-43",
      "uid": "st-mwlgkmw80e8zu9",
      "title": "",
      "text": "Tests: migration fixture check, route tests for toggle/rules, a cron-skip test with a switched-off automation, and the new CI check run against the repo",
@@ -327709,7 +328039,7 @@
      "updatedAt": "2026-11-18T01:44:31.208Z"
     },
     {
-     "id": "s30-29",
+     "id": "s45-44",
      "uid": "st-mwlgkmw80f4qm1",
      "title": "",
      "text": "UI Review: shoot the Watchdog tab desktop + phone with at least 3 options as assets and submit through review.mjs; run validate, tracker --check, check-theme, check-controls, check-console-control, the new check; write _claude/builds/reports/watchdog-plugin-owns-every-vps.md, add the THREADS row and open the PR saying how each feature is reached by REST, MCP, CLI and voice",
@@ -327731,7 +328061,7 @@
      "updatedAt": "2026-11-18T01:44:31.209Z"
     },
     {
-     "id": "s31-30",
+     "id": "s46-45",
      "uid": "st-mwlgk8ly017zfb",
      "title": "",
      "text": "Design the vps-automation@1 contract: one record per VPS automation (id, timer/cron, owner = watchdog, rules, enabled switch, log and FYI channels) and the settings migration map from the old Build orchestrator / gate / agent-slots keys to the Watchdog plugin's single settings source; write it to framework/spec/VPS-AUTOMATION.md and framework/schemas/vps-automation.json",
@@ -327756,7 +328086,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s32-31",
+     "id": "s47-46",
      "uid": "st-mwlgk8ly02rq16",
      "title": "",
      "text": "Add the vps-automation@1 reader/validator plus a migration that moves old setting keys into the Watchdog settings source with no loss (old keys read through a one-time shim), with a fixture of before/after settings",
@@ -327781,7 +328111,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s33-32",
+     "id": "s48-47",
      "uid": "st-mwlgk8ly03cshx",
      "title": "",
      "text": "Inventory every VPS timer and cron (axf-auto-lander, axf-watchdog, stale-row, the agent-slots sweeper, axf-pipeline and any other in deploy/ and the plugins) and register each one in the Watchdog plugin's automation registry with its default rules and on/off state",
@@ -327807,7 +328137,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s34-33",
+     "id": "s49-48",
      "uid": "st-mwlgk8ly043tfp",
      "title": "",
      "text": "Move the recovery-watchdog settings and rules out of Build orchestrator settings into the Watchdog plugin, reading them through the single settings source (vps-automation.mjs)",
@@ -327832,7 +328162,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s35-34",
+     "id": "s50-49",
      "uid": "st-mwlgk8ly05hn5w",
      "title": "",
      "text": "Move the stale-row watchdog settings, rules, logs and FYIs out of Build orchestrator into the Watchdog plugin; the orchestrator keeps only a read of the result",
@@ -327857,7 +328187,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s36-35",
+     "id": "s51-50",
      "uid": "st-mwlgk8ly067mmp",
      "title": "",
      "text": "Move the auto-lander controls (enable, rules, schedule) from the gate / push-banner settings into the Watchdog plugin; axf-auto-lander cron reads its switch and rules from the Watchdog settings source",
@@ -327884,7 +328214,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s37-36",
+     "id": "s52-51",
      "uid": "st-mwlgk8ly078amz",
      "title": "",
      "text": "Move the slot sweeper's settings and on/off switch from Agent cap into the Watchdog plugin; agent-slots.mjs sweep reads them from the Watchdog settings source",
@@ -327910,7 +328240,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s38-37",
+     "id": "s53-52",
      "uid": "st-mwlgk8ly08djpf",
      "title": "",
      "text": "Gate every VPS cron entry (axf-auto-lander, axf-watchdog, stale-row, sweeper, pipeline) on its Watchdog switch: a switched-off automation exits at once and logs one skip line to the Watchdog log",
@@ -327935,7 +328265,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s39-38",
+     "id": "s54-53",
      "uid": "st-mwlgk8ly091kqg",
      "title": "",
      "text": "Watchdog server routes: list automations, read state + last runs + logs/FYIs, toggle on/off, read/set rules per automation, all through the single settings source",
@@ -327959,7 +328289,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s40-39",
+     "id": "s55-54",
      "uid": "st-mwlgk8ly0andvs",
      "title": "",
      "text": "Watchdog tab UI: one row per automation (switch, schedule, last run, status), a rules editor and a log/FYI pane per automation, built from framework controls and tokens only (TabGroup, DataGrid, Switch); remove the old watchdog tab from Build orchestrator settings",
@@ -327984,7 +328314,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s41-40",
+     "id": "s56-55",
      "uid": "st-mwlgk8ly0bfz74",
      "title": "",
      "text": "API part of the tab: console-control targets and deep links (view:settings/tab:plugins/watchdog, row:<automation>), MCP plugin commands and console actions for list/state/toggle/rules, CLI `axf watchdog list|get|on|off|rules`, voice action names; all four call the same routes",
@@ -328010,7 +328340,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s42-41",
+     "id": "s57-56",
      "uid": "st-mwlgk8ly0ctgif",
      "title": "",
      "text": "Point the old Build orchestrator, gate and agent-cap settings spots to the Watchdog tab (a link row, no duplicated controls); update lifecycle markers, install/uninstall and help so uninstall leaves nothing",
@@ -328038,7 +328368,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s43-42",
+     "id": "s58-57",
      "uid": "st-mwlgk8ly0dycog",
      "title": "",
      "text": "CI check framework/cli/check-vps-automation.mjs: fails when a cron/timer in deploy/ or a plugin is not registered in the Watchdog registry, or when a VPS automation setting key is defined outside the Watchdog plugin; wire it into the CI workflow",
@@ -328063,7 +328393,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s44-43",
+     "id": "s59-58",
      "uid": "st-mwlgk8ly0e7tc2",
      "title": "",
      "text": "Tests: migration fixture check, route tests for toggle/rules, a cron-skip test with a switched-off automation, and the new CI check run against the repo",
@@ -328088,7 +328418,7 @@
      "updatedAt": "2026-11-18T01:44:12.694Z"
     },
     {
-     "id": "s45-44",
+     "id": "s60-59",
      "uid": "st-mwlgk8ly0f4319",
      "title": "",
      "text": "UI Review: shoot the Watchdog tab desktop + phone with at least 3 options as assets and submit through review.mjs; run validate, tracker --check, check-theme, check-controls, check-console-control, the new check; write _claude/builds/reports/watchdog-plugin-owns-every-vps.md, add the THREADS row and open the PR saying how each feature is reached by REST, MCP, CLI and voice",
