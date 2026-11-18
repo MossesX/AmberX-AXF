@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T15:09:29.215Z",
+ "updatedAt": "2026-11-18T15:09:59.120Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193689,6 +193689,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 22 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T15:08:03.730Z"
+    },
+    {
+     "text": "Watchdog fixed One build at a time, always split to fill every slot: split-ID gate, Splitting s (step s6): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T15:08:26.917Z"
     }
    ],
    "approvals": [],
