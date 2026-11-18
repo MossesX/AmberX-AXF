@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `vps-sends-shipped-features-every-merge` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `build-rules-tab-gate-rules-vps-owns` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `phone-connect-small-android-companion` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `shipped-features-open-button-views-each` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `fix-console-deep-links-open-page-lands` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `orchestrator-on-hold-status-and-tab` note (all) · foreign-write
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:20 UTC · `attach-widgets-to-any-toolbar-banner` s17 done (all) · orchestrator
 - 2026-11-18 16:22 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
 - 2026-11-18 16:22 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done (all) · foreign-write
+- 2026-11-18 16:24 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
+- 2026-11-18 16:24 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done (all) · foreign-write
+- 2026-11-18 16:25 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

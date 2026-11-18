@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9090,
- "updatedAt": "2026-11-18T16:23:29.717Z",
+ "rev": 9091,
+ "updatedAt": "2026-11-18T16:25:50.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252579,7 +252579,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T16:20:22.038Z",
+   "updatedAt": "2026-11-18T16:24:45.124Z",
    "builtAt": "",
    "notes": [
     {
@@ -252698,7 +252698,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-18T16:24:45.124Z",
+     "exit": 129,
+     "signal": "HUP",
+     "kind": "crash",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axt-claude-console-dxwztt",
+     "phase": "Phase 2"
+    }
    },
    "steps": [
     {
@@ -320341,7 +320351,7 @@
    "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
    "category": "",
    "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -320349,7 +320359,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T15:51:25.152Z",
+   "updatedAt": "2026-11-18T16:25:22.142Z",
    "builtAt": "",
    "notes": [
     {
@@ -320431,6 +320441,10 @@
     {
      "text": "Claude account: hulu0241 (axf-one-build-time-always-split-to-fill--sully, shared account login)",
      "at": "2026-11-18T15:16:49.512Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 8 steps left: back in the Queue (run 1).",
+     "at": "2026-11-18T16:25:22.142Z"
     }
    ],
    "approvals": [
@@ -320460,7 +320474,7 @@
     "queuedAt": "2026-11-18T12:40:55.823Z",
     "queuedBy": "Brett",
     "account": "hulu0241",
-    "session": "axf-one-build-time-always-split-to-fill--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "",
@@ -320468,13 +320482,13 @@
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-18T15:12:16.423Z",
-     "exit": 0,
+     "at": "2026-11-18T16:25:11.413Z",
+     "exit": 1,
      "outcome": "requeued",
      "reason": "",
-     "stepsLeft": 22,
-     "account": "",
-     "session": "",
+     "stepsLeft": 8,
+     "account": "hulu0241",
+     "session": "axf-one-build-time-always-split-to-fill--sully",
      "phase": ""
     },
     "split": {
@@ -320485,7 +320499,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 ended (exit 1) with 8 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-18T15:16:24.217Z",
     "planned": {
@@ -320773,7 +320787,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T16:22:28.737Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s12",
@@ -320798,7 +320812,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T16:22:28.737Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s13",
@@ -320823,7 +320837,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T16:22:28.737Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s14",
@@ -320848,7 +320862,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T16:22:28.737Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s15",
@@ -320868,12 +320882,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T16:22:04.734Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s16",
@@ -320893,12 +320907,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T16:22:31.529Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s17",
@@ -320917,12 +320931,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T16:22:59.435Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s18",
@@ -320942,12 +320956,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T16:23:29.728Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s19",
@@ -320967,12 +320981,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T16:23:48.324Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T16:24:43.818Z"
     },
     {
      "id": "s20",
@@ -321182,7 +321196,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
