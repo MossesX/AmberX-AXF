@@ -6,7 +6,7 @@
  *   node deploy/host-services/test-hostd.mjs
  */
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { chmodSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
@@ -86,6 +86,10 @@ try {
   const logs = await call(API, 'GET', '/v1/services/demo/logs?lines=5'); assert.equal(logs.body.lines.length, 1); ok('logs from journalctl');
   const rb = await call(API, 'POST', '/v1/services/demo/rollback', { by: 'test', why: 'drill' }); assert.equal(rb.body.to, 'container'); ok('rollback → container');
   const mode = await call(API, 'GET', '/v1/services/demo/mode'); assert.equal(mode.body.mode, 'container'); ok('mode file says container');
+  const cli = (...a) => execFileSync(process.execPath, [join(REPO, 'framework/cli/host-services.mjs'), ...a], { env: { ...process.env, AXF_HOST_API: `unix:${API}`, AXF_HOST_API_FALLBACK: '', AXF_CONSOLE_URL: '', AXF_TOKEN: '' }, encoding: 'utf8' });
+  assert.match(cli('list'), /^demo\s+down\s+container/m); ok('CLI list over the socket');
+  assert.equal(JSON.parse(cli('status', 'demo', '--json')).id, 'demo'); ok('CLI status --json');
+  assert.throws(() => cli('restart', 'demo'), (e) => e.status === 4); ok('CLI restart without --yes exits 4 (confirm)');
 
   demo.kill('SIGTERM'); await wait(() => !existsSync(DEMO));
   const down = await call(API, 'GET', '/v1/services/demo/health'); assert.equal(down.status, 503); assert.equal(down.body.code, 'host_service_down'); ok('a dead service is host_service_down');
