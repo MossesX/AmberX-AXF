@@ -297,5 +297,6 @@
     "model": "opus",
     "builtAt": "2026-11-18"
   },
-  "help": "help.json"
+  "help": "help.json",
+  "opens": false
 }
