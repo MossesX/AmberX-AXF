@@ -838,7 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:48 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
 - 2026-11-18 01:48 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 01:49 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · console
 - 2026-11-18 01:49 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
@@ -1238,6 +1237,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:00 UTC · `plan-studio-2-open-button-working-deep` s6 done (all) · orchestrator
 - 2026-11-18 13:00 UTC · `plan-studio-2-open-button-working-deep` s7 done (all) · orchestrator
 - 2026-11-18 13:01 UTC · `plan-studio-2-open-button-working-deep` s8 done (all) · orchestrator
+- 2026-11-18 13:01 UTC · `plan-studio-2-open-button-working-deep` s6 done (all) · foreign-write
 
 ## Token passes (log)
 
