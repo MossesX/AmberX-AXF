@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T07:20:51.335Z",
+ "updatedAt": "2026-11-18T07:24:46.941Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -191207,7 +191207,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -191215,7 +191215,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T07:14:55.421Z",
+   "updatedAt": "2026-11-18T07:23:30.721Z",
    "builtAt": "",
    "notes": [
     {
@@ -191309,6 +191309,10 @@
     {
      "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s11): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-18T07:14:55.421Z"
+    },
+    {
+     "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-18T07:23:30.721Z"
     },
     {
      "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
