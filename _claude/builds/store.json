@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8525,
- "updatedAt": "2026-11-18T00:11:08.713Z",
+ "rev": 8526,
+ "updatedAt": "2026-11-18T00:12:31.422Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -263486,7 +263486,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:57:27.096Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s16",
@@ -263510,7 +263510,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:57:27.096Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s17",
@@ -263535,7 +263535,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:58:34.764Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s18",
@@ -263559,7 +263559,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:01:58.750Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s19",
@@ -263584,7 +263584,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:02:01.158Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s20",
@@ -266720,7 +266720,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -267862,6 +267862,28 @@
     },
     {
      "id": "s55",
+     "uid": "st-mwlda5xv01ykdn",
+     "title": "",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:12:23.403Z",
+     "updatedAt": "2026-11-18T00:12:23.827Z"
+    },
+    {
+     "id": "s29-28",
      "uid": "st-mwld5ga9013z6s",
      "title": "",
      "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
@@ -267883,7 +267905,7 @@
      "updatedAt": "2026-11-18T00:08:43.953Z"
     },
     {
-     "id": "s29-28",
+     "id": "s30-29",
      "uid": "st-mwld0mui01kret",
      "title": "",
      "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
@@ -313525,7 +313547,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-17T23:56:35.019Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s10",
@@ -313547,7 +313569,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-17T23:58:34.764Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s11",
@@ -313569,7 +313591,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-17T23:59:59.693Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s12",
@@ -313591,7 +313613,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-18T00:08:46.508Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s13",
@@ -313613,7 +313635,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-18T00:08:46.508Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s14",
@@ -313635,7 +313657,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-18T00:08:46.508Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s15",
@@ -313657,7 +313679,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T23:25:40.639Z",
-     "updatedAt": "2026-11-18T00:08:46.508Z"
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s16",

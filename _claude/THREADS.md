@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `right-click-running-build-pop-open` added (14 steps) (all) · foreign-write
-- 2026-11-17 23:04 UTC · `terminal-main-tab-streaming-console-s` added (126 steps) (all) · foreign-write
-- 2026-11-17 23:04 UTC · `auto-lander-settings-log-placeholder` added (81 steps) (all) · foreign-write
-- 2026-11-17 23:04 UTC · `toolbars-1-5-build-orchestrator-incl` added (4 steps) (all) · foreign-write
-- 2026-11-17 23:04 UTC · `toolbars-3-5-settings-appearance-systems` added (4 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `toolbars-2-5-plan-studio-ui-review` added (4 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `toolbars-4-5-chat-viewer-codebase` added (4 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `toolbars-2-5-plan-studio-ui-review-2` added (4 steps) (all) · foreign-write
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:10 UTC · `move-server-side-console-parts-onto-vps` s20 done (all) · orchestrator
 - 2026-11-18 00:10 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-18 00:10 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-18 00:12 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
+- 2026-11-18 00:12 UTC · `move-server-side-console-parts-onto-vps` s15 done, s16 done, s17 done, s18 done, s19 done (all) · foreign-write
+- 2026-11-18 00:12 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · foreign-write
+- 2026-11-18 00:12 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
+- 2026-11-18 00:12 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done (all) · foreign-write
 
 ## Token passes (log)
 
