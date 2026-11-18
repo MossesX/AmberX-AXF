@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `toolbars-2-5-plan-studio-ui-review` added (4 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `toolbars-4-5-chat-viewer-codebase` added (4 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `toolbars-2-5-plan-studio-ui-review-2` added (4 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `toolbars-5-5-claude-accounts-glossary` added (4 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:12 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · foreign-write
 - 2026-11-18 00:12 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
 - 2026-11-18 00:12 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done (all) · foreign-write
+- 2026-11-18 00:12 UTC · `move-everything-axhub-web-console` s8 done (all) · foreign-write
 
 ## Token passes (log)
 
