@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9021,
- "updatedAt": "2026-11-18T14:32:02.341Z",
+ "rev": 9022,
+ "updatedAt": "2026-11-18T14:32:35.817Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318188,15 +318188,15 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/plan-studio-2-open-button-working-deep",
-   "pr": "",
+   "pr": "#843",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T14:31:03.133Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T14:31:43.219Z",
+   "builtAt": "2026-11-18T14:29:07.628Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -318241,23 +318241,14 @@
     "queuedAt": "2026-11-18T12:20:53.743Z",
     "queuedBy": "Brett",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-plan-studio-2-open-button-working-deep--joey",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 1",
     "launchedAt": "2026-11-18T12:28:07.147Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-18T14:30:40.541Z",
-     "exit": 0,
-     "outcome": "returned",
-     "reason": "stopped",
-     "stepsLeft": 1,
-     "account": "hulu0241",
-     "session": "axf-plan-studio-2-open-button-working-deep--joey",
-     "phase": "Phase 1"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-18T12:25:38.639Z",
      "by": "orchestrator",
@@ -318266,7 +318257,7 @@
      "note": "Split by Claude into 15 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-18T12:28:07.147Z",
     "planned": {
