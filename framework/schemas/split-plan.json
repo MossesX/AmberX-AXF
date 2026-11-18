@@ -1,0 +1,431 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/split-plan.json",
+  "title": "split-plan@1: one build at a time, split across every free slot (framework/spec/BUILD-SPLIT.md)",
+  "description": "The `split` record on a builds@1 build: the run's id, its parts (disjoint file claims, one branch each off the same main sha), the combine of every part and the run state. Also the store's main-lock@1 record. Reference engine framework/core/build-split.mjs.",
+  "type": "object",
+  "$ref": "#/$defs/plan",
+  "$defs": {
+    "splitId": {
+      "type": "string",
+      "description": "<build id>.r<n>: the build's id and the run number (1-based, counted up on every re-split)",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,39}\\.r[1-9][0-9]{0,3}$"
+    },
+    "partId": {
+      "type": "string",
+      "description": "p<k>, k 1-based in step order",
+      "pattern": "^p[1-9][0-9]?$"
+    },
+    "sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "shaOrEmpty": {
+      "type": "string",
+      "pattern": "^$|^[0-9a-f]{40}$"
+    },
+    "isoOrEmpty": {
+      "type": "string",
+      "description": "ISO date-time, or \"\" for none",
+      "maxLength": 40
+    },
+    "accountOrEmpty": {
+      "type": "string",
+      "pattern": "^$|^[a-z0-9][a-z0-9-]{0,31}$"
+    },
+    "partStatus": {
+      "enum": [
+        "waiting",
+        "building",
+        "testing",
+        "rebuilding",
+        "failed",
+        "done"
+      ]
+    },
+    "runState": {
+      "enum": [
+        "splitting",
+        "queued",
+        "building",
+        "combining",
+        "ci",
+        "merging",
+        "merged",
+        "live",
+        "finished",
+        "failed"
+      ]
+    },
+    "partEvent": {
+      "enum": [
+        "launch",
+        "ticked",
+        "green",
+        "fail",
+        "crash",
+        "rebuild",
+        "abandon"
+      ]
+    },
+    "ci": {
+      "enum": [
+        "",
+        "running",
+        "success",
+        "failure"
+      ]
+    },
+    "part": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "status",
+        "steps",
+        "files",
+        "branch",
+        "base",
+        "rebuilds"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/partId"
+        },
+        "status": {
+          "$ref": "#/$defs/partStatus"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 40
+          },
+          "description": "step ids of the build, in the build's step order; every open step is in exactly one part"
+        },
+        "files": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 300
+          },
+          "description": "the union of its steps' claims (paths or globs); disjoint from every other part's"
+        },
+        "branch": {
+          "type": "string",
+          "description": "claude/<build id>--r<n>-p<k>",
+          "pattern": "^claude/[a-z0-9][a-z0-9-]{0,39}--r[1-9][0-9]{0,3}-p[1-9][0-9]?$"
+        },
+        "base": {
+          "$ref": "#/$defs/shaOrEmpty",
+          "description": "the main sha it branches from: the same on every part and on the plan"
+        },
+        "slot": {
+          "type": "string",
+          "maxLength": 60
+        },
+        "account": {
+          "$ref": "#/$defs/accountOrEmpty"
+        },
+        "session": {
+          "type": "string",
+          "maxLength": 120
+        },
+        "model": {
+          "enum": [
+            "",
+            "Fable",
+            "Opus"
+          ]
+        },
+        "head": {
+          "$ref": "#/$defs/shaOrEmpty"
+        },
+        "startedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "endedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "rebuilds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 99
+        },
+        "lastError": {
+          "type": "string",
+          "maxLength": 600
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 400
+        }
+      }
+    },
+    "combine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "branch"
+      ],
+      "properties": {
+        "branch": {
+          "type": "string",
+          "description": "the build branch, claude/<build id>",
+          "pattern": "^claude/[a-z0-9][a-z0-9-]{0,39}$"
+        },
+        "head": {
+          "$ref": "#/$defs/shaOrEmpty"
+        },
+        "pr": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ci": {
+          "$ref": "#/$defs/ci"
+        },
+        "ciRun": {
+          "type": "string",
+          "maxLength": 300
+        },
+        "startedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "mergedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "liveAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "finishedAt": {
+          "$ref": "#/$defs/isoOrEmpty"
+        },
+        "attempts": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 400
+        }
+      }
+    },
+    "failure": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "at",
+        "why"
+      ],
+      "properties": {
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "part": {
+          "type": "string",
+          "pattern": "^$|^p[1-9][0-9]?$"
+        },
+        "why": {
+          "type": "string",
+          "maxLength": 600
+        }
+      }
+    },
+    "transition": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "at",
+        "from",
+        "to"
+      ],
+      "properties": {
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "from": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "to": {
+          "type": "string",
+          "maxLength": 20
+        },
+        "part": {
+          "type": "string",
+          "pattern": "^$|^p[1-9][0-9]?$"
+        },
+        "why": {
+          "type": "string",
+          "maxLength": 300
+        }
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "$axf",
+        "id",
+        "run",
+        "base",
+        "at",
+        "by",
+        "parts",
+        "combine"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "split-plan@1"
+        },
+        "id": {
+          "$ref": "#/$defs/splitId"
+        },
+        "run": {
+          "$ref": "#/$defs/runState"
+        },
+        "base": {
+          "$ref": "#/$defs/shaOrEmpty",
+          "description": "\"\" only while splitting, before main is locked"
+        },
+        "at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "slots": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "free",
+            "used"
+          ],
+          "properties": {
+            "free": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "used": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "parts": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "$ref": "#/$defs/part"
+          }
+        },
+        "combine": {
+          "$ref": "#/$defs/combine"
+        },
+        "maxRebuilds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10,
+          "default": 2
+        },
+        "failure": {
+          "$ref": "#/$defs/failure"
+        },
+        "history": {
+          "type": "array",
+          "maxItems": 200,
+          "items": {
+            "$ref": "#/$defs/transition"
+          }
+        }
+      }
+    },
+    "mainLock": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "required": [
+        "$axf",
+        "build",
+        "splitId",
+        "base",
+        "lockedAt",
+        "by"
+      ],
+      "properties": {
+        "$axf": {
+          "const": "main-lock@1"
+        },
+        "build": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{0,39}$"
+        },
+        "splitId": {
+          "$ref": "#/$defs/splitId"
+        },
+        "base": {
+          "$ref": "#/$defs/sha"
+        },
+        "lockedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "by": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "note": {
+          "type": "string",
+          "maxLength": 300
+        }
+      }
+    },
+    "planInput": {
+      "type": "object",
+      "description": "planParts(build, freeSlots, fileClaims, opts): fileClaims = extra claims per step id (the splitter's predictions)",
+      "additionalProperties": false,
+      "properties": {
+        "freeSlots": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "fileClaims": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 300
+            }
+          }
+        },
+        "base": {
+          "$ref": "#/$defs/shaOrEmpty"
+        },
+        "run": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "maxRebuilds": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        }
+      }
+    }
+  }
+}
