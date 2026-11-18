@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9152,
- "updatedAt": "2026-11-18T22:58:31.140Z",
+ "rev": 9153,
+ "updatedAt": "2026-11-18T22:59:09.635Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321752,7 +321752,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T22:58:04.327Z",
+   "updatedAt": "2026-11-18T22:58:57.550Z",
    "builtAt": "",
    "notes": [
     {
@@ -321794,6 +321794,10 @@
     {
      "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--joey, shared account login)",
      "at": "2026-11-18T21:00:01.858Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--joey: brief only · start 15.7K tokens ($0.13) · cost $26.28 · 235 turns · 6 tools, MCP none",
+     "at": "2026-11-18T22:58:57.550Z"
     },
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
@@ -321976,7 +321980,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
