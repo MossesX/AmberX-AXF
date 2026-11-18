@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `molly-one-shell` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `molly-native-expenses` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `skins-as-packages-of-slices-every-section-its-ow` → landing, note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `molly-fable-version-the-one-interface-for-amberx` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 15:12 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · pipeline
 - 2026-11-18 15:13 UTC · `one-build-time-always-split-to-fill` note (all) · watchdog
 - 2026-11-18 15:13 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 15:16 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
+- 2026-11-18 15:16 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
 
 ## Token passes (log)
 

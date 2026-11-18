@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9055,
- "updatedAt": "2026-11-18T15:16:11.636Z",
+ "rev": 9056,
+ "updatedAt": "2026-11-18T15:16:51.124Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252571,7 +252571,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T14:22:49.625Z",
+   "updatedAt": "2026-11-18T15:16:22.911Z",
    "builtAt": "",
    "notes": [
     {
@@ -252613,6 +252613,10 @@
     {
      "text": "Launch failed on hulu0241: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T14:20:00.348Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T15:16:22.911Z"
     }
    ],
    "approvals": [],
@@ -252649,7 +252653,7 @@
      "note": "Split by Claude into 19 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -253156,7 +253160,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320261,7 +320265,7 @@
    "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
    "category": "",
    "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -320269,7 +320273,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T15:15:53.810Z",
+   "updatedAt": "2026-11-18T15:16:38.132Z",
    "builtAt": "",
    "notes": [
     {
@@ -320343,6 +320347,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T15:13:35.129Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-one-build-time-always-split-to-fill--sully.",
+     "at": "2026-11-18T15:16:38.132Z"
     }
    ],
    "approvals": [],
@@ -320362,13 +320370,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:40:55.823Z",
     "queuedBy": "Brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-one-build-time-always-split-to-fill--sully",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-18T15:16:24.217Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": {
      "at": "2026-11-18T15:12:16.423Z",
@@ -320388,9 +320396,9 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T15:16:24.217Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -320398,10 +320406,8 @@
      "at": "2026-11-18T15:13:17.307Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-18T15:16:24.217Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -321087,7 +321093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
