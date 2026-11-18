@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "linen-slate",
+  "name": "Linen Slate",
+  "version": "1.0.0",
+  "description": "Warm linen paper with slate-blue actions, for documents and long reading.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "warm"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f8f6f4",
+      "surface": "#fefefd",
+      "surface2": "#fbfaf9",
+      "surface3": "#efede8",
+      "text": "#2d2316",
+      "muted": "#81725a",
+      "border": "#e4dfd8",
+      "accent": "#2779b4",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(39,121,180,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#2779b4",
+      "shadow": "rgba(50,39,21,0.12)"
+    }
+  }
+}

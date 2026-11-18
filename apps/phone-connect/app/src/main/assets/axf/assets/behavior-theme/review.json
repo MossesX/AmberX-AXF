@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "review",
+  "name": "Review",
+  "version": "1.0.0",
+  "description": "For reviewers: dialogs slide up centred, a subtle sound on each result, always confirm.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:approvals-flow"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "darken",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 600,
+      "doubleTapMs": 300,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "slide-up",
+      "backdrop": "dim",
+      "popupOpen": "slide",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 5000,
+      "sound": "subtle",
+      "vibration": "light",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}

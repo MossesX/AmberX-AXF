@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "neon-edge",
+  "name": "Neon Edge container",
+  "version": "1.0.0",
+  "description": "Neon Edge: outline with a accent header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "neon",
+    "vivid",
+    "dark"
+  ],
+  "data": {
+    "variant": "outline",
+    "header": "accent",
+    "padding": "md",
+    "elevation": 0,
+    "collapsible": false
+  }
+}

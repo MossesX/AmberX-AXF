@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "compact-admin",
+  "name": "Compact Admin dialog",
+  "version": "1.0.0",
+  "description": "Compact Admin: drawer, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "compact",
+    "compact"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 400,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

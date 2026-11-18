@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "enterprise-shell",
+  "name": "Enterprise Shell",
+  "version": "1.0.0",
+  "description": "Menu bar, toolbar, a full side navigation, an inspector on the right and a status bar: the classic line-of-business frame.",
+  "author": "AmberX AXF",
+  "tags": [
+    "desktop",
+    "enterprise"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 248,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "right",
+    "inspectorWidth": 300,
+    "contentMaxWidth": 0
+  }
+}

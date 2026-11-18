@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "touch-friendly",
+  "name": "Touch Friendly dialog",
+  "version": "1.0.0",
+  "description": "Touch Friendly: sheet, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "friendly",
+    "touch"
+  ],
+  "data": {
+    "variant": "sheet",
+    "width": 640,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "filled",
+    "closeOnBackdrop": true
+  }
+}

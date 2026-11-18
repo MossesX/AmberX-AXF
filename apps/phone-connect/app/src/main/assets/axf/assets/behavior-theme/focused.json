@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "focused",
+  "name": "Focused",
+  "version": "1.0.0",
+  "description": "Nothing moves that doesn't need to: no page entrance, quick fades, toasts in the corner.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:build-tracker"
+  ],
+  "data": {
+    "motion": {
+      "speed": "fast",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "none"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "darken",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 550,
+      "doubleTapMs": 300,
+      "dragThreshold": 8
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "dim",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": true,
+      "snapGrid": 8,
+      "stack": "remember",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom-right",
+      "toastMs": 4000,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

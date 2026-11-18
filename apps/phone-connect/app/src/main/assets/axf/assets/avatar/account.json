@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "avatar",
+  "id": "account",
+  "name": "Account",
+  "version": "1.0.0",
+  "description": "The signed-in account's initials; tap opens Settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "avatar"
+  ],
+  "data": {
+    "source": "account",
+    "size": "regular",
+    "shape": "circle",
+    "text": "Guest",
+    "link": "app.settings"
+  }
+}

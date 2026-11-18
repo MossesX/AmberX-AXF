@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "status",
+  "id": "ai",
+  "name": "AI",
+  "version": "1.0.0",
+  "description": "On while counter `ai.connected` is above zero (the AI assistant's connection).",
+  "author": "AmberX AXF",
+  "tags": [
+    "status"
+  ],
+  "data": {
+    "counter": "ai.connected",
+    "onLabel": "AI ready",
+    "offLabel": "AI off",
+    "onTone": "success",
+    "offTone": "muted",
+    "link": "app.settings"
+  }
+}

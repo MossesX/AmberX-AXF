@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "boardroom",
+  "name": "Boardroom tabs",
+  "version": "1.0.0",
+  "description": "Boardroom: underline tabs, stretch.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "formal",
+    "enterprise",
+    "formal"
+  ],
+  "data": {
+    "style": "underline",
+    "align": "stretch",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": true
+  }
+}

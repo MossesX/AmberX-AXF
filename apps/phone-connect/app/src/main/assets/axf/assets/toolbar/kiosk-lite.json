@@ -1,0 +1,41 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "kiosk-lite",
+  "name": "Kiosk Lite",
+  "version": "1.0.0",
+  "description": "A clock and a single help button; nothing that changes the app.",
+  "author": "AmberX AXF",
+  "tags": [
+    "kiosk",
+    "minimal"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "spread",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "help",
+        "items": [
+          {
+            "id": "docs",
+            "icon": "help",
+            "label": "Documentation",
+            "action": "help.docs"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "start",
+        "order": 0
+      }
+    ],
+    "density": "roomy",
+    "divider": false
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "mono-paper",
+  "name": "Mono Paper",
+  "version": "1.0.0",
+  "description": "Ink on paper: near-monochrome greys with a graphite accent, colour only for status.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "mono"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f6f6f6",
+      "surface": "#fefefe",
+      "surface2": "#fafafa",
+      "surface3": "#ebecec",
+      "text": "#1f2023",
+      "muted": "#6d6f74",
+      "border": "#dddedf",
+      "accent": "#6c727f",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(108,114,127,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#6c727f",
+      "shadow": "rgba(21,31,50,0.12)"
+    }
+  }
+}

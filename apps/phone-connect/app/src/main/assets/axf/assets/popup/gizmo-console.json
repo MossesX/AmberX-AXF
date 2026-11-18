@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "gizmo-console",
+  "name": "GizmoX Console pop-ups",
+  "version": "1.0.0",
+  "description": "GizmoX Console: solid pop-ups at the bottom-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "developer",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "solid",
+    "duration": 3500,
+    "showIcon": true,
+    "maxVisible": 4
+  }
+}

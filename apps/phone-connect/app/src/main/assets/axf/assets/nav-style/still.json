@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-style",
+  "id": "still",
+  "name": "Still",
+  "version": "0.1.0",
+  "description": "No motion at all: sub menus appear at once, compact rows, small icons and no chevron turn.",
+  "author": "AmberX AXF",
+  "tags": [
+    "navigation",
+    "quiet"
+  ],
+  "data": {
+    "icons": {
+      "show": true,
+      "size": "sm"
+    },
+    "layout": {
+      "density": "compact",
+      "indent": 2
+    },
+    "animation": {
+      "kind": "none",
+      "durationMs": 0,
+      "easing": "linear",
+      "staggerMs": 0,
+      "chevron": "none",
+      "reduced": "always"
+    },
+    "behavior": {
+      "single": true,
+      "openOn": "tap",
+      "autoCollapse": true,
+      "remember": true,
+      "followActive": true,
+      "swipe": false
+    }
+  }
+}

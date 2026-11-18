@@ -1,0 +1,45 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "phone-connect.direct",
+      "label": "Direct notification to the phone",
+      "group": "phone",
+      "app": "console",
+      "source": "Phone Connect",
+      "description": "A notification a session, the CLI, MCP or a voice command sent straight to the phone (phone.notify).",
+      "match": { "source": "phone-connect", "keyPrefix": "phone-connect:direct:" },
+      "priority": "default"
+    },
+    {
+      "id": "phone-connect.paired",
+      "label": "Phone paired or revoked",
+      "group": "phone",
+      "app": "console",
+      "source": "Phone Connect",
+      "description": "A phone claimed a pairing code, or a paired phone was revoked or forgotten.",
+      "match": { "source": "phone-connect", "keyPrefix": "phone-connect:pair:" },
+      "priority": "default"
+    },
+    {
+      "id": "phone-connect.offline",
+      "label": "Phone offline",
+      "group": "phone",
+      "app": "console",
+      "source": "Phone Connect",
+      "description": "The paired phone has not polled the console for a while, so pushes, approvals and the recorder cannot reach it.",
+      "match": { "source": "phone-connect", "keyPrefix": "phone-connect:offline:" },
+      "priority": "default"
+    },
+    {
+      "id": "phone-connect.command-failed",
+      "label": "Phone command failed",
+      "group": "phone",
+      "app": "console",
+      "source": "Phone Connect",
+      "description": "A command sent to the phone (open a page, notification, recorder, voice) failed or timed out.",
+      "match": { "source": "phone-connect", "keyPrefix": "phone-connect:failed:" },
+      "priority": "default"
+    }
+  ]
+}

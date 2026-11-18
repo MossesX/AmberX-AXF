@@ -113,7 +113,7 @@ export async function plan(opts = {}) {
     for (const row of t.rows) {
       const f = factsForRow(row, facts);
       const v = stale.classify(row, f);
-      verdicts.push({ table: t.id, row, action: v.action, reason: v.reason, evidence: v.evidence, line: stale.describe(row, v), prState: f.pr?.state ?? null, mergedAt: f.pr?.mergedAt ?? '', prUrl: f.pr?.url ?? '' });
+      verdicts.push({ table: t.id, row, action: v.action, reason: v.reason, evidence: v.evidence, line: stale.describe(row, v), prState: f.pr?.state ?? null, mergedAt: f.pr?.mergedAt ?? '', mergeCommit: f.pr?.mergeCommit ?? '', prUrl: f.pr?.url ?? '' });
     }
     delete t.builds; delete t.wantPrs;
   }

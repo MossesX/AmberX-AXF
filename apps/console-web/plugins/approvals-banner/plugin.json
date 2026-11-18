@@ -25,7 +25,8 @@
     "action:approvals.overlay",
     "action:overlay.expand",
     "action:overlay.collapse",
-    "action:overlay.open"
+    "action:overlay.open",
+    "service:approvals-relay@1"
   ],
   "optional": [],
   "scopes": [

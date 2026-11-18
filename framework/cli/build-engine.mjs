@@ -33,6 +33,7 @@ import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas 
 import { jsonSchema as buildWatchdogJsonSchema } from '../core/build-watchdog.mjs';
 import { jsonSchema as liveDemoJsonSchema } from '../core/live-demo.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
+import { REGISTRY as PHONE_CONNECT_REGISTRY, jsonSchemas as phoneConnectJsonSchemas } from '../core/phone-connect.mjs';
 import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
@@ -953,6 +954,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
   for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);
+  // phone-connect@1: the phone as a paired device (phone-device, phone-pairing, phone-command, phone-result) + the registry snapshot the plugin's Python server reads
+  for (const [n, schema] of Object.entries(phoneConnectJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const pcreg = join(FRAMEWORK_DIR, 'schemas/phone-connect.json'); writeFileSync(pcreg, JSON.stringify(PHONE_CONNECT_REGISTRY, null, 2) + '\n'); written.push(pcreg);
   // skin-config@1: what the AI may change when it makes a skin. The tree comes from the shared registry (never the
   // port extensions) and the style targets, so the schema enumerates every category, group, option and limit.
   const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);

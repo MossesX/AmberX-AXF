@@ -1,0 +1,127 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "hub-rail",
+  "name": "Hub Rail",
+  "version": "1.0.0",
+  "description": "Hub Rail: admin consoles, rail. Lists the pages it can; each app shows the ones it has. Pairs with the Brisk behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:brisk"
+  ],
+  "data": {
+    "style": "rail",
+    "sections": [
+      {
+        "label": "Hub",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "hub",
+            "label": "Hub",
+            "icon": "cloud",
+            "view": "hub"
+          },
+          {
+            "id": "approvals-log",
+            "label": "Approvals",
+            "icon": "check",
+            "view": "approvals-log"
+          },
+          {
+            "id": "handoff",
+            "label": "Handoff",
+            "icon": "external",
+            "view": "handoff"
+          },
+          {
+            "id": "go-pass",
+            "label": "Go pass",
+            "icon": "rocket",
+            "view": "go-pass"
+          }
+        ]
+      },
+      {
+        "label": "Manage",
+        "items": [
+          {
+            "id": "services",
+            "label": "Services",
+            "icon": "zap",
+            "view": "services"
+          },
+          {
+            "id": "jobs",
+            "label": "Jobs",
+            "icon": "refresh",
+            "view": "jobs"
+          },
+          {
+            "id": "audit",
+            "label": "Audit",
+            "icon": "eye",
+            "view": "audit"
+          },
+          {
+            "id": "vault",
+            "label": "Vault",
+            "icon": "key",
+            "view": "vault"
+          },
+          {
+            "id": "users",
+            "label": "Users",
+            "icon": "user",
+            "view": "users"
+          },
+          {
+            "id": "projects",
+            "label": "Hub projects",
+            "icon": "folder",
+            "view": "projects"
+          },
+          {
+            "id": "devices",
+            "label": "Devices",
+            "icon": "smartphone",
+            "view": "devices"
+          }
+        ]
+      },
+      {
+        "label": "Get",
+        "items": [
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "density": "compact"
+  }
+}

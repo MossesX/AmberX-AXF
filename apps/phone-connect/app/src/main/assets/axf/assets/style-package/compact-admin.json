@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "compact-admin",
+  "name": "Compact Admin",
+  "version": "1.0.0",
+  "description": "Small outlined buttons, tight panels and segmented tabs for admin back offices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "compact",
+    "compact"
+  ],
+  "data": {
+    "slots": {
+      "button": "compact-admin",
+      "container": "compact-admin",
+      "slider": "compact-admin",
+      "dialog": "compact-admin",
+      "popup": "compact-admin",
+      "tab-group": "compact-admin",
+      "gauge": "classic-arc",
+      "meter": "segments"
+    },
+    "tone": "compact"
+  }
+}

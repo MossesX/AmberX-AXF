@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "calm-reader",
+  "name": "Calm Reader tabs",
+  "version": "1.0.0",
+  "description": "Calm Reader: plain tabs, center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "calm",
+    "reading"
+  ],
+  "data": {
+    "style": "plain",
+    "align": "center",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": false,
+    "divider": false
+  }
+}

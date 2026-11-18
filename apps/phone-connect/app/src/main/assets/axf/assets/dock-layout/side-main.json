@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "dock-layout",
+  "id": "side-main",
+  "name": "Side and main",
+  "version": "1.0.0",
+  "description": "A narrow side pane on the left (a tree or outline) and the main pane. One of the ten starter pane layouts every dock host offers (dock-layout@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "dock",
+    "preset",
+    "columns",
+    "tree"
+  ],
+  "data": {
+    "panes": 2,
+    "tree": {
+      "kind": "split",
+      "vertical": false,
+      "children": [
+        {
+          "kind": "leaf",
+          "pane": 1
+        },
+        {
+          "kind": "leaf",
+          "pane": 2
+        }
+      ],
+      "weights": [
+        0.3,
+        0.7
+      ]
+    },
+    "hint": "A narrow side pane on the left (a tree or outline) and the main pane.",
+    "main": 2
+  }
+}

@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Fix launcher crash: duplicate steps + brief too big (`fix-launcher-crash-duplicate-steps-brief`): steps merged by text + dedupe guard on every write (16 steps had grown to 2,682); live store cleaned (29 builds, 8,139 → 340 steps); launcher feeds the brief on stdin (no E2BIG); brief cap `builds.briefMaxBytes`; launch-crash auto-retry with backoff + systems check item; land-clash bounce (Phone Connect #787 requeued with a merge-main step); report `_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md` | review | `claude/fix-launcher-crash-duplicate-steps-brief` | #827 | landing: CI on the PR, then merge; until it lands, writers on the old merge can re-add repeats (the guard here heals them) | 2026-11-18 |
+| Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX) (`rebuild-fresh-main-phone-connect-small`) | in-pr | `claude/rebuild-fresh-main-phone-connect-small` |  |  | 2026-11-17 |
 | Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause (`guided-live-demo-test-watch-orchestrator`): plugin Orchestrator demo, 21 acts on throwaway demo-* builds, ≥30 s gaps, Next/Pause, stop cleanup; dry run 21/21 in both modes; report `_claude/builds/reports/guided-live-demo-test-watch-orchestrator.md` | review | `claude/guided-live-demo-test-watch-orchestrator` | #816 | UI Review hold (item saved in the worktree: post with --console); Start refuses until `live-build-status-real-time-grids-15` lands; Fable follow-up: demo-build@1 should require the tag, not the demo- prefix | 2026-11-17 |
 | Rebuild every toolbar with page-specific buttons (Fable) (`rebuild-every-toolbar-page-specific`) | in-progress | `claude/rebuild-every-toolbar-page-specific` |  | s27: option pictures + UI Review submit (headless capture needs an axHub session), then s28 PR | 2026-11-17 |
 | Fix: banner settings Interface tab changes the banner, not the settings window (`fix-banner-settings-interface-tab`, Opus; Brett Nov 17: "why does the settings interface tab of the banner change just the interface of the settings itself? what's the point of that") | review | `claude/fix-banner-settings-interface-tab` |  | s13: PR into the merge queue; UI Review r-20261117-c12zx01 (3 Interface tab layouts) waits on Brett | 2026-11-17 |
@@ -833,26 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `molly-ri-court-records` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `new-app-wizard` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `orchestrator-settings-collapsible-split` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `console-app-part-2-native-floating` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `group-chat-audio-hear-agents-talk-while` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `banner-widget-shapes-plus-change-icon` s16 done, s17 done, s18 done, s19 done, → complete, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `move-server-side-console-parts-onto-vps` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `icon-picker-every-banner-settings-widget` s9 done, s10 done, s11 done, s12 done, → complete, note (all) · foreign-write
@@ -1233,6 +1214,26 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
 - 2026-11-18 01:52 UTC · `one-true-source-for-every-setting` s7 done (all) · orchestrator
+- 2026-11-18 01:53 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
+- 2026-11-18 01:53 UTC · `one-landing-line-pull-main-merge-one` note (all) · foreign-write
+- 2026-11-18 01:54 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
+- 2026-11-18 01:55 UTC · `approval-pass-covers-every-call` note (all) · pipeline
+- 2026-11-18 02:02 UTC · `one-true-source-for-every-setting` s8 done (all) · orchestrator
+- 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
+- 2026-11-18 02:03 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
+- 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
+- 2026-11-18 02:03 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s1 undone, s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, note (all) · foreign-write
+- 2026-11-18 02:03 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
+- 2026-11-18 02:03 UTC · `one-landing-line-pull-main-merge-one` added (40 steps) (all) · foreign-write
+- 2026-11-18 02:03 UTC · `fix-refreshing-console-jumps-back` → landing (all) · builds-live
+- 2026-11-18 02:05 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
+- 2026-11-18 02:04 UTC · `rebuild-fresh-main-phone-connect-small` merged, note (all) · reconciler
+- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
+- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
+- 2026-11-18 02:07 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
+- 2026-11-18 02:09 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 02:10 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
+- 2026-11-18 02:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 
 ## Token passes (log)
 
