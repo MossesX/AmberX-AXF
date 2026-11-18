@@ -55,6 +55,13 @@ PREFIX = 'axf-data-'
 
 
 
+def write_last(out: Path, doc: dict) -> None:
+    """<out>/last.json, written atomically: the console's backup status may read it while a backup thread writes it."""
+    tmp = out / f'.last.json.{os.getpid()}.tmp'
+    tmp.write_text(json.dumps(doc, indent=1), 'utf-8')
+    os.replace(tmp, out / 'last.json')
+
+
 def _extract(tar: "tarfile.TarFile", to, members=None) -> None:
     """Extract safely on every Python: the 'data' filter where tarfile has it (3.12, 3.11.4+), otherwise the same
     rules by hand (regular files and folders only, no absolute path, nothing climbing out with ..)."""
@@ -146,7 +153,7 @@ def run_sqlite(data: Path, out: Path, now: datetime | None = None) -> dict:
     result = {**meta, 'bytes': (out / name).stat().st_size}
     result['verify'] = verify(out / name, data)
     result['pruned'] = prune(out, now)
-    (out / 'last.json').write_text(json.dumps({k: v for k, v in result.items() if k not in ('counts', 'journalLines')} | {'counts': result['counts']}, indent=1))
+    write_last(out, {k: v for k, v in result.items() if k not in ('counts', 'journalLines')} | {'counts': result['counts']})
     return result
 
 
@@ -291,7 +298,7 @@ def run_pg(dsn: str, data: Path, out: Path, now: datetime | None = None, schema:
     result = {**meta, 'bytes': (out / name).stat().st_size}
     result['verify'] = verify_pg(out / name, dsn)
     result['pruned'] = prune(out, now)
-    (out / 'last.json').write_text(json.dumps({k: v for k, v in result.items() if k not in ('counts', 'journalLines', 'tables')} | {'counts': result['counts']}, indent=1))
+    write_last(out, {k: v for k, v in result.items() if k not in ('counts', 'journalLines', 'tables')} | {'counts': result['counts']})
     return result
 
 
@@ -414,7 +421,7 @@ def main(argv: list[str] | None = None) -> int:
             doc = json.loads(last.read_text())
             if doc.get('file') == f.name:
                 doc['verify'] = r
-                last.write_text(json.dumps(doc, indent=1))
+                write_last(out, doc)
         print(json.dumps(r, indent=1))
         return 0 if r['ok'] else 2
     if a.cmd == 'list':

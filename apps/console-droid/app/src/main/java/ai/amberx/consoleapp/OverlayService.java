@@ -79,7 +79,13 @@ public class OverlayService extends Service {
     static void startIfWanted(Context c) {
         if (running != null || !config.on || !Perms.has(c, Perms.OVERLAY)) return;
         Intent i = new Intent(c, OverlayService.class);
-        if (Build.VERSION.SDK_INT >= 26) c.startForegroundService(i); else c.startService(i);
+        try {
+            if (Build.VERSION.SDK_INT >= 26) c.startForegroundService(i); else c.startService(i);
+        } catch (IllegalStateException | SecurityException e) {
+            // Android 12+ refuses a foreground service start from the background (a process woken by another app's
+            // call, e.g. Phone Connect's hand-off): the caller sees running == null and falls back.
+            android.util.Log.w("OverlayService", "toolbar not started: " + e);
+        }
     }
 
     static void stop(Context c) { c.stopService(new Intent(c, OverlayService.class)); }
