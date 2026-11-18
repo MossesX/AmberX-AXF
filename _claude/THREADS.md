@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:37 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-17 23:37 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
 - 2026-11-17 23:37 UTC · `fix-launcher-crash-duplicate-steps-brief` s2 done, s3 done, note (all) · foreign-write
 - 2026-11-17 23:36 UTC · `terminal-main-tab-streaming-console-s` → running, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:33 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-18 00:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-18 00:33 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · orchestrator
+- 2026-11-18 00:34 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · orchestrator
 
 ## Token passes (log)
 

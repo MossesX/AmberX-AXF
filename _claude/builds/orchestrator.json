@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:34:09.218Z",
+ "updatedAt": "2026-11-18T00:34:24.368Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -189365,17 +189365,287 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-18T00:32:34.912Z",
-   "updatedAt": "2026-11-18T00:32:40.334Z",
+   "updatedAt": "2026-11-18T00:34:08.301Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by fix-launcher-crash-duplicate-steps-brief.",
      "at": "2026-11-18T00:32:40.334Z"
+    },
+    {
+     "text": "Split by Claude into 12 steps (0 Fable).",
+     "at": "2026-11-18T00:34:08.301Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read the failing CI logs for runs 44171482751 and 44186908843 (open 'CI build errors' issue or gh run view --log-failed) and note the exact failing assertions for the Build engine sweep watchdog test and the Alerts/MCP/axf_server step; write the findings to _claude/builds/reports/fix-ci-red-main-watchdog-test-vs-done.md (draft)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      ".github/workflows/android.yml",
+      "_claude/builds/reports/fix-ci-red-main-watchdog-test-vs-done.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h901uyqe",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s2",
+     "text": "Reproduce the watchdog failure locally: run node apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs with the CI env (AXF_DATA_DIR=off, CI's build profile) and confirm 'refused q-merged queued → landed: landed needs the merge commit (landed.sha)'; locate the stale-row watchdog code path that moves a queued build with a merged PR and the done-means-merged@1 guard it hits",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs",
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+      "framework/cli/builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h902lmvi",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s3",
+     "text": "Change the watchdog so a queued/running build whose PR merged records merge evidence (landed.sha = the PR's merge commit sha, landed.pr, landed.at) and moves the build to landed instead of complete; complete stays reachable only through verify, per done-means-merged@1",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h903uj1w",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s4",
+     "text": "Handle the case where the merge sha is unknown (PR read without merge_commit_sha or GitHub unreachable): watchdog fetches it via the cached GitHub read, or leaves the build where it is with a note instead of attempting a refused transition; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h9042196",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s5",
+     "text": "Update watchdog.test.mjs 'run: complete / archive builds under the store lock' to done-means-merged@1: fake PR carries a merge commit sha, expect q-merged → landed with landed.sha set, add a case for missing sha (no transition, note recorded) and keep the archive assertions; run the test green and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h905zq5i",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s6",
+     "text": "Run the full Build engine sweep job locally as CI does (the android.yml sweep script for build-orchestrator tests plus check-builds-store.mjs and check-landing-line.mjs) to confirm nothing else depends on the old watchdog → complete path; fix any knock-on assertion and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/",
+      "framework/spec/check-builds-store.mjs",
+      "framework/spec/check-landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h906t9e2",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s7",
+     "text": "Reproduce the 'Alerts + MCP client + axf_server' CI step locally: run each command it lists (TS + Python alert engine fixture checks, conflict detection, console alert server, web push encryption) and identify which one fails and why (engine drift vs stale fixture)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      ".github/workflows/android.yml",
+      "apps/console-web/server/",
+      "framework/spec/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h907a2sc",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s8",
+     "text": "If the TS and Python alert engines disagree, fix the engine that drifted from the contract (reference TS first, then the Python twin) so both produce the same output; otherwise skip to fixture regeneration",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/",
+      "apps/console-web/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h908wzcl",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s9",
+     "text": "Regenerate the affected fixture(s) only if the engine change is intended (npx -y tsx framework/spec/gen-fixtures.mts or the alerts fixture generator), diff the fixture to confirm only the expected entries changed, and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24h90937zo",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s10",
+     "text": "Fix any remaining failure in that step (MCP client test, axf_server, conflict detection or web push encryption test, e.g. a dependency or env change); re-run the whole step locally green and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/",
+      "apps/console-web/server/requirements.txt"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24ha0azezi",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s11",
+     "text": "API check: confirm the watchdog's new landed transition is visible through existing read paths (builds-store.mjs history, console Build orchestrator view, MCP pending_list/orchestrator reads, voice status) with no UI change needed; note in the report that no new UI was added",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "_claude/builds/reports/fix-ci-red-main-watchdog-test-vs-done.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24ha0brv4k",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "id": "s12",
+     "text": "Final: run tracker.mjs --check, validate --framework, the watchdog test and the Alerts step once more; finish _claude/builds/reports/fix-ci-red-main-watchdog-test-vs-done.md (cause, fix, before/after test results), add the THREADS.md row, push branch and open the PR noting it fixes main CI red (runs 44171482751, 44186908843) and #827's inherited failures; hand it to the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-ci-red-main-watchdog-test-vs-done.md",
+      "_claude/THREADS.md",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwle24ha0cmqg2",
+     "createdAt": "2026-11-18T00:34:08.301Z"
+    }
+   ]
   }
  ]
 }
