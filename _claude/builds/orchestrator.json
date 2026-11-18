@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:52:48.938Z",
+ "updatedAt": "2026-11-18T12:53:28.419Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193986,6 +193986,83 @@
      "note": "",
      "uid": "st-mwm47ohv0rmlwt",
      "createdAt": "2026-11-18T12:46:17.539Z"
+    }
+   ]
+  },
+  {
+   "id": "out-credits-account-failover-flag-dead",
+   "title": "Out-of-credits account failover: flag the dead account and move every slot to the backup",
+   "category": "orchestrator",
+   "detail": "Brett's words: \"So Moses X just ran out of credits. So when it runs out of credits, it needs to note that and stop using it. It needs to switch everything over to Hulu.\"\n\nWhen a Claude account (e.g. MossesX) runs out of credits, the orchestrator records it on the account (out of credits + timestamp + which build/step hit it), stops handing that account any new slots or steps, and moves every running and queued slot over to the backup account (\"Hulu\" (name from voice transcription, confirm)). In-flight steps on the dead account get handed off on the same branch, not restarted. Show the account switch in the banner and the builds journal.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T12:52:45.120Z",
+   "updatedAt": "2026-11-18T12:52:45.121Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Detect out-of-credits responses per account and record the account state (dead, when, which build/step) in the builds store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm4g20n045iau",
+     "createdAt": "2026-11-18T12:52:45.122Z"
+    },
+    {
+     "id": "s2",
+     "text": "Slot allocator skips dead accounts; reassign every running and queued slot to the backup account, resuming in-flight steps on the same branch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm4g20n05g0rn",
+     "createdAt": "2026-11-18T12:52:45.122Z"
+    },
+    {
+     "id": "s3",
+     "text": "Banner and THREADS log entry for the switch, plus a way to mark the account live again when credits come back",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm4g20n06ntdu",
+     "createdAt": "2026-11-18T12:52:45.122Z"
     }
    ]
   }

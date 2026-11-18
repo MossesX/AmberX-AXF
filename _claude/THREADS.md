@@ -838,7 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:42 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-18 01:42 UTC · `move-everything-axhub-web-console` s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done (all) · foreign-write
 - 2026-11-18 01:42 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done, s14 done, s15 done, s16 done, s17 done, → complete, note (all) · foreign-write
 - 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s1 done, s2 done, s3 done, s4 done (all) · foreign-write
@@ -1238,6 +1237,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:49 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
 - 2026-11-18 12:50 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
 - 2026-11-18 12:51 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 12:52 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · voice session
 
 ## Token passes (log)
 
