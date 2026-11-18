@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8999,
- "updatedAt": "2026-11-18T14:01:23.135Z",
+ "rev": 9000,
+ "updatedAt": "2026-11-18T14:01:55.108Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252547,7 +252547,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -252555,7 +252555,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-17T00:02:44.120Z",
+   "updatedAt": "2026-11-18T14:01:29.733Z",
    "builtAt": "",
    "notes": [
     {
@@ -252581,6 +252581,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T14:01:29.733Z"
     }
    ],
    "approvals": [],
@@ -253122,7 +253126,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
