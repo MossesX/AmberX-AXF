@@ -107,6 +107,7 @@ import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { reapFirstSync } from '../../../../framework/cli/reaper.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
+import { combineTick } from './combine.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
@@ -1600,6 +1601,9 @@ export function tick({ env = process.env } = {}) {
     try { const f = fillParts(b, { rules, env, accounts, settings, sl: slotsNow() }); if (f.parts.length) { filled.push({ id: b.id, parts: f.parts.map((p) => p.id) }); setPipeline(b.id, {}, { note: `Split run ${b.split.id}: started ${f.parts.map((p) => `${p.id} on ${p.account}`).join(', ')}.`, action: 'pipeline:split-fill' }); } }
     catch (e) { logLine({ event: 'part-fill-failed', build: b.id, error: str(e.message, 300) }); }
   }
+  // split-plan@1: a run whose parts are all done is combined into one branch; a failed run lands nothing, main unlocks
+  let combined = { combined: [], failed: [] };
+  try { combined = combineTick({ env }); for (const f of combined.failed) logLine({ event: 'split-run-failed', build: f.id, why: f.why }); } catch (e) { logLine({ event: 'combine-failed', error: str(e.message, 300) }); }
   // main-lock@1 (split-plan@1): the launched run holds main from the sha its worktree started on; a lock whose build has
   // no active run any more is released, so the next Queue build may start
   try { syncMainLock({ launched, env }); } catch (e) { logLine({ event: 'main-lock-failed', error: str(e.message, 300) }); }
@@ -1639,7 +1643,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, filled, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify };
+  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, filled, combined, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify };
 }
 
 const MAX_PICK_TRIES = 4;
