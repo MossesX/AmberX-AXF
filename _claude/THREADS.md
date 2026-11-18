@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `auto-lander-never-wait-missing-ui-review` added (17 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `one-true-source-for-every-setting` added (20 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `vps-sets-every-build-status-manifest` added (15 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `api-fully-drives-every-field-type-forms` added (18 steps) (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 18:12 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 - 2026-11-18 18:12 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
 - 2026-11-18 18:13 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-18 18:15 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 
 ## Token passes (log)
 
