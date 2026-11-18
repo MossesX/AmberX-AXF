@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8538,
- "updatedAt": "2026-11-18T00:17:04.292Z",
+ "rev": 8539,
+ "updatedAt": "2026-11-18T00:17:22.093Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -279486,7 +279486,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -279494,8 +279494,8 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-17T23:46:12.316Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T00:17:10.973Z",
+   "builtAt": "2026-11-18T00:17:10.973Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -279965,12 +279965,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T00:17:10.970Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T23:51:33.646Z",
-     "updatedAt": "2026-11-17T23:51:34.374Z"
+     "updatedAt": "2026-11-18T00:17:16.991Z"
     }
    ],
    "profiles": [
@@ -279981,17 +279981,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-17T19:34:48.701Z",
-    "builtAt": "",
+    "builtAt": "2026-11-18T00:17:10.973Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwlaugimcko7go": "2026-11-17T19:44:46.822Z",
@@ -280008,7 +280008,7 @@
      "st-mwlaugimcv3zl2": "2026-11-17T19:44:46.822Z",
      "st-mwlaugimcw8bb5": "2026-11-17T19:44:46.822Z",
      "st-mwlaugimcxbfwp": "2026-11-17T19:44:46.822Z",
-     "st-mwlc0hbb01c3k4": "2026-11-17T23:08:31.845Z"
+     "st-mwlcjduu01rxkf": "2026-11-17T23:51:33.646Z"
     }
    },
    "queue": null,

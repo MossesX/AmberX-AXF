@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:20 UTC · `move-everything-axhub-web-console` s4 done (all) · foreign-write
 - 2026-11-17 23:20 UTC · `fix-launcher-crash-duplicate-steps-brief` added (0 steps) (all) · foreign-write
 - 2026-11-17 23:20 UTC · `fix-launcher-crash-duplicate-steps-brief` → queued, note (all) · foreign-write
 - 2026-11-17 23:20 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · Brett
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → complete, note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
 - 2026-11-18 00:16 UTC · `active-tab-stop-button-grid-alignment` added (48 steps) (all) · foreign-write
+- 2026-11-18 00:17 UTC · `terminal-main-tab-streaming-console-s` s113 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 
