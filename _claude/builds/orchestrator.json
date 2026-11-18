@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:51:09.820Z",
+ "updatedAt": "2026-11-18T12:51:37.024Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157004,7 +157004,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157013,8 +157013,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T12:45:00.539Z",
-   "builtAt": "2026-11-18T12:45:00.539Z",
+   "updatedAt": "2026-11-18T12:48:22.028Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -157143,6 +157143,10 @@
     {
      "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
      "at": "2026-11-18T12:45:00.539Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-18T12:48:22.028Z"
     }
    ],
    "approvals": [],
@@ -192542,8 +192546,8 @@
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:48:30.624Z",
-   "builtAt": "2026-11-18T12:48:30.624Z",
+   "updatedAt": "2026-11-18T12:49:13.433Z",
+   "builtAt": "2026-11-18T12:49:13.433Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -192584,6 +192588,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-vps-never-gives-up-fix-land-every-build--paulie.",
      "at": "2026-11-18T12:31:12.439Z"
+    },
+    {
+     "text": "Headless run axf-vps-never-gives-up-fix-land-every-build--paulie: brief only · start 12.8K tokens ($0.03) · cost $1.14 · 31 turns · 6 tools, MCP none",
+     "at": "2026-11-18T12:49:13.433Z"
     }
    ],
    "approvals": [],
@@ -193358,7 +193366,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T12:48:59.222Z",
+   "updatedAt": "2026-11-18T12:50:12.225Z",
    "builtAt": "",
    "notes": [
     {
@@ -193372,6 +193380,10 @@
     {
      "text": "Launch failed on mossesx-max-, hulu0241: worktree for one-build-time-always-split-to-fill: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:48:59.222Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-, hulu0241: worktree for one-build-time-always-split-to-fill: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:50:12.225Z"
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
