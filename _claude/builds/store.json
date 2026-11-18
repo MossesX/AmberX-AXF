@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8851,
- "updatedAt": "2026-11-18T05:38:53.153Z",
+ "rev": 8899,
+ "updatedAt": "2026-11-18T07:36:52.846Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262943,7 +262943,7 @@
    "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
    "category": "",
    "detail": "Audit every console plugin. Anything that must keep running when the console is down, or touches Docker, disk or git, moves out of the axf-console container onto the VPS host as systemd services that start on boot and auto-restart, code at /opt/axf, run under a dedicated limited user with a sudo whitelist of only the commands needed (no general root). Candidates: Maintenance (coordinate with maintenance-plugin-clear-docker-cache), Systems check and its Auto fixes, agent-swarm job runner (CI-fix jobs), builds-live publisher, shipped-features watcher, axHub sync. Orchestrator/lander/watchdog are already moving in server-auto-lander-fixes-lands; reuse that, don't duplicate. App-only plugins (settings, skins, etc.) stay in the container. Console UI calls the host services over a local socket/API and shows a clear 'host service down' state. Include install script, health checks in Systems check, migration with rollback, and reachable via UI, REST, MCP, CLI, voice. Write the audit list into the report first.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -262951,8 +262951,8 @@
    "pr": "#828",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-18T01:22:17.133Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T06:40:26.356Z",
+   "builtAt": "2026-11-18T06:29:08.928Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -263061,6 +263061,10 @@
     {
      "text": "Brief only: brief is 32335 characters (~8084 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-18T01:22:17.133Z"
+    },
+    {
+     "text": "Session axf-move-server-side-console-parts-onto-vps--lenny on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-18T06:40:26.356Z"
     }
    ],
    "approvals": [
@@ -263100,7 +263104,7 @@
     "queuedAt": "2026-11-17T12:26:43.338Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 3",
@@ -263108,11 +263112,11 @@
     "runs": 3,
     "crashes": 2,
     "lastRun": {
-     "at": "2026-11-18T01:18:14.066Z",
-     "exit": 143,
-     "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 1,
+     "at": "2026-11-18T06:38:47.141Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-move-server-side-console-parts-onto-vps--lenny",
      "phase": "Phase 3"
@@ -263837,12 +263841,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:29:08.928Z",
      "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-18T01:18:22.145Z",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T01:18:22.146Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z"
     }
    ],
    "profiles": [
@@ -263853,17 +263857,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "",
     "source": "console",
     "planId": "",
     "createdAt": "2026-11-17T12:26:40.644Z",
-    "builtAt": "",
+    "builtAt": "2026-11-18T06:29:08.928Z",
     "prefixSteps": true,
     "stepAt": {
      "st-mwko4z4v01irua": "2026-11-17T12:28:31.327Z",
@@ -314984,7 +314988,7 @@
      "updatedAt": "2026-11-18T02:03:41.533Z"
     },
     {
-     "id": "s7",
+     "id": "s31-30",
      "uid": "st-mwlfgrl13ss5ih",
      "title": "",
      "text": "Reproduce the 'Alerts + MCP client + axf_server' CI step locally: run each command it lists (TS + Python alert engine fixture checks, conflict detection, console alert server, web push encryption) and identify which one fails and why (engine drift vs stale fixture)",
@@ -315001,12 +315005,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T00:34:08.301Z",
-     "updatedAt": "2026-11-18T01:13:29.208Z"
+     "updatedAt": "2026-11-18T01:42:44.284Z"
     },
     {
-     "id": "s8",
+     "id": "s32-31",
      "uid": "st-mwlfgrl13tkyrg",
      "title": "",
      "text": "If the TS and Python alert engines disagree, fix the engine that drifted from the contract (reference TS first, then the Python twin) so both produce the same output; otherwise skip to fixture regeneration",
@@ -315023,12 +315027,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T00:34:08.301Z",
-     "updatedAt": "2026-11-18T01:13:29.208Z"
+     "updatedAt": "2026-11-18T01:42:44.284Z"
     },
     {
-     "id": "s9",
+     "id": "s33-32",
      "uid": "st-mwlfgrl13u6l65",
      "title": "",
      "text": "Regenerate the affected fixture(s) only if the engine change is intended (npx -y tsx framework/spec/gen-fixtures.mts or the alerts fixture generator), diff the fixture to confirm only the expected entries changed, and commit",
@@ -315045,12 +315049,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T00:34:08.301Z",
-     "updatedAt": "2026-11-18T01:13:29.208Z"
+     "updatedAt": "2026-11-18T01:42:44.284Z"
     },
     {
-     "id": "s10",
+     "id": "s34-33",
      "uid": "st-mwlfgrl13vajjn",
      "title": "",
      "text": "Fix any remaining failure in that step (MCP client test, axf_server, conflict detection or web push encryption test, e.g. a dependency or env change); re-run the whole step locally green and commit",
@@ -315067,12 +315071,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T00:34:08.301Z",
-     "updatedAt": "2026-11-18T01:13:29.208Z"
+     "updatedAt": "2026-11-18T01:42:44.284Z"
     },
     {
-     "id": "s11",
+     "id": "s35-34",
      "uid": "st-mwlfgrl13w2nsm",
      "title": "",
      "text": "API check: confirm the watchdog's new landed transition is visible through existing read paths (builds-store.mjs history, console Build orchestrator view, MCP pending_list/orchestrator reads, voice status) with no UI change needed; note in the report that no new UI was added",
@@ -315089,12 +315093,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T00:34:08.301Z",
-     "updatedAt": "2026-11-18T01:13:29.208Z"
+     "updatedAt": "2026-11-18T01:42:44.284Z"
     },
     {
-     "id": "s12",
+     "id": "s36-35",
      "uid": "st-mwlfgrl13xyxab",
      "title": "",
      "text": "Final: run tracker.mjs --check, validate --framework, the watchdog test and the Alerts step once more; finish _claude/builds/reports/fix-ci-red-main-watchdog-test-vs-done.md (cause, fix, before/after test results), add the THREADS.md row, push branch and open the PR noting it fixes main CI red (runs 44171482751, 44186908843) and #827's inherited failures; hand it to the merge queue",
@@ -315111,9 +315115,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T00:34:08.301Z",
-     "updatedAt": "2026-11-18T01:13:29.208Z"
+     "updatedAt": "2026-11-18T01:42:44.284Z"
     }
    ],
    "profiles": [
@@ -315124,7 +315128,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -315255,7 +315259,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwlgif95019usx",
+     "uid": "st-mwlgi8vu01kl9s",
      "title": "",
      "text": "Read the axHub repo layout for the routes: packages/server/src/*-web.ts, the auth/api router, services registry (what `axhub services add|refresh|remove` call), token and OAuth client stores, handoff store; write a short route plan (handler, store call, auth scope, audit line) in docs/console-hub-routes.md",
      "model": "Opus",
@@ -315273,11 +315277,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwlgif9502q3d8",
+     "uid": "st-mwlgi8vu02kino",
      "title": "",
      "text": "Factor the CLI's services add/refresh/remove logic into a shared server-side module (services-admin.ts) the CLI and the new routes both call, no behaviour change; CLI tests still pass",
      "model": "Opus",
@@ -315295,11 +315299,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwlgif9503mfvd",
+     "uid": "st-mwlgi8vu031zak",
      "title": "",
      "text": "Add POST /auth/api/services {namespace, type, config}: owner-only, validates namespace/type, refuses duplicates (409), never echoes secrets in config back; audit log line",
      "model": "Opus",
@@ -315317,11 +315321,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwlgif9504q1nf",
+     "uid": "st-mwlgi8vu04osxs",
      "title": "",
      "text": "Add POST /auth/api/services/{namespace}/reconnect (same as `services refresh`, returns new status) and DELETE /auth/api/services/{namespace} (404 unknown, refuses built-in axhub service); audit log lines",
      "model": "Opus",
@@ -315339,11 +315343,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwlgif9505yb1v",
+     "uid": "st-mwlgi8vu05z0vg",
      "title": "",
      "text": "Tests for the three connector routes: add/reconnect/remove happy paths, auth refused for non-owner and console token without the admin scope, duplicate and unknown namespaces, secrets not in responses",
      "model": "Opus",
@@ -315361,11 +315365,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwlgif9506dmf3",
+     "uid": "st-mwlgi8vu0699f7",
      "title": "",
      "text": "Add DELETE /auth/api/handoff/{id} (clears a handoff run, 404 unknown, owner or the run's own device only) on the existing handoff store",
      "model": "Opus",
@@ -315383,11 +315387,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwlgif9507f8mc",
+     "uid": "st-mwlgi8vu070py1",
      "title": "",
      "text": "Add POST /auth/api/handoff/{id}/accept {device}: marks the run accepted by that device through the AXPP handoff state (pending → accepted, 409 when already accepted or expired); if AXPP lacks the transition, add it to the handoff store and note it in the AXPP doc",
      "model": "Opus",
@@ -315405,11 +315409,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwlgif9508isc4",
+     "uid": "st-mwlgi8vu08t627",
      "title": "",
      "text": "Tests for handoff accept and clear: state transitions, wrong device, expired run, unknown id",
      "model": "Opus",
@@ -315427,11 +315431,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwlgif9509k02k",
+     "uid": "st-mwlgi8vu09hb4a",
      "title": "",
      "text": "Add POST /auth/api/auth/tokens {label, scopes[], expiresInDays}: owner-only, scopes checked against the known list, returns the secret once (only a hash stored), and DELETE /auth/api/auth/tokens/{id} revokes at once; audit log lines",
      "model": "Opus",
@@ -315449,11 +315453,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwlgif950am80r",
+     "uid": "st-mwlgi8vu0a4rlk",
      "title": "",
      "text": "Add POST /auth/api/auth/clients {name, redirectUris[]} (https or localhost URIs only, returns client id + secret once) and DELETE /auth/api/auth/clients/{id} (revokes its grants); audit log lines",
      "model": "Opus",
@@ -315471,11 +315475,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwlgif950bwdd2",
+     "uid": "st-mwlgi8vu0b6vpj",
      "title": "",
      "text": "Tests for token and client admin: secret shown once and not in list/get, revoked token refused on /mcp, bad scopes/URIs refused, non-owner refused",
      "model": "Opus",
@@ -315493,11 +315497,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s12",
-     "uid": "st-mwlgif950cdfik",
+     "uid": "st-mwlgi8vu0cd292",
      "title": "",
      "text": "Add the new routes to the hub's capabilities/discovery list (whatever the console reads to decide hub_missing) and the MCP tools list for parity (axhub.services_add/reconnect/remove, handoff_accept/clear, tokens_create/revoke, clients_add/remove) as confirm/veto tools with reasons",
      "model": "Opus",
@@ -315515,11 +315519,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s13",
-     "uid": "st-mwlgif950dnq0d",
+     "uid": "st-mwlgi8vu0d1nz2",
      "title": "",
      "text": "Redirect table: map every old HTML page (/auth/admin/approvals, /auth/account, /auth/admin/users, log, passes, go-pass, handoff, apps, policy) to https://console.amberxai.com/?axf-open=hub.open:<screen>[:<id>] with 302, keeping query ids; leave /auth/api/* and /mcp untouched",
      "model": "Opus",
@@ -315537,11 +315541,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s14",
-     "uid": "st-mwlgif950eq4ku",
+     "uid": "st-mwlgi8vu0e5c84",
      "title": "",
      "text": "Tests for the redirects: every old page → right console URL, ids carried, /auth/api/* and /mcp not redirected, unknown /auth/admin/* falls back to hub.open:home; console URL from config (HUB_CONSOLE_URL) not hard-coded",
      "model": "Opus",
@@ -315559,11 +315563,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s15",
-     "uid": "st-mwlgif950f6yt6",
+     "uid": "st-mwlgi8vu0f0uyz",
      "title": "",
      "text": "Deploy: keep the axhub-web static site for now but behind a flag (SERVE_AXHUB_WEB, default on) with a dated note to drop it after the redirect has run; document the removal step in the deploy README",
      "model": "Opus",
@@ -315581,11 +315585,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s16",
-     "uid": "st-mwlgif950gyr5h",
+     "uid": "st-mwlgi8vu0gwpaa",
      "title": "",
      "text": "AmberX-AXF side: point the console's hub-console@1 actions (connectors/add|reconnect|remove, handoff/accept|clear, auth/token-create|revoke|client-add|remove) at the new routes when the hub advertises them, keep hub_missing otherwise; secret shown once in the dialog, never stored",
      "model": "Opus",
@@ -315603,11 +315607,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s17",
-     "uid": "st-mwlgif950h0roz",
+     "uid": "st-mwlgi8vu0ht2uj",
      "title": "",
      "text": "AmberX-AXF API parity for those actions: REST /api/plugins/hub-console/*, MCP plugin commands, `axf hub …` CLI and voice actions, plus console_show deep links for each hub screen; check-console-control passes",
      "model": "Opus",
@@ -315625,11 +315629,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s18",
-     "uid": "st-mwlgif950isnzk",
+     "uid": "st-mwlgi8vu0ia6fy",
      "title": "",
      "text": "Tests (axHub pnpm test, AmberX-AXF hub-console tests + check-console-control), report _claude/builds/reports/axhub-routes-for-console-hub.md (routes, redirects, how each is reached by REST/MCP/CLI/voice/deep link, what is left: dropping axhub-web), THREADS row, PRs on MossesX/axHub and AmberX-AXF",
      "model": "Opus",
@@ -315647,7 +315651,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:37:11.234Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     }
    ],
    "profiles": [
@@ -315753,7 +315757,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwlgif9q51clkw",
+     "uid": "st-mwlgi8w851jzxi",
      "title": "",
      "text": "Read framework/cli/agent-slots.mjs, apps/console-web/plugins/agent-slots/ and pipeline.mjs tick. Write down in _claude/builds/reports/vps-frees-stale-build-slots-every-minute.md how slot entries are stored: running and heavy entries, pid, session name, startedAt, queue. Include the three stale cases Brett hit (3-day-old rhonda-ci-fix job, finished tmux sessions, builds-store verify heavy processes) and the liveness rule for each.",
      "model": "Opus",
@@ -315771,11 +315775,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwlgif9q52dc4t",
+     "uid": "st-mwlgi8w852hstd",
      "title": "",
      "text": "Add a pure liveness core, framework/core/slot-liveness.mjs. Given one slot entry, a process-table snapshot (pid, ppid, cmd, etime) and a list of tmux sessions with pane_dead and pane_current_command, it returns a verdict: alive, dead (no pid / no claude process), finished (tmux session there but claude exited or pane dead), hung-heavy (heavy step past its max runtime), or orphan-session. Every verdict comes with a plain reason. It has no side effects.",
      "model": "Opus",
@@ -315793,11 +315797,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwlgif9q537kf0",
+     "uid": "st-mwlgi8w853dpw8",
      "title": "",
      "text": "Add settings defaults for the reaper to the agent-slots settings: reaper.enabled (on), reaper.heavyMaxMin (30), reaper.graceSec (90, so a just-launched slot is never reaped), reaper.closeFinishedSessions (on) and reaper.launchNext (on). Read them through the existing settings loader in agent-slots.mjs.",
      "model": "Opus",
@@ -315815,11 +315819,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwlgif9q54vybb",
+     "uid": "st-mwlgi8w854uzfd",
      "title": "",
      "text": "Add an `agent-slots.mjs reap [--dry-run] [--json]` subcommand. It takes the slots lock, snapshots ps and `tmux list-sessions/list-panes`, runs slot-liveness on every running and heavy entry, and frees the dead and finished entries under the same lock. Entries inside the grace window are skipped.",
      "model": "Opus",
@@ -315837,11 +315841,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwlgif9q55t39w",
+     "uid": "st-mwlgi8w855ugdf",
      "title": "",
      "text": "Make reap act on what it frees: SIGTERM then SIGKILL the process group of a hung-heavy step, `tmux kill-session` a finished axf-* session (only sessions the slots table owns, never the shared human tmux session), and drop orphan queue entries whose build is no longer queued.",
      "model": "Opus",
@@ -315859,11 +315863,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwlgif9q56c50a",
+     "uid": "st-mwlgi8w8565c7g",
      "title": "",
      "text": "Log every freed slot through data-store@1 (framework/core/data-files.mjs), namespace plugins/agent-slots/reaped/<YYYY-MM>.jsonl. Each line records at, slot id, build/session, verdict, reason, age, pid, action taken (freed/killed/closed) and host. Register the path in framework/schemas/data-store-paths.json.",
      "model": "Opus",
@@ -315881,11 +315885,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwlgif9q57aeug",
+     "uid": "st-mwlgi8w8576gad",
      "title": "",
      "text": "After freeing at least one slot, reap calls the pipeline dispatcher (`pipeline.mjs tick`, in-process or as a child) so the next queued build starts at once. The tick result goes in the reap summary. --no-launch skips it.",
      "model": "Opus",
@@ -315903,11 +315907,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwlgif9q58iljn",
+     "uid": "st-mwlgi8w858uevb",
      "title": "",
      "text": "Add the every-minute VPS timer. deploy/slot-reaper.sh wraps `node framework/cli/agent-slots.mjs reap --json` with flock so runs never overlap. Install a cron line `axf-slot-reaper` (* * * * *) the same way the axf-pipeline cron is installed (install/uninstall in the agent-slots plugin's install.mjs/uninstall.mjs, and in framework/deploy/axf-deploy.sh where the pipeline cron is set). Write a last-run heartbeat file.",
      "model": "Opus",
@@ -315925,11 +315929,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwlgif9q595zbs",
+     "uid": "st-mwlgi8w859txfs",
      "title": "",
      "text": "Add a systems-check health@1 check, agent-slots.reaper: red when the reaper heartbeat is older than 3 minutes or the cron line is missing. Its auto-fix reinstalls the cron and runs one reap. Also report a freed-slot count over the last hour in the check detail.",
      "model": "Opus",
@@ -315947,11 +315951,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwlgif9q5at2ak",
+     "uid": "st-mwlgi8w85ayaz4",
      "title": "",
      "text": "Add the API for the reaper in the agent-slots plugin server. GET /api/plugins/agent-slots/reaper (settings, last run, heartbeat), GET /reaper/log?limit=, POST /reaper/run {dryRun}, PUT /reaper/settings. Add them to the plugin's commands so MCP plugin-commands exposes agent-slots_reaper_* tools, add the CLI `axf slots reap|reaper-log`, and add voice actions slots.reap / slots.reaper-log.",
      "model": "Opus",
@@ -315969,11 +315973,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwlgif9q5b5ks5",
+     "uid": "st-mwlgi8w85bgo0i",
      "title": "",
      "text": "UI in Settings → Plugins → Agent cap: a Reaper section built from framework controls and tokens (Switch for enabled/close sessions/launch next, number fields for heavy max and grace, a Run now Button, a DataGrid of freed slots from /reaper/log). Each control registers its target through the framework controls (console-control address view:settings/tab:settings.tabs=plugins … agent-slots.reaper) so console_show / console_open deep-link to it.",
      "model": "Opus",
@@ -315991,11 +315995,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s12",
-     "uid": "st-mwlgif9q5cpso9",
+     "uid": "st-mwlgi8w85cb5cr",
      "title": "",
      "text": "Add fixtures and a CI check. framework/spec/fixtures/slot-liveness.json holds cases: rhonda-ci-fix 3 days old with no pid, finished tmux pane, builds-store verify heavy past its cap, a fresh slot in grace, a live claude. framework/spec/check-slot-reaper.mjs runs slot-liveness against them and runs `reap --dry-run` on a temp slots file with a faked ps/tmux (AXF_SLOTS_PS / AXF_SLOTS_TMUX env hooks). It also asserts the cron line is installed by install.mjs. Wire it into .github/workflows/android.yml next to the other spec checks.",
      "model": "Opus",
@@ -316013,11 +316017,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s13",
-     "uid": "st-mwlgif9q5da5m9",
+     "uid": "st-mwlgi8w85d55lb",
      "title": "",
      "text": "Docs. Add a Reaper section (what is freed and why, the log path, settings and API: REST/MCP/CLI/voice) to apps/console-web/plugins/agent-slots/README.md, and a reaper line to the CLAUDE.md Agent cap bullet with an <!-- axf-plugin:agent-slots --> marker. Run plugin-lifecycle check agent-slots --after-uninstall, check-theme, check-controls and check-console-control.",
      "model": "Opus",
@@ -316035,11 +316039,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     },
     {
      "id": "s14",
-     "uid": "st-mwlgif9q5eafxt",
+     "uid": "st-mwlgi8w85e4vou",
      "title": "",
      "text": "Tests, report, THREADS row and PR. Run check-slot-reaper.mjs, the agent-slots plugin tests, `agent-slots.mjs reap --dry-run` on the live VPS table (paste the verdicts for the stale entries into the report), then one real reap and the freed-slot log lines. Finish _claude/builds/reports/vps-frees-stale-build-slots-every-minute.md with before/after slot counts and how each feature is reached (deep link, REST, MCP, CLI, voice). Add the THREADS.md row, push branch claude/vps-frees-stale-build-slots-every-minute, open the PR, link it with builds-live.mjs link, and send the Reaper settings section to UI Review.",
      "model": "Opus",
@@ -316057,7 +316061,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T01:41:48.461Z",
-     "updatedAt": "2026-11-18T01:42:47.445Z"
+     "updatedAt": "2026-11-18T01:42:38.857Z"
     }
    ],
    "profiles": [
@@ -316970,7 +316974,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -316978,7 +316982,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:35:21.460Z",
+   "updatedAt": "2026-11-18T07:29:58.935Z",
    "builtAt": "",
    "notes": [
     {
@@ -317040,9 +317044,70 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T05:35:21.460Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T05:43:55.345Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s2): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T05:44:56.546Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-approval-pass-covers-every-call--gina.",
+     "at": "2026-11-18T05:52:47.024Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-approval-pass-covers-every-call--gina, shared account login)",
+     "at": "2026-11-18T05:53:08.912Z"
+    },
+    {
+     "text": "Session stopped on its own with 8 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T06:38:47.746Z"
+    },
+    {
+     "text": "Session stopped on its own with 8 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T06:44:33.029Z"
+    },
+    {
+     "text": "Session stopped on its own with 5 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T07:02:40.729Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s11): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T07:14:55.421Z"
+    },
+    {
+     "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-18T07:23:30.721Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s12): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T07:24:37.332Z"
+    },
+    {
+     "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T07:13:29.315Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s12): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T07:29:58.935Z"
+    },
+    {
+     "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-18T07:29:01.036Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-18T06:00:37.023Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Why do I keep getting approvals when I set a pass?",
@@ -317068,14 +317133,14 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-18T05:34:51.140Z",
+     "at": "2026-11-18T07:22:30.341Z",
      "exit": 0,
-     "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 11,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 1,
      "account": "",
      "session": "",
-     "phase": "Phase 1"
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-18T01:46:23.048Z",
@@ -317085,14 +317150,14 @@
      "note": "Split by Claude into 12 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "Session stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T01:48:41.734Z",
+     "at": "2026-11-18T07:35:44.641Z",
      "why": "subscription account hulu0241"
     },
     "tried": [
@@ -317106,10 +317171,24 @@
    },
    "recoveries": [
     {
-     "at": "2026-11-18T05:21:02.546Z",
+     "at": "2026-11-18T07:22:30.325Z",
      "buildId": "approval-pass-covers-every-call",
      "phase": "",
-     "step": "s2",
+     "step": "s12",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-18T07:27:54.936Z",
+     "buildId": "approval-pass-covers-every-call",
+     "phase": "",
+     "step": "s12",
      "cause": "exit-clean",
      "exit": 0,
      "action": "requeue",
@@ -317141,7 +317220,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T05:37:12.931Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z"
     },
     {
      "id": "s2",
@@ -317158,12 +317237,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:00:37.023Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z"
     },
     {
      "id": "s3",
@@ -317180,12 +317259,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:20:30.733Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z"
     },
     {
      "id": "s4",
@@ -317202,12 +317281,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:25:01.149Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T06:50:27.623Z"
     },
     {
      "id": "s5",
@@ -317224,12 +317303,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:35:22.642Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T06:58:55.834Z"
     },
     {
      "id": "s6",
@@ -317246,12 +317325,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:43:48.640Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T06:58:55.834Z"
     },
     {
      "id": "s7",
@@ -317268,12 +317347,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:49:26.442Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T07:16:05.126Z"
     },
     {
      "id": "s8",
@@ -317290,12 +317369,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T07:00:08.259Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T07:20:10.807Z"
     },
     {
      "id": "s9",
@@ -317312,12 +317391,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T07:06:21.617Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T07:20:10.807Z"
     },
     {
      "id": "s10",
@@ -317334,12 +317413,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T07:08:40.022Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T07:20:10.807Z"
     },
     {
      "id": "s11",
@@ -317356,12 +317435,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T07:11:55.230Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T07:20:10.807Z"
     },
     {
      "id": "s12",
@@ -317394,7 +317473,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
