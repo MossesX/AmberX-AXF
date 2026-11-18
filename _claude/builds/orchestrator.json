@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T21:29:26.567Z",
+ "updatedAt": "2026-11-18T22:57:22.128Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194796,7 +194796,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T21:00:01.858Z",
+   "updatedAt": "2026-11-18T22:57:10.231Z",
    "builtAt": "",
    "notes": [
     {
@@ -194826,6 +194826,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-18T20:29:05.528Z"
+    },
+    {
+     "text": "s2 (Fable): builds store is on Postgres tables. builds (keyed by id), build_steps, build_notes, journal (view build_journal); row-level patch writes (SELECT … FOR UPDATE on the touched builds only); key-level modes so store.json + journal/ move ahead of the rest of the namespace. Live: axf-data redeployed at a fixed address with host.env for host processes; engine moved shadow → postgres (SQLite side held 119 keys, Postgres 16 105; reads had been answering not_found); store copied and verified: 1 060 builds, 6 718 steps, 7 594 notes on both sides and as rows; journal: 22 parts, 15 731 entries (2 torn lines in p7 cannot be copied). Keys NOT flipped yet: a writer on older code would keep writing the file. s3 flips once main carries this: builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json (cli token, host URL), then drops the lock path and tmp files. Report: _claude/builds/reports/urgent-all-data-to-postgres-builds-store.md",
+     "at": "2026-11-18T22:57:10.231Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 2): axf-urgent-all-data-to-postgres-builds-store--joey.",

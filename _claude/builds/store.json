@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9149,
- "updatedAt": "2026-11-18T21:29:26.567Z",
+ "rev": 9150,
+ "updatedAt": "2026-11-18T22:57:22.128Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321752,7 +321752,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T21:00:01.858Z",
+   "updatedAt": "2026-11-18T22:57:10.231Z",
    "builtAt": "",
    "notes": [
     {
@@ -321784,6 +321784,10 @@
      "at": "2026-11-18T20:29:05.528Z"
     },
     {
+     "text": "s2 (Fable): builds store is on Postgres tables. builds (keyed by id), build_steps, build_notes, journal (view build_journal); row-level patch writes (SELECT … FOR UPDATE on the touched builds only); key-level modes so store.json + journal/ move ahead of the rest of the namespace. Live: axf-data redeployed at a fixed address with host.env for host processes; engine moved shadow → postgres (SQLite side held 119 keys, Postgres 16 105; reads had been answering not_found); store copied and verified: 1 060 builds, 6 718 steps, 7 594 notes on both sides and as rows; journal: 22 parts, 15 731 entries (2 torn lines in p7 cannot be copied). Keys NOT flipped yet: a writer on older code would keep writing the file. s3 flips once main carries this: builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json (cli token, host URL), then drops the lock path and tmp files. Report: _claude/builds/reports/urgent-all-data-to-postgres-builds-store.md",
+     "at": "2026-11-18T22:57:10.231Z"
+    },
+    {
      "text": "Started run 1 on hulu0241 (Fable, Phase 2): axf-urgent-all-data-to-postgres-builds-store--joey.",
      "at": "2026-11-18T20:59:53.928Z"
     },
@@ -321809,20 +321813,20 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "hulu0241",
-    "session": "axf-urgent-all-data-to-postgres-builds-store--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-18T20:59:50.540Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
-    "dispatchedAt": "2026-11-18T20:59:50.540Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -321830,8 +321834,10 @@
      "at": "2026-11-18T20:58:46.207Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-18T20:59:50.540Z",
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
