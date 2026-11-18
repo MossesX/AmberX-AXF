@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:52 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · foreign-write
-- 2026-11-17 23:51 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
 - 2026-11-17 23:51 UTC · `move-server-side-console-parts-onto-vps` s13 done (all) · orchestrator
 - 2026-11-17 23:53 UTC · `move-server-side-console-parts-onto-vps` s14 done (all) · orchestrator
 - 2026-11-17 23:53 UTC · `molly-console-commands` note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · orchestrator
 - 2026-11-18 01:11 UTC · `move-everything-axhub-web-console` s12 done (all) · orchestrator
 - 2026-11-18 01:11 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
+- 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
 
 ## Token passes (log)
 
