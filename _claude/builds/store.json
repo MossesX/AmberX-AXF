@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8967,
- "updatedAt": "2026-11-18T13:19:25.220Z",
+ "rev": 8968,
+ "updatedAt": "2026-11-18T13:20:36.811Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318118,7 +318118,7 @@
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T13:18:36.116Z",
+   "updatedAt": "2026-11-18T13:19:49.334Z",
    "builtAt": "",
    "notes": [
     {
@@ -318466,12 +318466,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:19:24.925Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:25:38.639Z",
-     "updatedAt": "2026-11-18T12:25:38.639Z"
+     "updatedAt": "2026-11-18T13:19:28.612Z"
     },
     {
      "id": "s12",
@@ -318492,12 +318492,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:19:49.333Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:25:38.639Z",
-     "updatedAt": "2026-11-18T12:25:38.639Z"
+     "updatedAt": "2026-11-18T13:19:51.929Z"
     },
     {
      "id": "s13",
@@ -318584,7 +318584,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
