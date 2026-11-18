@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T23:20:03.271Z",
+ "updatedAt": "2026-11-18T23:21:11.534Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195238,6 +195238,129 @@
      "note": "",
      "uid": "st-mwmmukzd064mcr",
      "createdAt": "2026-11-18T21:27:59.161Z"
+    }
+   ]
+  },
+  {
+   "id": "deep-links-to-plugin-s-settings-don-t",
+   "title": "Deep links to a plugin's settings don't open it (console_open just reloads the main page)",
+   "category": "Console > Settings",
+   "detail": "Brett (voice, Nov 18 2026): console_open with screen settings, tab plugins, item phone-connect answers ok/started but the console only refreshes the main page; the Phone Connect settings never open. Settings → Plugins also just lists plugins with no link into each plugin's settings. Known from another build log: the deep link to a settings sub-tab answers ok but the shared settings code doesn't move to it. Fix in the shared settings code so every plugin settings sub-tab is reachable by deep link (REST, MCP, CLI, voice) and by tapping the plugin in the list.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T23:20:06.039Z",
+   "updatedAt": "2026-11-18T23:20:57.231Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T23:20:57.231Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett (voice, Nov 18 2026): console_open with screen settings, tab plugins, item phone-connect answers ok/started but the console only refreshes the main page; the Phone Connect settings never open.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmqvuz301q0bu",
+     "createdAt": "2026-11-18T23:20:57.231Z"
+    },
+    {
+     "id": "s2",
+     "text": "Settings → Plugins also just lists plugins with no link into each plugin's settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmqvuz30234zo",
+     "createdAt": "2026-11-18T23:20:57.231Z"
+    },
+    {
+     "id": "s3",
+     "text": "Known from another build log: the deep link to a settings sub-tab answers ok but the shared settings code doesn't move to it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmqvuz303ain7",
+     "createdAt": "2026-11-18T23:20:57.231Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fix in the shared settings code so every plugin settings sub-tab is reachable by deep link (REST, MCP, CLI, voice) and by tapping the plugin in the list.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmqvuz304np7d",
+     "createdAt": "2026-11-18T23:20:57.231Z"
+    },
+    {
+     "id": "s5",
+     "text": "Tests green, report _claude/builds/reports/deep-links-to-plugin-s-settings-don-t.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/deep-links-to-plugin-s-settings-don-t.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmqvuz3057j74",
+     "createdAt": "2026-11-18T23:20:57.231Z"
     }
    ]
   }
