@@ -284,6 +284,93 @@ ok(j["ok"] and j["active"][0]["id"] == "p1" and j["goPass"]["live"] is False and
 (Path(DATA) / "requests.jsonl").write_text(json.dumps({"id": "r1", "service": "vps", "minutes": 30, "state": "open"}) + "\n" + json.dumps({"id": "r0", "state": "done"}) + "\n")
 ok([q["id"] for q in get("/passes").json()["requests"]] == ["r1"], "open pass requests from the plugin's data folder show on the Passes screen")
 
+# ---------------------------------------------------------------- actions (s8): who may run each, through the relay
+
+writes: list[tuple[str, Any, bool]] = []
+
+
+class FakeRelayWrites(FakeRelay):
+    def write(self, request, path, body, person, timeout=0):  # noqa: ANN001
+        writes.append((path, body, person))
+        if person and not getattr(self, "admin_browser", True):
+            return {"ok": False, "code": "person_required", "status": 403, "message": "Only your own tap in your signed-in console browser does this."}
+        if path.endswith("/approve-now"):
+            return {"ok": True, "status": 200, "json": {"ok": True, "state": "approved-now", "message": "Approved, running now"}, "via": "browser"}
+        if path.endswith("/auto/stop"):
+            return {"ok": True, "status": 200, "json": {"message": "Stopped."}, "via": "owner"}
+        return {"ok": True, "status": 200, "json": {"ok": True, "message": "Done.", "item": {"id": ID, "status": "declined"}}, "via": "browser"}
+
+
+relay_w = FakeRelayWrites()
+plugin_services.provide("axf.hub-relay@1", relay_w, "approvals-banner")
+HELD = "0123abcd-0123-4abc-8def-00000000ae1d"
+_items_held = {"id": HELD, "tool": "vps.run", "title": "Restart nginx", "status": "held", "revision": 1, "veto": {"runsAt": "2026-11-17T12:01:00Z", "secondsLeft": 60, "countdownSeconds": 90, "actions": ["deny", "approve-now", "shelve"]}}
+
+
+def hub_with_held(req: httpx.Request) -> httpx.Response:
+    if req.url.path == f"/auth/api/approvals/{HELD}":
+        return httpx.Response(200, json={"item": _items_held, "auto": APPROVALS["auto"]})
+    return hub(req)
+
+
+relay_w_read = relay_w.read
+
+
+def read_with_held(request, path, params=None, timeout=0):  # noqa: ANN001
+    if path == f"/auth/api/approvals/{HELD}":
+        return {"ok": True, "status": 200, "json": {"item": _items_held, "auto": APPROVALS["auto"]}, "via": "owner"}
+    return relay_w_read(request, path, params, timeout)
+
+
+relay_w.read = read_with_held  # type: ignore[method-assign]
+
+
+def post(path: str, body: dict | None = None, cookies: dict | None = GOOD):
+    c.cookies.clear()
+    for k, v in (cookies or {}).items():
+        c.cookies.set(k, v)
+    return c.post(path, json=body or {}, headers={"origin": "https://console.example.test"})
+
+
+j = post(f"/approvals/{ID}/deny", {"rev": 2}).json()
+ok(j["ok"] and j["action"] == "deny" and j["row"] == ID and j["item"]["status"] == "declined", "deny a pending request: through the relay as Brett")
+ok(writes[-1] == (f"/auth/api/approvals/{ID}", {"action": "decline", "rev": 2}, True), f"a pending Deny is the hub's decline with the revision shown, person=True ({writes[-1]})")
+j = post(f"/approvals/{HELD}/approve").json()
+ok(j["ok"] and j["state"] == "approved-now" and writes[-1] == (f"/auth/api/approvals/{HELD}/approve-now", {}, True), "approve a held call: the veto@1 approve-now route")
+post(f"/approvals/{HELD}/shelve")
+ok(writes[-1][0] == f"/auth/api/approvals/{HELD}/shelve" and writes[-1][2] is True, "shelve a held call: its own route, person")
+post(f"/approvals/{ID}/postpone", {"minutes": 30})
+ok(writes[-1] == (f"/auth/api/approvals/{ID}", {"action": "postpone", "rev": 2, "minutes": 30}, True), f"postpone carries its minutes ({writes[-1]})")
+relay_w.admin_browser = False
+j = post(f"/approvals/{ID}/approve").json()
+ok(j["ok"] is False and j["code"] == "person_required", "without Brett's own browser a decision is refused: person_required")
+relay_w.admin_browser = True
+ok(post(f"/approvals/not-an-id/approve").status_code == 400, "a decision on a bad row id is 400")
+ok(post(f"/approvals/{ID}/nope").status_code == 404, "an unknown action is 404")
+
+j = post("/approvals/auto-stop").json()
+ok(j["ok"] and writes[-1] == ("/auth/api/approvals/auto/stop", {}, False), "auto-stop is a command (person=False) on the hub's route")
+ok(post("/approvals/auto-start", {"minutes": 999}).status_code == 400, "auto-start refuses minutes out of range")
+post("/approvals/auto-start", {"minutes": 10})
+ok(writes[-1] == ("/auth/api/approvals/auto", {"minutes": 10}, True), "auto-start is Brett's tap on the hub's auto route")
+j = post("/approvals/check").json()
+ok(j["ok"] and j["state"]["ok"] and j["state"]["screen"] == "approvals", "check reads the hub again and answers the state")
+audit = [json.loads(line) for line in (Path(DATA) / "actions.jsonl").read_text().splitlines()]
+ok(any(e["action"] == "deny" and e["ok"] and e["who"] == "person" for e in audit) and all("cookie" not in json.dumps(e) for e in audit), "every action is audited, never a cookie")
+
+# without the relay plugin: a person write needs the admin browser (wall) and its own cookie
+plugin_services.withdraw("approvals-banner")
+srv.wall.wall_caller = lambda headers: None
+j = post(f"/approvals/{ID}/deny").json()
+ok(j["ok"] is False and j["code"] == "person_required", "relay off + not a wall admin: person_required")
+admin = srv.wall.Caller("brett", "admin", frozenset(), "session")
+srv.wall.wall_caller = lambda headers: admin
+j = post(f"/approvals/{ID}/deny", {"rev": 2}).json()
+ok(j["ok"] and j["via"] == "browser" and any(r.url.path == f"/auth/api/approvals/{ID}" and r.method == "POST" for r in seen), "relay off + wall admin + own cookie: the write goes with the browser session and the hub's CSRF")
+j = post(f"/approvals/{ID}/deny", {}, cookies=None).json()
+ok(j["ok"] is False and j["code"] == "relay_off", "relay off and no cookie: relay_off")
+plugin_services.provide("axf.hub-relay@1", relay, "approvals-banner")
+
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 
 manifest = json.loads((HERE / "plugin.json").read_text())

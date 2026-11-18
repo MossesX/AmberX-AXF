@@ -7,7 +7,6 @@
  * Decisions (approve, deny, shelve, grant, delete, create a token) are Brett's own tap through the approvals-banner
  * relay and are registered personOnly: no session, tool, CLI line or voice action runs them (HUB-CONSOLE.md → who).
  */
-import { useState } from 'react';
 import { Chip, Container, Note, TabGroup } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -16,6 +15,8 @@ import { homeScreen, screensOf, type HubConsoleTable, type HubScreen } from '@co
 import { appMenu } from './menu';
 import { FOLDER, VIEW } from './ids';
 import { ApprovalsScreen } from './approvals';
+import { registerHubActions } from './actions';
+import { setActiveScreen, useActiveScreen } from './store';
 import './hub-admin.css';
 
 export { FOLDER, VIEW };
@@ -67,12 +68,12 @@ export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX
 };
 
 export function HubPage() {
-  const [active, setActive] = useState<string>(homeScreen(TABLE)?.id ?? SCREENS[0]!.id);
+  const active = useActiveScreen(homeScreen(TABLE)?.id ?? SCREENS[0]!.id);
   const screen = SCREENS.find((s) => s.id === active) ?? SCREENS[0]!;
   const render = SCREEN_RENDERERS[screen.id];
   return (
     <div className="fx-stack fx-stack--lg" data-axf-view={VIEW}>
-      <TabGroup id={TABLE.tabRow} label="Hub screens" value={active} onChange={setActive} tabs={SCREENS.map((s) => ({ value: s.id, label: s.title, icon: s.icon, title: s.title }))}>
+      <TabGroup id={TABLE.tabRow} label="Hub screens" value={screen.id} onChange={setActiveScreen} tabs={SCREENS.map((s) => ({ value: s.id, label: s.title, icon: s.icon, title: s.title }))}>
         {render ? render(screen) : <ScreenPlaceholder screen={screen} />}
       </TabGroup>
     </div>
@@ -84,6 +85,7 @@ export const plugin: AxfWebLibrary = {
   label: 'Hub',
   version: '0.1.0',
   provides: ['axf.hub-console@1'],
+  register: (rt) => registerHubActions(rt, TABLE),
   appMenu,
   views: { [VIEW]: { title: 'Hub', icon: 'shield', keywords: ['axhub', 'hub', 'approvals', 'passes', 'veto', 'users', 'account', 'connectors', 'services', 'handoff', 'auth'], render: () => <HubPage /> } },
   nav: { label: 'Hub', items: [{ id: VIEW, label: 'Hub', icon: 'shield', view: VIEW }] },

@@ -15,6 +15,7 @@ import { formatCountdown, secondsLeftNow, vetoHost, vetoOf } from '@console/axf/
 import { approvalUrl, parseSource } from '@console/axf/libs/hub';
 import type { HubScreen } from '@console/axf/core/hub-console.mjs';
 import { readScreen, relTime, useHubRead, UNAVAILABLE_WORDS, type Read } from './data';
+import { clearFocus, useFocus } from './store';
 
 /** One entry as the hub's `/auth/api/approvals` answers it (apps/axhub-web/src/hub/types.ts, approval-grid@1). */
 export interface HubRawItem {
@@ -84,8 +85,17 @@ export function ApprovalsScreen({ screen }: { screen: HubScreen }) {
   const [status, setStatus] = useState('all');
   const [page, setPage] = useState(1);
   const [fast, setFast] = useState(false);
+  const focus = useFocus();
+  // A deep link to one request (`row:<id>`, `hub.open:approvals:<id>`): show every status so the row is there, and open it.
+  useEffect(() => { if (focus?.screen === 'approvals' && focus.row) { setStatus('all'); setPage(1); approvalsOpenStore.set(SCOPE, focus.row, true); } }, [focus]);
   const { data, stale, reload } = useHubRead<ApprovalGrid>('approvals', { status, page }, fast ? poll.heldMs : poll.idleMs);
   const g = data && data.ok ? data : null;
+  useEffect(() => {
+    if (!focus || focus.screen !== 'approvals' || !focus.row || !g) return;
+    const el = document.querySelector(`[data-axf-hub-screen="approvals"] [data-axf-row="${focus.row}"]`);
+    el?.scrollIntoView({ block: 'center' });
+    if (g.items.some((i) => i.id === focus.row)) clearFocus();
+  }, [focus, g]);
   const anyHeld = !!g && g.items.some(isHeld);
   useEffect(() => setFast(anyHeld), [anyHeld]);
   const waiting = g ? (g.waiting ?? 0) + (g.heldCount ?? 0) : 0;

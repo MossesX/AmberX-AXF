@@ -13,7 +13,10 @@
   "provides": [
     "view:hub",
     "settings-tab:hub",
-    "service:axf.hub-console@1"
+    "service:axf.hub-console@1",
+    "action:hub.open",
+    "action:hub.focus",
+    "action:hub.approvals"
   ],
   "requires": [
     "service:control@1"
@@ -176,6 +179,52 @@
         "readOnly": true,
         "tool": "hub_apps_list",
         "description": "App catalog (hub-apps@1): every app the framework's CI built."
+      },
+      {
+        "route": "POST /approvals/{row}/approve",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /approvals/{row}/deny",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /approvals/{row}/shelve",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /approvals/{row}/postpone",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /approvals/{row}/ignore",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /approvals/{row}/revoke",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /approvals/{row}/reopen",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /approvals/auto-start",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "id": "approvals-auto-stop",
+        "route": "POST /approvals/auto-stop",
+        "title": "Approvals: stop approving automatically",
+        "tool": "hub_approvals_auto_stop",
+        "description": "Ends the auto-approve window now; every call waits on Brett again."
+      },
+      {
+        "id": "approvals-check",
+        "route": "POST /approvals/check",
+        "title": "Approvals: check the hub now",
+        "tool": "hub_approvals_check",
+        "description": "Reads axHub again at once and answers the Approvals state (approval-grid@1)."
       }
     ]
   },
@@ -189,5 +238,8 @@
     "builtAt": "2026-11-17"
   },
   "help": "help.json",
-  "opens": "main"
+  "opens": "main",
+  "cli": {
+    "hub": "hub.mjs"
+  }
 }

@@ -39,6 +39,7 @@ from axf_server import http as axf_http
 from axf_server.github_hub import HubLink, HubUnreachable
 
 import plugin_services
+import wall
 
 router = APIRouter()
 FOLDER = "hub-admin"
@@ -549,6 +550,224 @@ async def get_auth(request: Request) -> dict[str, Any]:
 async def get_apps(request: Request) -> dict[str, Any]:
     """App catalog (hub-apps@1): every app the framework's CI built, with downloads on the hub's own path."""
     return await read_screen(request, "apps")
+
+
+# ---------------------------------------------------------------- actions (hub-console@1 `actions`): who may run each
+
+class Writer:
+    """`/auth/api` writes through the relay service (browser session, else the owner sign-in); without the relay plugin, the
+    browser's own cookie and nothing else. `person=True` goes only for a wall admin's same-origin browser request."""
+
+    def __init__(self, request: Request) -> None:
+        self.request = request
+        self.relay = plugin_services.get(RELAY_CAP)
+
+    def post(self, path: str, body: Any, person: bool) -> dict[str, Any]:
+        if self.relay is not None:
+            r = self.relay.write(self.request, path, body, person, timeout=TIMEOUT_S)
+            if r.get("ok"):
+                return {"ok": True, "json": r.get("json") or {}, "via": r.get("via", "")}
+            return {"ok": False, "code": r.get("code", "hub_error"), "message": r.get("message") or "axHub refused it.", "status": r.get("status"), "via": r.get("via", ""), "json": r.get("json") or {}}
+        c = wall.wall_caller(self.request.headers)
+        if person and (c is None or not c.admin or not wall.same_origin(self.request)):
+            return {"ok": False, "code": "person_required", "message": "Only your own tap in your signed-in console browser does this.", "status": 403}
+        cookie = self.request.cookies.get(COOKIE) or ""
+        hub = hub_base()
+        if not hub:
+            return {"ok": False, "code": "hub_unavailable", "message": "The console has no https hub address (AXF_WALL_HUB).", "status": 0}
+        if not cookie:
+            return {"ok": False, "code": "relay_off", "message": "The approvals-banner plugin is off and this browser brought no axHub session.", "status": 401}
+        try:
+            with httpx.Client(timeout=TIMEOUT_S, follow_redirects=False) as client:
+                r = relay_core.post_json(hub, cookie, path, body, client)
+        except httpx.HTTPError as e:
+            return {"ok": False, "code": "hub_unavailable", "message": f"Couldn't reach axHub ({type(e).__name__}).", "status": 0}
+        if r["status"] == 200:
+            return {"ok": True, "json": r["json"], "via": "browser"}
+        err = r["json"].get("error") if isinstance(r["json"].get("error"), dict) else {}
+        return {"ok": False, "code": str(r.get("code") or "hub_refused"), "message": str(err.get("message") or f"axHub answered {r['status']}.")[:MESSAGE_MAX], "status": r["status"], "via": "browser", "json": r["json"]}
+
+
+def _audit(entry: dict[str, Any]) -> None:
+    """One line per action asked of the hub (never a cookie, never a token); a log that can't be written never stops a tap."""
+    try:
+        d = _data()
+        d.mkdir(parents=True, exist_ok=True)
+        with (d / "actions.jsonl").open("a", encoding="utf-8") as f:
+            f.write(json.dumps({"at": _now(), **entry}) + "\n")
+    except OSError:
+        pass
+
+
+def _action(table: dict[str, Any], sid: str, aid: str) -> dict[str, Any]:
+    screen = screen_of(table, sid)
+    a = next((x for x in (screen or {}).get("actions", []) if x.get("id") == aid), None) if screen else None
+    if screen is None or a is None:
+        raise HTTPException(404, f"no hub action {sid}/{aid}")
+    return a
+
+
+def _caller(request: Request) -> str:
+    c = wall.wall_caller(request.headers)
+    if c is not None:
+        return c.name
+    u = getattr(getattr(request, "state", None), "axf_user", None)
+    return getattr(u, "name", "") or "token"
+
+
+async def _body(request: Request) -> dict[str, Any]:
+    try:
+        b = await request.json()
+    except ValueError:
+        return {}
+    return b if isinstance(b, dict) else {}
+
+
+async def run_action(request: Request, sid: str, aid: str, row: str | None, hub_call: Callable[[Session, dict[str, Any]], tuple[str, Any]] | None, body: dict[str, Any] | None = None) -> dict[str, Any]:
+    """One action of the route table: checks who may run it, finds the hub route, posts through the console's own hub
+    session, audits, and answers {ok, message, state?, …} or the unavailable / refusal state."""
+    table = load_table()
+    screen = screen_of(table, sid)
+    a = _action(table, sid, aid)
+    if row is not None and not row_ok(screen or {}, row):
+        raise HTTPException(400, f"not a {sid} row id")
+    b = body if body is not None else await _body(request)
+    person = a.get("who") == "person"
+    if a.get("missing"):
+        out = {"ok": False, "code": HUB_MISSING, "message": a["missing"].get("why", "axHub has no route for this yet."), "proposed": a["missing"].get("proposed", ""), **({"cli": a["missing"]["cli"]} if a["missing"].get("cli") else {})}
+    elif hub_call is None:
+        out = {"ok": True, "message": "Nothing to send to the hub."}
+    else:
+        s = Session(request)
+        try:
+            path, payload = await run_in_threadpool(hub_call, s, b)
+        except HTTPException:
+            raise
+        except LookupError as e:
+            out = {"ok": False, "code": "not_found", "message": str(e)}
+            path = ""
+            payload = None
+        except Unavailable as e:
+            out = dict(e.state)
+            path = ""
+            payload = None
+        if path:
+            r = await run_in_threadpool(Writer(request).post, path, payload, person)
+            if r["ok"]:
+                j = r["json"]
+                out = {"ok": True, "via": r["via"], "message": str(j.get("message") or "Done.")[:MESSAGE_MAX], **({"state": j["state"]} if isinstance(j.get("state"), str) else {}), **({"item": j["item"]} if isinstance(j.get("item"), dict) else {})}
+            else:
+                out = {"ok": False, "code": r.get("code", "hub_error"), "message": r.get("message", ""), "via": r.get("via", ""), **({"state": r["json"]["state"]} if isinstance(r.get("json"), dict) and isinstance(r["json"].get("state"), str) else {})}
+    _audit({"by": _caller(request), "screen": sid, "action": aid, "row": row, "who": a.get("who"), "ok": out["ok"], "code": out.get("code", ""), "via": out.get("via", "")})
+    return {"screen": sid, "action": aid, **({"row": row} if row is not None else {}), **out}
+
+
+# ---- Approvals (s8): decide actions are Brett's tap (person); auto-stop and check are commands
+
+class Unavailable(Exception):
+    """A read an action needed first could not be served: the action answers that state (never a stack trace)."""
+
+    def __init__(self, state: dict[str, Any]) -> None:
+        super().__init__(state.get("message", ""))
+        self.state = state
+
+
+def _approval_status(s: Session, row: str) -> dict[str, Any]:
+    r = s.get(f"/auth/api/approvals/{row}")
+    if not r["ok"]:
+        raise Unavailable(r)
+    item = r["json"].get("item") or {}
+    if not isinstance(item, dict):
+        raise LookupError("no such request on the hub")
+    return item
+
+
+def _decide_call(action: str) -> Callable[[Session, dict[str, Any]], tuple[str, Any]]:
+    """The hub route of a decision on one request: held calls have their own routes (veto@1), the rest go through the
+    plain decide route with the revision the screen showed (a request that changed meanwhile is refused by the hub)."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any]:
+        row = str(b.get("_row"))
+        item = _approval_status(s, row)
+        held = item.get("status") == "held" and isinstance(item.get("veto"), dict)
+        rev = b.get("rev") if isinstance(b.get("rev"), int) else item.get("revision")
+        if held and action in ("approve", "deny", "shelve"):
+            return f"/auth/api/approvals/{row}/{'approve-now' if action == 'approve' else action}", {}
+        hub_action = {"approve": "approve", "deny": "decline", "shelve": "postpone"}.get(action, action)
+        extra = {k: v for k, v in b.items() if k in ("until", "minutes", "condition", "note", "reason") and v is not None}
+        return f"/auth/api/approvals/{row}", {"action": hub_action, **({"rev": rev} if isinstance(rev, int) else {}), **extra}
+    return call
+
+
+async def _decide(request: Request, row: str, action: str) -> dict[str, Any]:
+    b = await _body(request)
+    return await run_action(request, "approvals", action, row, _decide_call(action), {**b, "_row": row})
+
+
+@router.post("/approvals/{row}/approve")
+async def post_approve(request: Request, row: str) -> dict[str, Any]:
+    """Approve one request (Brett's own tap; a held call runs at once)."""
+    return await _decide(request, row, "approve")
+
+
+@router.post("/approvals/{row}/deny")
+async def post_deny(request: Request, row: str) -> dict[str, Any]:
+    """Deny one request (Brett's own tap)."""
+    return await _decide(request, row, "deny")
+
+
+@router.post("/approvals/{row}/shelve")
+async def post_shelve(request: Request, row: str) -> dict[str, Any]:
+    """Shelve a held call: the countdown pauses until Brett decides (his own tap)."""
+    return await _decide(request, row, "shelve")
+
+
+@router.post("/approvals/{row}/postpone")
+async def post_postpone(request: Request, row: str) -> dict[str, Any]:
+    """Postpone one request (Brett's own tap)."""
+    return await _decide(request, row, "postpone")
+
+
+@router.post("/approvals/{row}/ignore")
+async def post_ignore(request: Request, row: str) -> dict[str, Any]:
+    """Ignore one request (Brett's own tap)."""
+    return await _decide(request, row, "ignore")
+
+
+@router.post("/approvals/{row}/revoke")
+async def post_revoke(request: Request, row: str) -> dict[str, Any]:
+    """Revoke an approval (Brett's own tap)."""
+    return await _decide(request, row, "revoke")
+
+
+@router.post("/approvals/{row}/reopen")
+async def post_reopen(request: Request, row: str) -> dict[str, Any]:
+    """Reopen a decided request (Brett's own tap)."""
+    return await _decide(request, row, "reopen")
+
+
+@router.post("/approvals/auto-start")
+async def post_auto_start(request: Request) -> dict[str, Any]:
+    """Approve everything for N minutes (Brett's own tap, tapped twice on the screen)."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any]:
+        minutes = b.get("minutes")
+        if not isinstance(minutes, int) or minutes < 1 or minutes > 240:
+            raise HTTPException(400, "minutes: 1 to 240")
+        return "/auth/api/approvals/auto", {"minutes": minutes}
+    return await run_action(request, "approvals", "auto-start", None, call)
+
+
+@router.post("/approvals/auto-stop")
+async def post_auto_stop(request: Request) -> dict[str, Any]:
+    """Stop approving automatically (the auto-approve window ends now)."""
+    return await run_action(request, "approvals", "auto-stop", None, lambda s, b: ("/auth/api/approvals/auto/stop", {}))
+
+
+@router.post("/approvals/check")
+async def post_check(request: Request) -> dict[str, Any]:
+    """Read the hub again now and answer the Approvals state."""
+    out = await run_action(request, "approvals", "check", None, None)
+    state = await read_screen(request, "approvals")
+    return {**out, "state": state}
 
 
 # ---------------------------------------------------------------- systems check: can the console read the hub?
