@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8806,
- "updatedAt": "2026-11-18T01:50:33.218Z",
+ "rev": 8807,
+ "updatedAt": "2026-11-18T01:51:17.984Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318824,10 +318824,10 @@
    "source": "fix-launcher-crash-duplicate-steps-brief",
    "pendingId": "fix-ci-red-main-watchdog-test-vs-done",
    "branch": "claude/fix-ci-red-main-watchdog-test-vs-done",
-   "pr": "",
+   "pr": "#830",
    "priority": "P1",
    "createdAt": "2026-11-18T00:32:34.912Z",
-   "updatedAt": "2026-11-18T00:53:36.402Z",
+   "updatedAt": "2026-11-18T01:51:12.745Z",
    "builtAt": "",
    "notes": [
     {
@@ -318845,6 +318845,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-ci-red-main-watchdog-test-vs-done--rhonda.",
      "at": "2026-11-18T00:38:45.918Z"
+    },
+    {
+     "text": "Reconciler: PR #830",
+     "at": "2026-11-18T01:51:12.745Z"
     }
    ],
    "approvals": [],
@@ -319693,7 +319697,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -337425,7 +337429,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T01:39:44.152Z",
-   "updatedAt": "2026-11-18T01:49:50.517Z",
+   "updatedAt": "2026-11-18T01:51:01.086Z",
    "builtAt": "",
    "notes": [
     {
@@ -337435,6 +337439,10 @@
     {
      "text": "Split by Claude into 15 steps (2 Fable).",
      "at": "2026-11-18T01:44:12.694Z"
+    },
+    {
+     "text": "Rule from Brett: before every build launch and whenever anything jams, check for stale slots, ghost processes and dead sessions and clear them first. The VPS and the console both run this check and back each other up: if one misses it, the other catches it.",
+     "at": "2026-11-18T01:51:01.086Z"
     },
     {
      "text": "Rule: always keep one build slot free on the VPS. The dispatcher fills at most limit minus 1 slots; the spare slot is only for urgent fixes (land fixes, manual launches, auto-lander fix sessions). Setting in the Watchdog plugin, default 1 spare.",
