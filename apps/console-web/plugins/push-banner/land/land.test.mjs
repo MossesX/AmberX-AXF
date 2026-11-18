@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, ciOf, reasonEvent, worktrees } from './land.mjs';
+import { makeGit, round, control, readState, ciOf, reasonEvent, worktrees, noticePng, flagReview, flagGroup } from './land.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -232,6 +232,14 @@ check(by.ui?.state === 'blocked' && by.ui.reason.kind === 'ui' && by.ui.pr === 5
 check(by.ui?.reviewFlag === 'waiting' && by.ui.heldSince === by.ui.since && /waiting in UI Review/.test(by.ui.holdReason) && !by.ui.holdReason.startsWith('ui:'), 'ui: the held record says since when and why (lander-state@1 heldSince, holdReason, reviewFlag waiting)');
 check(calls.api.some((c) => c.path.includes('/api/plugins/ui-review/state?branch=claude%2Fui&pr=51')) && !calls.api.some((c) => c.path.includes('/ui-hold')), 'the lander looks the review item up in the live console (ui-review state), not the old ui-hold');
 check(by.green?.reviewFlag === '' && by.green.heldSince === undefined, 'green: no review claimed, none in the console = no flag, not held');
+// s6: a PR that landed with its review missing / unposted files a UI Review notice (Screenshots, never the review queue) and a build note
+const png = noticePng(); check(png.subarray(0, 8).toString('hex') === '89504e470d0a1a0a' && png.subarray(12, 16).toString() === 'IHDR' && png.length < 2000, 'the notice picture is a small valid PNG');
+check(flagGroup('orchestrator-live-demo', 816) === 'orchestrator-live-demo - missing review' && flagGroup('', 816) === 'pr-816 - missing review', 'the notice group is "<build id> - missing review"');
+const posted = []; const fr = await flagReview({ s: { ...s, repo: tmp }, api: async (m, p, body) => { posted.push({ m, p, body }); return { ok: true, shot: { id: 'sh-816' } }; }, pr: 816, build: '', branch: 'claude/orchestrator-live-demo', reviewFlag: 'missing', at: '2026-11-18T10:00:00Z' });
+check(fr.ok && fr.notice === 'sh-816' && fr.group === 'pr-816 - missing review' && posted.length === 1 && posted[0].m === 'POST' && posted[0].p === '/api/plugins/ui-review/shots', 'flagReview posts one Screenshots notice to the console');
+check(posted[0].body.group === 'pr-816 - missing review' && /#816 landed with its UI Review missing/.test(posted[0].body.title) && /no item for #816/.test(posted[0].body.note) && posted[0].body.source === 'auto-lander' && typeof posted[0].body.data === 'string', 'the notice says what happened in plain words, in the right group, with a picture');
+const fr2 = await flagReview({ s, api: async () => null, pr: 817, reviewFlag: 'unposted', at: '2026-11-18T10:00:00Z', log: () => {} });
+check(!fr2.ok && fr2.notice === '' && fr2.reviewFlag === 'unposted', 'a console that does not answer never fails the landing: the notice is logged as not taken');
 check(by.green?.state === 'ready' && by.green.reason === null && by.green.pr === 52, 'green: CI green, UI free = ready (the push banner merges it)');
 check(st.order[0] && st.managed.includes(52), 'land.json gives the push banner the order and the PRs it manages');
 check(!existsSync(join(wtDir, '_claude/dropped.md')) && readFileSync(join(s.archive, 'wt/_claude/dropped.md'), 'utf8') === 'hub copy\n', 'wt: claude-sync\'s copy backed up to the archive and removed');

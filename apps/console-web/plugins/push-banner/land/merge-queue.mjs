@@ -33,7 +33,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
-import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { ciOf, crewSay, flagReview, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -46,6 +46,17 @@ export async function lookupReview({ api, branch, pr, claimed = false }) {
   let answer = null;
   try { answer = await api('GET', core.REVIEW_STATE_PATH(branch, pr)); } catch { answer = null; }
   return core.reviewLookup(answer, { claimed });
+}
+
+/** The UI Review notice + build note for each PR that landed this round with a flagged review (once: the entry keeps `notice`). */
+export async function noticeFlagged({ s, api, dry, log = () => {}, flagged, at }) {
+  const out = [];
+  for (const f of flagged) {
+    if (f.at !== at || f.notice !== undefined || dry) { out.push(f); continue; }
+    const r = await flagReview({ s, api, pr: f.pr, build: f.build, branch: f.branch, reviewFlag: f.reviewFlag, at, log });
+    out.push({ ...f, notice: r.notice || '', group: r.group });
+  }
+  return out;
 }
 
 export const readQueue = (s) => readJson(queueFile(s), { $axf: q.QUEUE_FRAME, items: [], stack: [], waiting: [], kicked: [], merged: [] });
@@ -306,7 +317,7 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || '', etaMin: q.etaMinutes(stack.length + j, { depth: cfg.depth, avg }) });
   const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => q.heldEntry(p, prevAll.get(p.number), at));
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.reviewFlag = q.reviewFlagOf(p); }
-  const flagged = q.flaggedLandings(prev.flagged, prs, mergedNow, at);
+  const flagged = await noticeFlagged({ s, api, dry, log, flagged: q.flaggedLandings(prev.flagged, prs, mergedNow, at), at });
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.prCi = p.ci; }
   const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, flagged, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
@@ -476,7 +487,7 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
   const prevAll = new Map([...(prev.items || []), ...(prev.waiting || [])].map((x) => [x.pr, x]));
   const waiting = prs.filter((p) => p.why && !landedNow.has(p.number)).map((p) => q.heldEntry(p, prevAll.get(p.number), at));
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.reviewFlag = q.reviewFlagOf(p); }
-  const flagged = q.flaggedLandings(prev.flagged, prs, landedNow, at);
+  const flagged = await noticeFlagged({ s, api, dry, log, flagged: q.flaggedLandings(prev.flagged, prs, landedNow, at), at });
   const st = { ...base, mainSha, expect: batch?.base || mainSha, avgMin: avg, history: history.slice(-20), batch, split, stack: [], items, waiting, flagged, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, lastLanded, enlisted, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
   return st;
