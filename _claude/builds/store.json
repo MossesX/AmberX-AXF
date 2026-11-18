@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8931,
- "updatedAt": "2026-11-18T12:36:57.831Z",
+ "rev": 8932,
+ "updatedAt": "2026-11-18T12:37:39.047Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318696,7 +318696,7 @@
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:31:12.439Z",
+   "updatedAt": "2026-11-18T12:37:07.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -318732,12 +318732,12 @@
      "at": "2026-11-18T12:24:57.670Z"
     },
     {
-     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-vps-never-gives-up-fix-land-every-build--paulie.",
-     "at": "2026-11-18T12:31:12.439Z"
-    },
-    {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:29:28.226Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-vps-never-gives-up-fix-land-every-build--paulie.",
+     "at": "2026-11-18T12:31:12.439Z"
     }
    ],
    "approvals": [],
@@ -318757,13 +318757,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:21:46.349Z",
     "queuedBy": "Brett",
-    "account": "hulu0241",
-    "session": "axf-vps-never-gives-up-fix-land-every-build--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-18T12:30:53.347Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -318774,9 +318774,9 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-18T12:30:53.347Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -318784,8 +318784,11 @@
      "at": "2026-11-18T12:23:45.055Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-18T12:30:53.347Z",
+    "tried": [
+     "hulu0241",
+     "mossesx-max-"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -318806,12 +318809,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T12:37:07.729Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:26:07.343Z",
-     "updatedAt": "2026-11-18T12:26:07.343Z"
+     "updatedAt": "2026-11-18T12:37:10.637Z"
     },
     {
      "id": "s2",
