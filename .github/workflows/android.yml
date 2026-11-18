@@ -197,6 +197,8 @@ jobs:
         run: node apps/console-web/src/native/nativeRules.test.mjs
       - name: Console deep links (#/<view>, ?axf-target=, ?axf-open=, plugin sub-targets, late plugin views, unknown targets)
         run: node apps/console-web/scripts/deeplink.test.mjs
+      - name: Command palette (one Ctrl+K palette, never a decision or an owner-only setting, confirm on destructive, recent first, three looks)
+        run: node apps/console-web/scripts/palette.test.mjs
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index
