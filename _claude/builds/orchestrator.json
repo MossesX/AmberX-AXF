@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:38:54.319Z",
+ "updatedAt": "2026-11-18T00:39:16.897Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -189381,15 +189381,15 @@
    "title": "Fix CI red on main: watchdog test vs done-means-merged guard, alerts engine job",
    "category": "",
    "detail": "CI on main has been red since at least 2026-11-17 19:19 (runs 44171482751, 44186908843) on two jobs, and every PR inherits it (seen on #827):\n1. Build engine sweep: apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs fails 'run: complete / archive builds under the store lock': the stale-row watchdog moves a queued build whose PR merged straight to complete, and the done-means-merged guard refuses it ('refused q-merged queued → landed: landed needs the merge commit (landed.sha)'). Make the watchdog record the merge evidence (landed.sha from the merge commit) and move it to landed (complete only through verify), then update the test to match done-means-merged@1.\n2. Web Dev Console (React/TS) + Python API: step 'Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption' fails; read the run log, fix the engine or regenerate the fixture.\nDone when both jobs are green on main.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "fix-launcher-crash-duplicate-steps-brief",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-ci-red-main-watchdog-test-vs-done",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-18T00:32:34.912Z",
-   "updatedAt": "2026-11-18T00:38:45.918Z",
+   "updatedAt": "2026-11-18T00:38:53.871Z",
    "builtAt": "",
    "notes": [
     {
@@ -189399,6 +189399,10 @@
     {
      "text": "Split by Claude into 12 steps (0 Fable).",
      "at": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-ci-red-main-watchdog-test-vs-done--rhonda, shared account login)",
+     "at": "2026-11-18T00:38:53.871Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-ci-red-main-watchdog-test-vs-done--rhonda.",
