@@ -11,7 +11,7 @@ bar widget, so it stays with agent-slots. The framework's own widgets (clock, se
 library status) stay in the framework.
 
 ## Before
-16 widgets drawn by 12 plugins, each with its own attach code, hint, show switch and settings place:
+17 widgets drawn by 12 plugins, each with its own attach code, hint, show switch and settings place:
 Badges (`claude-badge`: Claude, VPS, axHub, AmberX, usage meter), project-switcher, build-profiles, claude-accounts,
 follow-amber, whats-shipped, agent-voice, wake-listener, builds-page, main-build-status, alerts-bell (bell + count),
 plan-studio (+ Plan).
@@ -19,7 +19,7 @@ plan-studio (+ Plan).
 ## After
 - **One plugin: Banner widgets** (`apps/console-web/plugins/banner-widgets`, id `ai.amberx.axf.console.banner-widgets`).
   It is the Badges plugin moved and grown (`git mv`, so history follows; `builtWith.replaces` names the old id).
-  - `web/registry.ts`: the one table of all 16 widgets: id, asset type and id, side, order, picker hint, the setting keys it
+  - `web/registry.ts`: the one table of all 17 widgets: id, asset type and id, side, order, picker hint, the setting keys it
     obeys, and the old owner's plugin id and folder as aliases.
   - `web/supplied.ts`: builds the asset for every widget another plugin feeds, attaches it, takes it off, repaints on
     data, setting or counter changes.
