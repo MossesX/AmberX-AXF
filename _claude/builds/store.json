@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8647,
- "updatedAt": "2026-11-18T01:05:49.080Z",
+ "rev": 8648,
+ "updatedAt": "2026-11-18T01:06:06.088Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288246,7 +288246,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:05:20.109Z",
+   "updatedAt": "2026-11-18T01:05:35.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -288420,6 +288420,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T01:05:20.109Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T01:05:35.886Z"
     }
    ],
    "approvals": [
@@ -288504,6 +288508,20 @@
      "notified": "2026-11-18T00:55:23.842Z",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3)."
+    },
+    {
+     "at": "2026-11-18T01:05:12.551Z",
+     "buildId": "flagship-professional-skin-covering-2",
+     "phase": "Phase 1",
+     "step": "s20",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "",
+     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
    ],
    "steps": [
@@ -289229,7 +289247,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 90,
+   "rev": 91,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -289724,12 +289742,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-17T23:46:16.984Z",
+   "updatedAt": "2026-11-18T01:05:37.986Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Repeated steps collapsed: 224 → 7 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:16.984Z"
+    },
+    {
+     "text": "Overlap with move-everything-axhub-web-console: the console's Hub plugin (hub-admin) now carries every axHub web page (approvals with Approve / Deny / Shelve through the approvals-banner relay, log, passes, users, account, connectors, handoff, auth). Once Phone Connect is paired, hub notices should deep-link to the console (?axf-open=hub.open:approvals:<id>) and the AmberX app's own approvals UI can go; keep the relay (approvals-banner) and lib-approvals: the console decides through them.",
+     "at": "2026-11-18T01:05:37.986Z"
     }
    ],
    "approvals": [],
@@ -289940,7 +289962,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -289953,13 +289975,13 @@
     "builtAt": "",
     "prefixSteps": true,
     "stepAt": {
-     "st-mwl8hrhz08b6h2": "2026-11-17T21:58:19.850Z",
-     "st-mwl8hrhz09fdry": "2026-11-17T21:58:19.850Z",
-     "st-mwl8hrhz0alfu4": "2026-11-17T21:58:19.850Z",
-     "st-mwl8hrhz0brqpq": "2026-11-17T21:58:19.850Z",
-     "st-mwl8hrhz0c45tw": "2026-11-17T21:58:19.850Z",
-     "st-mwl8hrhz0d7rol": "2026-11-17T21:58:19.850Z",
-     "st-mwl8hrhz0esz2f": "2026-11-17T21:58:19.850Z"
+     "st-mwlaugiylnfivp": "2026-11-17T21:58:19.850Z",
+     "st-mwlaugiyloq8sg": "2026-11-17T21:58:19.850Z",
+     "st-mwlaugiylpg3ry": "2026-11-17T21:58:19.850Z",
+     "st-mwlaugiylqbdsa": "2026-11-17T21:58:19.850Z",
+     "st-mwlaugiylrunk5": "2026-11-17T21:58:19.850Z",
+     "st-mwlaugiyls2t2q": "2026-11-17T21:58:19.850Z",
+     "st-mwlaugiyltccsk": "2026-11-17T21:58:19.850Z"
     }
    },
    "queue": null,
