@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:25:39.530Z",
+ "updatedAt": "2026-11-18T12:26:39.157Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192040,7 +192040,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:24:49.545Z",
+   "updatedAt": "2026-11-18T12:26:21.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -192056,6 +192056,14 @@
      "at": "2026-11-18T12:23:58.636Z"
     },
     {
+     "text": "Split by Claude into 15 steps (0 Fable).",
+     "at": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:26:21.557Z"
+    },
+    {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:24:49.545Z"
     }
@@ -192065,13 +192073,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Plan Studio 2 opens only its settings.",
+     "text": "Trace why Plan Studio 2 opens only its settings: read the plugin's web entry, plugin.json `opens`, and how the console mounts plugin views; write the findings and the fix plan into _claude/builds/reports/plan-studio-2-open-button-working-deep.md (draft section).",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "10 min",
-     "files": [],
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/",
+      "apps/console-web/src/plugins/",
+      "_claude/builds/reports/plan-studio-2-open-button-working-deep.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -192079,18 +192091,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3d44201sa2a",
-     "createdAt": "2026-11-18T12:22:31.441Z"
+     "uid": "st-mwm3h4jz01vk69",
+     "createdAt": "2026-11-18T12:25:38.639Z"
     },
     {
      "id": "s2",
-     "text": "Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console.",
+     "text": "Register the Plan Studio 2 main view (view:plan-studio) alongside its settings sub-tab, so the plugin has a real screen to open, with the view root as a SkinScope and data-axf-target registered.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/plan-studio/plugin.json",
+      "apps/console-web/plugins/plan-studio/web/index.tsx"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -192098,18 +192113,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3d44202wjqo",
-     "createdAt": "2026-11-18T12:22:31.441Z"
+     "uid": "st-mwm3h4jz02hoy8",
+     "createdAt": "2026-11-18T12:25:38.639Z"
     },
     {
      "id": "s3",
-     "text": "Full API/CLI/voice parity, tests.",
+     "text": "Add the Open button to the plan list and plan rows (framework Button, toolbar role + aria-label, tap-confirm on touch), opening the selected plan in the Plan Studio view (view:plan-studio/plan:<id>).",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/plan-studio/web/PlanList.tsx",
+      "apps/console-web/plugins/plan-studio/web/PlanView.tsx"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -192117,12 +192135,260 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3d44203qmxp",
-     "createdAt": "2026-11-18T12:22:31.441Z"
+     "uid": "st-mwm3h4jz03x1qj",
+     "createdAt": "2026-11-18T12:25:38.639Z"
     },
     {
      "id": "s4",
-     "text": "Tests green, report _claude/builds/reports/plan-studio-2-open-button-working-deep.md, THREADS row, commit, push, PR",
+     "text": "API for Open: REST GET /api/plugins/plan-studio/plans/<id> state read and POST …/open, a plugin command `plan-studio.open` (MCP through plugin-commands), `axf plan open <id>` in plans.mjs, and a voice action; all four call the same handler.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/server/routes.py",
+      "apps/console-web/plugins/plan-studio/plans.mjs",
+      "apps/console-web/plugins/plan-studio/commands.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz0450d8",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s5",
+     "text": "Find where the console resolves hash routes (#/…) and ?axf-target=view:… on load, and why both fall through to the main page; add a failing test that loads #/plan-studio and ?axf-target=view:plan-studio and expects that view.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/router/",
+      "apps/console-web/src/console-control/",
+      "apps/console-web/scripts/deeplink.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz05hp2a",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s6",
+     "text": "Fix the deep-link resolver: parse #/<view>[/<sub>] and ?axf-target=<address> before first render, wait for plugin views to register (pending target queue), then navigate and highlight; unknown targets show a notice instead of silently landing on home.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/router/deepLink.ts",
+      "apps/console-web/src/App.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz06216h",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s7",
+     "text": "Cover plugin sub-targets in deep links (view:plan-studio/plan:<id>, view:settings/tab:settings.tabs=plugins) and the hashchange/popstate path while the console is open; make the test from the trace step pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/router/deepLink.ts",
+      "apps/console-web/scripts/deeplink.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz0711eh",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s8",
+     "text": "Deep-link API parity: console_show/console_open accept the same addresses, REST /api/console-control/resolve returns what a link would open, `axf console open <target|url>` and a voice action route to it; check-console-control.mjs still passes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/console_control.py",
+      "framework/cli/axf.mjs",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz081gvj",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s9",
+     "text": "Look at the existing Ctrl+K console-control search and decide how the palette extends it (one component, no second search); record the decision in the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/src/console-control/",
+      "_claude/builds/reports/plan-studio-2-open-button-working-deep.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz09ytvs",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s10",
+     "text": "Build the Ctrl+K command palette as a framework dialog asset: fuzzy search over every console-control target, plugin command and plan, keyboard navigation, theme tokens only, a mobile entry in the banner.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/components/CommandPalette.tsx",
+      "apps/console-web/src/assets/dialog/command-palette.json",
+      "apps/console-web/src/console.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz0a1haw",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s11",
+     "text": "Palette actions: Enter runs the target's action (open, press, set) through the same console-control dispatcher, destructive presses ask for confirm, approve/deny and owner-only settings are never listed; recent items first.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/components/CommandPalette.tsx",
+      "apps/console-web/src/console-control/dispatch.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz0b7l8a",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s12",
+     "text": "Palette API: deep link view:command-palette (open with a query), REST GET /api/console-control/search?q=, MCP console_control_search, `axf console search <q>`, voice 'search for …'; register its control targets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/console_control.py",
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz0ccjta",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s13",
+     "text": "Tests: Plan Studio open (REST/CLI/command), deep-link resolver cases, palette search and dispatch; run check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/test.py",
+      "apps/console-web/scripts/deeplink.test.mjs",
+      "apps/console-web/scripts/palette.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4jz0do03q",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s14",
+     "text": "Screenshots of Plan Studio open view, a deep-linked screen and the palette (desktop + phone, 3 options for the palette look) submitted to UI Review with choices; save the build's help/glossary descriptions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/plan-studio/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3h4k00ecoyu",
+     "createdAt": "2026-11-18T12:25:38.639Z"
+    },
+    {
+     "id": "s15",
+     "text": "Finish the report _claude/builds/reports/plan-studio-2-open-button-working-deep.md (what changed, how each feature is reached via deep link/REST/MCP/CLI/voice, tests before→after), add the THREADS row, push the branch and open the PR.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -192139,8 +192405,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3d44204wcye",
-     "createdAt": "2026-11-18T12:22:31.441Z"
+     "uid": "st-mwm3h4k00ff2xw",
+     "createdAt": "2026-11-18T12:25:38.639Z"
     }
    ]
   },
@@ -192260,7 +192526,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:24:57.670Z",
+   "updatedAt": "2026-11-18T12:26:07.343Z",
    "builtAt": "",
    "notes": [
     {
@@ -192282,6 +192548,10 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:23:38.942Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T12:26:07.343Z"
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
@@ -192311,8 +192581,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3fxcr01moao",
-     "createdAt": "2026-11-18T12:24:42.651Z"
+     "uid": "st-mwm3hqpb01nrbg",
+     "createdAt": "2026-11-18T12:26:07.343Z"
     },
     {
      "id": "s2",
@@ -192330,8 +192600,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3fxcr0259io",
-     "createdAt": "2026-11-18T12:24:42.651Z"
+     "uid": "st-mwm3hqpb02g7x5",
+     "createdAt": "2026-11-18T12:26:07.343Z"
     },
     {
      "id": "s3",
@@ -192349,8 +192619,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3fxcr03lhzd",
-     "createdAt": "2026-11-18T12:24:42.651Z"
+     "uid": "st-mwm3hqpb03n1o4",
+     "createdAt": "2026-11-18T12:26:07.343Z"
     },
     {
      "id": "s4",
@@ -192371,8 +192641,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3fxcr0443h6",
-     "createdAt": "2026-11-18T12:24:42.651Z"
+     "uid": "st-mwm3hqpb04wfeh",
+     "createdAt": "2026-11-18T12:26:07.343Z"
     }
    ]
   }
