@@ -834,7 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:10 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
 - 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-18 01:10 UTC · `flagship-professional-skin-covering-2` s20 done, → landing (all) · orchestrator
 - 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · orchestrator
@@ -1234,6 +1233,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s7 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
 - 2026-11-18 07:13 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
 - 2026-11-18 07:14 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-18 07:20 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
 
 ## Token passes (log)
 
