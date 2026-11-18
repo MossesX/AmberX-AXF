@@ -697,23 +697,8 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
     return _pipeline("split", _build_id(body.get("id")), "--request", "--by", (brett_click(request) or "console")[:80])
 
 
-@router.post("/pipeline/account")
-async def pipeline_account(request: Request) -> dict[str, Any]:
-    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential)."""
-    body = await _json_body(request)
-    name = str(body.get("name") or "").strip()
-    if not re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", name):
-        raise HTTPException(400, "bad account name")
-    args = ["account", name]
-    if body.get("fable") in ("on", "off", "auto"):
-        args += ["--fable", str(body["fable"])]
-    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 12:
-        args += ["--parallel", str(body["parallel"])]
-    if body.get("use") in ("on", "off"):
-        args += ["--use", str(body["use"])]
-    if len(args) == 2:
-        raise HTTPException(400, "nothing to change")
-    return _pipeline(*args)
+# POST /pipeline/account is gone (one-true-source-for-every-setting, Nov 18 2026): an account's on/off, sessions at once and
+# Fable live in Claude accounts (workers.json) and are changed there: its plugin API's POST role | POST account.
 
 
 @router.get("/pipeline/settings")

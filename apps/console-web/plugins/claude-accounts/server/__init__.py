@@ -424,6 +424,44 @@ async def role(request: Request) -> dict[str, Any]:
     return {"ok": True, "name": name, "role": want, "message": f"{name} takes headless jobs." if want == "worker" else f"{name} no longer takes headless jobs."}
 
 
+@router.post("/account")
+async def account(request: Request) -> dict[str, Any]:
+    """{name, building?: 1-20 | null (default), fable?: true | false | null (auto)}: one account's sessions at once and Fable
+    override (settings-source@1 accounts.<name>.parallel / .fable, owned here in workers.json perAccount). On/off is POST /role."""
+    by = _who(request)
+    b = await _body(request)
+    name = clean_name(b.get("name"))
+    if "building" not in b and "fable" not in b:
+        raise HTTPException(400, "send building (1-20 or null) and/or fable (true, false or null).")
+    if "building" in b and b["building"] is not None and not (isinstance(b["building"], int) and not isinstance(b["building"], bool) and 1 <= b["building"] <= 20):
+        raise HTTPException(400, "building is 1-20, or null for the default.")
+    if "fable" in b and b["fable"] is not None and not isinstance(b["fable"], bool):
+        raise HTTPException(400, "fable is true, false or null (auto).")
+
+    def change() -> dict[str, Any]:
+        cfg = config()
+        pa = dict(cfg["perAccount"].get(name) or {})
+        if "building" in b:
+            if b["building"] is None:
+                pa.pop("building", None)
+            else:
+                pa["building"] = b["building"]
+        if "fable" in b:
+            if b["fable"] is None:
+                pa.pop("fable", None)
+            else:
+                pa["fable"] = b["fable"]
+        cfg["perAccount"][name] = pa
+        return _save_config(cfg, by, _owner(request))
+
+    cfg = await run_in_threadpool(change)
+    pa = cfg["perAccount"].get(name) or {}
+    building = pa.get("building", cfg["limits"]["building"])
+    fable = pa.get("fable")
+    return {"ok": True, "name": name, "building": building, "fable": fable,
+            "message": f"{pa.get('label') or name}: {building} at once · Fable {'auto' if fable is None else 'on' if fable else 'off'}."}
+
+
 def build_account_view() -> dict[str, Any]:
     """The one build account and what can be picked: saved subscription logins (an API key bills per token)."""
     v = view()

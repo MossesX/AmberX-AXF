@@ -106,3 +106,6 @@ A Claude refresh token is spent by every renewal, so `deploy/claude-token-save.m
 of that login at once: a build's watcher (and its release) for its private copy, the `axf-claude-token-save` cron (every
 minute) for the live login and for pairs AI keys renews. A store is rewritten only when it holds a token that login has
 already spent, so a login that doesn't match its account name can never overwrite another account.
+
+
+`POST /account` `{name, building?: 1-20|null, fable?: true|false|null}`: one account's sessions at once and Fable override (settings-source@1 `accounts.<name>.parallel` / `.fable`, owned here in workers.json `perAccount`; CLI `deploy/claude-workers.mjs at-once|fable`, plugin command `account`, voice 'let account 3 run 4 at once'). The Build orchestrator's accounts tab shows them read-only and links here (one-true-source-for-every-setting, Nov 18 2026).

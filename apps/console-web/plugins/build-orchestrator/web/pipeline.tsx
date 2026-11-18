@@ -217,10 +217,9 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
                     : !a.usable && <span className="oc-flag" title={a.why}><Icon name="alert" size={13} />{a.why}</span>}
                 </div>
                 <div className="fx-row fx-row--wrap">
-                  <Button size="sm" tone="neutral" icon="zap" disabled={busy === a.name} title={`Fable access is from the ${a.fableFrom}; tap to set it by hand (on, off) or back to auto`} onClick={() => act('pipeline/account', { name: a.name, fable: a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on' }, `${a.name}: Fable ${a.fableFrom === 'override' ? 'auto' : a.fable ? 'off' : 'on'}`)}>Toggle Fable</Button>
-                  <Button size="sm" tone="neutral" icon="minus" disabled={busy === a.name || a.parallel <= 1} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel - 1 }, `${a.name}: ${a.parallel - 1} at once`)}>Less parallel</Button>
-                  <Button size="sm" tone="neutral" icon="plus" disabled={busy === a.name || a.parallel >= 12} onClick={() => act('pipeline/account', { name: a.name, parallel: a.parallel + 1 }, `${a.name}: ${a.parallel + 1} at once`)}>More parallel</Button>
-                  <Button size="sm" tone="neutral" icon={a.why === 'switched off for the pipeline' ? 'check' : 'x'} disabled={busy === a.name} onClick={() => act('pipeline/account', { name: a.name, use: a.why === 'switched off for the pipeline' ? 'on' : 'off' }, `${a.name}: ${a.why === 'switched off for the pipeline' ? 'back in' : 'off'}`)}>Toggle use</Button>
+                  {/* on/off, sessions at once and Fable have one owner: Claude accounts (workers.json). Read-only here, one link to change them. */}
+                  <span className="fx-small fx-muted">{a.kind === 'api' ? 'API worker, caps and spend' : `${a.why === 'switched off (Claude accounts: not a worker)' ? 'Off' : 'On'} · ${a.parallel} at once · Fable ${a.fableFrom === 'override' ? (a.fable ? 'on' : 'off') : 'auto'}`}</span>
+                  <Button size="sm" tone="neutral" icon="shuffle" title="Open Claude accounts → Job routing (the one place these are set)" onClick={() => void rt.actions.run('claude-accounts.routing')}>Change in Claude accounts</Button>
                 </div>
               </article>
             ))}

@@ -562,14 +562,15 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   const orch = (...a) => run('orchestrator.mjs', ...a);
   const json = (r) => JSON.parse(r.stdout.trim().split('\n').pop());
   const workersFile = () => JSON.parse(readFileSync(join(workersDir, 'workers.json'), 'utf8'));
-  t('account settings live in workers.json (settings-source@1): the pipeline writes the owner, never accounts.json', () => {
-    let r = json(pipe('account', 'w-pro', '--use', 'off', '--parallel', '4', '--fable', 'on', '--json'));
-    assert.equal(r.owner, 'claude-accounts/workers'); assert.deepEqual([r.record.use, r.record.parallel, r.record.fable], [false, 4, true]);
+  t('account settings live in workers.json (settings-source@1): Claude accounts writes them, the pipeline reads the owner, accounts.json holds no copy', () => {
+    const cw = (...a) => run('../../../../deploy/claude-workers.mjs', ...a);
+    cw('worker', 'w-pro', 'off'); cw('at-once', 'w-pro', '4'); cw('fable', 'w-pro', 'on');
     let w = workersFile(); assert.ok(w.excluded.includes('w-pro')); assert.equal(w.perAccount['w-pro'].building, 4); assert.equal(w.perAccount['w-pro'].fable, true);
     assert.ok(!existsSync(join(pipeDir, 'accounts.json')) || !('use' in (JSON.parse(readFileSync(join(pipeDir, 'accounts.json'), 'utf8'))['w-pro'] ?? {})), 'no copy in accounts.json');
     const a = json(pipe('accounts', '--json')).accounts.find((x) => x.name === 'w-pro');
     assert.equal(a.usable, false); assert.match(a.why, /not a worker/); assert.equal(a.parallel, 4); assert.equal(a.fable, true); assert.equal(a.fableFrom, 'override');
-    r = json(pipe('account', 'w-pro', '--use', 'on', '--fable', 'auto', '--json'));
+    assert.equal(pipe('account', 'w-pro', '--use', 'on', '--expect-fail').status, 2, 'the pipeline has no account command any more (usage error)');
+    cw('worker', 'w-pro', 'on'); cw('fable', 'w-pro', 'auto');
     w = workersFile(); assert.ok(!w.excluded.includes('w-pro')); assert.equal(w.perAccount['w-pro'].fable, undefined); assert.equal(w.perAccount['w-pro'].building, 4);
     assert.equal(json(pipe('accounts', '--json')).accounts.find((x) => x.name === 'w-pro').usable, true);
   });

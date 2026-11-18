@@ -30,7 +30,7 @@
  *                                  (the console container) or with --request it asks the next tick to run it.
  * The console's container has no ~/.claude-accounts: there the accounts come from accounts-host.json, the snapshot every
  * host tick writes (status.accountsFrom says which, and how old).
- *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
+ *   (an account's on/off, sessions at once and Fable are Claude accounts' settings: deploy/claude-workers.mjs worker|at-once|fable)
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
  *   … health [--request] [--json]  the account health sweep: every account, one tiny headless Fable call each on a private
  *                                  copy of its login: can it sign in, has it credits, does it take Fable. The tick starts it
@@ -98,7 +98,7 @@ import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
-import { SettingsSourceError, readSettingSync, writeSetting } from '../../../../framework/core/settings-source.mjs';
+import { SettingsSourceError, readSettingSync } from '../../../../framework/core/settings-source.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -142,7 +142,7 @@ export const loadOwnAccounts = () => { const j = readJson(files().accounts, {});
 export function saveOwnAccount(name, patch) {
   if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
   const bad = Object.keys(patch).filter((k) => !OWN_KEYS.includes(k));
-  if (bad.length) throw Object.assign(new Error(`${bad.join(', ')}: a setting, owned by Claude accounts (workers.json); use setAccountSetting`), { code: 'not_owner' });
+  if (bad.length) throw Object.assign(new Error(`${bad.join(', ')}: a setting, owned by Claude accounts (workers.json); change it in Claude accounts`), { code: 'not_owner' });
   const all = loadOwnAccounts(); const cur = all[name] && typeof all[name] === 'object' ? all[name] : {};
   const next = { ...cur, ...patch }; for (const k of Object.keys(next)) if (next[k] === undefined) delete next[k];
   all[name] = next; writeJson(files().accounts, all); return next;
@@ -157,15 +157,6 @@ export function accountSettings(name, env = process.env) {
     catch (e) { if (!(e instanceof SettingsSourceError)) throw e; }
   }
   return out;
-}
-/** Change an account's settings through their owner (workers.json): { use?: boolean, parallel?: n, fable?: boolean | undefined (= auto) }. */
-export async function setAccountSetting(name, patch, env = process.env) {
-  if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
-  const e = sourceEnv(env); const done = {};
-  if (typeof patch.use === 'boolean') { await writeSetting(`accounts.${name}.use`, patch.use, { env: e, store: 'claude-accounts/workers' }); done.use = patch.use; }
-  if (patch.parallel !== undefined) { await writeSetting(`accounts.${name}.parallel`, Math.max(1, Math.min(12, Number(patch.parallel) || 1)), { env: e, store: 'claude-accounts/workers' }); done.parallel = Math.max(1, Math.min(12, Number(patch.parallel) || 1)); }
-  if ('fable' in patch) { await writeSetting(`accounts.${name}.fable`, typeof patch.fable === 'boolean' ? patch.fable : undefined, { env: e, store: 'claude-accounts/workers' }); done.fable = patch.fable; }
-  return { ...accountSettings(name, env), ...done };
 }
 export const loadState = () => ({ $axf: SCHEMA_STATE, at: '', plan: null, slots: null, accounts: [], idle: null, alerts: [], launchFails: {}, recent: [], ...(readJson(files().state, {}) ?? {}) });
 const saveState = (s) => writeJson(files().state, { ...s, $axf: SCHEMA_STATE });
@@ -1530,14 +1521,6 @@ async function main(argv) {
     return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
   }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
-  if (cmd === 'account') {
-    // the settings' owner is Claude accounts (workers.json): this writes through settings-source@1, never accounts.json
-    const patch = {};
-    if (has('fable')) patch.fable = flag('fable') === 'auto' ? undefined : flag('fable') === 'on';
-    if (has('parallel')) patch.parallel = Math.max(1, Math.min(12, Number(flag('parallel')) || 1));
-    if (has('use')) patch.use = flag('use') !== 'off';
-    const r = await setAccountSetting(rest[0], patch); return out({ ok: true, name: rest[0], record: r, owner: 'claude-accounts/workers' }, `${rest[0]}: ${JSON.stringify(r)} (saved in Claude accounts)`);
-  }
   if (cmd === 'health') {
     if (has('request')) { const r = requestHealth({ by }); return out({ ok: true, ran: false, requested: r.at, last: loadHealth() }, `health sweep asked for: the next tick starts it (last: ${loadHealth()?.line || 'none yet'})`); }
     const r = health({ by });
@@ -1555,7 +1538,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

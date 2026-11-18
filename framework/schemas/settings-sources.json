@@ -17,7 +17,7 @@
     "frame": "the document's $axf, written when the resolver creates it",
     "owner": "the plugin or module that writes it",
     "editor": "the console_show deep link of the one control that edits it",
-    "api": "REST route, MCP tool, CLI and voice action: the four surfaces of that one control"
+    "api": "REST route, MCP tool, CLI and voice action: the four surfaces of that one control. `rest` is written relative to the owner's API root (a plugin's routes live under its plugin API: `<verb> <route>`), never as an absolute path"
   },
   "entryFields": {
     "key": "the setting's global name or pattern (* one segment, trailing ** the rest)",
@@ -39,12 +39,12 @@
       "label": "Claude accounts: workers, exclusions, per-account limits, API accounts, routing rules (claude-workers@1)",
       "file": "{plugins}/claude-accounts/workers.json",
       "envDir": "AXF_CLAUDE_ACCOUNTS_DATA_DIR",
-      "editor": "view:builds/tab:claude-accounts",
+      "editor": "view:claude-accounts/panel:claude-accounts.routing",
       "api": {
-        "rest": "/api/plugins/claude-accounts/routing/config",
-        "mcp": "claude_accounts_routing_config",
-        "cli": "node deploy/worker-routing.mjs",
-        "voice": "accounts.routing"
+        "rest": "plugin API: PUT/GET role (on/off), /account (at once, Fable), /routing/settings, /routing/config",
+        "mcp": "plugin commands claude-accounts: role, account, routing-settings",
+        "cli": "node deploy/claude-workers.mjs worker|at-once|fable|set",
+        "voice": "'stop account 1 taking jobs', 'let account 3 run 4 at once', 'account 3 can run Fable'"
       }
     },
     "claude-accounts/worker-state": {
@@ -68,7 +68,7 @@
       "envFile": "AXF_CLAUDE_SETTINGS_FILE",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings",
       "api": {
-        "rest": "/api/plugins/claude-settings/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "claude_settings_set",
         "cli": "node apps/console-web/plugins/claude-settings/claude-settings.mjs set",
         "voice": "claude.settings"
@@ -85,7 +85,7 @@
       "envDir": "AXF_PIPELINE_DIR",
       "editor": "view:builds/tab:pipeline",
       "api": {
-        "rest": "/api/plugins/build-orchestrator/pipeline/settings",
+        "rest": "plugin API: PUT/GET pipeline/settings",
         "mcp": "orchestrator_pipeline_settings",
         "cli": "node apps/console-web/plugins/build-orchestrator/pipeline.mjs set",
         "voice": "pipeline.settings"
@@ -111,7 +111,7 @@
       "envDir": "AXF_PIPELINE_DIR",
       "editor": "view:builds/tab:pipeline",
       "api": {
-        "rest": "/api/plugins/build-orchestrator/recovery-watchdog/settings",
+        "rest": "plugin API: PUT/GET recovery-watchdog/settings",
         "mcp": "orchestrator_recovery_watchdog_settings",
         "cli": "node apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs set",
         "voice": "watchdog.settings"
@@ -126,7 +126,7 @@
       "file": "{repo}/_claude/builds/store.json",
       "editor": "view:builds/tab:orchestrator",
       "api": {
-        "rest": "/api/plugins/build-orchestrator/rules",
+        "rest": "plugin API: rules",
         "mcp": "orchestrator_rules",
         "cli": "node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act rules",
         "voice": "orchestrator.rules"
@@ -143,7 +143,7 @@
       "envDir": "AXF_SLOTS_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
       "api": {
-        "rest": "/api/plugins/agent-slots/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "agent_slots_settings",
         "cli": "node framework/cli/agent-slots.mjs set",
         "voice": "agents.cap"
@@ -160,7 +160,7 @@
       "envDir": "AXF_SLOTS_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
       "api": {
-        "rest": "/api/plugins/agent-slots/build-limit",
+        "rest": "plugin API: build-limit",
         "mcp": "agent_slots_build_limit",
         "cli": "node framework/cli/agent-slots.mjs limit",
         "voice": "builds.limit"
@@ -177,7 +177,7 @@
       "envDir": "AXF_AUTO_LANDER_DIR",
       "editor": "view:builds/tab:gate",
       "api": {
-        "rest": "/api/plugins/gate/auto-lander/settings",
+        "rest": "plugin API: PUT/GET auto-lander/settings",
         "mcp": "gate_auto_lander_settings",
         "cli": "node apps/console-web/plugins/gate/gate.mjs auto-lander set",
         "voice": "lander.settings"
@@ -194,7 +194,7 @@
       "envDir": "AXF_GATE_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
       "api": {
-        "rest": "/api/plugins/gate/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "gate_settings",
         "cli": "axf plugins gate settings",
         "voice": "gate.settings"
@@ -221,7 +221,7 @@
       "envDir": "AXF_GATE_DIR",
       "editor": "view:builds/tab:gate",
       "api": {
-        "rest": "/api/plugins/gate/rules",
+        "rest": "plugin API: rules",
         "mcp": "gate_rules",
         "cli": "node apps/console-web/plugins/gate/gate.mjs rules",
         "voice": "gate.rules"
@@ -238,7 +238,7 @@
       "envDir": "AXF_PUSH_BANNER_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
       "api": {
-        "rest": "/api/plugins/push-banner/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "push_banner_config",
         "cli": "node apps/console-web/plugins/push-banner/land/land.mjs config",
         "voice": "merge-queue.settings"
@@ -254,7 +254,7 @@
       "envDir": "AXF_ACTIVITY_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity",
       "api": {
-        "rest": "/api/plugins/activity/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "activity_settings",
         "cli": "axf plugins activity config",
         "voice": "activity.settings"
@@ -271,7 +271,7 @@
       "envDir": "AXF_AGENT_MANAGER_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-manager",
       "api": {
-        "rest": "/api/plugins/agent-manager/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "agent_manager_settings",
         "cli": "axf plugins agent-manager settings",
         "voice": "agent-manager.settings"
@@ -288,7 +288,7 @@
       "envDir": "AXF_AI_ASSISTANT_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-assistant",
       "api": {
-        "rest": "/api/plugins/ai-assistant/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "ai_assistant_settings",
         "cli": "axf plugins ai-assistant config",
         "voice": "ai-assistant.settings"
@@ -304,7 +304,7 @@
       "envDir": "AXF_BRAND_LIBRARY_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library",
       "api": {
-        "rest": "/api/plugins/brand-library/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "brand_library_settings",
         "cli": "axf plugins brand-library config",
         "voice": "brand-library.settings"
@@ -320,7 +320,7 @@
       "envDir": "AXF_CHAT_VIEWER_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=chat-viewer",
       "api": {
-        "rest": "/api/plugins/chat-viewer/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "chat_viewer_settings",
         "cli": "axf plugins chat-viewer settings",
         "voice": "chat-viewer.settings"
@@ -336,7 +336,7 @@
       "envDir": "AXF_HANDOFF_DATA",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-handoff",
       "api": {
-        "rest": "/api/plugins/claude-handoff/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "claude_handoff_settings",
         "cli": "axf plugins claude-handoff config",
         "voice": "claude-handoff.settings"
@@ -352,7 +352,7 @@
       "envDir": "AXF_CONSOLE_COMMANDS_DATA_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands",
       "api": {
-        "rest": "/api/plugins/console-commands/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "console_commands_settings",
         "cli": "axf plugins console-commands settings",
         "voice": "console-commands.settings"
@@ -369,7 +369,7 @@
       "envDir": "AXF_TERMINAL_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-terminal",
       "api": {
-        "rest": "/api/plugins/console-terminal/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "console_terminal_settings",
         "cli": "axf plugins console-terminal settings",
         "voice": "console-terminal.settings"
@@ -386,7 +386,7 @@
       "envDir": "AXF_CONTAINER_ACCESS_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=container-access",
       "api": {
-        "rest": "/api/plugins/container-access/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "container_access_settings",
         "cli": "axf plugins container-access settings",
         "voice": "container-access.settings"
@@ -403,7 +403,7 @@
       "envDir": "AXF_DEMO_DESIGNER_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer",
       "api": {
-        "rest": "/api/plugins/demonstration-designer/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "demonstration_designer_settings",
         "cli": "axf plugins demonstration-designer settings",
         "voice": "demonstration-designer.settings"
@@ -419,7 +419,7 @@
       "envDir": "AXF_MAIN_BUILD_STATUS_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status",
       "api": {
-        "rest": "/api/plugins/main-build-status/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "main_build_status_settings",
         "cli": "axf plugins main-build-status config",
         "voice": "main-build-status.settings"
@@ -435,7 +435,7 @@
       "envDir": "AXF_MAINT_DATA_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance",
       "api": {
-        "rest": "/api/plugins/maintenance/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "maintenance_settings",
         "cli": "axf plugins maintenance settings",
         "voice": "maintenance.settings"
@@ -451,7 +451,7 @@
       "envDir": "AXF_NOTIFY_DATA_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notify-control",
       "api": {
-        "rest": "/api/plugins/notify-control/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "notify_control_settings",
         "cli": "axf plugins notify-control config",
         "voice": "notify-control.settings"
@@ -466,7 +466,7 @@
       "file": "{plugins}/orchestrator-demo/settings.json",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=orchestrator-demo",
       "api": {
-        "rest": "/api/plugins/orchestrator-demo/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "orchestrator_demo_settings",
         "cli": "axf plugins orchestrator-demo settings",
         "voice": "orchestrator-demo.settings"
@@ -482,7 +482,7 @@
       "envDir": "AXF_PLUGIN_COMMANDS_DATA_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
       "api": {
-        "rest": "/api/plugins/plugin-commands/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "plugin_commands_settings",
         "cli": "axf plugins plugin-commands settings",
         "voice": "plugin-commands.settings"
@@ -498,7 +498,7 @@
       "envDir": "AXF_PLUGINS_MENU_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugins-menu",
       "api": {
-        "rest": "/api/plugins/plugins-menu/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "plugins_menu_settings",
         "cli": "axf plugins plugins-menu config",
         "voice": "plugins-menu.settings"
@@ -514,7 +514,7 @@
       "envDir": "AXF_SKIN_GALLERY_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=skin-gallery",
       "api": {
-        "rest": "/api/plugins/skin-gallery/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "skin_gallery_settings",
         "cli": "axf plugins skin-gallery settings",
         "voice": "skin-gallery.settings"
@@ -531,7 +531,7 @@
       "envDir": "AXF_SNAPSHOT_MANAGER_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=snapshot-manager",
       "api": {
-        "rest": "/api/plugins/snapshot-manager/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "snapshot_manager_settings",
         "cli": "axf plugins snapshot-manager settings",
         "voice": "snapshot-manager.settings"
@@ -548,7 +548,7 @@
       "envDir": "AXF_SYSTEMS_CHECK_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=systems-check",
       "api": {
-        "rest": "/api/plugins/systems-check/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "systems_check_settings",
         "cli": "axf plugins systems-check settings",
         "voice": "systems-check.settings"
@@ -565,7 +565,7 @@
       "envDir": "AXF_UI_REVIEW_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
       "api": {
-        "rest": "/api/plugins/ui-review/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "ui_review_settings",
         "cli": "axf plugins ui-review settings",
         "voice": "ui-review.settings"
@@ -581,7 +581,7 @@
       "envDir": "AXF_WHATS_SHIPPED_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=whats-shipped",
       "api": {
-        "rest": "/api/plugins/whats-shipped/config",
+        "rest": "plugin API: PUT/GET config",
         "mcp": "whats_shipped_settings",
         "cli": "axf plugins whats-shipped config",
         "voice": "whats-shipped.settings"
@@ -598,7 +598,7 @@
       "envDir": "AXF_WAKE_LISTENER_DATA_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
       "api": {
-        "rest": "/api/plugins/wake-listener/settings",
+        "rest": "plugin API: PUT/GET settings",
         "mcp": "wake_listener_settings",
         "cli": "axf plugins wake-listener settings",
         "voice": "wake-listener.settings"
@@ -614,7 +614,7 @@
       "envDir": "AXF_UI_REVIEW_DIR",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
       "api": {
-        "rest": "/api/plugins/ui-review/choices/settings",
+        "rest": "plugin API: PUT/GET choices/settings",
         "mcp": "ui_review_settings",
         "cli": "axf plugins ui-review choices/settings",
         "voice": "ui-review.settings"
@@ -629,7 +629,7 @@
       "file": "{plugins}/token-control/pass-settings.json",
       "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=token-control",
       "api": {
-        "rest": "/api/plugins/token-control/pass/settings",
+        "rest": "plugin API: PUT/GET pass/settings",
         "mcp": "token_control_settings",
         "cli": "axf plugins token-control pass/settings",
         "voice": "token-control.settings"
@@ -1149,7 +1149,7 @@
         {
           "store": "pipeline/accounts",
           "pointer": "/{1}/use",
-          "note": "the pipeline's own on/off copy (Pipeline \u2192 Accounts toggle, `pipeline.mjs account --use`); removed by s8/s9"
+          "note": "the pipeline's own on/off copy (Pipeline \u2192 Accounts toggle, `pipeline.mjs account --use`); removed by s8 (store) and s9 (toggle, POST pipeline/account, pipeline.mjs account)"
         }
       ]
     },

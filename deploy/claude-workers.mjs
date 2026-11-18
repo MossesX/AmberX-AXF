@@ -25,6 +25,8 @@
  *   node deploy/claude-workers.mjs worker <name> on|off         Make worker / Stop worker (subscription logins)
  *   node deploy/claude-workers.mjs build-account [<name>|off]  the one account every build runs on (none = normal routing)
  *   node deploy/claude-workers.mjs label <name> <text>          a display name (Hulu, Moses X…)
+ *   node deploy/claude-workers.mjs at-once <name> <n|default>   jobs building at once on that account (perAccount.building)
+ *   node deploy/claude-workers.mjs fable <name> on|off|auto     may it run Fable? (perAccount.fable; auto = the pipeline's probe / the plan)
  *   node deploy/claude-workers.mjs api add <name> --label L --daily N --weekly N [--alert 0.8]   an API worker slot
  *   node deploy/claude-workers.mjs api on|off|remove <name>     · api caps <name> --daily N --weekly N (lower only)
  *   node deploy/claude-workers.mjs rule add --json '{rule}' [--at i] · rule update <id> --json '{…}' · rule remove <id>
@@ -442,6 +444,14 @@ const main = async () => {
       const n = nameOk(rest[0]); const label = rest.slice(1).join(' ').trim();
       editConfig((x) => { if (x.api[n]) x.api[n].label = label; else { x.perAccount[n] = { ...(x.perAccount[n] ?? {}), label }; } });
       out({ name: n, label }, `${n} is shown as "${label}"`);
+    } else if (cmd === 'at-once') {
+      const n = nameOk(rest[0]); const v = rest[1];
+      const c = editConfig((x) => { const pa = { ...(x.perAccount[n] ?? {}) }; if (v === undefined || v === 'default' || v === 'auto') delete pa.building; else pa.building = Number(v); x.perAccount[n] = pa; });
+      out({ name: n, building: c.perAccount[n]?.building ?? c.limits.building, default: c.perAccount[n]?.building === undefined }, `${n}: ${c.perAccount[n]?.building ?? `${c.limits.building} (the default)`} at once`);
+    } else if (cmd === 'fable') {
+      const n = nameOk(rest[0]); const v = String(rest[1] ?? 'auto').toLowerCase();
+      const c = editConfig((x) => { const pa = { ...(x.perAccount[n] ?? {}) }; if (v === 'auto') delete pa.fable; else pa.fable = onOff(v); x.perAccount[n] = pa; });
+      out({ name: n, fable: c.perAccount[n]?.fable ?? null }, `${n}: Fable ${c.perAccount[n]?.fable === undefined ? 'auto (probe / plan)' : c.perAccount[n].fable ? 'on' : 'off'}`);
     } else if (cmd === 'api') {
       const [op, n0] = rest; const n = nameOk(n0);
       const c = editConfig((x) => {
@@ -467,7 +477,7 @@ const main = async () => {
     } else if (cmd === 'signin') console.log(`started ${signin(rest[0])}: finish the sign-in in the console's Terminal`);
     else if (cmd === 'remove') console.log(`set aside in ${remove(rest[0])}`);
     else if (cmd === 'note') console.log(noteFor(rest[0]));
-    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|build-account|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
+    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|at-once|fable|build-account|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
   } catch (e) { console.error(`claude-workers: ${e.message}`); process.exit(2); }
 };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();

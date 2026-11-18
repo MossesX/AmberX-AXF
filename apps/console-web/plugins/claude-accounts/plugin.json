@@ -120,6 +120,38 @@
         }
       },
       {
+        "route": "POST /account",
+        "id": "account",
+        "title": "Set an account's sessions at once and Fable",
+        "description": "One Claude account's settings, owned here (settings-source@1 accounts.<name>.parallel / .fable): how many jobs build at once on it (building, 1-20, null = the default limit) and whether it may run Fable (fable true/false, null = auto: the pipeline's probe or the plan). Voice: 'let account 3 run 4 at once', 'account 3 can run Fable', 'account 3 Fable auto'. On/off is the role command ('stop account 1 taking jobs').",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "saved account name"
+            },
+            "building": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "minimum": 1,
+              "maximum": 20
+            },
+            "fable": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ]
+        }
+      },
+      {
         "route": "POST /signin",
         "id": "signin",
         "title": "Sign a Claude account in",
@@ -297,7 +329,7 @@
                       "items": {
                         "type": "string"
                       },
-                      "description": "build, agent-job or a job-type id (walkthrough, ui-shots…)"
+                      "description": "build, agent-job or a job-type id (walkthrough, ui-shots\u2026)"
                     },
                     "models": {
                       "type": "array",

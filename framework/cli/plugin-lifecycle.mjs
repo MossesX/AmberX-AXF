@@ -154,6 +154,9 @@ export function scanReferences(p) {
     // The console-control inventory is generated from the installed plugins (scripts/control-inventory.mjs, run by every
     // dev and build), so a removed plugin drops out of it on the next build: data, not a reference.
     if (file === join(CONSOLE_APP_DIR, 'src/control/inventory.json')) continue;
+    // Golden fixtures (framework/spec/fixtures, written by check-*.mjs --write) are generated data: a data-store key or a
+    // route in one is a value the engine answered, not a reference to the plugin's code.
+    if (file.startsWith(join(ROOT, 'framework/spec/fixtures') + '/')) continue;
     // An app's baked framework (apps/<app>/src/axf) is a copy: `framework/` is the file checked, and a re-bake refreshes the copy.
     if (file.startsWith(APPS_DIR + '/') && file.slice(APPS_DIR.length).split('/').slice(2, 4).join('/') === 'src/axf') continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime

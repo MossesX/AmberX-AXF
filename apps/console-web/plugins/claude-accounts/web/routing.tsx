@@ -24,7 +24,7 @@ type ViewName = 'sections' | 'status-first' | 'rule-cards';
 interface When { jobTypes: string[]; models: string[]; priorities: string[]; profiles: string[]; minSteps: number; maxSteps: number; maxMinutes: number; subs: 'any' | 'busy' }
 export interface Rule { id: string; name: string; enabled: boolean; to: 'api' | 'subscription'; accounts: string[]; when: When }
 interface ApiCfg { label: string; enabled: boolean; dailyCapUsd: number; weeklyCapUsd: number; alertAt: number }
-interface Config { interactiveTakesJobs: boolean; limits: { building: number; queue: number }; api: Record<string, ApiCfg>; rules: Rule[]; excluded: string[] }
+interface Config { interactiveTakesJobs: boolean; limits: { building: number; queue: number }; api: Record<string, ApiCfg>; rules: Rule[]; excluded: string[]; perAccount?: Record<string, { label?: string; building?: number; queue?: number; fable?: boolean }> }
 interface Spend { day: number; week: number; dayCap: number; weekCap: number; alertAt: number; state: 'ok' | 'warn' | 'capped'; why: string }
 export interface RoutingAccount {
   name: string; label: string; kind: 'subscription' | 'api'; role: string; active: boolean; hasKey: boolean; email: string;
@@ -143,6 +143,17 @@ function WorkersLimits({ data }: { data: Routing }) {
           <div className="axp-ca-row__actions">
             {!a.active && <Switch label="Takes jobs" checked={a.role === 'worker'} disabled={s.busy} onChange={(v) => void s.run(call('role', 'POST', { name: a.name, role: v ? 'worker' : 'saved' }))} />}
             {a.active && <Chip tone="success">Console account</Chip>}
+            {/* the one place these are set (settings-source@1 accounts.<name>.parallel / .fable): the Build orchestrator's accounts tab only links here */}
+            <span data-axf-target={`setting:accounts.${a.name}.parallel`}>
+              <SelectField label="At once" value={String(c.perAccount?.[a.name]?.building ?? '')} disabled={s.busy}
+                options={[{ value: '', label: `Default (${c.limits.building})` }, ...Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))]}
+                onChange={(v) => void s.run(call('account', 'POST', { name: a.name, building: v === '' ? null : Number(v) }))} />
+            </span>
+            <span data-axf-target={`setting:accounts.${a.name}.fable`}>
+              <SelectField label="Fable" value={c.perAccount?.[a.name]?.fable === undefined ? 'auto' : c.perAccount[a.name]!.fable ? 'on' : 'off'} disabled={s.busy}
+                options={[{ value: 'auto', label: 'Auto (probe / plan)' }, { value: 'on', label: 'On' }, { value: 'off', label: 'Off' }]}
+                onChange={(v) => void s.run(call('account', 'POST', { name: a.name, fable: v === 'auto' ? null : v === 'on' }))} />
+            </span>
           </div>
         </div>
       ))}</div>
