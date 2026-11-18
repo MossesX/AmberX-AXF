@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:53:35.798Z",
+ "updatedAt": "2026-11-18T00:53:58.300Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -189423,7 +189423,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-18T00:32:34.912Z",
-   "updatedAt": "2026-11-18T00:43:43.503Z",
+   "updatedAt": "2026-11-18T00:53:30.012Z",
    "builtAt": "",
    "notes": [
     {
@@ -189435,12 +189435,12 @@
      "at": "2026-11-18T00:34:08.301Z"
     },
     {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-ci-red-main-watchdog-test-vs-done--rhonda, shared account login)",
-     "at": "2026-11-18T00:38:53.871Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-ci-red-main-watchdog-test-vs-done--rhonda.",
      "at": "2026-11-18T00:38:45.918Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-ci-red-main-watchdog-test-vs-done--rhonda, shared account login)",
+     "at": "2026-11-18T00:38:53.871Z"
     }
    ],
    "approvals": [],
@@ -189474,7 +189474,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:41:31.219Z",
      "note": "",
-     "uid": "st-mwleiqsd36siss",
+     "uid": "st-mwler7bl01y10s",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189493,7 +189493,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:41:58.735Z",
      "note": "",
-     "uid": "st-mwleiqsd377t5y",
+     "uid": "st-mwler7bl02o4sl",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189512,7 +189512,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:43:25.275Z",
      "note": "",
-     "uid": "st-mwleiqsd38sivf",
+     "uid": "st-mwler7bl0360ul",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189531,7 +189531,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:43:33.149Z",
      "note": "",
-     "uid": "st-mwleiqsd391yjj",
+     "uid": "st-mwler7bl04k69h",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189550,7 +189550,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:43:39.932Z",
      "note": "",
-     "uid": "st-mwleiqsd3a1ceg",
+     "uid": "st-mwler7bl05n4m6",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189566,10 +189566,10 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T00:53:30.012Z",
      "note": "",
-     "uid": "st-mwleiqsd3b7zct",
+     "uid": "st-mwler7bl06a6qv",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189588,7 +189588,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3c3iae",
+     "uid": "st-mwler7bl073rf6",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189607,7 +189607,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3dnma0",
+     "uid": "st-mwler7bl08xkdy",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189626,7 +189626,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3ejqcq",
+     "uid": "st-mwler7bl09kwx0",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189645,7 +189645,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3ft3gl",
+     "uid": "st-mwler7bl0ab7wx",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189664,7 +189664,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3gvve7",
+     "uid": "st-mwler7bl0btni3",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189683,7 +189683,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3hxza5",
+     "uid": "st-mwler7bl0cdx67",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189702,7 +189702,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3ikwhq",
+     "uid": "st-mwler7bl0dav9m",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189721,7 +189721,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:42:08.882Z",
      "note": "",
-     "uid": "st-mwleiqsd3jer9p",
+     "uid": "st-mwler7bl0erl2t",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189740,7 +189740,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:43:29.366Z",
      "note": "",
-     "uid": "st-mwleiqsd3kl939",
+     "uid": "st-mwler7bl0f4h3b",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189759,7 +189759,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:43:36.522Z",
      "note": "",
-     "uid": "st-mwleiqsd3lzbek",
+     "uid": "st-mwler7bl0gs8p0",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189778,7 +189778,7 @@
      "done": true,
      "doneAt": "2026-11-18T00:43:43.503Z",
      "note": "",
-     "uid": "st-mwleiqsd3mismm",
+     "uid": "st-mwler7bl0hqyet",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189797,7 +189797,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3napm1",
+     "uid": "st-mwler7bl0i5vnb",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189816,7 +189816,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3o3kc9",
+     "uid": "st-mwler7bl0jbevw",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189835,7 +189835,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3p9t9u",
+     "uid": "st-mwler7bl0kobe6",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189854,7 +189854,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3q5yv7",
+     "uid": "st-mwler7bl0lirbl",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189873,7 +189873,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3rf8lr",
+     "uid": "st-mwler7bl0mhtr7",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189892,7 +189892,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3swu44",
+     "uid": "st-mwler7bl0njmg8",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189911,7 +189911,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3ty5lm",
+     "uid": "st-mwler7bl0o2j95",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189930,7 +189930,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3udik3",
+     "uid": "st-mwler7bl0p38ae",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189949,7 +189949,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3vio1v",
+     "uid": "st-mwler7bl0q6761",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189968,7 +189968,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3wl8aw",
+     "uid": "st-mwler7bl0rko61",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -189987,7 +189987,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3xkntx",
+     "uid": "st-mwler7bl0sm4yd",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190006,7 +190006,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3y7rng",
+     "uid": "st-mwler7bl0tev7q",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190025,7 +190025,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd3ziuym",
+     "uid": "st-mwler7bl0uzc6w",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190044,7 +190044,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd405vbr",
+     "uid": "st-mwler7bl0v1e42",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190063,7 +190063,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd418dow",
+     "uid": "st-mwler7bl0wyqzv",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190082,7 +190082,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd428qwd",
+     "uid": "st-mwler7bl0x81os",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190101,7 +190101,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd43vrcr",
+     "uid": "st-mwler7bl0y04dr",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190120,7 +190120,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd4426bd",
+     "uid": "st-mwler7bl0zbu7t",
      "createdAt": "2026-11-18T00:34:08.301Z"
     },
     {
@@ -190139,7 +190139,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwleiqsd45glgp",
+     "uid": "st-mwler7bl10jmt3",
      "createdAt": "2026-11-18T00:34:08.301Z"
     }
    ]
