@@ -12,6 +12,9 @@ export const FOLDER = 'plan-studio-2';
 export const VIEW = 'plan-studio-2';
 export const ID = 'ai.amberx.axf.console.plan-studio-2';
 export const CTX_TARGET = 'axp-plan-studio-2-item';
+/** console-control@1: the tree is a grid of the view, every item a row (`view:plan-studio-2/grid:plan-studio-2.tree/row:<id>`). */
+export const TREE_GRID = `view:${VIEW}/grid:plan-studio-2.tree`;
+export const rowAddress = (id: string) => `${TREE_GRID}/row:${id}`;
 export const DND_ZONE = 'axp-plan-studio-2';
 export const TOP = '__top__';
 export const DIALOGS = { item: 'plan-studio-2.item', move: 'plan-studio-2.move', link: 'plan-studio-2.link', build: 'plan-studio-2.build' } as const;

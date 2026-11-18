@@ -227,7 +227,10 @@ const providers: AxfWebLibrary['appMenuProviders'] = (() => {
 function openPlugin(rt: AxfRuntime, folder: string) {
   const p = bundledPlugins.find((b) => b.folder === folder);
   const lib = p?.library;
-  if (!p || !lib) return rt.toast(`No plugin "${folder}".`, 'warning');
+  if (!p) return rt.toast(`No plugin "${folder}".`, 'warning');
+  // web part not loaded in this browser yet: plugin.json names its page (the loader loads it on navigate)
+  const named = (p.manifest.provides ?? []).find((x) => x.startsWith('view:'))?.slice(5);
+  if (!lib) return named ? rt.navigate(named) : rt.toast(`No plugin "${folder}".`, 'warning');
   const manager = rt.actions.get('plugin-manager.open') ? `plugin-manager.open:${folder}` : 'settings.open:plugins';
   if (!rt.libraries.some((l) => l.id === lib.id)) return rt.dispatch(manager);
   const placed = rt.placedUis().find((u) => u.owner === lib.id)?.ui;

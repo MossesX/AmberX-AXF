@@ -5,12 +5,12 @@
  * the tree on a narrow screen).
  */
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, SkinScope, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
 import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, ID, KEYS, TREE_GRID, VIEW, rowAddress, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -76,7 +76,7 @@ export function PlanStudio2Page() {
       {!state ? <LoadingSkeleton rows={4} label="Loading the tree" /> : !state.items.length ? (
         <EmptyState icon="branch" action={{ label: 'New plan', icon: 'plus', onClick: newPlan }}>Nothing here yet. Plan Studio 2.0 starts empty and nothing is synced into it: start a plan, or say “new plan” followed by its name.</EmptyState>
       ) : !rows.length ? <EmptyState icon="search" compact>Nothing matches “{q}”.</EmptyState> : (
-        <ul className={`${B}__tree`} ref={listRef} role="tree" aria-label="Plan tree">
+        <ul className={`${B}__tree`} ref={listRef} role="tree" aria-label="Plan tree" data-axf-scope={TREE_GRID}>
           {rows.map((r) => <Row key={r.item.id} item={r.item} depth={r.depth} kids={r.kids} path={r.path} state={state} selected={selected === r.item.id} />)}
         </ul>
       )}
@@ -94,7 +94,7 @@ export function PlanStudio2Page() {
   const sections: SectionDef[] = lc.SECTIONS.map((x) => ({ ...x, badge: badge[x.id], node: node[x.id] }));
 
   return (
-    <div className={`${B} fx-stack fx-stack--lg`}>
+    <SkinScope kind="plugin" id={ID} className={`${B} fx-stack fx-stack--lg`} attrs={{ 'data-axf-scope': `view:${VIEW}`, 'data-axf-view': VIEW }}>
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Builds · {state ? `${state.items.length} items · ${total.done}/${total.total} steps done${total.minutes ? ` · ${total.minutes} min planned` : ''}` : 'loading'}{state?.trash.length ? ` · ${state.trash.length} in the trash` : ''}</p>
@@ -104,8 +104,8 @@ export function PlanStudio2Page() {
         <div className={`${B}__actions`} role="toolbar" aria-label="Plan Studio 2.0 actions">
           <Button tone="primary" icon="plus" onClick={newPlan}>New plan</Button>
           <IconButton icon="undo" label="Undo delete" disabled={!state?.trash.length || busy} onClick={() => void undoDelete().then((r) => rt.toast(r.say ?? 'Undone.', 'success', 'Plan Studio 2.0'))} />
-          <IconButton icon="chevron-down" label="Expand all" data-axf-target="action:plan-studio-2.expand-all" disabled={!state} onClick={() => setCollapsed(null, false)} />
-          <IconButton icon="chevron-up" label="Collapse all" data-axf-target="action:plan-studio-2.collapse-all" disabled={!state} onClick={() => setCollapsed(null, true)} />
+          <IconButton icon="chevron-down" label="Expand all" data-axf-target="button:expand-all" disabled={!state} onClick={() => setCollapsed(null, false)} />
+          <IconButton icon="chevron-up" label="Collapse all" data-axf-target="button:collapse-all" disabled={!state} onClick={() => setCollapsed(null, true)} />
           <IconButton icon="download" label="Export all as Markdown" disabled={!state?.items.length} onClick={() => void exportText(null, 'md').then((t) => download('plan-studio-2.md', t))} />
           <IconButton icon="refresh" label="Reload" onClick={() => void reload()} />
           <LayoutSwitcher />
@@ -114,7 +114,7 @@ export function PlanStudio2Page() {
       {error && <Note tone="danger">{error}</Note>}
       <SectionLayout sections={sections} />
       <DragLayer />
-    </div>
+    </SkinScope>
   );
 }
 
@@ -128,11 +128,11 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
   const done = tc.CHECKABLE.has(item.kind) && item.done;
   return (
     <li className={`${B}__row${selected ? ' is-selected' : ''}${done ? ' is-done' : ''}`} style={{ ['--axp-ps2-depth' as string]: depth }} role="treeitem" aria-selected={selected} aria-expanded={kids ? !item.collapsed : undefined}
-      data-fx-ctx-target={CTX_TARGET} data-fx-ctx-payload={item.id} data-axf-drop={DND_ZONE} data-axf-drop-id={item.id}>
+      data-fx-ctx-target={CTX_TARGET} data-fx-ctx-payload={item.id} data-axf-drop={DND_ZONE} data-axf-drop-id={item.id} data-axf-target={`row:${item.id}`}>
       <span className={`${B}__grip axf-dnd-grip`} title="Drag to move" onPointerDown={(e: RPointerEvent) => startDrag(e, { kind: `${DND_ZONE}:item`, id: item.id, label: item.title, icon: tc.KIND_ICON[item.kind], trashable: true, onTrash: () => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0')) })}><Icon name="grip" size={14} /></span>
       {kids ? <IconButton icon={item.collapsed ? 'chevron-right' : 'chevron-down'} label={item.collapsed ? `Expand ${item.title}` : `Collapse ${item.title}`} className={`${B}__fold`} onClick={() => setCollapsed([item.id], !item.collapsed)} /> : <span className={`${B}__fold is-leaf`} />}
       {tc.CHECKABLE.has(item.kind) ? <Checkbox label="" title={item.done ? 'Done' : 'Not done'} checked={item.done} onChange={(v) => void editItem(item.id, { done: v })} /> : <Icon name={tc.KIND_ICON[item.kind]} size={14} className={`${B}__kind`} />}
-      <button type="button" data-fx-row className={`${B}__title`} data-axf-target={`button:item.${item.id}`} onClick={open} onDoubleClick={() => rt.openDialog(DIALOGS.item, { id: item.id })} title={path || `${tc.KIND_LABEL[item.kind]}: ${item.title}`}>
+      <button type="button" data-fx-row className={`${B}__title`} data-axf-target={`${rowAddress(item.id)}/button:select`} onClick={open} onDoubleClick={() => rt.openDialog(DIALOGS.item, { id: item.id })} title={path || `${tc.KIND_LABEL[item.kind]}: ${item.title}`}>
         <span className={`${B}__text`}>{item.title}</span>
         {path && <span className={`${B}__path fx-muted`}>{path}</span>}
       </button>

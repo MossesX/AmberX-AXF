@@ -61,8 +61,26 @@ export interface Inventory {
 export function uiOf(p?: BundledPlugin): PluginUi {
   // the console's default settings sub-tab (plugin.json settingsTab.default) counts as the plugin's own tab
   const lib = p?.library && withDefaultSettingsTab(p.folder, p.manifest, p.library);
-  if (!lib) return { views: [], dialogs: [], settingsTabs: [], settingsCount: 0, contextItems: 0 };
-  return installedLibraryRecord(lib).ui!;
+  if (!lib) return { ...manifestUi(p), settingsCount: 0, contextItems: 0 };
+  const ui = installedLibraryRecord(lib).ui!;
+  // a stand-in built before the plugin's views were known still opens its page: plugin.json names them
+  if (!ui.views.length) { const m = manifestUi(p); if (m.views.length) return { ...ui, views: m.views }; }
+  return ui;
+}
+
+/**
+ * What plugin.json says the plugin shows (`provides: view:* / settings-tab:*`), for a plugin whose web part has not
+ * loaded in this browser yet: its Open and Settings buttons work from the first visit (the lazy loader loads it on open).
+ */
+function manifestUi(p?: BundledPlugin): Pick<PluginUi, 'views' | 'dialogs' | 'settingsTabs'> {
+  const provides = (p?.manifest as { provides?: string[] } | undefined)?.provides ?? [];
+  const pick = (kind: string) => provides.filter((x) => x.startsWith(`${kind}:`)).map((x) => x.slice(kind.length + 1));
+  const name = p?.manifest.name ?? '';
+  return {
+    views: pick('view').map((id) => ({ id, title: name || id })),
+    dialogs: [],
+    settingsTabs: pick('settings-tab').map((id) => ({ id, label: name || id })),
+  };
 }
 
 /** Contribution ids only the browser can see (views, dialogs, settings tabs), so clashes between web parts are reported by the engine too. */

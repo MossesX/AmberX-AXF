@@ -15,6 +15,16 @@ import * as lc from './layout-core.mjs';
 import { readDock, setLayout, showSection, writeDock } from './layout';
 import './plan-studio-2.css';
 
+/** Settings → Plugins → Plan Studio 2.0: the page itself is one tap away (the sub-tab used to be a dead end). */
+function OpenPanel() {
+  const rt = useRuntime();
+  return (
+    <div className="fx-row" role="toolbar" aria-label="Open Plan Studio 2.0">
+      <Button tone="primary" icon="branch" data-axf-target="button:plan-studio-2.open-page" onClick={() => rt.navigate(VIEW)}>Open Plan Studio 2.0</Button>
+    </div>
+  );
+}
+
 function OpenButton() {
   const rt = useRuntime();
   return <Button icon="branch" onClick={() => rt.navigate(VIEW)} title="Plan Studio 2.0: the planning tree">Plan Studio 2.0</Button>;
@@ -123,5 +133,6 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.voiceLang, label: 'Voice language', kind: 'choice', default: 'en-US', options: [{ value: 'en-US', label: 'English (US)' }, { value: 'en-GB', label: 'English (UK)' }, { value: 'en-CA', label: 'English (Canada)' }] },
     ],
   }],
-  settingsPanels: [{ id: 'plan-studio-2.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'plan-studio-2.open', tab: FOLDER, title: 'Plan Studio 2.0', icon: 'branch', order: 1, render: () => <OpenPanel /> },
+    { id: 'plan-studio-2.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };
