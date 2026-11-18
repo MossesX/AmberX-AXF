@@ -747,6 +747,9 @@ def resolve_link(target: str) -> dict[str, Any]:
             elif foreign:
                 raise ControlError("not_found", f'"{view}" cannot open "{foreign}"', field="target")
         out["address"] = address
+    if view == "command-palette":  # the palette is a dialog the console registers as a target of its own
+        out.update(view=view, label="Command palette")
+        view = None
     if view:
         if view not in views:
             raise ControlError("not_found", f'no screen "{view}" in the console', field="target")

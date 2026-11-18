@@ -16,6 +16,7 @@ import { isConsoleControlKind } from '../axf/core/engines/console-control';
 import { controlRegistry } from '../axf/react';
 import { createPendingTargets, parseDeepLink, planDeepLink, type DeepLink, type DeepLinkPlan } from './deepLink-core.mjs';
 import { controlState, describeAnswer, executeControl, setLinkOpener, type ControlAnswer } from './executor';
+import { PALETTE_VIEW, openPalette } from './SearchPalette';
 
 const TITLE = 'Link';
 
@@ -56,6 +57,14 @@ async function run(rt: AxfRuntime, link: DeepLink): Promise<string> {
   return describeAnswer(a);
 }
 
+/** The words a palette link opens with: `#/command-palette/<words>`, `?q=<words>` beside the target, or `…/panel:q=<words>`. */
+function paletteWords(l: DeepLink): string {
+  if (l.sub) return l.sub;
+  const seg = (l.address ?? '').split('/').find((x) => x.startsWith('panel:q='));
+  if (seg) return seg.slice('panel:q='.length);
+  try { return new URL(l.rest).searchParams.get('q') ?? ''; } catch { return ''; }
+}
+
 let queue: ReturnType<typeof createPendingTargets> | null = null;
 let runtime: AxfRuntime | null = null;
 
@@ -64,6 +73,7 @@ export function followDeepLink(rt: AxfRuntime, link: DeepLink | string | null): 
   const l = typeof link === 'string' ? parseDeepLink(new URL(link, typeof window !== 'undefined' ? window.location.href : 'http://console.invalid/').toString()) : link;
   if (!l) return false;
   if (l.error) { rt.toast(l.error, 'warning', TITLE); return true; }
+  if (l.view === PALETTE_VIEW) { openPalette(rt, paletteWords(l)); return true; }
   if (!queue || runtime !== rt) {
     queue?.stop();
     runtime = rt;
@@ -89,6 +99,7 @@ export async function openLinkTarget(rt: AxfRuntime, target: string): Promise<Co
   if (/^(https?:)?\/\/|^[#?]/.test(t)) link = parseDeepLink(new URL(t, typeof window !== 'undefined' ? window.location.href : 'http://console.invalid/').toString());
   else if (t.includes(':') && t.split('/').some((seg) => { const k = seg.slice(0, seg.indexOf(':')); return /^[a-z][a-z-]*$/.test(k) && !isConsoleControlKind(k); })) link = parseDeepLink(`http://console.invalid/?axf-target=${encodeURIComponent(t)}`);
   else return null;
+  if (link?.view === PALETTE_VIEW) { openPalette(rt, paletteWords(link)); return { $axf: 'console-control@1', ok: true, verb: 'open', address: `view:${PALETTE_VIEW}`, opened: `view:${PALETTE_VIEW}`, state: controlState(rt) } as unknown as ControlAnswer; }
   if (!link) return { $axf: 'console-control@1', ok: false, verb: 'open', code: 'not_found', message: `"${t}" is not a console link`, state: controlState(rt) } as unknown as ControlAnswer;
   if (link.address && !link.address.split('/').some((seg) => !isConsoleControlKind(seg.slice(0, seg.indexOf(':')))) && link.sub === undefined) {
     return executeControl(rt, { verb: 'open', address: link.address, by: 'deep-link' });

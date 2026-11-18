@@ -329,6 +329,8 @@ def test_deep_links_resolve_and_open() -> None:
     if any(v["id"] == "plan-studio-2" for v in cc.inventory()["views"]):
         r = client.get(f"{U}/resolve", params={"target": "#/plan-studio-2/plan:launch-x"})
         assert r.json()["action"] == "plan-studio-2.open:launch-x" and r.json()["opens"] == "view:plan-studio-2/plan:launch-x", r.json()
+    r = client.get(f"{U}/resolve", params={"target": "#/command-palette/deploy"})
+    assert r.status_code == 200 and r.json()["view"] == "command-palette" and r.json()["label"] == "Command palette", r.json()
     r = client.get(f"{U}/resolve", params={"target": "#/no-such-screen-here"})
     assert r.status_code == 404 and r.json()["code"] == "not_found"
     r = client.get(f"{U}/resolve", params={"target": "?axf-target=Not An Address"})

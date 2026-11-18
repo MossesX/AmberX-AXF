@@ -56,6 +56,13 @@ await t('?axf-open= keeps working (an address or an action)', () => {
   assert.deepEqual(DEEP_LINK_PARAMS, ['axf-target', 'axf-open']);
 });
 
+await t('the command palette: #/command-palette/<words> and ?axf-target=view:command-palette&q=<words>', () => {
+  const a = parseDeepLink(`${BASE}/#/command-palette/plan%20studio`);
+  assert.equal(a.view, 'command-palette'); assert.equal(a.sub, 'plan studio');
+  const b = parseDeepLink(`${BASE}/?axf-target=view:command-palette&q=deploy`);
+  assert.equal(b.view, 'command-palette'); assert.equal(new URL(b.rest).searchParams.get('q'), 'deploy');
+});
+
 await t('nothing to follow: no link, #, #/, an in-page #anchor', () => {
   for (const h of [`${BASE}/`, `${BASE}/#`, `${BASE}/#/`, `${BASE}/#top`, `${BASE}/?q=1`]) assert.equal(parseDeepLink(h), null, h);
   assert.equal(parseDeepLink('not a url'), null);
