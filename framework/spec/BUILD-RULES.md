@@ -121,6 +121,15 @@ or `before` for queue / model / origin rules), `check` and `autofix` where a che
 kept. Rule #1 `home-card` is added first. `--check` fails when any inventory rule id is missing from the seed (or from
 the live store when one exists), so nothing is dropped by a later edit.
 
+### Migration note: one build at a time (Nov 18 2026, split-plan@1)
+
+The dispatcher rule "fill every free agent slot with the next Queue builds" (up to 4 builds side by side) is retired.
+`plan()` launches ONE build per tick, only while no run is active and main is free (`main-lock@1` on the store's meta);
+every other queued build waits with `one build at a time: <id> is <status>`, and the free slots go to the active run's
+parts (`framework/spec/BUILD-SPLIT.md`). The Claude setting `builds.maxParallel` ("Max parallel builds") is retired with
+it: the registry keeps the key so stored values still read, the pipeline no longer uses it (`RETIRED_SETTINGS` in
+`pipeline-core.mjs`), `parallelPerAccount` keeps meaning sessions per account. Nothing is lost: no build record changes.
+
 ## One surface, four transports (Phase 2: the Build rules tab)
 
 | Transport | Where | Names |

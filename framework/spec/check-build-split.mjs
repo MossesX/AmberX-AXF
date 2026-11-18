@@ -144,5 +144,36 @@ t('machine: all-or-nothing combine readiness', () => { const m = machine[5]; con
 t('machine: a combine conflict rebuilds the part and combines again; red CI goes back to combining', () => { const m = machine[6]; assert.equal(m.final.run, 'merged'); assert.equal(m.final.combine.attempts, 3); assert.equal(m.final.parts[1].rebuilds, 1); assert.equal(m.final.parts[1].head, SHA2); });
 t('machine: maxRebuilds 0 fails the run on the first failure', () => { assert.equal(machine[7].final.run, 'failed'); assert.equal(machine[7].final.failure.part, 'p2'); });
 
+// ---------------- one build at a time, main lock
+t('isActiveRun / activeRun: splitting, running, waiting, fixing with a session; the oldest launch is the one', () => {
+  for (const st of ['splitting', 'running', 'waiting']) assert.ok(S.isActiveRun({ status: st }), st);
+  assert.ok(S.isActiveRun({ status: 'fixing', pipeline: { session: 'axf-x' } })); assert.ok(!S.isActiveRun({ status: 'fixing' })); assert.ok(!S.isActiveRun({ status: 'queued' })); assert.ok(!S.isActiveRun({ status: 'running', deleted: true }));
+  assert.equal(S.activeRun([{ id: 'b', status: 'running', pipeline: { launchedAt: '2026-11-18T12:05:00Z' } }, { id: 'a', status: 'running', pipeline: { launchedAt: '2026-11-18T12:00:00Z' } }, { id: 'q', status: 'queued' }]).id, 'a');
+  assert.equal(S.activeRun([{ id: 'q', status: 'queued' }]), null); assert.equal(S.activeRun(null), null);
+});
+t('lockMain / unlockMain / mainLocked: one holder, re-take by the holder, refused for another, stale after 6 h with no run, forced release', () => {
+  const t0 = Date.parse(AT);
+  const a = S.lockMain({}, { build: 'a', splitId: 'a.r1', base: SHA, at: AT, by: 'dispatcher' });
+  assert.equal(a.ok, true); assert.deepEqual(a.meta.mainLock, { $axf: 'main-lock@1', build: 'a', splitId: 'a.r1', base: SHA, lockedAt: AT, by: 'dispatcher' });
+  assert.equal(S.lockMain({}, { build: 'a', splitId: 'a.r1', base: 'short', at: AT }).ok, false, 'no sha, no lock');
+  const live = [{ id: 'a', status: 'running' }];
+  const held = S.mainLocked(a.meta, { now: t0 + 60e3, builds: live }); assert.equal(held.locked, true); assert.equal(held.stale, false); assert.match(held.why, /locked by a \(a\.r1, running\)/);
+  const other = S.lockMain(a.meta, { build: 'b', splitId: 'b.r1', base: SHA2, at: AT, builds: live }); assert.equal(other.ok, false); assert.match(other.why, /locked by a/); assert.equal(other.meta.mainLock.build, 'a');
+  const again = S.lockMain(a.meta, { build: 'a', splitId: 'a.r2', base: SHA2, at: AT, builds: live }); assert.equal(again.ok, true); assert.equal(again.meta.mainLock.splitId, 'a.r2'); assert.equal(again.meta.mainLock.base, SHA2); assert.equal(again.meta.mainLock.lockedAt, AT, 'the lock time is the first take');
+  const between = S.mainLocked(a.meta, { now: t0 + 60e3, builds: [{ id: 'a', status: 'queued' }] }); assert.equal(between.locked, true, 'between sessions the run still holds main');
+  for (const st of ['fixing', 'landing']) assert.equal(S.mainLocked(a.meta, { now: t0 + 60e3, builds: [{ id: 'a', status: st }] }).locked, true, `${st} holds main`);
+  for (const st of ['pending', 'landed', 'complete', 'failed', 'escalated', 'archived']) { const r = S.mainLocked(a.meta, { now: t0 + 60e3, builds: [{ id: 'a', status: st }] }); assert.equal(r.locked, false, `${st} frees main`); assert.equal(r.released, true); assert.equal(r.stale, false); }
+  assert.equal(S.mainLocked(a.meta, { now: t0 + 60e3, builds: [] }).locked, true, 'a holder not in the store: held until stale');
+  assert.deepEqual(S.HOLDS_MAIN, ['splitting', 'running', 'waiting', 'fixing', 'queued', 'landing']);
+  const stale = S.mainLocked(a.meta, { now: t0 + S.MAIN_LOCK_STALE_MS + 1, builds: [{ id: 'a', status: 'queued' }] }); assert.equal(stale.locked, false); assert.equal(stale.stale, true);
+  assert.equal(S.lockMain(a.meta, { build: 'b', splitId: 'b.r1', base: SHA2, at: AT, builds: [{ id: 'a', status: 'queued' }], now: t0 + S.MAIN_LOCK_STALE_MS + 1 }).ok, true, 'a stale lock is replaced');
+  assert.equal(S.mainLocked(a.meta, { now: t0 + S.MAIN_LOCK_STALE_MS + 1, builds: live }).locked, true, 'old but active: still held');
+  const refused = S.unlockMain(a.meta, { build: 'b' }); assert.equal(refused.ok, false); assert.equal(refused.meta.mainLock.build, 'a');
+  const forced = S.unlockMain(a.meta, { build: 'b', force: true }); assert.equal(forced.ok, true); assert.equal('mainLock' in forced.meta, false);
+  const own = S.unlockMain(a.meta, { build: 'a' }); assert.equal(own.ok, true); assert.equal(S.mainLocked(own.meta).locked, false);
+  assert.equal(S.unlockMain({}, { build: 'a' }).ok, true, 'nothing to release is fine');
+  const st = core.normalizeStore({ $axf: 'builds@1', rev: 1, meta: a.meta, builds: [] }); assert.deepEqual(st.meta.mainLock, a.meta.mainLock, 'the store keeps the lock');
+});
+
 if (WRITE) { writeFileSync(FIXTURE, `${JSON.stringify(fx, null, 1)}\n`); console.log(`wrote ${FIXTURE}`); }
 console.log(`build-split: ${n} checks passed`);

@@ -12,6 +12,7 @@
  *                                     stuck; Retry by hand (the ladder starts over; a strategy runs at once)
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
  *   … unqueue <id…>                Queue → Pending
+ *   … main-lock [release] [--force] main-lock@1 (split-plan@1): who holds main, since when, on which sha; release = drop it
  *   … hold <id…> [--why w] | release <id…>   On hold: stays in the Queue, the dispatcher skips it until released
  *   … archive <id…> | unarchive <id…>        the Archive (finished and retired builds; complete ones show there by themselves)
  *   … delete <id…> [--why w] | restore <id…> soft delete: kept in the store forever, Deleted tab, restorable
@@ -85,6 +86,7 @@ import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
+import { isActiveRun, lockMain, mainLocked, splitIdOf, unlockMain } from '../../../../framework/core/build-split.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
 import * as RL from '../../../../framework/core/retry-ladder.mjs';
 import * as V from './verify.mjs';
@@ -137,7 +139,7 @@ export function loadSettings(env = process.env) {
   const file = readJson(files().settings, {}) ?? {};
   const cs = claudeSettings(env);
   const fromClaude = {};
-  if (file.parallelPerAccount === undefined && Number.isFinite(Number(cs['builds.maxParallel']))) fromClaude.parallelPerAccount = Number(cs['builds.maxParallel']);
+  // builds.maxParallel ("Max parallel builds") is retired (split-plan@1, Nov 18 2026: one build at a time): no longer read (P.RETIRED_SETTINGS)
   if (typeof cs['builds.launchWithoutAsking'] === 'boolean') fromClaude.autoQueue = cs['builds.launchWithoutAsking'];
   if (file.briefMaxBytes === undefined && Number.isFinite(Number(cs['builds.briefMaxBytes']))) fromClaude.briefMaxBytes = Number(cs['builds.briefMaxBytes']);
   let patch = {}; try { patch = env.AXF_PIPELINE_SETTINGS ? JSON.parse(env.AXF_PIPELINE_SETTINGS) : {}; } catch { patch = {}; }
@@ -972,6 +974,8 @@ export function retryFixing({ env = process.env, accounts = [], settings = loadS
     if (b.deleted || b.status !== 'fixing' || (only && b.id !== only)) continue;
     const f = BP.normFailure(b.failure);
     if (!f) continue;
+    // one build at a time (split-plan@1): a retry is a launch too; another build's active run holds it back
+    { const other = store.builds.filter((x) => !x.deleted && x.id !== b.id).find(isActiveRun); if (other && !force) { out.push({ id: b.id, action: 'wait', why: `one build at a time: ${other.id} is ${other.status}` }); continue; } }
     if (!force && P.landerOwns(b, f, land.get(b.id), { now, attemptTimeoutMin: policy.attemptTimeoutMin })) { out.push({ id: b.id, action: 'lander', why: 'the auto-lander is fixing it on the PR' }); continue; }
     const pinned = BP.nextModel(b) || b.pipeline?.model || 'Opus';
     const usable = accounts.filter((a) => a.usable !== false).map((a) => a.name);
@@ -1269,6 +1273,38 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   return result;
 }
 
+// ------------------------------------------------------------------ main lock (main-lock@1, split-plan@1)
+
+/** The sha of origin/main as this checkout last fetched it ('' when git cannot say: tests, no remote). */
+export function mainHead(env = process.env) {
+  if (env.AXF_PIPELINE_MAIN_SHA !== undefined) return /^[0-9a-f]{40}$/.test(env.AXF_PIPELINE_MAIN_SHA) ? env.AXF_PIPELINE_MAIN_SHA : '';
+  const r = git(REPO_ROOT, 'rev-parse', '--verify', '-q', 'origin/main');
+  return r.status === 0 && /^[0-9a-f]{40}$/.test(r.stdout.trim()) ? r.stdout.trim() : '';
+}
+/**
+ * One build at a time: the build launched this tick takes the main lock (base = origin/main now; its split id is
+ * `<id>.r<n>` with n = its run count until the planner writes a plan); a lock whose build has no active run is
+ * released. Returns { locked, released } (ids) for the log.
+ */
+export function syncMainLock({ launched = [], env = process.env, now = Date.now() } = {}) {
+  const out = { locked: [], released: [] };
+  withStore((s) => {
+    const live = s.builds.filter((b) => !b.deleted);
+    const st = mainLocked(s.meta, { now, builds: live });
+    if (st.lock && !st.locked) { const r = unlockMain(s.meta, { force: true }); if (r.ok) { s.meta = r.meta; out.released.push(st.lock.build); } }
+    for (const l of launched) {
+      const b = storeCore.findBuild(s, l.id); if (!b || !isActiveRun(b)) continue;
+      const base = mainHead(env); if (!base) continue;
+      const splitId = b.splitId || splitIdOf(b.id, Math.max(1, b.pipeline?.runs ?? 1));
+      const r = lockMain(s.meta, { build: b.id, splitId, base, by: 'dispatcher', builds: live, now, note: `run ${b.pipeline?.runs ?? 1} on ${l.account}` });
+      if (r.ok) { s.meta = r.meta; out.locked.push(b.id); if (!b.splitId) b.splitId = splitId; } else logLine({ event: 'main-lock-refused', build: b.id, why: r.why });
+    }
+    return s;
+  }, { by: 'pipeline', action: 'main-lock', note: [...out.locked.map((x) => `lock ${x}`), ...out.released.map((x) => `release ${x}`)].join(', ') || 'no change' });
+  if (out.locked.length || out.released.length) logLine({ event: 'main-lock', ...out });
+  return out;
+}
+
 // ------------------------------------------------------------------ the tick
 
 export function tick({ env = process.env } = {}) {
@@ -1296,7 +1332,9 @@ export function tick({ env = process.env } = {}) {
   // done-means-merged@1: every fixing build gets the ladder's next strategy (a relaunch, a wait, or escalation)
   let retries = [];
   try { retries = retryFixing({ env, accounts, settings, rules, alert }); } catch (e) { logLine({ event: 'retry-failed', error: str(e.message, 300) }); }
-  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
+  // main-lock@1: a lock whose run ended is released before the plan, so the next Queue build may start this tick
+  try { syncMainLock({ env }); } catch (e) { logLine({ event: 'main-lock-failed', error: str(e.message, 300) }); }
+  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules, meta: loadStore().meta });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
@@ -1348,6 +1386,9 @@ export function tick({ env = process.env } = {}) {
         tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_PER_HOUR });
     }
   }
+  // main-lock@1 (split-plan@1): the launched run holds main from the sha its worktree started on; a lock whose build has
+  // no active run any more is released, so the next Queue build may start
+  try { syncMainLock({ launched, env }); } catch (e) { logLine({ event: 'main-lock-failed', error: str(e.message, 300) }); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
   if (plan.idle && !launched.length) {
@@ -1696,6 +1737,18 @@ async function main(argv) {
     const r = selfCheck({ reason, by });
     if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
     return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'main-lock') {
+    const s0 = loadStore(); const st = mainLocked(s0.meta, { builds: s0.builds.filter((b) => !b.deleted) });
+    if (rest[0] === 'release') {
+      if (!st.lock) return out({ ok: true, released: null, why: st.why }, st.why);
+      const forced = args.includes('--force');
+      if (st.locked && !forced) throw Object.assign(new Error(`${st.why}: the run is still on it; add --force to release it anyway`), { code: 2 });
+      withStore((s) => { const r = unlockMain(s.meta, { force: true }); if (r.ok) s.meta = r.meta; return s; }, { by: process.env.AXF_ACTOR || 'cli', action: 'main-lock', note: `release ${st.lock.build}${forced ? ' (forced)' : ''}` });
+      logLine({ event: 'main-lock', released: [st.lock.build], by: process.env.AXF_ACTOR || 'cli', forced });
+      return out({ ok: true, released: st.lock, why: st.why }, `released: main was held by ${st.lock.build} (${st.lock.splitId}) since ${st.lock.lockedAt}`);
+    }
+    return out({ ok: true, ...st }, st.why);
   }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {

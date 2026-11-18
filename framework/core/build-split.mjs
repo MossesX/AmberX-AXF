@@ -542,3 +542,67 @@ export function applyRollUp(plan, at = new Date().toISOString()) {
   for (let k = from; k < to; k += 1) { const r = runNext(cur, line[k + 1], { at }); if (!r.ok) return { plan: cur, change: cur === plan ? null : { from: plan.run, to: cur.run } }; cur = r.plan; }
   return { plan: cur, change: { from: plan.run, to: cur.run } };
 }
+
+// ------------------------------------------------------------------ one build at a time, main lock (main-lock@1)
+
+/**
+ * The builds@1 statuses that mean a run is active: splitting (its parts are being planned), running, waiting on an
+ * approval; `fixing` only while a retry session is on it (pipeline.session set). While one is active no other build is
+ * launched (BUILD-SPLIT.md → rule 1); its parts fill the free slots instead.
+ */
+export const ACTIVE_RUN_STATUSES = Object.freeze(['splitting', 'running', 'waiting']);
+export const isActiveRun = (b) => !!b && !b.deleted && (ACTIVE_RUN_STATUSES.includes(b.status) || (b.status === 'fixing' && !!str(obj(b.pipeline)?.session)));
+/** The one build with an active run (the oldest launch first), or null. */
+export function activeRun(builds) {
+  const live = (Array.isArray(builds) ? builds : []).filter(isActiveRun);
+  return live.sort((a, b) => str(obj(a.pipeline)?.launchedAt).localeCompare(str(obj(b.pipeline)?.launchedAt)) || str(a.id).localeCompare(str(b.id)))[0] ?? null;
+}
+
+/**
+ * Take the main lock for a run (pure, on the store's meta): → { ok, meta, why, lock }. Refused while another build's
+ * lock is fresh (its run is active, or it is younger than MAIN_LOCK_STALE_MS); re-taking one's own lock is fine (the
+ * base is kept unless a new one is given). `builds` lets a stale lock whose build is no longer active be replaced.
+ */
+export function lockMain(meta, { build, splitId, base, at = new Date().toISOString(), by = 'dispatcher', note = '', builds = [], now = Date.parse(at) } = {}) {
+  const m = obj(meta) ?? {};
+  const cur = normMainLock(m.mainLock);
+  const want = normMainLock({ $axf: LOCK_SCHEMA, build, splitId, base, lockedAt: iso(at) || new Date().toISOString(), by, note });
+  if (!want) return { ok: false, meta: m, why: 'a main lock needs the build id, its split id and the main sha (40 hex)', lock: cur };
+  if (cur && cur.build !== want.build) {
+    const st = mainLocked(m, { now, builds });
+    if (st.locked) return { ok: false, meta: m, why: `main is locked by ${cur.build} (${cur.splitId}) since ${cur.lockedAt}`, lock: cur };
+  }
+  const lock = cur && cur.build === want.build ? { ...cur, splitId: want.splitId, base: want.base || cur.base, by: want.by, ...(want.note ? { note: want.note } : {}) } : want;
+  return { ok: true, meta: { ...m, mainLock: lock }, why: '', lock };
+}
+/** Release the main lock (pure): → { ok, meta, why }. Only the holder releases it unless `force`. No lock = nothing to do (ok). */
+export function unlockMain(meta, { build = '', force = false } = {}) {
+  const m = obj(meta) ?? {};
+  const cur = normMainLock(m.mainLock);
+  if (!cur) { const { mainLock, ...rest } = m; return { ok: true, meta: rest, why: mainLock === undefined ? 'main was not locked' : 'a lock not in shape was dropped', lock: null }; }
+  if (!force && str(build) && cur.build !== build) return { ok: false, meta: m, why: `main is locked by ${cur.build}, not ${build}`, lock: cur };
+  const { mainLock, ...rest } = m;
+  return { ok: true, meta: rest, why: '', lock: cur };
+}
+/**
+ * The holder's statuses that keep main locked: an active run, a retry in the making (fixing), between phases (queued),
+ * and landing (combining, CI, merging: nothing else lands on main until this does). Anything else (pending, landed,
+ * complete, failed, escalated, blocked, archived, deleted, gone) means the run ended: the lock is released.
+ */
+export const HOLDS_MAIN = Object.freeze([...ACTIVE_RUN_STATUSES, 'fixing', 'queued', 'landing']);
+export const holdsMain = (b) => !!b && !b.deleted && HOLDS_MAIN.includes(b.status);
+/**
+ * Is main locked right now? → { locked, lock, stale, why }. Held while the holder has an active run or is between
+ * phases / landing (holdsMain); free at once when the holder's run ended (released: not stale); stale when the holder
+ * is not active and the lock is older than MAIN_LOCK_STALE_MS (a stalled landing or a lost run: the watchdog releases it).
+ */
+export function mainLocked(meta, { now = Date.now(), builds = [] } = {}) {
+  const cur = normMainLock(obj(meta)?.mainLock);
+  if (!cur) return { locked: false, lock: null, stale: false, why: 'main is free' };
+  const holder = (Array.isArray(builds) ? builds : []).find((b) => obj(b)?.id === cur.build);
+  const age = (typeof now === 'number' ? now : Date.parse(now)) - Date.parse(cur.lockedAt);
+  if (holder && isActiveRun(holder)) return { locked: true, lock: cur, stale: false, why: `main is locked by ${cur.build} (${cur.splitId}, ${holder.status}) since ${cur.lockedAt}` };
+  if (holder && !holdsMain(holder)) return { locked: false, lock: cur, stale: false, released: true, why: `main lock of ${cur.build} is over: its run ended (${holder.status})` };
+  if (age > MAIN_LOCK_STALE_MS) return { locked: false, lock: cur, stale: true, why: `main lock of ${cur.build} is stale: ${Math.round(age / 3600e3)} h old with no active run` };
+  return { locked: true, lock: cur, stale: false, why: `main is locked by ${cur.build} (${cur.splitId}) since ${cur.lockedAt}${holder ? ` (${holder.status})` : ' (build not in this store)'}` };
+}

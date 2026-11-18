@@ -10,7 +10,8 @@
  *
  *   accounts   accountViews(): every saved Claude account with Fable yes / no (override > probe > plan), its parallel
  *              cap and what runs on it now; candidates(): who can take a build's next phase
- *   plan       plan(): the launches a tick makes (one per free slot, next Queue build first), why the others wait, and
+ *   plan       plan(): the launch a tick makes (ONE build at a time, split-plan@1, Nov 18 2026: the next Queue build
+ *              when no run is active and main is free; its parts fill the other slots), why the others wait, and
  *              whether the pipeline is idle (nothing running while the Queue has work) and why
  *   runs       endOutcome(): what a session's end means (finished / requeued / returned / failed)
  *   split      splitPrompt() → Claude; parseSplit() checks the answer; rulesSplit() when no model can be asked
@@ -37,6 +38,7 @@ import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, normAttempts, no
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { DEMO_MARK, isDemo } from '../../../../framework/core/demo-build.mjs';
 import { stepKey } from '../../../../framework/plan/builds-store-core.mjs';
+import { activeRun, isActiveRun, mainLocked } from '../../../../framework/core/build-split.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
@@ -66,6 +68,16 @@ export const DEFAULTS = Object.freeze({
   healthEveryMin: 5,
   /** A launch brief is trimmed to at most this many bytes (Claude setting builds.briefMaxBytes); his words are never cut. */
   briefMaxBytes: 120 * 1024,
+  /**
+   * One build at a time (split-plan@1, framework/spec/BUILD-SPLIT.md, Brett Nov 18 2026): always true, not a setting.
+   * Retired with it: the Claude setting builds.maxParallel ("Max parallel builds", up to 4 builds side by side), which
+   * used to feed parallelPerAccount. Sessions per account (parts count as sessions) stay on parallelPerAccount.
+   */
+  oneBuildAtATime: true,
+});
+/** The retired settings and what replaced them (pipeline-settings@1 migration notes, read by the console and the CLI). */
+export const RETIRED_SETTINGS = Object.freeze({
+  'builds.maxParallel': 'retired Nov 18 2026 (split-plan@1): one build runs at a time and its parts fill every free slot; the value is kept but not read. Sessions per account: pipeline parallelPerAccount.',
 });
 const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
@@ -91,6 +103,7 @@ export function normSettings(raw = {}) {
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
     briefMaxBytes: o.briefMaxBytes === undefined ? DEFAULTS.briefMaxBytes : clamp('briefMaxBytes', o.briefMaxBytes),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
+    oneBuildAtATime: true, // not configurable: the rule, not a knob
   };
 }
 
@@ -362,19 +375,25 @@ export function noAccountWhy(accounts, model) {
 
 /**
  * What one tick does. `builds` = live builds@1 records; `accounts` = accountViews(); `slots` = { free, used, cap } from
- * agent-slots; `rules` = the orchestrator rules. Returns { launches, waits, queue, idle }:
- *   launches  [{ id, account, model, phase }]  one per free slot, in Queue order
+ * agent-slots; `rules` = the orchestrator rules; `meta` = the store's meta (its main-lock@1). Returns { launches, waits, queue, idle, active, mainLock }:
+ *   launches  [{ id, account, model, phase }]  at most ONE (split-plan@1): the next Queue build, when no run is active
+ *                                              and main is free; the run's parts fill the other slots (phase 2)
  *   waits     [{ id, why }]                    queued builds that stay put this tick, and why
  *   idle      null, or { reason, since? }      nothing is running while work waits
+ *   active    the id of the build whose run is active ('' when none); mainLock: mainLocked() of the store meta
  */
-export function plan({ builds, accounts, slots, settings = normSettings(), rules, now = Date.now() }) {
+export function plan({ builds, accounts, slots, settings = normSettings(), rules, meta = null, now = Date.now() }) {
   const live = list(builds).filter((b) => !b.deleted);
   const queue = queueOrder(live, (b) => effectivePriority(b));
-  const running = live.filter((b) => b.status === 'running' || b.status === 'waiting' || (b.status === 'fixing' && !!b.pipeline?.session)); // a retry run is a run (done-means-merged@1)
+  const running = live.filter(isActiveRun); // splitting, running, waiting, or a retry run on a fixing build (done-means-merged@1)
   const pending = live.filter((b) => b.status === 'pending' && !b.hidden);
   const acc = list(accounts).map((a) => ({ ...a }));
   let free = Math.max(0, Number(slots?.free) || 0);
   const launches = []; const waits = [];
+  // one build at a time (split-plan@1): an active run, or a main lock held by a build, gates every launch this tick
+  const active = activeRun(live);
+  const lockState = mainLocked(meta, { now, builds: live });
+  const gate = active ? `one build at a time: ${active.id} is ${active.status}` : lockState.locked ? lockState.why : '';
   for (const b of queue) {
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
@@ -383,6 +402,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
+    if (gate && !(lockState.locked && lockState.lock?.build === b.id && !active)) { waits.push({ id: b.id, why: gate, gated: true }); continue; }
+    if (launches.length) { waits.push({ id: b.id, why: `one build at a time: ${launches[0].id} starts this tick`, gated: true }); continue; }
     const model = nextModel(b);
     if (free <= 0) { waits.push({ id: b.id, why: slots?.hard?.max && Number(slots.hard.free) <= 0 ? `VPS hard build limit reached (${slots.hard.live ?? '?'}/${slots.hard.max} running)` : `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
     const r = routeFor(b, acc, model, settings);
@@ -401,7 +422,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (active.length) idle = { reason: `${active.length} build${active.length === 1 ? '' : 's'} in the Queue, nothing running: ${firstWait?.why ?? 'no launch this tick'}`, kind: 'stuck' };
     else if (pending.length) idle = { reason: `Queue empty, nothing running: ${pending.length} build${pending.length === 1 ? '' : 's'} wait in Pending for you to queue them`, kind: 'empty' };
   }
-  return { launches, waits, queue: queue.map((b) => b.id), held: queue.filter(isHeld).map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, demo: live.filter(isDemo).map((b) => b.id), idle, at: new Date(now).toISOString() };
+  return { launches, waits, queue: queue.map((b) => b.id), held: queue.filter(isHeld).map((b) => b.id), running: running.map((b) => b.id), pending: pending.length, demo: live.filter(isDemo).map((b) => b.id), idle, active: active?.id ?? '', mainLock: lockState.lock ? { build: lockState.lock.build, splitId: lockState.lock.splitId, base: lockState.lock.base, lockedAt: lockState.lock.lockedAt, locked: lockState.locked, stale: lockState.stale } : null, at: new Date(now).toISOString() };
 }
 
 // ------------------------------------------------------------------ session end

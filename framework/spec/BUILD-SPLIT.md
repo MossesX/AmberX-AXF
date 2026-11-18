@@ -144,9 +144,13 @@ store.meta.mainLock = null | { $axf: 'main-lock@1', build: <build id>, splitId, 
 
 Taken when a run enters `splitting` (the dispatcher reads main's head and writes it as `base`), released when the run is
 `merged` or `failed`. While it is held: no other build is launched; the auto-lander lands only this run's combine PR;
-any part whose `base` differs from the lock's is refused (`validatePlan`). A lock older than `MAIN_LOCK_STALE_MS` (6 h)
-with no live session on the build is stale: the watchdog releases it and notes the run. `lockMain(meta, …)`,
-`unlockMain(meta, …)`, `mainLocked(meta, now)` in the engine.
+any part whose `base` differs from the lock's is refused (`validatePlan`). The holder keeps main while its builds@1
+status is one of `HOLDS_MAIN` (`splitting running waiting fixing queued landing`: active, retrying, between phases,
+landing); any other status (`pending`, `landed`, `complete`, `failed`, `escalated`, `archived`, deleted) means the run
+ended and the lock is released on the next tick. A lock older than `MAIN_LOCK_STALE_MS` (6 h) whose holder has no
+active run (a stalled landing, a lost run) is stale: the dispatcher releases it and notes the run. `lockMain(meta, …)`,
+`unlockMain(meta, …)`, `mainLocked(meta, { now, builds })` in the engine; `pipeline.mjs main-lock [release [--force]]`
+on the CLI (a held lock is only released with `--force`).
 
 ## Planner (`planParts(build, freeSlots, fileClaims, opts)`)
 
@@ -186,9 +190,16 @@ ships the contract and engine; the addresses are fixed here so phase 2 wires the
   no record changes on the first read and nothing is lost. Unknown fields a newer writer adds are carried over verbatim
   (`extra`), never dropped by an older reader.
 - The "up to 4 builds at once" rule (agent slots filled with distinct builds) is retired: the slot count stays, the
-  dispatcher gives every free slot to the one active run's parts. `parallelPerAccount` keeps meaning sessions per
-  account (parts count as sessions). The migration note is on the pipeline settings (`pipeline-settings@1
-  oneBuildAtATime: true`, read-only) and in `framework/spec/BUILD-RULES.md`.
+  dispatcher launches ONE build per tick and only while no run is active and main is free (`plan()` in
+  `pipeline-core.mjs`: every other queued build waits with `one build at a time: <id> is <status>`); the free slots go
+  to the active run's parts. The Claude setting `builds.maxParallel` ("Max parallel builds", default 3, up to 4 in
+  practice) is retired: its value is kept but no longer read (`RETIRED_SETTINGS` in `pipeline-core.mjs`, the registry
+  entry says so); `parallelPerAccount` keeps meaning sessions per account (parts count as sessions).
+  `pipeline-settings@1` carries `oneBuildAtATime: true` read-only: the rule, not a knob.
+- The dispatcher takes the main lock in the same tick it launches (`syncMainLock` in `pipeline.mjs`: base =
+  `origin/main` as fetched for the worktree; the split id is `<id>.r<runs>` until the planner writes a plan) and
+  releases a lock whose build has no active run left. `plan()` reads the lock from the store meta: a fresh lock held by
+  another build gates every launch; a stale one (no active run, older than 6 h) gates nothing and is released.
 - Runs made before this contract have no split id: a session running without one keeps going (grandfathered until it
   exits); the gate applies to launches from now on.
 

@@ -92,14 +92,31 @@ const q2 = build('q2', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '
 const q3 = build('q3', 'queued', [], { pipeline: { queuedAt: '2026-11-08T00:03:00Z' } });
 const q4 = build('q4', 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: '2026-11-08T00:04:00Z' } });
 const p1 = build('p1', 'pending', [step('s1', 'Opus')]);
-t('plan: one launch per free slot in Queue order, Fable to a Fable account, the rest wait with a reason', () => {
+t('plan: ONE launch a tick in Queue order (split-plan@1), Fable to a Fable account, the rest wait with a reason', () => {
   const v = P.accountViews(rows, {}, { settings });
   const r = P.plan({ builds: [q4, q2, q1, q3, p1], accounts: v, slots: { free: 2, used: 1, cap: 3 }, settings });
   assert.deepEqual(r.queue, ['q1', 'q2', 'q3', 'q4']);
-  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.model]), [['q1', 'w-max', 'Fable'], ['q2', 'w-pro', 'Opus']], 'Opus work keeps the Fable account free');
-  assert.deepEqual(r.waits.map((w) => w.id), ['q3', 'q4']);
-  assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /no free agent slot/);
-  assert.equal(r.idle, null);
+  assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.model]), [['q1', 'w-max', 'Fable']], 'one build at a time: the next Queue build only');
+  assert.deepEqual(r.waits.map((w) => w.id), ['q2', 'q3', 'q4']);
+  assert.match(r.waits[0].why, /one build at a time: q1 starts this tick/); assert.match(r.waits[1].why, /no steps yet/); assert.match(r.waits[2].why, /one build at a time/);
+  assert.equal(r.idle, null); assert.equal(r.active, ''); assert.equal(r.mainLock, null);
+});
+t('plan: an active run gates every launch; a main lock held by a build does too; a stale lock does not', () => {
+  const v = P.accountViews(rows, {}, { settings });
+  const run = build('busy', 'running', [step('s1', 'Opus')], { pipeline: { launchedAt: now, session: 'axf-busy' } });
+  const r = P.plan({ builds: [q1, q2, run], accounts: v, slots: { free: 2, used: 1, cap: 3 }, settings });
+  assert.equal(r.launches.length, 0); assert.equal(r.active, 'busy'); assert.match(r.waits[0].why, /one build at a time: busy is running/); assert.equal(r.waits[0].gated, true);
+  for (const st of ['splitting', 'waiting']) assert.equal(P.plan({ builds: [q1, build('b', st, [step('s1', 'Opus')])], accounts: v, slots: { free: 2, used: 1, cap: 3 }, settings }).launches.length, 0, st);
+  assert.equal(P.plan({ builds: [q1, build('f', 'fixing', [step('s1', 'Opus')], { pipeline: { session: 'axf-f' } })], accounts: v, slots: { free: 2, used: 1, cap: 3 }, settings }).launches.length, 0, 'a retry session is a run');
+  assert.equal(P.plan({ builds: [q1, build('f', 'fixing', [step('s1', 'Opus')])], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings }).launches.length, 1, 'fixing with no session is not a run');
+  const sha = 'c'.repeat(40);
+  const meta = { mainLock: { $axf: 'main-lock@1', build: 'q2', splitId: 'q2.r1', base: sha, lockedAt: now, by: 'dispatcher' } };
+  const locked = P.plan({ builds: [q1, q2], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings, meta, now: Date.parse(now) + 60e3 });
+  assert.deepEqual(locked.launches.map((l) => l.id), ['q2'], 'the lock holder may start (its next phase); nobody else');
+  assert.match(locked.waits.find((w) => w.id === 'q1').why, /main is locked by q2/); assert.equal(locked.mainLock.locked, true); assert.equal(locked.mainLock.base, sha);
+  const stale = P.plan({ builds: [q1, q2], accounts: v, slots: { free: 2, used: 0, cap: 3 }, settings, meta, now: Date.parse(now) + 7 * 3600e3 });
+  assert.deepEqual(stale.launches.map((l) => l.id), ['q1'], 'a stale lock (no active run, over 6 h) gates nothing'); assert.equal(stale.mainLock.stale, true);
+  assert.equal(P.normSettings({ oneBuildAtATime: false }).oneBuildAtATime, true, 'the rule is not a knob'); assert.match(P.RETIRED_SETTINGS['builds.maxParallel'], /one build runs at a time/);
 });
 t('plan: account caps hold a launch even with slots free; Fable work waits when no Fable account is free', () => {
   const v = P.accountViews(rows.filter((x) => x.name === 'w-pro'), {}, { settings: P.normSettings({ parallelPerAccount: 1 }) });
@@ -316,7 +333,10 @@ t('plan: overflow fills an API account up to its cap, then the rest wait with th
   const q = (id, at) => build(id, 'queued', [step('s1', 'Opus')], { pipeline: { queuedAt: at } });
   const r = P.plan({ builds: [q('one', '2026-11-08T00:01:00Z'), q('two', '2026-11-08T00:02:00Z')], accounts: accts, slots: { free: 4, used: 0, cap: 6 }, settings: s });
   assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.kind, l.rule]), [['one', 'hulu-api', 'api', 'overflow']]);
-  assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /hulu-api: full/);
+  assert.equal(r.waits[0].id, 'two'); assert.match(r.waits[0].why, /one build at a time: one starts this tick/);
+  // the account cap still speaks when it is the only reason (an active run elsewhere is named first by the gate)
+  const capped = P.routeFor(q('two', '2026-11-08T00:02:00Z'), accts.map((a) => (a.name === 'hulu-api' ? { ...a, running: 1, free: 0, api: { ...a.api, usable: false, why: 'full (1/1)' } } : a)), 'Opus', s);
+  assert.match(capped.why, /hulu-api: full/);
   assert.equal(BP.normPipeline({ route: 'api' }).route, 'api'); assert.equal(BP.normPipeline({ route: 'nope', queuedAt: now }).route, '');
 });
 // ---------------- Nov 10 2026: tabs, subscriptions first then API, plan at split, final pick, account health
@@ -586,20 +606,24 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     json(pipe('queue', 'beta', '--json'));
     const bad = pipe('queue', 'alpha', '--json', '--expect-fail'); assert.notEqual(bad.status, 0, 'queueing a queued build is refused');
   });
-  t('e2e tick: one slot per account cap; the Fable build goes to the Max account, the Opus build to the Pro one', () => {
+  t('e2e tick: ONE build at a time (split-plan@1): the Fable build goes to the Max account, the next waits; main is locked for it', () => {
     const r = json(pipe('tick', '--json'));
-    assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]).sort(), [['alpha', 'w-max', 'Fable'], ['beta', 'w-pro', 'Opus']], JSON.stringify({ waits: r.plan.waits, failed: r.failed }));
+    assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]), [['alpha', 'w-max', 'Fable']], JSON.stringify({ waits: r.plan.waits, failed: r.failed }));
+    assert.match(r.plan.waits.find((w) => w.id === 'beta').why, /one build at a time: alpha starts this tick/);
     const log = readFileSync(join(tmp, 'launches.log'), 'utf8');
-    assert.match(log, /--name alpha .*--account w-max/); assert.match(log, /--model claude-fable-5-1/); assert.match(log, /--name beta .*--account w-pro/); assert.match(log, /--model claude-opus-5-5/);
+    assert.match(log, /--name alpha .*--account w-max/); assert.match(log, /--model claude-fable-5-1/); assert.doesNotMatch(log, /--name beta/);
+    const ml = json(pipe('main-lock', '--json')); assert.equal(ml.locked, true); assert.equal(ml.lock.build, 'alpha'); assert.equal(ml.lock.splitId, 'alpha.r1'); assert.match(ml.lock.base, /^[0-9a-f]{40}$/);
+    assert.equal(find('alpha').splitId, 'alpha.r1', 'the run is named on the build');
+    assert.notEqual(pipe('main-lock', 'release', '--json', '--expect-fail').status, 0, 'a held lock is not released without --force');
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
     assert.match(brief, /Checkpoints: Steps are checkpoints inside this ONE session/); assert.match(brief, /they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it/);
-    assert.equal(json(pipe('tick', '--json')).launched.length, 0, 'nothing free: no second launch');
+    const again = json(pipe('tick', '--json')); assert.equal(again.launched.length, 0, 'one build at a time: no second launch'); assert.match(again.plan.waits.find((w) => w.id === 'beta').why, /one build at a time: alpha is running/);
   });
   t('e2e one way to start builds: every dispatcher launch carries a token the gate accepts once; anything else is refused', () => {
     const gate = readFileSync(join(tmp, 'gate.log'), 'utf8');
-    assert.match(gate, /ok: alpha: dispatched by the orchestrator on w-max \(Fable\)/); assert.match(gate, /ok: beta: dispatched by the orchestrator on w-pro/); assert.doesNotMatch(gate, /GATE-REFUSED/);
+    assert.match(gate, /ok: alpha: dispatched by the orchestrator on w-max \(Fable\)/); assert.doesNotMatch(gate, /GATE-REFUSED/);
     const g = (...a) => spawnSync(process.execPath, [join(ROOT, 'framework/cli/dispatch-gate.mjs'), ...a], { cwd: ROOT, env, encoding: 'utf8' });
     assert.equal(g('check', '--name', 'alpha').status, 3, 'no token: refused');
     const tokens = JSON.parse(readFileSync(join(pipeDir, 'dispatch.json'), 'utf8')).tokens;
@@ -639,12 +663,9 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.match(readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'), /## Retry: attempt 1/);
     assert.match(a.notes.map((x) => x.text).join('\n'), /back in the Queue \(run 1\)/);
     assert.match(a.notes.map((x) => x.text).join('\n'), /Fixing: the session crashed/);
-    // beta's session ticks its step and ends cleanly
-    orch('act', 'step', 'beta', 's1', 'done');
-    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
-    r = json(pipe('tick', '--json'));
-    assert.ok(['complete', 'built', 'landing', 'landed'].includes(find('beta').status), find('beta').status);
-    assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
+    // beta still waits: a retry run on alpha is the active run
+    assert.match(r.plan.waits.find((w) => w.id === 'beta').why, /one build at a time: alpha is fixing|main is locked by alpha \(alpha\.r1\)/);
+    assert.equal(json(pipe('main-lock', '--json')).lock.build, 'alpha', 'alpha keeps main through its retry');
   });
   t('e2e session end: a clean stop with steps left is fell-to-pending, retried; a session that asked Brett goes back to Pending', () => {
     const end = (exit) => writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit, at: new Date(Date.now() + 1000).toISOString() }) + '\n');
@@ -663,6 +684,23 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.deepEqual(r.ended.map((e) => [e.id, e.outcome]), [['alpha', 'returned']]);
     assert.deepEqual(r.failures, []);
     assert.equal(find('alpha').status, 'pending'); assert.match(find('alpha').notes.at(-1).text, /back in Pending|needs Brett/);
+    // one build at a time: alpha's run ended in this tick, so main is freed and the next Queue build starts at once
+    assert.deepEqual(r.launched.map((l) => [l.id, l.account, l.model]), [['beta', 'w-pro', 'Opus']], JSON.stringify({ waits: r.plan.waits, failed: r.failed }));
+  });
+  t('e2e one at a time: beta holds main, ticks its step and ends cleanly = landing; landing keeps main until it merges', () => {
+    let r;
+    assert.equal(find('beta').status, 'running');
+    assert.match(readFileSync(join(tmp, 'gate.log'), 'utf8'), /ok: beta: dispatched by the orchestrator on w-pro/);
+    const ml = json(pipe('main-lock', '--json')); assert.equal(ml.lock.build, 'beta'); assert.equal(ml.lock.splitId, 'beta.r1');
+    orch('act', 'step', 'beta', 's1', 'done');
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('beta').pipeline.session, name: 'beta', exit: 0, at: new Date().toISOString() }) + '\n');
+    r = json(pipe('tick', '--json'));
+    assert.ok(['complete', 'built', 'landing', 'landed'].includes(find('beta').status), find('beta').status);
+    assert.equal(find('beta').pipeline.lastRun.outcome, 'finished');
+    assert.equal(json(pipe('main-lock', '--json')).locked, true, 'landing: main stays locked until the PR merges');
+    // the auto-lander's merge stands in here: the lock is released by hand (forced, the run is still landing)
+    const rel = json(pipe('main-lock', 'release', '--force', '--json')); assert.equal(rel.ok, true); assert.equal(rel.released.build, 'beta');
+    assert.equal(json(pipe('main-lock', '--json')).locked, false);
   });
   t('e2e idle: nothing running with work in Pending raises the idle alert once, cleared when a build runs', () => {
     const st = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));
@@ -699,6 +737,8 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.deepEqual(json(pipe('tick', '--json')).authRequeued, [], 'one health answer re-queues once');
   });
   t('e2e a queued build that fails to start: the phone hears it at once with the exact reason', () => {
+    // one build at a time: alpha's run is parked first (Brett takes it back to Pending), which frees main for the next build
+    if (find('alpha').status === 'queued') json(pipe('unqueue', 'alpha', '--json')); else orch('act', 'status', 'alpha', 'pending');
     orch('act', JSON.stringify({ action: 'add', id: 'epsstart', title: 'Epsilon start', steps: [{ text: 'do epsstart', model: 'Opus', estimate: '10 min' }] }));
     json(pipe('queue', 'epsstart', '--json'));
     const bad = join(tmp, 'bad-launcher.sh');
@@ -938,7 +978,7 @@ t('plan: a demo build runs like any other and is marked demo-only', () => {
   const r = P.plan({ builds: [dq, dw, q2], accounts: v, slots: { free: 5, used: 0, cap: 5 }, settings });
   assert.deepEqual(r.demo, ['demo-crash', 'demo-wait']);
   assert.equal(r.launches.find((l) => l.id === 'demo-crash').demo, true);
-  assert.equal('demo' in r.launches.find((l) => l.id === 'q2'), false);
+  assert.equal('demo' in r.waits.find((w) => w.id === 'q2'), false, 'q2 waits (one build at a time) and is not marked demo');
   assert.equal(r.waits.find((w) => w.id === 'demo-wait').demo, true);
 });
 t('alertFor: an alert about a demo build is marked from its id alone', () => {
