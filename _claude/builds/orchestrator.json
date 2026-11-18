@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:23:25.461Z",
+ "updatedAt": "2026-11-18T01:24:13.724Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -187462,14 +187462,14 @@
    "title": "One true source for every setting",
    "category": "",
    "detail": "Rule from Brett: every setting has exactly one true source. Audit the console, plugins, orchestrator, axHub and framework for any setting stored or editable in more than one place (example found: Claude account on/off lived in both claude-accounts workers.json and the orchestrator's pipeline accounts.json, so Moses X looked on but never got builds). For each duplicate: pick the one source, migrate values, make every other place read from it (no copies), remove duplicate controls/APIs. Add a CI check that fails when a setting key is defined or written in two stores. Write the rule into the shared build rules so every future build follows it. Report listing each duplicate found and fixed.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-true-source-for-every-setting",
    "branch": "claude/one-true-source-for-every-setting",
    "pr": "",
    "createdAt": "2026-11-17T22:38:13.587Z",
-   "updatedAt": "2026-11-18T01:17:07.523Z",
+   "updatedAt": "2026-11-18T01:24:00.103Z",
    "builtAt": "",
    "notes": [
     {
@@ -187513,8 +187513,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:24:00.103Z",
      "note": "",
      "uid": "st-mwlaugjmwe4pw5",
      "createdAt": "2026-11-17T22:42:25.629Z"
