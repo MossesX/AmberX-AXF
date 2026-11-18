@@ -4,10 +4,15 @@
  *
  *   node framework/cli/builds-data.mjs status                 where the store and the journal are (key modes, local vs remote,
  *                                                             rows per table when the token may read them)
- *   node framework/cli/builds-data.mjs cutover [--apply]      copy the live store (one put) and every hub journal part (only the
+ *   node framework/cli/builds-data.mjs cutover [--apply] [--no-flip]
+ *                                                             copy the live store (one put) and every hub journal part (only the
  *                                                             lines axf-data lacks, the overlap compared line by line), verify
  *                                                             counts, then flip `builds/store.json` and `builds/journal/` to
  *                                                             cutover under the store lock. Without --apply: report only.
+ *                                                             --no-flip: copy and verify, leave the keys local. The flip is only
+ *                                                             safe once every writer on the machine runs code that reads key-level
+ *                                                             modes (this build merged into main and deployed): an older writer
+ *                                                             would keep writing the file while newer ones write axf-data.
  *   node framework/cli/builds-data.mjs local [--apply]        back to the files: the remote store is written to the local file
  *                                                             and the remote journal lines the hub lacks are appended, then the
  *                                                             two keys go back to local (the namespace is untouched).
@@ -25,7 +30,7 @@
  *   journal  for every part: remote entries ≥ local lines, and every local line equals the remote entry at its position
  *            (oversized entries are compared through their builds/journal-large record)
  */
-import { appendFileSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, renameSync, utimesSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
@@ -123,10 +128,10 @@ export async function status({ store = files.remoteStore(), file = storeFile() }
  * The cut: under the store lock, put the store (when it differs), sync every journal part, verify, flip the keys.
  * Returns the report; `ok` is false when anything did not verify (nothing flipped then).
  */
-export async function cutover({ store = files.remoteStore(), apply = false, by = 'svc:cli', log = () => {}, file = storeFile() } = {}) {
+export async function cutover({ store = files.remoteStore(), apply = false, flip = true, by = 'svc:cli', log = () => {}, file = storeFile() } = {}) {
   if (!store) throw new DataStoreError('unavailable', 'axf-data is not configured (AXF_DATA_URL / --url)');
   const at = nowIso();
-  const report = { $axf: 'builds-data-cutover@1', at, apply, ok: false, store: null, journal: [], counts: null, tables: null, flipped: [], problems: [] };
+  const report = { $axf: 'builds-data-cutover@1', at, apply, flip, ok: false, store: null, journal: [], counts: null, tables: null, flipped: [], problems: [] };
   const run = async () => {
     const localStore = core.normalizeStore(JSON.parse(readFileSync(file, 'utf8')));
     const localDoc = JSON.parse(storeText(localStore));
@@ -162,7 +167,7 @@ export async function cutover({ store = files.remoteStore(), apply = false, by =
       }
     }
     report.ok = !report.problems.length;
-    if (!apply || !report.ok) return;
+    if (!apply || !report.ok || !flip) return;
     let state = readState();
     const verified = { at: nowIso(), how: 'builds-data cutover: store record equal, journal parts compared line by line, counts equal', counts: report.counts.local, journal: report.journal.map((j) => ({ part: j.part, lines: Math.max(j.local, j.remote) })), tables: report.tables };
     const changes = [];
@@ -171,8 +176,19 @@ export async function cutover({ store = files.remoteStore(), apply = false, by =
     report.flipped = changes.map((c) => `${c.ns}/${c.key}: ${c.from} → ${c.to}`);
     try { await publish(store, state, changes, by); report.published = true; } catch (e) { report.published = false; report.publishError = `${e.code || 'error'}: ${e.message}`; }
   };
-  // hold the store lock the whole time: no local writer can change the file or the journal while they are copied and checked
-  await withStoreLock(() => run(), 60000, file);
+  // the bulk of the journal (gigabytes) is copied before the lock, so writers wait seconds, not minutes; under the lock only
+  // the tail written meanwhile is appended and every part is checked again
+  if (apply) {
+    for (const part of Object.keys(journalParts()).sort()) {
+      const r = await syncPart(store, part, { apply, log });
+      if (r.mismatch) { report.journal.push(r); report.problems.push(`journal ${part}: ${r.mismatch}`); report.ok = false; return report; }
+      report.prepass = [...(report.prepass || []), { part: r.part, appended: r.appended, large: r.large }];
+    }
+  }
+  // hold the store lock for the check and the flip: no local writer can change the file or the journal meanwhile. The lock
+  // file's mtime is refreshed while held (builds-store treats a lock older than 30 s as a dead writer's and removes it).
+  const keep = setInterval(() => { try { const now = new Date(); utimesSync(`${file}.lock`, now, now); } catch { /* lock gone */ } }, 10000);
+  try { await withStoreLock(() => run(), 60000, file); } finally { clearInterval(keep); }
   return report;
 }
 
@@ -208,16 +224,17 @@ export async function toLocal({ store = files.remoteStore(), apply = false, by =
   }, 60000, file);
   return report;
 }
+// (toLocal holds the lock briefly: one record and the journal tails; no mtime refresh needed)
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   const flag = (k) => { const i = args.indexOf(`--${k}`); if (i < 0) return undefined; const v = args[i + 1]; args.splice(i, v && !v.startsWith('--') ? 2 : 1); return v && !v.startsWith('--') ? v : true; };
-  const json = !!flag('json'); const apply = !!flag('apply'); const url = flag('url'); const token = flag('token'); const by = flag('by'); const storeArg = flag('store'); const file = typeof storeArg === 'string' ? resolve(storeArg) : storeFile();
+  const json = !!flag('json'); const apply = !!flag('apply'); const noFlip = !!flag('no-flip'); const url = flag('url'); const token = flag('token'); const by = flag('by'); const storeArg = flag('store'); const file = typeof storeArg === 'string' ? resolve(storeArg) : storeFile();
   const cmd = ['status', 'cutover', 'local'].includes(args[0]) ? args.shift() : 'status';
   const store = typeof url === 'string' ? createDataStore({ backend: httpBackend({ url, token: typeof token === 'string' ? token : process.env.AXF_DATA_TOKEN || '' }), by: 'svc:cli' }) : files.remoteStore();
   const log = json ? () => {} : (m) => console.error(m);
   try {
-    const r = cmd === 'status' ? await status({ store, file }) : cmd === 'cutover' ? await cutover({ store, apply, by: typeof by === 'string' ? by : 'svc:cli', log, file }) : await toLocal({ store, apply, by: typeof by === 'string' ? by : 'svc:cli', log, file });
+    const r = cmd === 'status' ? await status({ store, file }) : cmd === 'cutover' ? await cutover({ store, apply, flip: !noFlip, by: typeof by === 'string' ? by : 'svc:cli', log, file }) : await toLocal({ store, apply, by: typeof by === 'string' ? by : 'svc:cli', log, file });
     if (json) console.log(JSON.stringify(r, null, 1));
     else if (cmd === 'status') {
       console.log(`modes: ${Object.entries(r.modes).map(([k, m]) => `${k} ${m}`).join(', ')}${r.engine ? `; engine ${r.engine}` : ''}`);
