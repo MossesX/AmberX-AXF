@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9130,
- "updatedAt": "2026-11-18T19:48:00.629Z",
+ "rev": 9131,
+ "updatedAt": "2026-11-18T19:48:51.830Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321748,12 +321748,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T19:47:44.614Z",
+   "updatedAt": "2026-11-18T19:48:31.816Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Brett, Nov 18 2026 (voice), correction to the earlier write-only note: \"We're going to move the build store over to a Postgres table. We're going to still allow the orchestrator to check it in case it's going to build a feature that's going to break an already built feature, or in case that feature has already gone live through another build. We want to keep the orchestrator able to make sure we're not going to break something.\"\n\nSo: the builds history table is NOT write-only. Before launching a build, the orchestrator queries it (indexed search by feature, files, plugin, title words) for (a) the same feature already shipped by another build and (b) built features the new build could break. It pulls only matching rows, never the whole history. The pipeline's routine tick still reads only the live/active builds.",
      "at": "2026-11-18T16:02:33.839Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for urgent-all-data-to-postgres-builds-store: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T19:48:31.816Z"
     }
    ],
    "approvals": [],
@@ -321772,7 +321776,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: worktree for urgent-all-data-to-postgres-builds-store: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -321782,7 +321786,9 @@
      "at": "2026-11-18T14:46:58.838Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
+    "tried": [
+     "hulu0241"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -321908,7 +321914,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
