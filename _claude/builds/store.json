@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8574,
- "updatedAt": "2026-11-18T00:32:53.752Z",
+ "rev": 8575,
+ "updatedAt": "2026-11-18T00:33:24.042Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -313306,7 +313306,7 @@
    "pr": "#827",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T00:20:48.869Z",
+   "updatedAt": "2026-11-18T00:32:51.354Z",
    "builtAt": "2026-11-18T00:12:42.641Z",
    "notes": [
     {
@@ -313344,6 +313344,10 @@
     {
      "text": "Reconciler: PR #827",
      "at": "2026-11-18T00:20:48.869Z"
+    },
+    {
+     "text": "All 16 steps done; PR #827 is mergeable (clean). CI run 44206120478 is red only on the two jobs that are already red on main (watchdog.test.mjs vs the done-means-merged guard; the alerts/MCP engines step), not on anything this PR changes; every check this PR touches passes. Filed and queued fix-ci-red-main-watchdog-test-vs-done (P1) for main's red. Until #827 lands, writers still on the old merge keep re-adding repeated steps (seen on this build and Phone Connect); the new save guard heals them on every write.",
+     "at": "2026-11-18T00:32:51.354Z"
     }
    ],
    "approvals": [],
@@ -313399,7 +313403,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwldffpa02kx6h",
+     "uid": "st-mwlbqpta1kux9m",
      "title": "",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
      "model": "Opus",
@@ -313415,13 +313419,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:36:49.344Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.758Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:36:54.658Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwldffpa030kwv",
+     "uid": "st-mwlbqpta1lyc6u",
      "title": "",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
      "model": "Opus",
@@ -313437,13 +313441,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:36:53.870Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.758Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:37:16.450Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwldffpa04beuc",
+     "uid": "st-mwlbqpta1movdk",
      "title": "",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
      "model": "Opus",
@@ -313459,13 +313463,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:36:58.572Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.758Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:37:16.450Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwldffpa05jwmv",
+     "uid": "st-mwlbqpta1n4fvg",
      "title": "",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
      "model": "Opus",
@@ -313481,13 +313485,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:38:10.034Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.758Z"
+     "rev": 3,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:38:39.005Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwldffpa06xpcx",
+     "uid": "st-mwlbqpta1o7s9w",
      "title": "",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
      "model": "Opus",
@@ -313503,13 +313507,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:39:37.567Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:42:51.494Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwldffpb07ozi6",
+     "uid": "st-mwlbqpta1pf1f3",
      "title": "",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
      "model": "Opus",
@@ -313525,13 +313529,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:47:40.415Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:53:29.082Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwldffpb087249",
+     "uid": "st-mwlbqpta1qrueq",
      "title": "",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
      "model": "Opus",
@@ -313547,13 +313551,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:48:33.158Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:53:29.082Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwldffpb09hxv0",
+     "uid": "st-mwlbqpta1rqfci",
      "title": "",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
      "model": "Opus",
@@ -313569,13 +313573,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:51:01.676Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-17T23:53:29.082Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwldffpb0ablm6",
+     "uid": "st-mwlbqpta1s9o0d",
      "title": "",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
      "model": "Opus",
@@ -313591,13 +313595,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:54:21.265Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwldffpb0b2k5q",
+     "uid": "st-mwlbqpta1t2dkz",
      "title": "",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
      "model": "Opus",
@@ -313613,13 +313617,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:57:32.336Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwldffpb0cuve5",
+     "uid": "st-mwlbqpta1u5xix",
      "title": "",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
      "model": "Opus",
@@ -313635,13 +313639,13 @@
      "done": true,
      "doneAt": "2026-11-17T23:58:40.378Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s12",
-     "uid": "st-mwldffpb0duf0f",
+     "uid": "st-mwlbqpta1v6rat",
      "title": "",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
      "model": "Opus",
@@ -313657,13 +313661,13 @@
      "done": true,
      "doneAt": "2026-11-18T00:02:07.669Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s13",
-     "uid": "st-mwldffpb0efhb5",
+     "uid": "st-mwlbqpta1wytqw",
      "title": "",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
      "model": "Opus",
@@ -313679,13 +313683,13 @@
      "done": true,
      "doneAt": "2026-11-18T00:03:18.575Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s14",
-     "uid": "st-mwldffpb0faeua",
+     "uid": "st-mwlbqpta1xvdjw",
      "title": "",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
      "model": "Opus",
@@ -313701,13 +313705,13 @@
      "done": true,
      "doneAt": "2026-11-18T00:05:14.121Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s15",
-     "uid": "st-mwldffpb0g1pp1",
+     "uid": "st-mwlbqpta1y0z1u",
      "title": "",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
      "model": "Opus",
@@ -313723,13 +313727,13 @@
      "done": true,
      "doneAt": "2026-11-18T00:07:56.643Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
      "id": "s16",
-     "uid": "st-mwldffpb0hurws",
+     "uid": "st-mwlbqpta1zjs8w",
      "title": "",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
      "model": "Opus",
@@ -313745,9 +313749,9 @@
      "done": true,
      "doneAt": "2026-11-18T00:12:42.640Z",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T00:16:28.983Z",
-     "updatedAt": "2026-11-18T00:16:29.759Z"
+     "rev": 2,
+     "createdAt": "2026-11-17T23:25:40.639Z",
+     "updatedAt": "2026-11-18T00:13:09.610Z"
     }
    ],
    "profiles": [
@@ -313758,10 +313762,37 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-17T23:19:42.353Z",
+    "builtAt": "2026-11-18T00:12:42.641Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlbqpta1kux9m": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1lyc6u": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1movdk": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1n4fvg": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1o7s9w": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1pf1f3": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1qrueq": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1rqfci": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1s9o0d": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1t2dkz": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1u5xix": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1v6rat": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1wytqw": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1xvdjw": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1y0z1u": "2026-11-17T23:25:40.639Z",
+     "st-mwlbqpta1zjs8w": "2026-11-17T23:25:40.639Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-17T23:21:46.506Z",
    "rearranged": false,

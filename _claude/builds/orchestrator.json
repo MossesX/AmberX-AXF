@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:32:53.752Z",
+ "updatedAt": "2026-11-18T00:33:24.042Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -73604,6 +73604,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -90304,6 +90305,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -129063,6 +129065,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -137706,6 +137709,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -188371,7 +188375,7 @@
    "pr": "#827",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T00:20:48.869Z",
+   "updatedAt": "2026-11-18T00:32:51.354Z",
    "builtAt": "2026-11-18T00:12:42.641Z",
    "notes": [
     {
@@ -188409,6 +188413,10 @@
     {
      "text": "Reconciler: PR #827",
      "at": "2026-11-18T00:20:48.869Z"
+    },
+    {
+     "text": "All 16 steps done; PR #827 is mergeable (clean). CI run 44206120478 is red only on the two jobs that are already red on main (watchdog.test.mjs vs the done-means-merged guard; the alerts/MCP engines step), not on anything this PR changes; every check this PR touches passes. Filed and queued fix-ci-red-main-watchdog-test-vs-done (P1) for main's red. Until #827 lands, writers still on the old merge keep re-adding repeated steps (seen on this build and Phone Connect); the new save guard heals them on every write.",
+     "at": "2026-11-18T00:32:51.354Z"
     }
    ],
    "approvals": [],
@@ -188442,8 +188450,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:36:49.344Z",
      "note": "",
-     "uid": "st-mwldffpa02kx6h",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1kux9m",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s2",
@@ -188461,8 +188469,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:36:53.870Z",
      "note": "",
-     "uid": "st-mwldffpa030kwv",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1lyc6u",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s3",
@@ -188480,8 +188488,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:36:58.572Z",
      "note": "",
-     "uid": "st-mwldffpa04beuc",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1movdk",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s4",
@@ -188499,8 +188507,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:38:10.034Z",
      "note": "",
-     "uid": "st-mwldffpa05jwmv",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1n4fvg",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s5",
@@ -188518,8 +188526,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:39:37.567Z",
      "note": "",
-     "uid": "st-mwldffpa06xpcx",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1o7s9w",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s6",
@@ -188537,8 +188545,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:47:40.415Z",
      "note": "",
-     "uid": "st-mwldffpb07ozi6",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1pf1f3",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s7",
@@ -188556,8 +188564,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:48:33.158Z",
      "note": "",
-     "uid": "st-mwldffpb087249",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1qrueq",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s8",
@@ -188575,8 +188583,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:51:01.676Z",
      "note": "",
-     "uid": "st-mwldffpb09hxv0",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1rqfci",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s9",
@@ -188594,8 +188602,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:54:21.265Z",
      "note": "",
-     "uid": "st-mwldffpb0ablm6",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1s9o0d",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s10",
@@ -188613,8 +188621,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:57:32.336Z",
      "note": "",
-     "uid": "st-mwldffpb0b2k5q",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1t2dkz",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s11",
@@ -188632,8 +188640,8 @@
      "done": true,
      "doneAt": "2026-11-17T23:58:40.378Z",
      "note": "",
-     "uid": "st-mwldffpb0cuve5",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1u5xix",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s12",
@@ -188651,8 +188659,8 @@
      "done": true,
      "doneAt": "2026-11-18T00:02:07.669Z",
      "note": "",
-     "uid": "st-mwldffpb0duf0f",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1v6rat",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s13",
@@ -188670,8 +188678,8 @@
      "done": true,
      "doneAt": "2026-11-18T00:03:18.575Z",
      "note": "",
-     "uid": "st-mwldffpb0efhb5",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1wytqw",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s14",
@@ -188689,8 +188697,8 @@
      "done": true,
      "doneAt": "2026-11-18T00:05:14.121Z",
      "note": "",
-     "uid": "st-mwldffpb0faeua",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1xvdjw",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s15",
@@ -188708,8 +188716,8 @@
      "done": true,
      "doneAt": "2026-11-18T00:07:56.643Z",
      "note": "",
-     "uid": "st-mwldffpb0g1pp1",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1y0z1u",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     },
     {
      "id": "s16",
@@ -188727,8 +188735,8 @@
      "done": true,
      "doneAt": "2026-11-18T00:12:42.640Z",
      "note": "",
-     "uid": "st-mwldffpb0hurws",
-     "createdAt": "2026-11-18T00:16:28.983Z"
+     "uid": "st-mwlbqpta1zjs8w",
+     "createdAt": "2026-11-17T23:25:40.639Z"
     }
    ]
   },
