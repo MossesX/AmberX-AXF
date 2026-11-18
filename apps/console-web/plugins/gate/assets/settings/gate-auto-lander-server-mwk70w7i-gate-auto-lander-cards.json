@@ -1,21 +1,22 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "gate-auto-lander-server-mwk70w7i-gate-auto-lander-cards",
- "name": "gate-auto-lander-server-mwk70w7i: Cards",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "One card per build with state, attempts and last result as labels and values; reads best on a phone.",
- "tags": [
-  "ui-choice",
-  "choice-set:gate-auto-lander-server-mwk70w7i",
-  "choice-option:gate-auto-lander-cards"
- ],
- "data": {
-  "view": "cards",
-  "settingKey": "gate.view",
-  "appliesTo": [
-   "gate.auto-lander"
-  ]
- }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "gate-auto-lander-server-mwk70w7i-gate-auto-lander-cards",
+  "name": "gate-auto-lander-server-mwk70w7i: Cards",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "One card per build with state, attempts and last result as labels and values; reads best on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:gate-auto-lander-server-mwk70w7i",
+    "choice-option:gate-auto-lander-cards"
+  ],
+  "data": {
+    "view": "cards",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.auto-lander"
+    ],
+    "builtFor": "plugin:gate"
+  }
 }

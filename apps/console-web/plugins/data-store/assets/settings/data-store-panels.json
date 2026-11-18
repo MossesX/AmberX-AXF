@@ -13,6 +13,8 @@
   "data": {
     "layout": "list",
     "header": "compact",
+    "search": false,
+    "descriptions": true,
     "levels": true,
     "defaultLevel": "basic",
     "view": "panels",
@@ -25,6 +27,7 @@
       "status",
       "backups",
       "mode"
-    ]
+    ],
+    "builtFor": "plugin:data-store"
   }
 }

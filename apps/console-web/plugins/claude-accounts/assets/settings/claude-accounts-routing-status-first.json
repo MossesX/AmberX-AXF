@@ -35,6 +35,7 @@
     "open": [
       "status",
       "test"
-    ]
+    ],
+    "builtFor": "plugin:claude-accounts"
   }
 }

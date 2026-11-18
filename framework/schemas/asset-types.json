@@ -1254,7 +1254,7 @@
       "label": "Settings interface",
       "group": "System",
       "icon": "settings",
-      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
+      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts. builtFor (required, settings-iface@1, core/engines/settings-iface-rules.mjs): who the interface is built for: app (the Settings page), asset:<type>, plugin:<name> or chrome:<type>; every asset type and plugin has a locked default-<name> and its picker lists only interfaces built for it.",
       "optional_fields": {
         "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs)",
         "extends": "inherit@1: id of the settings asset this one extends; fields it does not set come from that one (an app's custom chrome copy extends the shared default until edited)",
@@ -1268,7 +1268,8 @@
         "layout",
         "header",
         "search",
-        "descriptions"
+        "descriptions",
+        "builtFor"
       ],
       "enums": {
         "layout": [

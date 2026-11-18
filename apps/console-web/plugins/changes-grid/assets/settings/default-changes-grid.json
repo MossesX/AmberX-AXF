@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "default-changes-grid",
+  "name": "Changes & features grid settings (default)",
+  "version": "1.0.0",
+  "description": "The default settings interface for the Changes & features grid plugin: locked until another interface built for it is picked (settings-iface@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "settings-iface@1",
+    "plugin"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "hide": [],
+    "levelOf": {},
+    "builtFor": "plugin:changes-grid"
+  }
+}

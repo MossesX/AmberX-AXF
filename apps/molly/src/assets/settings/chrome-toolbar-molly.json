@@ -53,6 +53,7 @@
       "asset": "basic",
       "interface": "developer"
     },
-    "extends": "chrome-toolbar"
+    "extends": "chrome-toolbar",
+    "builtFor": "chrome:toolbar"
   }
 }

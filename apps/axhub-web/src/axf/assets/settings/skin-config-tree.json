@@ -15,6 +15,7 @@
     "header": "compact",
     "search": true,
     "descriptions": true,
-    "view": "tree"
+    "view": "tree",
+    "builtFor": "app"
   }
 }

@@ -53,6 +53,7 @@
       "asset": "basic",
       "interface": "developer"
     },
-    "extends": "chrome-context-menu"
+    "extends": "chrome-context-menu",
+    "builtFor": "chrome:context-menu"
   }
 }

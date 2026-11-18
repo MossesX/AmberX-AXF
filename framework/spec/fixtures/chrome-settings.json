@@ -760,6 +760,7 @@
         "asset": "basic",
         "interface": "developer"
       },
+      "builtFor": "chrome:tab-group",
       "extends": "chrome-tab-group"
     }
   },
@@ -805,7 +806,8 @@
         "behaviour": "basic",
         "asset": "basic",
         "interface": "developer"
-      }
+      },
+      "builtFor": "chrome:tab-group"
     },
     "edited": {
       "for": "tab-group",
@@ -850,7 +852,8 @@
         "behaviour": "basic",
         "asset": "basic",
         "interface": "developer"
-      }
+      },
+      "builtFor": "chrome:tab-group"
     },
     "default": {
       "for": "tab-group",
@@ -893,7 +896,8 @@
         "behaviour": "basic",
         "asset": "basic",
         "interface": "developer"
-      }
+      },
+      "builtFor": "chrome:tab-group"
     },
     "loop": {
       "for": "toolbar",

@@ -53,6 +53,7 @@
       "asset": "basic",
       "interface": "developer"
     },
-    "extends": "chrome-app-menu"
+    "extends": "chrome-app-menu",
+    "builtFor": "chrome:app-menu"
   }
 }

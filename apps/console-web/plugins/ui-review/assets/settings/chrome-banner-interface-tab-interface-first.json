@@ -1,57 +1,58 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "chrome-banner-interface-tab-interface-first",
- "name": "chrome-banner-interface-tab: Interface first, no duplicate tabs",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "Opens on Interface (everything for this banner); Look and Behaviour tabs are hidden because Interface already covers them; Asset stays for the picker cards. Fewer tabs on the phone.",
- "tags": [
-  "ui-choice",
-  "choice-set:chrome-banner-interface-tab",
-  "choice-option:interface-first"
- ],
- "data": {
-  "for": "banner",
-  "header": "compact",
-  "search": false,
-  "descriptions": true,
-  "groups": [],
-  "levels": true,
-  "defaultLevel": "basic",
-  "layout": "tabs-top",
-  "tabs": [
-   {
-    "id": "interface",
-    "label": "Interface",
-    "icon": "settings",
-    "order": 5
-   },
-   {
-    "id": "asset",
-    "label": "Asset",
-    "icon": "layers",
-    "order": 30
-   },
-   {
-    "id": "look",
-    "label": "Look",
-    "icon": "palette",
-    "order": 10,
-    "hidden": true
-   },
-   {
-    "id": "behaviour",
-    "label": "Behaviour",
-    "icon": "sliders",
-    "order": 20,
-    "hidden": true
-   }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "chrome-banner-interface-tab-interface-first",
+  "name": "chrome-banner-interface-tab: Interface first, no duplicate tabs",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Opens on Interface (everything for this banner); Look and Behaviour tabs are hidden because Interface already covers them; Asset stays for the picker cards. Fewer tabs on the phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:chrome-banner-interface-tab",
+    "choice-option:interface-first"
   ],
-  "hide": [],
-  "levelOf": {
-   "interface": "simple",
-   "asset": "basic"
+  "data": {
+    "for": "banner",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "layout": "tabs-top",
+    "tabs": [
+      {
+        "id": "interface",
+        "label": "Interface",
+        "icon": "settings",
+        "order": 5
+      },
+      {
+        "id": "asset",
+        "label": "Asset",
+        "icon": "layers",
+        "order": 30
+      },
+      {
+        "id": "look",
+        "label": "Look",
+        "icon": "palette",
+        "order": 10,
+        "hidden": true
+      },
+      {
+        "id": "behaviour",
+        "label": "Behaviour",
+        "icon": "sliders",
+        "order": 20,
+        "hidden": true
+      }
+    ],
+    "hide": [],
+    "levelOf": {
+      "interface": "simple",
+      "asset": "basic"
+    },
+    "builtFor": "chrome:banner"
   }
- }
 }

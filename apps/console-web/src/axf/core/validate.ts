@@ -20,6 +20,7 @@ import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
 import { navStyleErrors } from './engines/navstyle-rules.mjs';
+import { builtForErrors } from './engines/settings-iface-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -142,6 +143,9 @@ export function validateAsset(raw: unknown): ValidationResult {
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);
   if (host && host.field in data) errors.push(...validateHostAttachments(raw.type, data[host.field]));
+  // settings-iface@1: who a settings interface is built for (core/engines/settings-iface-rules.mjs); required, so a
+  // missing one is already reported by `required`
+  if (raw.type === 'settings' && 'builtFor' in data) errors.push(...builtForErrors(data.builtFor));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');

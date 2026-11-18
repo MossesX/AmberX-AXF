@@ -1,24 +1,25 @@
 {
- "$axf": "asset@1",
- "type": "settings",
- "id": "gate-lists-cards",
- "name": "gate-lists: Cards",
- "version": "0.1.0",
- "author": "UI Review choices",
- "description": "One card per rule, waiting PR, run and history entry, with every column as a label and value. One column of cards on a phone, several on a wide screen.",
- "tags": [
-  "ui-choice",
-  "choice-set:gate-lists",
-  "choice-option:cards"
- ],
- "data": {
-  "view": "cards",
-  "settingKey": "gate.view",
-  "appliesTo": [
-   "gate.rules",
-   "gate.waiting",
-   "gate.runs",
-   "gate.history"
-  ]
- }
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "gate-lists-cards",
+  "name": "gate-lists: Cards",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "One card per rule, waiting PR, run and history entry, with every column as a label and value. One column of cards on a phone, several on a wide screen.",
+  "tags": [
+    "ui-choice",
+    "choice-set:gate-lists",
+    "choice-option:cards"
+  ],
+  "data": {
+    "view": "cards",
+    "settingKey": "gate.view",
+    "appliesTo": [
+      "gate.rules",
+      "gate.waiting",
+      "gate.runs",
+      "gate.history"
+    ],
+    "builtFor": "plugin:gate"
+  }
 }

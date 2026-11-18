@@ -13,6 +13,7 @@
     "layout": "tabs-top",
     "header": "full",
     "search": false,
-    "descriptions": true
+    "descriptions": true,
+    "builtFor": "app"
   }
 }

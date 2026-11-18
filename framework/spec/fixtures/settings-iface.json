@@ -1,0 +1,287 @@
+{
+  "$comment": "settings-iface@1 golden outputs (node framework/spec/check-settings-iface.mjs --write). Inputs live in the check.",
+  "contract": "settings-iface@1",
+  "kinds": [
+    "app",
+    "asset",
+    "plugin",
+    "chrome"
+  ],
+  "parse": {
+    "app": {
+      "kind": "app",
+      "name": ""
+    },
+    "asset:toolbar": {
+      "kind": "asset",
+      "name": "toolbar"
+    },
+    "plugin:sample-notes": {
+      "kind": "plugin",
+      "name": "sample-notes"
+    },
+    "chrome:tab-group": {
+      "kind": "chrome",
+      "name": "tab-group"
+    },
+    "plugin:": null,
+    "nope:x": null,
+    "asset:Bad Name": null,
+    "plugin:a:b": null,
+    "(empty)": null
+  },
+  "errors": {
+    "missing": [
+      "data.builtFor is required for settings (app | asset:<type> | plugin:<name> | chrome:<type>)"
+    ],
+    "ok": [],
+    "bad": [
+      "data.builtFor must be app, asset:<type>, plugin:<name> or chrome:<type> (not \"plugin\")"
+    ],
+    "number": [
+      "data.builtFor must be app, asset:<type>, plugin:<name> or chrome:<type> (not 3)"
+    ]
+  },
+  "pluginNames": {
+    "ai.amberx.axf.console.sample-notes": "sample-notes",
+    "ai.amberx.axf.settings": "settings",
+    "Weird_Name!!": "weird-name",
+    "(empty)": "",
+    "x": "x"
+  },
+  "defaultIds": {
+    "asset:toolbar": "default-toolbar",
+    "plugin:sample-notes": "default-sample-notes",
+    "plugin:sample-rules": "default-sample-rules",
+    "plugin:settings": "default-settings-plugin",
+    "asset:settings": "default-settings",
+    "chrome:toolbar": "chrome-toolbar",
+    "app": "standard",
+    "plugin:nope": "default-nope"
+  },
+  "keys": {
+    "asset:toolbar": "axf.settings.iface.asset.toolbar",
+    "plugin:sample-notes": "axf.settings.iface.plugin.sample-notes",
+    "plugin:sample-rules": "axf.settings.iface.plugin.sample-rules",
+    "plugin:settings": "axf.settings.iface.plugin.settings",
+    "asset:settings": "axf.settings.iface.asset.settings",
+    "chrome:toolbar": "axf.settings.iface.chrome.toolbar",
+    "app": "axf.settings.iface.app",
+    "plugin:nope": "axf.settings.iface.plugin.nope"
+  },
+  "keyOwners": {
+    "axf.settings.iface.plugin.sample-notes": "plugin:sample-notes",
+    "axf.settings.iface.asset.tab-group": "asset:tab-group",
+    "axf.settings.iface.app": "app",
+    "axf.settings.iface.nope": null,
+    "axf.other": null
+  },
+  "builtForOf": {
+    "default-toolbar": "asset:toolbar",
+    "toolbar-compact": "asset:toolbar",
+    "toolbar-big": "asset:toolbar",
+    "default-sample-notes": "plugin:sample-notes",
+    "sample-notes-rows": "plugin:sample-notes",
+    "sample-rules-cards": "plugin:sample-rules",
+    "default-settings-plugin": "plugin:settings",
+    "chrome-toolbar": "chrome:toolbar",
+    "standard": "app"
+  },
+  "defaultAsset": {
+    "$axf": "asset@1",
+    "type": "settings",
+    "id": "default-sample-notes",
+    "name": "Sample notes settings (default)",
+    "version": "1.0.0",
+    "description": "The default settings interface for the Sample notes plugin: locked until another interface built for it is picked (settings-iface@1).",
+    "author": "AmberX AXF",
+    "tags": [
+      "default",
+      "settings-iface@1",
+      "plugin"
+    ],
+    "data": {
+      "layout": "tabs-top",
+      "header": "compact",
+      "search": false,
+      "descriptions": true,
+      "hide": [],
+      "levelOf": {},
+      "builtFor": "plugin:sample-notes"
+    }
+  },
+  "defaultAssetClash": "default-settings-plugin",
+  "choices": {
+    "asset:toolbar": [
+      {
+        "id": "default-toolbar",
+        "name": "Toolbar settings (default)",
+        "description": "",
+        "isDefault": true
+      },
+      {
+        "id": "toolbar-big",
+        "name": "Big",
+        "description": "",
+        "isDefault": false
+      },
+      {
+        "id": "toolbar-compact",
+        "name": "Compact",
+        "description": "",
+        "isDefault": false
+      }
+    ],
+    "plugin:sample-notes": [
+      {
+        "id": "default-sample-notes",
+        "name": "Sample notes settings (default)",
+        "description": "",
+        "isDefault": true
+      },
+      {
+        "id": "sample-notes-rows",
+        "name": "Rows",
+        "description": "",
+        "isDefault": false
+      }
+    ],
+    "plugin:sample-rules": [
+      {
+        "id": "sample-rules-cards",
+        "name": "Cards",
+        "description": "",
+        "isDefault": false
+      }
+    ],
+    "plugin:settings": [
+      {
+        "id": "default-settings-plugin",
+        "name": "Settings plugin (default)",
+        "description": "",
+        "isDefault": true
+      }
+    ],
+    "asset:settings": [],
+    "chrome:toolbar": [
+      {
+        "id": "chrome-toolbar",
+        "name": "Toolbar dialog",
+        "description": "",
+        "isDefault": true
+      }
+    ],
+    "app": [
+      {
+        "id": "standard",
+        "name": "Standard",
+        "description": "",
+        "isDefault": true
+      }
+    ],
+    "plugin:nope": []
+  },
+  "picks": {
+    "none": {
+      "id": "default-toolbar",
+      "defaultId": "default-toolbar",
+      "locked": true,
+      "source": "default"
+    },
+    "picked": {
+      "id": "toolbar-big",
+      "defaultId": "default-toolbar",
+      "locked": false,
+      "source": "pick"
+    },
+    "otherOwner": {
+      "id": "default-toolbar",
+      "defaultId": "default-toolbar",
+      "locked": true,
+      "source": "default"
+    },
+    "gone": {
+      "id": "default-toolbar",
+      "defaultId": "default-toolbar",
+      "locked": true,
+      "source": "default"
+    },
+    "theDefault": {
+      "id": "default-toolbar",
+      "defaultId": "default-toolbar",
+      "locked": true,
+      "source": "default"
+    }
+  },
+  "sets": {
+    "default": {
+      "value": null
+    },
+    "empty": {
+      "value": null
+    },
+    "defaultId": {
+      "value": null
+    },
+    "pick": {
+      "value": "toolbar-compact"
+    },
+    "shared": {
+      "error": "\"sample-notes-rows\" is not a settings interface built for plugin:sample-rules."
+    },
+    "badOwner": {
+      "error": "No settings owner \"plugin:\"."
+    }
+  },
+  "args": {
+    "plugin": {
+      "owner": "plugin:sample-notes",
+      "which": "sample-notes-rows"
+    },
+    "asset": {
+      "owner": "asset:toolbar",
+      "which": "default"
+    },
+    "app": {
+      "owner": "app",
+      "which": "standard"
+    },
+    "bad": null,
+    "noWhich": {
+      "owner": "plugin:sample-rules",
+      "which": ""
+    }
+  },
+  "layer": {
+    "plain": {
+      "layout": "tabs-side",
+      "header": "full",
+      "search": true,
+      "descriptions": false,
+      "hide": [
+        "a",
+        "b"
+      ],
+      "levelOf": {
+        "a": "basic",
+        "b": "developer"
+      },
+      "levels": true
+    },
+    "empty": {
+      "descriptions": true,
+      "hide": [],
+      "levelOf": {}
+    }
+  },
+  "pickList": [
+    {
+      "owner": "asset:toolbar",
+      "interface": "toolbar-big"
+    },
+    {
+      "owner": "plugin:sample-rules",
+      "interface": "sample-rules-cards"
+    }
+  ]
+}

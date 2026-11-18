@@ -27,7 +27,12 @@ const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '!../pl
 // UI Review's choices/assets), so the page's own asset stays the one its scope picks.
 const pluginToolbars = Object.fromEntries(Object.entries(import.meta.glob(['../plugins/*/assets/toolbar/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' }))
   .filter(([, a]) => !((a as { tags?: string[] }).tags ?? []).includes('ui-choice')));
-const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...pluginToolbars, ...overrideAssets };
+// Plugin settings interfaces (settings-iface@1, settings asset with data.builtFor = plugin:<folder>, at
+// plugins/<folder>/assets/settings/*.json): each plugin's default-<folder> and any other interface built for it, so its
+// Settings → Plugins tab can pick between them. UI Review options (ui-choice) are left out like toolbars.
+const pluginSettings = Object.fromEntries(Object.entries(import.meta.glob(['../plugins/*/assets/settings/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' }))
+  .filter(([, a]) => !((a as { tags?: string[] }).tags ?? []).includes('ui-choice')));
+const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...pluginToolbars, ...pluginSettings, ...overrideAssets };
 
 const axf = createAxf({
   manifest: manifest as AxfManifest,
