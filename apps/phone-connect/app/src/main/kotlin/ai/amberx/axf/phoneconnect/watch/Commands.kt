@@ -36,11 +36,14 @@ object Commands {
     fun foreground(): Boolean = runCatching { ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) }.getOrDefault(false)
 
     init {
-        // browser.open: straight away while the app is in front; otherwise a high-priority notification with a
-        // full-screen intent (Android blocks activity starts from the background).
+        // browser.open: the AXF Console app's floating overlay first when the command asks for it (where: overlay, the
+        // default) and the console app takes it; else straight away while this app is in front; otherwise a
+        // high-priority notification with a full-screen intent (Android blocks activity starts from the background).
         register("browser.open") { ctx, id, args ->
             val url = args.optString("url")
             if (!LinkRules.openable(url)) return@register Outcome.Failed("denied", "Only https pages open on the phone.")
+            val where = args.optString("where", "overlay")
+            if (LinkRules.wantsOverlay(where)) ConsoleOverlay.open(ctx, url, where)?.let { return@register Outcome.Done(it) }
             if (foreground()) {
                 ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
                 Outcome.Done(JSONObject().put("opened", true).put("how", "direct"))

@@ -8,6 +8,10 @@
     <!-- Playback capture is filed under RECORD_AUDIO by Android; the recorder never opens the microphone itself. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PROJECTION" />
+    <!-- The AXF Console app's floating overlay opens console pages first (console-overlay@1, ConsoleOverlay.kt). -->
+    <queries>
+        <package android:name="ai.amberx.consoleapp" />
+    </queries>
     <!-- Every framework module contributes its own manifest pieces; this file holds only the app's identity. -->
     <application
         android:name=".App"

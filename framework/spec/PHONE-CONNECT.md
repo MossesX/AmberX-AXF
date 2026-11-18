@@ -121,6 +121,10 @@ unpaired ──issue──▶ pending ──claim──▶ paired ──revoke�
 ways, Brett Nov 8 2026). `ttl` defaults per command (`TTL`: open_url 60 s, notify 60 s, approval = `secondsLeft` or
 600 s, recorder.start 120 s, recorder.stop/status 30 s, voice = `timeoutSeconds` + 10 s).
 
+`open_url` with `where: overlay` (the default) goes to the AXF Console app's floating overlay first when that app is
+installed with its toolbar on (console-overlay@1, `apps/console-droid/OVERLAY.md` → "With Phone Connect"); the result
+then says `how: "console-overlay"`. Otherwise, and always for `where: browser`, the phone opens the page itself.
+
 Three things a command can never carry:
 
 - a **decision**: `approval` only *shows* the prompt. There is no `decide` command, no `decision` argument, and the API

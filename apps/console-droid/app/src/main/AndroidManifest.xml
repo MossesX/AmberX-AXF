@@ -43,6 +43,12 @@
                 <data android:scheme="https" android:host="console.amberxai.com" />
             </intent-filter>
         </activity>
+        <!-- Phone Connect opens the console's pages in the floating overlay (console-overlay@1, PhoneConnectProvider):
+             exported for its call() only; the provider checks the calling package and the url itself. -->
+        <provider
+            android:name=".PhoneConnectProvider"
+            android:authorities="ai.amberx.consoleapp.overlay"
+            android:exported="true" />
         <!-- The floating toolbar over every app; keeps the console page running while another app is on screen. -->
         <service
             android:name=".OverlayService"

@@ -20,6 +20,13 @@ class LinkRulesTest {
         assertNull(LinkRules.normalizeOrigin("https://console.amberxai.com/path"))
     }
 
+    @Test fun overlayUnlessBrowser() {
+        assertTrue(LinkRules.wantsOverlay("overlay"))
+        assertTrue(LinkRules.wantsOverlay(""))
+        assertTrue(LinkRules.wantsOverlay(null))
+        assertFalse(LinkRules.wantsOverlay("browser"))
+    }
+
     @Test fun openable() {
         assertTrue(LinkRules.openable("https://console.amberxai.com/?x=1"))
         assertFalse(LinkRules.openable("intent://scan/#Intent;end"))

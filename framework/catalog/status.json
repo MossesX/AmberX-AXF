@@ -1126,7 +1126,7 @@
     "status": "placeholder",
     "wave": 2,
     "module": "axf-platform-android",
-    "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
+    "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The AXF Console app (apps/console-droid, overlay@1) carries the same overlay, and since Nov 18 2026 Phone Connect's open_url lands in it (console-overlay@1, PhoneConnectProvider + PhoneConnectRules, JUnit). The framework capability stays a placeholder (Android on hold)."
   },
   "dv.pip": {
     "status": "placeholder",
