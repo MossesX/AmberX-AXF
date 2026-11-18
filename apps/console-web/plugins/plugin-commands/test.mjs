@@ -65,6 +65,14 @@ r = plan(act('fixture-todos/entries-by-eid-delete', { eid: 1 }));
 eq(r.code, 'confirmation_required', 'a delete asks for a confirm token');
 ok(plan(act('fixture-todos/entries-by-eid-delete', { eid: 1 }, { confirm: r.confirm })).dispatch, 'the same command with it runs');
 eq(plan(act('fixture-todos/entries-by-eid-delete', { eid: 2 }, { confirm: r.confirm })).code, 'confirmation_required', 'not for another record');
+/* ---- a pass (build approval-pass-covers-every-call, s2). Reproduces Brett's "Why do I keep getting approvals when I
+   set a pass?": plan() has no way to hear about a covering pass, so a confirm command asks for its token even while an
+   `all` pass is on. Flipped to the fixed behaviour in s5. */
+{
+  const pass = { id: 'p-all', scope: 'all', covers: 'all', state: 'active', expiresAt: new Date(Date.now() + 600000).toISOString() };
+  const gap = plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { pass });
+  eq(gap.code, 'confirmation_required', 'KNOWN GAP (s2 → s5): a covering pass does not lift the confirm yet');
+}
 eq(plan(act('fixture-plans/nope')).code, 'not_found', 'unknown command');
 eq(plan(act('nobody/state')).code, 'not_found', 'unknown plugin');
 eq(plan({ op: 'act', target: 'plugins.reads', path: 'fixture-todos/entries-run', action: 'read' }).code, 'not_found', 'a command is not a read');
