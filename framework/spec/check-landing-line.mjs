@@ -10,7 +10,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as L from '../core/landing-line.mjs';
-import { clashBounceStep } from '../../apps/console-web/plugins/build-orchestrator/pipeline-core.mjs'; // land-clash bounce: the dispatcher's side of a conflict
+import { clashBounceStep } from '../../apps/console-web/plugins/build-orchestrator/pipeline-core.mjs'; // land-clash bounce: the dispatcher's side of a conflict (axf-plugin:build-orchestrator)
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 const FIX = join(ROOT, 'framework/spec/fixtures/landing-line-migrate.json');

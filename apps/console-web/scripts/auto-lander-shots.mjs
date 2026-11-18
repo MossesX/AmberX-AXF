@@ -65,8 +65,8 @@ try {
         const u = new URL(r.request().url());
         const json = (body) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(body) });
         if (u.pathname === '/api/me') return json(ME);
-        if (u.pathname === '/api/plugins/gate/auto-lander') return json(STATUS);
-        if (u.pathname === '/api/plugins/gate/settings') return json(GATE_SETTINGS);
+        if (u.pathname === '/api/plugins/gate/auto-lander') return json(STATUS); // axf-plugin:gate
+        if (u.pathname === '/api/plugins/gate/settings') return json(GATE_SETTINGS); // axf-plugin:gate
         if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
         return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'offline (shots)' }) });
       });

@@ -56,7 +56,7 @@ fi
 # 3. the brief builder's byte cap
 out="$(cd "$ROOT" && AXF_BUILDS_STORE="$tmp/store.json" AXF_BUILDS_LIVE=0 AXF_BUILD_HOOKS=off AXF_SHIPPED=off AXF_DATA_DIR=off AXF_PIPELINE_DIR="$tmp/pipe" AXF_PIPELINE_CONSOLE=off \
   node --input-type=module -e '
-const P = await import("./apps/console-web/plugins/build-orchestrator/pipeline.mjs");
+const P = await import("./apps/console-web/plugins/build-orchestrator/pipeline.mjs"); // axf-plugin:build-orchestrator
 const core = await import("./framework/plan/builds-store-core.mjs");
 const steps = Array.from({ length: 3000 }, (_, i) => ({ id: `s${i + 1}`, text: `Step ${i + 1}: ${"do the thing carefully ".repeat(4)}`, estimate: "5 min", done: i < 100 }));
 const b = core.normBuild({ id: "big", title: "Big", status: "queued", steps, origin: { said: "Make it work, every time.", at: "2026-11-17T00:00:00Z", by: "Brett" } });

@@ -387,7 +387,7 @@ def escalated_probe(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
 
 def _retry_escalated() -> dict[str, Any]:
     try:
-        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")
+        r = _pipeline("retry-all", "--by", "systems-check", "--why", "Retry from the systems check banner")  # axf-not-plugin:systems-check (actor name)
     except Exception as e:  # noqa: BLE001
         return {"state": "failed", "message": str(e)[:200]}
     done = r.get("retried") if isinstance(r, dict) else None
@@ -419,7 +419,7 @@ def launch_crash_probe() -> dict[str, Any]:
 
 def _requeue_launch_crashed() -> dict[str, Any]:
     try:
-        r = _pipeline("launch-crashed", "--requeue", "--by", "systems-check")
+        r = _pipeline("launch-crashed", "--requeue", "--by", "systems-check")  # axf-not-plugin:systems-check (actor name)
     except Exception as e:  # noqa: BLE001
         return {"state": "failed", "message": str(e)[:200]}
     done = r.get("requeued") if isinstance(r, dict) else None
