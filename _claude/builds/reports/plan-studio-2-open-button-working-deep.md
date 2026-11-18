@@ -70,3 +70,23 @@ Two keydown handlers answer Ctrl+K: `menuLibrary.tsx` opens `console-search` (th
 - Failing test first: `apps/console-web/scripts/deeplink.test.mjs` (`#/plan-studio`, `#/plan-studio-2`,
   `?axf-target=view:plan-studio`, plugin sub-targets, settings tabs, late plugin views, unknown targets). It fails
   with `Cannot find module src/control/deepLink-core.mjs` until s6.
+
+### Ctrl+K: one palette (s9 decision)
+
+Today three things answer Ctrl+K: the banner's search bar (framework `Search`, focuses itself), `menuLibrary.tsx`
+(opens the older `console-search` dialog, a LiveSearch over the runtime index, when no bar is visible) and
+`control/SearchPalette.tsx` (opens `console-control.search`, the console-control search). Which wins depends on
+listener order; usually two react at once.
+
+Decision: **the console-control `SearchPalette` is the command palette**. One component, one search
+(`src/control/search.ts` `consoleSearch`, the same ranking REST `/search`, MCP `console_control_search`, `axf console
+search` and voice "find …" use). It already ranks the runtime index (plan features, builds, windows, dialogs) next to
+every control target, so nothing the old dialog found is lost.
+
+- Ctrl+K / Cmd+K opens the palette, always (a capture-phase handler; the bar keeps `/`). `menuLibrary`'s Ctrl+K
+  handler goes; `console.search` opens the palette when no search bar is on screen.
+- Plugin commands are already `function:` targets (every registered action). Plans come in as a loaded source from
+  Plan Studio 2.0 (`view:plan-studio-2/grid:plan-studio-2.tree/row:<id>`; picking one opens the plan).
+- Its look is a `dialog` asset of the console (`src/assets/dialog/command-palette*.json`, three options for UI Review),
+  picked with the console setting `console.palette.look`. A per-dialog asset pick in the framework (any dialog choosing
+  its own dialog asset) would need an asset-contract change (Fable); recorded as a follow-up, not done here.
