@@ -208,10 +208,14 @@ export function saveSettings(patch) {
 export const loadState = () => normState(readJson(files().state, null));
 
 const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
-/** One writer at a time across the host and the container (mkdir is atomic on the shared folder); stale after 15 s. */
+/**
+ * One writer at a time across the host and the container (mkdir is atomic on the shared folder); a lock is stale after 15 s.
+ * A caller waits up to 90 s for its turn: with many sessions taking the lock for a moment each, 15 s of contention is
+ * ordinary and a caller that gave up then left a heavy step unrun (Nov 18 2026).
+ */
 export function withState(fn) {
   const f = files(); mkdirSync(f.dir, { recursive: true });
-  const until = Date.now() + 15_000;
+  const until = Date.now() + 90_000;
   for (;;) {
     try { mkdirSync(f.lock); break; } catch {
       try { if (Date.now() - statSync(f.lock).mtimeMs > 15_000) { rmSync(f.lock, { recursive: true, force: true }); continue; } } catch { continue; }

@@ -351,7 +351,7 @@ class RelayService:
             return {"ok": False, "code": "unreachable", "status": 0, "message": f"Couldn't reach axHub ({type(e).__name__})."}
         return {"ok": False, "code": "signed_out", "status": 401, "message": NO_CREDENTIAL if not cred else "axHub didn't take any session."}
 
-    def write(self, request: Request, path: str, body: Any, person: bool, timeout: float = TIMEOUT_S) -> dict[str, Any]:
+    def write(self, request: Request, path: str, body: Any, person: bool, timeout: float = TIMEOUT_S, method: str = "POST") -> dict[str, Any]:
         c = wall.wall_caller(request.headers)
         if person and (c is None or not c.admin or not wall.same_origin(request)):
             return {"ok": False, "code": "person_required", "status": 403, "message": "Only your own tap in your signed-in console browser does this."}
@@ -365,7 +365,7 @@ class RelayService:
             with httpx.Client(timeout=timeout, follow_redirects=False) as client:
                 out = {"ok": False, "code": "signed_out", "status": 401, "message": NO_CREDENTIAL if not cred else "axHub didn't take any session."}
                 for via, cookie in self._sessions(request, c):
-                    r = relay_core.post_json(hub, cookie, path, body, client)
+                    r = relay_core.post_json(hub, cookie, path, body, client, method)
                     if r.get("code") != "no_session":
                         out = _write_reply(r, via)
                         break
@@ -376,14 +376,14 @@ class RelayService:
                             if not s["ok"]:
                                 out = {"ok": False, "code": s.get("code", "signed_out"), "status": 0, "message": s.get("message", "")}
                                 break
-                            r = relay_core.post_json(hub, s["cookie"], path, body, client)
+                            r = relay_core.post_json(hub, s["cookie"], path, body, client, method)
                             if r.get("code") != "no_session":
                                 out = _write_reply(r, "owner")
                                 break
                             OWNER.drop(s["cookie"])
         except httpx.HTTPError as e:
             out = {"ok": False, "code": "unreachable", "status": 0, "message": f"Couldn't reach axHub ({type(e).__name__})."}
-        _log({"by": who, "path": path, "person": person, "ok": out["ok"], "via": out.get("via", ""), "status": out.get("status"), "code": out.get("code", "")})
+        _log({"by": who, "path": path, "method": method, "person": person, "ok": out["ok"], "via": out.get("via", ""), "status": out.get("status"), "code": out.get("code", "")})
         return out
 
 

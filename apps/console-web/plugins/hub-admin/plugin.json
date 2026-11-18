@@ -318,6 +318,30 @@
         "title": "Passes: end the go pass",
         "tool": "hub_go_pass_end",
         "description": "Ends the go pass now: sessions that cannot reach axHub wait again."
+      },
+      {
+        "id": "veto-countdown",
+        "route": "POST /passes/veto-countdown",
+        "title": "Veto: set the countdown",
+        "tool": "hub_veto_countdown_set",
+        "confirm": true,
+        "description": "Sets the veto countdown in seconds on every tool axHub holds for a veto (the registered setting axf.hub.veto.countdownSeconds; the first call answers confirmation_required with a token, the second carries it).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "seconds": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 1800
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "seconds"
+          ]
+        }
       }
     ]
   },

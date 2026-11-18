@@ -563,9 +563,9 @@ class Writer:
         self.request = request
         self.relay = plugin_services.get(RELAY_CAP)
 
-    def post(self, path: str, body: Any, person: bool) -> dict[str, Any]:
+    def post(self, path: str, body: Any, person: bool, method: str = "POST") -> dict[str, Any]:
         if self.relay is not None:
-            r = self.relay.write(self.request, path, body, person, timeout=TIMEOUT_S)
+            r = self.relay.write(self.request, path, body, person, timeout=TIMEOUT_S, method=method)
             if r.get("ok"):
                 return {"ok": True, "json": r.get("json") or {}, "via": r.get("via", "")}
             return {"ok": False, "code": r.get("code", "hub_error"), "message": r.get("message") or "axHub refused it.", "status": r.get("status"), "via": r.get("via", ""), "json": r.get("json") or {}}
@@ -580,7 +580,7 @@ class Writer:
             return {"ok": False, "code": "relay_off", "message": "The approvals-banner plugin is off and this browser brought no axHub session.", "status": 401}
         try:
             with httpx.Client(timeout=TIMEOUT_S, follow_redirects=False) as client:
-                r = relay_core.post_json(hub, cookie, path, body, client)
+                r = relay_core.post_json(hub, cookie, path, body, client, method)
         except httpx.HTTPError as e:
             return {"ok": False, "code": "hub_unavailable", "message": f"Couldn't reach axHub ({type(e).__name__}).", "status": 0}
         if r["status"] == 200:
@@ -601,9 +601,17 @@ def _audit(entry: dict[str, Any]) -> None:
 
 
 def _action(table: dict[str, Any], sid: str, aid: str) -> dict[str, Any]:
+    """An action of a screen, or one of its settings written through the hub (`setting:<key>`, who from the setting)."""
     screen = screen_of(table, sid)
-    a = next((x for x in (screen or {}).get("actions", []) if x.get("id") == aid), None) if screen else None
-    if screen is None or a is None:
+    if screen is None:
+        raise HTTPException(404, f"no hub screen {sid}")
+    if aid.startswith("setting:"):
+        st = next((x for x in screen.get("settings", []) if x.get("key") == aid[len("setting:"):]), None)
+        if st is None or not st.get("writes"):
+            raise HTTPException(404, f"no hub-written setting {aid}")
+        return {"id": aid, "label": st.get("label", aid), "who": st.get("who", "confirm"), "effect": "write", "hub": st["writes"]}
+    a = next((x for x in screen.get("actions", []) if x.get("id") == aid), None)
+    if a is None:
         raise HTTPException(404, f"no hub action {sid}/{aid}")
     return a
 
@@ -651,7 +659,7 @@ def confirm_check(sid: str, aid: str, row: str | None, caller: str, given: Any) 
     return {"ok": False, "code": "confirmation_required", "confirm": token, "message": f"{sid} {aid}{' ' + row if row else ''} changes the hub: send it again with confirm set to this token (valid {CONFIRM_TTL_S // 60} min)."}
 
 
-async def run_action(request: Request, sid: str, aid: str, row: str | None, hub_call: Callable[[Session, dict[str, Any]], tuple[str, Any]] | None, body: dict[str, Any] | None = None) -> dict[str, Any]:
+async def run_action(request: Request, sid: str, aid: str, row: str | None, hub_call: Callable[[Session, dict[str, Any]], tuple[Any, ...]] | None, body: dict[str, Any] | None = None) -> dict[str, Any]:
     """One action of the route table: checks who may run it, finds the hub route, posts through the console's own hub
     session, audits, and answers {ok, message, state?, …} or the unavailable / refusal state."""
     table = load_table()
@@ -661,18 +669,18 @@ async def run_action(request: Request, sid: str, aid: str, row: str | None, hub_
         raise HTTPException(400, f"not a {sid} row id")
     b = body if body is not None else await _body(request)
     person = a.get("who") == "person"
-    if a.get("who") == "confirm" and not a.get("missing"):
-        need = confirm_check(sid, aid, row, _caller(request), b.get("confirm"))
-        if need is not None:
-            return {"screen": sid, "action": aid, **({"row": row} if row is not None else {}), **need}
     if a.get("missing"):
         out = {"ok": False, "code": HUB_MISSING, "message": a["missing"].get("why", "axHub has no route for this yet."), "proposed": a["missing"].get("proposed", ""), **({"cli": a["missing"]["cli"]} if a["missing"].get("cli") else {})}
     elif hub_call is None:
         out = {"ok": True, "message": "Nothing to send to the hub."}
     else:
         s = Session(request)
+        method = "POST"
         try:
-            path, payload = await run_in_threadpool(hub_call, s, b)
+            called = await run_in_threadpool(hub_call, s, b)
+            path, payload = called[0], called[1]
+            if len(called) > 2:
+                method = str(called[2])
         except HTTPException:
             raise
         except LookupError as e:
@@ -683,8 +691,13 @@ async def run_action(request: Request, sid: str, aid: str, row: str | None, hub_
             out = dict(e.state)
             path = ""
             payload = None
+        if path and a.get("who") == "confirm":
+            # bad input is refused above, before a token is handed out; the confirm guards the write itself
+            need = confirm_check(sid, aid, row, _caller(request), b.get("confirm"))
+            if need is not None:
+                return {"screen": sid, "action": aid, **({"row": row} if row is not None else {}), **need}
         if path:
-            r = await run_in_threadpool(Writer(request).post, path, payload, person)
+            r = await run_in_threadpool(Writer(request).post, path, payload, person, method)
             if r["ok"]:
                 j = r["json"]
                 out = {"ok": True, "via": r["via"], "message": str(j.get("message") or "Done.")[:MESSAGE_MAX], **({"state": j["state"]} if isinstance(j.get("state"), str) else {}), **({"item": j["item"]} if isinstance(j.get("item"), dict) else {})}
@@ -913,6 +926,42 @@ async def post_go_pass(request: Request) -> dict[str, Any]:
 async def post_go_pass_end(request: Request) -> dict[str, Any]:
     """End the go pass now."""
     return await run_action(request, "passes", "go-end", None, lambda s, b: ("/auth/api/go-pass/end", {}))
+
+
+# ---- the veto countdown (s12): the registered setting axf.hub.veto.countdownSeconds writes the policy table (a confirm)
+
+VETO_SETTING = "axf.hub.veto.countdownSeconds"
+
+
+def veto_changes(policy: dict[str, Any], seconds: int) -> list[dict[str, Any]]:
+    """Every tool whose effective policy is veto gets the new countdown (one PUT, all or nothing on the hub)."""
+    out = []
+    for svc in policy.get("services", []) if isinstance(policy, dict) else []:
+        if not isinstance(svc, dict) or not svc.get("namespace"):
+            continue
+        for t in svc.get("tools", []) if isinstance(svc.get("tools"), list) else []:
+            if isinstance(t, dict) and t.get("name") and t.get("policy") == "veto":
+                out.append({"service": svc["namespace"], "tool": t["name"], "vetoSeconds": seconds})
+    return out
+
+
+@router.post("/passes/veto-countdown")
+async def post_veto_countdown(request: Request) -> dict[str, Any]:
+    """Set the veto countdown (seconds) on every tool axHub holds for a veto: the registered setting's write (a confirm)."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any, str]:
+        seconds = b.get("seconds")
+        pol = policy_table()
+        if not pol["ok"]:
+            raise Unavailable(pol)
+        veto = pol["data"].get("veto") if isinstance(pol["data"], dict) else {}
+        lo, hi = (veto or {}).get("min", 10), (veto or {}).get("max", 1800)
+        if not isinstance(seconds, int) or isinstance(seconds, bool) or seconds < lo or seconds > hi:
+            raise HTTPException(400, f"seconds: {lo} to {hi}")
+        changes = veto_changes(pol["data"], seconds)
+        if not changes:
+            raise LookupError("no tool on the hub is held for a veto, so there is no countdown to set")
+        return "/auth/api/policy", {"changes": changes, "reason": str(b.get("reason") or f"Veto countdown {seconds} s from the console")[:200]}, "PUT"
+    return await run_action(request, "passes", f"setting:{VETO_SETTING}", None, call)
 
 
 # ---- Approval log (s10): the hub's whole log as JSON, a command

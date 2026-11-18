@@ -10,6 +10,7 @@ import type { HubScreen } from '@console/axf/core/hub-console.mjs';
 import { relTime, useHubRead, UNAVAILABLE_WORDS, when, type Unavailable } from './data';
 import { UnavailableNote } from './approvals';
 import { TapTwice, clock, useHubAction, useTick } from './controls';
+import { vetoFromHub } from './settings';
 
 export interface PassView {
   id: string; service: string; tools?: string[]; scope?: string[]; title: string; description?: string; createdAt: string; expiresAt: string; active: boolean;
@@ -37,6 +38,7 @@ export function PassesScreen(_props: { screen: HubScreen }) {
   const now = useTick(!!g && g.active.length > 0);
   const left = (p: PassView) => Math.max(0, p.secondsLeft - Math.floor((now - readAt) / 1000));
   const veto = g && !isUnavailable(g.veto) ? g.veto : null;
+  useEffect(() => { if (veto) vetoFromHub(rt, veto.defaultSeconds); }, [rt, veto]);
   const goPass = g && !isUnavailable(g.goPass) ? g.goPass : null;
 
   return (

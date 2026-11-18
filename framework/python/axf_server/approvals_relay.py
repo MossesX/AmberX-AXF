@@ -97,14 +97,15 @@ def get_json(hub: str, cookie: str, path: str, client: httpx.Client, params: dic
     return {"status": r.status_code, "json": _json(r)}
 
 
-def post_json(hub: str, cookie: str, path: str, body: Any, client: httpx.Client) -> dict[str, Any]:
-    """One `/auth/api` write with this session (its CSRF value, the hub's own Origin); → {status, json, code?}."""
+def post_json(hub: str, cookie: str, path: str, body: Any, client: httpx.Client, method: str = "POST") -> dict[str, Any]:
+    """One `/auth/api` write with this session (its CSRF value, the hub's own Origin); → {status, json, code?}. `method`
+    POST (default) or PUT (the policy table)."""
     head = {"Cookie": f"{COOKIE}={cookie}", "Accept": "application/json"}
     s = client.get(f"{hub}/auth/api/session", headers=head)
     csrf = _json(s).get("csrf") if s.status_code == 200 else None
     if not isinstance(csrf, str) or not csrf:
         return {"status": s.status_code, "json": {}, "code": "no_session"}
-    r = client.post(f"{hub}{path}", headers={**head, "Origin": hub, "Content-Type": "application/json", "X-AxHub-CSRF": csrf}, content=json.dumps(body if body is not None else {}))
+    r = client.request(method if method in ("POST", "PUT", "PATCH", "DELETE") else "POST", f"{hub}{path}", headers={**head, "Origin": hub, "Content-Type": "application/json", "X-AxHub-CSRF": csrf}, content=json.dumps(body if body is not None else {}))
     j = _json(r)
     err = j.get("error") if isinstance(j.get("error"), dict) else {}
     return {"status": r.status_code, "json": j, **({"code": str(err.get("code") or "hub_refused")} if r.status_code != 200 else {})}

@@ -97,6 +97,8 @@ def hub(req: httpx.Request) -> httpx.Response:
         return httpx.Response(404, json={"error": {"code": "not_found", "message": "no such page"}})
     if p == "/apps.json":
         return httpx.Response(200, json={"apps": [{"project": "amberx", "name": "AmberX"}], "updatedAt": "2026-11-17T00:00:00Z"})
+    if p == "/auth/api/policy" and req.method == "PUT":
+        return httpx.Response(200, json={"ok": True, "table": {"$axf": "policy-table@1"}})
     if p == "/auth/api/policy":
         if state["policy"] != 200:
             return httpx.Response(state["policy"], text="no")
@@ -296,8 +298,8 @@ writes: list[tuple[str, Any, bool]] = []
 
 
 class FakeRelayWrites(FakeRelay):
-    def write(self, request, path, body, person, timeout=0):  # noqa: ANN001
-        writes.append((path, body, person))
+    def write(self, request, path, body, person, timeout=0, method="POST"):  # noqa: ANN001
+        writes.append((path, body, person) if method == "POST" else (method, path, body, person))
         if person and not getattr(self, "admin_browser", True):
             return {"ok": False, "code": "person_required", "status": 403, "message": "Only your own tap in your signed-in console browser does this."}
         if path.endswith("/approve-now"):
@@ -414,6 +416,14 @@ ok(j["ok"] and writes[-1] == ("/auth/api/go-pass", {"hours": 4, "note": "phone"}
 j = post("/passes/go-end").json()
 ok(j["ok"] and writes[-1] == ("/auth/api/go-pass/end", {}, False), "ending the go pass is a command")
 ok(post(f"/passes/{'x' * 201}/revoke").status_code == 400, "an absurd pass id (over 200 characters) is 400")
+
+# ---------------------------------------------------------------- the veto countdown setting (s12): a confirm that PUTs the policy table
+j = post("/passes/veto-countdown", {"seconds": 120}).json()
+ok(j["ok"] is False and j["code"] == "confirmation_required" and j["action"] == f"setting:{srv.VETO_SETTING}", "the countdown setting's write confirms first")
+j = post("/passes/veto-countdown", {"seconds": 120, "confirm": j["confirm"]}).json()
+ok(j["ok"] and writes[-1][0] == "PUT" and writes[-1][1] == "/auth/api/policy" and writes[-1][2]["changes"] == [{"service": "vps", "tool": "run", "vetoSeconds": 120}] and writes[-1][3] is False, f"then PUTs the countdown onto every veto tool ({writes[-1]})")
+ok(post("/passes/veto-countdown", {"seconds": 5}).status_code == 400, "a countdown under the hub's minimum is refused")
+ok(srv.veto_changes({"services": [{"namespace": "a", "tools": [{"name": "x", "policy": "veto"}, {"name": "y", "policy": "allow"}]}]}, 60) == [{"service": "a", "tool": "x", "vetoSeconds": 60}], "only veto tools get the countdown")
 
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 

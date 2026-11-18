@@ -18,6 +18,7 @@ import { ApprovalsScreen } from './approvals';
 import { LogScreen } from './log';
 import { PassesScreen } from './passes';
 import { registerHubActions } from './actions';
+import { hubSettingsGroups, wireHubSettings } from './settings';
 import { setActiveScreen, useActiveScreen } from './store';
 import './hub-admin.css';
 
@@ -89,11 +90,12 @@ export const plugin: AxfWebLibrary = {
   label: 'Hub',
   version: '0.1.0',
   provides: ['axf.hub-console@1'],
-  register: (rt) => registerHubActions(rt, TABLE),
+  register: (rt) => { registerHubActions(rt, TABLE); wireHubSettings(rt); },
   appMenu,
   views: { [VIEW]: { title: 'Hub', icon: 'shield', keywords: ['axhub', 'hub', 'approvals', 'passes', 'veto', 'users', 'account', 'connectors', 'services', 'handoff', 'auth'], render: () => <HubPage /> } },
   nav: { label: 'Hub', items: [{ id: VIEW, label: 'Hub', icon: 'shield', view: VIEW }] },
   // Plugins never ship their own settings screen: a sub-tab of Settings → Plugins, with the shared lifecycle panel.
   settingsTabs: [{ id: TABLE.settingsSubtab, label: 'Hub', icon: 'shield', order: 60, parent: 'plugins' }],
+  settings: hubSettingsGroups(TABLE),
   settingsPanels: [{ id: 'hub.lifecycle', tab: TABLE.settingsSubtab, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };
