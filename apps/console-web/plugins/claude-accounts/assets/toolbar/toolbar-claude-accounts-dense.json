@@ -77,6 +77,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:claude-accounts"
   }
 }

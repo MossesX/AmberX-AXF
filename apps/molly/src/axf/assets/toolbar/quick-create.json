@@ -39,6 +39,7 @@
         "max": 4,
         "label": "Create"
       }
-    ]
+    ],
+    "builtFor": "generic"
   }
 }

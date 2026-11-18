@@ -89,6 +89,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:agent-swarm"
   }
 }

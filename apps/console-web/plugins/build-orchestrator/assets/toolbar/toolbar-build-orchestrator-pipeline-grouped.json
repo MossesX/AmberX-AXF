@@ -138,6 +138,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:build-orchestrator"
   }
 }

@@ -81,6 +81,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:glossary-index"
   }
 }

@@ -90,6 +90,7 @@
         ]
       }
     ],
-    "density": "compact"
+    "density": "compact",
+    "builtFor": "generic"
   }
 }

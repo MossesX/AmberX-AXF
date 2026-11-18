@@ -49,6 +49,7 @@
         "id": "inbox",
         "items": []
       }
-    ]
+    ],
+    "builtFor": "generic"
   }
 }

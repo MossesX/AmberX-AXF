@@ -52,6 +52,7 @@
       }
     ],
     "density": "roomy",
-    "divider": false
+    "divider": false,
+    "builtFor": "generic"
   }
 }

@@ -54,6 +54,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:chat-viewer"
   }
 }

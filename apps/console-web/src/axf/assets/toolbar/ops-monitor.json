@@ -59,6 +59,7 @@
         "order": 40
       }
     ],
-    "surface": "raised"
+    "surface": "raised",
+    "builtFor": "generic"
   }
 }

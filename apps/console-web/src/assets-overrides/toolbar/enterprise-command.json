@@ -93,6 +93,7 @@
       }
     ],
     "surface": "raised",
-    "collapsible": true
+    "collapsible": true,
+    "builtFor": "generic"
   }
 }

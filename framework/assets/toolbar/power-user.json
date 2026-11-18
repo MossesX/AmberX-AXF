@@ -113,6 +113,7 @@
       }
     ],
     "density": "compact",
-    "collapsible": true
+    "collapsible": true,
+    "builtFor": "generic"
   }
 }

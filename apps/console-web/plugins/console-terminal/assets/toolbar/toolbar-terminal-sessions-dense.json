@@ -110,6 +110,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:terminal"
   }
 }

@@ -6,33 +6,91 @@
   "version": "1.0.0",
   "description": "The Gate & rules toolbar: land the waiting builds now, pause or resume the lander, run the auto-lander once, jump to the build rules or the history, and reset the gate rules (with a confirm). Every button runs the gate plugin's own commands.",
   "author": "AmberX AXF",
-  "tags": ["page", "gate", "lander", "rules"],
+  "tags": [
+    "page",
+    "gate",
+    "lander",
+    "rules"
+  ],
   "data": {
     "scope": "view:gate",
     "variant": "icons-labels",
     "align": "start",
     "showSearch": false,
-    "overflow": { "when": "auto", "keep": 2, "label": "More" },
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
     "groups": [
       {
         "id": "lander",
         "label": "Lander",
         "items": [
-          { "id": "land-now", "icon": "rocket", "label": "Land now", "action": "command:gate/lander-land-now", "confirm": "Land every waiting build that passes now?", "priority": 300, "overflow": "never" },
-          { "id": "pause", "icon": "pause", "label": "Pause lander", "action": "command:gate/lander-pause", "priority": 260 },
-          { "id": "resume", "icon": "play", "label": "Resume lander", "action": "command:gate/lander-resume", "priority": 250 },
-          { "id": "auto", "icon": "branch", "label": "Run auto-lander", "action": "command:gate/auto-lander-run", "priority": 240 }
+          {
+            "id": "land-now",
+            "icon": "rocket",
+            "label": "Land now",
+            "action": "command:gate/lander-land-now",
+            "confirm": "Land every waiting build that passes now?",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "pause",
+            "icon": "pause",
+            "label": "Pause lander",
+            "action": "command:gate/lander-pause",
+            "priority": 260
+          },
+          {
+            "id": "resume",
+            "icon": "play",
+            "label": "Resume lander",
+            "action": "command:gate/lander-resume",
+            "priority": 250
+          },
+          {
+            "id": "auto",
+            "icon": "branch",
+            "label": "Run auto-lander",
+            "action": "command:gate/auto-lander-run",
+            "priority": 240
+          }
         ]
       },
       {
         "id": "rules",
         "label": "Rules",
         "items": [
-          { "id": "build-rules", "icon": "list", "label": "Build rules", "action": "handler:gate.show-build-rules", "checked": "state:onBuildRules", "priority": 200 },
-          { "id": "history", "icon": "clock", "label": "History", "action": "handler:gate.show-history", "checked": "state:onHistory", "priority": 180 },
-          { "id": "reset", "icon": "trash", "label": "Reset rules", "action": "command:gate/rules-reset", "destructive": true, "confirm": "Put every gate rule back to its default?", "priority": 20 }
+          {
+            "id": "build-rules",
+            "icon": "list",
+            "label": "Build rules",
+            "action": "handler:gate.show-build-rules",
+            "checked": "state:onBuildRules",
+            "priority": 200
+          },
+          {
+            "id": "history",
+            "icon": "clock",
+            "label": "History",
+            "action": "handler:gate.show-history",
+            "checked": "state:onHistory",
+            "priority": 180
+          },
+          {
+            "id": "reset",
+            "icon": "trash",
+            "label": "Reset rules",
+            "action": "command:gate/rules-reset",
+            "destructive": true,
+            "confirm": "Put every gate rule back to its default?",
+            "priority": 20
+          }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:gate"
   }
 }

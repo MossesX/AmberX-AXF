@@ -16,7 +16,11 @@ export type SplitMode = 'vertical' | 'horizontal' | 'four' | 'grid';
 export const CORNERS: Corner[] = ['top-left', 'top-right', 'bottom-right', 'bottom-left'];
 export const nextCorner = (c: Corner): Corner => CORNERS[(CORNERS.indexOf(c) + 1) % CORNERS.length] ?? 'bottom-right';
 
-export interface WindowSettings { corner: Corner; mode: MinimizeMode; toolbarAsset?: string | null; alwaysOnTop: boolean; opacity: number }
+/**
+ * `opacity` fades the whole window, content included. `surface` is this window's own background transparency
+ * (0..1): it overrides the theme's opacitySettings token for this one window; absent / null = follow the theme.
+ */
+export interface WindowSettings { corner: Corner; mode: MinimizeMode; toolbarAsset?: string | null; alwaysOnTop: boolean; opacity: number; surface?: number | null }
 export const defaultSettings = (): WindowSettings => ({ corner: 'bottom-right', mode: 'stacked', toolbarAsset: null, alwaysOnTop: false, opacity: 1 });
 
 /** The window schema. `toolbarsAllowed` = whether a toolbar may attach; floating windows force `toolbarEnabled`. */
@@ -127,6 +131,28 @@ export function dragRestore(w: WindowSpec, pointerX: number, pointerY: number, g
 export type WindowFrame = 'standard' | 'frameless';
 export const windowFrame = (w: Pick<WindowSpec, 'frame'>): WindowFrame => (w.frame === 'frameless' ? 'frameless' : 'standard');
 export const isMaximized = (w: Pick<WindowSpec, 'maximized'>) => w.maximized === true;
+
+/**
+ * Tab press on a frameless window's tab strip (terminal-drag-chain-tree, Nov 3 2026, Brett: "There's nowhere to click
+ * to drag the terminal window around … It's all tabbed."). A strip full of tabs leaves no empty title bar, so a tab
+ * press decides what it is: a quick tap switches tabs; a horizontal drag (started before the hold) reorders; press and
+ * hold (long-press on a phone) then move drags the window, and so does a vertical pull; a hold released without moving
+ * is a `hold` (the caller's long-press menu on touch, a tap with a mouse). Pure, so every port agrees.
+ */
+export const TAB_HOLD_MS = 450;
+export const TAB_SLOP_PX = 6;
+export type TabPressIntent = 'pending' | 'armed' | 'tap' | 'hold' | 'reorder' | 'window';
+export function tabPressIntent(p: { dx: number; dy: number; heldMs: number; released?: boolean }): TabPressIntent {
+  const moved = Math.hypot(p.dx, p.dy) >= TAB_SLOP_PX;
+  const held = p.heldMs >= TAB_HOLD_MS;
+  if (!moved) return p.released ? (held ? 'hold' : 'tap') : held ? 'armed' : 'pending';
+  if (held) return 'window';
+  return Math.abs(p.dx) >= Math.abs(p.dy) ? 'reorder' : 'window';
+}
+/** Where a tab dragged to `x` lands among tabs whose [left, right] edges are `rects` (index in the final order). Pure. */
+export function reorderIndex(rects: readonly { left: number; right: number }[], from: number, x: number): number {
+  return rects.reduce((n, r, i) => (i !== from && x > (r.left + r.right) / 2 ? n + 1 : n), 0);
+}
 
 export const isFloating = (w: WindowSpec) => w.type === 'floating' || w.type === 'dock' || w.type === 'element';
 export const forcesToolbar = (w: WindowSpec) => isFloating(w) && w.type !== 'element';
@@ -330,6 +356,34 @@ export interface WindowState { windows: WindowSpec[]; groups: Record<string, Tab
 /** `checked` = check-mark binding, same forms as MenuItem.checked (`setting:<key>` | `counter:<name>` | `slot:<type>` | `hidden:<type>`). */
 export interface MenuEntry { id: string; label?: string; icon?: string; action?: string; separator?: boolean; checked?: string; items?: MenuEntry[] }
 
+/**
+ * context-lead@1: `runtime.contextExtras` keys starting with this prefix give entries that lead every context menu
+ * (any target, any screen or plugin, even a target whose asset turns contributions off), e.g. the console's
+ * "Console settings".
+ */
+export const CONTEXT_LEAD_PREFIX = '^:';
+export const CONTEXT_LEAD_SEPARATOR_ID = 'ctx-lead-sep';
+
+/**
+ * A context menu with its lead entries on top: the lead, one separator, then the rest. Separators at the edges of
+ * either part and an entry of the rest whose id (or action) a lead entry already has are dropped, so a lead entry
+ * never shows twice and the menu never starts, ends or doubles up on a separator. No lead: the rest, unchanged.
+ */
+export function withContextLead<T extends MenuEntry>(lead: readonly T[], rest: readonly T[]): T[] {
+  const trim = (xs: readonly T[]) => {
+    let a = 0, b = xs.length;
+    while (a < b && xs[a]!.separator) a++;
+    while (b > a && xs[b - 1]!.separator) b--;
+    return xs.slice(a, b).filter((x, i, all) => !(x.separator && all[i - 1]?.separator));
+  };
+  const top = trim(lead);
+  if (!top.length) return [...rest];
+  const ids = new Set(top.map((x) => x.id));
+  const actions = new Set(top.map((x) => x.action).filter((a): a is string => !!a));
+  const body = trim(rest.filter((x) => !ids.has(x.id) && !(x.action && actions.has(x.action))));
+  return body.length ? [...top, { id: CONTEXT_LEAD_SEPARATOR_ID, separator: true } as T, ...body] : top;
+}
+
 /** Even distribution: the first `size % n` groups get one extra tab (5 → 3 + 2, 7 in four → 2,2,2,1). Empty parts are kept so the grid has every cell. */
 export function distribute<T>(items: T[], n: number): T[][] {
   const base = Math.floor(items.length / n), extra = items.length % n; let i = 0;
@@ -353,6 +407,11 @@ export class WindowManager {
   placement: WindowPlacementRules = { ...DEFAULT_WINDOW_PLACEMENT };
   /** The viewport the UI reports (for `center` stacking and keeping windows on screen); null = unknown. */
   viewport: { width: number; height: number } | null = null;
+  /**
+   * Where the app's fixed chrome along the top ends (banner, menu bar, banner strip), read when a window opens; the UI
+   * sets it. New floating windows open below it so they never cover what is tapped there (0 = no chrome / unknown).
+   */
+  chromeTop: () => number = () => 0;
   /** Last position per remember-key (title or origin) for `stack: remember`. */
   private readonly remembered = new Map<string, { x: number; y: number }>();
   setPlacement(rules: Partial<WindowPlacementRules>) { this.placement = { ...DEFAULT_WINDOW_PLACEMENT, ...rules }; }
@@ -390,7 +449,11 @@ export class WindowManager {
     const wid = this.nextId('win');
     const count = this._state.windows.filter(isFloating).length;
     const at = placeNewWindow(this.placement, count, { width, height }, this.viewport, this.remembered.get(title) ?? null);
-    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', ...opts, x: x ?? at.x, y: y ?? at.y, width, height, z: this.topZ(s) })], focused: wid }));
+    // below the top chrome, shrunk to fit under it when the viewport is known (never under the minimum height)
+    const top = Math.max(0, Math.round(this.chromeTop()));
+    const wy = Math.max(y ?? at.y, top);
+    const h = this.viewport ? Math.max(Math.min(height, this.viewport.height - wy), Math.min(height, opts.minHeight ?? 160)) : height;
+    this.set((s) => ({ ...s, windows: [...s.windows, this.spec(wid, type, title, { toolbarEnabled: type !== 'element', ...opts, x: x ?? at.x, y: wy, width, height: h, z: this.topZ(s) })], focused: wid }));
     this.openGroup(tabs, wid);
     return wid;
   }

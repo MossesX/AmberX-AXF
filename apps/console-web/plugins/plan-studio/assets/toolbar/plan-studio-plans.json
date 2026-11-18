@@ -6,32 +6,88 @@
   "version": "1.0.0",
   "description": "The Plan Studio toolbar on the Plans tab: start a new plan, park the selected ones, turn one into a build, move them to a category, attach media to one, and search every field. Changes go through plans.mjs (the plan-studio api command).",
   "author": "AmberX AXF",
-  "tags": ["page", "plan-studio", "plans"],
+  "tags": [
+    "page",
+    "plan-studio",
+    "plans"
+  ],
   "data": {
     "scope": "view:plan-studio",
     "variant": "icons-labels",
     "align": "start",
     "showSearch": false,
-    "overflow": { "when": "auto", "keep": 2, "label": "More" },
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
     "groups": [
       {
         "id": "plans",
         "label": "Plans",
         "items": [
-          { "id": "new", "icon": "plus", "label": "New plan", "action": "handler:plan-studio.new", "priority": 300, "overflow": "never" },
-          { "id": "search", "icon": "search", "label": "Search", "action": "handler:plan-studio.search", "checked": "state:searching", "priority": 280 }
+          {
+            "id": "new",
+            "icon": "plus",
+            "label": "New plan",
+            "action": "handler:plan-studio.new",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "search",
+            "icon": "search",
+            "label": "Search",
+            "action": "handler:plan-studio.search",
+            "checked": "state:searching",
+            "priority": 280
+          }
         ]
       },
       {
         "id": "selected",
         "label": "Selected plans",
         "items": [
-          { "id": "park", "icon": "clock", "label": "Park", "action": "handler:plan-studio.park", "enabledWhen": "selection.count>0", "badge": "state:selection.count", "priority": 250 },
-          { "id": "build", "icon": "play", "label": "Turn into a build", "action": "handler:plan-studio.build", "enabledWhen": ["selection.count=1", "selection.steps>0"], "confirm": "Add this plan to the build orchestrator as a build?", "priority": 220 },
-          { "id": "category", "icon": "folder", "label": "Move category", "action": "handler:plan-studio.move-category", "enabledWhen": "selection.count>0", "priority": 200 },
-          { "id": "media", "icon": "upload", "label": "Attach media", "action": "handler:plan-studio.attach-media", "enabledWhen": "selection.count=1", "priority": 180 }
+          {
+            "id": "park",
+            "icon": "clock",
+            "label": "Park",
+            "action": "handler:plan-studio.park",
+            "enabledWhen": "selection.count>0",
+            "badge": "state:selection.count",
+            "priority": 250
+          },
+          {
+            "id": "build",
+            "icon": "play",
+            "label": "Turn into a build",
+            "action": "handler:plan-studio.build",
+            "enabledWhen": [
+              "selection.count=1",
+              "selection.steps>0"
+            ],
+            "confirm": "Add this plan to the build orchestrator as a build?",
+            "priority": 220
+          },
+          {
+            "id": "category",
+            "icon": "folder",
+            "label": "Move category",
+            "action": "handler:plan-studio.move-category",
+            "enabledWhen": "selection.count>0",
+            "priority": 200
+          },
+          {
+            "id": "media",
+            "icon": "upload",
+            "label": "Attach media",
+            "action": "handler:plan-studio.attach-media",
+            "enabledWhen": "selection.count=1",
+            "priority": 180
+          }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:plan-studio"
   }
 }

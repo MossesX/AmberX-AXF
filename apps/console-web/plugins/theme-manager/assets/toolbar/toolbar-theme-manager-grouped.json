@@ -101,6 +101,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:theme-manager"
   }
 }

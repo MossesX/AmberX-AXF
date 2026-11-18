@@ -17,6 +17,7 @@
  *   auto-lander-state@1    every build the lander tracks + the policy; migrated from lander-state@1
  */
 import { normSnapshot } from './gate-rules.mjs';
+import { isDemoId } from './demo-build.mjs';
 
 export const SCHEMA = 'auto-lander@1';
 export const ATTEMPT_FRAME = 'auto-lander-attempt@1';
@@ -142,6 +143,7 @@ export function normBuild(b, at = new Date().toISOString()) {
     state: state === 'escalated' && !esc ? 'waiting' : state, since: iso(x.since) || iso(x.at) || at, at: iso(x.at) || at,
     attempts: (Array.isArray(x.attempts) ? x.attempts : []).slice(-ATTEMPTS_MAX).map(normAttempt), reason: str(x.reason, TEXT_MAX),
     escalation: state === 'escalated' ? esc : null,
+    ...(x.demo === true || isDemoId(x.build) ? { demo: true } : {}), // demo-build@1: a demo build is marked demo-only in the lander's state
   };
 }
 
@@ -392,6 +394,7 @@ export function jsonSchemas() {
       $axf: { const: BUILD_FRAME }, build: { type: 'string', minLength: 1, maxLength: 120 }, pr: { type: 'integer', minimum: 0 }, branch: { type: 'string', maxLength: 200 }, head: { type: 'string', maxLength: 64 },
       state: { enum: STATES }, since: dateTime, at: dateTime, attempts: { type: 'array', maxItems: ATTEMPTS_MAX, items: { ...attempt, $schema: undefined, $id: undefined }, description: 'oldest first; at most one started' },
       reason: { type: 'string', maxLength: TEXT_MAX, description: 'why it is in this state, in plain words' }, escalation,
+      demo: { const: true, description: 'demo-build@1: a demo (throwaway) build, id prefix demo-; absent on every other build' },
     },
   };
   const action = {
