@@ -71,7 +71,7 @@ export function useBannerOverflow(root: RefObject<HTMLElement | null>, items: re
 }
 
 /** The ⋯ button and its menu: the widgets that didn't fit, still live, nothing lost. */
-export function BannerMore({ keys, draw }: { keys: string[]; draw: (key: string) => ReactNode }) {
+export function BannerMore({ keys, draw, noun = 'banner widget', ctxTarget = 'banner' }: { keys: string[]; draw: (key: string) => ReactNode; /** what the items are called in the button's label */ noun?: string; /** the host the menu belongs to (right-click) */ ctxTarget?: string }) {
   const btn = useRef<HTMLSpanElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<CSSProperties | null>(null);
@@ -92,9 +92,9 @@ export function BannerMore({ keys, draw }: { keys: string[]; draw: (key: string)
   };
   return (
     <span ref={btn} className="fx-banner__item fx-banner__more-btn">
-      <IconButton icon="more" label={`${keys.length} more banner widget${keys.length === 1 ? '' : 's'}`} title={`${keys.length} more`} aria-expanded={!!pos} onClick={toggle} />
+      <IconButton icon="more" label={`${keys.length} more ${noun}${keys.length === 1 ? '' : 's'}`} title={`${keys.length} more`} aria-expanded={!!pos} onClick={toggle} />
       {pos && createPortal(
-        <div ref={box} className="fx-popover fx-banner__more" style={pos} data-fx-overlay="" data-fx-ctx-target="banner" data-axf-search="off">
+        <div ref={box} className="fx-popover fx-banner__more" style={pos} data-fx-overlay="" data-fx-ctx-target={ctxTarget} data-axf-search="off">
           {keys.map((k) => <div key={k} className="fx-banner__more-item" data-axf-banner-more={k}>{draw(k)}</div>)}
         </div>,
         document.body,

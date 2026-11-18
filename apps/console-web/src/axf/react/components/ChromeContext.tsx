@@ -50,6 +50,7 @@ import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
 import { addDerivedTargets, type ControlTargetDef } from '../controlTargets';
+import { ToolbarWidgetsPanel, installToolbarWidgets } from './ToolbarWidgets';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -191,6 +192,8 @@ export function installChrome(rt: AxfRuntime): void {
   if (installed.has(rt)) return;
   installed.add(rt);
   rt.actions.withModule(FRAMEWORK_MODULE, () => {
+    // toolbar-widgets@1: Attach widget… / Style… / Move / Detach on every toolbar, and their actions
+    installToolbarWidgets(rt);
     const t = (v: unknown): ChromeType | null => (isChromeType(v) ? v : null);
     const inst = (type: ChromeType, v: unknown, ctx?: { payload?: unknown }) => instanceOf(type, (typeof v === 'string' && v) || (typeof ctx?.payload === 'string' ? ctx.payload : undefined)) || CHROME_APP_INSTANCE;
     rt.actions.register('chrome.settings', ([type, instance, tab], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_SETTINGS_DIALOG, { type: ty, instance: inst(ty, instance, ctx), ...(tab ? { tab } : {}) }); }, { label: 'Chrome settings (chrome.settings:<type>:<instance>[:look|behaviour|asset|interface])', params: true });
@@ -569,7 +572,8 @@ export function ChromeSettingsPanel({ type, instance, initialTab }: { type: Chro
   const level: SettingsLevel = settingsLevelOf(rt.settings.get(SETTINGS_LEVEL_KEY)) ?? ui.defaultLevel;
   // the four chrome tabs, relabelled / reordered / hidden by the asset, minus `hide`
   const tabs = useMemo(() => {
-    const base = CHROME_SETTINGS_TABS.map((t) => ({ ...t }));
+    // a toolbar always has its Widgets tab (toolbar-widgets@1), also under an app's own copy of the interface
+    const base = [...CHROME_SETTINGS_TABS.map((t) => ({ ...t })), ...(type === 'toolbar' ? [{ id: 'widgets', label: 'Widgets', icon: 'layers', order: 15 }] : [])];
     const extra = ui.tabs.filter((t) => !base.some((b) => b.id === t.id)).map((t, i) => ({ id: t.id, label: t.label ?? t.id, icon: t.icon ?? 'settings', order: t.order ?? 100 + i }));
     const all = [...base, ...extra].map((t) => { const o = ui.tabs.find((x) => x.id === t.id); return o ? { ...t, label: o.label ?? t.label, icon: o.icon ?? t.icon, order: o.order ?? t.order, hidden: o.hidden } : t; });
     return all.filter((t) => !('hidden' in t && t.hidden) && !ui.hide.includes(t.id)).sort((a, b) => a.order - b.order);
@@ -598,6 +602,8 @@ export function ChromeSettingsPanel({ type, instance, initialTab }: { type: Chro
         </div>
       );
     }
+    // toolbar-widgets@1: the widgets on this toolbar (style, shape, order, Detach, Attach a widget)
+    if (id === 'widgets' && type === 'toolbar') return <ToolbarWidgetsPanel instance={instance} />;
     if (id === 'asset') return <ChromeAssetPicker type={type} instance={instance} />;
     if (id === 'interface') return <InstanceInterfaceTab type={type} instance={instance} descriptions={ui.descriptions} show={(f) => !ui.hide.includes(f.key) && levelOk(f.key, f.level) && (!q || f.label.toLowerCase().includes(q) || f.key.toLowerCase().includes(q))} />;
     return <div className="fx-stack">{ui.groups.filter((g) => g.tab === id).map((g) => <ExtraGroup key={g.id} group={g} />)}</div>;

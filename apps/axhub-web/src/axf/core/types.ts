@@ -374,8 +374,10 @@ export interface ToolbarData {
   divider?: boolean;
   /** live search box (see ToolbarSearch); absent or live:false = classic submit-to-jump box */
   search?: ToolbarSearch;
-  /** widget assets (clock, search bar) at the toolbar's start or end (core/engines/widgets.ts) */
+  /** widget assets (clock, search bar) at the toolbar's start or end (core/engines/widgets.ts), each with an optional banner widget style + shape ref */
   widgets?: ToolbarWidget[];
+  /** default shape@1 ids for this toolbar's widgets (toolbar-widgets@1; the lowest level of the shape chain) */
+  shape?: HostShape;
   /** a chevron at the end folds the toolbar to a thin handle and back (default false); remembered per device */
   collapsible?: boolean;
 }
@@ -452,7 +454,14 @@ export interface PopupData {
 /* ---------- banner + attachables (core/engines/banner.ts) ---------- */
 
 export type BannerSide = 'left' | 'center' | 'right';
-export interface BannerAttach { type: string; id: string; at: BannerSide; order?: number }
+/**
+ * One entry of a widget host's list (asset-types.json → hostEntry; toolbar-widgets@1): the asset, its side and order,
+ * the banner widget style it is drawn with (`widget`, engines/bannerwidgets.ts) and a shape@1 ref (`shape`).
+ */
+export interface HostEntry { type: string; id: string; at: string; order?: number; widget?: import('./engines/bannerwidgets').BannerWidgetHint; shape?: string }
+/** A host's default widget shapes (shape@1 asset ids): icon-only / square widgets, and chips with text. */
+export interface HostShape { icon?: string; chip?: string }
+export interface BannerAttach extends HostEntry { at: BannerSide }
 export interface BannerData {
   /** px, 16 to 48 (thin = 24) */
   height: number;
@@ -460,6 +469,8 @@ export interface BannerData {
   logo: { show: boolean; text: string };
   attach: BannerAttach[];
   divider?: boolean;
+  /** default shape@1 ids for the banner's widgets (the lowest level of the shape chain) */
+  shape?: HostShape;
 }
 export interface ClockData {
   format: '24h' | '12h';
@@ -476,7 +487,7 @@ export interface SearchBarData {
   shortcut?: boolean;
 }
 /** A widget placed on a toolbar (asset type toolbar → data.widgets). */
-export interface ToolbarWidget { type: string; id: string; at: 'start' | 'end'; order?: number }
+export interface ToolbarWidget extends HostEntry { at: 'start' | 'end' }
 export type WidgetTone = 'neutral' | 'success' | 'warning' | 'danger' | 'accent' | 'muted';
 /** Widget kinds (asset types with "widget": true besides clock and search bar); rules in engines/widgets.ts. */
 export interface LogoData { kind: 'text' | 'image' | 'icon'; text: string; size: 'small' | 'regular' | 'large'; image?: string; icon?: string; link?: string; bold?: boolean; tooltip?: string }

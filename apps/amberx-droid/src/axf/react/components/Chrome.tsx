@@ -10,6 +10,7 @@ import { HelpModeButton } from './Help';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
 import { WidgetView } from './Widgets';
+import { ToolbarWidgetBody, toolbarWidgetAddress, toolbarWidgetItemProps } from './ToolbarWidgetSlot';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
@@ -100,7 +101,13 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const arrange = useArrange('toolbar', widgets);
   const brand = useBrandPlace('toolbar');
   const brandHost = brandHostProps(brand);
-  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
+  // toolbar-widgets@1: each widget in the banner widget frame (size, show, cap, shape) with its console-control address
+  const resolvedWidgets = rt.toolbarInstanceWidgets('app');
+  const resolvedOf = (key: string) => Object.values(resolvedWidgets.sides).flat().find((r) => r.key === key);
+  const drawWidget = (w: PlacedAttachment, i: number) => {
+    const r = resolvedOf(w.key);
+    return arrange.item(w, i, `fx-banner__item fx-toolbar__widget${r?.shape ? ' fx-shaped' : ''}`, { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin, 'data-axf-target': toolbarWidgetAddress('app', w.key), ...(r ? toolbarWidgetItemProps(r) : {}) }, r ? <ToolbarWidgetBody w={r} /> : <WidgetView type={w.type} id={w.id} host="toolbar" />);
+  };
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;
   const collapsed = rt.toolbarCollapsed();

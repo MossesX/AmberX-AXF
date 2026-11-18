@@ -2427,6 +2427,12 @@
     "module": "app-console",
     "notes": "Build rebuild-fresh-main-phone-connect-small (Nov 17 2026; Brett: \"What's up with the new phone connection? You gonna build it or what?\"): console plugin phone-connect (Settings → Plugins → Phone Connect; REST /api/plugins/phone-connect, MCP phone_connect_*, CLI axf phone …, voice phone.*), companion app apps/phone-connect (phone-connect-debug.apk in CI). Self-tests: plugin test.py (engine fixture replay + routes), test.mts, app LinkRulesTest. Kotlin engine twin deferred (PORTING.md)."
   },
+  "cx.toolbarwidgets": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Build attach-widgets-to-any-toolbar-banner (Nov 2026; Brett: \"Rebuild.\", intent Nov 13: \"I can attach widgets to the toolbar right, just like the banner widgets\"). Every framework toolbar draws its widgets banner style; actions toolbar.widget.attach|detach|move|style; REST /api/plugins/toolbar-widgets/widgets, MCP toolbar_widgets_*, CLI axf toolbar widgets, voice. Kotlin twin deferred (PORTING.md)."
+  },
   "cx.settings.ifacedefault": {
     "status": "built",
     "wave": 1,

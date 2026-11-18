@@ -19,6 +19,7 @@ import type { ToolbarData } from '../../core/types';
 import type { ResolvedToolbar, ResolvedToolbarButton } from '../../core/engines/toolbar-actions';
 import { registerLiveToolbar, usePageToolbar, type PageToolbarHook } from '../pageToolbar';
 import { Icon } from './Icon';
+import { ToolbarWidgetSlot, useToolbarWidgetOverflow, useToolbarWidgets } from './ToolbarWidgetSlot';
 
 export interface PageToolbarProps {
   /** the view (default: the enclosing console-control scope's view) */
@@ -53,6 +54,9 @@ function PageToolbarView({ hook, toolbar: t, label, className, children }: { hoo
   const out = toolbarStyle(t.look as ToolbarData);
   const variant = t.look.variant;
   useFit(bar, hook, t);
+  // toolbar-widgets@1: the widgets attached to this toolbar (its asset, plugins, the person), banner style, at its ends
+  const widgets = useToolbarWidgets(t.id);
+  const widgetOverflow = useToolbarWidgetOverflow(bar, widgets, true);
   useEffect(() => {
     if (!more) return undefined;
     const close = (e: Event) => { if (!(e.target instanceof Node) || !bar.current?.contains(e.target)) setMore(false); };
@@ -75,6 +79,7 @@ function PageToolbarView({ hook, toolbar: t, label, className, children }: { hoo
         data-fx-ctx-target="toolbar"
         data-fx-ctx-payload={t.id}
       >
+        <ToolbarWidgetSlot instance={t.id} side="start" label={name} resolved={widgets} overflow={widgetOverflow} />
         {t.groups.filter((g) => g.visible && g.buttons.some((b) => b.visible && t.bar.some((x) => x.key === b.key))).map((g) => (
           <div key={g.id} className="fx-toolbar__group" role="group" aria-label={g.label ?? undefined} data-axf-provider={g.provider ?? undefined}>
             {g.buttons.filter((b) => t.bar.some((x) => x.key === b.key)).map((b) => <PageToolbarButton key={b.key} button={b} variant={variant} onPress={() => void hook.press(b)} />)}
@@ -103,6 +108,7 @@ function PageToolbarView({ hook, toolbar: t, label, className, children }: { hoo
           </div>
         )}
         {children}
+        <ToolbarWidgetSlot instance={t.id} side="end" label={name} resolved={widgets} overflow={widgetOverflow} />
       </div>
     </div>
   );
