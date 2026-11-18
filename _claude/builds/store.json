@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9022,
- "updatedAt": "2026-11-18T14:32:35.817Z",
+ "rev": 9023,
+ "updatedAt": "2026-11-18T14:33:16.115Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319373,8 +319373,8 @@
    "branch": "claude/every-plugin-gets-own-default-toolbar",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T14:31:36.727Z",
-   "builtAt": "2026-11-18T14:31:36.727Z",
+   "updatedAt": "2026-11-18T14:32:21.920Z",
+   "builtAt": "2026-11-18T14:32:21.920Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319459,7 +319459,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-18T14:32:21.920Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-every-plugin-gets-own-default-toolbar--earl",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
