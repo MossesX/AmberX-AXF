@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:04 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-18 00:05 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · foreign-write
 - 2026-11-18 00:05 UTC · `fix-launcher-crash-duplicate-steps-brief` s14 done (all) · orchestrator
 - 2026-11-18 00:05 UTC · `fix-launcher-crash-duplicate-steps-brief` s14 done (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s12 done (all) · orchestrator
 - 2026-11-18 01:17 UTC · `move-everything-axhub-web-console` s17 done, s18 done, s19 done (all) · foreign-write
 - 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s11 done (all) · foreign-write
+- 2026-11-18 01:17 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done (all) · foreign-write
 
 ## Token passes (log)
 
