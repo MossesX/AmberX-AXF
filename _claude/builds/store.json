@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9020,
- "updatedAt": "2026-11-18T14:31:25.819Z",
+ "rev": 9021,
+ "updatedAt": "2026-11-18T14:32:02.341Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319375,15 +319375,15 @@
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
    "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/every-plugin-gets-own-default-toolbar",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T14:07:05.018Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T14:31:36.727Z",
+   "builtAt": "2026-11-18T14:31:36.727Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319621,12 +319621,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:31:36.727Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:32:10.647Z",
-     "updatedAt": "2026-11-18T12:32:10.647Z"
+     "updatedAt": "2026-11-18T14:31:40.022Z"
     }
    ],
    "profiles": [
@@ -319637,7 +319637,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
