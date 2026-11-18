@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T16:25:50.638Z",
+ "updatedAt": "2026-11-18T16:28:40.221Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193680,7 +193680,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T16:25:22.142Z",
+   "updatedAt": "2026-11-18T16:27:54.013Z",
    "builtAt": "",
    "notes": [
     {
@@ -193766,6 +193766,14 @@
     {
      "text": "Session on hulu0241 ended (exit 1) with 8 steps left: back in the Queue (run 1).",
      "at": "2026-11-18T16:25:22.142Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T16:27:07.345Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T16:27:54.013Z"
     }
    ],
    "approvals": [
