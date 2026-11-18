@@ -340,6 +340,13 @@ header is ignored.
 beside the existing `pass`), the THREADS line, the hub's approvals log entry (`ranUnder`, `passId`, `decidedBy: pass:<id>`), the
 job and the connector call. A covered run sends no veto or approval push.
 
+**Matching (s3-s9).** The console matches by `covers`, never by scope id: `passCoversCall(covers, {service, tool, target})`
+(`passPatternMatches`, `*` = any run of characters; the console's own commands are service `axf-console`); `passCovering` keeps a
+token scope's ops (set / reset). A plugin `confirm` command (`console-terminal/sessions-stop` → `console_terminal_sessions_stop`)
+runs at once under a covering pass, the console's own or the one axHub sent (`commandPass`; `_meta["axhub/pass"]` checked by
+`hub_pass` with HMAC-SHA256 keyed by the console token), and its audit row carries `ranUnder` + `skippedPolicy`. Every part is
+reached the same four ways (axHub `docs/veto-pass.md` §2e; voice: `core/engines/pass-voice.mjs`, pass-voice@1).
+
 **Migration.** Records stored before the field have no `covers`; `passCoversOf` reads them: scope `all` → `all`; a token scope →
 `scope:<target>` per target of the scope (never wider). Every grant from now on stores `covers` (`input.covers`, else the scope's).
 The hub's twin (`passCoversOf` in `packages/core/src/passes.ts`): `all: true` or `*` / `["*"]` → `all`; a narrow pass → the
