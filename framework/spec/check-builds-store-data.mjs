@@ -33,7 +33,8 @@ delete process.env.AXF_ORCH_FILE; delete process.env.AXF_PENDING_FILE;
 mkdirSync(join(dir, '_claude/builds'), { recursive: true });
 const modeFile = join(dir, '.axf-console/data-store/mode.json');
 const setMode = (mode) => { mkdirSync(join(dir, '.axf-console/data-store'), { recursive: true }); writeFileSync(modeFile, JSON.stringify({ $axf: 'data-store-mode@1', mode: 'local', namespaces: { builds: { mode } } })); const t = new Date(Date.now() + Math.random() * 5000); utimesSync(modeFile, t, t); };
-const H = { authorization: 'Bearer tok' };
+// one connection per request: uvicorn closes idle keep-alive sockets after 5 s and a pooled fetch on one answers "other side closed"
+const H = { authorization: 'Bearer tok', connection: 'close' };
 const remote = async (key) => { const r = await fetch(`${url}/v1/${key}`, { headers: H }); return r.status === 200 ? r.json() : null; };
 
 let n = 0;
