@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `molly-ri-court-records` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `new-app-wizard` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:38 UTC · `rebuild-fresh-main-phone-connect-small` → pending (all) · builds-live
+- 2026-11-18 01:39 UTC · `auto-lander-never-wait-missing-ui-review` PR #831, note (all) · reconciler
 
 ## Token passes (log)
 
