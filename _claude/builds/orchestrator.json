@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:53:28.419Z",
+ "updatedAt": "2026-11-18T12:54:32.733Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -177669,8 +177669,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T12:45:00.539Z",
-   "builtAt": "2026-11-18T12:45:00.539Z",
+   "updatedAt": "2026-11-18T12:53:28.520Z",
+   "builtAt": "2026-11-18T12:53:28.520Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -177951,6 +177951,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T12:45:00.539Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T12:53:28.520Z"
     }
    ],
    "approvals": [
@@ -188597,8 +188601,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T09:14:24.414Z",
-   "builtAt": "2026-11-18T00:12:42.641Z",
+   "updatedAt": "2026-11-18T12:53:28.520Z",
+   "builtAt": "2026-11-18T12:53:28.520Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -188651,6 +188655,10 @@
     {
      "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-18T09:14:24.415Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T12:53:28.520Z"
     }
    ],
    "approvals": [],

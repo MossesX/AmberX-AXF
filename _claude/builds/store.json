@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8951,
- "updatedAt": "2026-11-18T12:53:28.419Z",
+ "rev": 8952,
+ "updatedAt": "2026-11-18T12:54:32.733Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -275222,8 +275222,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T12:45:00.539Z",
-   "builtAt": "2026-11-18T12:45:00.539Z",
+   "updatedAt": "2026-11-18T12:53:28.520Z",
+   "builtAt": "2026-11-18T12:53:28.520Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -275504,6 +275504,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T12:45:00.539Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T12:53:28.520Z"
     }
    ],
    "approvals": [
@@ -276302,7 +276306,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 112,
+   "rev": 113,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313498,8 +313502,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T09:14:24.414Z",
-   "builtAt": "2026-11-18T00:12:42.641Z",
+   "updatedAt": "2026-11-18T12:53:28.520Z",
+   "builtAt": "2026-11-18T12:53:28.520Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -313552,6 +313556,10 @@
     {
      "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-18T09:14:24.415Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T12:53:28.520Z"
     }
    ],
    "approvals": [],
@@ -313603,6 +313611,17 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "landed": {
+    "pr": 827,
+    "sha": "cf08a0b8c20415b3ef20b3f118898b88df3ccfbb",
+    "mergedAt": "2026-11-18T09:06:06Z",
+    "ci": "unknown",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "steps": [
     {
@@ -313966,7 +313985,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -318243,7 +318262,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:25:38.639Z",
-     "updatedAt": "2026-11-18T12:49:44.528Z"
+     "updatedAt": "2026-11-18T12:53:14.820Z"
     },
     {
      "id": "s5",
@@ -318269,7 +318288,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:25:38.639Z",
-     "updatedAt": "2026-11-18T12:50:58.122Z"
+     "updatedAt": "2026-11-18T12:53:14.820Z"
     },
     {
      "id": "s6",
