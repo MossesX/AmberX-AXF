@@ -832,12 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:12 UTC · `move-server-side-console-parts-onto-vps` s20 done (all) · foreign-write
-- 2026-11-18 00:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 00:12 UTC · `fix-launcher-crash-duplicate-steps-brief` s16 done, → complete (all) · foreign-write
-- 2026-11-18 00:13 UTC · `move-everything-axhub-web-console` s8 done (all) · foreign-write
-- 2026-11-18 00:13 UTC · `fix-launcher-crash-duplicate-steps-brief` s16 done, → complete (all) · foreign-write
-- 2026-11-18 00:14 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-18 00:14 UTC · `move-everything-axhub-web-console` s8 done (all) · foreign-write
 - 2026-11-18 00:14 UTC · `fix-launcher-crash-duplicate-steps-brief` s16 done, → complete (all) · foreign-write
 - 2026-11-18 00:15 UTC · `move-server-side-console-parts-onto-vps` s21 done (all) · orchestrator
@@ -1232,6 +1226,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:20 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-18 01:20 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-18 01:20 UTC · `auto-lander-never-wait-missing-ui-review` s12 done (all) · foreign-write
+- 2026-11-18 01:20 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 01:20 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-18 01:20 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:20 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
+- 2026-11-18 01:20 UTC · `move-everything-axhub-web-console` s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done (all) · foreign-write
+- 2026-11-18 01:20 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done, s13 done, s14 done (all) · foreign-write
 
 ## Token passes (log)
 
