@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8537,
- "updatedAt": "2026-11-18T00:16:51.490Z",
+ "rev": 8538,
+ "updatedAt": "2026-11-18T00:17:04.292Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244506,6 +244506,10 @@
     {
      "text": "Repeated steps collapsed: 24 → 21 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:05.696Z"
+    },
+    {
+     "text": "Refused pending → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T23:48:48.513Z"
     }
    ],
    "approvals": [],
@@ -263232,7 +263236,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s6",
@@ -263256,7 +263260,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s7",
@@ -263281,7 +263285,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s8",
@@ -263305,7 +263309,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s9",
@@ -263331,7 +263335,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:53:29.082Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s10",
@@ -263357,7 +263361,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:53:29.082Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s11",
@@ -263383,7 +263387,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:53:29.082Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s12",
@@ -263408,7 +263412,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:53:29.082Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s13",
@@ -263434,7 +263438,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:53:29.082Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s14",
@@ -263460,7 +263464,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T23:54:11.771Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s15",
@@ -263486,7 +263490,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:12:27.013Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s16",
@@ -263510,7 +263514,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:12:27.013Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s17",
@@ -263535,7 +263539,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:12:27.013Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s18",
@@ -263559,7 +263563,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:12:27.013Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s19",
@@ -263584,7 +263588,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:12:27.013Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s20",
@@ -263609,7 +263613,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:12:58.258Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s21",
@@ -266720,7 +266724,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -267884,6 +267888,28 @@
     },
     {
      "id": "s55",
+     "uid": "st-mwldffmh01m8p0",
+     "title": "",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.658Z"
+    },
+    {
+     "id": "s29-28",
      "uid": "st-mwlda5xv01ykdn",
      "title": "",
      "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
@@ -279634,9 +279660,9 @@
      "done": true,
      "doneAt": "2026-11-17T19:51:34.620Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s2",
@@ -279656,9 +279682,9 @@
      "done": true,
      "doneAt": "2026-11-17T19:54:15.835Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s3",
@@ -279678,9 +279704,9 @@
      "done": true,
      "doneAt": "2026-11-17T19:55:33.683Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s4",
@@ -279700,9 +279726,9 @@
      "done": true,
      "doneAt": "2026-11-17T19:57:50.782Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s5",
@@ -279722,9 +279748,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:00:55.393Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s6",
@@ -279744,9 +279770,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:01:57.805Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s7",
@@ -279766,9 +279792,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:08:17.196Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s8",
@@ -279788,9 +279814,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:10:27.919Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s9",
@@ -279810,9 +279836,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:12:38.439Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s10",
@@ -279832,9 +279858,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:16:28.189Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s11",
@@ -279854,9 +279880,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:19:30.889Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s12",
@@ -279876,9 +279902,9 @@
      "done": true,
      "doneAt": "2026-11-17T20:58:27.223Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s13",
@@ -279898,9 +279924,9 @@
      "done": true,
      "doneAt": "2026-11-17T21:00:38.742Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s14",
@@ -279920,9 +279946,9 @@
      "done": true,
      "doneAt": "2026-11-17T21:01:32.193Z",
      "note": "",
-     "rev": 5,
+     "rev": 3,
      "createdAt": "2026-11-17T22:28:27.285Z",
-     "updatedAt": "2026-11-17T23:42:51.494Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s113",
@@ -286287,7 +286313,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s12",
@@ -286312,7 +286338,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     }
    ],
    "profiles": [
@@ -288976,7 +289002,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s25",
@@ -289001,7 +289027,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s26",
@@ -289899,6 +289925,10 @@
     {
      "text": "Reconciler: PR #826; PR #826 names s1, s2 done",
      "at": "2026-11-17T23:50:39.041Z"
+    },
+    {
+     "text": "Reconciler: PR #826; PR #826 names s1, s2 done",
+     "at": "2026-11-17T23:10:19.720Z"
     }
    ],
    "approvals": [],
@@ -292875,7 +292905,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s6",
@@ -292897,7 +292927,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s7",
@@ -292919,7 +292949,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-17T23:54:43.646Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s8",
@@ -292941,7 +292971,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-18T00:14:51.776Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s9",
@@ -296914,6 +296944,10 @@
     {
      "text": "Reconciler: branch claude/auto-lander-never-wait-missing-ui-review (no PR yet)",
      "at": "2026-11-17T23:50:39.041Z"
+    },
+    {
+     "text": "Reconciler: branch claude/auto-lander-never-wait-missing-ui-review (no PR yet)",
+     "at": "2026-11-17T23:10:19.720Z"
     }
    ],
    "approvals": [],
@@ -296987,7 +297021,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s2",
@@ -297009,7 +297043,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s3",
@@ -297031,7 +297065,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s4",
@@ -297053,7 +297087,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s5",
@@ -297075,7 +297109,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s6",
@@ -297097,7 +297131,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s7",
@@ -297119,7 +297153,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s8",
@@ -297141,7 +297175,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s9",
@@ -297163,7 +297197,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s10",
@@ -297185,7 +297219,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s11",
@@ -297207,7 +297241,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s12",
@@ -297229,7 +297263,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s13",
@@ -297251,7 +297285,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s14",
@@ -297273,7 +297307,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s15",
@@ -297295,7 +297329,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s16",
@@ -297317,7 +297351,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     },
     {
      "id": "s17",
@@ -297339,7 +297373,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-17T23:51:38.533Z"
+     "updatedAt": "2026-11-18T00:16:35.271Z"
     }
    ],
    "profiles": [
@@ -313331,6 +313365,358 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwldffpa02kx6h",
+     "title": "",
+     "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:36:49.344Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.758Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwldffpa030kwv",
+     "title": "",
+     "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:36:53.870Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.758Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwldffpa04beuc",
+     "title": "",
+     "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:36:58.572Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.758Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwldffpa05jwmv",
+     "title": "",
+     "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:38:10.034Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.758Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwldffpa06xpcx",
+     "title": "",
+     "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:39:37.567Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwldffpb07ozi6",
+     "title": "",
+     "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:47:40.415Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwldffpb087249",
+     "title": "",
+     "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:48:33.158Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwldffpb09hxv0",
+     "title": "",
+     "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:51:01.676Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwldffpb0ablm6",
+     "title": "",
+     "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:54:21.265Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwldffpb0b2k5q",
+     "title": "",
+     "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:57:32.336Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwldffpb0cuve5",
+     "title": "",
+     "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-17T23:58:40.378Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwldffpb0duf0f",
+     "title": "",
+     "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-18T00:02:07.669Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwldffpb0efhb5",
+     "title": "",
+     "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-18T00:03:18.575Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwldffpb0faeua",
+     "title": "",
+     "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-18T00:05:14.121Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwldffpb0g1pp1",
+     "title": "",
+     "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-18T00:07:56.643Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwldffpb0hurws",
+     "title": "",
+     "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-18T00:12:42.640Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:16:28.983Z",
+     "updatedAt": "2026-11-18T00:16:29.759Z"
+    },
+    {
+     "id": "s17-16",
      "uid": "st-mwlbqpta1kux9m",
      "title": "",
      "text": "Reproduce the duplicate-step growth: read the step splitter / re-split path (apps/console-web/plugins/build-orchestrator/pipeline.mjs intake/split, orchestrator.mjs add-steps) and framework/cli/builds-store.mjs step writes; write a failing test that re-splits a build twice and expects the step count to stay the same",
@@ -313352,7 +313738,7 @@
      "updatedAt": "2026-11-17T23:36:54.658Z"
     },
     {
-     "id": "s2",
+     "id": "s18-17",
      "uid": "st-mwlbqpta1lyc6u",
      "title": "",
      "text": "Fix the splitter: a re-split replaces the build's not-done steps instead of appending; keep done steps (matched by normalized text) with their done flags and ids",
@@ -313374,7 +313760,7 @@
      "updatedAt": "2026-11-17T23:37:16.450Z"
     },
     {
-     "id": "s3",
+     "id": "s19-18",
      "uid": "st-mwlbqpta1movdk",
      "title": "",
      "text": "Add a dedupe-by-text guard on every steps write in the builds store (normalized text; a done copy wins over a pending one; stable order of first appearance) so no writer can append repeats again",
@@ -313396,7 +313782,7 @@
      "updatedAt": "2026-11-17T23:37:16.450Z"
     },
     {
-     "id": "s4",
+     "id": "s20-19",
      "uid": "st-mwlbqpta1n4fvg",
      "title": "",
      "text": "Tests for the splitter fix and store dedupe guard (re-split twice, append same steps, done flag survives, distinct steps with similar text kept); make the step-1 test pass",
@@ -313418,7 +313804,7 @@
      "updatedAt": "2026-11-17T23:38:39.005Z"
     },
     {
-     "id": "s5",
+     "id": "s21-20",
      "uid": "st-mwlbqpta1o7s9w",
      "title": "",
      "text": "Write a one-shot cleanup command `builds-store.mjs dedupe-steps [--dry-run|--apply]` that collapses duplicate steps in every build (keeps done flags, renumbers ids only where the store allows, journals one revision per build) and prints before/after counts",
@@ -313440,7 +313826,7 @@
      "updatedAt": "2026-11-17T23:42:51.494Z"
     },
     {
-     "id": "s6",
+     "id": "s22-21",
      "uid": "st-mwlbqpta1pf1f3",
      "title": "",
      "text": "Run dedupe-steps --dry-run then --apply on the live store (dispatcher-split 897, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63 …); verify with builds-store.mjs verify and record the before/after table for the report; publish via builds-live.mjs",
@@ -313462,7 +313848,7 @@
      "updatedAt": "2026-11-17T23:53:29.082Z"
     },
     {
-     "id": "s7",
+     "id": "s23-22",
      "uid": "st-mwlbqpta1qrueq",
      "title": "",
      "text": "deploy/claude-headless.sh: stop passing the brief as an argv string at line ~416; write it to a temp file and feed claude -p via stdin (or file read), cleaning up the file on exit",
@@ -313484,7 +313870,7 @@
      "updatedAt": "2026-11-17T23:53:29.082Z"
     },
     {
-     "id": "s8",
+     "id": "s24-23",
      "uid": "st-mwlbqpta1rqfci",
      "title": "",
      "text": "Cap brief size: in the brief builder, trim the step list to done count + the next N pending steps with a 'N more steps in the store' line, and enforce a byte cap (setting builds.briefMaxBytes, default ~120 KB) with a clear log line when trimmed",
@@ -313506,7 +313892,7 @@
      "updatedAt": "2026-11-17T23:53:29.082Z"
     },
     {
-     "id": "s9",
+     "id": "s25-24",
      "uid": "st-mwlbqpta1s9o0d",
      "title": "",
      "text": "Headless launcher tests: fake claude in HOME/.local/bin reads stdin; a 300 KB brief launches without E2BIG; brief over the cap is trimmed and still carries 'Brett said (verbatim)'",
@@ -313528,7 +313914,7 @@
      "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
-     "id": "s10",
+     "id": "s26-25",
      "uid": "st-mwlbqpta1t2dkz",
      "title": "",
      "text": "Launch-crash auto-retry: the dispatcher (pipeline.mjs tick) detects a run that died at launch (exit before first heartbeat / E2BIG / launcher error) and requeues it with a backoff, separate from the 3-run session cap, logging the reason on the build",
@@ -313550,7 +313936,7 @@
      "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
-     "id": "s11",
+     "id": "s27-26",
      "uid": "st-mwlbqpta1u5xix",
      "title": "",
      "text": "Requeue auto-lander-never-wait-missing-ui-review after the launcher fix (pipeline.mjs queue path) and add a test for the launch-crash retry (crash once → requeued → second launch picks it up; crash loop stops after the retry cap with a banner alert)",
@@ -313572,7 +313958,7 @@
      "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
-     "id": "s12",
+     "id": "s28-27",
      "uid": "st-mwlbqpta1v6rat",
      "title": "",
      "text": "Land-clash bounce: when the lander/merge queue reports a merge conflict on a build with all steps done, append one 'Merge main into <branch> and resolve conflicts in <files>' step (deduped, Opus) and move the build back to queued so the dispatcher runs it",
@@ -313594,7 +313980,7 @@
      "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
-     "id": "s13",
+     "id": "s29-28",
      "uid": "st-mwlbqpta1wytqw",
      "title": "",
      "text": "Tests for the land-clash bounce (27/27 done + clash → one merge-main step added, status queued; second clash doesn't add a second step); extend check-landing-line.mjs fixture",
@@ -313616,7 +314002,7 @@
      "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
-     "id": "s14",
+     "id": "s30-29",
      "uid": "st-mwlbqpta1xvdjw",
      "title": "",
      "text": "Apply the clash bounce to Phone Connect #787 (clash in framework/spec/check-ci-scope.mjs) so the dispatcher picks it up; verify it shows queued with the merge-main step",
@@ -313638,7 +314024,7 @@
      "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
-     "id": "s15",
+     "id": "s31-30",
      "uid": "st-mwlbqpta1y0z1u",
      "title": "",
      "text": "API parity: expose dedupe-steps, launch-retry state and clash-bounce through the build-orchestrator REST routes, MCP plugin commands, axf CLI and voice action (pipeline-dedupe, pipeline-requeue); readable state on the build (lastLaunchError, retries, bounce reason)",
@@ -313660,7 +314046,7 @@
      "updatedAt": "2026-11-18T00:12:27.013Z"
     },
     {
-     "id": "s16",
+     "id": "s32-31",
      "uid": "st-mwlbqpta1zjs8w",
      "title": "",
      "text": "Run checks (check-builds-store.mjs, check-build-steps.mjs, check-landing-line.mjs, the new tests, builds-store.mjs verify), write _claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md with before/after step counts and launcher behaviour, add the THREADS row, push the branch and open the PR saying how each piece is reached via REST/MCP/CLI/voice",
@@ -314202,6 +314588,1062 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwldffpq0vstn7",
+     "title": "",
+     "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwldffpq0wx064",
+     "title": "",
+     "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwldffpq0xzt5n",
+     "title": "",
+     "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwldffpq0ybaej",
+     "title": "",
+     "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwldffpq0zyick",
+     "title": "",
+     "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwldffpq10qfuc",
+     "title": "",
+     "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwldffpq112qay",
+     "title": "",
+     "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwldffpq123boo",
+     "title": "",
+     "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwldffpq13at35",
+     "title": "",
+     "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwldffpq14xm19",
+     "title": "",
+     "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwldffpq157nn0",
+     "title": "",
+     "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwldffpq16nn5j",
+     "title": "",
+     "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwldffpq172c3y",
+     "title": "",
+     "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwldffpq1883k0",
+     "title": "",
+     "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwldffpq19m9rg",
+     "title": "",
+     "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwldffpq1a0cok",
+     "title": "",
+     "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwldffpq1bcbgi",
+     "title": "",
+     "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwldffpq1cgmdy",
+     "title": "",
+     "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwldffpq1dg25m",
+     "title": "",
+     "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwldffpq1e4uvd",
+     "title": "",
+     "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwldffpq1f75wd",
+     "title": "",
+     "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s22",
+     "uid": "st-mwldffpq1guous",
+     "title": "",
+     "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s23",
+     "uid": "st-mwldffpq1huplk",
+     "title": "",
+     "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s24",
+     "uid": "st-mwldffpq1ido4n",
+     "title": "",
+     "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s25",
+     "uid": "st-mwldffpq1je5z4",
+     "title": "",
+     "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s26",
+     "uid": "st-mwldffpq1kgb7b",
+     "title": "",
+     "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s27",
+     "uid": "st-mwldffpq1l3jy6",
+     "title": "",
+     "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s28",
+     "uid": "st-mwldffpq1mat7f",
+     "title": "",
+     "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s29",
+     "uid": "st-mwldffpq1n7lg8",
+     "title": "",
+     "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s30",
+     "uid": "st-mwldffpq1o6wqv",
+     "title": "",
+     "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s31",
+     "uid": "st-mwldffpq1pgttc",
+     "title": "",
+     "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s32",
+     "uid": "st-mwldffpq1qkgki",
+     "title": "",
+     "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s33",
+     "uid": "st-mwldffpq1rz2ta",
+     "title": "",
+     "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s34",
+     "uid": "st-mwldffpq1sfecz",
+     "title": "",
+     "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s35",
+     "uid": "st-mwldffpq1twmts",
+     "title": "",
+     "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s36",
+     "uid": "st-mwldffpq1uxirw",
+     "title": "",
+     "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s37",
+     "uid": "st-mwldffpq1vobqx",
+     "title": "",
+     "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s38",
+     "uid": "st-mwldffpq1wdwgu",
+     "title": "",
+     "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s39",
+     "uid": "st-mwldffpq1xx67h",
+     "title": "",
+     "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s40",
+     "uid": "st-mwldffpq1ymclf",
+     "title": "",
+     "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s41",
+     "uid": "st-mwldffpq1zo7r1",
+     "title": "",
+     "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s42",
+     "uid": "st-mwldffpq20a319",
+     "title": "",
+     "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s43",
+     "uid": "st-mwldffpq21us6t",
+     "title": "",
+     "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s44",
+     "uid": "st-mwldffpq22va35",
+     "title": "",
+     "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s45",
+     "uid": "st-mwldffpq23xcks",
+     "title": "",
+     "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s46",
+     "uid": "st-mwldffpq24uhzy",
+     "title": "",
+     "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s47",
+     "uid": "st-mwldffpq25lavy",
+     "title": "",
+     "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s48",
+     "uid": "st-mwldffpq26l8qp",
+     "title": "",
+     "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-17T23:29:49.226Z",
+     "updatedAt": "2026-11-18T00:16:28.983Z"
+    },
+    {
+     "id": "s49-48",
      "uid": "st-mwlcjdwp0vnrhw",
      "title": "",
      "text": "Find where the Active tab rows, the grid header and the cells are drawn, and how a running build maps to its VPS tmux session (session name, host). Write the findings as notes at the top of the report draft.",
@@ -314223,7 +315665,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s2",
+     "id": "s50-49",
      "uid": "st-mwlcjdwp0wzht6",
      "title": "",
      "text": "Add a stop function to the orchestrator CLI (orchestrator.mjs stop <id> [--reason]). It ends the build's tmux session through the VPS runner, sets the build to Hold with a note and a journalled store write, and records no-relaunch on the build so the pipeline dispatcher skips it.",
@@ -314245,7 +315687,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s3",
+     "id": "s51-50",
      "uid": "st-mwlcjdwp0x3tva",
      "title": "",
      "text": "Make pipeline.mjs tick and the crash-requeue path skip builds that are on Hold or marked no-relaunch. Add a unit test that a stopped build is never put back on the Queue.",
@@ -314267,7 +315709,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s4",
+     "id": "s52-51",
      "uid": "st-mwlcjdwp0ya3wd",
      "title": "",
      "text": "Add a REST route POST /api/plugins/build-orchestrator/builds/<id>/stop and a state read of stoppable/running on the Active-tab rows. A destructive press needs confirm. Register the plugin command so MCP gets the same action.",
@@ -314289,7 +315731,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s5",
+     "id": "s53-52",
      "uid": "st-mwlcjdwp0zg8l5",
      "title": "",
      "text": "Wire the CLI (axf orchestrator stop <id>) and the voice action (AmberX 'stop build <name>') to the same route. Add the console-control address row:<build>/action:stop so console_show can deep-link it.",
@@ -314311,7 +315753,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s6",
+     "id": "s54-53",
      "uid": "st-mwlcjdwp10enf6",
      "title": "",
      "text": "Add the Stop button to every running row in the Active tab. Use the framework Button with destructive confirm, inside the row toolbar (role=toolbar + aria-label), and give it a data-axf-target. On success the row turns to Hold, with an error toast on failure.",
@@ -314333,7 +315775,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s7",
+     "id": "s55-54",
      "uid": "st-mwlcjdwp115e4y",
      "title": "",
      "text": "Fix the Active tab grid. Header and cells share one column template, as fixed DataGrid cell widths or a shared grid-template-columns from tokens. No max-content drift between rows, and columns stay aligned on phone and desktop. Tokens only, no hardcoded sizes.",
@@ -314355,7 +315797,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s8",
+     "id": "s56-55",
      "uid": "st-mwlcjdwp12lmlk",
      "title": "",
      "text": "Check the narrow and wide breakpoints of the fixed grid. Hidden or collapsed columns must drop from the header and the cells together. Run check-theme.mjs, check-controls.mjs and check-toolbars.mjs clean.",
@@ -314377,7 +315819,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s9",
+     "id": "s57-56",
      "uid": "st-mwlcjdwp13382r",
      "title": "",
      "text": "Add a CI check (Playwright on the built console preview) that renders the Active tab at 360, 768 and 1440 widths with seeded running builds. It asserts each header cell's left/right edges match its column cells within 1px and that every running row has a Stop button. Wire it into the console CI workflow.",
@@ -314399,7 +315841,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s10",
+     "id": "s58-57",
      "uid": "st-mwlcjdwp14wsxh",
      "title": "",
      "text": "Add unit tests for the stop route and CLI: the tmux kill is called with the right session name, the status becomes Hold, the dispatcher won't relaunch, and a non-running build is refused. Check REST, MCP and CLI parity.",
@@ -314421,7 +315863,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s11",
+     "id": "s59-58",
      "uid": "st-mwlcjdwp155qlp",
      "title": "",
      "text": "Take before/after desktop and phone shots of the Active tab. Submit 3 UI Review options (ui-choices@1, assets in plugins/build-orchestrator/assets/) and note in the PR that it waits there.",
@@ -314443,7 +315885,7 @@
      "updatedAt": "2026-11-17T23:51:33.646Z"
     },
     {
-     "id": "s12",
+     "id": "s60-59",
      "uid": "st-mwlcjdwp16c0g7",
      "title": "",
      "text": "Run the full checks (tracker --check, check-console-control.mjs, check-chrome-assets.mjs, plugin tests, new grid check). Write the report _claude/builds/reports/active-tab-stop-button-grid-alignment.md with before/after, how Stop is reached (deep link, REST, MCP, CLI, voice) and test results. Add the THREADS row and open the PR.",
