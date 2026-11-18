@@ -838,7 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 02:05 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
 - 2026-11-18 02:04 UTC · `rebuild-fresh-main-phone-connect-small` merged, note (all) · reconciler
 - 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
 - 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
@@ -1238,6 +1237,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:23 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
 - 2026-11-18 13:23 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
 - 2026-11-18 13:23 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
+- 2026-11-18 13:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
 
 ## Token passes (log)
 
