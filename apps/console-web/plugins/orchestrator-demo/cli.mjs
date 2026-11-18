@@ -2,6 +2,7 @@
 /**
  * `axf demo orchestrator start [--pause|--no-pause] | open | pause | resume | next | skip | stop | state | summary
  *  | pause-between-steps on|off | settings [--json] [--url <console>]`
+ * `axf demo selftest [--last]`   the lander self-test (demo-selftest@1): POST /selftest, or the saved result
  *
  * The Orchestrator demo from a terminal. Every word is one call to the plugin's REST routes on the console
  * (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN), the same routes the console UI, the MCP tools and
@@ -10,7 +11,7 @@
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const cliWords = ['orchestrator'];
+export const cliWords = ['orchestrator', 'selftest'];
 const BASE = '/api/plugins/orchestrator-demo';
 
 /** word → [method, path, body?]. */
@@ -22,6 +23,7 @@ export function requestFor(word, argv = []) {
     case 'summary': return ['GET', '/summary'];
     case 'settings': return ['GET', '/settings'];
     case 'deps': return ['GET', '/deps'];
+    case 'selftest': return has('--last') ? ['GET', '/selftest'] : ['POST', '/selftest', {}];
     case 'start': return ['POST', '/start', has('--pause') ? { pause: true } : has('--no-pause') ? { pause: false } : {}];
     case 'open': return ['POST', '/open', has('--pause') ? { pause: true } : has('--no-pause') ? { pause: false } : {}];
     case 'pause': return ['POST', '/pause', {}];
@@ -38,7 +40,7 @@ export function requestFor(word, argv = []) {
   }
 }
 
-export const USAGE = 'axf demo orchestrator start [--pause|--no-pause] | open | pause | resume | next | skip [--why …] | stop [--why …] | state | summary | deps | pause-between-steps on|off | settings  [--json] [--url <console>]';
+export const USAGE = 'axf demo orchestrator start [--pause|--no-pause] | open | pause | resume | next | skip [--why …] | stop [--why …] | state | summary | deps | pause-between-steps on|off | settings  [--json] [--url <console>]\naxf demo selftest [--last]   the lander self-test now (the real gate verdict, review lookup and queue check), or the saved result';
 
 /** One plain line for a person (the --json flag prints the whole answer instead). */
 export function describe(word, r) {
@@ -50,6 +52,7 @@ export function describe(word, r) {
     return lines.join('\n');
   }
   if (word === 'deps') return r.deps?.ok ? `All there${r.deps.skipped ? ` (${r.deps.skipped})` : ''}.` : `${r.deps?.reason ?? ''}`;
+  if (word === 'selftest') { const t = r.selftest; if (!t) return 'No self-test has run yet.'; return [`${t.ok ? '✓ passed' : '✗ FAILED'} ${t.at} (${t.durationMs} ms)`, ...(t.checks ?? []).map((c) => `  ${c.ok ? '✓' : '✗'} ${c.id}: ${c.detail}`)].join('\n'); }
   if (r.settings && !r.state) return `Pause between steps: ${r.settings.pauseBetweenSteps ? 'on' : 'off'} · minimum gap ${Math.round(r.settings.minGapMs / 1000)} s`;
   const st = r.state;
   if (!st?.run) return 'No demo run.';

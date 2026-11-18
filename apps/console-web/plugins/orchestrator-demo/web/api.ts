@@ -33,6 +33,10 @@ interface StateRes { ok: boolean; state: DemoState; settings?: Settings; deps?: 
 export const TERMINAL = ['done', 'stopped'];
 export const isLive = (s: DemoState | null) => !!s?.run && !TERMINAL.includes(s.run.state);
 
+/** demo-selftest@1: the lander self-test the landing act runs first (POST /selftest). */
+export interface SelfTest { $axf: string; at: string; ok: boolean; checks: { id: string; title: string; ok: boolean; detail: string }[]; durationMs: number }
+export interface SelfTestRes { ok: boolean; state?: DemoState; selftest: SelfTest; passed: boolean }
+
 /** Every action the UI offers, one REST call each. */
 export const demo = {
   state: () => api.call<StateRes>('state'),
@@ -43,6 +47,7 @@ export const demo = {
   next: () => api.post<StateRes>('next'),
   skip: () => api.post<StateRes>('skip'),
   stop: () => api.post<StateRes>('stop'),
+  selftest: () => api.post<SelfTestRes>('selftest'),
   setPause: (pause: boolean) => api.put<{ ok: boolean; settings: Settings; state: DemoState | null }>('pause-between-steps', { pause }),
   settings: () => api.call<{ ok: boolean; settings: Settings }>('settings'),
   summary: () => api.call<{ ok: boolean; summary: Summary | null; cleanup: unknown }>('summary'),

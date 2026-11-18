@@ -150,3 +150,87 @@ def get_settings() -> dict[str, Any]:
 def summary() -> dict[str, Any]:
     """The last run's summary: passed / failed / skipped per act with what failed and the evidence, and the cleanup."""
     return answer(run_runner("summary"))
+
+
+# ---------------------------------------------------------------- the lander self-test (demo-selftest@1, Nov 18 2026)
+SELFTEST_TIMEOUT_S = 120
+HEALTH_ID = "demo-selftest"
+_health = {"done": False}
+
+
+@router.post("/selftest")
+def selftest() -> dict[str, Any]:
+    """Run the lander self-test now (demo-selftest@1): the live gate verdict on a throwaway PR (a missing review lands flagged, a
+    waiting one holds), the real review lookup in the console, the merge queue in check mode and the held-prs state. The demo
+    runs it before its landing act; a failure stops the demo and raises the demo-selftest systems check item. Same call as MCP
+    orchestrator-demo_selftest, `axf demo selftest` and the voice phrase "run the demo self-test"."""
+    _ensure_health()
+    try:
+        p = subprocess.run(["node", str(RUNNER), "selftest"], cwd=str(ROOT), capture_output=True, text=True, timeout=SELFTEST_TIMEOUT_S, env=os.environ.copy())
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(500, f"the self-test could not run: {type(e).__name__}: {e}"[:400], headers={"X-Axf-Code": "runner-failed"}) from None
+    line = next((x for x in reversed(p.stdout.strip().splitlines()) if x.startswith("{")), "")
+    try:
+        res = json.loads(line) if line else {"ok": False, "code": "runner-failed", "error": (p.stderr or "no answer")[-400:]}
+    except json.JSONDecodeError:
+        res = {"ok": False, "code": "runner-failed", "error": line[-400:]}
+    return answer(res)
+
+
+@router.get("/selftest")
+def selftest_last() -> dict[str, Any]:
+    """The saved result of the last lander self-test (demo-selftest@1), or ran: false when none has run."""
+    _ensure_health()
+    return answer(run_runner("selftest", "--last"))
+
+
+def _selftest_check() -> dict[str, Any]:
+    """health@1 run(): red when the last self-test failed (the demo stopped before its landing act), green when it passed."""
+    res = run_runner("selftest", "--last")
+    t = res.get("selftest") if res.get("ok") else None
+    if not t:
+        return {"status": "info", "summary": "The lander self-test has not run yet: it runs before the demo's landing act, or on demand (axf demo selftest)."}
+    bad = [c for c in (t.get("checks") or []) if not c.get("ok")]
+    when = str(t.get("at") or "").replace("T", " ")[:16]
+    if bad:
+        return {"status": "error", "summary": f"The lander failed its own test at {when} UTC: {', '.join(str(c.get('id')) for c in bad)}. The demo stopped before its landing act. Press Run the self-test again once fixed.",
+                "details": [f"{c.get('id')}: {c.get('detail')}" for c in (t.get("checks") or [])],
+                "breaks": "The demo cannot prove the lander path, and a lander that fails this test would hold or mishandle real PRs too."}
+    return {"status": "ok", "summary": f"The lander passed its self-test at {when} UTC ({len(t.get('checks') or [])} checks: gate verdict, review lookup, queue check, held PRs).",
+            "details": [f"{c.get('id')}: {c.get('detail')}" for c in (t.get("checks") or [])]}
+
+
+def _selftest_fix() -> dict[str, Any]:
+    r = selftest()
+    t = r.get("selftest") or {}
+    if t.get("ok"):
+        return {"state": "done", "message": "The lander self-test passed."}
+    bad = [c for c in (t.get("checks") or []) if not c.get("ok")]
+    return {"state": "failed", "message": f"Still failing: {'; '.join(f"{c.get('id')}: {c.get('detail')}" for c in bad)[:300]}"}
+
+
+def _ensure_health() -> None:
+    """Register the demo-selftest item with the systems check (axf.health@1) once it is there."""
+    if _health["done"]:
+        return
+    try:
+        import plugin_services  # the console's capability registry (absent in a bare test import)
+        reg = plugin_services.get("axf.health@1")
+    except Exception:  # noqa: BLE001
+        return
+    if reg is None:
+        return
+    try:
+        reg.register({"id": HEALTH_ID, "label": "The lander passes its own test", "service": "github", "order": 33, "interval": 300,
+                      "run": _selftest_check,
+                      "breaks": "The orchestrator demo cannot prove the lander path; a lander that fails this test would hold or mishandle real PRs too.",
+                      "autoFix": {"label": "Run the self-test again", "mode": "ask", "run": _selftest_fix},
+                      "instructions": ["Read which check failed (gate verdict, review lookup, queue check, held PRs) and fix that part; then press Run the self-test again.",
+                                       "CLI: axf demo selftest · REST POST /api/plugins/orchestrator-demo/selftest · MCP orchestrator-demo_selftest · voice: run the demo self-test.",
+                                       "The demo runs this test by itself before its landing act and stops when it fails."]}, "orchestrator-demo")
+        _health["done"] = True
+    except Exception:  # noqa: BLE001 — the plugin works without its item
+        return
+
+
+_ensure_health()
