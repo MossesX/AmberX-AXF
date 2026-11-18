@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `full-api-cli-control-of-everything-plus-an-offli` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `inline-element-editing-plugin-right-click-any-el` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `pass-approval-hook-deep-link-amberx-notification` → landing, note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `skin-checker-flags-anything-that-breaks-a-profes` note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 15:16 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
 - 2026-11-18 15:16 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
 - 2026-11-18 15:17 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
+- 2026-11-18 15:18 UTC · `attach-widgets-to-any-toolbar-banner` → running, note (all) · pipeline
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9057,
- "updatedAt": "2026-11-18T15:17:33.810Z",
+ "rev": 9058,
+ "updatedAt": "2026-11-18T15:18:52.812Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252563,7 +252563,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -252571,7 +252571,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T15:17:09.529Z",
+   "updatedAt": "2026-11-18T15:18:40.823Z",
    "builtAt": "",
    "notes": [
     {
@@ -252621,6 +252621,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T15:17:09.529Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-attach-widgets-to-any-toolbar-banner--earl.",
+     "at": "2026-11-18T15:18:40.823Z"
     }
    ],
    "approvals": [],
@@ -252640,13 +252644,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T22:45:02.695Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
-    "slot": "[object Object]",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "account": "hulu0241",
+    "session": "axf-attach-widgets-to-any-toolbar-banner--earl",
+    "slot": "",
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-18T15:18:36.120Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -252657,9 +252661,9 @@
      "note": "Split by Claude into 19 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T15:18:36.120Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -252667,10 +252671,8 @@
      "at": "2026-11-18T12:52:31.419Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-18T15:18:36.120Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -253164,7 +253166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
