@@ -1047,7 +1047,7 @@ export function escalateBuild(id, f, { at = nowIso(), policy = retryPolicy(), by
     esc = { ...RL.escalationOf(b.attempts, f, { at, policy, head: f.head }), bannerId: ESCALATION_BANNER };
     since = BP.normAttempts(b.attempts).find((a) => a.kind === esc.kind && a.result !== 'skipped')?.startedAt || BP.normFailure(b.failure)?.at || at;
     b.escalation = esc; b.status = 'escalated'; b.updatedAt = at; fresh = true;
-    b.notes.push({ text: `Escalated: ${esc.why} It is on the systems check banner with Retry; one push went to the phone.`, at });
+    b.notes.push({ text: `Failed: every option was used up (${esc.tried.join(', ') || 'nothing left to try'}). ${esc.why} It is on the systems check banner with Retry; one push went to the phone.`, at });
     return s;
   }, { by, action: 'pipeline:escalate', note: id });
   if (fresh && esc && !esc.pushedAt) {
@@ -1056,7 +1056,7 @@ export function escalateBuild(id, f, { at = nowIso(), policy = retryPolicy(), by
     const others = escalated().filter((x) => x.id !== id);
     if (others.length) alert('escalated', { id, title, at: esc.at, why: esc.why, tried: esc.tried, since });
     withStore((s) => { const b = storeCore.findBuild(s, id); if (b?.escalation && b.escalation.at === esc.at) { b.escalation = { ...b.escalation, pushedAt: nowIso() }; } return s; }, { by, action: 'pipeline:escalate-pushed', note: id });
-    crewSay('dispatcher', 'failed', `${id} is stuck after ${esc.attempts} tries (${esc.tried.join(', ')}). Brett, it's on the systems check banner with Retry.`, { ref: id });
+    crewSay('dispatcher', 'failed', `${id} failed: every option used up after ${esc.attempts} tries (${esc.tried.join(', ')}). Brett, it's on the systems check banner with Retry.`, { ref: id });
   }
   logLine({ event: 'escalated', build: id, kind: esc?.kind, attempts: esc?.attempts, tried: esc?.tried, pushed: fresh ? 'once' : 'already' });
   return { escalation: esc };

@@ -18,7 +18,7 @@
     },
     {
       "id": "pipeline.escalated",
-      "label": "Build stuck after every retry",
+      "label": "Build failed: every option used up",
       "group": "builds",
       "app": "console",
       "source": "Build orchestrator dispatcher",

@@ -501,6 +501,7 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
     assert.equal(P.classifyFailure(b, { now: T0 + (min + 60) * 60e3, land }), null, 'an escalated build is not classified again (no second push)');
     const a = P.alertFor('escalated', { id: 'sim', title: 'Sim', at: b.escalation.at, why: b.escalation.why, tried: b.escalation.tried });
     assert.equal(a.key, `pipeline:escalated:sim:${b.escalation.at}`); assert.equal(a.severity, 'error'); assert.match(a.body, /Tried: /);
+    assert.match(a.title, /^Build failed, every option used up: Sim/);
   });
 
   t('done-means-merged sim: the merged + green + verified path is the only way to complete', () => {
