@@ -335,6 +335,7 @@ jobs:
             node framework/spec/check-skin-modes.mjs                    # skin-modes@1: every skin ships a light and a dark colour theme (shipped, right scheme, own theme is one of them)
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
             node framework/spec/check-settings-iface.mjs                # settings-iface@1: every asset type + plugin ships its locked default-<name>, every settings asset has a valid builtFor, picker lists only its owner's
+            node framework/spec/check-app-menus.mjs                     # app-menus@1: every app ships its locked default-<app>-nav / -appmenu, its manifest names them, no app points at a shared or another app's menu
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
             node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
