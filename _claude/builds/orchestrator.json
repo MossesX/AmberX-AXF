@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T05:54:43.636Z",
+ "updatedAt": "2026-11-18T06:00:58.039Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -209755,7 +209755,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:53:08.913Z",
+   "updatedAt": "2026-11-18T06:00:37.023Z",
    "builtAt": "",
    "notes": [
     {
@@ -209835,7 +209835,16 @@
      "at": "2026-11-18T05:53:08.912Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-18T06:00:37.023Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Why do I keep getting approvals when I set a pass?",
@@ -209882,8 +209891,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:00:37.023Z",
      "note": "",
      "uid": "st-mwlgr9vm021izx",
      "createdAt": "2026-11-18T01:49:40.384Z"

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8857,
- "updatedAt": "2026-11-18T05:54:43.636Z",
+ "rev": 8858,
+ "updatedAt": "2026-11-18T06:00:58.039Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338450,7 +338450,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:53:08.913Z",
+   "updatedAt": "2026-11-18T06:00:37.023Z",
    "builtAt": "",
    "notes": [
     {
@@ -338530,7 +338530,16 @@
      "at": "2026-11-18T05:53:08.912Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-18T06:00:37.023Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Why do I keep getting approvals when I set a pass?",
@@ -338547,24 +338556,15 @@
    "pipeline": {
     "queuedAt": "2026-11-18T01:41:33.750Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-approval-pass-covers-every-call--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-18T05:52:28.425Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-18T05:43:43.825Z",
-     "exit": 0,
-     "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 11,
-     "account": "",
-     "session": "",
-     "phase": "Phase 1"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-18T01:46:23.048Z",
      "by": "orchestrator",
@@ -338573,52 +338573,25 @@
      "note": "Split by Claude into 12 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit null: claude-headless: origin: approval-pass-covers-every-call ← \"Why do I keep getting approvals when I set a pass?\"",
     "route": "",
-    "dispatchedAt": "2026-11-18T05:52:28.425Z",
+    "dispatchedAt": "",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T05:49:38.227Z",
+     "at": "2026-11-18T01:48:41.734Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-18T05:52:28.425Z",
+    "tried": [
+     "hulu0241",
+     "mossesx-max-"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-18T05:21:02.546Z",
-     "buildId": "approval-pass-covers-every-call",
-     "phase": "",
-     "step": "s2",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    },
-    {
-     "at": "2026-11-18T05:43:43.746Z",
-     "buildId": "approval-pass-covers-every-call",
-     "phase": "",
-     "step": "s2",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -338657,12 +338630,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:00:37.023Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T06:00:40.416Z"
     },
     {
      "id": "s3",
