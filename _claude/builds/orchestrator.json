@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:04:44.736Z",
+ "updatedAt": "2026-11-18T00:05:13.331Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -172049,6 +172049,25 @@
     },
     {
      "id": "s55",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwld0mui01kret",
+     "createdAt": "2026-11-18T00:04:58.624Z"
+    },
+    {
+     "id": "s29-28",
      "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
      "model": "Opus",
      "why": "",

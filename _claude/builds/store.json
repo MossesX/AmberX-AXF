@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8512,
- "updatedAt": "2026-11-18T00:04:44.736Z",
+ "rev": 8513,
+ "updatedAt": "2026-11-18T00:05:13.331Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -267830,6 +267830,28 @@
     },
     {
      "id": "s55",
+     "uid": "st-mwld0mui01kret",
+     "title": "",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:04:58.624Z",
+     "updatedAt": "2026-11-18T00:04:59.178Z"
+    },
+    {
+     "id": "s29-28",
      "uid": "st-mwld06c7014msa",
      "title": "",
      "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
