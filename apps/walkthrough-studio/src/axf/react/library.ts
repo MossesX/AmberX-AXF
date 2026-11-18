@@ -169,6 +169,8 @@ export function installLibraries(rt: AxfRuntime, libs: AxfWebLibrary[]): { views
   }
   for (const m of missing) rt.terminal.warn('libraries', `missing dependency: ${m}`);
   rt.noteSkippedLibraries(skipped);
+  // every installed view and dialog is drawable in a sandbox (rt.uiRenderers: the Skin editor's live preview)
+  rt.registerUiRenderers(views, dialogs);
   banners.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   for (const list of Object.values(slots)) list.sort((a, b) => (a.order ?? 100) - (b.order ?? 100));
   return { views, dialogs, tabs, banners, slots, missing };
@@ -193,7 +195,8 @@ function placeLibrary(rt: AxfRuntime, l: AxfWebLibrary) {
   if (!tab) return;
   rt.settings.addGroup({
     id: `${l.id}.placement`, label: 'Opens in', icon: 'layout', module: l.id, order: 1, tab,
-    description: `Where ${title ?? l.label} opens. Default: ${PLACEMENT_LABELS[l.opens].toLowerCase()}.`,
+    // its settings always open as a floating popup (Brett, Nov 16 2026); this pick moves only the plugin's own UI
+    description: `Where ${l.label}${title && title !== l.label ? ` (${title})` : ''} opens. Its settings always open in a floating dialog. Default: ${PLACEMENT_LABELS[l.opens].toLowerCase()}.`,
     settings: [{ key: placementKey(l.id), label: 'Open it in', kind: 'choice', default: l.opens, options: placementOptions() }],
   });
 }
