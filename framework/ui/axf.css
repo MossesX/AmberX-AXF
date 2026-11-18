@@ -353,6 +353,8 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar__widget[data-fx-shape='circle'] { min-width: calc(var(--fx-space) * 3); justify-content: center; padding: 0; }
 .fx-toolbar__widget[data-fx-shape='rounded'], .fx-toolbar__widget[data-fx-shape='squircle'] { border-radius: var(--fx-radius-md); }
 .fx-toolbar__widget[data-fx-shape='square'] { border-radius: var(--fx-radius-sm); }
+.fx-toolbar.is-widget-drop { outline: var(--fx-border-w) dashed var(--fx-accent); outline-offset: calc(var(--fx-border-w) * -2); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+.fx-toolbar__widget[draggable='true'] { cursor: grab; }
 .fx-toolbar__widget.fx-shaped:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-hover) * 100%), transparent); }
 
 /* ---------------- arrange mode: drag widgets on a host, they snap between the others (react/components/Arrange.tsx) ---------------- */

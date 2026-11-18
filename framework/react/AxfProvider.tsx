@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
+import { installToolbarWidgetDrop } from './toolbarWidgetDrop';
 import { installMenuFit } from './components/menuFit';
 import { installControlRegistry } from './controlTargets';
 import { installScrollControl } from './scrollControl';
@@ -140,6 +141,9 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     const host = installTapConfirm(document, (key) => runtime.settings.get(key));
     return () => host.dispose();
   }, [runtime]);
+
+  // drop-target@1: a widget dropped on any toolbar attaches there and snaps between its widgets (toolbarWidgetDrop.ts)
+  useEffect(() => installToolbarWidgetDrop(runtime), [runtime]);
 
   return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;
 }
