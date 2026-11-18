@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · builds-live
 - 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · builds-live
 - 2026-11-18 01:43 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · orchestrator
+- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · builds-live
 
 ## Token passes (log)
 
