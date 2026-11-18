@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:37 UTC · `fix-launcher-crash-duplicate-steps-brief` s2 done, s3 done (all) · foreign-write
-- 2026-11-17 23:38 UTC · `terminal-main-tab-streaming-console-s` → pending, note (all) · pipeline
-- 2026-11-17 23:38 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
-- 2026-11-17 23:39 UTC · `fix-launcher-crash-duplicate-steps-brief` s5 done (all) · orchestrator
 - 2026-11-17 23:39 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
 - 2026-11-17 23:40 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · watchdog
 - 2026-11-17 23:40 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 - 2026-11-18 00:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
 - 2026-11-18 00:35 UTC · `auto-lander-never-wait-missing-ui-review` s4 done (all) · orchestrator
+- 2026-11-18 00:35 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 00:35 UTC · `auto-lander-never-wait-missing-ui-review` s4 done (all) · foreign-write
+- 2026-11-18 00:35 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 00:35 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · foreign-write
 
 ## Token passes (log)
 
