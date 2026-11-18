@@ -87,7 +87,7 @@ try {
       const run = (cmd) => page.evaluate((c) => window.axfConsoleControl(c), cmd);
       // a fresh profile loads every plugin once to learn its shape: wait until this one is registered
       let known = false;
-      for (let i = 0; i < 150 && !known; i++) { known = !!(await run({ verb: 'state', address: 'plugin:ai.amberx.axf.console.host-services' })).ok; if (!known) await sleep(1000); }
+      for (let i = 0; i < 150 && !known; i++) { known = !!(await run({ verb: 'state', address: 'plugin:ai.amberx.axf.console.host-services' })).ok; if (!known) await sleep(1000); } // axf-plugin:host-services
       if (!known) say(`${scene} ${device}: the host-services plugin never registered`);
       if (scene === 'gate') {
         await run({ verb: 'open', address: 'view:agent-swarm' });
