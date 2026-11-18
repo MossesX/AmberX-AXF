@@ -1,0 +1,245 @@
+{
+  "$axf": "settings-sources@1",
+  "version": 1,
+  "note": "Every setting has exactly one true source (Brett, Nov 18 2026: \"All settings need one true fucking source.\"). A setting key (or key pattern) maps to one owning store: a data-store@1 namespace + path (the document) and a JSON pointer inside it. Readers resolve through the owner (framework/core/settings-source.mjs, apps/console-web/server/settings_source.py); a write to any other store is refused; `mirrors` must be empty on every entry (CI: framework/cli/check-settings-sources.mjs). Spec: framework/spec/SETTINGS-SOURCES.md.",
+  "keyPattern": "^[a-z][a-z0-9]*(\\.([a-z0-9][a-zA-Z0-9_-]*|\\*))*(\\.\\*\\*)?$",
+  "storeIdPattern": "^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9._-]*)*$",
+  "storeKinds": {
+    "data-store": "a data-store@1 key (`ns` + `path`): the document lives where framework/schemas/data-store-paths.json puts it today and on axf-data once its namespace is cut over; readable and writable from Node and Python",
+    "browser": "a SettingsRegistry (framework/core/settings.ts) saved under `storageKey` in the app's localStorage; readable only inside that app, so the owner's control is the app's Settings and the API path is console-control@1 (control@1 for tokens)"
+  },
+  "pointerNote": "`pointer` is a JSON pointer inside the owner document. `{1}`, `{2}` are the key's `*` segments in order; `{rest}` is what `**` matched, `.` turned into `/`. A `**` entry with pointer `/` means the whole document is one setting per remaining key.",
+  "stores": {
+    "claude-accounts/workers": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "claude-accounts/workers.json",
+      "frame": "claude-workers@1",
+      "owner": "plugin:claude-accounts",
+      "label": "Claude accounts: workers and routing",
+      "editor": "view:builds/tab:claude-accounts",
+      "api": {
+        "rest": "/api/plugins/claude-accounts/config",
+        "mcp": "claude_accounts_config",
+        "cli": "node deploy/claude-workers.mjs",
+        "voice": "accounts.config"
+      }
+    },
+    "claude-accounts/worker-state": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "claude-accounts/worker-state.json",
+      "owner": "plugin:claude-accounts",
+      "label": "Claude accounts: live limits and claims",
+      "editor": "view:builds/tab:claude-accounts"
+    },
+    "claude-settings/settings": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "claude/settings.json",
+      "frame": "claude-settings@1",
+      "owner": "plugin:claude-settings",
+      "label": "Claude settings (every session reads these)",
+      "editor": "view:settings/tab:plugins.claude-settings",
+      "api": {
+        "rest": "/api/plugins/claude-settings/settings",
+        "mcp": "claude_settings_set",
+        "cli": "node apps/console-web/plugins/claude-settings/claude-settings.mjs set",
+        "voice": "claude.settings"
+      }
+    },
+    "pipeline/settings": {
+      "kind": "data-store",
+      "ns": "builds",
+      "path": "pipeline/settings.json",
+      "frame": "pipeline-settings@1",
+      "owner": "plugin:build-orchestrator",
+      "label": "Build pipeline settings",
+      "editor": "view:builds/tab:pipeline",
+      "api": {
+        "rest": "/api/plugins/build-orchestrator/pipeline/settings",
+        "mcp": "orchestrator_pipeline_set",
+        "cli": "node apps/console-web/plugins/build-orchestrator/pipeline.mjs set",
+        "voice": "pipeline.settings"
+      }
+    },
+    "pipeline/accounts": {
+      "kind": "data-store",
+      "ns": "builds",
+      "path": "pipeline/accounts.json",
+      "owner": "plugin:build-orchestrator",
+      "label": "Build pipeline: what it learned about each account (probes, health)",
+      "editor": "view:builds/tab:pipeline"
+    },
+    "appearance/shared": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "appearance.json",
+      "frame": "appearance@1",
+      "owner": "framework:appearance",
+      "label": "Hub-wide appearance (token overrides, hub skin pointers)",
+      "editor": "view:settings/tab:appearance",
+      "api": {
+        "rest": "/api/skins/global",
+        "mcp": "control_tokens",
+        "cli": "node framework/cli/skins.mjs global",
+        "voice": "skin.global"
+      }
+    },
+    "appearance/app-look": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "looks/{1}.json",
+      "frame": "app-look@1",
+      "owner": "framework:skins",
+      "label": "One app's look (app-look@1)",
+      "editor": "view:settings/tab:appearance",
+      "api": {
+        "rest": "/api/skins/{app}",
+        "mcp": "skins_set",
+        "cli": "node framework/cli/skins.mjs",
+        "voice": "skin.use"
+      }
+    }
+  },
+  "settings": [
+    {
+      "key": "accounts.*.use",
+      "store": "claude-accounts/workers",
+      "pointer": "/perAccount/{1}/use",
+      "label": "Account takes builds (on/off)",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts", "deploy/worker-routing.mjs"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": [],
+      "formerly": [{ "store": "pipeline/accounts", "pointer": "/{1}/use", "note": "the pipeline's own on/off copy; removed by one-true-source-for-every-setting s8" }]
+    },
+    {
+      "key": "accounts.*.fable",
+      "store": "claude-accounts/workers",
+      "pointer": "/perAccount/{1}/fable",
+      "label": "Account may run Fable (override; absent = probe / plan)",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": [],
+      "formerly": [{ "store": "pipeline/accounts", "pointer": "/{1}/fable", "note": "removed by one-true-source-for-every-setting s8" }]
+    },
+    {
+      "key": "accounts.*.parallel",
+      "store": "claude-accounts/workers",
+      "pointer": "/perAccount/{1}/parallel",
+      "label": "Sessions at once on this account",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": [],
+      "formerly": [{ "store": "pipeline/accounts", "pointer": "/{1}/parallel", "note": "removed by one-true-source-for-every-setting s8" }]
+    },
+    {
+      "key": "accounts.*.label",
+      "store": "claude-accounts/workers",
+      "pointer": "/perAccount/{1}/label",
+      "label": "Account label",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": []
+    },
+    {
+      "key": "accounts.workers",
+      "store": "claude-accounts/workers",
+      "pointer": "/workers",
+      "label": "Subscription logins that take headless jobs",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts", "deploy/worker-routing.mjs"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": []
+    },
+    {
+      "key": "accounts.excluded",
+      "store": "claude-accounts/workers",
+      "pointer": "/excluded",
+      "label": "Logins kept off every job",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": []
+    },
+    {
+      "key": "accounts.buildAccount",
+      "store": "claude-accounts/workers",
+      "pointer": "/buildAccount",
+      "label": "The one build account ('' = normal routing)",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": []
+    },
+    {
+      "key": "accounts.limits.**",
+      "store": "claude-accounts/workers",
+      "pointer": "/limits/{rest}",
+      "label": "Host-wide job limits (building, queue)",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": []
+    },
+    {
+      "key": "accounts.api.*.**",
+      "store": "claude-accounts/workers",
+      "pointer": "/api/{1}/{rest}",
+      "label": "API account settings (enabled, caps, alert)",
+      "readers": ["plugin:build-orchestrator", "plugin:claude-accounts"],
+      "writers": ["plugin:claude-accounts"],
+      "mirrors": []
+    },
+    {
+      "key": "pipeline.**",
+      "store": "pipeline/settings",
+      "pointer": "/{rest}",
+      "label": "Pipeline settings (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays, splitProvider, autoQueue, apiOverflow, healthEveryMin, apiAccounts)",
+      "readers": ["plugin:build-orchestrator"],
+      "writers": ["plugin:build-orchestrator"],
+      "mirrors": []
+    },
+    {
+      "key": "claude.**",
+      "store": "claude-settings/settings",
+      "pointer": "/values/{rest}",
+      "label": "Claude settings (claude-settings-registry@1 keys: noWait.*, builds.*, talking.*, notifications.*, …)",
+      "readers": ["plugin:claude-settings", "plugin:build-orchestrator", "plugin:follow-amber", "plugin:push-banner", "plugin:token-control"],
+      "writers": ["plugin:claude-settings"],
+      "mirrors": []
+    },
+    {
+      "key": "appearance.tokens.**",
+      "store": "appearance/shared",
+      "pointer": "/settings/axf.tokens.{rest}",
+      "label": "Hub-wide control@1 token overrides",
+      "readers": ["framework:runtime", "plugin:token-control"],
+      "writers": ["framework:appearance", "plugin:token-control"],
+      "mirrors": []
+    },
+    {
+      "key": "appearance.skin",
+      "store": "appearance/shared",
+      "pointer": "/skin",
+      "label": "Hub-wide skin pointer",
+      "readers": ["framework:runtime"],
+      "writers": ["framework:skins"],
+      "mirrors": []
+    },
+    {
+      "key": "appearance.defaultSkin",
+      "store": "appearance/shared",
+      "pointer": "/defaultSkin",
+      "label": "Hub default skin (the floor every app stands on)",
+      "readers": ["framework:runtime"],
+      "writers": ["framework:skins"],
+      "mirrors": []
+    },
+    {
+      "key": "look.*.**",
+      "store": "appearance/app-look",
+      "pointer": "/{rest}",
+      "label": "One app's look document (own, skin, scopes, undo, backups)",
+      "readers": ["framework:runtime", "framework:skins"],
+      "writers": ["framework:skins", "framework:runtime"],
+      "mirrors": []
+    }
+  ]
+}
