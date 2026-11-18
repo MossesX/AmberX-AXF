@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:20:42.002Z",
+ "updatedAt": "2026-11-18T00:21:10.623Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168128,7 +168128,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-18T00:18:33.506Z",
+   "updatedAt": "2026-11-18T00:21:00.763Z",
    "builtAt": "",
    "notes": [
     {
@@ -168789,8 +168789,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T00:21:00.763Z",
      "note": "",
      "uid": "st-mwko4z4v0op9mr",
      "createdAt": "2026-11-17T12:28:31.327Z"
@@ -188379,10 +188379,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-launcher-crash-duplicate-steps-brief",
-   "pr": "",
+   "pr": "#827",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T00:12:42.640Z",
+   "updatedAt": "2026-11-18T00:20:48.869Z",
    "builtAt": "2026-11-18T00:12:42.641Z",
    "notes": [
     {
@@ -188416,6 +188416,10 @@
     {
      "text": "Repeated steps collapsed: 240 → 16 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:41.079Z"
+    },
+    {
+     "text": "Reconciler: PR #827",
+     "at": "2026-11-18T00:20:48.869Z"
     }
    ],
    "approvals": [],

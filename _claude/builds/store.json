@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8550,
- "updatedAt": "2026-11-18T00:20:42.002Z",
+ "rev": 8551,
+ "updatedAt": "2026-11-18T00:21:10.623Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262907,7 +262907,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-18T00:18:33.506Z",
+   "updatedAt": "2026-11-18T00:21:00.763Z",
    "builtAt": "",
    "notes": [
     {
@@ -263710,12 +263710,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T00:21:00.763Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-17T12:28:31.327Z"
+     "updatedAt": "2026-11-18T00:21:06.834Z"
     },
     {
      "id": "s25",
@@ -263779,7 +263779,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313299,10 +313299,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-launcher-crash-duplicate-steps-brief",
-   "pr": "",
+   "pr": "#827",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T00:12:42.640Z",
+   "updatedAt": "2026-11-18T00:20:48.869Z",
    "builtAt": "2026-11-18T00:12:42.641Z",
    "notes": [
     {
@@ -313336,6 +313336,10 @@
     {
      "text": "Repeated steps collapsed: 240 → 16 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:41.079Z"
+    },
+    {
+     "text": "Reconciler: PR #827",
+     "at": "2026-11-18T00:20:48.869Z"
     }
    ],
    "approvals": [],
@@ -314102,7 +314106,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
