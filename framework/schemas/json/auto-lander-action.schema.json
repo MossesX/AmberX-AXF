@@ -84,6 +84,13 @@
     "reason": {
       "type": "string",
       "maxLength": 600
+    },
+    "reviewFlag": {
+      "enum": [
+        "missing",
+        "unposted"
+      ],
+      "description": "on a land action: the UI Review item is missing from the console or was never posted; the PR lands and the review is flagged (Nov 18 2026)"
     }
   }
 }

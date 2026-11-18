@@ -256,6 +256,13 @@
           "demo": {
             "const": true,
             "description": "demo-build@1: a demo (throwaway) build, id prefix demo-; absent on every other build"
+          },
+          "reviewFlag": {
+            "enum": [
+              "missing",
+              "unposted"
+            ],
+            "description": "its UI Review item was missing from the console or never posted when it landed: the review is flagged, nothing held it (Nov 18 2026)"
           }
         }
       },

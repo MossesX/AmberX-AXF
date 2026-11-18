@@ -61,7 +61,9 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
       return {
         number: n, title: qi?.title || li?.title || '', build: qi?.build || li?.id || '', branch: qi?.branch || li?.branch || '', head: qi?.head || li?.head || '',
         ci: qi?.ci === 'success' || qi?.ci === 'failure' || qi?.ci === 'running' ? qi.ci : li?.ci || 'none', failing: li?.failing || qi?.failing || [],
-        ui: uiOf(kind) || (/ui review/i.test(why) ? 'waiting' : ''), conflicts: kind === 'conflict' ? (li?.reason?.files || ['code']) : /conflicts? with main in code/i.test(why) ? ['code'] : [],
+        // a UI Review hold only when the lander found the item in the console; a missing / unposted review is the flag (Nov 18 2026)
+        ui: uiOf(kind) || (['missing', 'unposted'].includes(li?.reviewFlag || qi?.reviewFlag) ? (li?.reviewFlag || qi?.reviewFlag) : /ui review/i.test(why) ? 'waiting' : ''), reviewFlag: String(li?.reviewFlag || qi?.reviewFlag || ''),
+        conflicts: kind === 'conflict' ? (li?.reason?.files || ['code']) : /conflicts? with main in code/i.test(why) ? ['code'] : [],
         draft: /draft/i.test(why), landHeld: kind === 'held' ? String(li?.reason?.text || 'by hand') : '', removed: ctl.removed?.[n] ? String(ctl.removed[n].why || 'by hand') : '', kicked: qi?.state === 'kicked' ? why : '',
       };
     },

@@ -135,6 +135,27 @@ export function makeConsole(s) {
   };
 }
 
+/**
+ * The UI Review item of a PR, looked up in the live console (GET /api/plugins/ui-review/state, what `review.mjs state --pr N
+ * --console` reads) → { ui, reviewFlag, items } (land-core.reviewLookup). A failed lookup is never a hold. An item that
+ * exists only in the build's worktree (its local ui-review items.json names the PR / branch) is `unposted`.
+ */
+export async function lookupReview({ api, branch, pr, claimed = false, worktree = '' }) {
+  let answer = null;
+  try { answer = await api('GET', core.REVIEW_STATE_PATH(branch, pr)); } catch { answer = null; }
+  const unposted = answer && typeof answer === 'object' && String(answer.state || 'none') === 'none' ? localReviewItems(worktree, { branch, pr }) : false;
+  return core.reviewLookup(answer, { claimed, unposted });
+}
+
+/** True when the worktree's local UI Review store (apps/console-web/.axf-console/plugins/ui-review/items.json) names the PR or branch. */
+export function localReviewItems(worktree, { branch = '', pr = 0 } = {}) {
+  if (!worktree) return false;
+  const manifest = readJson(join(worktree, 'apps/console-web/plugins/ui-review/plugin.json'), {}) || {};
+  const file = join(worktree, manifest.lifecycle?.dataDir || 'apps/console-web/.axf-console/plugins/ui-review', 'items.json');
+  const doc = readJson(file, null);
+  return !!(doc && Array.isArray(doc.items) && doc.items.some((it) => it && !it.landed && ((branch && it.branch === branch) || (pr && Number(it.pr) === Number(pr)))));
+}
+
 // ------------------------------------------------------------------ state files (the push banner's data folder)
 
 /** A section event in the crew's group chat, as its owner (framework/cli/crew-say.mjs). Never fails the round. */
@@ -504,13 +525,18 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
           else { const br = buildRules({ id: b.id, head: it.head, root: wts[b.branch] || '' }); if (br) it.rules = { head: it.head, ...br }; }
           if (it.rules) facts.rules = it.rules;
         }
-        if (it.pr) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(b.branch)}&pr=${it.pr}`); facts.ui = u ? String(u.hold || '') : 'unknown'; } // UI Review through ui-review@1
+        // UI Review (ui-review@1, Nov 18 2026): the item is looked up in the live console; only an item that exists holds.
+        // Not found or the lookup failed = it lands when CI is green and the record carries reviewFlag (never a hold).
+        if (it.pr) { const rv = await lookupReview({ api, branch: b.branch, pr: it.pr, claimed: old.reason?.kind === 'ui' || !!old.reviewFlag || !!b.uiReview, worktree: wts[b.branch] || '' }); facts.ui = rv.ui; facts.reviewFlag = rv.reviewFlag; it.reviewItems = rv.items; }
         facts.deps = o.after.filter((d) => { const x = byId.get(d); return x && !x.mergedAt && x.status !== 'complete' && x.status !== 'archived'; });
       }
       it.reason = core.blockReason(b.id, facts);
       it.state = !it.reason ? 'ready' : it.reason.quiet ? 'waiting' : 'blocked';
+      it.reviewFlag = core.reviewFlagOf(facts);
     } catch (e) { it.state = 'blocked'; it.reason = { kind: 'error', text: `${b.id}: the landing round failed (${String(e.message).slice(0, 160)}).` }; }
     it.since = old.reason?.kind === it.reason?.kind ? old.since || at : at;
+    // lander-state@1: a truly held build says since when and why (the held-prs check ages it from heldSince)
+    if (it.state === 'blocked') { it.heldSince = old.state === 'blocked' && old.heldSince ? old.heldSince : it.since; it.holdReason = it.reason.text.replace(`${b.id}: `, ''); }
     // one push per new reason; an agent only for a code conflict or red CI, once per head
     it.pushed = old.pushed || null; it.agent = old.agent || null;
     if (it.reason && !it.reason.quiet && core.shouldPush(old.pushed, it.reason, it.head)) {

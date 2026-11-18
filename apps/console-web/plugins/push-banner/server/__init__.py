@@ -116,6 +116,7 @@ AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
+UI_HOLDS = ("waiting", "changes", "rejected")  # the only UI Review states that hold; unknown / missing / unposted land flagged (Nov 18 2026)
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
 MEM_MAX = 4000  # finished check-run answers kept per commit (cleared when full)
@@ -816,15 +817,21 @@ class Pushes:
     def ui_hold(self, repo: str, number: int, branch: str) -> str:
         """The UI Review state that holds this PR ('' = free to merge). ui-review@1 items carry a branch and a PR number
         but no repo, so PR numbers count only for the console's own repo; other repos match by branch. Without the
-        UI Review plugin nothing is held."""
+        UI Review plugin nothing is held. Nov 18 2026 (gate-rules@1 ui-review-missing): a hold needs an item in the
+        console; a lookup that fails answers 'unknown', which callers treat as a flag, never as a hold (ui_holds)."""
         svc = claudefix.plugin_services.get(UI_REVIEW_CAP)
         if svc is None or not (branch or number):
             return ""
         try:
             st = svc.state(branch, number if repo == UI_REVIEW_REPO else None)
-        except Exception:  # noqa: BLE001 — UI Review broken: don't merge blind
+        except Exception:  # noqa: BLE001 — UI Review broken: flagged, not a blind hold
             return "unknown"
         return str(st.get("state") or "waiting") if st.get("holds") else ""
+
+    @staticmethod
+    def ui_holds(held: str) -> bool:
+        """True only for a review item that exists in the console and holds (waiting, changes, rejected)."""
+        return held in UI_HOLDS
 
     def merge(self, body: Any, wait_ui: bool = True) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
@@ -850,7 +857,7 @@ class Pushes:
             if p.get("draft") is True:
                 raise HTTPException(409, "that PR is a draft")
             held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)) if wait_ui else ""
-            if held:
+            if self.ui_holds(held):
                 raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
             task = self._task(repo, p, "merge", "merge it")
             sha = _text((p.get("head") or {}).get("sha"), 40)
@@ -945,7 +952,7 @@ class Pushes:
                 if p.get("ci") in ("failure", "none", "unknown"):
                     continue  # nothing to do until it is fixed (or, without CI, never)
                 held = self.ui_hold(repo, p["number"], p.get("head") or "") if wait_ui else ""
-                if held:  # waiting on Brett in UI Review: the next PR gets its turn
+                if self.ui_holds(held):  # an item in the console waits on Brett: the next PR gets its turn
                     done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
                     continue
                 try:
@@ -1562,8 +1569,10 @@ def land_tracking_show(body: Any = Body(None)) -> dict[str, Any]:
 
 @router.get("/ui-hold")
 def ui_hold(branch: str = "", pr: int = 0) -> dict[str, Any]:
-    """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1."""
-    return {"hold": PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)}
+    """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1. `holds` is true only
+    for an item that exists in the console (waiting, changes, rejected); 'unknown' is a failed lookup = flagged, never a hold."""
+    held = PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)
+    return {"hold": held, "holds": PUSHES.ui_holds(held), "flag": "missing" if held == "unknown" else ("waiting" if held in UI_HOLDS else "")}
 
 
 @router.post("/land/now")

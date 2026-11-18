@@ -49,6 +49,11 @@ const SNAPSHOTS = {
   greenNewHead: { number: 710, head: HEAD2, ci: 'success' },
   uiWaiting: { number: 710, head: HEAD, ci: 'success', ui: 'waiting' },
   uiChanges: { number: 710, head: HEAD, ci: 'success', ui: 'changes' },
+  // Nov 18 2026 (PR #816): CI green, the review item is missing from the console / unposted / unreadable → it lands, flagged
+  uiMissing: { number: 710, head: HEAD, ci: 'success', ui: 'missing' },
+  uiUnposted: { number: 710, head: HEAD, ci: 'success', ui: 'unposted' },
+  uiUnknown: { number: 710, head: HEAD, ci: 'success', ui: 'unknown' },
+  uiRejected: { number: 710, head: HEAD, ci: 'success', ui: 'rejected' },
   draft: { number: 710, head: HEAD, ci: 'none', draft: true },
   fork: { number: 710, head: HEAD, ci: 'success', fork: true },
   heldByHand: { number: 710, head: HEAD, ci: 'success', landHeld: 'waiting for the skins build' },
@@ -132,7 +137,7 @@ function run() {
   return {
     decide: {
       clash: D('clash'), dataClashOnly: D('dataClashOnly'), red: D('red'), running: D('running'), none: D('none'), green: D('green'),
-      uiWaiting: D('uiWaiting'), uiChanges: D('uiChanges'), draft: D('draft'), fork: D('fork'), heldByHand: D('heldByHand'), merged: D('merged'), noPr: D('noPr', 'none', 'defaults', AT, { ...BUILD, pr: 0 }),
+      uiWaiting: D('uiWaiting'), uiChanges: D('uiChanges'), uiRejected: D('uiRejected'), uiMissing: D('uiMissing'), uiUnposted: D('uiUnposted'), uiUnknown: D('uiUnknown'), draft: D('draft'), fork: D('fork'), heldByHand: D('heldByHand'), merged: D('merged'), noPr: D('noPr', 'none', 'defaults', AT, { ...BUILD, pr: 0 }),
       off: D('red', 'none', 'off'), noFix: D('red', 'none', 'noFix'), noLand: D('green', 'none', 'noLand'), clashNoMerge: D('clash', 'none', { mergeMain: false }),
     },
     retry: {
@@ -172,7 +177,13 @@ t('CI running or not run waits', () => { assert.deepEqual(act(d.running), ['wait
 t('green lands', () => { assert.deepEqual(act(d.green), ['land', 'landing', 'land', 1, '']); assert.equal(d.green.$axf, L.ACTION_FRAME); assert.equal(d.green.pr, 710); });
 t('what the server never touches: UI Review, drafts, forks, holds by hand, no PR; merged is done', () => {
   assert.deepEqual([d.uiWaiting, d.uiChanges, d.draft, d.fork, d.heldByHand, d.noPr].map((x) => [x.action, x.waitReason]), [['wait', 'ui-review'], ['wait', 'ui-review'], ['wait', 'draft'], ['wait', 'fork'], ['wait', 'held'], ['wait', 'no-pr']]);
-  assert.deepEqual(act(d.merged), ['none', 'landed', '', 0, '']);
+  assert.deepEqual(act(d.merged), ['none', 'landed', '', 0, '']); assert.deepEqual([d.uiRejected.action, d.uiRejected.waitReason], ['wait', 'ui-review']);
+});
+t('a review the console has no item for never waits: missing, unposted and unreadable land with the flag (PR #816)', () => {
+  assert.deepEqual(act(d.uiMissing), ['land', 'landing', 'land', 1, '']); assert.equal(d.uiMissing.reviewFlag, 'missing'); assert.match(d.uiMissing.reason, /missing from the console.*flagged/);
+  assert.deepEqual(act(d.uiUnposted), ['land', 'landing', 'land', 1, '']); assert.equal(d.uiUnposted.reviewFlag, 'unposted'); assert.match(d.uiUnposted.reason, /not posted/);
+  assert.deepEqual(act(d.uiUnknown), ['land', 'landing', 'land', 1, '']); assert.equal(d.uiUnknown.reviewFlag, 'missing');
+  assert.equal(d.green.reviewFlag, undefined); assert.equal(L.normBuild({ build: 'x', state: 'landed', reviewFlag: 'missing' }).reviewFlag, 'missing'); assert.equal(L.normBuild({ build: 'x', reviewFlag: 'waiting' }).reviewFlag, undefined);
 });
 t('the switches: rule off does nothing; a kind switched off escalates at once; landing off waits for a hand', () => {
   assert.deepEqual(act(d.off), ['none', 'waiting', '', 0, 'switched-off']); assert.deepEqual(act(d.noFix), ['escalate', 'escalated', 'red-ci', 0, '']);
