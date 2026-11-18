@@ -175,5 +175,46 @@ t('lockMain / unlockMain / mainLocked: one holder, re-take by the holder, refuse
   const st = core.normalizeStore({ $axf: 'builds@1', rev: 1, meta: a.meta, builds: [] }); assert.deepEqual(st.meta.mainLock, a.meta.mainLock, 'the store keeps the lock');
 });
 
+// ---------------- every slot filled
+t('every slot filled: as many independent file groups as slots gives exactly one part per slot, no file in two parts', () => {
+  for (const slots of [1, 2, 3, 4, 6]) {
+    const steps = Array.from({ length: 8 }, (_, i) => ({ id: `s${i + 1}`, text: `step ${i + 1}`, files: [`f${i + 1}.mjs`] }));
+    const r = S.planParts({ id: 'fill', steps }, slots, {}, { at: AT, base: SHA });
+    assert.equal(r.ok, true); assert.equal(r.plan.parts.length, slots, `${slots} slots → ${slots} parts`);
+    assert.ok(r.plan.parts.every((p) => p.steps.length >= 1), 'no empty part');
+    const files = r.plan.parts.flatMap((p) => p.files); assert.equal(files.length, new Set(files).size);
+  }
+  const shared = [{ id: 's1', files: ['x'] }, { id: 's2', files: ['x'] }, { id: 's3', files: ['x', 'y'] }];
+  assert.equal(S.planParts({ id: 'one', steps: shared }, 4, {}, { at: AT, base: SHA }).plan.parts.length, 1, 'one file group: one part, never two on one file');
+});
+
+// ---------------- one build at a time (pipeline-core plan)
+const { plan: dispatchPlan } = await import('../../apps/console-web/plugins/build-orchestrator/pipeline-core.mjs');
+const Q = (id, extra = {}) => ({ id, title: id, status: 'queued', model: 'Opus', steps: [{ id: 's1', text: 'x', model: 'Opus' }], ...extra });
+const ACC = [{ name: 'acct', kind: 'max', usable: true, fable: true, parallel: 8, running: 0, free: 8 }];
+const SLOTS = { free: 6, used: 0, cap: 6 };
+t('one at a time: two queued builds with six free slots launch one; the other waits gated', () => {
+  const r = dispatchPlan({ builds: [Q('a'), Q('b')], accounts: ACC, slots: SLOTS, now: Date.parse(AT) });
+  assert.equal(r.launches.length, 1, JSON.stringify(r)); assert.equal(r.launches[0].id, 'a'); const w = r.waits.find((x) => x.id === 'b');
+  assert.ok(w?.gated, JSON.stringify(r.waits)); assert.match(w.why, /one build at a time: a starts this tick/);
+});
+t('one at a time: an active run gates every queued build; a main lock gates all but its holder', () => {
+  const r = dispatchPlan({ builds: [Q('a'), { ...Q('r'), status: 'running' }], accounts: ACC, slots: SLOTS, now: Date.parse(AT) });
+  assert.equal(r.launches.length, 0); assert.match(r.waits.find((x) => x.id === 'a').why, /one build at a time: r is running/);
+  const meta = S.lockMain({}, { build: 'b', splitId: 'b.r1', base: SHA, at: AT }).meta;
+  const r2 = dispatchPlan({ builds: [Q('a'), Q('b')], accounts: ACC, slots: SLOTS, meta, now: Date.parse(AT) + 1000 });
+  assert.ok(r2.waits.find((x) => x.id === 'a')?.gated, 'a waits on b\'s lock'); assert.ok(!r2.launches.some((l) => l.id === 'a'));
+});
+
+// ---------------- migration loses nothing
+t('migration: the committed store snapshot round-trips with no build and no field lost, idempotently', () => {
+  let raw; try { raw = JSON.parse(readFileSync(join(HERE, '../../_claude/builds/store.json'), 'utf8')); } catch { return; }
+  const st = core.normalizeStore(raw); assert.equal(st.builds.length, raw.builds.length, 'no build dropped');
+  const by = new Map(st.builds.map((b) => [b.id, b]));
+  for (const b of raw.builds) { const nb = by.get(b.id); assert.ok(nb, b.id); for (const k of Object.keys(b)) if (b[k] !== undefined && b[k] !== null && b[k] !== '') assert.ok(k in nb, `${b.id}.${k} lost`); }
+  assert.ok(same(core.normalizeStore(st).builds, st.builds), 'normalising twice changes nothing');
+  assert.ok(st.builds.filter((b) => !raw.builds.find((x) => x.id === b.id)?.split).every((b) => !('split' in b)), 'no build gains a split by migrating');
+});
+
 if (WRITE) { writeFileSync(FIXTURE, `${JSON.stringify(fx, null, 1)}\n`); console.log(`wrote ${FIXTURE}`); }
 console.log(`build-split: ${n} checks passed`);
