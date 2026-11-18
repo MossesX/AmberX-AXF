@@ -17,13 +17,21 @@ import { controlRegistry } from '../axf/react';
 import { createPendingTargets, parseDeepLink, planDeepLink, type DeepLink, type DeepLinkPlan } from './deepLink-core.mjs';
 import { controlState, describeAnswer, executeControl, setLinkOpener, type ControlAnswer } from './executor';
 import { PALETTE_VIEW, openPalette } from './SearchPalette';
+import { inventory } from './inventory';
+import { bundledPlugins } from '../plugins';
+import { loader } from '../pluginLoader';
 
 const TITLE = 'Link';
+/** What the resolver did, newest last (window.axfDeepLinkLog: tests, devtools). */
+const log: string[] = [];
+const note = (m: string) => { log.push(`${Math.round(typeof performance !== 'undefined' ? performance.now() : 0)}ms ${m}`); if (log.length > 40) log.shift(); };
+if (typeof window !== 'undefined') (window as unknown as { axfDeepLinkLog?: string[] }).axfDeepLinkLog = log;
 
 /** Read and take the link off the address bar (once, before the first render). */
 function capture(): DeepLink | null {
   if (typeof window === 'undefined') return null;
   const link = parseDeepLink(window.location.href);
+  if (link) note(`captured ${link.raw}`);
   if (link) { try { window.history.replaceState(window.history.state, '', link.rest); } catch { /* sandboxed frame */ } }
   return link;
 }
@@ -42,6 +50,7 @@ function planFor(rt: AxfRuntime, link: DeepLink): DeepLinkPlan | null {
 /** Run a ready plan: navigate, then the address (highlighted by the executor) or the action. */
 async function run(rt: AxfRuntime, link: DeepLink): Promise<string> {
   const plan = planFor(rt, link);
+  note(`run ${link.raw} → ${JSON.stringify(plan)}`);
   if (!plan) return 'nothing to open';
   if (plan.error) { rt.toast(plan.error, 'warning', TITLE); return plan.error; }
   if (plan.action) {
@@ -65,8 +74,25 @@ function paletteWords(l: DeepLink): string {
   try { return new URL(l.rest).searchParams.get('q') ?? ''; } catch { return ''; }
 }
 
+/** How long a link waits for its screen (a plugin page on a slow phone, a console still reaching the hub). */
+const WAIT_MS = 30_000;
+
+/** A plugin's page the link names: ask the lazy loader for that plugin now instead of waiting for its turn. */
+function loadPluginOf(view: string): void {
+  const id = (inventory as unknown as { views?: { id: string; plugin?: string }[] }).views?.find((v) => v.id === view)?.plugin;
+  const folder = id ? bundledPlugins.find((p) => p.manifest.id === id)?.folder : undefined;
+  if (!folder) return;
+  note(`load plugin ${folder}`);
+  void loader.request(folder, 'used').catch(() => undefined);
+}
+
 let queue: ReturnType<typeof createPendingTargets> | null = null;
 let runtime: AxfRuntime | null = null;
+/** The link still waiting for its screen: when the runtime re-installs (start-up, a host swap) the next install takes it. */
+let waiting: DeepLink | null = null;
+/** The link opened last and when: a runtime that re-installs right after start-up (it starts on its default screen) follows it again. */
+let opened: { link: DeepLink; at: number } | null = null;
+const REOPEN_MS = 10_000;
 
 /** Follow a link (a parsed one, or a URL): wait for its screen, then open it. */
 export function followDeepLink(rt: AxfRuntime, link: DeepLink | string | null): boolean {
@@ -80,10 +106,14 @@ export function followDeepLink(rt: AxfRuntime, link: DeepLink | string | null): 
     queue = createPendingTargets({
       // the screen it names has registered (a plugin's page arrives when its chunk or stand-in installs)
       isReady: (view, p) => { const dl = p as unknown as { link: DeepLink }; return view ? viewReady(rt, view) : !!rt.actions.get(actionId(dl.link.action ?? '')); },
-      open: (p) => { void run(rt, (p as unknown as { link: DeepLink }).link); },
-      notice: (m) => rt.toast(m, 'warning', TITLE),
+      open: (p) => { const link = (p as unknown as { link: DeepLink }).link; waiting = null; opened = { link, at: Date.now() }; void run(rt, link); },
+      notice: (m) => { waiting = null; note(`gave up: ${m}`); rt.toast(m, 'warning', TITLE); },
+      timeoutMs: WAIT_MS,
     });
   }
+  waiting = l;
+  note(`wait ${l.raw}`);
+  if (l.view && !viewReady(rt, l.view)) loadPluginOf(l.view);
   queue.push({ ...(l.view ? { view: l.view } : {}), link: l } as unknown as DeepLinkPlan, l.raw);
   return true;
 }
@@ -112,7 +142,12 @@ export async function openLinkTarget(rt: AxfRuntime, target: string): Promise<Co
 /** Install once per runtime: the page's own link, hashchange / popstate, window.axfDeepLink. Returns a remover. */
 export function installDeepLinks(rt: AxfRuntime): () => void {
   if (typeof window === 'undefined') return () => {};
-  if (initial) { const l = initial; initial = null; followDeepLink(rt, l); }
+  // the page's own link, or one an earlier install of this page was still waiting on
+  const again = opened && Date.now() - opened.at < REOPEN_MS && rt.getState().view !== opened.link.view ? opened.link : null;
+  const first = initial ?? waiting ?? again;
+  initial = null; waiting = null; opened = null;
+  note(`install${first ? ` with ${first.raw}` : ''}`);
+  if (first) followDeepLink(rt, first);
   const onNav = () => {
     const l = parseDeepLink(window.location.href);
     if (!l) return;
@@ -125,5 +160,5 @@ export function installDeepLinks(rt: AxfRuntime): () => void {
   const w = window as unknown as { axfDeepLink?: (url: string) => boolean };
   w.axfDeepLink = (url) => followDeepLink(rt, url);
   setLinkOpener(openLinkTarget);
-  return () => { setLinkOpener(null); window.removeEventListener('hashchange', onNav); window.removeEventListener('popstate', onNav); off(); delete w.axfDeepLink; queue?.stop(); queue = null; runtime = null; };
+  return () => { setLinkOpener(null); window.removeEventListener('hashchange', onNav); window.removeEventListener('popstate', onNav); off(); delete w.axfDeepLink; const left = waiting; queue?.stop(); queue = null; runtime = null; waiting = left; };
 }

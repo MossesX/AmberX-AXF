@@ -60,7 +60,7 @@ try {
       const u = new URL(r.request().url());
       const json = (body, status = 200) => r.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
       if (u.pathname === '/api/me') return json(ME);
-      if (u.pathname === '/api/plugins/plan-studio-2/state') return json(STATE);
+      if (u.pathname === '/api/plugins/plan-studio-2/state' || u.pathname === '/api/control/plan-studio-2/state') return json(STATE);
       if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
       return json({ ok: false, error: 'offline (shots)' }, 503);
     });
