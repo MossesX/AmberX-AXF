@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9121,
- "updatedAt": "2026-11-18T18:13:24.229Z",
+ "rev": 9122,
+ "updatedAt": "2026-11-18T18:20:35.220Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252611,7 +252611,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T17:48:56.828Z",
+   "updatedAt": "2026-11-18T18:18:54.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -252681,6 +252681,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-18T17:48:56.828Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T18:18:54.838Z"
     }
    ],
    "approvals": [
@@ -253233,7 +253237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
