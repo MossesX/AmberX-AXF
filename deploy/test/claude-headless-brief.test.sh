@@ -35,7 +35,8 @@ EOF
       bash "$ROOT/deploy/claude-headless.sh" --name "$tag" --brief brief.md --log run.log -- --model opus > "$tmp/launch.out" 2>&1)
   st=$?
   ok '(( st == 0 ))' "the launch starts (exit $st): $(tail -3 "$tmp/launch.out")"
-  for _ in $(seq 1 150); do [[ -s "$tmp/run/claude-got.txt" ]] && break; sleep 0.2; done
+  # the launcher runs several node gates before claude; on a loaded VPS each can take a minute (AXF_BRIEF_TEST_WAIT seconds)
+  for _ in $(seq 1 $(( ${AXF_BRIEF_TEST_WAIT:-180} * 5 ))); do [[ -s "$tmp/run/claude-got.txt" ]] && break; sleep 0.2; done
   got="$(cat "$tmp/run/claude-got.txt" 2>/dev/null)"
   stdin_bytes="$(sed -n 's/^stdin=\([0-9]*\).*/\1/p' <<<"$got")"; longest="$(sed -n 's/.*longest_arg=\([0-9]*\).*/\1/p' <<<"$got")"
   ok '[[ -n "$got" ]]' "claude ran (no E2BIG): $(cat "$tmp/run/run.log" 2>/dev/null | tail -3)"
@@ -43,7 +44,7 @@ EOF
   ok '(( ${longest:-999999} < 131072 ))' "no argument reached 128 KB (longest ${longest:-?})"
   ok '! grep -qi "argument list too long" "$tmp/run/run.log" "$tmp/launch.out" 2>/dev/null' 'no "Argument list too long" anywhere'
   ok '[[ "$(cat "$tmp/run/claude-tmpfiles.txt" 2>/dev/null)" == 1 ]]' 'the prompt file existed while claude ran'
-  for _ in $(seq 1 100); do tmux has-session -t "axf-$tag" 2>/dev/null || break; sleep 0.2; done
+  for _ in $(seq 1 $(( ${AXF_BRIEF_TEST_WAIT:-180} * 5 ))); do tmux has-session -t "axf-$tag" 2>/dev/null || break; sleep 0.2; done
   ok '[[ -z "$(ls "$tmp/tmpdir" | grep "^axf-brief\.")" ]]' "the prompt file is removed after the run: $(ls "$tmp/tmpdir")"
 else
   echo '(tmux or node missing: skipped the launcher end-to-end checks)'

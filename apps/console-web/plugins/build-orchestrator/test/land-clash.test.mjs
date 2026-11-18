@@ -20,7 +20,7 @@ const PL = await import('../pipeline.mjs');
 let n = 0; const t = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const find = (id) => core.findBuild(S.loadStore(), id);
 const done = (k) => Array.from({ length: k }, (_, i) => ({ id: `s${i + 1}`, text: `step ${i + 1}`, model: 'Opus', estimate: '10 min', done: true, doneAt: '2026-11-17T00:00:00Z' }));
-const build = (id, steps, extra = {}) => ({ id, title: id, status: 'landing', branch: `claude/${id}`, pr: '#787', steps, builtAt: '2026-11-17T01:00:00Z', ...extra });
+const build = (id, steps, extra = {}) => ({ id, title: id, status: 'landing', branch: `claude/${id}`, pr: 787, steps, builtAt: '2026-11-17T01:00:00Z', ...extra });
 writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify(core.normalizeStore({ ...core.emptyStore(), builds: [
   build('phone', done(27)),
   build('agent', done(3)),
