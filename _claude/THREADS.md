@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 07:00 UTC · `approval-pass-covers-every-call` s8 done (all) · orchestrator
-- 2026-11-18 07:02 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
 - 2026-11-18 07:06 UTC · `approval-pass-covers-every-call` s9 done (all) · orchestrator
 - 2026-11-18 07:03 UTC · `approval-pass-covers-every-call` s8 done (all) · foreign-write
 - 2026-11-18 07:08 UTC · `approval-pass-covers-every-call` s10 done (all) · orchestrator
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` → running, note (all) · pipeline
 - 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
 - 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` branch claude/every-app-gets-own-locked-default (all) · pipeline
+- 2026-11-18 14:42 UTC · `stop-push-storm-builds-live-pushes-build` → queued (all) · voice session
+- 2026-11-18 14:43 UTC · `every-plugin-gets-own-default-toolbar` PR #844, note (all) · reconciler
 
 ## Token passes (log)
 
