@@ -972,4 +972,13 @@ t('exhaustPolicy: the caps never cut the ladder short; untilExhausted off keeps 
   assert.ok(RL.walk('clash', RL.normPolicy(p), ctx).some((d) => d.strategy === 'merge-main'));
 });
 
+t('alertFor attempt: an FYI per attempt, one key per attempt, a registered notify type', () => {
+  const a = P.alertFor('attempt', { id: 'b1', title: 'B one', n: 3, kind: 'ci-red', why: 'check-theme red', step: 's2', strategy: 'fix', fixStrategy: 'regenerate', account: 'a2', model: 'Opus', left: ['fresh-session', 'switch-model'] });
+  assert.equal(a.key, 'pipeline:attempt:b1:3'); assert.equal(a.severity, 'info'); assert.match(a.title, /^FYI attempt 3: B one/);
+  assert.match(a.body, /Now trying: fix \(regenerate\) on a2 \(Opus\)/); assert.match(a.body, /Left after this: fresh-session, switch-model/);
+  assert.match(P.alertFor('attempt', { id: 'b1', n: 9, left: [] }).body, /last option before it is marked Failed/);
+  const types = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'notify.json'), 'utf8')).types;
+  assert.ok(types.some((x) => x.id === 'pipeline.attempt' && a.key.startsWith(x.match.keyPrefix) && x.push === true));
+});
+
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

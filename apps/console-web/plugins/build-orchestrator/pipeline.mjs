@@ -1010,6 +1010,11 @@ export function retryFixing({ env = process.env, accounts = [], settings = loadS
       return s;
     }, { by: 'pipeline', action: 'pipeline:retry', note: `${b.id} ${d.strategy}` });
     logLine({ event: 'retry', build: b.id, kind: f.kind, strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, session: r.session, n: d.n });
+    try {
+      const lad = RL.ladderFor(f.kind, policy); const cur = d.strategy === 'fix' ? `fix:${d.fixStrategy || 'targeted'}` : d.strategy;
+      const left = lad.slice(lad.indexOf(cur) + 1).filter((x) => x !== 'escalate');
+      alert('attempt', { id: b.id, title: b.title, n: d.n, kind: f.kind, why: f.why, step: f.step, strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, left });
+    } catch (e) { logLine({ event: 'attempt-alert-failed', build: b.id, error: str(e.message, 300) }); }
     crewSay('dispatcher', 'start', `${b.id}: attempt ${d.n} (${d.strategy}${d.fixStrategy ? `: ${d.fixStrategy}` : ''}) on ${used.account}, ${model}.`, { ref: b.id });
     out.push({ id: b.id, action: 'launched', strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, session: r.session });
   }

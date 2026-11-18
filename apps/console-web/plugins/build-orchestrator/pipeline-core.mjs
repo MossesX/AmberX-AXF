@@ -741,6 +741,10 @@ function alertBody(kind, d, base) {
     // done-means-merged@1: the ladder ran out. One push per escalation (key per build + escalation time), with every try
     case 'escalated': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:escalated:${d.id}:${d.at ?? ''}`, severity: 'error', title: `Build failed, every option used up: ${str(d.title, 120)}`,
       body: str([d.why, list(d.tried).length ? `Tried: ${list(d.tried).join(', ')}.` : '', d.since ? `Failing since ${d.since}.` : '', 'Retry from the systems check banner or the build\'s Attempts tab.'].filter(Boolean).join('\n'), 1500) };
+    // vps-never-gives-up: an FYI on every attempt the ladder starts (what broke, what is tried now, what is left)
+    case 'attempt': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:attempt:${d.id}:${d.n ?? ''}`, severity: 'info',
+      title: `FYI attempt ${d.n ?? '?'}: ${str(d.title, 120)}`,
+      body: str([`${d.kindWord || d.kind || 'A failure'}${d.step ? ` on ${d.step}` : ''}${d.why ? `: ${d.why}` : ''}.`, `Now trying: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''} on ${d.account || '?'} (${d.model || '?'}).`, list(d.left).length ? `Left after this: ${list(d.left).join(', ')}.` : 'This is the last option before it is marked Failed.', 'Nothing to do: it keeps going by itself.'].join('\n'), 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,

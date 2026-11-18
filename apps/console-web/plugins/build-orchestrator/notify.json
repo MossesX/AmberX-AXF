@@ -17,6 +17,20 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.attempt",
+      "label": "FYI: build retry attempt",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "vps-never-gives-up: an FYI each time the server starts a new attempt on a failing build (crash, red CI, a clash, a failed push, a stall, a fall back to Pending): what broke, the strategy it tries now (retry, merge main, a fix, a fresh session, another model or account) and what is left before it is marked Failed. Nothing to do; one per attempt.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:attempt:"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
       "id": "pipeline.escalated",
       "label": "Build failed: every option used up",
       "group": "builds",
