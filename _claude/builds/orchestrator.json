@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:52:30.606Z",
+ "updatedAt": "2026-11-18T01:52:42.975Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -73604,7 +73604,6 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -90305,7 +90304,6 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -129081,7 +129079,6 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -137725,7 +137722,6 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -213661,11 +213657,1379 @@
      "done": false,
      "doneAt": "",
      "note": "",
+     "uid": "st-mwlgr9vm01j4ye",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s2",
+     "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm021izx",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s3",
+     "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm032669",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s4",
+     "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm04ext1",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s5",
+     "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm05so2t",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s6",
+     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm069d2n",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s7",
+     "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm07f2y1",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s8",
+     "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm08pip9",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s9",
+     "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm09f322",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s10",
+     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0aiolk",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s11",
+     "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0bp70i",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s12",
+     "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0cf0t7",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s13",
+     "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0drv5o",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s14",
+     "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0eql92",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s15",
+     "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0f1cpk",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s16",
+     "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0gr0wd",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s17",
+     "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0h0xhr",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s18",
+     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0iczoi",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s19",
+     "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0jncis",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s20",
+     "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0kk5f4",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s21",
+     "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0lyvvc",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s22",
+     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0m8vyi",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s23",
+     "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0n0o8t",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s24",
+     "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0oqbh6",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s25",
+     "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0p24nv",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s26",
+     "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0qgk6i",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s27",
+     "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0r366o",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s28",
+     "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0sjuga",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s29",
+     "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0t2300",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s30",
+     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vm0u7628",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s31",
+     "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn0v00z7",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s32",
+     "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn0wvk0m",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s33",
+     "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn0xcpjo",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s34",
+     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn0yv615",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s35",
+     "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn0zgpfy",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s36",
+     "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1088kg",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s37",
+     "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn11a38n",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s38",
+     "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn124dki",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s39",
+     "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn13dyxa",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s40",
+     "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn14twfo",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s41",
+     "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn15sk5b",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s42",
+     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn16s94k",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s43",
+     "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn17j7dg",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s44",
+     "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn18tobk",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s45",
+     "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn19fqug",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s46",
+     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1a1xj1",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s47",
+     "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1b6ihx",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s48",
+     "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1cxgd8",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s49",
+     "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1du6ty",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s50",
+     "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1e7z0j",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s51",
+     "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1finu7",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s52",
+     "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1gupjv",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s53",
+     "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1hkb8b",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s54",
+     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1ipd96",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s55",
+     "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1jcjis",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s56",
+     "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1ke7g0",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s57",
+     "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1l52sm",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s58",
+     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1m13na",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s59",
+     "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1naqzd",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s60",
+     "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1os0w5",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s61",
+     "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1pph9k",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s62",
+     "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1qnpg9",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s63",
+     "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1rdf0o",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s64",
+     "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1sqlj3",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s65",
+     "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1t3pdt",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s66",
+     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1ugxna",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s67",
+     "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1vym38",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s68",
+     "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1wz12k",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s69",
+     "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1x5zya",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s70",
+     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1y6i79",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s71",
+     "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn1zbjyg",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s72",
+     "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgr9vn20yckg",
+     "createdAt": "2026-11-18T01:49:40.384Z"
+    },
+    {
+     "id": "s73-72",
+     "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
      "uid": "st-mwlguo6b3d8dix",
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s2",
+     "id": "s74-73",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -213684,7 +215048,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s3",
+     "id": "s75-74",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -213703,7 +215067,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s4",
+     "id": "s76-75",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -213722,7 +215086,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s5",
+     "id": "s77-76",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -213741,7 +215105,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s6",
+     "id": "s78-77",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -213760,7 +215124,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s7",
+     "id": "s79-78",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -213779,7 +215143,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s8",
+     "id": "s80-79",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -213798,7 +215162,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s9",
+     "id": "s81-80",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -213817,7 +215181,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s10",
+     "id": "s82-81",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -213836,7 +215200,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s11",
+     "id": "s83-82",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -213855,7 +215219,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s12",
+     "id": "s84-83",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -213874,7 +215238,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s13",
+     "id": "s85-84",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -213893,7 +215257,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s14",
+     "id": "s86-85",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -213912,7 +215276,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s15",
+     "id": "s87-86",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -213931,7 +215295,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s16",
+     "id": "s88-87",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -213950,7 +215314,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s17",
+     "id": "s89-88",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -213969,7 +215333,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s18",
+     "id": "s90-89",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -213988,7 +215352,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s19",
+     "id": "s91-90",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -214007,7 +215371,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s20",
+     "id": "s92-91",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -214026,7 +215390,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s21",
+     "id": "s93-92",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -214045,7 +215409,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s22",
+     "id": "s94-93",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -214064,7 +215428,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s23",
+     "id": "s95-94",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -214083,7 +215447,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s24",
+     "id": "s96-95",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -214102,7 +215466,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s25",
+     "id": "s97-96",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -214121,7 +215485,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s26",
+     "id": "s98-97",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -214140,7 +215504,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s27",
+     "id": "s99-98",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -214159,7 +215523,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s28",
+     "id": "s100-99",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -214178,7 +215542,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s29",
+     "id": "s101-100",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -214197,7 +215561,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s30",
+     "id": "s102-101",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -214216,7 +215580,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s31",
+     "id": "s103-102",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -214235,7 +215599,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s32",
+     "id": "s104-103",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -214254,7 +215618,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s33",
+     "id": "s105-104",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -214273,7 +215637,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s34",
+     "id": "s106-105",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -214292,7 +215656,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s35",
+     "id": "s107-106",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -214311,7 +215675,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s36",
+     "id": "s108-107",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -214330,7 +215694,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s37",
+     "id": "s109-108",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -214349,7 +215713,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s38",
+     "id": "s110-109",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -214368,7 +215732,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s39",
+     "id": "s111-110",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -214387,7 +215751,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s40",
+     "id": "s112-111",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -214406,7 +215770,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s41",
+     "id": "s113-112",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -214425,7 +215789,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s42",
+     "id": "s114-113",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -214444,7 +215808,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s43",
+     "id": "s115-114",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -214463,7 +215827,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s44",
+     "id": "s116-115",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -214482,7 +215846,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s45",
+     "id": "s117-116",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -214501,7 +215865,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s46",
+     "id": "s118-117",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -214520,7 +215884,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s47",
+     "id": "s119-118",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -214539,7 +215903,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s48",
+     "id": "s120-119",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -214558,7 +215922,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s49",
+     "id": "s121-120",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -214577,7 +215941,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s50",
+     "id": "s122-121",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -214596,7 +215960,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s51",
+     "id": "s123-122",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -214615,7 +215979,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s52",
+     "id": "s124-123",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -214634,7 +215998,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s53",
+     "id": "s125-124",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -214653,7 +216017,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s54",
+     "id": "s126-125",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -214672,7 +216036,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s55",
+     "id": "s127-126",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -214691,7 +216055,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s56",
+     "id": "s128-127",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -214710,7 +216074,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s57",
+     "id": "s129-128",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -214729,7 +216093,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s58",
+     "id": "s130-129",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -214748,7 +216112,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s59",
+     "id": "s131-130",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -214767,7 +216131,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s60",
+     "id": "s132-131",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -214786,7 +216150,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s61",
+     "id": "s133-132",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -214805,7 +216169,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s62",
+     "id": "s134-133",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -214824,7 +216188,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s63",
+     "id": "s135-134",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -214843,7 +216207,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s64",
+     "id": "s136-135",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -214862,7 +216226,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s65",
+     "id": "s137-136",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -214881,7 +216245,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s66",
+     "id": "s138-137",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -214900,7 +216264,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s67",
+     "id": "s139-138",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -214919,7 +216283,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s68",
+     "id": "s140-139",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -214938,7 +216302,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s69",
+     "id": "s141-140",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -214957,7 +216321,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s70",
+     "id": "s142-141",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -214976,7 +216340,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s71",
+     "id": "s143-142",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -214995,7 +216359,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s72",
+     "id": "s144-143",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -215014,7 +216378,7 @@
      "createdAt": "2026-11-18T01:52:18.936Z"
     },
     {
-     "id": "s73-72",
+     "id": "s145-144",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -215033,7 +216397,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s74-73",
+     "id": "s146-145",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -215052,7 +216416,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s75-74",
+     "id": "s147-146",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -215071,7 +216435,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s76-75",
+     "id": "s148-147",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -215090,7 +216454,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s77-76",
+     "id": "s149-148",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -215109,7 +216473,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s78-77",
+     "id": "s150-149",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -215128,7 +216492,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s79-78",
+     "id": "s151-150",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -215147,7 +216511,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s80-79",
+     "id": "s152-151",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -215166,7 +216530,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s81-80",
+     "id": "s153-152",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -215185,7 +216549,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s82-81",
+     "id": "s154-153",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -215204,7 +216568,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s83-82",
+     "id": "s155-154",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -215223,7 +216587,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s84-83",
+     "id": "s156-155",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -215242,7 +216606,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s85-84",
+     "id": "s157-156",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -215261,7 +216625,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s86-85",
+     "id": "s158-157",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -215280,7 +216644,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s87-86",
+     "id": "s159-158",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -215299,7 +216663,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s88-87",
+     "id": "s160-159",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -215318,7 +216682,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s89-88",
+     "id": "s161-160",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -215337,7 +216701,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s90-89",
+     "id": "s162-161",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -215356,7 +216720,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s91-90",
+     "id": "s163-162",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -215375,7 +216739,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s92-91",
+     "id": "s164-163",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -215394,7 +216758,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s93-92",
+     "id": "s165-164",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -215413,7 +216777,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s94-93",
+     "id": "s166-165",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -215432,7 +216796,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s95-94",
+     "id": "s167-166",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -215451,7 +216815,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s96-95",
+     "id": "s168-167",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -215470,7 +216834,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s97-96",
+     "id": "s169-168",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -215489,7 +216853,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s98-97",
+     "id": "s170-169",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -215508,7 +216872,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s99-98",
+     "id": "s171-170",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -215527,7 +216891,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s100-99",
+     "id": "s172-171",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -215546,7 +216910,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s101-100",
+     "id": "s173-172",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -215565,7 +216929,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s102-101",
+     "id": "s174-173",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -215584,7 +216948,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s103-102",
+     "id": "s175-174",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -215603,7 +216967,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s104-103",
+     "id": "s176-175",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -215622,7 +216986,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s105-104",
+     "id": "s177-176",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -215641,7 +217005,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s106-105",
+     "id": "s178-177",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -215660,7 +217024,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s107-106",
+     "id": "s179-178",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -215679,7 +217043,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s108-107",
+     "id": "s180-179",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -215698,7 +217062,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s109-108",
+     "id": "s181-180",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -215717,7 +217081,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s110-109",
+     "id": "s182-181",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -215736,7 +217100,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s111-110",
+     "id": "s183-182",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -215755,7 +217119,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s112-111",
+     "id": "s184-183",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -215774,7 +217138,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s113-112",
+     "id": "s185-184",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -215793,7 +217157,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s114-113",
+     "id": "s186-185",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -215812,7 +217176,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s115-114",
+     "id": "s187-186",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -215831,7 +217195,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s116-115",
+     "id": "s188-187",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -215850,7 +217214,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s117-116",
+     "id": "s189-188",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -215869,7 +217233,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s118-117",
+     "id": "s190-189",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -215888,7 +217252,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s119-118",
+     "id": "s191-190",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -215907,7 +217271,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s120-119",
+     "id": "s192-191",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -215926,7 +217290,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s121-120",
+     "id": "s193-192",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -215945,7 +217309,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s122-121",
+     "id": "s194-193",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -215964,7 +217328,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s123-122",
+     "id": "s195-194",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -215983,7 +217347,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s124-123",
+     "id": "s196-195",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -216002,7 +217366,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s125-124",
+     "id": "s197-196",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -216021,7 +217385,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s126-125",
+     "id": "s198-197",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -216040,7 +217404,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s127-126",
+     "id": "s199-198",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -216059,7 +217423,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s128-127",
+     "id": "s200-199",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -216078,7 +217442,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s129-128",
+     "id": "s201-200",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -216097,7 +217461,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s130-129",
+     "id": "s202-201",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -216116,7 +217480,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s131-130",
+     "id": "s203-202",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -216135,7 +217499,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s132-131",
+     "id": "s204-203",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -216154,7 +217518,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s133-132",
+     "id": "s205-204",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -216173,7 +217537,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s134-133",
+     "id": "s206-205",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -216192,7 +217556,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s135-134",
+     "id": "s207-206",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -216211,7 +217575,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s136-135",
+     "id": "s208-207",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -216230,7 +217594,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s137-136",
+     "id": "s209-208",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -216249,7 +217613,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s138-137",
+     "id": "s210-209",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -216268,7 +217632,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s139-138",
+     "id": "s211-210",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -216287,7 +217651,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s140-139",
+     "id": "s212-211",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -216306,7 +217670,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s141-140",
+     "id": "s213-212",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -216325,7 +217689,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s142-141",
+     "id": "s214-213",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -216344,7 +217708,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s143-142",
+     "id": "s215-214",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -216363,7 +217727,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s144-143",
+     "id": "s216-215",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -216382,7 +217746,7 @@
      "createdAt": "2026-11-18T01:49:17.705Z"
     },
     {
-     "id": "s145-144",
+     "id": "s217-216",
      "text": "[Fable] Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -216401,7 +217765,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s146-145",
+     "id": "s218-217",
      "text": "[Opus] Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -216420,7 +217784,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s147-146",
+     "id": "s219-218",
      "text": "[Opus] Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -216439,7 +217803,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s148-147",
+     "id": "s220-219",
      "text": "[Opus] Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -216458,7 +217822,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s149-148",
+     "id": "s221-220",
      "text": "[Opus] Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -216477,7 +217841,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s150-149",
+     "id": "s222-221",
      "text": "[Opus] Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -216496,7 +217860,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s151-150",
+     "id": "s223-222",
      "text": "[Opus] Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -216515,7 +217879,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s152-151",
+     "id": "s224-223",
      "text": "[Opus] Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -216534,7 +217898,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s153-152",
+     "id": "s225-224",
      "text": "[Opus] API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -216553,7 +217917,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s154-153",
+     "id": "s226-225",
      "text": "[Opus] Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -216572,7 +217936,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s155-154",
+     "id": "s227-226",
      "text": "[Opus] CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -216591,7 +217955,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s156-155",
+     "id": "s228-227",
      "text": "[Opus] Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -216610,7 +217974,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s157-156",
+     "id": "s229-228",
      "text": "[Fable] Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -216629,7 +217993,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s158-157",
+     "id": "s230-229",
      "text": "[Opus] Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -216648,7 +218012,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s159-158",
+     "id": "s231-230",
      "text": "[Opus] Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -216667,7 +218031,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s160-159",
+     "id": "s232-231",
      "text": "[Opus] Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -216686,7 +218050,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s161-160",
+     "id": "s233-232",
      "text": "[Opus] Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -216705,7 +218069,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s162-161",
+     "id": "s234-233",
      "text": "[Opus] Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -216724,7 +218088,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s163-162",
+     "id": "s235-234",
      "text": "[Opus] Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -216743,7 +218107,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s164-163",
+     "id": "s236-235",
      "text": "[Opus] Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -216762,7 +218126,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s165-164",
+     "id": "s237-236",
      "text": "[Opus] API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -216781,7 +218145,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s166-165",
+     "id": "s238-237",
      "text": "[Opus] Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -216800,7 +218164,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s167-166",
+     "id": "s239-238",
      "text": "[Opus] CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -216819,7 +218183,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s168-167",
+     "id": "s240-239",
      "text": "[Opus] Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -216838,7 +218202,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s169-168",
+     "id": "s241-240",
      "text": "[Fable] Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -216857,7 +218221,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s170-169",
+     "id": "s242-241",
      "text": "[Opus] Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -216876,7 +218240,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s171-170",
+     "id": "s243-242",
      "text": "[Opus] Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -216895,7 +218259,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s172-171",
+     "id": "s244-243",
      "text": "[Opus] Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -216914,7 +218278,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s173-172",
+     "id": "s245-244",
      "text": "[Opus] Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -216933,7 +218297,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s174-173",
+     "id": "s246-245",
      "text": "[Opus] Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -216952,7 +218316,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s175-174",
+     "id": "s247-246",
      "text": "[Opus] Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -216971,7 +218335,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s176-175",
+     "id": "s248-247",
      "text": "[Opus] Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -216990,7 +218354,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s177-176",
+     "id": "s249-248",
      "text": "[Opus] API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -217009,7 +218373,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s178-177",
+     "id": "s250-249",
      "text": "[Opus] Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -217028,7 +218392,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s179-178",
+     "id": "s251-250",
      "text": "[Opus] CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -217047,7 +218411,7 @@
      "createdAt": "2026-11-18T01:48:13.985Z"
     },
     {
-     "id": "s180-179",
+     "id": "s252-251",
      "text": "[Opus] Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
