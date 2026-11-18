@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:25:21.665Z",
+ "updatedAt": "2026-11-18T00:25:37.529Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186818,7 +186818,7 @@
    "branch": "claude/auto-lander-never-wait-missing-ui-review",
    "pr": "",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-18T00:19:57.791Z",
+   "updatedAt": "2026-11-18T00:25:21.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -186906,8 +186906,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T00:25:21.854Z",
      "note": "",
      "uid": "st-mwlaizmt014x75",
      "createdAt": "2026-11-17T22:55:15.780Z"
