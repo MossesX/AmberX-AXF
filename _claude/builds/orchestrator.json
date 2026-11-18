@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T14:34:55.130Z",
+ "updatedAt": "2026-11-18T14:36:50.726Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192184,7 +192184,7 @@
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "#843",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T14:34:15.045Z",
+   "updatedAt": "2026-11-18T14:36:33.837Z",
    "builtAt": "2026-11-18T14:29:07.628Z",
    "notes": [
     {
@@ -192226,6 +192226,10 @@
     {
      "text": "Reconciler: PR #843",
      "at": "2026-11-18T14:34:15.045Z"
+    },
+    {
+     "text": "Session axf-plan-studio-2-open-button-working-deep--joey on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-18T14:36:33.837Z"
     }
    ],
    "approvals": [],
