@@ -226,10 +226,12 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
 }
 
 /** The answer of a dispatched command, as a control@1 envelope (the console server calls this after running it). */
-export function finish(command, outcome) {
+export function finish(command, outcome, under = null) {
   const c = normalizeControl(command);
   const ok = typeof outcome.ok === 'boolean' ? outcome.ok : outcome.status === undefined || (outcome.status >= 200 && outcome.status < 300);
-  if (c.target === 'plugins.commands') audit({ by: c.by || 'unknown', reason: c.reason ?? '', path: c.path, input: c.input, status: outcome.status ?? null, ok });
+  // decision #120: a run under a pass says which one and what it skipped
+  const ran = under && typeof under.ranUnder === 'string' && under.ranUnder ? { ranUnder: under.ranUnder, pass: under.ranUnder, skippedPolicy: under.skippedPolicy || 'confirm' } : {};
+  if (c.target === 'plugins.commands') audit({ by: c.by || 'unknown', reason: c.reason ?? '', path: c.path, input: c.input, status: outcome.status ?? null, ok, ...ran });
   if (!ok) {
     const code = outcome.status === 401 || outcome.status === 403 ? CONTROL_WIRE.DENIED : outcome.status === 404 ? CONTROL_WIRE.NOT_FOUND : outcome.status === 400 || outcome.status === 422 ? CONTROL_WIRE.VALIDATION : outcome.code ?? CONTROL_WIRE.UNEXPECTED;
     return controlFailure(code, outcome.message || `the plugin answered ${outcome.status}`, { op: c.op, target: c.target, path: c.path, status: outcome.status, result: outcome.result });
@@ -296,7 +298,7 @@ export async function main(argv) {
     return 0;
   }
   if (cmd === 'bundle') { const body = JSON.parse(read('/dev/stdin') || '{}'); const reg = registry({ enabled: body.enabled ?? null }); console.log(JSON.stringify({ registry: reg, tools: pluginCommandTools(reg) })); return 0; }
-  if (cmd === 'finish') { const body = JSON.parse(read('/dev/stdin') || '{}'); console.log(JSON.stringify(finish(body.command ?? {}, body.outcome ?? {}))); return 0; }
+  if (cmd === 'finish') { const body = JSON.parse(read('/dev/stdin') || '{}'); console.log(JSON.stringify(finish(body.command ?? {}, body.outcome ?? {}, body.under ?? null))); return 0; }
   if (cmd === 'check') {
     const reg = registry({ folders: rest.length ? rest : null, apps: ['console-web'] });
     const res = reg.plugins.map((p) => ({ folder: p.folder, ...pluginCommandCoverage(p) }));

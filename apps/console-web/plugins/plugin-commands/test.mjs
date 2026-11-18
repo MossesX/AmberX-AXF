@@ -8,7 +8,7 @@
  *   node apps/console-web/plugins/plugin-commands/test.mjs
  */
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -75,6 +75,9 @@ eq(plan(act('fixture-todos/entries-by-eid-delete', { eid: 2 }, { confirm: r.conf
   ok(plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { passes: [{ ...pass, covers: ['axf-console.fixture_todos_*'] }] }).dispatch, 'a pass naming the tool covers it');
   eq(plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { passes: [{ ...pass, covers: ['vps'] }] }).code, 'confirmation_required', 'a pass naming another service does not');
   eq(plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { pass: { ...pass, expiresAt: new Date(Date.now() - 1000).toISOString() } }).code, 'confirmation_required', 'an ended pass does not');
+  finish(under.command, { ok: true, status: 200 }, { ranUnder: under.ranUnder, skippedPolicy: under.skippedPolicy });
+  const last = readFileSync(join(process.env.AXF_PLUGIN_COMMANDS_DATA_DIR, 'audit.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)).pop();
+  ok(last.ranUnder === 'p-all' && last.skippedPolicy === 'confirm' && last.path === 'fixture-todos/entries-by-eid-delete', 'the audit row says which pass it ran under and what it skipped');
 }
 eq(plan(act('fixture-plans/nope')).code, 'not_found', 'unknown command');
 eq(plan(act('nobody/state')).code, 'not_found', 'unknown plugin');
