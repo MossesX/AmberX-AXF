@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8807,
- "updatedAt": "2026-11-18T01:51:17.984Z",
+ "rev": 8808,
+ "updatedAt": "2026-11-18T01:51:28.732Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337429,7 +337429,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T01:39:44.152Z",
-   "updatedAt": "2026-11-18T01:51:01.086Z",
+   "updatedAt": "2026-11-18T01:51:24.407Z",
    "builtAt": "",
    "notes": [
     {
@@ -337443,6 +337443,10 @@
     {
      "text": "Rule from Brett: before every build launch and whenever anything jams, check for stale slots, ghost processes and dead sessions and clear them first. The VPS and the console both run this check and back each other up: if one misses it, the other catches it.",
      "at": "2026-11-18T01:51:01.086Z"
+    },
+    {
+     "text": "Brett: every time the orchestrator receives a build, sends a build, or sends anything at all to the VPS, it first checks for stale slot holders (dead sessions, ghost processes, finished-but-open sessions) and frees them.",
+     "at": "2026-11-18T01:51:24.407Z"
     },
     {
      "text": "Rule: always keep one build slot free on the VPS. The dispatcher fills at most limit minus 1 slots; the spare slot is only for urgent fixes (land fixes, manual launches, auto-lander fix sessions). Setting in the Watchdog plugin, default 1 spare.",
@@ -340202,7 +340206,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": {
