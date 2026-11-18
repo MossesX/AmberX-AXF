@@ -167,7 +167,7 @@ try {
     // held-prs@1: every truly held PR with its age; over = older than heldAlertMin (the systems check's red line)
     const hp = g.run('held_prs'); assert.equal(hp.ok, true); assert.equal(hp.limitMin, 60);
     assert.deepEqual(hp.items.map((x) => [x.pr, x.state, x.heldMin, x.over, x.reviewFlag]), [[704, 'kicked', 180, true, ''], [705, 'held', 10, false, 'waiting']]); // merge-queue mode: the queue's held PRs
-    assert.deepEqual(hp.over, [704]); assert.match(hp.items[0].holdReason, /conflicts with main/); assert.equal(hp.items[0].link, 'row:held-prs/pr:704'); assert.equal(hp.items[0].landNow.cli, 'axf gate land-now 704');
+    assert.deepEqual(hp.over, [704]); assert.match(hp.items[0].holdReason, /conflicts with main/); assert.equal(hp.items[0].link, 'grid:held-prs/row:704'); assert.equal(hp.items[0].landNow.cli, 'axf gate land-now 704');
     assert.deepEqual(g.run('held_prs', { limitMin: 5 }).over, [704, 705]);
     // land now from the item: two-step, says what holds it, then front of the queue with an override note in History
     const ln = g.run('land_now', { pr: 705, by: 'systems-check' }); assert.equal(ln.code, 'confirmation_required'); assert.equal(ln.held.state, 'held'); assert.match(ln.message, /ahead of its hold/);

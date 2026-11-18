@@ -15,7 +15,9 @@ import './systems-check.css';
 
 type Status = 'ok' | 'warn' | 'error' | 'info' | 'unknown';
 interface Field { key: string; label: string; secret: boolean; placeholder: string; help: string; set: boolean; value: string }
-type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string; action?: string } | null;
+/** held-prs (gate plugin, Nov 18 2026): one Land now row per PR the lander has held past the limit; `action` is the console action the press dispatches, `target` its console-control address */
+interface PrRow { pr: number; build: string; title: string; state: string; heldMin: number; heldSince: string; reason: string; reviewFlag: string; action: string; target: string; route: string; cli: string }
+type Fix = { type: 'secrets'; fields: Field[] } | { type: 'action'; label: string } | { type: 'host'; command: string } | { type: 'settings'; tab: string; label: string; action?: string } | { type: 'prs'; label: string; items: PrRow[] } | null;
 export interface Check { id: string; service: string; title: string; status: Status; summary: string; details: string[]; fix: Fix; instructions: string[]; links: { label: string; url: string }[]; dependsOn: string[]; order: number; autoFix: boolean;
   /** health@1 (Oct 30 2026): what a failure breaks, since when (ms) it's been in this state, who registered it, expiry (ms) */
   breaks?: string; since?: number; health?: boolean; owner?: string; holding?: boolean; expiring?: boolean; expiresAt?: number;
@@ -378,7 +380,7 @@ export function SystemBanner() {
             const label = autoFixLabel(c);
             return (
               <li key={c.id} className="axp-systems-check-banner__li">
-                <button type="button" data-fx-row className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
+                <button type="button" data-fx-row data-axf-target={`row:${c.id}`} className="axp-systems-check-banner__item" onClick={() => rt.openDialog('system-check', { focus: c.id })}>
                   <StatusDot s={c.status} /><span className="axp-systems-check-banner__title">{c.title}</span><SourceBadge ai={isAiCheck(c)} /><span className="axp-systems-check-banner__sum">{s.runMsg[c.id] || c.summary}</span>
                   {c.health && c.status !== 'ok' && <span className="axp-systems-check-banner__plain fx-small">{s.runMsg[c.id] || c.summary}</span>}
                   <WhyLine c={c} />
@@ -438,6 +440,9 @@ function RunBadge({ r }: { r?: Run }) {
   if (!r) return null;
   return <span className={`axp-systems-check-run is-${r}`} role="status">{r === 'working' ? <span className="axp-systems-check-run__spin" aria-hidden /> : <Icon name={r === 'done' ? 'check' : r === 'failed' ? 'x' : r === 'needs-you' || r === 'waiting' ? 'alert' : r === 'skipped' ? 'minus' : 'clock'} size={12} />}{RUN_LABEL[r]}</span>;
 }
+
+/** "35 min", "6 h 10", "3 d": how long a PR has been held. */
+const heldFor = (m: number) => (m < 120 ? `${m} min` : m < 48 * 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')}` : `${Math.floor(m / 1440)} d`);
 
 export function FixPanel({ c }: { c: Check }) {
   const rt = useRuntime();
@@ -500,6 +505,19 @@ export function FixPanel({ c }: { c: Check }) {
         </div>
       )}
       {f?.type === 'settings' && <Button icon="settings" onClick={() => rt.dispatch(f.action || `settings.open:${f.tab}`)}>{f.label}</Button>}
+      {f?.type === 'prs' && (
+        <ul className="axp-systems-check-prs" aria-label={f.label}>
+          {f.items.map((x) => (
+            <li key={x.pr} className="axp-systems-check-prs__row" data-axf-target={x.target}>
+              <span className="axp-systems-check-prs__who"><strong>#{x.pr}</strong>{x.build && <> {x.build}</>}{x.reviewFlag && <> <Chip tone={x.reviewFlag === 'waiting' ? 'warning' : 'danger'}>UI Review {x.reviewFlag}</Chip></>}</span>
+              <span className="fx-small fx-muted axp-systems-check-prs__why">held {heldFor(x.heldMin)} ({x.state}): {x.reason}</span>
+              <Button size="sm" tone="primary" icon="rocket" id={`held-prs-land-now-${x.pr}`} disabled={busy}
+                confirm={`Land #${x.pr} now? It goes to the front of the merge queue ahead of its hold (${x.reason}). It still passes every rule; never a direct merge.`}
+                onClick={() => { rt.dispatch(x.action); setMsg(`#${x.pr}: asked the lander to land it next (override noted).`); }}>{f.label}</Button>
+            </li>
+          ))}
+        </ul>
+      )}
       <div className="fx-row fx-row--wrap">
         {c.status !== 'ok' && c.autoFixLabel && c.autoFixMode !== 'off' && !c.fixing && <Button tone="primary" icon="zap" disabled={busy} onClick={() => void healthFix()}>{c.autoFixLabel}</Button>}
         {c.status !== 'ok' && autoFixLabel(c) && <Button tone={c.autoFixLabel ? undefined : 'primary'} icon={fixIcon(c)} disabled={busy || s.fixing || s.run[c.id] === 'working'} onClick={() => void autoFix(c, rt).then(() => setMsg(snap.runMsg[c.id] ?? ''))}>{autoFixLabel(c)}</Button>}

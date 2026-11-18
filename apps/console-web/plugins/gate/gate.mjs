@@ -172,7 +172,7 @@ export function createGate(opts = {}) {
     held_prs(i = {}) {
       const limitMin = Number.isInteger(Number(i.limitMin)) && Number(i.limitMin) > 0 ? Number(i.limitMin) : settingsOf(store).heldAlertMin;
       const st = lander.state();
-      const items = gate.heldOlderThan(st, 0, st.at).map((x) => ({ ...x, over: x.heldMin >= limitMin, link: `row:held-prs/pr:${x.pr}`, landNow: { route: 'POST /api/plugins/gate/land-now', cli: `axf gate land-now ${x.pr}`, action: `gate.land-now:${x.pr}` } }));
+      const items = gate.heldOlderThan(st, 0, st.at).map((x) => ({ ...x, over: x.heldMin >= limitMin, link: `grid:held-prs/row:${x.pr}`, landNow: { route: 'POST /api/plugins/gate/land-now', cli: `axf gate land-now ${x.pr}`, action: `gate.land-now:${x.pr}` } }));
       return { ok: true, $axf: 'held-prs@1', at: st.at, limitMin, count: items.length, over: items.filter((x) => x.over).map((x) => x.pr), items };
     },
     /**

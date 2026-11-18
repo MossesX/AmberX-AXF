@@ -26,9 +26,9 @@ def ok(cond: bool, what: str) -> None:
 
 HELD = {"ok": True, "$axf": "held-prs@1", "at": "2026-11-18T10:00:00Z", "limitMin": 60, "count": 3, "over": [816, 704], "items": [
     {"pr": 816, "build": "orchestrator-live-demo", "title": "Orchestrator: live demo", "state": "held", "rule": "ui-review", "reviewFlag": "waiting",
-     "holdReason": "its screenshots wait for Brett in UI Review", "heldSince": "2026-11-18T04:00:00Z", "heldMin": 360, "over": True, "link": "row:held-prs/pr:816"},
-    {"pr": 704, "build": "dock", "title": "Dock sizes", "state": "kicked", "rule": "ci-green", "reviewFlag": "", "holdReason": "kicked out: broke CI", "heldSince": "2026-11-18T08:30:00Z", "heldMin": 90, "over": True, "link": "row:held-prs/pr:704"},
-    {"pr": 705, "build": "shots", "title": "Phone shots", "state": "held", "rule": "", "reviewFlag": "", "holdReason": "it is a draft", "heldSince": "2026-11-18T09:50:00Z", "heldMin": 10, "over": False, "link": "row:held-prs/pr:705"},
+     "holdReason": "its screenshots wait for Brett in UI Review", "heldSince": "2026-11-18T04:00:00Z", "heldMin": 360, "over": True, "link": "grid:held-prs/row:816"},
+    {"pr": 704, "build": "dock", "title": "Dock sizes", "state": "kicked", "rule": "ci-green", "reviewFlag": "", "holdReason": "kicked out: broke CI", "heldSince": "2026-11-18T08:30:00Z", "heldMin": 90, "over": True, "link": "grid:held-prs/row:704"},
+    {"pr": 705, "build": "shots", "title": "Phone shots", "state": "held", "rule": "", "reviewFlag": "", "holdReason": "it is a draft", "heldSince": "2026-11-18T09:50:00Z", "heldMin": 10, "over": False, "link": "grid:held-prs/row:705"},
 ]}
 
 # ---- the verdict
@@ -40,7 +40,7 @@ ok(v["link"] == "view:gate/tab:gate.tabs=auto-lander" and "unmerged" in v["break
 fix = v["fix"]
 ok(fix["type"] == "prs" and fix["label"] == "Land now" and [x["pr"] for x in fix["items"]] == [816, 704], "the fix carries one Land now row per PR, longest held first")
 row = fix["items"][0]
-ok(row["action"] == "gate.land-now:816" and row["target"] == "row:held-prs/pr:816" and row["route"] == "POST /api/plugins/gate/land-now" and row["cli"] == "axf gate land-now 816" and row["reviewFlag"] == "waiting" and row["heldMin"] == 360, f"each row names its action, console-control address, REST route and CLI: {row}")
+ok(row["action"] == "gate.land-now:816" and row["target"] == "grid:held-prs/row:816" and row["route"] == "POST /api/plugins/gate/land-now" and row["cli"] == "axf gate land-now 816" and row["reviewFlag"] == "waiting" and row["heldMin"] == 360, f"each row names its action, console-control address, REST route and CLI: {row}")
 
 # ---- green and unknown
 under = {**HELD, "over": [], "items": [{**x, "over": False} for x in HELD["items"]]}
@@ -54,7 +54,7 @@ ok(hp.check({})["status"] == "unknown", "an empty answer is unknown")
 # ---- the Auto fix lands the PR held longest, two steps done server-side
 calls: list[tuple[int, str]] = []
 r = hp.land_oldest(HELD, lambda pr, by: (calls.append((pr, by)), {"ok": True, "pr": pr, "position": 0, "via": "merge-queue"})[1])
-ok(calls == [(816, "systems-check")] and r["state"] == "started" and "#816 is at the front of the merge queue" in r["message"] and r["link"] == "row:held-prs/pr:816", f"Auto fix lands #816 (held longest) with the override: {r}")
+ok(calls == [(816, "systems-check")] and r["state"] == "started" and "#816 is at the front of the merge queue" in r["message"] and r["link"] == "grid:held-prs/row:816", f"Auto fix lands #816 (held longest) with the override: {r}")
 r2 = hp.land_oldest(HELD, lambda pr, by: {"ok": False, "code": "failed", "message": "the merge queue refused #816"})
 ok(r2["state"] == "failed" and "refused" in r2["message"], "a refused landing is a failed fix with the reason")
 ok(hp.land_oldest(under, lambda pr, by: {"ok": True})["state"] == "done", "nothing past the limit = nothing to land")

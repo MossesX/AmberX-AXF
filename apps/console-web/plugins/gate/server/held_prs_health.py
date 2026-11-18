@@ -5,7 +5,7 @@
              Gate → Held PR alert after; default 60 min); pushed once to the AmberX app by the health monitor (push on).
              Fix = Land now: the PR goes to the front of the merge queue with an override note (POST /api/plugins/gate/land-now,
              a two-step confirm; never a direct merge). The item's fix carries one row per PR (type `prs`) with its console-control
-             address `row:held-prs/pr:<n>` and the action `gate.land-now:<n>`; the item's Auto fix (mode ask) lands the oldest.
+             address `grid:held-prs/row:<n>` and the action `gate.land-now:<n>`; the item's Auto fix (mode ask) lands the oldest.
 
 Build auto-lander-never-wait-missing-ui-review (Nov 18 2026). Brett: "If it recorded the test of the pipeline and didn't
 merge it on its own, then the test failed." Pure functions here (test_held_prs.py drives them); routes.py registers the
@@ -19,7 +19,7 @@ CAPABILITY = "axf.health@1"
 OWNER = "gate"
 CHECK_ID = "held-prs"
 LINK = "view:gate/tab:gate.tabs=auto-lander"
-ROW = "row:held-prs/pr:{pr}"
+ROW = "grid:held-prs/row:{pr}"  # console-control@1: the item is row:held-prs, each PR a row under grid:held-prs (the grammar has no `pr` segment)
 
 
 def _dur(minutes: Any) -> str:
