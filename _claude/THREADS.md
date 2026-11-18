@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:51 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `molly-ri-court-records` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `new-app-wizard` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
 - 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
+- 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
 
 ## Token passes (log)
 
