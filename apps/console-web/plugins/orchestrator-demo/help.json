@@ -71,6 +71,13 @@
         "title": "Run again",
         "kind": "button",
         "text": "Opens the start overlay for a new demo run. The last run's summary stays readable with `axf demo orchestrator summary`."
+      },
+      {
+        "target": "action:orchestrator-demo.open",
+        "title": "Start the orchestrator demo",
+        "text": "Starts the orchestrator demo. Part of Orchestrator demo.",
+        "kind": "menu-item",
+        "draft": true
       }
     ]
   }

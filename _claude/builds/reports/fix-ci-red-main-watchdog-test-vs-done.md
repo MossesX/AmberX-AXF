@@ -1,6 +1,6 @@
 # Fix CI red on main: watchdog test vs done-means-merged guard, alerts engine job
 
-Build `fix-ci-red-main-watchdog-test-vs-done`. Status: draft.
+Build `fix-ci-red-main-watchdog-test-vs-done`. Status: done, PR open (merge queue).
 
 ## Failing runs
 
@@ -112,3 +112,16 @@ No UI was added or changed for the watchdog. The UI touched in this build is the
 framework page toolbar instead of hand-drawn buttons, menu entries); every button on it was already reachable by deep
 link (`?axf-open=orchestrator-demo`), REST (`/api/plugins/orchestrator-demo/*`), MCP (plugin-commands tools, console
 actions), the CLI and voice ("press <button> on the orchestrator demo toolbar", now in the voice inventory).
+
+## Before / after
+
+| Check | Before (main) | After (this branch) |
+|---|---|---|
+| `test/watchdog.test.mjs` | ✗ refused q-merged queued → landed; expected complete | ✓ 15 tests |
+| Build engine sweep build/store/landing checks | stopped at the watchdog test | ✓ all (15 run individually) |
+| `help-coverage.mjs --check` | ✗ framework 182/184 | ✓ 100% |
+| `check-plugin-pages.mjs` | ✗ orchestrator-demo no page head | ✓ |
+| Alerts step: `check-token-registry.mjs` | ✗ plan-studio-2 (and orchestrator-demo) no tokens block | ✓ |
+| Alerts step: page toolbars, voice inventory, menu-reach, shared assets | ✗ (hidden behind the first failure) | ✓ |
+| Alerts step: alert engines TS + Python, MCP client, axf_server, conflict detection, web push | ✓ | ✓ |
+| `tracker.mjs --check`, `axf.mjs validate --framework`, `check-done-means-merged.mjs` | ✓ | ✓ |
