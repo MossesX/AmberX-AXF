@@ -298,7 +298,9 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
 }
 
 export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
-  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  let b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  // a start the gate refused (require-split-id) sits in Failed with its reason: Queue sends it back through the splitter
+  if (b.status === 'failed' && b.gateRejection && !b.deleted && !b.hidden) b = setPipeline(b.id, {}, { status: 'pending', by, action: 'pipeline:gate-requeue', note: `Back from Failed (gate: ${str(b.gateReason, 200)}): queued again by ${by}; intake splits it first.`, mutate: (rec) => { rec.gateReason = ''; } });
   if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
   const now = nowIso();
   const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
