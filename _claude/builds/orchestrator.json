@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:49:29.105Z",
+ "updatedAt": "2026-11-18T01:49:44.768Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -212749,6 +212749,38 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     }
    ]
+  },
+  {
+   "id": "one-landing-line-pull-main-merge-one",
+   "title": "One landing line: pull in main and merge one build at a time",
+   "category": "",
+   "detail": "Landing must be one strict line on the VPS: finished builds wait in a single ordered landing line; only one lands at a time. For each: fetch main, merge main into the branch, resolve clashes (automatic fix session if needed), run checks against that fresh main, merge to main, then the next one starts from the new main. Nothing else may push to main while one is landing. A build that finishes building goes straight into the line. Lives in the Watchdog plugin with its settings and order. CI check.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-18T01:48:59.706Z",
+   "updatedAt": "2026-11-18T01:49:14.555Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "We have to put everything in a line, pull in main and merge one at a time.",
+    "at": "2026-11-18T01:48:59.706Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
