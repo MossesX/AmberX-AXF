@@ -834,7 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
 - 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
 - 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
 - 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
@@ -1234,6 +1233,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 06:36 UTC · `move-server-side-console-parts-onto-vps` → complete (all) · foreign-write
 - 2026-11-18 06:38 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
 - 2026-11-18 06:40 UTC · `move-server-side-console-parts-onto-vps` note (all) · pipeline
+- 2026-11-18 06:43 UTC · `approval-pass-covers-every-call` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
