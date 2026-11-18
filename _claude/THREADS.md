@@ -838,7 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:47 UTC · `one-true-source-for-every-setting` s5 done, s6 done (all) · foreign-write
 - 2026-11-18 01:47 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` → landing, note (all) · pipeline
 - 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
@@ -1238,6 +1237,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:56 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
 - 2026-11-18 12:56 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 12:56 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 12:58 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 
