@@ -4469,7 +4469,10 @@
       "rule": "clash",
       "reason": "conflicts in code with #540; goes in the next batch",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/543"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/543",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 2,
@@ -4482,7 +4485,10 @@
       "rule": "",
       "reason": "waits its turn in the line.",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/539"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/539",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 3,
@@ -4494,7 +4500,10 @@
       "state": "held",
       "rule": "ui-review",
       "reason": "its screenshots wait for Brett in UI Review",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "its screenshots wait for Brett in UI Review",
+      "reviewFlag": "waiting"
      },
      {
       "position": 4,
@@ -4506,7 +4515,10 @@
       "state": "kicked",
       "rule": "ci-green",
       "reason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+      "reviewFlag": ""
      },
      {
       "position": 5,
@@ -4518,7 +4530,10 @@
       "state": "held",
       "rule": "merge-queue-only",
       "reason": "it is a draft",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "it is a draft",
+      "reviewFlag": ""
      },
      {
       "position": 6,
@@ -4530,13 +4545,17 @@
       "state": "held",
       "rule": "",
       "reason": "taken out of the queue by hand (waiting for the skins build)",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "taken out of the queue by hand (waiting for the skins build)",
+      "reviewFlag": ""
      }
     ],
     "landedRecently": [
      538,
      536
-    ]
+    ],
+    "flagged": []
    },
    "paused": {
     "$axf": "lander-state@1",
@@ -4606,7 +4625,10 @@
       "rule": "clash",
       "reason": "conflicts in code with #540; goes in the next batch",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/543"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/543",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 2,
@@ -4619,7 +4641,10 @@
       "rule": "",
       "reason": "waits its turn in the line.",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/539"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/539",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 3,
@@ -4631,7 +4656,10 @@
       "state": "held",
       "rule": "ui-review",
       "reason": "its screenshots wait for Brett in UI Review",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "its screenshots wait for Brett in UI Review",
+      "reviewFlag": "waiting"
      },
      {
       "position": 4,
@@ -4643,7 +4671,10 @@
       "state": "kicked",
       "rule": "ci-green",
       "reason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+      "reviewFlag": ""
      },
      {
       "position": 5,
@@ -4655,7 +4686,10 @@
       "state": "held",
       "rule": "merge-queue-only",
       "reason": "it is a draft",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "it is a draft",
+      "reviewFlag": ""
      },
      {
       "position": 6,
@@ -4667,13 +4701,17 @@
       "state": "held",
       "rule": "",
       "reason": "taken out of the queue by hand (waiting for the skins build)",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "taken out of the queue by hand (waiting for the skins build)",
+      "reviewFlag": ""
      }
     ],
     "landedRecently": [
      538,
      536
-    ]
+    ],
+    "flagged": []
    },
    "off": {
     "$axf": "lander-state@1",
@@ -4700,7 +4738,8 @@
      }
     ],
     "waiting": [],
-    "landedRecently": []
+    "landedRecently": [],
+    "flagged": []
    },
    "empty": {
     "$axf": "lander-state@1",
@@ -4714,7 +4753,8 @@
     "landing": null,
     "lastRuns": [],
     "waiting": [],
-    "landedRecently": []
+    "landedRecently": [],
+    "flagged": []
    }
   },
   "ruleForWhy": {

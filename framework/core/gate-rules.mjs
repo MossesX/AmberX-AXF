@@ -149,14 +149,34 @@ export function normLanding(l) {
   return { pr: pr(x.pr), title: str(x.title, 200), build: str(x.build, 120), branch: str(x.branch, 200), ci: str(x.ci, 20), since: iso(x.since), runUrl: str(x.runUrl, 300) };
 }
 
-/** One waiting PR with the rule that holds it. */
-export function normWaiting(w, i = 0) {
+/** The waiting states in which a PR is truly held (not merely in line): heldSince and holdReason are filled in. */
+export const HELD_STATES = Object.freeze(['held', 'kicked', 'paused']);
+
+/**
+ * One waiting PR with the rule that holds it. Nov 18 2026 (build auto-lander-never-wait-missing-ui-review): a held record
+ * carries heldSince (when the hold began), holdReason (why, in plain words) and reviewFlag ('' | missing | unposted |
+ * waiting). Migration: a held record written before these fields gets heldSince = its last-seen time (`since`, else `at`)
+ * and holdReason = its reason, so the held-prs check can age every hold from the first read.
+ */
+export function normWaiting(w, i = 0, at = '') {
   const x = obj(w);
+  const state = oneOf(WAITING_STATES, x.state, 'waiting');
+  const reason = str(x.reason, TEXT_MAX);
+  const held = HELD_STATES.includes(state);
+  const heldSince = iso(x.heldSince) || (held ? iso(x.since) || iso(at) : '');
   return {
     position: int(x.position) || i + 1, pr: pr(x.pr), title: str(x.title, 200), build: str(x.build, 120), branch: str(x.branch, 200), head: str(x.head, 64),
-    state: oneOf(WAITING_STATES, x.state, 'waiting'), rule: ID_RE.test(String(x.rule || '')) ? x.rule : '', reason: str(x.reason, TEXT_MAX), since: iso(x.since), ...(x.url ? { url: str(x.url, 300) } : {}),
+    state, rule: ID_RE.test(String(x.rule || '')) ? x.rule : '', reason, since: iso(x.since), ...(x.url ? { url: str(x.url, 300) } : {}),
+    heldSince, holdReason: held ? str(x.holdReason, TEXT_MAX) || reason : str(x.holdReason, TEXT_MAX), reviewFlag: oneOf(REVIEW_FLAGS, x.reviewFlag, ''),
   };
 }
+
+/** One PR that landed with its review flagged (lander-state@1.flagged[]): what the UI Review notice and the build note say. */
+export function normFlagged(f) {
+  const x = obj(f);
+  return { pr: pr(x.pr), build: str(x.build, 120), branch: str(x.branch, 200), reviewFlag: oneOf(REVIEW_FLAGS.filter(Boolean), x.reviewFlag, 'missing'), at: iso(x.at), ...(x.notice ? { notice: str(x.notice, 120) } : {}) };
+}
+export const FLAGGED_MAX = 50;
 
 /** A lander-state@1 record, normalised. */
 export function normLanderState(s, at = new Date().toISOString()) {
@@ -168,10 +188,19 @@ export function normLanderState(s, at = new Date().toISOString()) {
     mode: oneOf(LANDER_MODES, x.mode === 'merge-queue' ? 'batch' : x.mode, 'serial'), source: oneOf(STATE_SOURCES, x.source, 'merge-queue@1'),
     landing: x.landing && typeof x.landing === 'object' ? normLanding(x.landing) : null,
     lastRuns: (Array.isArray(x.lastRuns) ? x.lastRuns : []).slice(-RUNS_MAX).map(normRun),
-    waiting: (Array.isArray(x.waiting) ? x.waiting : []).slice(0, WAITING_MAX).map(normWaiting),
+    waiting: (Array.isArray(x.waiting) ? x.waiting : []).slice(0, WAITING_MAX).map((w, i) => normWaiting(w, i, iso(x.at) || at)),
     landedRecently: (Array.isArray(x.landedRecently) ? x.landedRecently : []).map(pr).filter(Boolean).slice(-20),
+    flagged: (Array.isArray(x.flagged) ? x.flagged : []).map(normFlagged).filter((f) => f.pr).slice(-FLAGGED_MAX),
     ...(x.error ? { error: str(x.error, 400) } : {}),
   };
+}
+
+/** The held PRs of a lander-state@1 older than `minutes`, each with how long it has been held (the held-prs check). */
+export function heldOlderThan(state, minutes, at = new Date().toISOString()) {
+  const now = Date.parse(at); const limit = Math.max(0, Number(minutes) || 0) * 60000;
+  return normLanderState(state, at).waiting
+    .filter((w) => HELD_STATES.includes(w.state) && w.heldSince && now - Date.parse(w.heldSince) >= limit)
+    .map((w) => ({ pr: w.pr, build: w.build, title: w.title, branch: w.branch, state: w.state, rule: w.rule, reviewFlag: w.reviewFlag, holdReason: w.holdReason, heldSince: w.heldSince, heldMin: Math.floor((now - Date.parse(w.heldSince)) / 60000), ...(w.url ? { url: w.url } : {}) }));
 }
 
 /** Errors in a lander-state@1 record (empty = valid). */
@@ -188,8 +217,18 @@ export function landerStateErrors(s) {
   if (!Array.isArray(x.lastRuns)) out.push('lastRuns is a list');
   else x.lastRuns.forEach((r, i) => { if (!RUN_RESULTS.includes(obj(r).result)) out.push(`lastRuns[${i}].result is one of ${RUN_RESULTS.join(', ')}`); if (obj(r).reason && !RUN_REASONS.includes(obj(r).reason)) out.push(`lastRuns[${i}].reason is one of ${RUN_REASONS.join(', ')}`); });
   if (!Array.isArray(x.waiting)) out.push('waiting is a list');
-  else x.waiting.forEach((w, i) => { const y = obj(w); if (!pr(y.pr)) out.push(`waiting[${i}].pr is a PR number`); if (!WAITING_STATES.includes(y.state)) out.push(`waiting[${i}].state is one of ${WAITING_STATES.join(', ')}`); if (!str(y.reason)) out.push(`waiting[${i}].reason says in plain words why it waits`); if (y.rule && !ID_RE.test(String(y.rule))) out.push(`waiting[${i}].rule is a rule id`); });
+  else x.waiting.forEach((w, i) => {
+    const y = obj(w);
+    if (!pr(y.pr)) out.push(`waiting[${i}].pr is a PR number`);
+    if (!WAITING_STATES.includes(y.state)) out.push(`waiting[${i}].state is one of ${WAITING_STATES.join(', ')}`);
+    if (!str(y.reason)) out.push(`waiting[${i}].reason says in plain words why it waits`);
+    if (y.rule && !ID_RE.test(String(y.rule))) out.push(`waiting[${i}].rule is a rule id`);
+    if (HELD_STATES.includes(y.state) && !iso(y.heldSince)) out.push(`waiting[${i}].heldSince says when the hold began (a held record is aged from it)`);
+    if (HELD_STATES.includes(y.state) && !str(y.holdReason)) out.push(`waiting[${i}].holdReason says why it is held`);
+    if (y.reviewFlag !== undefined && !REVIEW_FLAGS.includes(y.reviewFlag)) out.push(`waiting[${i}].reviewFlag is one of ${REVIEW_FLAGS.filter(Boolean).join(', ')} or empty`);
+  });
   if (x.landing !== null && x.landing !== undefined && !pr(obj(x.landing).pr)) out.push('landing is null or names a PR');
+  if (x.flagged !== undefined) { if (!Array.isArray(x.flagged)) out.push('flagged is a list'); else x.flagged.forEach((f, i) => { const y = obj(f); if (!pr(y.pr)) out.push(`flagged[${i}].pr is a PR number`); if (!REVIEW_FLAGS.filter(Boolean).includes(y.reviewFlag)) out.push(`flagged[${i}].reviewFlag is one of ${REVIEW_FLAGS.filter(Boolean).join(', ')}`); }); }
   return out;
 }
 
@@ -200,8 +239,8 @@ export const REGISTRY = Object.freeze({
   schema: SCHEMA, version: VERSION, rule: RULE_FRAME, set: SET_FRAME, state: STATE_FRAME, run: RUN_FRAME,
   kinds: KINDS, severities: SEVERITIES, owners: OWNERS, landerStatuses: LANDER_STATUSES, landerModes: LANDER_MODES,
   waitingStates: WAITING_STATES, runResults: RUN_RESULTS, runReasons: RUN_REASONS, stateSources: STATE_SOURCES,
-  uiStates: UI_STATES, uiFlagged: UI_FLAGGED, reviewFlags: REVIEW_FLAGS, verdictFlags: VERDICT_FLAGS,
-  idPattern: ID_PATTERN, rulesMax: RULES_MAX, runsMax: RUNS_MAX, waitingMax: WAITING_MAX, textMax: TEXT_MAX,
+  uiStates: UI_STATES, uiFlagged: UI_FLAGGED, reviewFlags: REVIEW_FLAGS, verdictFlags: VERDICT_FLAGS, heldStates: HELD_STATES,
+  idPattern: ID_PATTERN, rulesMax: RULES_MAX, runsMax: RUNS_MAX, waitingMax: WAITING_MAX, flaggedMax: FLAGGED_MAX, textMax: TEXT_MAX,
 });
 
 const $schema = 'https://json-schema.org/draft/2020-12/schema';
@@ -263,8 +302,12 @@ export function jsonSchemas() {
       position: { type: 'integer', minimum: 0 }, pr: prNumber, title: { type: 'string' }, build: { type: 'string' }, branch: { type: 'string' }, head: { type: 'string' }, url: { type: 'string' },
       state: { enum: WAITING_STATES }, rule: { type: 'string', pattern: `(${ID_PATTERN})|^$`, description: 'the gate rule that holds it, or empty for a hold by hand / a queue state' },
       reason: { type: 'string', minLength: 1, maxLength: TEXT_MAX, description: 'why it waits, in plain words' }, since: { type: 'string' },
+      heldSince: { type: 'string', description: 'when the hold began (ISO); required while state is held, kicked or paused. A record written before Nov 18 2026 gets its last-seen time' },
+      holdReason: { type: 'string', maxLength: TEXT_MAX, description: 'why it is held, in plain words (the held-prs check and Land now show it)' },
+      reviewFlag: { enum: REVIEW_FLAGS, description: "the UI Review flag: waiting = an item in the console holds it; missing / unposted = it lands flagged; '' = no review" },
     },
   };
+  const flagged = { type: 'object', required: ['pr', 'reviewFlag'], properties: { pr: prNumber, build: { type: 'string' }, branch: { type: 'string' }, reviewFlag: { enum: REVIEW_FLAGS.filter(Boolean) }, at: { type: 'string' }, notice: { type: 'string', description: 'the UI Review notice (Screenshots group "<build> - missing review") filed for it' } } };
   return {
     'gate-rule.schema.json': rule,
     'gate-rule-set.schema.json': {
@@ -281,7 +324,8 @@ export function jsonSchemas() {
         $axf: { const: STATE_FRAME }, at: dateTime, status: { enum: LANDER_STATUSES }, enabled: { type: 'boolean', description: 'the one On/Off the cron reads first' },
         paused: { type: 'boolean' }, pause: { type: ['object', 'null'], properties: { why: { type: 'string' }, by: { type: 'string' }, at: { type: 'string' } } },
         mode: { enum: LANDER_MODES }, source: { enum: STATE_SOURCES }, landing, lastRuns: { type: 'array', maxItems: RUNS_MAX, items: run },
-        waiting: { type: 'array', maxItems: WAITING_MAX, items: waiting }, landedRecently: { type: 'array', items: prNumber }, error: { type: 'string' },
+        waiting: { type: 'array', maxItems: WAITING_MAX, items: waiting }, landedRecently: { type: 'array', items: prNumber },
+        flagged: { type: 'array', maxItems: FLAGGED_MAX, items: flagged, description: 'PRs that landed with their UI Review missing or unposted (land, review flagged), oldest first' }, error: { type: 'string' },
       },
     },
   };
@@ -535,13 +579,16 @@ export function landerStateFrom({ config = {}, queue = {}, control = {}, runs = 
   const last = runs.length ? normRun(runs[runs.length - 1]) : null;
   const paused = !!(pause && typeof pause === 'object');
   const status = !l.enabled ? 'off' : paused ? 'paused' : last?.result === 'error' ? 'error' : live ? 'running' : 'idle';
+  // the review flag: a queue entry says it (reviewFlag), else a UI Review hold is 'waiting' (the item exists; nothing else holds)
+  const flagOf = (x, rule, state) => oneOf(REVIEW_FLAGS, x.reviewFlag, rule === 'ui-review' && HELD_STATES.includes(state) ? 'waiting' : '');
   const waiting = [
-    ...items.filter((x) => pr(x.pr) && x !== live).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: removed[x.pr] ? 'skipped' : 'waiting', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'waits its turn in the line.', since: x.since })),
-    ...held.filter((x) => pr(x.pr)).map((x) => ({ pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state: x.state === 'kicked' ? 'kicked' : 'held', rule: ruleForWhy(x.why), reason: str(x.why, TEXT_MAX) || 'held.', since: x.since })),
-  ].map((w, i) => normWaiting({ ...w, position: i + 1 }, i));
+    ...items.filter((x) => pr(x.pr) && x !== live).map((x) => { const state = removed[x.pr] ? 'skipped' : 'waiting'; const rule = ruleForWhy(x.why); return { pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state, rule, reason: str(x.why, TEXT_MAX) || 'waits its turn in the line.', since: x.since, reviewFlag: flagOf(x, rule, state) }; }),
+    ...held.filter((x) => pr(x.pr)).map((x) => { const state = x.state === 'kicked' ? 'kicked' : 'held'; const rule = ruleForWhy(x.why); return { pr: x.pr, title: x.title, build: x.build, branch: x.branch, head: x.head, url: x.url, state, rule, reason: str(x.why, TEXT_MAX) || 'held.', since: x.since, heldSince: x.heldSince || x.since, holdReason: x.holdReason || str(x.why, TEXT_MAX), reviewFlag: flagOf(x, rule, state) }; }),
+  ].map((w, i) => normWaiting({ ...w, position: i + 1 }, i, at));
   return normLanderState({
     at, status, enabled: l.enabled, paused, pause: paused ? pause : null, mode: l.mode, source: 'merge-queue@1',
     landing: live ? { pr: live.pr, title: live.title, build: live.build, branch: live.branch, ci: live.ci, since: live.startedAt || q.at, runUrl: live.runUrl } : null,
-    lastRuns: runs, waiting, landedRecently: (Array.isArray(q.merged) ? q.merged : []).map((m) => m?.pr).filter(pr).slice(-20), ...(last?.error ? { error: last.error } : {}),
+    lastRuns: runs, waiting, landedRecently: (Array.isArray(q.merged) ? q.merged : []).map((m) => m?.pr).filter(pr).slice(-20),
+    flagged: (Array.isArray(q.flagged) ? q.flagged : []), ...(last?.error ? { error: last.error } : {}),
   }, at);
 }

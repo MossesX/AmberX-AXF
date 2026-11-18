@@ -54,6 +54,14 @@ setting lists only `waiting`, `changes`, `rejected`; `missing`, `unposted` and `
 says. The lander (s4–s6 of that build) looks the item up in the live console before it holds, records the flag on the
 `lander-state@1` record (`reviewFlag`) and files a UI Review notice so the flagged review is seen without blocking.
 
+`lander-state@1.waiting[]` records carry three more fields since the same build: `heldSince` (ISO, when the hold began;
+required while `state` is `held`, `kicked` or `paused`: `HELD_STATES`), `holdReason` (why, in plain words) and
+`reviewFlag` (`REVIEW_FLAGS`). Migration: a held record written before the fields gets `heldSince` = its last-seen time
+(`since`, else the record's `at`) and `holdReason` = its `reason` on the first normalisation (`normWaiting`), so every
+hold has an age from the first read. `heldOlderThan(state, minutes)` lists the held PRs older than a limit with `heldMin`
+(the held-prs systems check). `lander-state@1.flagged[]` (`normFlagged`, ≤ 50, oldest first) lists the PRs that landed
+with their review flagged: `{ pr, build, branch, reviewFlag, at, notice? }`.
+
 `gate-history@1` (append-only JSONL in the plugin's `dataDir`): `{ at, by, kind: rule \| lander, action, id?, pr?,
 before?, after?, reason }`. `gate.check_pr` with a PR number builds the snapshot from what the lander knows (PR checks,
 UI Review hold through `ui-review@1`, conflicts, hand holds) and never changes anything; it is what the Rules tab's
@@ -75,7 +83,7 @@ VPS runner reads it through `auto-lander.policyFromRules` and obeys it with or w
 | Tool | Policy | Input | Output |
 | --- | --- | --- | --- |
 | `lander.status` | read | `{}` | `lander-state@1` without `waiting` and `lastRuns` bodies: `status`, `enabled`, `paused`, `pause`, `mode`, `landing`, counts `{ waiting, runs }`, `landedRecently` |
-| `lander.waiting` | read | `{ rule?, state? }` | `{ items: lander-state@1.waiting }` (each: `position`, `pr`, `title`, `build`, `state`, `rule`, `reason`, `since`) |
+| `lander.waiting` | read | `{ rule?, state? }` | `{ items: lander-state@1.waiting }` (each: `position`, `pr`, `title`, `build`, `state`, `rule`, `reason`, `since`, `heldSince`, `holdReason`, `reviewFlag`) |
 | `lander.runs` | read | `{ limit?: ≤ 200, result? }` | `{ items: [auto-lander-run@1] }`, newest first |
 | `lander.land_now` | confirm | `{ pr, by, reason, confirm? }` | first call `{ confirm: token, pr, title }`; second `{ ok, pr, position: 0, via: merge-queue }` — puts the PR at the head of the line (`land.mjs queue move <pr> 0` / `lander land-now`); it still passes every rule, never a direct merge |
 | `lander.pause` | write | `{ why, by, reason }` | `lander-state@1` with `paused: true`, `pause: { why, by, at }`; the entry in flight finishes, nothing new starts |
