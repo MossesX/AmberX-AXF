@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9008,
- "updatedAt": "2026-11-18T14:12:22.018Z",
+ "rev": 9009,
+ "updatedAt": "2026-11-18T14:15:10.121Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252547,7 +252547,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -252555,7 +252555,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T14:01:29.733Z",
+   "updatedAt": "2026-11-18T14:14:41.726Z",
    "builtAt": "",
    "notes": [
     {
@@ -252585,6 +252585,10 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T14:01:29.733Z"
+    },
+    {
+     "text": "Watchdog fixed Attach widgets to any toolbar, banner style (step s6): its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-18T14:14:41.726Z"
     }
    ],
    "approvals": [],
@@ -252606,13 +252610,22 @@
     "queuedBy": "console",
     "account": "",
     "session": "",
-    "slot": "[object Object]",
+    "slot": "",
     "model": "",
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 0,
-    "lastRun": null,
+    "crashes": 1,
+    "lastRun": {
+     "at": "2026-11-18T14:14:25.732Z",
+     "exit": null,
+     "outcome": "requeued",
+     "reason": "crash",
+     "stepsLeft": 14,
+     "account": "",
+     "session": "",
+     "phase": ""
+    },
     "split": {
      "at": "2026-11-16T22:49:23.111Z",
      "by": "orchestrator",
@@ -252621,7 +252634,7 @@
      "note": "Split by Claude into 19 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -252637,6 +252650,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T14:14:25.732Z",
+     "buildId": "attach-widgets-to-any-toolbar-banner",
+     "phase": "",
+     "step": "s6",
+     "cause": "tmux-missing",
+     "exit": null,
+     "action": "retry",
+     "attempt": 1,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3)."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -252786,10 +252815,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-18T14:14:41.726Z",
+     "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-16T22:49:23.111Z"
+     "updatedAt": "2026-11-18T14:14:41.927Z"
     },
     {
      "id": "s7",
@@ -253126,7 +253155,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -321110,7 +321139,7 @@
      "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T14:11:34.518Z",
+     "at": "2026-11-18T14:12:50.319Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -321173,7 +321202,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
