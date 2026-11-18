@@ -49,8 +49,10 @@ on settings-iface@1.
   fixtures regenerated (`toolbar-actions.json`, `toolbar-migrate.json` gain builtFor).
 - `check-page-toolbar-voice.mts --write` regenerated the voice inventory for the renamed ids.
 - Green: check-toolbars, check-chrome-assets, check-page-toolbars (20), check-toolbar-actions (325), settings-iface,
-  shared-assets, check-theme, check-controls; console `tsc --noEmit` clean apart from the generated
-  `src/control/inventory.json` that is missing on a fresh checkout.
+  shared-assets, check-theme, check-controls, check-console-control, chrome-settings, check-tapconfirm,
+  check-asset-overrides, check-done-means-merged (all re-run after merging main). Console `tsc --noEmit` was clean
+  before the main merge (only the generated `src/control/inventory.json` that a fresh checkout lacks); the
+  post-merge run never got a VPS heavy slot in 15 min (2/2 busy), so CI's typecheck covers the merge commit.
 
 ## Coordination (s6)
 
