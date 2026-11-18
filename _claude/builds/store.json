@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8524,
- "updatedAt": "2026-11-18T00:10:49.745Z",
+ "rev": 8525,
+ "updatedAt": "2026-11-18T00:11:08.713Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266728,7 +266728,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-18T00:10:31.831Z",
+   "updatedAt": "2026-11-18T00:10:45.111Z",
    "builtAt": "",
    "notes": [
     {
@@ -267098,6 +267098,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 2 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T00:10:31.831Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s55): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T00:10:45.111Z"
     }
    ],
    "approvals": [
@@ -267168,6 +267172,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T00:10:19.569Z",
+     "buildId": "rebuild-fresh-main-phone-connect-small",
+     "phase": "Phase 1",
+     "step": "s55",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-18T00:10:53.275Z",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -267893,7 +267913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 122,
+   "rev": 124,
    "deleted": false,
    "deletedAt": "",
    "pending": {
