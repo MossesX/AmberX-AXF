@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8765,
- "updatedAt": "2026-11-18T01:39:30.624Z",
+ "rev": 8766,
+ "updatedAt": "2026-11-18T01:40:06.157Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323939,6 +323939,55 @@
     "prefixSteps": false,
     "stepAt": {}
    },
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "watchdog-plugin-owns-every-vps",
+   "title": "Watchdog plugin owns every VPS automation and its rules",
+   "category": "",
+   "detail": "Rule: anything the VPS automates lives in the Watchdog plugin. Move the recovery watchdog and stale-row watchdog settings, rules, tab, logs and FYIs out of Build orchestrator settings into the Watchdog plugin, with one settings source. Also move auto-lander controls, the slot sweeper and every other VPS timer or cron (axf-auto-lander, axf-watchdog, stale-row) into it, each with its own rules and an on/off switch. Run after watchdogs-combined-land lands. CI check that no VPS automation settings live outside the Watchdog plugin.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T01:39:44.152Z",
+   "updatedAt": "2026-11-18T01:39:44.152Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Anything automated by the VPS goes into that plugin.",
+    "at": "2026-11-18T01:39:44.152Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 995
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
    "queue": null,
    "defaultAt": "",
    "rearranged": false,
