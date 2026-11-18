@@ -521,7 +521,7 @@
         "id": "pipeline-split",
         "route": "POST /pipeline/split",
         "title": "Split a build into steps",
-        "description": "Ask the orchestrator to split (or re-split) a build into steps of 10 minutes or less, Fable only where needed; done by the dispatcher within a minute.",
+        "description": "Ask the orchestrator to split (or re-split) a build on its next tick: steps of 10 minutes or less (Fable only where needed), then parts for the free agent slots that never touch the same files (split-plan@1; the row reads Splitting meanwhile). Done by the dispatcher within a minute; read the plan with pipeline-split-show. Say 'split skins'.",
         "input": {
           "type": "object",
           "properties": {
@@ -1154,6 +1154,117 @@
           ]
         },
         "output": "{ build, status, retries, recoveries: [watchdog-recovery@1] }"
+      },
+      {
+        "id": "pipeline-split-show",
+        "route": "GET /split/{build}",
+        "title": "A build's split",
+        "description": "One build's split (split-plan@1): its split id, every part with its slot, branch, account and live status (waiting, building, testing, rebuilding, failed, done), the run state rolled up (Splitting, Queued, Building k/n, Combining, CI, Merging, Merged, Live, Finished, Failed), a gate refusal if any, and the main lock. Say 'show the split of skins' or 'how are the parts of skins doing'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, status, tab, splitId, split: { run, parts: [{ id, status, slot, branch, account }], combine }, badge, gateReason?, mainLock, holdsMain }"
+      },
+      {
+        "id": "pipeline-run-status",
+        "route": "GET /run/active",
+        "title": "The active run",
+        "description": "One build at a time: the build whose run is on now (splitting, building its parts, combining or landing) with its split and roll-up, and the main lock (who holds main, since when, on which sha). Say 'what is building now' or 'which run is active'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {}
+        },
+        "output": "{ active: { id, status, split, badge } | null, mainLock, why }"
+      },
+      {
+        "id": "pipeline-resplit",
+        "route": "POST /split/{build}/resplit",
+        "title": "Resplit a build now",
+        "description": "Plan a Pending or Queued build's parts again now, for the free agent slots (a new split id). Refused while its run is on: cancel it first. Say 'resplit skins'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ id, ok, splitId, parts, why, status }"
+      },
+      {
+        "id": "pipeline-cancel",
+        "route": "POST /run/{build}/cancel",
+        "title": "Cancel a build's run",
+        "description": "Stop a build's split run: every part session stops, nothing lands, main unlocks and the build goes back to Pending. Destructive: send confirm: true. Say 'cancel the run of skins', then confirm.",
+        "destructive": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id or spoken name"
+            },
+            "confirm": {
+              "type": "boolean",
+              "description": "true to really cancel (required)"
+            },
+            "why": {
+              "type": "string",
+              "description": "Why, for the build's notes"
+            }
+          },
+          "required": [
+            "build",
+            "confirm"
+          ]
+        },
+        "output": "{ id, cancelled, stopped: [session], status }"
+      },
+      {
+        "id": "pipeline-split-gate",
+        "route": "GET /split-gate",
+        "title": "The split-ID gate rule",
+        "description": "The gate rule require-split-id (Gate & rules, on by default): the VPS refuses any build start without an orchestrator build id and a split id; refused starts go to the Failed tab with the reason. Say 'is the split gate on'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {}
+        },
+        "output": "{ rule: { id, title, description, enabled, severity, settings } }"
+      },
+      {
+        "id": "pipeline-split-gate-set",
+        "route": "PUT /split-gate",
+        "title": "Switch the split-ID gate",
+        "description": "Switch the gate rule require-split-id on or off (the same switch as on Gate & rules). Say 'turn the split gate on'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "description": "on (true) or off (false)"
+            }
+          },
+          "required": [
+            "enabled"
+          ]
+        },
+        "output": "{ rule: { id, enabled } }"
       }
     ]
   },

@@ -1,4 +1,5 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
+import type { AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
@@ -12,6 +13,7 @@ import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 import { registerWatchdogActions } from './watchdogActions';
 import { WatchdogPanel, registerWatchdogTargets } from './WatchdogPanel';
+import voiceDoc from '../voice.json';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
@@ -52,6 +54,55 @@ setPriorityHost({
   set: async (builds, priority) => { await priorityApi.post('priority', { builds, priority }); },
 });
 
+/*
+ * split-plan@1 (one-build-time-always-split-to-fill): console actions for split runs, each the same route as its plugin
+ * command (MCP), its pipeline.mjs subcommand (CLI) and its AmberX voice phrase (../voice.json):
+ *   build-orchestrator.run-status            GET run/active           pipeline-run-status    pipeline.mjs run
+ *   build-orchestrator.split-show:<build>    GET split/<build>        pipeline-split-show    pipeline.mjs split <id>
+ *   build-orchestrator.split:<build>         POST pipeline/split      pipeline-split         pipeline.mjs split <id> --request
+ *   build-orchestrator.resplit:<build>       POST split/<id>/resplit  pipeline-resplit       pipeline.mjs resplit <id>
+ *   build-orchestrator.cancel-run:<build>|confirm  POST run/<id>/cancel  pipeline-cancel     pipeline.mjs cancel <id> --confirm
+ *   build-orchestrator.split-gate[:on|off]   GET / PUT split-gate     pipeline-split-gate[-set]  pipeline.mjs split-gate [on|off]
+ * Cancel is destructive: without `|confirm` it only says how to confirm.
+ */
+type SplitAnswer = { ok: boolean; id?: string; status?: string; splitId?: string; badge?: { label: string } | null; split?: { parts: { id: string; status: string }[] } | null; why?: string; active?: SplitAnswer | null; rule?: { id: string; enabled: boolean; title: string }; parts?: number; cancelled?: string };
+function registerSplitActions(rt: AxfRuntime, open: (arg?: string) => Promise<void>) {
+  const arg = (a?: string) => { try { return decodeURIComponent(a ?? '').trim(); } catch { return (a ?? '').trim(); } };
+  const say = (t: string, tone: 'info' | 'success' | 'warning' = 'info') => rt.toast(t, tone, 'Split runs');
+  const fail = (e: Error) => say(e.message, 'warning');
+  const line = (r: SplitAnswer) => `${r.id}: ${r.status}${r.splitId ? ` · ${r.splitId} · ${r.badge?.label ?? ''} · ${(r.split?.parts ?? []).map((p) => `${p.id} ${p.status}`).join(', ')}` : ' · not split yet'}`;
+  rt.actions.register('build-orchestrator.run-status', () => { void pipeApi.call<SplitAnswer>('run/active').then((r) => say(r.active ? `Active: ${line(r.active)}` : `No active run. ${r.why ?? ''}`), fail); }, { label: 'Split runs: the active run and the main lock' });
+  rt.actions.register('build-orchestrator.split-show', ([a]) => { const id = arg(a); if (!id) return; void open(id); void pipeApi.call<SplitAnswer>(`split/${encodeURIComponent(id)}`).then((r) => say(line(r)), fail); }, { label: 'Split runs: show a build\'s split (<build>)', params: true });
+  rt.actions.register('build-orchestrator.split', ([a]) => { const id = arg(a); if (!id) return; void pipeApi.post<SplitAnswer>('pipeline/split', { id }).then(() => say(`${id}: split on the next tick (steps, then parts).`, 'success'), fail); }, { label: 'Split runs: split a build (<build>)', params: true });
+  rt.actions.register('build-orchestrator.resplit', ([a]) => { const id = arg(a); if (!id) return; void pipeApi.post<SplitAnswer>(`split/${encodeURIComponent(id)}/resplit`, {}).then((r) => say(r.ok ? `${id}: ${r.splitId}, ${r.parts} part(s).` : `${id}: ${r.why}`, r.ok ? 'success' : 'warning'), fail); }, { label: 'Split runs: plan a build\'s parts again (<build>)', params: true });
+  rt.actions.register('build-orchestrator.cancel-run', ([a]) => {
+    const [id, c] = arg(a).split('|'); if (!id) return;
+    if (c !== 'confirm') { say(`Cancelling ${id}'s run stops every part and lands nothing. Run build-orchestrator.cancel-run:${id}|confirm to do it.`, 'warning'); return; }
+    void pipeApi.post<SplitAnswer>(`run/${encodeURIComponent(id)}/cancel`, { confirm: true }).then((r) => say(`${id}: run ${r.cancelled} cancelled, back to Pending.`, 'success'), fail);
+  }, { label: 'Split runs: cancel a build\'s run (<build>|confirm)', params: true });
+  rt.actions.register('build-orchestrator.split-gate', ([a]) => {
+    const v = arg(a);
+    const p = v === 'on' || v === 'off' ? pipeApi.put<SplitAnswer>('split-gate', { enabled: v === 'on' }) : pipeApi.call<SplitAnswer>('split-gate');
+    void p.then((r) => say(`${r.rule?.title}: ${r.rule?.enabled ? 'on' : 'off'}.`, 'success'), fail);
+  }, { label: 'Split runs: the split-ID gate rule [on|off]' });
+  // AmberX matches phrases literally, so a {build} phrase is spelled out for every build in Pending, the Queue and Active (its
+  // spoken name: the id with spaces), its action carrying the id. Voice never confirms a cancel: it says how to.
+  const v = (globalThis as { amberxVoice?: { register(module: string, commands: { id: string; phrases: string[]; action: string; owner?: string }[]): () => void } }).amberxVoice;
+  if (!v) return;
+  const spoken = (id: string) => id.replace(/-[a-z0-9]{4}$/, '').replace(/-/g, ' ');
+  const voice = (builds: TabRow[]) => voiceDoc.commands.flatMap((c) => {
+    const fixed = c.phrases.filter((p) => !p.includes('{build}'));
+    const slot = c.phrases.filter((p) => p.includes('{build}'));
+    return [
+      ...(fixed.length ? [{ id: c.id, phrases: fixed, action: c.action, owner: voiceDoc.owner }] : []),
+      ...(slot.length ? builds.map((b) => ({ id: `${c.id}.${b.id}`, phrases: slot.map((p) => p.replace('{build}', spoken(b.id))), action: `${c.action}:${b.id}`, owner: voiceDoc.owner })) : []),
+    ];
+  });
+  const refresh = () => void loadRows(true).then((all) => v.register('build-orchestrator.split', voice(all.filter((b) => ['pending', 'queue', 'active'].includes(b.tab)))), () => v.register('build-orchestrator.split', voice([])));
+  refresh();
+  setInterval(refresh, 5 * 60_000);
+}
+
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.build-orchestrator',
   label: 'Build orchestrator',
@@ -78,6 +129,7 @@ export const plugin: AxfWebLibrary = {
     };
     registerWatchdogActions(rt);
     registerWatchdogTargets(rt);
+    registerSplitActions(rt, open);
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
     // the build watchdog (build-watchdog@1) for voice and console actions: the same calls as REST / MCP / `axf watchdog`

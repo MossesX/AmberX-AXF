@@ -1,0 +1,88 @@
+{
+  "$axf": "orchestrator-voice@1",
+  "description": "AmberX voice phrases for split runs (split-plan@1), registered through the page's AmberX voice registry (globalThis.amberxVoice). Each runs the console action of the same id, which calls the same route as the plugin command (MCP) and pipeline.mjs (CLI). {build} is the build's id or spoken name.",
+  "owner": "Build orchestrator",
+  "commands": [
+    {
+      "id": "split.run-status",
+      "action": "build-orchestrator.run-status",
+      "route": "GET /run/active",
+      "command": "pipeline-run-status",
+      "phrases": [
+        "what is building now",
+        "which run is active",
+        "what holds main",
+        "run status"
+      ]
+    },
+    {
+      "id": "split.show",
+      "action": "build-orchestrator.split-show",
+      "route": "GET /split/{build}",
+      "command": "pipeline-split-show",
+      "phrases": [
+        "show the split of {build}",
+        "how are the parts of {build} doing",
+        "split status of {build}"
+      ]
+    },
+    {
+      "id": "split.split",
+      "action": "build-orchestrator.split",
+      "route": "POST /pipeline/split",
+      "command": "pipeline-split",
+      "phrases": [
+        "split {build}"
+      ]
+    },
+    {
+      "id": "split.resplit",
+      "action": "build-orchestrator.resplit",
+      "route": "POST /split/{build}/resplit",
+      "command": "pipeline-resplit",
+      "phrases": [
+        "resplit {build}",
+        "split {build} again"
+      ]
+    },
+    {
+      "id": "split.cancel",
+      "action": "build-orchestrator.cancel-run",
+      "route": "POST /run/{build}/cancel",
+      "command": "pipeline-cancel",
+      "confirm": true,
+      "phrases": [
+        "cancel the run of {build}",
+        "stop the run of {build}"
+      ]
+    },
+    {
+      "id": "split.gate",
+      "action": "build-orchestrator.split-gate",
+      "route": "GET /split-gate",
+      "command": "pipeline-split-gate",
+      "phrases": [
+        "is the split gate on",
+        "split gate status"
+      ]
+    },
+    {
+      "id": "split.gate-on",
+      "action": "build-orchestrator.split-gate:on",
+      "route": "PUT /split-gate",
+      "command": "pipeline-split-gate-set",
+      "phrases": [
+        "turn the split gate on"
+      ]
+    },
+    {
+      "id": "split.gate-off",
+      "action": "build-orchestrator.split-gate:off",
+      "route": "PUT /split-gate",
+      "command": "pipeline-split-gate-set",
+      "phrases": [
+        "turn the split gate off"
+      ]
+    }
+  ]
+}
