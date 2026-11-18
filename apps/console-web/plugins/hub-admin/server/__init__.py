@@ -964,6 +964,94 @@ async def post_veto_countdown(request: Request) -> dict[str, Any]:
     return await run_action(request, "passes", f"setting:{VETO_SETTING}", None, call)
 
 
+# ---- Users (s13 / s14): invite, role, permissions, disable, sign-out and delete confirm; password is Brett's tap; profile and enable are commands
+
+def _user_action(action: str, build: Callable[[dict[str, Any]], dict[str, Any]]) -> Callable[[Session, dict[str, Any]], tuple[str, Any]]:
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any]:
+        return f"/auth/api/users/{b['_row']}", {"action": action, **build(b)}
+    return call
+
+
+def _str(b: dict[str, Any], k: str, max_len: int = 200, required: bool = False) -> str:
+    v = b.get(k)
+    if v is None or v == "":
+        if required:
+            raise HTTPException(400, f"{k} is needed")
+        return ""
+    if not isinstance(v, str):
+        raise HTTPException(400, f"{k} must be text")
+    return v.strip()[:max_len]
+
+
+async def _user(request: Request, row: str, action: str, call: Callable[[Session, dict[str, Any]], tuple[str, Any]]) -> dict[str, Any]:
+    b = await _body(request)
+    return await run_action(request, "users", action, row, call, {**b, "_row": row})
+
+
+@router.post("/users/invite")
+async def post_users_invite(request: Request) -> dict[str, Any]:
+    """Add a hub account with a temporary password they replace at first sign-in (a confirm)."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any]:
+        username = _str(b, "username", 80, True)
+        password = _str(b, "password", 200, True)
+        role = _str(b, "role", 20) or "user"
+        return "/auth/api/users", {"username": username, "name": _str(b, "name"), "email": _str(b, "email"), "password": password, "role": role}
+    return await run_action(request, "users", "invite", None, call)
+
+
+@router.post("/users/{row}/profile")
+async def post_user_profile(request: Request, row: str) -> dict[str, Any]:
+    """Save an account's name and email."""
+    return await _user(request, row, "profile", _user_action("profile", lambda b: {"name": _str(b, "name"), "email": _str(b, "email")}))
+
+
+@router.post("/users/{row}/role")
+async def post_user_role(request: Request, row: str) -> dict[str, Any]:
+    """Change an account's role (a confirm)."""
+    return await _user(request, row, "role", _user_action("role", lambda b: {"role": _str(b, "role", 20, True)}))
+
+
+@router.post("/users/{row}/permissions")
+async def post_user_permissions(request: Request, row: str) -> dict[str, Any]:
+    """Save the permissions apps behind the wall see for an account (a confirm)."""
+    def build(b: dict[str, Any]) -> dict[str, Any]:
+        perms = b.get("permissions")
+        if not isinstance(perms, list) or any(not isinstance(x, str) for x in perms):
+            raise HTTPException(400, "permissions must be a list of strings")
+        return {"permissions": [x.strip()[:120] for x in perms if x.strip()][:200]}
+    return await _user(request, row, "permissions", _user_action("permissions", build))
+
+
+@router.post("/users/{row}/password")
+async def post_user_password(request: Request, row: str) -> dict[str, Any]:
+    """Set a temporary password for an account (Brett's own tap; never stored or logged here)."""
+    return await _user(request, row, "password", _user_action("password", lambda b: {"password": _str(b, "password", 200, True)}))
+
+
+@router.post("/users/{row}/enable")
+async def post_user_enable(request: Request, row: str) -> dict[str, Any]:
+    """Enable a disabled account."""
+    return await _user(request, row, "enable", _user_action("enable", lambda b: {}))
+
+
+@router.post("/users/{row}/disable")
+async def post_user_disable(request: Request, row: str) -> dict[str, Any]:
+    """Disable an account (a confirm)."""
+    return await _user(request, row, "disable", _user_action("disable", lambda b: {}))
+
+
+@router.post("/users/{row}/signout")
+async def post_user_signout(request: Request, row: str) -> dict[str, Any]:
+    """Sign an account out of every browser (a confirm)."""
+    return await _user(request, row, "signout", _user_action("signout", lambda b: {}))
+
+
+@router.delete("/users/{row}")
+async def delete_user(request: Request, row: str) -> dict[str, Any]:
+    """Delete an account (a confirm; the hub keeps the last admin and Brett's own account safe)."""
+    return await _user(request, row, "delete", _user_action("delete", lambda b: {"sure": True}))
+
+
 # ---- Approval log (s10): the hub's whole log as JSON, a command
 
 @router.post("/log/download")

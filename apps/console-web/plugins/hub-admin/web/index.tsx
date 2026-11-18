@@ -17,6 +17,8 @@ import { FOLDER, VIEW } from './ids';
 import { ApprovalsScreen } from './approvals';
 import { LogScreen } from './log';
 import { PassesScreen } from './passes';
+import { AppsScreen, OverviewScreen } from './overview';
+import { UsersScreen } from './users';
 import { registerHubActions } from './actions';
 import { hubSettingsGroups, wireHubSettings } from './settings';
 import { setActiveScreen, useActiveScreen } from './store';
@@ -70,6 +72,9 @@ export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX
   approvals: (screen) => <ApprovalsScreen screen={screen} />,
   log: (screen) => <LogScreen screen={screen} />,
   passes: (screen) => <PassesScreen screen={screen} />,
+  apps: (screen) => <AppsScreen screen={screen} />,
+  overview: (screen) => <OverviewScreen screen={screen} table={TABLE} />,
+  users: (screen) => <UsersScreen screen={screen} />,
 };
 
 export function HubPage() {

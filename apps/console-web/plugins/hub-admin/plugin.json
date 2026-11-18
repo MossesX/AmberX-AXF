@@ -18,7 +18,8 @@
     "action:hub.focus",
     "action:hub.approvals",
     "action:hub.approvalLog",
-    "action:hub.passes"
+    "action:hub.passes",
+    "action:hub.users"
   ],
   "requires": [
     "service:control@1"
@@ -342,6 +343,134 @@
             "seconds"
           ]
         }
+      },
+      {
+        "route": "POST /users/{row}/password",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "id": "users-invite",
+        "route": "POST /users/invite",
+        "title": "Users: add an account",
+        "tool": "hub_users_invite",
+        "confirm": true,
+        "description": "Adds a hub account with a temporary password they replace at first sign-in (username, name, email, password, role). A confirm: the first call answers a token, the second carries it.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "username",
+            "password"
+          ]
+        }
+      },
+      {
+        "id": "users-profile",
+        "route": "POST /users/{row}/profile",
+        "title": "Users: save name and email",
+        "tool": "hub_users_profile",
+        "description": "Saves an account's name and email.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "id": "users-role",
+        "route": "POST /users/{row}/role",
+        "title": "Users: change role",
+        "tool": "hub_users_role",
+        "confirm": true,
+        "description": "Changes an account's role (a confirm).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "role": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "role"
+          ]
+        }
+      },
+      {
+        "id": "users-permissions",
+        "route": "POST /users/{row}/permissions",
+        "title": "Users: save permissions",
+        "tool": "hub_users_permissions",
+        "confirm": true,
+        "description": "Saves the permissions apps behind the wall see for an account (a confirm).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "permissions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "required": [
+            "permissions"
+          ]
+        }
+      },
+      {
+        "id": "users-enable",
+        "route": "POST /users/{row}/enable",
+        "title": "Users: enable",
+        "tool": "hub_users_enable",
+        "description": "Enables a disabled account."
+      },
+      {
+        "id": "users-disable",
+        "route": "POST /users/{row}/disable",
+        "title": "Users: disable",
+        "tool": "hub_users_disable",
+        "confirm": true,
+        "destructive": true,
+        "description": "Disables an account (a confirm)."
+      },
+      {
+        "id": "users-signout",
+        "route": "POST /users/{row}/signout",
+        "title": "Users: sign out everywhere",
+        "tool": "hub_users_signout",
+        "confirm": true,
+        "description": "Signs an account out of every browser (a confirm)."
+      },
+      {
+        "id": "users-delete",
+        "route": "DELETE /users/{row}",
+        "title": "Users: delete",
+        "tool": "hub_users_delete",
+        "confirm": true,
+        "destructive": true,
+        "description": "Deletes an account (a confirm; the hub keeps the last admin and Brett's own account safe)."
       }
     ]
   },

@@ -85,6 +85,10 @@ def hub(req: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json={"ok": True, "message": "Done"})
     if p == "/auth/api/go-pass":
         return httpx.Response(200, json={"live": False, "hours": [4], "repos": [], "branch": "go-pass", "file": "GO", "writes": []})
+    if p == "/auth/api/users" and req.method == "POST":
+        return httpx.Response(200, json={"ok": True, "message": "Added."})
+    if p.startswith("/auth/api/users/") and req.method == "POST":
+        return httpx.Response(200, json={"ok": True, "message": "Saved."})
     if p == "/auth/api/users":
         return httpx.Response(200, json={"you": "u1", "roles": ["admin", "user"], "passwordMin": 12, "tempPasswordMin": 8, "hints": [], "users": [{"id": "u1", "username": "brett", "role": "admin", "disabled": False, "name": "Brett", "email": "", "permissions": [], "mustChangePassword": False, "weakPassword": False, "createdAt": "", "passwordChangedAt": ""}]})
     if p == "/auth/api/account":
@@ -306,6 +310,8 @@ class FakeRelayWrites(FakeRelay):
             return {"ok": True, "status": 200, "json": {"ok": True, "state": "approved-now", "message": "Approved, running now"}, "via": "browser"}
         if path.endswith("/auto/stop"):
             return {"ok": True, "status": 200, "json": {"message": "Stopped."}, "via": "owner"}
+        if path.startswith("/auth/api/users"):
+            return {"ok": True, "status": 200, "json": {"ok": True, "message": "Saved."}, "via": "browser"}
         return {"ok": True, "status": 200, "json": {"ok": True, "message": "Done.", "item": {"id": ID, "status": "declined"}}, "via": "browser"}
 
 
@@ -424,6 +430,36 @@ j = post("/passes/veto-countdown", {"seconds": 120, "confirm": j["confirm"]}).js
 ok(j["ok"] and writes[-1][0] == "PUT" and writes[-1][1] == "/auth/api/policy" and writes[-1][2]["changes"] == [{"service": "vps", "tool": "run", "vetoSeconds": 120}] and writes[-1][3] is False, f"then PUTs the countdown onto every veto tool ({writes[-1]})")
 ok(post("/passes/veto-countdown", {"seconds": 5}).status_code == 400, "a countdown under the hub's minimum is refused")
 ok(srv.veto_changes({"services": [{"namespace": "a", "tools": [{"name": "x", "policy": "veto"}, {"name": "y", "policy": "allow"}]}]}, 60) == [{"service": "a", "tool": "x", "vetoSeconds": 60}], "only veto tools get the countdown")
+
+# ---------------------------------------------------------------- users (s13 / s14)
+def confirmed(path: str, body: dict | None = None, method: str = "POST"):
+    """A confirm action, both calls: → the second answer."""
+    first = c.request(method, path, json=body or {}, headers={"origin": "https://console.example.test"}).json()
+    assert first.get("code") == "confirmation_required", first
+    return c.request(method, path, json={**(body or {}), "confirm": first["confirm"]}, headers={"origin": "https://console.example.test"}).json()
+
+
+c.cookies.clear(); c.cookies.set("axhub_session", "good")
+j = confirmed("/users/invite", {"username": "sam", "name": "Sam", "email": "", "password": "temp-pass-123", "role": "user"})
+ok(j["ok"] and writes[-1] == ("/auth/api/users", {"username": "sam", "name": "Sam", "email": "", "password": "temp-pass-123", "role": "user"}, False), f"invite confirms, then posts the account ({writes[-1][0]})")
+ok(post("/users/invite", {"username": "sam"}).status_code == 400, "invite without a temporary password is refused before any token")
+j = post("/users/u1/profile", {"name": "Brett M", "email": "b@example.test"}).json()
+ok(j["ok"] and writes[-1] == ("/auth/api/users/u1", {"action": "profile", "name": "Brett M", "email": "b@example.test"}, False), "profile is a plain command")
+j = confirmed("/users/u1/role", {"role": "admin"})
+ok(j["ok"] and writes[-1][1] == {"action": "role", "role": "admin"}, "role change confirms")
+j = confirmed("/users/u1/permissions", {"permissions": ["console.plugin.theme-manager", " apps.download "]})
+ok(j["ok"] and writes[-1][1] == {"action": "permissions", "permissions": ["console.plugin.theme-manager", "apps.download"]}, "permissions confirm and are trimmed")
+ok(post("/users/u1/permissions", {"permissions": "nope"}).status_code == 400, "permissions must be a list")
+j = post("/users/u1/password", {"password": "new-temp-123"}).json()
+ok(j["ok"] and writes[-1] == ("/auth/api/users/u1", {"action": "password", "password": "new-temp-123"}, True), "a temporary password is Brett's tap")
+audit = [json.loads(line) for line in (Path(DATA) / "actions.jsonl").read_text().splitlines()]
+ok(not any("new-temp-123" in json.dumps(e) for e in audit), "the password never reaches the audit log")
+ok(post("/users/u1/enable").json()["ok"] and writes[-1][1] == {"action": "enable"}, "enable is a command")
+ok(confirmed("/users/u1/disable")["ok"] and writes[-1][1] == {"action": "disable"}, "disable confirms")
+ok(confirmed("/users/u1/signout")["ok"] and writes[-1][1] == {"action": "signout"}, "sign-out everywhere confirms")
+j = confirmed("/users/u1", None, "DELETE")
+ok(j["ok"] and writes[-1][1] == {"action": "delete", "sure": True}, "delete is a DELETE that confirms and carries sure")
+ok(c.delete("/users/u1").json()["code"] == "confirmation_required", "a bare DELETE only hands out a token")
 
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 

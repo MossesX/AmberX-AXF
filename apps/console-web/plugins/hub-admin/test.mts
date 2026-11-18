@@ -63,8 +63,8 @@ t('the manifest declares every read with the table\'s tool and skips every perso
     assert.equal(items.find((i) => i.route === `GET /${s.id}`)?.tool, s.state.tool, `GET /${s.id}`);
     if (s.rows?.read) assert.equal(items.find((i) => i.route === `GET /${s.id}/{row}`)?.tool, s.rows.read.tool, `GET /${s.id}/{row}`);
   }
-  for (const sid of ['approvals', 'passes', 'log']) for (const a of hc.screensOf(cli.table).find((s) => s.id === sid)!.actions) {
-    const it = items.find((i) => i.route === (a.row ? `POST /${sid}/{row}/${a.id}` : `POST /${sid}/${a.id}`));
+  for (const sid of ['approvals', 'passes', 'log', 'users']) for (const a of hc.screensOf(cli.table).find((s) => s.id === sid)!.actions) {
+    const it = items.find((i) => i.route === (a.method === 'DELETE' ? `DELETE /${sid}/{row}` : a.row ? `POST /${sid}/{row}/${a.id}` : `POST /${sid}/${a.id}`));
     assert.ok(it, `${sid}/${a.id} declared`);
     if (a.who === 'person') assert.ok(it!.skip && !it!.tool, `${sid}/${a.id} is skipped (person)`);
     else assert.equal(it!.tool, hc.toolOf(cli.table, sid, a.id), `${sid}/${a.id} tool`);
