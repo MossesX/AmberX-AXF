@@ -838,19 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 02:04 UTC · `rebuild-fresh-main-phone-connect-small` merged, note (all) · reconciler
-- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:07 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 02:09 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 02:10 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 02:21 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-18 02:34 UTC · `move-everything-axhub-web-console` → pending, note (all) · reconciler
-- 2026-11-18 02:34 UTC · `one-true-source-for-every-setting` → pending, note (all) · reconciler
-- 2026-11-18 04:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 04:23 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 04:23 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
 - 2026-11-18 04:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 04:27 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
 - 2026-11-18 04:27 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
@@ -1238,6 +1225,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:23 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
 - 2026-11-18 13:23 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
 - 2026-11-18 13:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-18 13:25 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `plan-studio-2-open-button-working-deep` added (15 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (4 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `vps-never-gives-up-fix-land-every-build` added (4 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `every-app-gets-own-locked-default` added (6 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `every-plugin-gets-own-default-toolbar` added (7 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `server-gate-reject-any-build-without` added (5 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
 
 ## Token passes (log)
 

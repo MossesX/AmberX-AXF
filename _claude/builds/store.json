@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8970,
- "updatedAt": "2026-11-18T13:23:28.527Z",
+ "rev": 8971,
+ "updatedAt": "2026-11-18T13:25:35.840Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27478,7 +27478,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -89746,7 +89749,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -96794,7 +96800,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -105602,7 +105611,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -115888,6 +115900,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -118494,7 +118507,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -118776,7 +118792,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -119173,7 +119192,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -132888,7 +132910,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -135470,7 +135495,10 @@
     "pickedAt": "2026-11-14T22:45:32.880Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -135903,7 +135931,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -137652,6 +137683,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -141913,7 +141945,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -142352,7 +142387,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -142936,7 +142974,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -144341,7 +144382,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -146678,7 +146722,10 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -146908,7 +146955,10 @@
     "pickedAt": "2026-11-17T19:06:31.477Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -148716,7 +148766,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -150925,7 +150978,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -151142,7 +151198,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -151709,7 +151768,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -151905,7 +151967,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152122,7 +152187,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152343,7 +152411,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152563,7 +152634,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152788,7 +152862,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153017,7 +153094,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153253,7 +153333,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153486,7 +153569,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153727,7 +153813,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153977,7 +154066,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -154635,7 +154727,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -155449,7 +155544,10 @@
     "pickedAt": "2026-11-15T01:24:21.442Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-molly-gap-axhub-cors",
@@ -155692,7 +155790,10 @@
     "pickedAt": "2026-11-16T16:47:14.644Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -155931,7 +156032,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156183,7 +156287,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156369,7 +156476,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156572,7 +156682,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156856,7 +156969,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157050,7 +157166,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157257,7 +157376,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157455,7 +157577,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157898,7 +158023,10 @@
     "pickedAt": "2026-11-14T23:56:20.868Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-axhub-36-pull-main-in-failed",
@@ -158691,7 +158819,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -158891,7 +159022,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -159117,7 +159251,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -159463,7 +159600,10 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159646,7 +159786,10 @@
     "pickedAt": "2026-11-13T10:43:09.520Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159790,7 +159933,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159892,7 +160038,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160038,7 +160187,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160233,7 +160385,10 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -160364,7 +160519,10 @@
     "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160533,7 +160691,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160706,7 +160867,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -160820,7 +160984,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168590,7 +168757,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168767,7 +168937,10 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168881,7 +169054,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168999,7 +169175,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169152,7 +169331,10 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169310,7 +169492,10 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169393,7 +169578,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -169597,7 +169785,10 @@
     "pickedAt": "2026-11-13T00:46:14.486Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
@@ -169787,7 +169978,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
@@ -170090,7 +170284,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -170163,7 +170360,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -170455,7 +170655,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
@@ -170660,7 +170863,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -170907,7 +171113,10 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171011,7 +171220,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171153,7 +171365,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171308,7 +171523,10 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171474,7 +171692,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171657,7 +171878,10 @@
     "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
@@ -171862,7 +172086,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
@@ -172132,7 +172359,10 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172294,7 +172524,10 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172482,7 +172715,10 @@
     "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
@@ -172660,7 +172896,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172765,7 +173004,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172899,7 +173141,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -173014,7 +173259,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
@@ -173210,7 +173458,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173377,7 +173628,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173603,7 +173857,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173797,7 +174054,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -173977,7 +174237,10 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -174135,7 +174398,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
@@ -174349,7 +174615,10 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -174465,7 +174734,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
@@ -174705,7 +174977,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
@@ -174909,7 +175184,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
@@ -175217,7 +175495,10 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175405,7 +175686,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175590,7 +175874,10 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175738,7 +176025,10 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175938,7 +176228,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -176103,7 +176396,10 @@
     "pickedAt": "2026-11-16T23:25:51.201Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -176583,7 +176879,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
@@ -177531,7 +177830,10 @@
     "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -177642,7 +177944,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -177814,7 +178119,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -177942,7 +178250,10 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -178062,7 +178373,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-android-approval-overlay-a-small-always-on-float",
@@ -178313,7 +178627,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -179035,7 +179352,10 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -179180,7 +179500,10 @@
     "pickedAt": "2026-11-13T11:37:09.309Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-overlay-opens-pages-the-floating-toolbar-expands",
@@ -179455,7 +179778,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-server-watchdog-orchestrator-auto-recovers-stuck",
@@ -180202,7 +180528,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -180736,7 +181065,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -181467,7 +181799,10 @@
     "pickedAt": "2026-11-13T12:17:15.710Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -181992,7 +182327,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182272,7 +182610,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -182367,7 +182708,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182592,7 +182936,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182813,7 +183160,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182975,7 +183325,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183247,7 +183600,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183533,7 +183889,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183766,7 +184125,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -184140,7 +184502,10 @@
     "pickedAt": "2026-11-17T19:08:15.640Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "push-fail",
@@ -184991,7 +185356,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185309,7 +185677,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185529,7 +185900,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185738,7 +186112,10 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185986,7 +186363,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186216,7 +186596,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186493,7 +186876,10 @@
     "pickedAt": "2026-11-14T23:10:32.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186784,7 +187170,10 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -187446,7 +187835,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-every-skin-ships-light-dark-colour-theme",
@@ -187713,7 +188105,10 @@
     "pickedAt": "2026-11-16T13:12:13.730Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-build-whose-session-finishes-phase-e",
@@ -188179,7 +188574,10 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188396,7 +188794,10 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188573,7 +188974,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188847,7 +189251,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -189094,7 +189501,10 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -189509,7 +189919,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -190111,7 +190524,10 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -190635,7 +191051,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191030,7 +191449,10 @@
     "pickedAt": "2026-11-14T23:08:13.680Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191246,7 +191668,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191477,7 +191902,10 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -191773,7 +192201,10 @@
     "pickedAt": "2026-11-14T23:06:12.490Z",
     "heldAt": "2026-11-16T18:30:25.768Z",
     "heldBy": "cli",
-    "heldWhy": "Brett review Nov 16: on hold"
+    "heldWhy": "Brett review Nov 16: on hold",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-owner-recognized-everywhere-veto",
@@ -191972,7 +192403,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -192211,7 +192645,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -192480,7 +192917,10 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193120,7 +193560,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193355,7 +193798,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193609,7 +194055,10 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193823,7 +194272,10 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194309,7 +194761,10 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194563,7 +195018,10 @@
     "pickedAt": "2026-11-14T23:04:23.303Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194861,7 +195319,10 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -195148,7 +195609,10 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-configuration-panel-before-ai-makes",
@@ -195604,7 +196068,10 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skins-plugin-own-removable-console",
@@ -196875,7 +197342,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197107,7 +197577,10 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197313,7 +197786,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197509,7 +197985,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197827,7 +198306,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -198080,7 +198562,10 @@
     "pickedAt": "2026-11-13T17:49:19.495Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-instance-settings-window-picker",
@@ -198290,7 +198775,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-tab-groups-choose-how-many-rows-tabs",
@@ -198520,7 +199008,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -198873,7 +199364,10 @@
     "pickedAt": "2026-11-16T18:36:18.505Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-all-settings-interfaces-open-floating",
@@ -199122,7 +199616,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -199505,7 +200002,10 @@
     "pickedAt": "2026-11-15T00:27:21.094Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -199886,7 +200386,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -200268,7 +200771,10 @@
     "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -200654,7 +201160,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201000,7 +201509,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201345,7 +201857,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201599,7 +202114,10 @@
     "pickedAt": "2026-11-13T18:36:14.104Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-transparency-token-works-every-dialog",
@@ -202015,7 +202533,10 @@
     "pickedAt": "2026-11-16T13:23:15.243Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -202568,7 +203089,10 @@
     "pickedAt": "2026-11-13T19:19:07.577Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -203021,7 +203545,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -203524,7 +204051,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-console-app-part-2-native-floating",
@@ -203891,7 +204421,10 @@
     "pickedAt": "2026-11-13T19:29:11.351Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204190,7 +204723,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204514,7 +205050,10 @@
     "pickedAt": "2026-11-13T19:30:50.870Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204837,7 +205376,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -205225,7 +205767,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-custom-groups-custom-tabs",
@@ -205657,7 +206202,10 @@
     "pickedAt": "2026-11-15T01:03:18.277Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-axhub-override-switch-greyed-out",
@@ -205985,7 +206533,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206098,6 +206649,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -206180,7 +206732,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206559,7 +207114,10 @@
     "pickedAt": "2026-11-14T23:15:54.090Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206808,7 +207366,10 @@
     "pickedAt": "2026-11-13T19:53:15.999Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207024,7 +207585,10 @@
     "pickedAt": "2026-11-13T19:35:33.966Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207227,7 +207791,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207442,7 +208009,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207659,7 +208229,10 @@
     "pickedAt": "2026-11-13T19:43:15.087Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-instance-settings-picker-merge-main",
@@ -207934,7 +208507,10 @@
     "pickedAt": "2026-11-14T23:35:28.763Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-config-panel-merge-main-and-land",
@@ -208165,7 +208741,10 @@
     "pickedAt": "2026-11-13T19:56:14.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skins-plugin-merge-main-and-land",
@@ -208378,7 +208957,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -208717,7 +209299,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-animations-swatches-skin-switch",
@@ -209050,7 +209635,10 @@
     "pickedAt": "2026-11-13T19:59:07.053Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -209349,7 +209937,10 @@
     "pickedAt": "2026-11-14T03:35:14.704Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -209669,7 +210260,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -210010,7 +210604,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -210271,7 +210868,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-own-token-sets-for-grids-and-tab-groups",
@@ -210599,7 +211199,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-token-registry-skin-editor-live-sandbox",
@@ -210995,7 +211598,10 @@
     "pickedAt": "2026-11-13T20:18:14.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-dispatcher-gate-never-launch-build",
@@ -211251,7 +211857,10 @@
     "pickedAt": "2026-11-14T23:17:21.049Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-toolbar-settings-fix-failing-chrome",
@@ -211436,7 +212045,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -211879,7 +212491,10 @@
     "pickedAt": "2026-11-17T19:08:26.677Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -212224,7 +212839,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212592,7 +213210,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212798,7 +213419,10 @@
     "pickedAt": "2026-11-13T20:50:31.267Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212976,7 +213600,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -213234,7 +213861,10 @@
     "pickedAt": "2026-11-14T23:23:17.794Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-lander-regenerates-generated-files-clash",
@@ -213489,7 +214119,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-desktop-console-draws-app-menu",
@@ -213687,7 +214320,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-main-ci-red-test-sandbox-profile-export",
@@ -213876,7 +214512,10 @@
     "pickedAt": "2026-11-13T23:41:19.408Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -214278,7 +214917,10 @@
     "pickedAt": "2026-11-14T23:23:43.044Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-batch-merge-main-each-finished",
@@ -214976,7 +215618,10 @@
     "pickedAt": "2026-11-14T23:28:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -215576,7 +216221,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-voice-listener-use-claude-when-connected",
@@ -216056,7 +216704,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -216950,7 +217601,10 @@
     "pickedAt": "2026-11-14T12:28:09.521Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-get-main-ci-green-theme-swap",
@@ -217208,7 +217862,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218123,7 +218780,10 @@
     "pickedAt": "2026-11-14T03:51:29.271Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218379,7 +219039,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218489,6 +219152,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -218768,7 +219432,10 @@
     "pickedAt": "2026-11-16T13:24:57.284Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -219545,7 +220212,10 @@
     "pickedAt": "2026-11-16T13:13:13.711Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "push-fail",
@@ -219841,7 +220511,10 @@
     "pickedAt": "2026-11-14T16:46:23.975Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-builds-share-one-claude-login-write",
@@ -220118,7 +220791,10 @@
     "pickedAt": "2026-11-14T16:51:21.042Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -220340,7 +221016,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-toolbar-settings-still-change",
@@ -220641,7 +221320,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -221401,7 +222083,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -222156,7 +222841,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -223114,7 +223802,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-all-skin-builds",
@@ -223910,7 +224601,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-replace-merge-queue-one-time-landing",
@@ -224707,7 +225401,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -225700,7 +226397,10 @@
     "pickedAt": "2026-11-16T13:24:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -226348,7 +227048,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -226705,7 +227408,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-change-to-move-amberx",
@@ -227044,7 +227750,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -227409,7 +228118,10 @@
     "pickedAt": "2026-11-14T23:46:40.547Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -227765,7 +228477,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228102,7 +228817,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228464,7 +229182,10 @@
     "pickedAt": "2026-11-15T00:15:47.364Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228825,7 +229546,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-voice-listener-use",
@@ -229215,7 +229939,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-console-axhub-retry",
@@ -229631,7 +230358,10 @@
     "pickedAt": "2026-11-15T19:57:09.845Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -230243,7 +230973,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -231412,7 +232145,10 @@
     "pickedAt": "2026-11-16T23:31:13.598Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -232303,7 +233039,10 @@
     "pickedAt": "2026-11-15T11:54:29.199Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -232811,7 +233550,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -233617,7 +234359,10 @@
     "pickedAt": "2026-11-15T11:58:22.439Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-gate-rules-plugin-in-the-console",
@@ -234366,7 +235111,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -234643,7 +235391,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -235224,7 +235975,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -235443,7 +236197,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -236027,7 +236784,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-build-rules-tab-gate-rules-vps-owns",
@@ -236949,7 +237709,10 @@
     "pickedAt": "2026-11-16T16:26:37.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238013,7 +238776,10 @@
     "pickedAt": "2026-11-15T14:57:29.625Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238568,7 +239334,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238771,7 +239540,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -239391,7 +240163,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -241058,7 +241833,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -241687,7 +242465,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -242351,7 +243132,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243091,7 +243875,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243526,7 +244313,10 @@
     "pickedAt": "2026-11-17T12:28:43.007Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243787,7 +244577,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -244056,7 +244849,10 @@
     "pickedAt": "2026-11-16T23:17:52.842Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-axhub-veto-countdown-setting-read-only",
@@ -244633,7 +245429,10 @@
     "pickedAt": "2026-11-17T19:08:43.298Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -245425,7 +246224,10 @@
     "pickedAt": "2026-11-16T18:34:01.102Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -246291,7 +247093,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -246785,7 +247590,10 @@
     "pickedAt": "2026-11-16T23:17:18.218Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247362,7 +248170,10 @@
     "pickedAt": "2026-11-16T19:05:58.434Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247815,7 +248626,10 @@
     "pickedAt": "2026-11-16T19:16:48.399Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248014,7 +248828,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248266,7 +249083,10 @@
     "pickedAt": "2026-11-17T12:28:56.306Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248527,7 +249347,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248751,7 +249574,10 @@
     "pickedAt": "2026-11-16T19:46:04.279Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248949,7 +249775,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249150,7 +249979,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249382,7 +250214,10 @@
     "pickedAt": "2026-11-16T20:24:12.031Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249584,7 +250419,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250404,7 +251242,10 @@
     "pickedAt": "2026-11-16T20:29:03.156Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250593,7 +251434,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250730,7 +251574,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -250835,7 +251682,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -251468,7 +252318,10 @@
     "pickedAt": "2026-11-16T22:49:42.023Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -252000,7 +252853,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -252619,7 +253475,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -253224,7 +254083,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -254170,7 +255032,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -255099,7 +255964,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -255925,7 +256793,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -256461,7 +257332,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -257468,7 +258342,10 @@
     "pickedAt": "2026-11-17T22:10:38.850Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -258161,7 +259038,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -258977,7 +259857,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -259741,7 +260624,10 @@
     "pickedAt": "2026-11-17T12:38:16.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-stop-auto-lander-committing-tracking",
@@ -260246,7 +261132,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -260716,7 +261605,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -261350,7 +262242,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -261891,7 +262786,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -262398,7 +263296,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -262920,7 +263821,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -263183,6 +264087,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:27:13.513Z",
      "exit": 0,
@@ -264037,7 +264944,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -264527,7 +265437,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -265090,7 +266003,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -265759,7 +266675,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -266272,7 +267191,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -267352,7 +268274,10 @@
     "pickedAt": "2026-11-18T00:34:47.468Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -268187,7 +269112,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -268686,7 +269614,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -269266,7 +270197,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -270097,7 +271031,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -271057,7 +271994,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -271688,7 +272628,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -272248,7 +273191,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -272840,7 +273786,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273335,7 +274284,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273473,7 +274425,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273958,7 +274913,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -274720,7 +275678,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -275607,7 +276568,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "landed": {
     "pr": 817,
@@ -276456,7 +277420,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -276817,7 +277784,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -277070,7 +278040,10 @@
     "pickedAt": "2026-11-17T20:16:29.639Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -278026,7 +278999,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -278747,7 +279723,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -279240,7 +280219,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -279785,6 +280767,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-18T00:17:54.575Z",
      "exit": 0,
@@ -284468,7 +285453,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -284815,7 +285803,10 @@
     "pickedAt": "2026-11-17T20:55:33.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285026,7 +286017,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285237,7 +286231,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285452,7 +286449,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285667,7 +286667,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285881,7 +286884,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -286195,6 +287201,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:32:12.309Z",
      "exit": 0,
@@ -286719,7 +287728,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -287213,7 +288225,10 @@
     "pickedAt": "2026-11-17T21:27:56.788Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -287538,7 +288553,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -288575,7 +289593,10 @@
     "pickedAt": "2026-11-18T01:08:11.137Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "recoveries": [
     {
@@ -289490,7 +290511,10 @@
     "pickedAt": "2026-11-17T21:43:26.212Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -289883,7 +290907,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -290211,7 +291238,10 @@
     "pickedAt": "2026-11-17T22:28:58.757Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -292594,7 +293624,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -293013,7 +294046,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -297250,7 +298286,10 @@
     "pickedAt": "2026-11-18T00:19:41.557Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -312049,7 +313088,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -312617,7 +313659,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -313100,7 +314145,10 @@
     "pickedAt": "",
     "heldAt": "2026-11-17T22:53:22.354Z",
     "heldBy": "console",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -313649,7 +314697,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "landed": {
     "pr": 827,
@@ -314131,7 +315182,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -314558,7 +315612,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -314940,7 +315997,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -315342,7 +316402,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -315840,7 +316903,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -316239,7 +317305,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -316694,7 +317763,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -317263,6 +318335,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-18T08:06:49.748Z",
      "exit": 0,
@@ -317537,7 +318612,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T13:23:12.533Z"
+     "updatedAt": "2026-11-18T13:25:15.718Z"
     }
    ],
    "profiles": [
@@ -317651,7 +318726,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -318198,7 +319276,10 @@
     "pickedAt": "2026-11-18T12:28:07.147Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -318659,7 +319740,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -318892,7 +319976,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "push-fail",
@@ -319110,7 +320197,10 @@
     "pickedAt": "2026-11-18T12:39:46.830Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -319360,7 +320450,10 @@
     "pickedAt": "2026-11-18T13:17:14.831Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -319597,7 +320690,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -319794,7 +320890,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -320097,7 +321196,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -320836,11 +321938,80 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwm5liml26mj83",
+     "title": "",
+     "text": "Detect out-of-credits responses per account and record the account state (dead, when, which build/step) in the builds store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T12:52:45.122Z",
+     "updatedAt": "2026-11-18T13:25:00.229Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwm5liml278gjc",
+     "title": "",
+     "text": "Slot allocator skips dead accounts; reassign every running and queued slot to the backup account, resuming in-flight steps on the same branch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T12:52:45.122Z",
+     "updatedAt": "2026-11-18T13:25:00.229Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwm5liml28r625",
+     "title": "",
+     "text": "Banner and THREADS log entry for the switch, plus a way to mark the account live again when credits come back",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T12:52:45.122Z",
+     "updatedAt": "2026-11-18T13:25:00.229Z"
+    },
+    {
+     "id": "s4-3",
      "uid": "st-mwm5iw452658ow",
      "title": "",
      "text": "Detect out-of-credits responses per account and record the account state (dead, when, which build/step) in the builds store",
@@ -320862,7 +322033,7 @@
      "updatedAt": "2026-11-18T13:22:58.510Z"
     },
     {
-     "id": "s2",
+     "id": "s5-4",
      "uid": "st-mwm5iw452713ga",
      "title": "",
      "text": "Slot allocator skips dead accounts; reassign every running and queued slot to the backup account, resuming in-flight steps on the same branch",
@@ -320884,7 +322055,7 @@
      "updatedAt": "2026-11-18T13:22:58.510Z"
     },
     {
-     "id": "s3",
+     "id": "s6-5",
      "uid": "st-mwm5iw4528iq6f",
      "title": "",
      "text": "Banner and THREADS log entry for the switch, plus a way to mark the account live again when credits come back",
@@ -320906,7 +322077,7 @@
      "updatedAt": "2026-11-18T13:22:58.510Z"
     },
     {
-     "id": "s4-3",
+     "id": "s7-6",
      "uid": "st-mwm4g20n045iau",
      "title": "",
      "text": "Detect out-of-credits responses per account and record the account state (dead, when, which build/step) in the builds store",
@@ -320928,7 +322099,7 @@
      "updatedAt": "2026-11-18T12:52:45.122Z"
     },
     {
-     "id": "s5-4",
+     "id": "s8-7",
      "uid": "st-mwm4g20n05g0rn",
      "title": "",
      "text": "Slot allocator skips dead accounts; reassign every running and queued slot to the backup account, resuming in-flight steps on the same branch",
@@ -320950,7 +322121,7 @@
      "updatedAt": "2026-11-18T12:52:45.122Z"
     },
     {
-     "id": "s6-5",
+     "id": "s9-8",
      "uid": "st-mwm4g20n06ntdu",
      "title": "",
      "text": "Banner and THREADS log entry for the switch, plus a way to mark the account live again when credits come back",
