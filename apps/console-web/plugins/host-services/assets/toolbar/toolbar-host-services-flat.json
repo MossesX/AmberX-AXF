@@ -1,58 +1,59 @@
 {
-  "$axf": "asset@1",
-  "type": "toolbar",
-  "id": "toolbar-host-services-flat",
-  "name": "Host services: One row, no groups",
-  "version": "1.0.0",
-  "description": "The Host services page toolbar as one flat row of icon + label buttons, Restart down services first, nothing in an overflow menu. Same buttons and actions as the default.",
-  "author": "AmberX AXF",
-  "tags": [
-    "page",
-    "host-services"
-  ],
-  "data": {
-    "scope": "view:host-services",
-    "variant": "icons-labels",
-    "align": "start",
-    "showSearch": false,
-    "overflow": {
-      "when": "never",
-      "keep": 3,
-      "label": "More"
-    },
-    "groups": [
-      {
-        "id": "all",
-        "label": "Host services",
-        "items": [
-          {
-            "id": "restart-down",
-            "icon": "zap",
-            "label": "Restart down services",
-            "action": "handler:host-services.restart-down",
-            "badge": "state:down",
-            "enabledWhen": "down>0",
-            "confirm": "Restart every host service that is down or limping?",
-            "priority": 280
-          },
-          {
-            "id": "refresh",
-            "icon": "refresh",
-            "label": "Refresh",
-            "action": "handler:host-services.refresh",
-            "badge": "state:services",
-            "priority": 300,
-            "overflow": "never"
-          },
-          {
-            "id": "expand",
-            "icon": "list",
-            "label": "Open all",
-            "action": "handler:host-services.expand-all",
-            "priority": 200
-          }
-        ]
-      }
+ "$axf": "asset@1",
+ "type": "toolbar",
+ "id": "toolbar-host-services-flat",
+ "name": "toolbar-host-services: Flat row",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One flat row of icon + label buttons, Restart down services first, nothing in an overflow menu. Same buttons and actions.",
+ "tags": [
+  "ui-choice",
+  "choice-set:toolbar-host-services",
+  "choice-option:flat"
+ ],
+ "data": {
+  "scope": "view:host-services",
+  "variant": "icons-labels",
+  "align": "start",
+  "showSearch": false,
+  "overflow": {
+   "when": "never",
+   "keep": 3,
+   "label": "More"
+  },
+  "groups": [
+   {
+    "id": "all",
+    "label": "Host services",
+    "items": [
+     {
+      "id": "restart-down",
+      "icon": "zap",
+      "label": "Restart down services",
+      "action": "handler:host-services.restart-down",
+      "badge": "state:down",
+      "enabledWhen": "down>0",
+      "confirm": "Restart every host service that is down or limping?",
+      "priority": 280
+     },
+     {
+      "id": "refresh",
+      "icon": "refresh",
+      "label": "Refresh",
+      "action": "handler:host-services.refresh",
+      "badge": "state:services",
+      "priority": 300,
+      "overflow": "never"
+     },
+     {
+      "id": "expand",
+      "icon": "list",
+      "label": "Open all",
+      "action": "handler:host-services.expand-all",
+      "priority": 200
+     }
     ]
-  }
+   }
+  ]
+ }
 }
