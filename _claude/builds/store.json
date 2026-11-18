@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8652,
- "updatedAt": "2026-11-18T01:07:16.584Z",
+ "rev": 8653,
+ "updatedAt": "2026-11-18T01:07:24.778Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288246,7 +288246,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -288464,7 +288464,7 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "hulu0241",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -288490,7 +288490,7 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
@@ -288531,7 +288531,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-18T01:05:52.585Z",
      "session": "",
      "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -289259,7 +289259,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
