@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T19:19:20.811Z",
+ "updatedAt": "2026-11-18T19:20:50.311Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157004,7 +157004,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157013,8 +157013,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T18:51:05.129Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T19:20:41.814Z",
+   "builtAt": "2026-11-18T19:20:41.814Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -157243,6 +157243,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T18:51:05.129Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T19:20:41.814Z"
     }
    ],
    "approvals": [],
@@ -177821,7 +177825,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "landed",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -177830,8 +177834,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T18:50:30.025Z",
-   "builtAt": "2026-11-18T18:50:30.025Z",
+   "updatedAt": "2026-11-18T19:20:41.814Z",
+   "builtAt": "2026-11-18T19:20:41.814Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -178164,6 +178168,14 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T18:21:04.915Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by builds-live): landed needs CI green on the merge commit: landed.ci is unknown. Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-18T18:50:59.522Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T19:20:41.814Z"
     }
    ],
    "approvals": [
@@ -188845,7 +188857,7 @@
    "title": "Fix launcher crash: duplicate steps + brief too big",
    "category": "",
    "detail": "auto-lander-never-wait-missing-ui-review died at launch: deploy/claude-headless.sh line 416 '/root/.local/bin/claude: Argument list too long' (brief ~54,579 tokens). Two causes: (1) the step splitter/re-split appends the same steps again and again (dispatcher-split had 897 steps, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63, all repeats of 13-15 real steps). Fix the splitter so a re-split replaces steps, dedupe by text, and clean every existing build's duplicate steps (keep done flags). (2) claude-headless.sh must pass the brief through a file/stdin, never as an argv string, and cap brief size with a trimmed step list. Also: a launch crash must be retried automatically by the VPS after the fix, and a land clash must send the build straight back to the queue with a merge-main fix step on its own (Phone Connect #787 sits with 27/27 steps done and a clash in framework/spec/check-ci-scope.mjs, so the dispatcher has nothing to run). Tests for each. Run on Opus now.",
-   "status": "landed",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -188854,8 +188866,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T18:50:30.025Z",
-   "builtAt": "2026-11-18T18:50:30.025Z",
+   "updatedAt": "2026-11-18T19:20:41.814Z",
+   "builtAt": "2026-11-18T19:20:41.814Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -188960,6 +188972,14 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T18:21:04.915Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by builds-live): landed needs CI green on the merge commit: landed.ci is unknown. Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-18T18:50:59.522Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T19:20:41.814Z"
     }
    ],
    "approvals": [],
@@ -192860,7 +192880,7 @@
    "title": "VPS never gives up: fix and land every build until all options are exhausted",
    "category": "",
    "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
-   "status": "landed",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -192868,8 +192888,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T18:50:30.025Z",
-   "builtAt": "2026-11-18T18:50:30.025Z",
+   "updatedAt": "2026-11-18T19:20:41.814Z",
+   "builtAt": "2026-11-18T19:20:41.814Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -192962,6 +192982,14 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-18T18:21:04.915Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by builds-live): landed needs CI green on the merge commit: landed.ci is unknown. Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-18T18:50:59.522Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T19:20:41.814Z"
     }
    ],
    "approvals": [],
