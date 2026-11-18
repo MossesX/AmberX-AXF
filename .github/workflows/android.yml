@@ -178,6 +178,8 @@ jobs:
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
+      - name: Build rule ui-review-posted (gate fixer)
+        run: node apps/console-web/plugins/gate/test/test.ui-review-posted.mjs  # axf-plugin:gate
       - name: Server auto-lander (attempt log, clash resolver on a temp repo, red-CI reader, fix-session launcher, reconcile, the whole loop with a fake GitHub and claude-headless)
         run: node --test 'deploy/auto-lander/test/*.test.mjs'
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)

@@ -37,7 +37,7 @@ export const APPLIES = Object.freeze(['builds', 'interactive', 'all']);
 /** What `check` holds: nothing, a command line, or a checker id (`gate:ui-review`, `store:home-card`, `fixer:<fixer id>`). */
 export const CHECK_KINDS = Object.freeze(['none', 'command', 'checker']);
 /** Fixer ids a vps rule may name in `autofix`. An open list: a new fixer is a line here and a runner in the dispatcher. */
-export const FIXERS = Object.freeze(['home-card', 'scale-adopt', 'ui-review-submit', 'glossary-catalog', 'tracker', 'chrome-settings-backfill', 'shared-assets-bake', 'builds-live-link',
+export const FIXERS = Object.freeze(['home-card', 'scale-adopt', 'ui-review-submit', 'ui-review-posted', 'glossary-catalog', 'tracker', 'chrome-settings-backfill', 'shared-assets-bake', 'builds-live-link',
   'help-stub', 'shipped-features', 'api-parity', 'tracker-threads', 'run-ci-checks', 'pr-open-link']);
 /** What a history line records. */
 export const HISTORY_ACTIONS = Object.freeze(['seed', 'migrate', 'add', 'edit', 'toggle', 'remove', 'restore']);
