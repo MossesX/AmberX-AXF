@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9004,
- "updatedAt": "2026-11-18T14:07:02.441Z",
+ "rev": 9005,
+ "updatedAt": "2026-11-18T14:07:41.423Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319359,7 +319359,7 @@
    "branch": "claude/every-plugin-gets-own-default-toolbar",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T13:51:58.916Z",
+   "updatedAt": "2026-11-18T14:07:05.018Z",
    "builtAt": "",
    "notes": [
     {
@@ -319573,12 +319573,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:07:05.018Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:32:10.647Z",
-     "updatedAt": "2026-11-18T12:32:10.647Z"
+     "updatedAt": "2026-11-18T14:07:08.637Z"
     },
     {
      "id": "s7",
@@ -319614,7 +319614,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {

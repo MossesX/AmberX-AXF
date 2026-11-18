@@ -839,7 +839,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:42 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
 - 2026-11-18 01:42 UTC · `move-everything-axhub-web-console` s27 done, s28 done (all) · foreign-write
 - 2026-11-18 01:42 UTC · `auto-lander-never-wait-missing-ui-review` s15 done, s16 done, s17 done, → complete, note (all) · foreign-write
 - 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s3 done, s4 done (all) · foreign-write
@@ -1239,6 +1238,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · pipeline
 - 2026-11-18 14:01 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
 - 2026-11-18 14:06 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
+- 2026-11-18 14:07 UTC · `every-plugin-gets-own-default-toolbar` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
