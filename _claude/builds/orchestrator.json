@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:28:38.757Z",
+ "updatedAt": "2026-11-18T12:29:09.959Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192033,14 +192033,14 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:28:11.856Z",
+   "updatedAt": "2026-11-18T12:28:48.528Z",
    "builtAt": "",
    "notes": [
     {
@@ -192061,15 +192061,19 @@
     },
     {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:26:21.557Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:24:49.545Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-plan-studio-2-open-button-working-deep--joey, shared account login)",
+     "at": "2026-11-18T12:28:48.528Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-plan-studio-2-open-button-working-deep--joey.",
      "at": "2026-11-18T12:28:11.856Z"
-    },
-    {
-     "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
-     "at": "2026-11-18T12:26:21.557Z"
     }
    ],
    "approvals": [],
@@ -192662,17 +192666,139 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:27:58.754Z",
+   "updatedAt": "2026-11-18T12:28:57.431Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
      "at": "2026-11-18T12:27:58.754Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T12:28:57.431Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3ldy001ue9l",
+     "createdAt": "2026-11-18T12:28:57.431Z"
+    },
+    {
+     "id": "s2",
+     "text": "A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3ldy002zfqb",
+     "createdAt": "2026-11-18T12:28:57.431Z"
+    },
+    {
+     "id": "s3",
+     "text": "No shared generic menu is ever offered, because every app is different.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3ldy003n54r",
+     "createdAt": "2026-11-18T12:28:57.431Z"
+    },
+    {
+     "id": "s4",
+     "text": "Migrate current menus into each app defaults.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3ldy004vm9d",
+     "createdAt": "2026-11-18T12:28:57.431Z"
+    },
+    {
+     "id": "s5",
+     "text": "Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3ldy005e4f2",
+     "createdAt": "2026-11-18T12:28:57.431Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tests green, report _claude/builds/reports/every-app-gets-own-locked-default.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/every-app-gets-own-locked-default.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3ldy0068i5p",
+     "createdAt": "2026-11-18T12:28:57.431Z"
+    }
+   ]
   }
  ]
 }
