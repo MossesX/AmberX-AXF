@@ -43,6 +43,8 @@ await t('settings sub-targets: #/settings/plugins and view:settings/tab:settings
   assert.equal(a.address, 'view:settings/tab:settings.tabs=plugins');
   const b = parseDeepLink(`${BASE}/?axf-target=view:settings/tab:settings.tabs=plugins`);
   assert.equal(b.address, a.address);
+  assert.equal(parseDeepLink(`${BASE}/#/settings/plugins/plan-studio-2`).address, 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plan-studio-2');
+  assert.equal(parseDeepLink(`${BASE}/#/plan-studio-2/grid:plan-studio-2.tree/row:x`).address, 'view:plan-studio-2/grid:plan-studio-2.tree/row:x');
   const plan = planDeepLink(b, { hasAction: () => false, isControlKind: () => true });
   assert.deepEqual(plan, { view: 'settings', address: 'view:settings/tab:settings.tabs=plugins' });
 });
@@ -62,6 +64,11 @@ await t('nothing to follow: no link, #, #/, an in-page #anchor', () => {
 await t('a broken address is a notice, not Home', () => {
   const l = parseDeepLink(`${BASE}/?axf-target=Not%20An%20Address`);
   assert.ok(l && l.error, 'carries an error'); assert.match(l.error, /Not An Address/);
+});
+
+await t('a plugin sub-target its view cannot open is a notice', () => {
+  const p = planDeepLink(parseDeepLink(`${BASE}/#/home/plan:x`), { hasAction: () => false, isControlKind: (k) => k !== 'plan' });
+  assert.equal(p.view, 'home'); assert.match(p.error, /cannot open "plan:x"/);
 });
 
 await t('pending targets: wait for a late plugin view, then open it once', async () => {
