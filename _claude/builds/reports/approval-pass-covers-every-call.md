@@ -78,3 +78,5 @@ explicit}`, `notify`.
 - The console feed publishes `active`, the hub reads `passes`: a console-set pass doesn't reach the hub through the
   feed today. Grant on the hub (all four ways above) to cover hub calls.
 - Kotlin twins (`ControlPass` matcher, `PassVoice`) deferred, recorded in `framework/spec/PORTING.md`.
+- CI on main: `check-page-toolbars` fails on `orchestrator-demo` (a toolbar asset with no page drawing it). It belongs to
+  another build, so this branch leaves it alone.
