@@ -14,7 +14,7 @@ import * as core from './web/review-core.mjs';
 import * as sc from './web/shots-core.mjs';
 import * as gc from './web/groups-core.mjs';
 import * as cf from './web/conform.mjs';
-import { caller, fieldsOf } from './review.mjs';
+import { caller, confirmPosted, fieldsOf, postedState } from './review.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let n = 0; const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -449,3 +449,19 @@ t('sorting: every column sorts both ways', () => {
 });
 
 console.log(`ui-review: ${n} checks ok`);
+
+
+// Nov 18 2026: posting is confirmed (build auto-lander-never-wait-missing-ui-review)
+{
+  const items = [{ id: 'rv-1', name: 'Settings bar', build: 'b1', status: 'waiting' }, { id: 'rv-2', name: 'Card', build: 'b1', status: 'approved' }];
+  assert.deepEqual(confirmPosted({ id: 'rv-1' }, items), { ok: true, id: 'rv-1', item: items[0] });
+  assert.equal(confirmPosted({ id: 'rv-9' }, items).ok, false); assert.match(confirmPosted({ id: 'rv-9' }, items).why, /did not confirm item rv-9/);
+  assert.equal(confirmPosted(undefined, items).ok, false); assert.match(confirmPosted({}, items).why, /without an item id/);
+  assert.equal(confirmPosted({ id: 'rv-1' }, null).ok, false);
+  const local = [{ id: 'rv-1', name: 'Settings bar', build: 'b1' }, { id: 'rv-old', name: 'Card', build: 'b1' }, { id: 'rv-3', name: 'Menu', build: 'b1' }];
+  const st = postedState(local, items);
+  assert.equal(st.ok, false); assert.equal(st.total, 3); assert.deepEqual(st.posted, ['rv-1', 'rv-old']); assert.deepEqual(st.missing, [{ id: 'rv-3', name: 'Menu' }]); // rv-old matched by build + name (re-submitted under a new id)
+  assert.deepEqual(postedState([], items), { ok: true, total: 0, posted: [], missing: [] });
+  assert.equal(postedState(local, null).ok, false); assert.equal(postedState(local, null).missing.length, 3);
+}
+console.log('ui-review: posting confirmed checks passed');
