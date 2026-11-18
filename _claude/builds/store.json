@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8642,
- "updatedAt": "2026-11-18T01:03:08.317Z",
+ "rev": 8643,
+ "updatedAt": "2026-11-18T01:03:26.703Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288238,7 +288238,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -288246,7 +288246,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:02:17.973Z",
+   "updatedAt": "2026-11-18T01:03:18.516Z",
    "builtAt": "",
    "notes": [
     {
@@ -288408,6 +288408,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T01:02:17.973Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T01:03:18.516Z"
     }
    ],
    "approvals": [
@@ -288445,13 +288449,13 @@
     "runs": 2,
     "crashes": 2,
     "lastRun": {
-     "at": "2026-11-18T01:02:10.730Z",
+     "at": "2026-11-18T01:03:17.072Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
      "stepsLeft": 1,
      "account": "hulu0241",
-     "session": "axf-flagship-professional-skin-covering-2--earl",
+     "session": "",
      "phase": "Phase 1"
     },
     "split": {
@@ -288466,11 +288470,11 @@
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
-     "model": "Fable",
-     "account": "hulu0241",
+     "model": "Opus",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-17T21:34:22.330Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T01:03:18.004Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-17T21:58:22.524Z",
@@ -289217,7 +289221,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
