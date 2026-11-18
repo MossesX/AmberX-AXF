@@ -26,7 +26,8 @@ import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLoc
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
-import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
+import { WIDGET_TYPES, hostSpec, hostSpecs, instanceHost, moveOnHost, normalizeArrangement, placeHost, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
+import { TOOLBARS_WIDGET_STYLE_KEY, TOOLBAR_APP_INSTANCE, TOOLBAR_WIDGETS_KEY, TOOLBAR_WIDGET_STYLE_KEY, addToolbarWidget, foldArrangement, isToolbarInstanceId, mergeWidgetStyle, moveToolbarWidget, normalizeToolbarWidgetSlots, normalizeWidgetStyle, patchToolbarWidget, removeToolbarWidget, resolveToolbarWidgets, toolbarSlotsEmpty, type ResolvedToolbarWidgets, type ToolbarWidgetSlot, type WidgetStyle } from './engines/toolbar-widgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
@@ -1555,16 +1556,124 @@ export class AxfRuntime {
     this.resetHostArrangement('banner');
   }
 
-  /** Attach a widget (clock, search bar) to the toolbar at run time (at: start | end). Same type + id replaces. Returns detach. */
-  attachToToolbar(a: HostAttachment & { at: 'start' | 'end'; origin: string }): () => void { return this.attachToHost('toolbar', a); }
+  /**
+   * Attach a widget (clock, search bar, a plugin's chip) to a toolbar at run time (at: start | end). `instance` names the
+   * toolbar (toolbar-widgets@1: `app` or nothing = the app's own, else a page toolbar's asset id, `axf-ws-toolbar:<ws>`, …).
+   * Same type + id replaces. Returns detach.
+   */
+  attachToToolbar(a: HostAttachment & { at: 'start' | 'end'; origin: string }, instance?: string): () => void { return this.attachToHost(instanceHost('toolbar', instance), a); }
 
-  /** Remove run-time toolbar widgets by key (`type:id`) or by origin (a module / plugin id). */
-  detachFromToolbar(keyOrOrigin: string): void { this.detachFromHost('toolbar', keyOrOrigin); }
+  /** Remove run-time toolbar widgets by key (`type:id`) or by origin (a module / plugin id), from one toolbar instance. */
+  detachFromToolbar(keyOrOrigin: string, instance?: string): void { this.detachFromHost(instanceHost('toolbar', instance), keyOrOrigin); }
 
-  /** Widgets on the active toolbar (its own `widgets` plus run-time ones), start and end. */
+  /** Widgets drawn on the app's toolbar (its own `widgets`, run-time ones and the person's slots), start and end. */
   toolbarWidgets(): Record<'start' | 'end', PlacedAttachment[]> {
-    const tb = this.slotHidden('toolbar') ? null : (this.asset('toolbar')?.data as { widgets?: HostAttachment[] } | undefined) ?? null;
-    return placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('toolbar'));
+    const r = this.toolbarInstanceWidgets(TOOLBAR_APP_INSTANCE);
+    return { start: r.sides.start ?? [], end: r.sides.end ?? [] };
+  }
+
+  /* ---------------- toolbar-widgets@1: widgets on any toolbar, banner style (core/engines/toolbar-widgets.ts) ---------------- */
+
+  /**
+   * The toolbar asset one instance draws from: the app's active toolbar for `app` (null when hidden), the toolbar asset
+   * with that id for a page toolbar, else (a toolbar with no asset of its own: a hand-drawn strip carrying
+   * `data-axf-toolbar="<id>"`) an empty list under the app toolbar's shape defaults, so run-time widgets and the person's
+   * slots still draw there.
+   */
+  private toolbarInstanceData(instance: string): AssetDataMap['toolbar'] | null {
+    if (instance === TOOLBAR_APP_INSTANCE) return this.slotHidden('toolbar') ? null : this.chromeData('toolbar', TOOLBAR_APP_INSTANCE);
+    const own = this.registry.get('toolbar', instance) as Asset<'toolbar'> | undefined;
+    if (own) return this.chromeData('toolbar', instance, own.data);
+    const app = this.chromeData('toolbar', TOOLBAR_APP_INSTANCE);
+    return { ...(app ?? {}), widgets: [] } as AssetDataMap['toolbar'];
+  }
+
+  /** The person's slots for one toolbar (`axf.toolbar.<id>.widgets`): what they added and their choices; [] when none or damaged. */
+  toolbarWidgetSlots(instance: string): ToolbarWidgetSlot[] { return normalizeToolbarWidgetSlots(this.settings.get(TOOLBAR_WIDGETS_KEY(instance))); }
+
+  /** The default widget style for one toolbar: the app's (`axf.toolbars.widgetStyle`) under the toolbar's own (`axf.toolbar.<id>.widgetStyle`). */
+  toolbarWidgetStyle(instance: string): WidgetStyle {
+    return mergeWidgetStyle(normalizeWidgetStyle(this.settings.get(TOOLBARS_WIDGET_STYLE_KEY)), normalizeWidgetStyle(this.settings.get(TOOLBAR_WIDGET_STYLE_KEY(instance))));
+  }
+
+  /**
+   * Everything one toolbar instance draws, side by side, each widget with its banner-style view, shape and attributes,
+   * plus the hidden ones. The legacy app-toolbar arrangement (`axf.widgets.arrange.toolbar`) is read as a layer until it
+   * is folded into the slots, so nothing moves.
+   */
+  toolbarInstanceWidgets(instance: string = TOOLBAR_APP_INSTANCE): ResolvedToolbarWidgets {
+    return resolveToolbarWidgets({
+      toolbar: this.toolbarInstanceData(instance),
+      extra: this.hostExtra.get(instanceHost('toolbar', instance)) ?? [],
+      slots: this.toolbarWidgetSlots(instance),
+      style: this.toolbarWidgetStyle(instance),
+      arrange: instance === TOOLBAR_APP_INSTANCE ? this.hostArrangement('toolbar') : null,
+      has: (t, id) => this.registry.has(t as AssetType, id),
+    }, WIDGET_TYPES);
+  }
+
+  /**
+   * Save one toolbar's slots (an empty list clears the key). The app toolbar's legacy arrangement is folded in first and
+   * then retired, so the saved order is kept whichever key held it (migration: nothing moves).
+   */
+  private saveToolbarWidgetSlots(instance: string, next: ToolbarWidgetSlot[], what: string): boolean {
+    if (!isToolbarInstanceId(instance)) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Toolbar widgets'); return false; }
+    // the legacy key goes first (its side + order are already in `next`), then the slots are written
+    if (instance === TOOLBAR_APP_INSTANCE && this.settings.get(ARRANGE_KEY('toolbar')) != null) this.settings.clear(ARRANGE_KEY('toolbar'));
+    if (toolbarSlotsEmpty(next)) this.settings.clear(TOOLBAR_WIDGETS_KEY(instance)); else this.settings.set(TOOLBAR_WIDGETS_KEY(instance), JSON.stringify(next));
+    this.terminal.ok('widgets', `toolbar ${instance}: ${what}`);
+    this.set({});
+    return true;
+  }
+
+  /** The slots with the legacy app-toolbar arrangement folded in (side + order of widgets the person has not placed themselves). */
+  private toolbarSlotsMigrated(instance: string): ToolbarWidgetSlot[] {
+    const slots = this.toolbarWidgetSlots(instance);
+    return instance === TOOLBAR_APP_INSTANCE ? foldArrangement(slots, this.hostArrangement('toolbar')) : slots;
+  }
+
+  /** Add a widget to a toolbar at a side (after everything there). Saved at once, drawn at once. */
+  addToolbarWidget(instance: string, type: string, id: string, at: string): boolean {
+    if (!this.registry.has(type as AssetType, id)) { this.terminal.warn('widgets', `${type}:${id} is not registered; nothing added to toolbar ${instance}`); return false; }
+    return this.saveToolbarWidgetSlots(instance, addToolbarWidget(this.toolbarSlotsMigrated(instance), type, id, at, WIDGET_TYPES), `+ ${type}:${id} at ${at}`);
+  }
+
+  /** Remove a widget the person added (its choices go too). A widget the toolbar or a plugin put there stays: hide it. */
+  removeToolbarWidget(instance: string, key: string): boolean { return this.saveToolbarWidgetSlots(instance, removeToolbarWidget(this.toolbarSlotsMigrated(instance), key), `− ${key}`); }
+
+  /** Change one widget's choices on a toolbar (the banner's rules; a field set to null goes back to the default; `shape` too). */
+  setToolbarWidget(instance: string, key: string, patch: Record<string, unknown>): boolean { return this.saveToolbarWidgetSlots(instance, patchToolbarWidget(this.toolbarSlotsMigrated(instance), key, patch), `${key} ${JSON.stringify(patch)}`); }
+
+  /** Move a drawn widget to a side at a position (0 = first); the whole toolbar's order is written so every device agrees. */
+  moveToolbarWidget(instance: string, key: string, side: string, index: number): boolean {
+    const drawn = this.toolbarInstanceWidgets(instance).sides;
+    const next = moveToolbarWidget(this.toolbarSlotsMigrated(instance), drawn, key, side, index);
+    return this.saveToolbarWidgetSlots(instance, next, `${key} → ${side} #${index + 1}`);
+  }
+
+  /** Everything on one toolbar back to what the toolbar and its modules put there (slots, style and the legacy arrangement). */
+  resetToolbarWidgets(instance: string): void {
+    if (!isToolbarInstanceId(instance) || !this.canArrange()) return;
+    this.settings.clear(TOOLBAR_WIDGETS_KEY(instance));
+    this.settings.clear(TOOLBAR_WIDGET_STYLE_KEY(instance));
+    if (instance === TOOLBAR_APP_INSTANCE) this.resetHostArrangement('toolbar');
+    this.terminal.ok('widgets', `toolbar ${instance}: reset`);
+    this.set({});
+  }
+
+  /** The default widget style of one toolbar (`instance`) or of every toolbar (null): a field set to null goes back to the default. */
+  setToolbarWidgetStyle(instance: string | null, patch: Record<string, unknown>): boolean {
+    if (instance !== null && !isToolbarInstanceId(instance)) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Toolbar widgets'); return false; }
+    const key = instance === null ? TOOLBARS_WIDGET_STYLE_KEY : TOOLBAR_WIDGET_STYLE_KEY(instance);
+    const merged: Record<string, unknown> = { ...normalizeWidgetStyle(this.settings.get(key)), ...patch };
+    for (const [k, v] of Object.entries(merged)) if (v === null || v === undefined) delete merged[k];
+    const next = normalizeWidgetStyle(merged);
+    if (Object.keys(next).length) this.settings.set(key, JSON.stringify(next)); else this.settings.clear(key);
+    this.terminal.ok('widgets', `toolbar ${instance ?? 'all'} style ${JSON.stringify(patch)}`);
+    this.set({});
+    return true;
   }
 
   /* ---------------- arranging widgets on hosts (drag + snap; core/engines/widgets.ts) ---------------- */

@@ -27,6 +27,7 @@ import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, merge
 import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
+import { HOST_ENTRY_WIDGET, HOST_ENTRY_WIDGET_FIELDS, TOOLBARS_WIDGET_STYLE_KEY, TOOLBAR_APP_INSTANCE, TOOLBAR_PERSON_ORDER, TOOLBAR_WIDGETS_CONTRACT, TOOLBAR_WIDGETS_KEY, TOOLBAR_WIDGETS_MAX, TOOLBAR_WIDGET_OPS, TOOLBAR_WIDGET_STYLE_KEY, WIDGET_STYLE_FIELDS, addToolbarWidget, fitToolbar, foldArrangement, hostEntryErrors, hostShapeErrors, matchToolbarInstance, mergeWidgetStyle, moveToolbarWidget, normalizeToolbarWidgetSlots, normalizeWidgetStyle, parseToolbarWidgetArgs, parseToolbarWidgetShapeArgs, patchToolbarWidget, removeToolbarWidget, resolveToolbarWidgets, toolbarInstanceOfKey, type ToolbarFitPlan, type ToolbarWidgetSlot } from '../core/engines/toolbar-widgets';
 import { scoreEntry } from '../core/engines/search';
 import { ackAlerts, alertKey, applyAlert, deliveryTargets, diagnosticToAlert, DEFAULT_ALERT_RULES, ntfyPriority, resolveAlerts, sortAlerts, trimAlerts, unreadCount, ALERT_SEVERITIES, type Alert, type AlertInput, type AlertRules, type Diagnostic } from '../core/engines/alerts';
 import { MCP_PERMISSIONS, MCP_PROTOCOL_VERSION, MCP_SESSION_HEADER, MCP_SUPPORTED_VERSIONS, MCP_VERSION_HEADER, SseParser, argumentSkeleton, callGate, classifyResponse, contentText, errorFromHttp, errorFromRpc, errorFromTransport, initializeParams, mcpHeaders, mergePages, negotiate, offers, pageParams, parseMessages, parseSse, rpcNotification, rpcRequest, serverIdFor, toolEffect, validateServerInput } from '../core/engines/mcp';
@@ -669,6 +670,81 @@ write('spacing.json', {
     toolbar: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { toolbar: c.toolbar, extra: c.extra, placed: placeToolbarWidgets(c.toolbar as never, c.extra as never, has) }])),
     kinds,
   });
+  // toolbar-widgets@1 (core/engines/toolbar-widgets.ts, Nov 16 2026): widgets on any toolbar instance, banner style.
+  const tb = { widgets: [{ type: 'clock', id: 'digital-12h', at: 'start' }, { type: 'search-bar', id: 'everything', at: 'end', widget: { size: 'wide', priority: 2 }, shape: 'squircle' }, { type: 'counter', id: 'alerts', at: 'end', widget: { label: 'Alerts', hidden: true, aliases: ['bell'] } }], shape: { icon: 'circle', chip: 'pill' } };
+  const cpu = { type: 'status', id: 'online', at: 'end', origin: 'vps', widget: { label: 'CPU', size: 'compact', priority: 7 } };
+  const slotsRaw = [
+    { type: 'avatar', id: 'account', at: 'start', size: 'icon', shape: 'hexagon' },
+    { type: 'clock', id: 'digital-12h', hidden: true },
+    { type: 'search-bar', id: 'everything', at: 'start', order: 0, maxWidth: 240 },
+    { type: 'counter', id: 'alerts', hidden: false, priority: 40, show: 'number' },
+    { type: 'bad id!', id: 'x', at: 'start' }, { type: 'status', id: 'online', at: 'top' }, 'nope', { type: 'logo', id: 'wordmark' },
+  ];
+  const slots = normalizeToolbarWidgetSlots(slotsRaw);
+  const resolveCases: Record<string, { toolbar: unknown; extra?: unknown[]; slots?: unknown; style?: unknown; arrange?: unknown }> = {
+    'asset-only': { toolbar: tb },
+    'plugin-chip': { toolbar: tb, extra: [cpu] },
+    'person-slots': { toolbar: tb, extra: [cpu], slots: slotsRaw },
+    'toolbar-style': { toolbar: tb, extra: [cpu], style: { size: 'icon', shape: 'diamond' } },
+    'style-under-slot': { toolbar: tb, extra: [cpu], slots: [{ type: 'status', id: 'online', size: 'wide', shape: 'tag' }], style: { size: 'icon', shape: 'diamond' } },
+    'legacy-arrange': { toolbar: tb, extra: [cpu], arrange: { 'clock:digital-12h': { at: 'end', order: 5 }, 'status:online': { at: 'start', order: 0 } } },
+    'slot-over-arrange': { toolbar: tb, extra: [cpu], arrange: { 'clock:digital-12h': { at: 'end', order: 5 } }, slots: [{ type: 'clock', id: 'digital-12h', at: 'start', order: 0 }] },
+    'no-shape-defaults': { toolbar: { widgets: [{ type: 'status', id: 'online', at: 'end' }, { type: 'avatar', id: 'account', at: 'end', widget: { size: 'icon' } }] } },
+    'no-toolbar': { toolbar: null, extra: [cpu], slots: slotsRaw },
+    'added-missing-asset': { toolbar: { widgets: [] }, slots: [{ type: 'clock', id: 'nope', at: 'start' }, { type: 'badge', id: 'new', at: 'start' }] },
+  };
+  const fitPlan: ToolbarFitPlan = { sides: { start: [{ key: 'logo', width: 80, priority: 5, overflow: true }], end: [{ key: 'search', width: 120, priority: 2, overflow: true }, { key: 'cpu', width: 70, priority: 5, overflow: true }, { key: 'avatar', width: 32, priority: 9, overflow: false }] }, flex: { width: 400, min: 160 }, gap: 8, moreWidth: 32, padding: 12 };
+  const fitCases = Object.fromEntries([900, 760, 600, 500, 420, 330, 260, 120].map((n) => [`w${n}`, { plan: fitPlan, available: n, fit: fitToolbar(fitPlan, n) }]));
+  fitCases['no-more-menu-w330'] = { plan: { ...fitPlan, overflowMenu: false }, available: 330, fit: fitToolbar({ ...fitPlan, overflowMenu: false }, 330) };
+  fitCases['no-flex-w200'] = { plan: { ...fitPlan, flex: null }, available: 200, fit: fitToolbar({ ...fitPlan, flex: null }, 200) };
+  fitCases['empty-sides-w100'] = { plan: { sides: { start: [], end: [] }, flex: { width: 300, min: 120 }, gap: 8, moreWidth: 32 }, available: 100, fit: fitToolbar({ sides: { start: [], end: [] }, flex: { width: 300, min: 120 }, gap: 8, moreWidth: 32 }, 100) };
+  // slot edits in sequence (each step from the one before)
+  const edits: { step: string; slots: ToolbarWidgetSlot[] }[] = [];
+  let s: ToolbarWidgetSlot[] = [];
+  const drawnOf = (list: ToolbarWidgetSlot[]) => resolveToolbarWidgets({ toolbar: tb, extra: [cpu], slots: list, has }, WIDGET_TYPES).sides;
+  s = addToolbarWidget(s, 'avatar', 'account', 'start', WIDGET_TYPES); edits.push({ step: 'add avatar at start', slots: s });
+  s = addToolbarWidget(s, 'badge', 'new', 'start', WIDGET_TYPES); edits.push({ step: 'add a badge: refused (not a widget type)', slots: s });
+  s = addToolbarWidget(s, 'avatar', 'account', 'top', WIDGET_TYPES); edits.push({ step: 'add at an unknown side: refused', slots: s });
+  s = patchToolbarWidget(s, 'avatar:account', { size: 'icon', shape: 'hexagon', priority: 3 }); edits.push({ step: 'patch avatar: icon, hexagon, priority 3', slots: s });
+  s = patchToolbarWidget(s, 'status:online', { hidden: true }); edits.push({ step: 'hide the plugin chip (a slot with only a choice)', slots: s });
+  s = patchToolbarWidget(s, 'status:online', { hidden: null }); edits.push({ step: 'show it again: the empty slot goes', slots: s });
+  s = patchToolbarWidget(s, 'avatar:account', { shape: null, priority: null }); edits.push({ step: 'shape + priority back to default', slots: s });
+  s = addToolbarWidget(s, 'avatar', 'account', 'end', WIDGET_TYPES); edits.push({ step: 'add the same widget again: moves it to the end, keeps its size', slots: s });
+  s = moveToolbarWidget(s, drawnOf(s), 'status:online', 'start', 0); edits.push({ step: 'move the plugin chip first at the start: every drawn widget gets side + order', slots: s });
+  s = moveToolbarWidget(s, drawnOf(s), 'clock:nope', 'start', 0); edits.push({ step: 'move a widget that is not drawn: unchanged', slots: s });
+  s = removeToolbarWidget(s, 'avatar:account'); edits.push({ step: 'remove the avatar (its choices go)', slots: s });
+  const folded = foldArrangement([{ type: 'status', id: 'online', at: 'end', order: 3 }], { 'clock:digital-12h': { at: 'end', order: 10 }, 'status:online': { at: 'start', order: 0 }, 'search-bar:everything': { at: 'left', order: 1 } });
+  const entryCases: Record<string, unknown> = {
+    ok: { type: 'status', id: 'online', at: 'end', widget: { label: 'CPU', icon: 'cpu', size: 'compact', show: 'both', priority: 7, hideWhenEmpty: true, overflow: false, hidden: false, aliases: ['load'] }, shape: 'squircle' },
+    'bad-fields': { type: 'status', id: 'online', at: 'end', widget: { label: '', icon: 3, size: 'huge', show: 'all', priority: 0, hideWhenEmpty: 'yes', overflow: 1, hidden: null, aliases: ['', 2], colour: 'red' }, shape: 'Bad Shape' },
+    'widget-not-object': { type: 'status', id: 'online', at: 'end', widget: 'compact' },
+    'too-many-aliases': { type: 'status', id: 'online', at: 'end', widget: { aliases: Array.from({ length: HOST_ENTRY_WIDGET.aliasesMax + 1 }, (_, i) => `a${i}`) } },
+    'no-style': { type: 'status', id: 'online', at: 'end' },
+  };
+  const shapeCases: Record<string, unknown> = { ok: { icon: 'circle', chip: 'pill' }, 'one-slot': { chip: 'squircle' }, 'bad-slot': { ring: 'circle', chip: 'Pill!' }, 'not-object': 'pill', none: undefined };
+  write('toolbar-widgets.json', {
+    contract: TOOLBAR_WIDGETS_CONTRACT,
+    appInstance: TOOLBAR_APP_INSTANCE,
+    max: TOOLBAR_WIDGETS_MAX,
+    personOrder: TOOLBAR_PERSON_ORDER,
+    keys: { slots: TOOLBAR_WIDGETS_KEY('settings-toolbar'), style: TOOLBAR_WIDGET_STYLE_KEY('settings-toolbar'), appSlots: TOOLBAR_WIDGETS_KEY(TOOLBAR_APP_INSTANCE), allStyle: TOOLBARS_WIDGET_STYLE_KEY },
+    instanceOfKey: Object.fromEntries(['axf.toolbar.app.widgets', 'axf.toolbar.axf-ws-toolbar:main.widgets', 'axf.toolbar.app.widgetStyle', 'axf.toolbars.widgetStyle', 'axf.toolbar..widgets', 'x'].map((k) => [k, toolbarInstanceOfKey(k)])),
+    hostEntryWidget: HOST_ENTRY_WIDGET,
+    hostEntryWidgetFields: HOST_ENTRY_WIDGET_FIELDS,
+    widgetStyleFields: WIDGET_STYLE_FIELDS,
+    ops: TOOLBAR_WIDGET_OPS,
+    normalize: { raw: slotsRaw, slots, style: { in: { size: 'icon', show: 'nope', priority: 12, hideWhenEmpty: true, overflow: 'no', shape: 'squircle', hidden: true, maxWidth: 40 }, out: normalizeWidgetStyle({ size: 'icon', show: 'nope', priority: 12, hideWhenEmpty: true, overflow: 'no', shape: 'squircle', hidden: true, maxWidth: 40 }) }, styleJson: normalizeWidgetStyle('{"size":"wide"}'), slotsJson: normalizeToolbarWidgetSlots('[{"type":"clock","id":"digital-12h","at":"end"}]'), junk: normalizeToolbarWidgetSlots({ a: 1 }), merged: mergeWidgetStyle({ size: 'icon', shape: 'circle' }, { size: 'wide' }) },
+    exists: [...exists].sort(),
+    resolve: Object.fromEntries(Object.entries(resolveCases).map(([k, c]) => [k, { ...c, out: resolveToolbarWidgets({ toolbar: c.toolbar as never, extra: (c.extra ?? []) as never, slots: normalizeToolbarWidgetSlots(c.slots), style: normalizeWidgetStyle(c.style), arrange: (c.arrange ?? null) as never, has }, WIDGET_TYPES) }])),
+    fit: fitCases,
+    edits,
+    fold: { slots: [{ type: 'status', id: 'online', at: 'end', order: 3 }], arrange: { 'clock:digital-12h': { at: 'end', order: 10 }, 'status:online': { at: 'start', order: 0 }, 'search-bar:everything': { at: 'left', order: 1 } }, out: folded },
+    parse: Object.fromEntries([['cpu', 'add'], ['settings', 'status:online', 'hide'], ['app', 'clock', 'icon'], ['cpu'], ['x', 'cpu', 'explode'], ['Bad Instance!', 'cpu', 'add'], ['ui-review.sections', 'the', 'bell', 'end']].map((a) => [a.join(':'), parseToolbarWidgetArgs(a)])),
+    parseShape: Object.fromEntries([['app', 'cpu', 'squircle'], ['settings', 'status:online', 'inherit'], ['app', 'cpu', 'Bad!'], ['cpu', 'squircle']].map((a) => [a.join(':'), parseToolbarWidgetShapeArgs(a)])),
+    match: Object.fromEntries(['', 'main', 'the main toolbar', 'settings', 'the settings toolbar', 'ui-review.sections', 'UI review', 'review', 'nothing like it', 'axf-ws-toolbar:main'].map((w) => [w || '(empty)', matchToolbarInstance([{ id: 'ui-review.sections', label: 'UI Review sections' }, { id: 'settings-toolbar', label: 'Settings toolbar' }], w)])),
+    entryErrors: Object.fromEntries(Object.entries(entryCases).map(([k, e]) => [k, { entry: e, errors: hostEntryErrors('data.widgets[0]', e) }])),
+    shapeErrors: Object.fromEntries(Object.entries(shapeCases).map(([k, v]) => [k, { shape: v, errors: hostShapeErrors(v) }])),
+  });
 }
 // chrome-settings@1 (Nov 4 2026): registry, ids, inherit@1 chain, picks, instance overrides, custom copies
 {
@@ -832,6 +908,10 @@ write('validation.json', [
   { case: 'banner-attach-bad', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'button', id: 'x', at: 'left' }, { type: 'badge', id: 'new', at: 'top' }] } } },
   { case: 'banner-attach-ok', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'search-bar', id: 'everything', at: 'center' }] } } },
   { case: 'toolbar-widgets-bad', raw: { $axf: 'asset@1', type: 'toolbar', id: 'xx', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, widgets: [{ type: 'badge', id: 'new', at: 'start' }] } } },
+  // toolbar-widgets@1: banner widget style + shape ref on host entries, the host's shape default (same messages on every port)
+  { case: 'toolbar-widget-style-ok', raw: { $axf: 'asset@1', type: 'toolbar', id: 'xx', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, widgets: [{ type: 'status', id: 'cpu', at: 'end', widget: { label: 'CPU', size: 'compact', priority: 7, aliases: ['load'] }, shape: 'squircle' }], shape: { icon: 'circle', chip: 'pill' } } } },
+  { case: 'toolbar-widget-style-bad', raw: { $axf: 'asset@1', type: 'toolbar', id: 'xx', name: 'X', version: '1', data: { variant: 'icons', align: 'start', groups: [], showSearch: false, widgets: [{ type: 'status', id: 'cpu', at: 'end', widget: { size: 'huge', priority: 0, colour: 'red' }, shape: 'Bad!' }, { type: 'clock', id: 'digital-12h', at: 'start', widget: 'wide' }], shape: { ring: 'circle', chip: 'Pill' } } } },
+  { case: 'banner-attach-style-bad', raw: { $axf: 'asset@1', type: 'banner', id: 'xx', name: 'X', version: '1', data: { height: 24, surface: 'flat', logo: { show: true, text: 'X' }, attach: [{ type: 'badge', id: 'new', at: 'left', widget: { show: 'all', hidden: 'yes' } }], shape: 'pill' } } },
   // Repeating slots (layout.repeat): same messages on every port.
   { case: 'repeat-ok', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: [{ id: 'projects', dataSet: 'projects', style: 'cards', columns: 3, max: 6, region: 'main', fallback: { type: 'container', id: 'empty', label: 'No projects yet' } }, { id: 'tabs', dataSet: 'docs', style: 'tabs' }] } } },
   { case: 'repeat-not-list', raw: { $axf: 'asset@1', type: 'layout', id: 'x', name: 'X', version: '1', data: { ...base, repeat: { id: 'a' } } } },
