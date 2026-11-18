@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9024,
- "updatedAt": "2026-11-18T14:34:06.418Z",
+ "rev": 9025,
+ "updatedAt": "2026-11-18T14:34:55.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318207,7 +318207,7 @@
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "#843",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T14:31:43.219Z",
+   "updatedAt": "2026-11-18T14:34:15.045Z",
    "builtAt": "2026-11-18T14:29:07.628Z",
    "notes": [
     {
@@ -318245,6 +318245,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-18T14:31:03.133Z"
+    },
+    {
+     "text": "Reconciler: PR #843",
+     "at": "2026-11-18T14:34:15.045Z"
     }
    ],
    "approvals": [],
@@ -318677,7 +318681,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
