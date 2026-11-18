@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:33:46.325Z",
+ "updatedAt": "2026-11-18T12:34:29.038Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192033,14 +192033,14 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:28:48.528Z",
+   "updatedAt": "2026-11-18T12:34:10.834Z",
    "builtAt": "",
    "notes": [
     {
@@ -192061,19 +192061,19 @@
     },
     {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
-     "at": "2026-11-18T12:26:21.557Z"
-    },
-    {
-     "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:24:49.545Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-plan-studio-2-open-button-working-deep--joey, shared account login)",
-     "at": "2026-11-18T12:28:48.528Z"
     },
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-plan-studio-2-open-button-working-deep--joey.",
      "at": "2026-11-18T12:28:11.856Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:26:21.557Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-plan-studio-2-open-button-working-deep--joey, shared account login)",
+     "at": "2026-11-18T12:28:48.528Z"
     }
    ],
    "approvals": [],
@@ -192096,8 +192096,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T12:34:10.834Z",
      "note": "",
      "uid": "st-mwm3h4jz01vk69",
      "createdAt": "2026-11-18T12:25:38.639Z"

@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:43 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · orchestrator
 - 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · builds-live
 - 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · foreign-write
 - 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:32 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
 - 2026-11-18 12:32 UTC · `server-gate-reject-any-build-without` added (0 steps) (all) · Brett
 - 2026-11-18 12:33 UTC · `server-gate-reject-any-build-without` note (all) · orchestrator
+- 2026-11-18 12:34 UTC · `plan-studio-2-open-button-working-deep` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
