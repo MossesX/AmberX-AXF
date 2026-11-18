@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:33 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · foreign-write
 - 2026-11-18 00:33 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 00:33 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-18 00:33 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:45 UTC · `watchdog-plugin-owns-every-vps` added (30 steps) (all) · foreign-write
 - 2026-11-18 01:45 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:46 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
+- 2026-11-18 01:46 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 
 ## Token passes (log)
 
