@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9019,
- "updatedAt": "2026-11-18T14:30:29.221Z",
+ "rev": 9020,
+ "updatedAt": "2026-11-18T14:31:25.819Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318188,15 +318188,15 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T14:29:07.628Z",
-   "builtAt": "2026-11-18T14:29:07.628Z",
+   "updatedAt": "2026-11-18T14:31:03.133Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -318229,6 +318229,10 @@
     {
      "text": "Claude account: hulu0241 (axf-plan-studio-2-open-button-working-deep--joey, shared account login)",
      "at": "2026-11-18T12:28:48.528Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-18T14:31:03.133Z"
     }
    ],
    "approvals": [],
@@ -318237,14 +318241,23 @@
     "queuedAt": "2026-11-18T12:20:53.743Z",
     "queuedBy": "Brett",
     "account": "hulu0241",
-    "session": "axf-plan-studio-2-open-button-working-deep--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 1",
     "launchedAt": "2026-11-18T12:28:07.147Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-18T14:30:40.541Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 1,
+     "account": "hulu0241",
+     "session": "axf-plan-studio-2-open-button-working-deep--joey",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-18T12:25:38.639Z",
      "by": "orchestrator",
@@ -318253,7 +318266,7 @@
      "note": "Split by Claude into 15 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on hulu0241 stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-18T12:28:07.147Z",
     "planned": {
@@ -318661,7 +318674,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
