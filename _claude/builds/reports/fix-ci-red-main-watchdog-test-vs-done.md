@@ -95,3 +95,20 @@ Environment-only on the VPS (pass in CI conditions): `test_wall_users.py` (needs
 first), `console-control-parity.mjs` (port 7097 taken by another session; green on another port),
 `check-headless-tabs.mts` (this session's `CLAUDE_CODE_DISABLE_CLAUDE_MDS`; green with a clean env),
 `refresh-check.mts` and `test_console_commands.py` (timing under load; green on rerun).
+
+## API check (no new UI)
+
+The watchdog adds no screen, setting or action; it now writes `landing` / `landed` (existing done-means-merged@1
+statuses) and the `landed` evidence instead of an attempted `complete`. Every existing read path shows it:
+
+- Store / CLI: the write goes through `withStore` (action `stale-watchdog`), so `node framework/cli/builds-store.mjs
+  history <id>` lists the revision, and `pending.mjs` / `build-queue.mjs` show the build's status.
+- Console: Build orchestrator pipeline view (`pipeline.tsx`, `attempts.tsx`) already draws landing and landed; the
+  watchdog's own card, REST, MCP, CLI (`watchdog.mjs status|log`) and voice report the run and each change line,
+  including "merge commit unknown: left as is".
+- MCP `pending_list` and the orchestrator reads, and voice status (`crew-say.mjs`), read the same store status.
+
+No UI was added or changed for the watchdog. The UI touched in this build is the Orchestrator demo page (page head,
+framework page toolbar instead of hand-drawn buttons, menu entries); every button on it was already reachable by deep
+link (`?axf-open=orchestrator-demo`), REST (`/api/plugins/orchestrator-demo/*`), MCP (plugin-commands tools, console
+actions), the CLI and voice ("press <button> on the orchestrator demo toolbar", now in the voice inventory).
