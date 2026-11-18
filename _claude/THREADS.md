@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 07:23 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
 - 2026-11-18 07:24 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-18 07:29 UTC · `approval-pass-covers-every-call` note (all) · pipeline
 - 2026-11-18 07:29 UTC · `approval-pass-covers-every-call` note (all) · watchdog
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:56 UTC · `one-build-time-always-split-to-fill` s5 done (all) · orchestrator
 - 2026-11-18 14:55 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 14:59 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-18 14:59 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
 
 ## Token passes (log)
 

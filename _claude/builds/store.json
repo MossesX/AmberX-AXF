@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9041,
- "updatedAt": "2026-11-18T14:59:38.231Z",
+ "rev": 9042,
+ "updatedAt": "2026-11-18T15:00:30.215Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321220,7 +321220,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-18T14:51:59.721Z",
+   "updatedAt": "2026-11-18T14:59:48.022Z",
    "builtAt": "",
    "notes": [
     {
@@ -321230,6 +321230,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit null: warning: the brief has no \"## Brett said (verbatim)\" block",
      "at": "2026-11-18T14:51:59.721Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit null: warning: the brief has no \"## Brett said (verbatim)\" block",
+     "at": "2026-11-18T14:59:48.022Z"
     }
    ],
    "approvals": [],
@@ -321332,7 +321336,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
