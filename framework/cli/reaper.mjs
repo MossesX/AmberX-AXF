@@ -512,7 +512,7 @@ export async function apply(actions, { env = process.env } = {}) {
 
 /** One note per pass on AmberX's "Automatic fixes" list (created when missing). */
 async function writeNote(sum) {
-  const { runAmberx } = await import('../../apps/console-web/plugins/token-control/lib/amberx.mjs');
+  const { runAmberx } = await import('../../apps/console-web/plugins/token-control/lib/amberx.mjs');  // axf-plugin:token-control (no plugin: the note is skipped, the pass goes on)
   const found = runAmberx({ target: 'amberx.lists', op: 'list', select: { q: NOTES_LIST } }).items.find((l) => l.name === NOTES_LIST);
   const list = found?.id ?? runAmberx({ target: 'amberx.lists', op: 'add', value: { name: NOTES_LIST } }).item.id;
   return runAmberx({ target: 'amberx.items', op: 'add', by: 'reaper', value: { list, kind: 'note', title: sum.title.slice(0, 200), text: `${sum.body}\n\n${sum.at} · by ${sum.by}`, tags: ['reaper', 'auto-fix'] } }).item.id;
@@ -522,7 +522,7 @@ async function writeNote(sum) {
 function sendAlert(sum, env = process.env) {
   const name = env.AXF_PIPELINE_CONSOLE || 'axf-console';
   if (name === 'off') return false;
-  const body = { source: 'pipeline', key: `${ALERT_PREFIX}:${sum.at}`, severity: 'info', title: sum.title, body: sum.body.slice(0, 1500), link: '#/settings/plugins/build-orchestrator', meta: { kind: 'pipeline.reaper', count: sum.count } };
+  const body = { source: 'pipeline', key: `${ALERT_PREFIX}:${sum.at}`, severity: 'info', title: sum.title, body: sum.body.slice(0, 1500), meta: { kind: 'pipeline.reaper', count: sum.count } };
   const cmd = `curl -s -m 20 -X POST -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @- "http://127.0.0.1:${env.AXF_CONSOLE_PORT || 7090}/api/alerts"`;
   const r = spawnSync('docker', ['exec', '-i', name, 'sh', '-c', cmd], { input: JSON.stringify(body), encoding: 'utf8', timeout: 30e3 });
   return !r.error && r.status === 0;
