@@ -13,6 +13,13 @@ export function DemoView() {
   const sum = state?.summary ?? null;
   return (
     <div className="axp-orchestrator-demo__page" data-axf-target="view:orchestrator-demo">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Builds · Demo</p>
+          <h1>Orchestrator demo</h1>
+          <p className="fx-muted">A guided live run of the Build orchestrator on throwaway demo builds, every act crossed off as it goes.</p>
+        </div>
+      </header>
       <PageToolbar view="orchestrator-demo" />
       {sum && run && <p className="axp-orchestrator-demo__muted">{run.state} · {sum.pass} passed · {sum.fail} failed · {sum.skipped} skipped · {sum.remaining} to go</p>}
       {error && <p className="axp-orchestrator-demo__error" role="alert">{error}</p>}
