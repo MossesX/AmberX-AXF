@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:33:18.939Z",
+ "updatedAt": "2026-11-18T12:33:46.325Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192996,13 +192996,118 @@
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-18T12:32:49.331Z",
-   "updatedAt": "2026-11-18T12:32:49.331Z",
+   "updatedAt": "2026-11-18T12:33:23.845Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T12:33:23.845Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett (Nov 18): add a rule on the Gate & rules screen (on by default) so the VPS only starts builds that carry an orchestrator-issued build ID.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3r3id01kviw",
+     "createdAt": "2026-11-18T12:33:23.845Z"
+    },
+    {
+     "id": "s2",
+     "text": "Any start without one (vps.build_start, launcher, hand launch) is rejected and kicked back to the orchestrator with the reason, and the orchestrator puts it in its Failed tab with that reason so it can be fixed and re-queued.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3r3id02dwgc",
+     "createdAt": "2026-11-18T12:33:23.845Z"
+    },
+    {
+     "id": "s3",
+     "text": "Molly (the orchestrator gate) and the VPS both enforce it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3r3id030dzi",
+     "createdAt": "2026-11-18T12:33:23.845Z"
+    },
+    {
+     "id": "s4",
+     "text": "Shows on the Gate & rules screen; full REST/MCP/CLI/voice parity; tests and a CI check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3r3id04dhy9",
+     "createdAt": "2026-11-18T12:33:23.845Z"
+    },
+    {
+     "id": "s5",
+     "text": "Tests green, report _claude/builds/reports/server-gate-reject-any-build-without.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/server-gate-reject-any-build-without.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3r3id05l5wc",
+     "createdAt": "2026-11-18T12:33:23.845Z"
+    }
+   ]
   }
  ]
 }
