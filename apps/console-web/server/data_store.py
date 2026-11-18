@@ -160,9 +160,19 @@ def mode_doc() -> dict:
 
 
 def mode_of(key: str) -> str:
+    """The key's mode: a key-level override on its namespace entry (exact path or the longest prefix ending in '/'; the
+    path is relative to the namespace id, so `builds/store.json` → `store.json`), else the namespace entry, else the store."""
     doc = mode_doc()
-    e = (doc.get("namespaces") or {}).get(nsid_of(key))
-    m = (e or {}).get("mode") or doc.get("mode") or "local"
+    nsid = nsid_of(key)
+    e = (doc.get("namespaces") or {}).get(nsid) or {}
+    rel = key[len(nsid) + 1:] if key.startswith(nsid + "/") else ""
+    best = ""
+    m = ""
+    for p, k in (e.get("keys") or {}).items() if rel and isinstance(e.get("keys"), dict) else []:
+        hit = rel.startswith(p) if p.endswith("/") else rel == p
+        if hit and len(p) > len(best) and isinstance(k, dict):
+            best, m = p, str(k.get("mode") or "")
+    m = m or e.get("mode") or doc.get("mode") or "local"
     return m if m in MODES else "local"
 
 

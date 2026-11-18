@@ -19,7 +19,10 @@
  *             process per call). axf-data unreachable: reads fall back to the local read-only copy (logged), writes throw
  *   rollback  async reads from axf-data; writes refuse with `read_only`
  *
- * axf-data: AXF_DATA_URL + AXF_DATA_TOKEN (the env files deploy/install-data.sh writes). Tests pass `remote`.
+ * axf-data: AXF_DATA_URL + AXF_DATA_TOKEN (the env files deploy/install-data.sh writes), or on the VPS host the
+ * `conf/env/host.env` file it writes for processes outside the containers (remoteConfig). Tests pass `remote`.
+ * Modes are per namespace with key-level overrides (data-store-mode@1 `keys`): the builds store and its journal moved
+ * first (Nov 18 2026), the rest of `builds` follows namespace by namespace.
  */
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -35,10 +38,32 @@ const SEGMENT = new RegExp(PATTERNS.segment);
 const FOLDER = new RegExp(PATTERNS.pluginFolder);
 export const MODES = ['local', 'shadow', 'cutover', 'rollback'];
 
+/**
+ * A linked git worktree (`.git` is a file) shares the main checkout's console data: its `.axf-console` (the mode document,
+ * the data-store folder) is the main checkout's, never one of its own, so a build session sees the same modes as the
+ * console and every other process on the machine. Memoised per repo path.
+ */
+const mainCheckoutMemo = new Map();
+export function mainCheckout(repo) {
+  if (mainCheckoutMemo.has(repo)) return mainCheckoutMemo.get(repo);
+  let main = repo;
+  try {
+    const g = join(repo, '.git');
+    if (statSync(g).isFile()) {
+      const gitdir = readFileSync(g, 'utf8').match(/gitdir:\s*(.+)/)?.[1]?.trim();
+      // <main>/.git/worktrees/<name> → <main>
+      const m = gitdir && /^(.*)\/\.git\/worktrees\/[^/]+\/?$/.exec(resolve(repo, gitdir));
+      if (m && existsSync(join(m[1], '.git'))) main = m[1];
+    }
+  } catch { /* not a worktree */ }
+  mainCheckoutMemo.set(repo, main);
+  return main;
+}
 /** The four roots, from the same env as the Python side. */
 export function roots(env = process.env) {
-  const data = env.AXF_STATE ? dirname(resolve(env.AXF_STATE)) : join(env.AXF_ROOT ? resolve(env.AXF_ROOT) : REPO, '.axf-console');
-  return { plugins: resolve(env.AXF_PLUGINS_DATA_DIR || join(data, 'plugins')), data, repo: env.AXF_ROOT ? resolve(env.AXF_ROOT) : REPO, projects: resolve(env.AXHUB_PROJECTS_DIR || '/projects') };
+  const repo = env.AXF_ROOT ? resolve(env.AXF_ROOT) : REPO;
+  const data = env.AXF_STATE ? dirname(resolve(env.AXF_STATE)) : join(env.AXF_ROOT ? repo : mainCheckout(repo), '.axf-console');
+  return { plugins: resolve(env.AXF_PLUGINS_DATA_DIR || join(data, 'plugins')), data, repo, projects: resolve(env.AXHUB_PROJECTS_DIR || '/projects') };
 }
 /** Is `key` a key data-store@1 accepts (registry namespaces, segments, plugin folder)? */
 export function validKey(key) {
@@ -129,19 +154,47 @@ export function modeDoc(env = process.env) {
   }
   return modeCache.doc;
 }
+/**
+ * The mode of one key: a key-level override on its namespace entry (`keys`: the exact path, or the longest prefix ending
+ * in `/`, relative to the namespace id: `builds/store.json` → `store.json`), else the namespace entry, else the store.
+ */
 export function modeOf(key, env = process.env) {
-  const doc = modeDoc(env); const e = doc.namespaces?.[nsIdOf(key)];
-  const m = e?.mode || doc.mode || 'local';
+  const doc = modeDoc(env); const id = nsIdOf(key); const e = doc.namespaces?.[id];
+  let m = '';
+  const rel = key.startsWith(`${id}/`) ? key.slice(id.length + 1) : '';
+  if (rel && e?.keys && typeof e.keys === 'object') {
+    let best = '';
+    for (const [p, k] of Object.entries(e.keys)) { const hit = p.endsWith('/') ? rel.startsWith(p) : rel === p; if (hit && p.length > best.length && k && typeof k === 'object') { best = p; m = String(k.mode || ''); } }
+  }
+  m = m || e?.mode || doc.mode || 'local';
   return MODES.includes(m) ? m : 'local';
 }
 
 // ── axf-data ──
 let remote = null;
-/** The axf-data client (createDataStore over httpBackend), or null when AXF_DATA_URL is unset. Tests pass their own. */
+/**
+ * Where axf-data is: AXF_DATA_URL + AXF_DATA_TOKEN from the environment (the console container, the headless drill), else
+ * the host env file deploy/install-data.sh writes for processes on the VPS itself (build sessions in worktrees, the gate
+ * runner, cron): `<AXF_DATA_CONF>/env/host.env` (default /root/hub/data/axf-data/conf/env/host.env, root-only, carrying
+ * the loopback URL and the orchestrator token). Tests set AXF_DATA_URL or pass their own store; AXF_DATA_URL=off disables.
+ */
+export function remoteConfig(env = process.env) {
+  if (env.AXF_DATA_URL === 'off') return null;
+  if (env.AXF_DATA_URL) return { url: env.AXF_DATA_URL, token: env.AXF_DATA_TOKEN || '', from: 'env' };
+  if (env.AXF_DATA_DIR !== undefined || env.AXF_BUILDS_STORE) return null; // tests and scratch runs never reach the VPS service
+  const f = join(env.AXF_DATA_CONF || '/root/hub/data/axf-data/conf', 'env', 'host.env');
+  try {
+    const kv = Object.fromEntries(readFileSync(f, 'utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')).map((l) => { const i = l.indexOf('='); return [l.slice(0, i), l.slice(i + 1)]; }));
+    if (kv.AXF_DATA_URL) return { url: kv.AXF_DATA_URL, token: kv.AXF_DATA_TOKEN || '', from: f };
+  } catch { /* no host env file: not on the VPS */ }
+  return null;
+}
+/** The axf-data client (createDataStore over httpBackend), or null when axf-data is not configured here. Tests pass their own. */
 export function remoteStore(env = process.env) {
   if (remote) return remote;
-  if (!env.AXF_DATA_URL) return null;
-  remote = createDataStore({ backend: httpBackend({ url: env.AXF_DATA_URL, token: () => env.AXF_DATA_TOKEN || '', actor: env.AXF_DATA_ACTOR || '' }) });
+  const cfg = remoteConfig(env);
+  if (!cfg) return null;
+  remote = createDataStore({ backend: httpBackend({ url: cfg.url, token: () => cfg.token, actor: env.AXF_DATA_ACTOR || '' }) });
   return remote;
 }
 export function setRemote(store) { remote = store; }

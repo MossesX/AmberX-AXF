@@ -21,6 +21,12 @@ axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` da
   `live-outbox.jsonl.lock`, and **106 orphan `store.json.tmp-*` files** (Nov 9 – Nov 17) left by killed writers. That
   lock is what makes console writes fail with "builds store is locked".
 - `builds` (985 rows) and `build_steps` (5 951) already exist, but as a mirror of the file. s2 makes them the source.
+- **s2 done (Nov 18 2026, Fable)**: `builds` rows are keyed by the build id, `build_steps` and the new `build_notes` hang
+  under it, `journal` holds every journal line (view `build_journal`); `builds-store.mjs` writes a row-level `patch`
+  (data-patch@1, `SELECT … FOR UPDATE` on the touched builds only) and the two keys `builds/store.json` and
+  `builds/journal/` run in `cutover` (key-level modes, data-store-mode@1 `keys`). The cut, with its counts, is
+  `node framework/cli/builds-data.mjs cutover --apply`; `builds-data.mjs status` shows both sides. The file-lock path
+  (`store.json.lock`, the `tmp-*` files) is no longer in use for the store; s3 removes the leftovers.
 
 Row counts below are live `keys` rows in axf-data (not deleted); sizes are the stored bodies.
 

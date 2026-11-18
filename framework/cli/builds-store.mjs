@@ -36,11 +36,14 @@
  * exports of the store (see exportAll); nothing but the store writes them, and a direct edit is taken into the store.
  *
  * data-store@1 (axf-data, Nov 15 2026: "the builds keep running" with the console down): the store and its journal
- * follow the mode of the `builds` namespace (framework/core/data-store-mode.mjs). local = the files, as before. shadow =
- * the files first, then the same write and journal line on axf-data (a failure is a drift line, never an error). cutover
- * = axf-data only: the read takes the record's etag and the write sends it back (lock = rev check: a conflict re-reads
- * and re-applies the change, up to 5 times), so a headless session or axf-molly with the console down writes the same
- * store. rollback = writes refused (read_only) until the local copy has caught up.
+ * follow the mode of their keys (`builds/store.json`, `builds/journal/`; framework/core/data-store-mode.mjs, key-level
+ * overrides on the `builds` namespace). local = the files, as before. shadow = the files first, then the same write and
+ * journal line on axf-data (a failure is a drift line, never an error). cutover (Nov 18 2026, Postgres tables `builds`,
+ * `build_steps`, `build_notes`, `journal`) = axf-data only: the read assembles the record from the rows, the write is a
+ * data-patch@1 of the builds this write changed, each checked against the rev it was read at and locked row by row
+ * (`SELECT … FOR UPDATE`), plus the journal line, in one transaction (writeStoreRemote). A conflict on one build re-reads
+ * and re-applies the change, up to 5 times. rollback = writes refused (read_only) until the local copy has caught up.
+ * The cut itself: `node framework/cli/builds-data.mjs cutover --apply` (copy, verify counts, flip the keys under the lock).
  */
 import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -116,8 +119,10 @@ export function journalPartText(key) {
 }
 
 export class StoreLocked extends Error {}
-/** cutover: someone else wrote the store on axf-data between our read and our write (withStore re-runs). */
+/** cutover: someone else wrote a build we changed (or the store) on axf-data between our read and our write (withStore re-runs). */
 export class StoreConflict extends Error {}
+/** The store file's lock (a writer's, or the data cut-over's): fn() runs while it is held. */
+export function withStoreLock(fn, waitMs) { const unlock = lock(storeFile(), waitMs); try { return fn(); } finally { unlock(); } }
 /**
  * The store's axf-data key. A build worktree's hub home (worktreeHome) is a local copy of the one store, so it maps
  * to the canonical key (builds/store.json), never to a per-worktree key: in cutover nothing is written to the checkout.
@@ -128,31 +133,62 @@ export const storeMode = () => { const k = storeKey(); return k ? files.modeOf(k
 const remoteOn = () => { const m = storeMode(); return m === 'cutover' || m === 'rollback'; };
 let remoteEtag = '';
 const shadowCall = (req, what) => { try { return files.callSync(req); } catch (e) { files.logDrift(req.op === 'append' ? 'append' : 'write', req.key, req.op === 'append' ? 'append-failed' : 'write-failed', null, null, `${what}: ${e.code || 'error'}: ${e.message}`); return null; } };
-/** One journal entry on axf-data; an entry over the 256 KiB entry limit goes as a record with a pointer line. */
+/** The axf-data journal key of an entry: the month part (builds/journal/<YYYY-MM>; parts are a file-size matter, not a key one). */
+export const remoteJournalKey = (entry) => `builds/journal/${entry.at.slice(0, 7)}`;
+/**
+ * The line an entry becomes on axf-data: itself, or (over the 256 KiB entry limit) a pointer line after the whole entry
+ * is written as the record builds/journal-large/<rev>-<at>.json. `put` creates that record (idempotent: exists = kept).
+ */
+export function remoteJournalEntry(entry, put = (key, data) => files.callSync({ op: 'put', key, data, create: true })) {
+  if (Buffer.byteLength(files.canonical(entry)) <= 256 * 1024) return entry;
+  const big = `builds/journal-large/${entry.rev}-${String(entry.at).replace(/[^0-9]/g, '')}.json`;
+  try { put(big, entry); } catch (e) { if (!(e instanceof DataStoreError) || e.code !== 'exists') throw e; }
+  return { rev: entry.rev, at: entry.at, by: entry.by, action: entry.action, large: big };
+}
+/** One journal entry on axf-data (shadow mirror, or the first remote write); the patch path carries its own line. */
 function remoteJournal(key, entry, shadow) {
   const call = shadow ? (r) => shadowCall(r, 'journal') : files.callSync;
-  try { return call({ op: 'append', key, entries: [entry], idem: `rev-${entry.rev}-${entry.at}` }); }
-  catch (e) {
-    if (!(e instanceof DataStoreError) || e.code !== 'too_large') throw e;
-    const big = `builds/journal-large/${entry.rev}-${entry.at.replace(/[^0-9]/g, '')}.json`;
-    files.callSync({ op: 'put', key: big, data: entry, create: true });
-    return files.callSync({ op: 'append', key, entries: [{ rev: entry.rev, at: entry.at, by: entry.by, action: entry.action, large: big }], idem: `rev-${entry.rev}-${entry.at}` });
-  }
+  return call({ op: 'append', key, entries: [remoteJournalEntry(entry)], idem: `rev-${entry.rev}-${entry.at}` });
 }
-/** Store write by mode (local file + optional shadow mirror, or axf-data with the etag read). */
+/** Store write by mode: the local file, plus the shadow mirror (the whole record, as before the cut). */
 function writeStoreFile(f, store) {
   const mode = storeMode();
-  if (mode === 'rollback') throw new DataStoreError('read_only', 'the builds namespace is rolling back: writes wait until it is local again');
-  if (mode === 'cutover') {
-    try { remoteEtag = files.callSync({ op: 'put', key: storeKey(), data: core.compactStore(store), ...(remoteEtag ? { ifMatch: remoteEtag } : { create: true }) }).etag; }
-    catch (e) { if (e instanceof DataStoreError && (e.code === 'conflict' || e.code === 'exists')) throw new StoreConflict(e.message); throw e; }
-    return;
-  }
+  if (mode === 'rollback') throw new DataStoreError('read_only', 'the builds store is rolling back: writes wait until it is local again');
   const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(store)); renameSync(tmp, f);
   if (mode === 'shadow') {
     const cur = shadowCall({ op: 'get', key: storeKey() }, 'store read');
     shadowCall({ op: 'put', key: storeKey(), data: core.compactStore(store), ...(cur ? { ifMatch: cur.etag } : { create: true }) }, 'store');
   }
+}
+/**
+ * The cutover write (data-patch@1, Nov 18 2026): only the builds this write changed go to axf-data, each with the rev it
+ * was read at (`ifRev`; a new build passes null), together with the head fields that changed (rev, updatedAt, meta,
+ * rules, drafts) and the journal line, in ONE transaction on the server. Postgres locks those rows and no others
+ * (`SELECT … FOR UPDATE` in services/axf-data/pg.py), so two sessions ticking two builds never wait on each other, and
+ * a session that read a build before someone else changed it gets `conflict` for that build only: withStore re-reads
+ * and re-applies (StoreConflict). The first write of a store axf-data has never seen is a whole-record put.
+ */
+function writeStoreRemote(before, after, changes, entry, { draftChanged, metaChanged }) {
+  if (storeMode() === 'rollback') throw new DataStoreError('read_only', 'the builds store is rolling back: writes wait until it is local again');
+  const key = storeKey();
+  if (!remoteEtag) {
+    try { remoteEtag = files.callSync({ op: 'put', key, data: core.compactStore(after), create: true }).etag; }
+    catch (e) { if (e instanceof DataStoreError && (e.code === 'conflict' || e.code === 'exists')) throw new StoreConflict(e.message); throw e; }
+    remoteJournal(remoteJournalKey(entry), entry, false);
+    return;
+  }
+  const head = { rev: after.rev, updatedAt: after.updatedAt };
+  if (metaChanged) { head.meta = after.meta; head.rules = after.rules; }
+  if (draftChanged) head.drafts = after.drafts;
+  // any other top-level field this write changed (migratedAt, a new field a later version adds) rides along
+  for (const [k, v] of Object.entries(core.compactStore(after))) if (!(k in head) && k !== 'builds' && JSON.stringify(v) !== JSON.stringify(before[k])) head[k] = v;
+  // every row is stored normalized (rev, dates, lists in shape): a build a caller pushed raw reads back the same as it
+  // would from the file, and its stored rev is what the next writer's ifRev will name
+  const lists = { builds: changes.map((c) => ({ key: c.id, ifRev: c.before ? c.before.rev : null, item: core.compactBuild(core.normBuild(c.after)) })) };
+  const line = remoteJournalEntry(entry);
+  const body = { head, lists, journal: { path: remoteJournalKey(entry).slice('builds/'.length), entry: line, idem: `rev-${entry.rev}-${entry.at}` } };
+  try { remoteEtag = files.callSync({ op: 'patch', key, body }).record.etag; }
+  catch (e) { if (e instanceof DataStoreError && (e.code === 'conflict' || e.code === 'exists')) throw new StoreConflict(e.message); throw e; }
 }
 function lock(f, waitMs = 20000) {
   const l = `${f}.lock`; const t0 = Date.now();
@@ -392,8 +428,8 @@ function ensureDirKeepingOwner(d) {
 function journal(entry) {
   const line = `${JSON.stringify(entry)}\n`;
   const mode = storeMode();
-  if (mode === 'cutover') remoteJournal(`builds/journal/${entry.at.slice(0, 7)}`, entry, false);
-  else {
+  // cutover: the line went with the store write (writeStoreRemote, one transaction); nothing is written here
+  if (mode !== 'cutover') {
     const d = journalDir(); ensureDirKeepingOwner(d);
     // one lock per journal folder, shared by every checkout on the machine (the hub home is shared by all of them)
     const unlock = testJournal() ? () => {} : lock(join(d, '.journal'));
@@ -463,10 +499,11 @@ export function saveStore(before, after, { by = 'cli', action = 'write', note = 
   const metaChanged = JSON.stringify([before.meta, before.rules]) !== JSON.stringify([after.meta, after.rules]);
   if (!changes.length && !draftChanged && !metaChanged) return { store: before, changes: [], rev: before.rev };
   after.rev = (before.rev ?? 0) + 1; after.updatedAt = now;
-  const f = storeFile(); if (!remoteOn()) mkdirSync(dirname(f), { recursive: true });
-  writeStoreFile(f, after);
+  const entry = { rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) };
+  if (remoteOn()) writeStoreRemote(before, after, changes, entry, { draftChanged, metaChanged });
+  else { const f = storeFile(); mkdirSync(dirname(f), { recursive: true }); writeStoreFile(f, after); }
   foldOrigins(after);
-  journal({ rev: after.rev, at: now, by, action, note, builds: changes.map((c) => ({ id: c.id, op: c.op, rev: c.after?.rev, before: core.compactBuild(c.before), after: core.compactBuild(c.after) })), ...(draftChanged ? { drafts: after.drafts } : {}), ...(metaChanged ? { meta: after.meta, rules: after.rules } : {}) });
+  journal(entry);
   // build-hook@1: every creator's write fires the same events (Shipped features ledger and other listeners)
   if (changes.length) emitChanges(changes, { at: now, by });
   return { store: after, changes, rev: after.rev };
