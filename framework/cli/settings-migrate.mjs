@@ -54,7 +54,13 @@ export function expandKeys(pattern, tpl, doc) {
 }
 
 const mtimeOf = (file) => { try { return statSync(file).mtimeMs; } catch { return 0; } };
-const docTime = (doc, file) => { const t = isObj(doc) && typeof doc.updatedAt === 'string' ? Date.parse(doc.updatedAt) : NaN; return Number.isFinite(t) ? t : mtimeOf(file); };
+/** When a store last changed this key: the document's per-key `changed[key].at` (claude-settings@1), else its `updatedAt`, else the file's mtime. */
+const docTime = (doc, file, pointer = '') => {
+  const last = S.pointerSegments(pointer).pop();
+  const per = isObj(doc) && isObj(doc.changed) && last && isObj(doc.changed[last]) && typeof doc.changed[last].at === 'string' ? Date.parse(doc.changed[last].at) : NaN;
+  if (Number.isFinite(per)) return per;
+  const t = isObj(doc) && typeof doc.updatedAt === 'string' ? Date.parse(doc.updatedAt) : NaN; return Number.isFinite(t) ? t : mtimeOf(file);
+};
 
 /** The registry entries that still name a former store (the duplicates to migrate), as patterns. */
 export function patternsWithFormerly(registry = S.loadRegistry()) { return registry.settings.filter((e) => Array.isArray(e.formerly) && e.formerly.length).map((e) => e.key); }
@@ -68,7 +74,7 @@ export async function keysFor(pattern, { registry = S.loadRegistry(), env = proc
   const places = [{ store, pointer: entry.pointer }, ...(entry.formerly || []).map((f) => ({ store: { id: f.store, ...registry.stores[f.store] }, pointer: f.pointer || '' }))];
   const keys = new Set();
   for (const p of places) {
-    if (p.store.kind !== 'data-store' || /\{\d+\}/.test(p.store.path)) continue; // a per-capture document (looks/{1}.json) is listed by concrete key
+    if (p.store.kind !== 'data-store' || /\{\d+\}/.test(p.store.path || '')) continue; // a per-capture document (looks/{1}.json) is listed by concrete key
     const doc = await readJson(S.storeFile(p.store, {}, env), null);
     if (doc === null) continue;
     for (const r of expandKeys(pattern, p.pointer, doc)) keys.add(r.key);
@@ -80,22 +86,25 @@ export async function keysFor(pattern, { registry = S.loadRegistry(), env = proc
 export async function planKey(key, { registry = S.loadRegistry(), env = process.env } = {}) {
   const owner = S.ownerOf(key, { registry, env });
   if (!owner) throw new S.SettingsSourceError('no_owner', `"${key}" has no owner in settings-sources.json`);
-  if (owner.store.kind !== 'data-store') throw new S.SettingsSourceError('unreachable', `"${key}" lives in the browser: nothing to migrate from here`);
-  const ownerDoc = await readJson(owner.file, null);
-  const ownerValue = ownerDoc === null ? undefined : S.getAt(ownerDoc, owner.pointer);
-  const holders = [{ store: owner.store.id, pointer: owner.pointer, file: owner.file, value: ownerValue, set: ownerValue !== undefined, at: docTime(ownerDoc, owner.file), owner: true }];
+  const browser = owner.store.kind !== 'data-store';
+  const ownerDoc = browser ? null : await readJson(owner.file, null);
+  const rawOwner = ownerDoc === null ? undefined : S.getAt(ownerDoc, owner.pointer);
+  const ownerValue = owner.derive && ownerDoc !== null ? S.deriveRead(owner, rawOwner) : rawOwner;
+  const holders = [{ store: owner.store.id, pointer: owner.pointer, file: owner.file || '', value: ownerValue, set: browser ? false : owner.derive ? ownerDoc !== null : ownerValue !== undefined, at: browser ? 0 : docTime(ownerDoc, owner.file, owner.pointer), owner: true, browser }];
   for (const f of S.formerPlaces(key, { registry, env })) {
     if (f.store.kind !== 'data-store') continue;
     const doc = await readJson(f.file, null);
     const value = doc === null ? undefined : S.getAt(doc, f.pointer);
-    holders.push({ store: f.store.id, pointer: f.pointer, file: f.file, value, set: value !== undefined, at: docTime(doc, f.file), owner: false });
+    holders.push({ store: f.store.id, pointer: f.pointer, file: f.file, value, set: value !== undefined, at: docTime(doc, f.file, f.pointer), owner: false });
   }
   const copies = holders.filter((h) => !h.owner && h.set);
   let pick;
-  if (holders[0].set) pick = { store: owner.store.id, value: ownerValue, why: 'the owner holds a value: it wins' };
+  if (browser) pick = { store: owner.store.id, value: undefined, why: copies.length ? 'the owner is a browser store: the copies are stripped, the value stays where the app saved it' : 'nothing to move' };
+  else if (owner.derive && holders[0].set) pick = { store: owner.store.id, value: ownerValue, why: `the owner holds the list: ${owner.derive.kind} says ${JSON.stringify(ownerValue)}` };
+  else if (holders[0].set) pick = { store: owner.store.id, value: ownerValue, why: 'the owner holds a value: it wins' };
   else if (copies.length) { const newest = [...copies].sort((a, b) => b.at - a.at)[0]; pick = { store: newest.store, value: newest.value, why: `the owner is unset: the newest copy wins (${newest.store}, ${new Date(newest.at).toISOString()})` }; }
   else pick = { store: owner.store.id, value: undefined, why: 'no store holds a value: nothing to move' };
-  const conflict = copies.some((h) => JSON.stringify(h.value) !== JSON.stringify(pick.value));
+  const conflict = !browser && copies.some((h) => JSON.stringify(h.value) !== JSON.stringify(pick.value));
   return { key, owner: owner.store.id, pointer: owner.pointer, holders, pick, strip: copies.map((h) => h.store), conflict, noop: !copies.length && (holders[0].set || pick.value === undefined) };
 }
 
@@ -110,7 +119,7 @@ export async function plan(items, opts = {}) {
 export async function applyRow(row, { registry = S.loadRegistry(), env = process.env, journal = JOURNAL_FILE, at = new Date().toISOString(), by = 'settings-migrate' } = {}) {
   const before = Object.fromEntries(row.holders.map((h) => [h.store, h.set ? h.value : null]));
   const after = {};
-  if (row.pick.value !== undefined && (!row.holders[0].set || row.pick.store !== row.owner)) {
+  if (row.pick.value !== undefined && !row.holders[0].browser && (!row.holders[0].set || row.pick.store !== row.owner || row.holders[0].value !== row.pick.value)) {
     await S.writeSetting(row.key, row.pick.value, { registry, env, store: row.owner });
   }
   after[row.owner] = row.pick.value === undefined ? null : row.pick.value;

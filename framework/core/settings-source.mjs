@@ -51,8 +51,8 @@ export function loadRegistry(file = process.env.AXF_SETTINGS_SOURCES || REGISTRY
 export function resetRegistry() { cache = { file: '', mtime: -1, size: -1, reg: null }; }
 
 // ── patterns ──
-const KEY_RE = /^[a-z][a-z0-9]*(\.([a-z0-9][a-zA-Z0-9_-]*|\*))*(\.\*\*)?$/;
-const CONCRETE_RE = /^[a-z][a-z0-9]*(\.[a-z0-9][a-zA-Z0-9_-]*)*$/;
+const KEY_RE = /^[a-z][a-z0-9-]*(\.([a-z0-9][a-zA-Z0-9_-]*|\*))*(\.\*\*)?$/;
+const CONCRETE_RE = /^[a-z][a-z0-9-]*(\.[a-z0-9][a-zA-Z0-9_-]*)*$/;
 /** Is `key` a concrete setting key (no wildcards)? */
 export function validKey(key) { return typeof key === 'string' && key.length <= 240 && CONCRETE_RE.test(key); }
 /** Is `pattern` a registry key or key pattern? */
@@ -149,8 +149,10 @@ export function registryErrors(doc) {
     if (typeof e.pointer !== 'string' || (e.pointer !== '' && !e.pointer.startsWith('/'))) out.push(`${at}: pointer must be a JSON pointer`);
     if (!Array.isArray(e.mirrors) || e.mirrors.length) out.push(`${at}: mirrors must be [] (a copy is removed, never registered)`);
     if (!Array.isArray(e.readers) || !Array.isArray(e.writers)) out.push(`${at}: readers and writers must be arrays`);
+    if (e.derive !== undefined && !/^not-in-list:\{\d+\}$/.test(String(e.derive))) out.push(`${at}: derive must be not-in-list:{n}`);
     const c = compilePattern(e.key);
     const allowed = new Set([...Array.from({ length: c.stars }, (_, k) => String(k + 1)), ...(c.rest ? ['rest'] : [])]);
+    for (const m of String(e.derive || '').matchAll(/\{(\d+)\}/g)) if (!allowed.has(m[1])) out.push(`${at}: derive uses {${m[1]}} the key has no capture for`);
     for (const m of String(e.pointer || '').matchAll(/\{(\d+|rest|rest\/)\}/g)) if (!allowed.has(m[1].replace('/', ''))) out.push(`${at}: pointer uses {${m[1]}} the key has no capture for`);
     const st = stores?.[e.store];
     for (const m of String(st?.path || '').matchAll(/\{(\d+)\}/g)) if (!allowed.has(m[1])) out.push(`${at}: store path uses {${m[1]}} the key has no capture for`);
@@ -195,12 +197,21 @@ export function ownerOf(key, { registry, env = process.env } = {}) {
   if (tie) throw new SettingsSourceError('ambiguous', `"${key}" could belong to ${best.e.key} or ${tie.key}`, { entries: [best.e.key, tie.key] });
   const store = { id: best.e.store, ...reg.stores[best.e.store] };
   const storeKey = store.kind === 'data-store' ? `${store.ns}/${substitute(store.path, best.caps)}` : `browser:${store.storageKey}`;
-  return { key, entry: best.e, store, captures: best.caps, pointer: resolvePointer(best.e.pointer, best.caps), storeKey, file: storeFile(store, best.caps, env) };
+  const derive = best.e.derive ? deriveSpec(best.e.derive, best.caps) : null;
+  return { key, entry: best.e, store, captures: best.caps, pointer: resolvePointer(best.e.pointer, best.caps), storeKey, file: storeFile(store, best.caps, env), ...(derive ? { derive } : {}) };
 }
 /** Every registry entry with its store, for lists (the Sources view, the CLI, the API). */
 export function listSources({ registry } = {}) {
   const reg = registry || loadRegistry();
   return reg.settings.map((e) => ({ key: e.key, label: e.label || '', store: e.store, pointer: e.pointer, owner: reg.stores[e.store]?.owner || '', editor: reg.stores[e.store]?.editor || '', kind: reg.stores[e.store]?.kind || '', readers: e.readers || [], writers: e.writers || [], formerly: e.formerly || [], api: reg.stores[e.store]?.api || null }));
+}
+
+// ── derived values: `not-in-list:{n}` = true when the captured name is absent from the array at the pointer ──
+export function deriveSpec(derive, caps) { const m = /^not-in-list:\{(\d+)\}$/.exec(String(derive)); return m ? { kind: 'not-in-list', name: String(caps[m[1]] ?? '') } : null; }
+export function deriveRead(owner, raw) { const list = Array.isArray(raw) ? raw : []; return owner.derive.kind === 'not-in-list' ? !list.includes(owner.derive.name) : raw; }
+export function deriveWrite(owner, raw, value) {
+  const list = Array.isArray(raw) ? raw.filter((x) => x !== owner.derive.name) : [];
+  return value === false ? [...list, owner.derive.name] : list;
 }
 
 // ── read / write through the owner ──
@@ -211,8 +222,9 @@ export async function readSetting(key, opts = {}) {
   if (!owner) throw new SettingsSourceError('no_owner', `"${key}" has no owner in settings-sources.json: register it first`);
   if (owner.store.kind !== 'data-store') return { key, owner, value: undefined, set: false, reachable: false };
   let doc; try { doc = await readJson(owner.file, null); } catch (e) { throw dataError(e); }
-  const value = doc === null ? undefined : getAt(doc, owner.pointer);
-  return { key, owner, value, set: value !== undefined, reachable: true };
+  const raw = doc === null ? undefined : getAt(doc, owner.pointer);
+  const value = owner.derive ? deriveRead(owner, raw) : raw;
+  return { key, owner, value, set: owner.derive ? doc !== null : value !== undefined, reachable: true };
 }
 /**
  * Write `key` through its owner. `store` (optional) is the store the caller believes it is writing: when it is not the
@@ -228,8 +240,9 @@ export async function writeSetting(key, value, { by = '', store = '', registry, 
   try {
     await updateJson(owner.file, (doc) => {
       const base = doc && typeof doc === 'object' ? doc : {};
-      before = getAt(base, owner.pointer);
-      const next = value === undefined ? deleteAt(base, owner.pointer) : setAt(base, owner.pointer, value);
+      const raw = getAt(base, owner.pointer);
+      before = owner.derive ? deriveRead(owner, raw) : raw;
+      const next = owner.derive ? setAt(base, owner.pointer, deriveWrite(owner, raw, value)) : value === undefined ? deleteAt(base, owner.pointer) : setAt(base, owner.pointer, value);
       return owner.store.frame && next && typeof next === 'object' && !Array.isArray(next) && !next.$axf ? { $axf: owner.store.frame, ...next } : next;
     }, {});
   } catch (e) { throw dataError(e); }

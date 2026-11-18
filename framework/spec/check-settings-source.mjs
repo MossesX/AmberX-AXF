@@ -37,11 +37,12 @@ const LOOKUP_KEYS = ['accounts.mossesx-max-.use', 'accounts.account-3.fable', 'a
   'look.axf-console.skin.use', 'look.amberx-droid.own.spacing', 'nothing.here', 'accounts', 'pipeline', 'accountsx.a.use'];
 out.lookups = LOOKUP_KEYS.map((key) => {
   const o = S.ownerOf(key, { registry: reg, env: { AXF_ROOT: '/repo', AXHUB_PROJECTS_DIR: '/projects' } });
-  return { key, owner: o ? { entry: o.entry.key, store: o.store.id, storeKey: o.storeKey, pointer: o.pointer, captures: o.captures, file: o.file } : null };
+  return { key, owner: o ? { entry: o.entry.key, store: o.store.id, storeKey: o.storeKey, pointer: o.pointer, captures: o.captures, file: o.file, ...(o.derive ? { derive: o.derive } : {}) } : null };
 });
 await t('lookups resolve', () => {
   const by = Object.fromEntries(out.lookups.map((l) => [l.key, l.owner]));
-  assert.equal(by['accounts.mossesx-max-.use'].pointer, '/perAccount/mossesx-max-/use');
+  assert.equal(by['accounts.mossesx-max-.use'].pointer, '/excluded'); assert.deepEqual(by['accounts.mossesx-max-.use'].derive, { kind: 'not-in-list', name: 'mossesx-max-' });
+  assert.equal(by['accounts.hulu0241.parallel'].pointer, '/perAccount/hulu0241/building');
   assert.equal(by['accounts.mossesx-max-.use'].store, 'claude-accounts/workers');
   assert.equal(by['accounts.workers'].pointer, '/workers');
   assert.equal(by['accounts.api.account-5.dailyCapUsd'].pointer, '/api/account-5/dailyCapUsd');
@@ -112,6 +113,7 @@ const testReg = {
   settings: [
     { key: 'alpha.*.use', store: 'alpha/settings', pointer: '/accounts/{1}/use', readers: ['plugin:beta'], writers: ['plugin:alpha'], mirrors: [], formerly: [{ store: 'beta/settings', pointer: '/own/{1}/use' }] },
     { key: 'alpha.limit', store: 'alpha/settings', pointer: '/limit', readers: [], writers: ['plugin:alpha'], mirrors: [] },
+    { key: 'alpha.*.on', store: 'alpha/settings', pointer: '/excluded', derive: 'not-in-list:{1}', readers: [], writers: ['plugin:alpha'], mirrors: [] },
     { key: 'beta.**', store: 'beta/settings', pointer: '/{rest}', readers: [], writers: [], mirrors: [] },
     { key: 'demo.theme', store: 'demo/browser', pointer: '/axf.theme', readers: [], writers: ['app:demo'], mirrors: [] },
   ],
@@ -134,6 +136,8 @@ await step('writeBrowser', () => S.writeSetting('demo.theme', 'dark', o));
 await step('writeNew', async () => { await S.writeSetting('alpha.a2.use', true, o); const d = JSON.parse(readFileSync(join(tmp, '.axf-console/plugins/alpha/settings.json'), 'utf8')); assert.deepEqual(d.accounts, { a1: { use: true }, a2: { use: true } }); });
 await step('writeRemove', async () => { await S.writeSetting('alpha.a2.use', undefined, o); const d = JSON.parse(readFileSync(join(tmp, '.axf-console/plugins/alpha/settings.json'), 'utf8')); assert.deepEqual(d.accounts, { a1: { use: true }, a2: {} }); });
 await step('writeCreatesDoc', async () => { rmSync(join(tmp, 'projects/amberx-axf/_data/beta/settings.json')); await S.writeSetting('beta.maxRuns', 7, o); const d = JSON.parse(readFileSync(join(tmp, 'projects/amberx-axf/_data/beta/settings.json'), 'utf8')); assert.deepEqual(d, { maxRuns: 7 }); });
+await step('deriveRead', async () => { await S.writeSetting('alpha.a1.use', true, o); const d0 = JSON.parse(readFileSync(join(tmp, '.axf-console/plugins/alpha/settings.json'), 'utf8')); writeFileSync(join(tmp, '.axf-console/plugins/alpha/settings.json'), JSON.stringify({ ...d0, excluded: ['a2'] })); const a = await S.readSetting('alpha.a1.on', o); const b = await S.readSetting('alpha.a2.on', o); assert.equal(a.value, true); assert.equal(b.value, false); assert.equal(a.set, true); });
+await step('deriveWrite', async () => { await S.writeSetting('alpha.a1.on', false, o); await S.writeSetting('alpha.a2.on', true, o); const d = JSON.parse(readFileSync(join(tmp, '.axf-console/plugins/alpha/settings.json'), 'utf8')); assert.deepEqual(d.excluded, ['a1']); const r = await S.writeSetting('alpha.a1.on', false, o); assert.equal(r.before, false); assert.deepEqual(JSON.parse(readFileSync(join(tmp, '.axf-console/plugins/alpha/settings.json'), 'utf8')).excluded, ['a1']); });
 await step('assertOwnerById', () => S.assertOwner('alpha/settings', 'alpha.a1.use', o));
 await step('assertOwnerByFile', () => S.assertOwner(join(tmp, '.axf-console/plugins/alpha/settings.json'), 'alpha.a1.use', o));
 await step('assertNotOwnerFile', () => S.assertOwner(join(tmp, 'projects/amberx-axf/_data/beta/settings.json'), 'alpha.a1.use', o));
@@ -146,7 +150,7 @@ rmSync(tmp, { recursive: true, force: true });
 out.scenario = scenario;
 await t('read / write scenario', () => {
   const by = Object.fromEntries(scenario.map((s) => [s.name, s.v]));
-  assert.deepEqual(by, { readOwned: 'ok', readUnset: 'ok', readRest: 'ok', readNoOwner: 'no_owner', readBrowser: 'ok', writeOwned: 'ok', writeNotOwnerStore: 'not_owner', writeNotOwnerBy: 'not_owner', writeNoOwner: 'no_owner', writeBrowser: 'unreachable', writeNew: 'ok', writeRemove: 'ok', writeCreatesDoc: 'ok', assertOwnerById: 'ok', assertOwnerByFile: 'ok', assertNotOwnerFile: 'not_owner', assertNotOwnerId: 'not_owner', assertNoOwner: 'no_owner', formerPlaces: 'ok', envDir: 'ok', ambiguousThrows: 'ambiguous' });
+  assert.deepEqual(by, { readOwned: 'ok', readUnset: 'ok', readRest: 'ok', readNoOwner: 'no_owner', readBrowser: 'ok', writeOwned: 'ok', writeNotOwnerStore: 'not_owner', writeNotOwnerBy: 'not_owner', writeNoOwner: 'no_owner', writeBrowser: 'unreachable', writeNew: 'ok', writeRemove: 'ok', writeCreatesDoc: 'ok', deriveRead: 'ok', deriveWrite: 'ok', assertOwnerById: 'ok', assertOwnerByFile: 'ok', assertNotOwnerFile: 'not_owner', assertNotOwnerId: 'not_owner', assertNoOwner: 'no_owner', formerPlaces: 'ok', envDir: 'ok', ambiguousThrows: 'ambiguous' });
 });
 out.testRegistry = testReg;
 

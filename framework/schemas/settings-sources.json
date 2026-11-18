@@ -1,8 +1,8 @@
 {
   "$axf": "settings-sources@1",
   "version": 1,
-  "note": "Every setting has exactly one true source (Brett, Nov 18 2026: \"All settings need one true fucking source.\"). A setting key (or key pattern) maps to one owning store: a data-store@1 namespace + path (the document) and a JSON pointer inside it. Readers resolve through the owner (framework/core/settings-source.mjs, apps/console-web/server/settings_source.py); a write to any other store is refused; `mirrors` must be empty on every entry (CI: framework/cli/check-settings-sources.mjs). Spec: framework/spec/SETTINGS-SOURCES.md.",
-  "keyPattern": "^[a-z][a-z0-9]*(\\.([a-z0-9][a-zA-Z0-9_-]*|\\*))*(\\.\\*\\*)?$",
+  "note": "Every setting has exactly one true source (Brett, Nov 18 2026: \"All settings need one true fucking source.\"). A setting key (or key pattern) maps to one owning store: a data-store@1 namespace + path (the document) and a JSON pointer inside it. Readers resolve through the owner (framework/core/settings-source.mjs, apps/console-web/server/settings_source.py); a write to any other store is refused; `mirrors` must be empty on every entry (CI: framework/cli/check-settings-sources.mjs). Spec: framework/spec/SETTINGS-SOURCES.md. Filled from the three audits (_claude/builds/reports/one-true-source-for-every-setting/audit-*.json) and duplicates.md.",
+  "keyPattern": "^[a-z][a-z0-9-]*(\\.([a-z0-9][a-zA-Z0-9_-]*|\\*))*(\\.\\*\\*)?$",
   "storeIdPattern": "^[a-z0-9][a-z0-9-]*(/[a-z0-9][a-z0-9._-]*)*$",
   "storeKinds": {
     "data-store": "a data-store@1 key (`ns` + `path`): the document lives where framework/schemas/data-store-paths.json puts it today and on axf-data once its namespace is cut over; readable and writable from Node and Python",
@@ -19,6 +19,15 @@
     "editor": "the console_show deep link of the one control that edits it",
     "api": "REST route, MCP tool, CLI and voice action: the four surfaces of that one control"
   },
+  "entryFields": {
+    "key": "the setting's global name or pattern (* one segment, trailing ** the rest)",
+    "store": "the owning store id",
+    "pointer": "JSON pointer inside the owner document ({1}.. captures, {rest} flat, {rest/} nested, \"\" whole document)",
+    "derive": "optional: `not-in-list:{n}` = the value is true when the captured name is absent from the array at the pointer (a write adds / removes it)",
+    "readers / writers": "who reads (through the owner) and who may write",
+    "mirrors": "always []",
+    "formerly": "where copies used to be: { store, pointer, note }; the migration strips them and the check refuses writes there"
+  },
   "pointerNote": "`pointer` is a JSON pointer inside the owner document. `{1}`, `{2}` are the key's `*` segments in order; `{rest}` is what `**` matched as one pointer segment (dots kept: a flat document keyed by dotted names); `{rest/}` is the same with `.` turned into `/` (a nested document). Pointer \"\" means the whole document.",
   "stores": {
     "claude-accounts/workers": {
@@ -27,26 +36,26 @@
       "path": "claude-accounts/workers.json",
       "frame": "claude-workers@1",
       "owner": "plugin:claude-accounts",
-      "label": "Claude accounts: workers and routing",
+      "label": "Claude accounts: workers, exclusions, per-account limits, API accounts, routing rules (claude-workers@1)",
+      "file": "{plugins}/claude-accounts/workers.json",
+      "envDir": "AXF_CLAUDE_ACCOUNTS_DATA_DIR",
       "editor": "view:builds/tab:claude-accounts",
       "api": {
-        "rest": "/api/plugins/claude-accounts/config",
-        "mcp": "claude_accounts_config",
-        "cli": "node deploy/claude-workers.mjs",
-        "voice": "accounts.config"
-      },
-      "file": "{plugins}/claude-accounts/workers.json",
-      "envDir": "AXF_CLAUDE_ACCOUNTS_DATA_DIR"
+        "rest": "/api/plugins/claude-accounts/routing/config",
+        "mcp": "claude_accounts_routing_config",
+        "cli": "node deploy/worker-routing.mjs",
+        "voice": "accounts.routing"
+      }
     },
     "claude-accounts/worker-state": {
       "kind": "data-store",
       "ns": "plugins",
       "path": "claude-accounts/worker-state.json",
       "owner": "plugin:claude-accounts",
-      "label": "Claude accounts: live limits and claims",
-      "editor": "view:builds/tab:claude-accounts",
+      "label": "Claude accounts: live limits and claims (runtime state)",
       "file": "{plugins}/claude-accounts/worker-state.json",
-      "envDir": "AXF_CLAUDE_ACCOUNTS_DATA_DIR"
+      "envDir": "AXF_CLAUDE_ACCOUNTS_DATA_DIR",
+      "editor": "view:builds/tab:claude-accounts"
     },
     "claude-settings/settings": {
       "kind": "data-store",
@@ -54,16 +63,16 @@
       "path": "claude/settings.json",
       "frame": "claude-settings@1",
       "owner": "plugin:claude-settings",
-      "label": "Claude settings (every session reads these)",
-      "editor": "view:settings/tab:plugins.claude-settings",
+      "label": "Claude settings: what every Claude session reads before acting (claude-settings@1)",
+      "file": "{projects}/_shared/_data/claude/settings.json",
+      "envFile": "AXF_CLAUDE_SETTINGS_FILE",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings",
       "api": {
         "rest": "/api/plugins/claude-settings/settings",
         "mcp": "claude_settings_set",
         "cli": "node apps/console-web/plugins/claude-settings/claude-settings.mjs set",
         "voice": "claude.settings"
-      },
-      "file": "{projects}/_shared/_data/claude/settings.json",
-      "envFile": "AXF_CLAUDE_SETTINGS_FILE"
+      }
     },
     "pipeline/settings": {
       "kind": "data-store",
@@ -71,26 +80,595 @@
       "path": "pipeline/settings.json",
       "frame": "pipeline-settings@1",
       "owner": "plugin:build-orchestrator",
-      "label": "Build pipeline settings",
+      "label": "Build pipeline settings (pipeline-settings@1)",
+      "file": "{projects}/amberx-axf/_data/pipeline/settings.json",
+      "envDir": "AXF_PIPELINE_DIR",
       "editor": "view:builds/tab:pipeline",
       "api": {
         "rest": "/api/plugins/build-orchestrator/pipeline/settings",
-        "mcp": "orchestrator_pipeline_set",
+        "mcp": "orchestrator_pipeline_settings",
         "cli": "node apps/console-web/plugins/build-orchestrator/pipeline.mjs set",
         "voice": "pipeline.settings"
-      },
-      "file": "{projects}/amberx-axf/_data/pipeline/settings.json",
-      "envDir": "AXF_PIPELINE_DIR"
+      }
     },
     "pipeline/accounts": {
       "kind": "data-store",
       "ns": "builds",
       "path": "pipeline/accounts.json",
       "owner": "plugin:build-orchestrator",
-      "label": "Build pipeline: what it learned about each account (probes, health)",
-      "editor": "view:builds/tab:pipeline",
+      "label": "Build pipeline: what it learned about each account (probe, health). No settings live here any more",
       "file": "{projects}/amberx-axf/_data/pipeline/accounts.json",
-      "envDir": "AXF_PIPELINE_DIR"
+      "envDir": "AXF_PIPELINE_DIR",
+      "editor": "view:builds/tab:pipeline"
+    },
+    "pipeline/watchdog-settings": {
+      "kind": "data-store",
+      "ns": "builds",
+      "path": "pipeline/build-watchdog-settings.json",
+      "owner": "plugin:build-orchestrator",
+      "label": "Recovery watchdog settings",
+      "file": "{projects}/amberx-axf/_data/pipeline/build-watchdog-settings.json",
+      "envDir": "AXF_PIPELINE_DIR",
+      "editor": "view:builds/tab:pipeline",
+      "api": {
+        "rest": "/api/plugins/build-orchestrator/recovery-watchdog/settings",
+        "mcp": "orchestrator_recovery_watchdog_settings",
+        "cli": "node apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs set",
+        "voice": "watchdog.settings"
+      }
+    },
+    "orchestrator/rules": {
+      "kind": "data-store",
+      "ns": "builds",
+      "path": "store.json",
+      "owner": "plugin:build-orchestrator",
+      "label": "Orchestrator rules (builds@1 store, `rules`)",
+      "file": "{repo}/_claude/builds/store.json",
+      "editor": "view:builds/tab:orchestrator",
+      "api": {
+        "rest": "/api/plugins/build-orchestrator/rules",
+        "mcp": "orchestrator_rules",
+        "cli": "node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act rules",
+        "voice": "orchestrator.rules"
+      }
+    },
+    "agent-slots/settings": {
+      "kind": "data-store",
+      "ns": "console",
+      "path": "agent-slots/settings.json",
+      "frame": "agent-slots-settings@1",
+      "owner": "framework/cli/agent-slots.mjs",
+      "label": "Agent slots: VPS-wide agent cap and guards (agent-slots-settings@1)",
+      "file": "{projects}/amberx-axf/_data/agent-slots/settings.json",
+      "envDir": "AXF_SLOTS_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
+      "api": {
+        "rest": "/api/plugins/agent-slots/settings",
+        "mcp": "agent_slots_settings",
+        "cli": "node framework/cli/agent-slots.mjs set",
+        "voice": "agents.cap"
+      }
+    },
+    "agent-slots/build-limit": {
+      "kind": "data-store",
+      "ns": "console",
+      "path": "agent-slots/build-limit.json",
+      "frame": "build-limit@1",
+      "owner": "framework/cli/agent-slots.mjs",
+      "label": "Build limit: builds at once and the systemd / docker caps (build-limit@1)",
+      "file": "{projects}/amberx-axf/_data/agent-slots/build-limit.json",
+      "envDir": "AXF_SLOTS_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
+      "api": {
+        "rest": "/api/plugins/agent-slots/build-limit",
+        "mcp": "agent_slots_build_limit",
+        "cli": "node framework/cli/agent-slots.mjs limit",
+        "voice": "builds.limit"
+      }
+    },
+    "auto-lander/control": {
+      "kind": "data-store",
+      "ns": "console",
+      "path": "auto-lander/control.json",
+      "frame": "auto-lander-control@1",
+      "owner": "framework/core/auto-lander.mjs",
+      "label": "Auto-lander control: settings, pause, resets (auto-lander-control@1)",
+      "file": "{projects}/amberx-axf/_data/auto-lander/control.json",
+      "envDir": "AXF_AUTO_LANDER_DIR",
+      "editor": "view:builds/tab:gate",
+      "api": {
+        "rest": "/api/plugins/gate/auto-lander/settings",
+        "mcp": "gate_auto_lander_settings",
+        "cli": "node apps/console-web/plugins/gate/gate.mjs auto-lander set",
+        "voice": "lander.settings"
+      }
+    },
+    "gate/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "gate/settings.json",
+      "frame": "gate-settings@1",
+      "owner": "plugin:gate",
+      "label": "Gate plugin's own view settings (gate-settings@1)",
+      "file": "{plugins}/gate/settings.json",
+      "envDir": "AXF_GATE_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+      "api": {
+        "rest": "/api/plugins/gate/settings",
+        "mcp": "gate_settings",
+        "cli": "axf plugins gate settings",
+        "voice": "gate.settings"
+      }
+    },
+    "gate/lander": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "gate/lander.json",
+      "frame": "gate-lander@1",
+      "owner": "plugin:gate",
+      "label": "Gate's lander record: pause state and saved flags (gate-lander@1). mergeQueue no longer lives here",
+      "file": "{plugins}/gate/lander.json",
+      "envDir": "AXF_GATE_DIR",
+      "editor": "view:builds/tab:gate"
+    },
+    "gate/rules": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "gate/rules.json",
+      "owner": "plugin:gate",
+      "label": "Gate rule set (gate-rules@1)",
+      "file": "{plugins}/gate/rules.json",
+      "envDir": "AXF_GATE_DIR",
+      "editor": "view:builds/tab:gate",
+      "api": {
+        "rest": "/api/plugins/gate/rules",
+        "mcp": "gate_rules",
+        "cli": "node apps/console-web/plugins/gate/gate.mjs rules",
+        "voice": "gate.rules"
+      }
+    },
+    "push-banner/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "push-banner/config.json",
+      "frame": "push-banner-config@1",
+      "owner": "plugin:push-banner",
+      "label": "Push banner / merge queue config (push-banner-config@1)",
+      "file": "{plugins}/push-banner/config.json",
+      "envDir": "AXF_PUSH_BANNER_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
+      "api": {
+        "rest": "/api/plugins/push-banner/config",
+        "mcp": "push_banner_config",
+        "cli": "node apps/console-web/plugins/push-banner/land/land.mjs config",
+        "voice": "merge-queue.settings"
+      }
+    },
+    "activity/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "activity/config.json",
+      "owner": "plugin:activity",
+      "label": "activity: its own settings (config.json)",
+      "file": "{plugins}/activity/config.json",
+      "envDir": "AXF_ACTIVITY_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity",
+      "api": {
+        "rest": "/api/plugins/activity/config",
+        "mcp": "activity_settings",
+        "cli": "axf plugins activity config",
+        "voice": "activity.settings"
+      }
+    },
+    "agent-manager/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "agent-manager/settings.json",
+      "frame": "agent-manager-settings@1",
+      "owner": "plugin:agent-manager",
+      "label": "agent-manager: its own settings (settings.json)",
+      "file": "{plugins}/agent-manager/settings.json",
+      "envDir": "AXF_AGENT_MANAGER_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-manager",
+      "api": {
+        "rest": "/api/plugins/agent-manager/settings",
+        "mcp": "agent_manager_settings",
+        "cli": "axf plugins agent-manager settings",
+        "voice": "agent-manager.settings"
+      }
+    },
+    "ai-assistant/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "ai-assistant/config.json",
+      "frame": "ai-assistant-config@1",
+      "owner": "plugin:ai-assistant",
+      "label": "ai-assistant: its own settings (config.json)",
+      "file": "{plugins}/ai-assistant/config.json",
+      "envDir": "AXF_AI_ASSISTANT_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-assistant",
+      "api": {
+        "rest": "/api/plugins/ai-assistant/config",
+        "mcp": "ai_assistant_settings",
+        "cli": "axf plugins ai-assistant config",
+        "voice": "ai-assistant.settings"
+      }
+    },
+    "brand-library/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "brand-library/config.json",
+      "owner": "plugin:brand-library",
+      "label": "brand-library: its own settings (config.json)",
+      "file": "{plugins}/brand-library/config.json",
+      "envDir": "AXF_BRAND_LIBRARY_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=brand-library",
+      "api": {
+        "rest": "/api/plugins/brand-library/config",
+        "mcp": "brand_library_settings",
+        "cli": "axf plugins brand-library config",
+        "voice": "brand-library.settings"
+      }
+    },
+    "chat-viewer/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "chat-viewer/settings.json",
+      "owner": "plugin:chat-viewer",
+      "label": "chat-viewer: its own settings (settings.json)",
+      "file": "{plugins}/chat-viewer/settings.json",
+      "envDir": "AXF_CHAT_VIEWER_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=chat-viewer",
+      "api": {
+        "rest": "/api/plugins/chat-viewer/settings",
+        "mcp": "chat_viewer_settings",
+        "cli": "axf plugins chat-viewer settings",
+        "voice": "chat-viewer.settings"
+      }
+    },
+    "claude-handoff/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "claude-handoff/config.json",
+      "owner": "plugin:claude-handoff",
+      "label": "claude-handoff: its own settings (config.json)",
+      "file": "{plugins}/claude-handoff/config.json",
+      "envDir": "AXF_HANDOFF_DATA",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-handoff",
+      "api": {
+        "rest": "/api/plugins/claude-handoff/config",
+        "mcp": "claude_handoff_settings",
+        "cli": "axf plugins claude-handoff config",
+        "voice": "claude-handoff.settings"
+      }
+    },
+    "console-commands/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "console-commands/settings.json",
+      "owner": "plugin:console-commands",
+      "label": "console-commands: its own settings (settings.json)",
+      "file": "{plugins}/console-commands/settings.json",
+      "envDir": "AXF_CONSOLE_COMMANDS_DATA_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands",
+      "api": {
+        "rest": "/api/plugins/console-commands/settings",
+        "mcp": "console_commands_settings",
+        "cli": "axf plugins console-commands settings",
+        "voice": "console-commands.settings"
+      }
+    },
+    "console-terminal/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "console-terminal/settings.json",
+      "frame": "terminal-settings@1",
+      "owner": "plugin:console-terminal",
+      "label": "console-terminal: its own settings (settings.json)",
+      "file": "{plugins}/console-terminal/settings.json",
+      "envDir": "AXF_TERMINAL_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-terminal",
+      "api": {
+        "rest": "/api/plugins/console-terminal/settings",
+        "mcp": "console_terminal_settings",
+        "cli": "axf plugins console-terminal settings",
+        "voice": "console-terminal.settings"
+      }
+    },
+    "container-access/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "container-access/settings.json",
+      "frame": "container-access-settings@1",
+      "owner": "plugin:container-access",
+      "label": "container-access: its own settings (settings.json)",
+      "file": "{plugins}/container-access/settings.json",
+      "envDir": "AXF_CONTAINER_ACCESS_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=container-access",
+      "api": {
+        "rest": "/api/plugins/container-access/settings",
+        "mcp": "container_access_settings",
+        "cli": "axf plugins container-access settings",
+        "voice": "container-access.settings"
+      }
+    },
+    "demonstration-designer/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "demonstration-designer/settings.json",
+      "frame": "pitch-settings@1",
+      "owner": "plugin:demonstration-designer",
+      "label": "demonstration-designer: its own settings (settings.json)",
+      "file": "{plugins}/demonstration-designer/settings.json",
+      "envDir": "AXF_DEMO_DESIGNER_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=demonstration-designer",
+      "api": {
+        "rest": "/api/plugins/demonstration-designer/settings",
+        "mcp": "demonstration_designer_settings",
+        "cli": "axf plugins demonstration-designer settings",
+        "voice": "demonstration-designer.settings"
+      }
+    },
+    "main-build-status/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "main-build-status/config.json",
+      "owner": "plugin:main-build-status",
+      "label": "main-build-status: its own settings (config.json)",
+      "file": "{plugins}/main-build-status/config.json",
+      "envDir": "AXF_MAIN_BUILD_STATUS_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status",
+      "api": {
+        "rest": "/api/plugins/main-build-status/config",
+        "mcp": "main_build_status_settings",
+        "cli": "axf plugins main-build-status config",
+        "voice": "main-build-status.settings"
+      }
+    },
+    "maintenance/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "maintenance/settings.json",
+      "owner": "plugin:maintenance",
+      "label": "maintenance: its own settings (settings.json)",
+      "file": "{plugins}/maintenance/settings.json",
+      "envDir": "AXF_MAINT_DATA_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance",
+      "api": {
+        "rest": "/api/plugins/maintenance/settings",
+        "mcp": "maintenance_settings",
+        "cli": "axf plugins maintenance settings",
+        "voice": "maintenance.settings"
+      }
+    },
+    "notify-control/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "notify-control/config.json",
+      "owner": "plugin:notify-control",
+      "label": "notify-control: its own settings (config.json)",
+      "file": "{plugins}/notify-control/config.json",
+      "envDir": "AXF_NOTIFY_DATA_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notify-control",
+      "api": {
+        "rest": "/api/plugins/notify-control/config",
+        "mcp": "notify_control_settings",
+        "cli": "axf plugins notify-control config",
+        "voice": "notify-control.settings"
+      }
+    },
+    "orchestrator-demo/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "orchestrator-demo/settings.json",
+      "owner": "plugin:orchestrator-demo",
+      "label": "orchestrator-demo: its own settings (settings.json)",
+      "file": "{plugins}/orchestrator-demo/settings.json",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=orchestrator-demo",
+      "api": {
+        "rest": "/api/plugins/orchestrator-demo/settings",
+        "mcp": "orchestrator_demo_settings",
+        "cli": "axf plugins orchestrator-demo settings",
+        "voice": "orchestrator-demo.settings"
+      }
+    },
+    "plugin-commands/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "plugin-commands/settings.json",
+      "owner": "plugin:plugin-commands",
+      "label": "plugin-commands: its own settings (settings.json)",
+      "file": "{plugins}/plugin-commands/settings.json",
+      "envDir": "AXF_PLUGIN_COMMANDS_DATA_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
+      "api": {
+        "rest": "/api/plugins/plugin-commands/settings",
+        "mcp": "plugin_commands_settings",
+        "cli": "axf plugins plugin-commands settings",
+        "voice": "plugin-commands.settings"
+      }
+    },
+    "plugins-menu/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "plugins-menu/config.json",
+      "owner": "plugin:plugins-menu",
+      "label": "plugins-menu: its own settings (config.json)",
+      "file": "{plugins}/plugins-menu/config.json",
+      "envDir": "AXF_PLUGINS_MENU_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugins-menu",
+      "api": {
+        "rest": "/api/plugins/plugins-menu/config",
+        "mcp": "plugins_menu_settings",
+        "cli": "axf plugins plugins-menu config",
+        "voice": "plugins-menu.settings"
+      }
+    },
+    "skin-gallery/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "skin-gallery/settings.json",
+      "owner": "plugin:skin-gallery",
+      "label": "skin-gallery: its own settings (settings.json)",
+      "file": "{plugins}/skin-gallery/settings.json",
+      "envDir": "AXF_SKIN_GALLERY_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=skin-gallery",
+      "api": {
+        "rest": "/api/plugins/skin-gallery/settings",
+        "mcp": "skin_gallery_settings",
+        "cli": "axf plugins skin-gallery settings",
+        "voice": "skin-gallery.settings"
+      }
+    },
+    "snapshot-manager/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "snapshot-manager/settings.json",
+      "frame": "snapshot-settings@1",
+      "owner": "plugin:snapshot-manager",
+      "label": "snapshot-manager: its own settings (settings.json)",
+      "file": "{plugins}/snapshot-manager/settings.json",
+      "envDir": "AXF_SNAPSHOT_MANAGER_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=snapshot-manager",
+      "api": {
+        "rest": "/api/plugins/snapshot-manager/settings",
+        "mcp": "snapshot_manager_settings",
+        "cli": "axf plugins snapshot-manager settings",
+        "voice": "snapshot-manager.settings"
+      }
+    },
+    "systems-check/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "systems-check/settings.json",
+      "frame": "systems-check-settings@1",
+      "owner": "plugin:systems-check",
+      "label": "systems-check: its own settings (settings.json)",
+      "file": "{plugins}/systems-check/settings.json",
+      "envDir": "AXF_SYSTEMS_CHECK_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=systems-check",
+      "api": {
+        "rest": "/api/plugins/systems-check/settings",
+        "mcp": "systems_check_settings",
+        "cli": "axf plugins systems-check settings",
+        "voice": "systems-check.settings"
+      }
+    },
+    "ui-review/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "ui-review/settings.json",
+      "frame": "ui-review-settings@1",
+      "owner": "plugin:ui-review",
+      "label": "ui-review: its own settings (settings.json)",
+      "file": "{plugins}/ui-review/settings.json",
+      "envDir": "AXF_UI_REVIEW_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
+      "api": {
+        "rest": "/api/plugins/ui-review/settings",
+        "mcp": "ui_review_settings",
+        "cli": "axf plugins ui-review settings",
+        "voice": "ui-review.settings"
+      }
+    },
+    "whats-shipped/config": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "whats-shipped/config.json",
+      "owner": "plugin:whats-shipped",
+      "label": "whats-shipped: its own settings (config.json)",
+      "file": "{plugins}/whats-shipped/config.json",
+      "envDir": "AXF_WHATS_SHIPPED_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=whats-shipped",
+      "api": {
+        "rest": "/api/plugins/whats-shipped/config",
+        "mcp": "whats_shipped_settings",
+        "cli": "axf plugins whats-shipped config",
+        "voice": "whats-shipped.settings"
+      }
+    },
+    "wake-listener/settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "wake-listener/settings.json",
+      "frame": "wake-listener@1",
+      "owner": "plugin:wake-listener",
+      "label": "Wake listener settings (wake-listener@1, `values`)",
+      "file": "{plugins}/wake-listener/settings.json",
+      "envDir": "AXF_WAKE_LISTENER_DATA_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
+      "api": {
+        "rest": "/api/plugins/wake-listener/settings",
+        "mcp": "wake_listener_settings",
+        "cli": "axf plugins wake-listener settings",
+        "voice": "wake-listener.settings"
+      }
+    },
+    "ui-review/choices-settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "ui-review/choices-settings.json",
+      "owner": "plugin:ui-review",
+      "label": "UI Review: the ui-choices rule's settings",
+      "file": "{plugins}/ui-review/choices-settings.json",
+      "envDir": "AXF_UI_REVIEW_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-review",
+      "api": {
+        "rest": "/api/plugins/ui-review/choices/settings",
+        "mcp": "ui_review_settings",
+        "cli": "axf plugins ui-review choices/settings",
+        "voice": "ui-review.settings"
+      }
+    },
+    "token-control/pass-settings": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "token-control/pass-settings.json",
+      "owner": "plugin:token-control",
+      "label": "Token control: pass settings",
+      "file": "{plugins}/token-control/pass-settings.json",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=token-control",
+      "api": {
+        "rest": "/api/plugins/token-control/pass/settings",
+        "mcp": "token_control_settings",
+        "cli": "axf plugins token-control pass/settings",
+        "voice": "token-control.settings"
+      }
+    },
+    "follow-amber/state": {
+      "kind": "data-store",
+      "ns": "plugins",
+      "path": "follow-amber/state.json",
+      "owner": "plugin:follow-amber",
+      "label": "Follow Amber: who switched it and when (runtime state). The switch itself is claude.followAmber.enabled",
+      "file": "{plugins}/follow-amber/state.json",
+      "envDir": "AXF_FOLLOW_AMBER_DATA_DIR",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber"
+    },
+    "server/alerts-config": {
+      "kind": "data-store",
+      "ns": "console",
+      "path": "alerts-config.json",
+      "owner": "server:alerts",
+      "label": "Systems-check alerts hub: rules, ntfy, webpush, sources, repos, publicUrl, pollSeconds",
+      "file": "{data}/alerts-config.json",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=systems-check",
+      "api": {
+        "rest": "/api/alerts/config",
+        "mcp": "console_alerts_config",
+        "cli": "axf alerts config",
+        "voice": "alerts.config"
+      }
+    },
+    "server/state": {
+      "kind": "data-store",
+      "ns": "console",
+      "path": "state.json",
+      "owner": "server:main",
+      "label": "Console server state: project, terminal tail, plugin enable/disable (runtime state)",
+      "file": "{data}/state.json",
+      "envFile": "AXF_STATE",
+      "editor": "view:settings"
     },
     "appearance/shared": {
       "kind": "data-store",
@@ -98,15 +676,15 @@
       "path": "appearance.json",
       "frame": "appearance@1",
       "owner": "framework:appearance",
-      "label": "Hub-wide appearance (token overrides, hub skin pointers)",
+      "label": "Hub-wide appearance (appearance@1): token overrides, hub skin pointers; legacy slots / spacing / hidden / palette still read by Android",
+      "file": "{projects}/_shared/_data/settings/appearance.json",
       "editor": "view:settings/tab:appearance",
       "api": {
         "rest": "/api/skins/global",
         "mcp": "control_tokens",
         "cli": "node framework/cli/skins.mjs global",
         "voice": "skin.global"
-      },
-      "file": "{projects}/_shared/_data/settings/appearance.json"
+      }
     },
     "appearance/app-look": {
       "kind": "data-store",
@@ -114,23 +692,472 @@
       "path": "looks/{1}.json",
       "frame": "app-look@1",
       "owner": "framework:skins",
-      "label": "One app's look (app-look@1)",
+      "label": "One app's look (app-look@1): default, own, skin, scopes, undo, backups",
+      "file": "{projects}/_shared/_data/settings/looks/{1}.json",
       "editor": "view:settings/tab:appearance",
       "api": {
         "rest": "/api/skins/{app}",
         "mcp": "skins_set",
         "cli": "node framework/cli/skins.mjs",
         "voice": "skin.use"
-      },
-      "file": "{projects}/_shared/_data/settings/looks/{1}.json"
+      }
+    },
+    "hub-settings/app": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "apps/{1}.json",
+      "frame": "hub-settings@1",
+      "owner": "framework/libs/hubstore",
+      "label": "hub-settings@1 per app: a stale Oct 31 snapshot of SettingsRegistry values; retired by s14",
+      "file": "{projects}/_shared/_data/settings/apps/{1}.json",
+      "editor": "view:settings"
+    },
+    "claude-handoff/look": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "claude-handoff-look.json",
+      "owner": "plugin:claude-handoff",
+      "label": "Claude handoff installer look (hub document)",
+      "file": "{projects}/_shared/_data/settings/claude-handoff-look.json",
+      "editor": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-handoff"
+    },
+    "console-web/registry": {
+      "kind": "browser",
+      "storageKey": "axf:ai.amberx.axf.console:settings",
+      "owner": "app:console-web",
+      "label": "The Dev Console's SettingsRegistry (localStorage axf:ai.amberx.axf.console:settings): device / app settings only",
+      "editor": "view:settings",
+      "api": {
+        "rest": "/api/console/control (console_set)",
+        "mcp": "console_set",
+        "cli": "axf console set",
+        "voice": "settings.set"
+      }
+    },
+    "app/registry": {
+      "kind": "browser",
+      "storageKey": "axf:<app>:settings",
+      "owner": "framework:runtime",
+      "label": "Any AXF app's SettingsRegistry (localStorage axf:<app id>:settings): the runtime's applied copies of hub look documents live here too",
+      "editor": "view:settings",
+      "api": {
+        "rest": "/api/console/control (console_set)",
+        "mcp": "console_set / control_tokens",
+        "cli": "axf console set",
+        "voice": "settings.set"
+      }
+    },
+    "hub-settings/console": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "apps/axf-console.json",
+      "frame": "hub-settings@1",
+      "owner": "framework/libs/hubstore",
+      "label": "hub-settings@1 snapshot of the Dev Console's SettingsRegistry (last written Oct 31 2026): a stale copy, stripped by s14",
+      "file": "{projects}/_shared/_data/settings/apps/axf-console.json",
+      "editor": "view:settings"
+    },
+    "hub-settings/axhub-web": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "apps/axhub-web.json",
+      "frame": "hub-settings@1",
+      "owner": "framework/libs/hubstore",
+      "label": "hub-settings@1 snapshot of axHub web's SettingsRegistry (Nov 5 2026): a stale copy, stripped by s14",
+      "file": "{projects}/_shared/_data/settings/apps/axhub-web.json",
+      "editor": "view:settings"
+    },
+    "hub-settings/amberx-droid": {
+      "kind": "data-store",
+      "ns": "settings",
+      "path": "apps/amberx-droid.json",
+      "frame": "hub-settings@1",
+      "owner": "android:lib-hub HubSettings",
+      "label": "AmberX (Android) settings on the hub (hub-settings@1): the app's own live store, not a copy",
+      "file": "{projects}/_shared/_data/settings/apps/amberx-droid.json",
+      "editor": "view:settings"
     }
   },
   "settings": [
     {
+      "key": "activity.**",
+      "store": "activity/config",
+      "pointer": "/{rest}",
+      "label": "activity settings (config.json, every key)",
+      "readers": [
+        "plugin:activity"
+      ],
+      "writers": [
+        "plugin:activity"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "agent-manager.**",
+      "store": "agent-manager/settings",
+      "pointer": "/{rest}",
+      "label": "agent-manager settings (settings.json, every key)",
+      "readers": [
+        "plugin:agent-manager"
+      ],
+      "writers": [
+        "plugin:agent-manager"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "ai-assistant.**",
+      "store": "ai-assistant/config",
+      "pointer": "/{rest}",
+      "label": "ai-assistant settings (config.json, every key)",
+      "readers": [
+        "plugin:ai-assistant"
+      ],
+      "writers": [
+        "plugin:ai-assistant"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "brand-library.**",
+      "store": "brand-library/config",
+      "pointer": "/{rest}",
+      "label": "brand-library settings (config.json, every key)",
+      "readers": [
+        "plugin:brand-library"
+      ],
+      "writers": [
+        "plugin:brand-library"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "chat-viewer.**",
+      "store": "chat-viewer/settings",
+      "pointer": "/{rest}",
+      "label": "chat-viewer settings (settings.json, every key)",
+      "readers": [
+        "plugin:chat-viewer"
+      ],
+      "writers": [
+        "plugin:chat-viewer"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "claude-handoff.**",
+      "store": "claude-handoff/config",
+      "pointer": "/{rest}",
+      "label": "claude-handoff settings (config.json, every key)",
+      "readers": [
+        "plugin:claude-handoff"
+      ],
+      "writers": [
+        "plugin:claude-handoff"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console-commands.**",
+      "store": "console-commands/settings",
+      "pointer": "/{rest}",
+      "label": "console-commands settings (settings.json, every key)",
+      "readers": [
+        "plugin:console-commands"
+      ],
+      "writers": [
+        "plugin:console-commands"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console-terminal.**",
+      "store": "console-terminal/settings",
+      "pointer": "/{rest}",
+      "label": "console-terminal settings (settings.json, every key)",
+      "readers": [
+        "plugin:console-terminal"
+      ],
+      "writers": [
+        "plugin:console-terminal"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "container-access.**",
+      "store": "container-access/settings",
+      "pointer": "/{rest}",
+      "label": "container-access settings (settings.json, every key)",
+      "readers": [
+        "plugin:container-access"
+      ],
+      "writers": [
+        "plugin:container-access"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "demonstration-designer.**",
+      "store": "demonstration-designer/settings",
+      "pointer": "/{rest}",
+      "label": "demonstration-designer settings (settings.json, every key)",
+      "readers": [
+        "plugin:demonstration-designer"
+      ],
+      "writers": [
+        "plugin:demonstration-designer"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "main-build-status.**",
+      "store": "main-build-status/config",
+      "pointer": "/{rest}",
+      "label": "main-build-status settings (config.json, every key)",
+      "readers": [
+        "plugin:main-build-status"
+      ],
+      "writers": [
+        "plugin:main-build-status"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "maintenance.**",
+      "store": "maintenance/settings",
+      "pointer": "/{rest}",
+      "label": "maintenance settings (settings.json, every key)",
+      "readers": [
+        "plugin:maintenance"
+      ],
+      "writers": [
+        "plugin:maintenance"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "notify-control.**",
+      "store": "notify-control/config",
+      "pointer": "/{rest}",
+      "label": "notify-control settings (config.json, every key)",
+      "readers": [
+        "plugin:notify-control"
+      ],
+      "writers": [
+        "plugin:notify-control"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "orchestrator-demo.**",
+      "store": "orchestrator-demo/settings",
+      "pointer": "/{rest}",
+      "label": "orchestrator-demo settings (settings.json, every key)",
+      "readers": [
+        "plugin:orchestrator-demo"
+      ],
+      "writers": [
+        "plugin:orchestrator-demo"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "plugin-commands.**",
+      "store": "plugin-commands/settings",
+      "pointer": "/{rest}",
+      "label": "plugin-commands settings (settings.json, every key)",
+      "readers": [
+        "plugin:plugin-commands"
+      ],
+      "writers": [
+        "plugin:plugin-commands"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "plugins-menu.**",
+      "store": "plugins-menu/config",
+      "pointer": "/{rest}",
+      "label": "plugins-menu settings (config.json, every key)",
+      "readers": [
+        "plugin:plugins-menu"
+      ],
+      "writers": [
+        "plugin:plugins-menu"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "skin-gallery.**",
+      "store": "skin-gallery/settings",
+      "pointer": "/{rest}",
+      "label": "skin-gallery settings (settings.json, every key)",
+      "readers": [
+        "plugin:skin-gallery"
+      ],
+      "writers": [
+        "plugin:skin-gallery"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "snapshot-manager.**",
+      "store": "snapshot-manager/settings",
+      "pointer": "/{rest}",
+      "label": "snapshot-manager settings (settings.json, every key)",
+      "readers": [
+        "plugin:snapshot-manager"
+      ],
+      "writers": [
+        "plugin:snapshot-manager"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "systems-check.**",
+      "store": "systems-check/settings",
+      "pointer": "/{rest}",
+      "label": "systems-check settings (settings.json, every key)",
+      "readers": [
+        "plugin:systems-check"
+      ],
+      "writers": [
+        "plugin:systems-check"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "ui-review.**",
+      "store": "ui-review/settings",
+      "pointer": "/{rest}",
+      "label": "ui-review settings (settings.json, every key)",
+      "readers": [
+        "plugin:ui-review"
+      ],
+      "writers": [
+        "plugin:ui-review"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "whats-shipped.**",
+      "store": "whats-shipped/config",
+      "pointer": "/{rest}",
+      "label": "whats-shipped settings (config.json, every key)",
+      "readers": [
+        "plugin:whats-shipped"
+      ],
+      "writers": [
+        "plugin:whats-shipped"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "wake-listener.**",
+      "store": "wake-listener/settings",
+      "pointer": "/values/{rest}",
+      "label": "Wake listener settings (on, phrases, engine, awakeSec, answerSec, speak, chime, indicator, pauseHidden, useClaude, claudeTimeoutSec)",
+      "readers": [
+        "plugin:wake-listener"
+      ],
+      "writers": [
+        "plugin:wake-listener"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "console-web/registry",
+          "pointer": "/axf.voice.useClaude",
+          "note": "browser copy of useClaude (axf.voice.useClaude); removed by s12"
+        },
+        {
+          "store": "console-web/registry",
+          "pointer": "/axf.voice.claudeTimeoutSec",
+          "note": "browser copy of claudeTimeoutSec; removed by s12"
+        }
+      ]
+    },
+    {
+      "key": "ui-review.choices.**",
+      "store": "ui-review/choices-settings",
+      "pointer": "/{rest}",
+      "label": "UI choices settings (minOptions, askOptions, askTimeoutMin)",
+      "readers": [
+        "plugin:ui-review"
+      ],
+      "writers": [
+        "plugin:ui-review"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "token-control.pass.**",
+      "store": "token-control/pass-settings",
+      "pointer": "/{rest}",
+      "label": "Control pass settings",
+      "readers": [
+        "plugin:token-control"
+      ],
+      "writers": [
+        "plugin:token-control"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "alerts.**",
+      "store": "server/alerts-config",
+      "pointer": "/{rest/}",
+      "label": "Alerts hub config (apps/console-web/server/alerts.py)",
+      "readers": [
+        "server:alerts"
+      ],
+      "writers": [
+        "server:alerts"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.plugins.*.enabled",
+      "store": "server/state",
+      "pointer": "/plugins/{1}/enabled",
+      "label": "Plugin on/off (Plugin Manager)",
+      "readers": [
+        "server:main",
+        "plugin:plugin-manager"
+      ],
+      "writers": [
+        "server:main"
+      ],
+      "mirrors": []
+    },
+    {
       "key": "accounts.*.use",
       "store": "claude-accounts/workers",
-      "pointer": "/perAccount/{1}/use",
-      "label": "Account takes builds (on/off)",
+      "pointer": "/excluded",
+      "label": "Account takes builds (on/off): on = not in the excluded list",
+      "readers": [
+        "plugin:build-orchestrator",
+        "plugin:claude-accounts",
+        "deploy/worker-routing.mjs"
+      ],
+      "writers": [
+        "plugin:claude-accounts"
+      ],
+      "mirrors": [],
+      "derive": "not-in-list:{1}",
+      "formerly": [
+        {
+          "store": "pipeline/accounts",
+          "pointer": "/{1}/use",
+          "note": "the pipeline's own on/off copy (Pipeline \u2192 Accounts toggle, `pipeline.mjs account --use`); removed by s8/s9"
+        }
+      ]
+    },
+    {
+      "key": "accounts.*.parallel",
+      "store": "claude-accounts/workers",
+      "pointer": "/perAccount/{1}/building",
+      "label": "Sessions at once on this account (claude-workers@1 perAccount.building)",
       "readers": [
         "plugin:build-orchestrator",
         "plugin:claude-accounts",
@@ -143,8 +1170,8 @@
       "formerly": [
         {
           "store": "pipeline/accounts",
-          "pointer": "/{1}/use",
-          "note": "the pipeline's own on/off copy; removed by one-true-source-for-every-setting s8"
+          "pointer": "/{1}/parallel",
+          "note": "the pipeline's own copy; removed by s8"
         }
       ]
     },
@@ -165,30 +1192,24 @@
         {
           "store": "pipeline/accounts",
           "pointer": "/{1}/fable",
-          "note": "removed by one-true-source-for-every-setting s8"
+          "note": "the pipeline's own copy; removed by s8"
         }
       ]
     },
     {
-      "key": "accounts.*.parallel",
+      "key": "accounts.*.queue",
       "store": "claude-accounts/workers",
-      "pointer": "/perAccount/{1}/parallel",
-      "label": "Sessions at once on this account",
+      "pointer": "/perAccount/{1}/queue",
+      "label": "Jobs waiting for this account",
       "readers": [
         "plugin:build-orchestrator",
-        "plugin:claude-accounts"
+        "plugin:claude-accounts",
+        "deploy/worker-routing.mjs"
       ],
       "writers": [
         "plugin:claude-accounts"
       ],
-      "mirrors": [],
-      "formerly": [
-        {
-          "store": "pipeline/accounts",
-          "pointer": "/{1}/parallel",
-          "note": "removed by one-true-source-for-every-setting s8"
-        }
-      ]
+      "mirrors": []
     },
     {
       "key": "accounts.*.label",
@@ -248,10 +1269,58 @@
       "mirrors": []
     },
     {
-      "key": "accounts.limits.**",
+      "key": "accounts.interactiveTakesJobs",
       "store": "claude-accounts/workers",
-      "pointer": "/limits/{rest}",
-      "label": "Host-wide job limits (building, queue)",
+      "pointer": "/interactiveTakesJobs",
+      "label": "The console's own account takes jobs",
+      "readers": [
+        "plugin:build-orchestrator",
+        "plugin:claude-accounts"
+      ],
+      "writers": [
+        "plugin:claude-accounts"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "pipeline/settings",
+          "pointer": "/useConsoleAccount",
+          "note": "the pipeline's useConsoleAccount: the same switch; removed by s10"
+        }
+      ]
+    },
+    {
+      "key": "accounts.limits.building",
+      "store": "claude-accounts/workers",
+      "pointer": "/limits/building",
+      "label": "Jobs running at once per account (the default every account inherits)",
+      "readers": [
+        "plugin:build-orchestrator",
+        "plugin:claude-accounts",
+        "deploy/worker-routing.mjs"
+      ],
+      "writers": [
+        "plugin:claude-accounts"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "pipeline/settings",
+          "pointer": "/parallelPerAccount",
+          "note": "the pipeline's parallelPerAccount; removed by s10"
+        },
+        {
+          "store": "claude-settings/settings",
+          "pointer": "/values/builds.maxParallel",
+          "note": "claude.builds.maxParallel only seeded parallelPerAccount (pipeline.mjs loadSettings); the Claude settings field becomes a read-only line (s11)"
+        }
+      ]
+    },
+    {
+      "key": "accounts.limits.queue",
+      "store": "claude-accounts/workers",
+      "pointer": "/limits/queue",
+      "label": "Jobs waiting per account",
       "readers": [
         "plugin:build-orchestrator",
         "plugin:claude-accounts"
@@ -265,13 +1334,145 @@
       "key": "accounts.api.*.**",
       "store": "claude-accounts/workers",
       "pointer": "/api/{1}/{rest}",
-      "label": "API account settings (enabled, caps, alert)",
+      "label": "API account settings (enabled, dailyCapUsd, weeklyCapUsd, alertAt, label)",
       "readers": [
         "plugin:build-orchestrator",
         "plugin:claude-accounts"
       ],
       "writers": [
         "plugin:claude-accounts"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "accounts.rules",
+      "store": "claude-accounts/workers",
+      "pointer": "/rules",
+      "label": "Job routing rules",
+      "readers": [
+        "plugin:build-orchestrator",
+        "plugin:claude-accounts",
+        "deploy/worker-routing.mjs"
+      ],
+      "writers": [
+        "plugin:claude-accounts"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "accounts.state.**",
+      "store": "claude-accounts/worker-state",
+      "pointer": "/{rest/}",
+      "label": "Live limits and claims (runtime state)",
+      "readers": [
+        "plugin:claude-accounts",
+        "deploy/claude-workers.mjs"
+      ],
+      "writers": [
+        "deploy/claude-workers.mjs"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "claude.builds.launchWithoutAsking",
+      "store": "claude-settings/settings",
+      "pointer": "/values/builds.launchWithoutAsking",
+      "label": "Launch builds without asking (the pipeline's auto-queue)",
+      "readers": [
+        "plugin:claude-settings",
+        "plugin:build-orchestrator"
+      ],
+      "writers": [
+        "plugin:claude-settings"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "pipeline/settings",
+          "pointer": "/autoQueue",
+          "note": "the pipeline's autoQueue copy; removed by s10"
+        }
+      ]
+    },
+    {
+      "key": "claude.builds.fableUpgradeApproval",
+      "store": "claude-settings/settings",
+      "pointer": "/values/builds.fableUpgradeApproval",
+      "label": "Fable upgrades need Brett's approval (framework/core/model-switch.mjs)",
+      "readers": [
+        "plugin:claude-settings",
+        "plugin:build-orchestrator",
+        "framework/core/model-switch.mjs"
+      ],
+      "writers": [
+        "plugin:claude-settings"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "orchestrator/rules",
+          "pointer": "/rules/approveModelSwitch",
+          "note": "the orchestrator rule nobody read any more; removed by s10"
+        }
+      ]
+    },
+    {
+      "key": "claude.followAmber.enabled",
+      "store": "claude-settings/settings",
+      "pointer": "/values/followAmber.enabled",
+      "label": "Follow Amber (one switch for every console and session)",
+      "readers": [
+        "plugin:claude-settings",
+        "plugin:follow-amber",
+        "every Claude session"
+      ],
+      "writers": [
+        "plugin:claude-settings",
+        "plugin:follow-amber"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "follow-amber/state",
+          "pointer": "/on",
+          "note": "the follow-amber plugin's own copy of the switch; removed by s12"
+        },
+        {
+          "store": "console-web/registry",
+          "pointer": "/follow-amber.on",
+          "note": "browser copy; removed by s12"
+        }
+      ]
+    },
+    {
+      "key": "claude.builds.defaultModel",
+      "store": "claude-settings/settings",
+      "pointer": "/values/builds.defaultModel",
+      "label": "Model for new builds (split | opus | fable)",
+      "readers": [
+        "plugin:claude-settings",
+        "plugin:build-orchestrator"
+      ],
+      "writers": [
+        "plugin:claude-settings"
+      ],
+      "mirrors": [],
+      "note": "axf.dev.defaultModel (a Dev Console registry key) is a different setting with a similar name; its stale hub copies are stripped under console.axf.dev.defaultModel"
+    },
+    {
+      "key": "claude.**",
+      "store": "claude-settings/settings",
+      "pointer": "/values/{rest}",
+      "label": "Claude settings (claude-settings-registry@1: noWait.*, builds.*, headless.*, verification.*, talking.*, notify.*, recording.*, memory.*, nightly.*)",
+      "readers": [
+        "plugin:claude-settings",
+        "plugin:build-orchestrator",
+        "plugin:push-banner",
+        "plugin:token-control",
+        "every Claude session"
+      ],
+      "writers": [
+        "plugin:claude-settings"
       ],
       "mirrors": []
     },
@@ -279,7 +1480,7 @@
       "key": "pipeline.**",
       "store": "pipeline/settings",
       "pointer": "/{rest}",
-      "label": "Pipeline settings (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays, splitProvider, autoQueue, apiOverflow, healthEveryMin, apiAccounts)",
+      "label": "Pipeline settings (fablePlans, maxRuns, idleAfterMin, probeDays, splitProvider, apiOverflow, healthEveryMin, apiAccounts). parallelPerAccount, useConsoleAccount and autoQueue have owners elsewhere",
       "readers": [
         "plugin:build-orchestrator"
       ],
@@ -289,19 +1490,162 @@
       "mirrors": []
     },
     {
-      "key": "claude.**",
-      "store": "claude-settings/settings",
-      "pointer": "/values/{rest}",
-      "label": "Claude settings (claude-settings-registry@1 keys: noWait.*, builds.*, talking.*, notifications.*, \u2026)",
+      "key": "pipeline.accounts.*.probe",
+      "store": "pipeline/accounts",
+      "pointer": "/{1}/probe",
+      "label": "What the pipeline's Fable probe found (runtime record, not a setting)",
       "readers": [
-        "plugin:claude-settings",
-        "plugin:build-orchestrator",
-        "plugin:follow-amber",
-        "plugin:push-banner",
-        "plugin:token-control"
+        "plugin:build-orchestrator"
       ],
       "writers": [
-        "plugin:claude-settings"
+        "plugin:build-orchestrator"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "pipeline.accounts.*.health",
+      "store": "pipeline/accounts",
+      "pointer": "/{1}/health",
+      "label": "What the health sweep found (runtime record)",
+      "readers": [
+        "plugin:build-orchestrator"
+      ],
+      "writers": [
+        "plugin:build-orchestrator"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "watchdog.**",
+      "store": "pipeline/watchdog-settings",
+      "pointer": "/{rest}",
+      "label": "Recovery watchdog settings",
+      "readers": [
+        "plugin:build-orchestrator"
+      ],
+      "writers": [
+        "plugin:build-orchestrator"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "orchestrator.rules.**",
+      "store": "orchestrator/rules",
+      "pointer": "/rules/{rest}",
+      "label": "Orchestrator rules (sameSession, subAgents, maxStepMinutes). approveModelSwitch moved to claude.builds.fableUpgradeApproval",
+      "readers": [
+        "plugin:build-orchestrator"
+      ],
+      "writers": [
+        "plugin:build-orchestrator"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "agents.**",
+      "store": "agent-slots/settings",
+      "pointer": "/{rest}",
+      "label": "Agent slots settings (maxAgents, maxHeavy, minFreeGb, closeFinishedAfterSec, pollSec, priorityRules, guardWarnTrips, swapWarnMb, swapWarnMin)",
+      "readers": [
+        "framework/cli/agent-slots.mjs",
+        "plugin:agent-slots"
+      ],
+      "writers": [
+        "framework/cli/agent-slots.mjs"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "builds.limit.**",
+      "store": "agent-slots/build-limit",
+      "pointer": "/{rest}",
+      "label": "Build limit (maxBuilds, cpuQuotaPct, memoryMaxGb, memoryHighGb, tasksMax, dockerCpus, dockerMemoryGb, dockerImages, reserveSec, setupSec)",
+      "readers": [
+        "framework/cli/agent-slots.mjs",
+        "plugin:agent-slots",
+        "plugin:build-orchestrator"
+      ],
+      "writers": [
+        "framework/cli/agent-slots.mjs"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "lander.**",
+      "store": "auto-lander/control",
+      "pointer": "/settings/{rest}",
+      "label": "Auto-lander settings (enabled, maxAttempts, backoffBaseMin, backoffFactor, backoffMaxMin, attemptTimeoutMin, pushOnEscalation). state.json `policy` is the lander's own projection, rewritten every tick",
+      "readers": [
+        "framework/core/auto-lander.mjs",
+        "plugin:gate"
+      ],
+      "writers": [
+        "framework/core/auto-lander.mjs"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "gate.**",
+      "store": "gate/settings",
+      "pointer": "/{rest}",
+      "label": "Gate plugin view settings (refreshSec, historySize, defaultTab)",
+      "readers": [
+        "plugin:gate"
+      ],
+      "writers": [
+        "plugin:gate"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "merge-queue.mergeQueue",
+      "store": "push-banner/config",
+      "pointer": "/mergeQueue",
+      "label": "The merge queue is on",
+      "readers": [
+        "plugin:push-banner",
+        "plugin:gate"
+      ],
+      "writers": [
+        "plugin:push-banner",
+        "plugin:gate"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "gate/lander",
+          "pointer": "/mergeQueue",
+          "note": "gate lander.mjs kept its own copy and preferred it; removed by s10"
+        }
+      ]
+    },
+    {
+      "key": "merge-queue.landWaitUi",
+      "store": "push-banner/config",
+      "pointer": "/landWaitUi",
+      "label": "Landing waits for UI Review (the gate's ui-review rule writes this)",
+      "readers": [
+        "plugin:push-banner",
+        "plugin:gate"
+      ],
+      "writers": [
+        "plugin:push-banner",
+        "plugin:gate"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "merge-queue.**",
+      "store": "push-banner/config",
+      "pointer": "/{rest}",
+      "label": "Push banner / merge queue config (repos, hidden, claudeOnFail, claudeShell, autoMerge, autoPr, autoLand, landShowTracking, queueDepth, queueMode, batchSize)",
+      "readers": [
+        "plugin:push-banner",
+        "plugin:gate"
+      ],
+      "writers": [
+        "plugin:push-banner",
+        "plugin:gate"
       ],
       "mirrors": []
     },
@@ -317,6 +1661,19 @@
       "writers": [
         "framework:appearance",
         "plugin:token-control"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "appearance.settings.**",
+      "store": "appearance/shared",
+      "pointer": "/settings/{rest}",
+      "label": "Hub-wide look settings carried by the shared document (banners group, widgets arrangement)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:appearance"
       ],
       "mirrors": []
     },
@@ -347,10 +1704,63 @@
       "mirrors": []
     },
     {
+      "key": "appearance.slots.**",
+      "store": "appearance/shared",
+      "pointer": "/slots/{rest}",
+      "label": "Legacy hub-wide slot picks: Android (AppearanceEngine) still reads them; each web app composes from its look document. Deferred: Kotlin twin of app-look@1 (PORTING.md)",
+      "readers": [
+        "framework:runtime",
+        "android:AppearanceEngine"
+      ],
+      "writers": [
+        "framework:appearance"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "appearance.spacing",
+      "store": "appearance/shared",
+      "pointer": "/spacing",
+      "label": "Legacy hub-wide spacing (Android reads it; web apps use look.<app>.own.spacing)",
+      "readers": [
+        "android:AppearanceEngine"
+      ],
+      "writers": [
+        "framework:appearance"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "appearance.hidden.**",
+      "store": "appearance/shared",
+      "pointer": "/hidden/{rest}",
+      "label": "Legacy hub-wide hidden chrome (Android reads it)",
+      "readers": [
+        "android:AppearanceEngine"
+      ],
+      "writers": [
+        "framework:appearance"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "appearance.palette",
+      "store": "appearance/shared",
+      "pointer": "/palette",
+      "label": "Palette derived from the colour theme for apps without the theme engine (axHub's pages)",
+      "readers": [
+        "axhub:pages"
+      ],
+      "writers": [
+        "framework:appearance"
+      ],
+      "mirrors": []
+    },
+    {
       "key": "look.*.**",
       "store": "appearance/app-look",
       "pointer": "/{rest/}",
-      "label": "One app's look document (own, skin, scopes, undo, backups)",
+      "label": "One app's look document (default, own, skin, scopes, undo, legacy, backups). The browser keys axf.skin.look / axf.appearance.spacing are the runtime's applied copies",
       "readers": [
         "framework:runtime",
         "framework:skins"
@@ -358,6 +1768,494 @@
       "writers": [
         "framework:skins",
         "framework:runtime"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "hub-settings/app",
+          "pointer": "/values/axf.appearance.spacing",
+          "note": "spacing in the stale per-app hub snapshot (apps/<app>.json); stripped by s14"
+        }
+      ]
+    },
+    {
+      "key": "handoff.look",
+      "store": "claude-handoff/look",
+      "pointer": "",
+      "label": "Claude handoff installer look (whole document)",
+      "readers": [
+        "plugin:claude-handoff"
+      ],
+      "writers": [
+        "plugin:claude-handoff"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "console-web/registry",
+          "pointer": "/claude-handoff.look",
+          "note": "browser cache copy (LOCAL_KEY); in-memory only after s12"
+        }
+      ]
+    },
+    {
+      "key": "browser.axf.display.fontScale",
+      "store": "app/registry",
+      "pointer": "/axf.display.fontScale",
+      "label": "Font scale (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "hub-settings/console",
+          "pointer": "/values/axf.display.fontScale",
+          "note": "copied into the stale per-app hub snapshot; stripped by s14"
+        },
+        {
+          "store": "hub-settings/axhub-web",
+          "pointer": "/values/axf.display.fontScale",
+          "note": "the same key in axHub web's stale snapshot; stripped by s14"
+        }
+      ]
+    },
+    {
+      "key": "browser.axf.display.animations",
+      "store": "app/registry",
+      "pointer": "/axf.display.animations",
+      "label": "Animations (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.help.intros.reset",
+      "store": "app/registry",
+      "pointer": "/axf.help.intros.reset",
+      "label": "Reset intros (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.settings.lastTab",
+      "store": "app/registry",
+      "pointer": "/axf.settings.lastTab",
+      "label": "Last settings tab (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.lock.hubskin",
+      "store": "app/registry",
+      "pointer": "/axf.lock.hubskin",
+      "label": "Get my skin only from axHub (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.lock.hubskin.override",
+      "store": "app/registry",
+      "pointer": "/axf.lock.hubskin.override",
+      "label": "Override axHub (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.lock.appearance",
+      "store": "app/registry",
+      "pointer": "/axf.lock.appearance",
+      "label": "Appearance lock (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.inspector.shown",
+      "store": "app/registry",
+      "pointer": "/axf.inspector.shown",
+      "label": "Inspector shown (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.toolbar.collapsed",
+      "store": "app/registry",
+      "pointer": "/axf.toolbar.collapsed",
+      "label": "Toolbar collapsed (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.pluginTheme.toolbar",
+      "store": "app/registry",
+      "pointer": "/axf.pluginTheme.toolbar",
+      "label": "Plugin theme toolbar (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.pluginTheme.view",
+      "store": "app/registry",
+      "pointer": "/axf.pluginTheme.view",
+      "label": "Plugin theme view (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.skinConfig.layout",
+      "store": "app/registry",
+      "pointer": "/axf.skinConfig.layout",
+      "label": "Skin config layout (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.skin.whereLayout",
+      "store": "app/registry",
+      "pointer": "/axf.skin.whereLayout",
+      "label": "Where-the-skin-applies layout (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.banners.prefs",
+      "store": "app/registry",
+      "pointer": "/axf.banners.prefs",
+      "label": "Banner prefs (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.banners.look",
+      "store": "app/registry",
+      "pointer": "/axf.banners.look",
+      "label": "Banner look (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.banners.lookLevel",
+      "store": "app/registry",
+      "pointer": "/axf.banners.lookLevel",
+      "label": "Banner look level (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.banners.group",
+      "store": "app/registry",
+      "pointer": "/axf.banners.group",
+      "label": "Banner group placement (device / app setting)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "browser.axf.**",
+      "store": "app/registry",
+      "pointer": "/axf.{rest}",
+      "label": "Every other framework SettingsRegistry key (axf.*: chrome, placement, hide, icons, widgets \u2026)",
+      "readers": [
+        "framework:runtime"
+      ],
+      "writers": [
+        "framework:runtime"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.alerts-bell.show",
+      "store": "console-web/registry",
+      "pointer": "/alerts-bell.show",
+      "label": "Alerts bell shown (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "hub-settings/console",
+          "pointer": "/values/alerts-bell.show",
+          "note": "copied into the stale per-app hub snapshot; stripped by s14"
+        }
+      ]
+    },
+    {
+      "key": "console.alerts-bell.side",
+      "store": "console-web/registry",
+      "pointer": "/alerts-bell.side",
+      "label": "Alerts bell side (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "hub-settings/console",
+          "pointer": "/values/alerts-bell.side",
+          "note": "copied into the stale per-app hub snapshot; stripped by s14"
+        }
+      ]
+    },
+    {
+      "key": "console.amberx-listeners.refreshSec",
+      "store": "console-web/registry",
+      "pointer": "/amberx-listeners.refreshSec",
+      "label": "Listeners refresh (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.amberx-listeners.open",
+      "store": "console-web/registry",
+      "pointer": "/amberx-listeners.open",
+      "label": "Listeners open (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.hubstatus.show",
+      "store": "console-web/registry",
+      "pointer": "/hubstatus.show",
+      "label": "axHub badge shown (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.claude-badge.axhub.moved",
+      "store": "console-web/registry",
+      "pointer": "/claude-badge.axhub.moved",
+      "label": "axHub badge moved (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.main-build-status.show",
+      "store": "console-web/registry",
+      "pointer": "/main-build-status.show",
+      "label": "Main build status shown (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.todo-manager.view",
+      "store": "console-web/registry",
+      "pointer": "/todo-manager.view",
+      "label": "To-do view (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.plugin-manager.view",
+      "store": "console-web/registry",
+      "pointer": "/plugin-manager.view",
+      "label": "Plugin manager view (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "hub-settings/console",
+          "pointer": "/values/plugin-manager.view",
+          "note": "copied into the stale per-app hub snapshot; stripped by s14"
+        }
+      ]
+    },
+    {
+      "key": "console.context-menu-designer.actions.filter",
+      "store": "console-web/registry",
+      "pointer": "/context-menu-designer.actions.filter",
+      "label": "Context menu actions filter (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.follow-amber.chip",
+      "store": "console-web/registry",
+      "pointer": "/follow-amber.chip",
+      "label": "Follow Amber banner chip (console device setting)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "console.axf.dev.defaultModel",
+      "store": "console-web/registry",
+      "pointer": "/axf.dev.defaultModel",
+      "label": "Dev Console: default model for dev tools (device setting; not the orchestrator's build model)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": [],
+      "formerly": [
+        {
+          "store": "hub-settings/console",
+          "pointer": "/values/axf.dev.defaultModel",
+          "note": "stale per-app hub snapshot; stripped by s14"
+        },
+        {
+          "store": "hub-settings/axhub-web",
+          "pointer": "/values/axf.dev.defaultModel",
+          "note": "stale per-app hub snapshot; stripped by s14"
+        }
+      ]
+    },
+    {
+      "key": "console.axf.**",
+      "store": "console-web/registry",
+      "pointer": "/axf.{rest}",
+      "label": "Console plugin view keys (axf.claude-settings.view, axf.claude-accounts.routing.view, axf.theme-editor.view, axf.skin-editor.registry.q, axf.output-recorder.find \u2026)",
+      "readers": [
+        "app:console-web"
+      ],
+      "writers": [
+        "app:console-web"
+      ],
+      "mirrors": []
+    },
+    {
+      "key": "amberx.**",
+      "store": "hub-settings/amberx-droid",
+      "pointer": "/values/{rest}",
+      "label": "AmberX (Android) app settings (monitor, voice, ai, tasks, listeners): live on the hub through lib-hub HubSettings",
+      "readers": [
+        "android:amberx-droid"
+      ],
+      "writers": [
+        "android:amberx-droid"
       ],
       "mirrors": []
     }

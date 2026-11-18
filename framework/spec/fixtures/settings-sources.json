@@ -7,12 +7,190 @@
   "claude-settings/settings",
   "pipeline/settings",
   "pipeline/accounts",
+  "pipeline/watchdog-settings",
+  "orchestrator/rules",
+  "agent-slots/settings",
+  "agent-slots/build-limit",
+  "auto-lander/control",
+  "gate/settings",
+  "gate/lander",
+  "gate/rules",
+  "push-banner/config",
+  "activity/config",
+  "agent-manager/settings",
+  "ai-assistant/config",
+  "brand-library/config",
+  "chat-viewer/settings",
+  "claude-handoff/config",
+  "console-commands/settings",
+  "console-terminal/settings",
+  "container-access/settings",
+  "demonstration-designer/settings",
+  "main-build-status/config",
+  "maintenance/settings",
+  "notify-control/config",
+  "orchestrator-demo/settings",
+  "plugin-commands/settings",
+  "plugins-menu/config",
+  "skin-gallery/settings",
+  "snapshot-manager/settings",
+  "systems-check/settings",
+  "ui-review/settings",
+  "whats-shipped/config",
+  "wake-listener/settings",
+  "ui-review/choices-settings",
+  "token-control/pass-settings",
+  "follow-amber/state",
+  "server/alerts-config",
+  "server/state",
   "appearance/shared",
-  "appearance/app-look"
+  "appearance/app-look",
+  "hub-settings/app",
+  "claude-handoff/look",
+  "console-web/registry",
+  "app/registry",
+  "hub-settings/console",
+  "hub-settings/axhub-web",
+  "hub-settings/amberx-droid"
  ],
  "entries": [
   {
+   "key": "activity.**",
+   "store": "activity/config",
+   "rank": 101
+  },
+  {
+   "key": "agent-manager.**",
+   "store": "agent-manager/settings",
+   "rank": 101
+  },
+  {
+   "key": "ai-assistant.**",
+   "store": "ai-assistant/config",
+   "rank": 101
+  },
+  {
+   "key": "brand-library.**",
+   "store": "brand-library/config",
+   "rank": 101
+  },
+  {
+   "key": "chat-viewer.**",
+   "store": "chat-viewer/settings",
+   "rank": 101
+  },
+  {
+   "key": "claude-handoff.**",
+   "store": "claude-handoff/config",
+   "rank": 101
+  },
+  {
+   "key": "console-commands.**",
+   "store": "console-commands/settings",
+   "rank": 101
+  },
+  {
+   "key": "console-terminal.**",
+   "store": "console-terminal/settings",
+   "rank": 101
+  },
+  {
+   "key": "container-access.**",
+   "store": "container-access/settings",
+   "rank": 101
+  },
+  {
+   "key": "demonstration-designer.**",
+   "store": "demonstration-designer/settings",
+   "rank": 101
+  },
+  {
+   "key": "main-build-status.**",
+   "store": "main-build-status/config",
+   "rank": 101
+  },
+  {
+   "key": "maintenance.**",
+   "store": "maintenance/settings",
+   "rank": 101
+  },
+  {
+   "key": "notify-control.**",
+   "store": "notify-control/config",
+   "rank": 101
+  },
+  {
+   "key": "orchestrator-demo.**",
+   "store": "orchestrator-demo/settings",
+   "rank": 101
+  },
+  {
+   "key": "plugin-commands.**",
+   "store": "plugin-commands/settings",
+   "rank": 101
+  },
+  {
+   "key": "plugins-menu.**",
+   "store": "plugins-menu/config",
+   "rank": 101
+  },
+  {
+   "key": "skin-gallery.**",
+   "store": "skin-gallery/settings",
+   "rank": 101
+  },
+  {
+   "key": "snapshot-manager.**",
+   "store": "snapshot-manager/settings",
+   "rank": 101
+  },
+  {
+   "key": "systems-check.**",
+   "store": "systems-check/settings",
+   "rank": 101
+  },
+  {
+   "key": "ui-review.**",
+   "store": "ui-review/settings",
+   "rank": 101
+  },
+  {
+   "key": "whats-shipped.**",
+   "store": "whats-shipped/config",
+   "rank": 101
+  },
+  {
+   "key": "wake-listener.**",
+   "store": "wake-listener/settings",
+   "rank": 101
+  },
+  {
+   "key": "ui-review.choices.**",
+   "store": "ui-review/choices-settings",
+   "rank": 202
+  },
+  {
+   "key": "token-control.pass.**",
+   "store": "token-control/pass-settings",
+   "rank": 202
+  },
+  {
+   "key": "alerts.**",
+   "store": "server/alerts-config",
+   "rank": 101
+  },
+  {
+   "key": "console.plugins.*.enabled",
+   "store": "server/state",
+   "rank": 10403
+  },
+  {
    "key": "accounts.*.use",
+   "store": "claude-accounts/workers",
+   "rank": 10302
+  },
+  {
+   "key": "accounts.*.parallel",
    "store": "claude-accounts/workers",
    "rank": 10302
   },
@@ -22,7 +200,7 @@
    "rank": 10302
   },
   {
-   "key": "accounts.*.parallel",
+   "key": "accounts.*.queue",
    "store": "claude-accounts/workers",
    "rank": 10302
   },
@@ -47,9 +225,19 @@
    "rank": 1010202
   },
   {
-   "key": "accounts.limits.**",
+   "key": "accounts.interactiveTakesJobs",
    "store": "claude-accounts/workers",
-   "rank": 202
+   "rank": 1010202
+  },
+  {
+   "key": "accounts.limits.building",
+   "store": "claude-accounts/workers",
+   "rank": 1010303
+  },
+  {
+   "key": "accounts.limits.queue",
+   "store": "claude-accounts/workers",
+   "rank": 1010303
   },
   {
    "key": "accounts.api.*.**",
@@ -57,9 +245,34 @@
    "rank": 302
   },
   {
-   "key": "pipeline.**",
-   "store": "pipeline/settings",
-   "rank": 101
+   "key": "accounts.rules",
+   "store": "claude-accounts/workers",
+   "rank": 1010202
+  },
+  {
+   "key": "accounts.state.**",
+   "store": "claude-accounts/worker-state",
+   "rank": 202
+  },
+  {
+   "key": "claude.builds.launchWithoutAsking",
+   "store": "claude-settings/settings",
+   "rank": 1010303
+  },
+  {
+   "key": "claude.builds.fableUpgradeApproval",
+   "store": "claude-settings/settings",
+   "rank": 1010303
+  },
+  {
+   "key": "claude.followAmber.enabled",
+   "store": "claude-settings/settings",
+   "rank": 1010303
+  },
+  {
+   "key": "claude.builds.defaultModel",
+   "store": "claude-settings/settings",
+   "rank": 1010303
   },
   {
    "key": "claude.**",
@@ -67,7 +280,72 @@
    "rank": 101
   },
   {
+   "key": "pipeline.**",
+   "store": "pipeline/settings",
+   "rank": 101
+  },
+  {
+   "key": "pipeline.accounts.*.probe",
+   "store": "pipeline/accounts",
+   "rank": 10403
+  },
+  {
+   "key": "pipeline.accounts.*.health",
+   "store": "pipeline/accounts",
+   "rank": 10403
+  },
+  {
+   "key": "watchdog.**",
+   "store": "pipeline/watchdog-settings",
+   "rank": 101
+  },
+  {
+   "key": "orchestrator.rules.**",
+   "store": "orchestrator/rules",
+   "rank": 202
+  },
+  {
+   "key": "agents.**",
+   "store": "agent-slots/settings",
+   "rank": 101
+  },
+  {
+   "key": "builds.limit.**",
+   "store": "agent-slots/build-limit",
+   "rank": 202
+  },
+  {
+   "key": "lander.**",
+   "store": "auto-lander/control",
+   "rank": 101
+  },
+  {
+   "key": "gate.**",
+   "store": "gate/settings",
+   "rank": 101
+  },
+  {
+   "key": "merge-queue.mergeQueue",
+   "store": "push-banner/config",
+   "rank": 1010202
+  },
+  {
+   "key": "merge-queue.landWaitUi",
+   "store": "push-banner/config",
+   "rank": 1010202
+  },
+  {
+   "key": "merge-queue.**",
+   "store": "push-banner/config",
+   "rank": 101
+  },
+  {
    "key": "appearance.tokens.**",
+   "store": "appearance/shared",
+   "rank": 202
+  },
+  {
+   "key": "appearance.settings.**",
    "store": "appearance/shared",
    "rank": 202
   },
@@ -82,9 +360,194 @@
    "rank": 1010202
   },
   {
+   "key": "appearance.slots.**",
+   "store": "appearance/shared",
+   "rank": 202
+  },
+  {
+   "key": "appearance.spacing",
+   "store": "appearance/shared",
+   "rank": 1010202
+  },
+  {
+   "key": "appearance.hidden.**",
+   "store": "appearance/shared",
+   "rank": 202
+  },
+  {
+   "key": "appearance.palette",
+   "store": "appearance/shared",
+   "rank": 1010202
+  },
+  {
    "key": "look.*.**",
    "store": "appearance/app-look",
    "rank": 201
+  },
+  {
+   "key": "handoff.look",
+   "store": "claude-handoff/look",
+   "rank": 1010202
+  },
+  {
+   "key": "browser.axf.display.fontScale",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.display.animations",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.help.intros.reset",
+   "store": "app/registry",
+   "rank": 1010505
+  },
+  {
+   "key": "browser.axf.settings.lastTab",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.lock.hubskin",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.lock.hubskin.override",
+   "store": "app/registry",
+   "rank": 1010505
+  },
+  {
+   "key": "browser.axf.lock.appearance",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.inspector.shown",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.toolbar.collapsed",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.pluginTheme.toolbar",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.pluginTheme.view",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.skinConfig.layout",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.skin.whereLayout",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.banners.prefs",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.banners.look",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.banners.lookLevel",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.banners.group",
+   "store": "app/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "browser.axf.**",
+   "store": "app/registry",
+   "rank": 202
+  },
+  {
+   "key": "console.alerts-bell.show",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.alerts-bell.side",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.amberx-listeners.refreshSec",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.amberx-listeners.open",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.hubstatus.show",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.claude-badge.axhub.moved",
+   "store": "console-web/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "console.main-build-status.show",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.todo-manager.view",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.plugin-manager.view",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.context-menu-designer.actions.filter",
+   "store": "console-web/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "console.follow-amber.chip",
+   "store": "console-web/registry",
+   "rank": 1010303
+  },
+  {
+   "key": "console.axf.dev.defaultModel",
+   "store": "console-web/registry",
+   "rank": 1010404
+  },
+  {
+   "key": "console.axf.**",
+   "store": "console-web/registry",
+   "rank": 202
+  },
+  {
+   "key": "amberx.**",
+   "store": "hub-settings/amberx-droid",
+   "rank": 101
   }
  ],
  "lookups": [
@@ -94,11 +557,15 @@
     "entry": "accounts.*.use",
     "store": "claude-accounts/workers",
     "storeKey": "plugins/claude-accounts/workers.json",
-    "pointer": "/perAccount/mossesx-max-/use",
+    "pointer": "/excluded",
     "captures": {
      "1": "mossesx-max-"
     },
-    "file": "/repo/.axf-console/plugins/claude-accounts/workers.json"
+    "file": "/repo/.axf-console/plugins/claude-accounts/workers.json",
+    "derive": {
+     "kind": "not-in-list",
+     "name": "mossesx-max-"
+    }
    }
   },
   {
@@ -120,7 +587,7 @@
     "entry": "accounts.*.parallel",
     "store": "claude-accounts/workers",
     "storeKey": "plugins/claude-accounts/workers.json",
-    "pointer": "/perAccount/hulu0241/parallel",
+    "pointer": "/perAccount/hulu0241/building",
     "captures": {
      "1": "hulu0241"
     },
@@ -152,13 +619,11 @@
   {
    "key": "accounts.limits.building",
    "owner": {
-    "entry": "accounts.limits.**",
+    "entry": "accounts.limits.building",
     "store": "claude-accounts/workers",
     "storeKey": "plugins/claude-accounts/workers.json",
     "pointer": "/limits/building",
-    "captures": {
-     "rest": "building"
-    },
+    "captures": {},
     "file": "/repo/.axf-console/plugins/claude-accounts/workers.json"
    }
   },
@@ -219,13 +684,11 @@
   {
    "key": "claude.builds.defaultModel",
    "owner": {
-    "entry": "claude.**",
+    "entry": "claude.builds.defaultModel",
     "store": "claude-settings/settings",
     "storeKey": "settings/claude/settings.json",
     "pointer": "/values/builds.defaultModel",
-    "captures": {
-     "rest": "builds.defaultModel"
-    },
+    "captures": {},
     "file": "/projects/_shared/_data/claude/settings.json"
    }
   },
@@ -598,6 +1061,14 @@
    "v": "ok"
   },
   {
+   "name": "deriveRead",
+   "v": "ok"
+  },
+  {
+   "name": "deriveWrite",
+   "v": "ok"
+  },
+  {
    "name": "assertOwnerById",
    "v": "ok"
   },
@@ -677,6 +1148,17 @@
     "key": "alpha.limit",
     "store": "alpha/settings",
     "pointer": "/limit",
+    "readers": [],
+    "writers": [
+     "plugin:alpha"
+    ],
+    "mirrors": []
+   },
+   {
+    "key": "alpha.*.on",
+    "store": "alpha/settings",
+    "pointer": "/excluded",
+    "derive": "not-in-list:{1}",
     "readers": [],
     "writers": [
      "plugin:alpha"
