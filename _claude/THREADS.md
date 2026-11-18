@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `pending-optimizer-ai-finds-pending` added (20 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `separate-settings-per-plugin-reset` added (18 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `rebuild-every-toolbar-page-specific` added (28 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `notify-phone-when-queue-starts-building` added (10 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:05 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-18 00:06 UTC · `fix-launcher-crash-duplicate-steps-brief` s14 done (all) · foreign-write
 - 2026-11-18 00:06 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 00:07 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 
 ## Token passes (log)
 
