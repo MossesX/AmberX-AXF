@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:27 UTC · `auto-lander-never-wait-missing-ui-review` s2 done (all) · foreign-write
-- 2026-11-18 00:27 UTC · `auto-lander-never-wait-missing-ui-review` s2 done (all) · orchestrator
-- 2026-11-18 00:29 UTC · `auto-lander-never-wait-missing-ui-review` s3 done (all) · orchestrator
 - 2026-11-18 00:30 UTC · `auto-lander-never-wait-missing-ui-review` s3 done (all) · foreign-write
 - 2026-11-18 00:31 UTC · `molly-console-commands` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `profile-filter-tables` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:36 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
 - 2026-11-18 01:37 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
 - 2026-11-18 01:37 UTC · `one-true-source-for-every-setting` s4 done (all) · orchestrator
+- 2026-11-18 01:37 UTC · `one-true-source-for-every-setting` s4 done (all) · foreign-write
+- 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · foreign-write
+- 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 

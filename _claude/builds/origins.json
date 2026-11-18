@@ -10485,6 +10485,18 @@
    "from": "",
    "addenda": []
   },
+  "vps-frees-stale-build-slots-every-2": {
+   "said": "The VPS is supposed to check that shit every minute.",
+   "at": "2026-11-18T01:37:23.899Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "vps-frees-stale-build-slots-every-minute": {
    "said": "The VPS is supposed to check that shit every minute.",
    "at": "2026-11-18T01:36:53.146Z",
