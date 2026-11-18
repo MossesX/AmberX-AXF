@@ -20,10 +20,12 @@ w(join(data, 'framework/catalog/status.json'), {});
 const core = await import('../../../../../framework/plan/builds-store-core.mjs');
 const st = (id, done) => ({ id, title: id, done });
 const B = (o) => core.normBuild({ status: 'pending', createdAt: '2026-10-01T00:00:00Z', ...o }, { now: '2026-10-01T00:00:00Z' });
+// done-means-merged@1: a build only completes with its landing proof (merge commit, CI green on it, the verify run)
+const landed = (pr) => ({ pr, sha: 'a1b2c3d', mergedAt: '2026-10-02T00:00:00Z', ci: 'success', verifiedAt: '2026-10-02T01:00:00Z', verifyHow: 'check' });
 const store = core.emptyStore('2026-10-01T00:00:00Z');
 store.builds = [
-  B({ id: 'merged-pr', title: 'Merged PR build', pr: '#90001' }),
-  B({ id: 'all-ticked', title: 'All ticked', steps: [st('s1', true), st('s2', true)] }),
+  B({ id: 'merged-pr', title: 'Merged PR build', pr: '#90001', mergedAt: '2026-10-02T00:00:00Z', landed: landed(90001) }),
+  B({ id: 'all-ticked', title: 'All ticked', pr: '#90002', mergedAt: '2026-10-02T00:00:00Z', landed: landed(90002), steps: [st('s1', true), st('s2', true)] }),
   B({ id: 'patches-web', title: 'Patches web tabs' }),
   B({ id: 'x-done', title: 'Thing X', status: 'complete' }),
   B({ id: 'x-again', title: 'Thing X!', steps: [st('s1', false)] }),

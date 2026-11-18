@@ -340,7 +340,10 @@ ok(r.returncode == 0, f"profile engine checks: {(r.stdout or r.stderr).strip()[-
 
 PCD = TMP / "pc"
 store = {"$axf": "builds@1", "rev": 0, "updatedAt": "", "migratedAt": "", "rules": {}, "meta": {"queue": {}, "pending": {}}, "drafts": {},
-         "builds": [{"id": "ticked", "title": "Ticked build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a", "done": True}]},
+         "builds": [{"id": "ticked", "title": "Ticked build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a", "done": True}],
+                     # done-means-merged@1: it completes only with its landing proof
+                     "pr": "#90003", "mergedAt": "2026-10-02T00:00:00Z", "landed": {"pr": 90003, "sha": "a1b2c3d", "mergedAt": "2026-10-02T00:00:00Z", "ci": "success",
+                                                                                    "verifiedAt": "2026-10-02T01:00:00Z", "verifyHow": "check"}},
                     {"id": "open-one", "title": "Open build", "status": "pending", "profiles": ["main-framework"], "steps": [{"id": "s1", "title": "a"}]},
                     {"id": "busy", "title": "Busy build", "status": "running", "profiles": ["main-framework"]}]}
 (PCD / "data" / "framework" / "plan").mkdir(parents=True)
