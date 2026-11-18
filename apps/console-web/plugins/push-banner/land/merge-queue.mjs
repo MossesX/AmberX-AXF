@@ -33,7 +33,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
-import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { ciOf, crewSay, mergeMain, reapFirst, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -504,6 +504,7 @@ export async function main(argv) {
   const s = settings();
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   if (cmd === 'run') {
+    if (!dry) reapFirst('merge-queue', s.repo);   // vps-reaper@1: ghosts go before a merge round
     const git = makeGit(s.repo);
     const gh = makeGitHub(s);
     const st = await queueRound({ s, git, gh, api: makeConsole(s), dry, log: (m) => !json && console.error(m) });
