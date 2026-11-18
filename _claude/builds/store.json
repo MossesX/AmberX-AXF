@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8966,
- "updatedAt": "2026-11-18T13:18:53.315Z",
+ "rev": 8967,
+ "updatedAt": "2026-11-18T13:19:25.220Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319272,7 +319272,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T13:17:54.832Z",
+   "updatedAt": "2026-11-18T13:18:16.517Z",
    "builtAt": "",
    "notes": [
     {
@@ -319298,6 +319298,10 @@
     {
      "text": "Claude account: hulu0241 (axf-every-plugin-gets-own-default-toolbar--earl, shared account login)",
      "at": "2026-11-18T13:17:54.832Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
+     "at": "2026-11-18T13:18:16.517Z"
     }
    ],
    "approvals": [],
@@ -319334,7 +319338,7 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
     "route": "",
     "dispatchedAt": "2026-11-18T13:17:14.831Z",
     "planned": {
@@ -319517,7 +319521,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
