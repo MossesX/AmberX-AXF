@@ -18,6 +18,7 @@ import actionsDoc from '../actions.json';
 import voiceDoc from '../voice.json';
 import { CaptionBar } from './CaptionBar';
 import { DemoView } from './DemoView';
+import { appMenu } from './menu';
 import { SettingsPanel } from './Settings';
 import { StartOverlay } from './StartOverlay';
 import { SummaryDialog } from './SummaryDialog';
@@ -106,9 +107,11 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-17' },
   opens: 'dialog',
   opensUi: `dialog:${DIALOG_START}`,
+  appMenu,
   register(rt) {
     rt.actions.register('orchestrator-demo.open', () => rt.openDialog(DIALOG_START), { label: 'Orchestrator demo: open the start overlay' });
     rt.actions.register('orchestrator-demo.summary', () => rt.openDialog(DIALOG_SUMMARY), { label: 'Orchestrator demo: summary' });
+    rt.actions.register('orchestrator-demo.page', () => rt.navigate(VIEW), { label: 'Orchestrator demo: the check-list page' });
     registerActions(rt);
     registerVoice();
     openDeepLink(rt);
