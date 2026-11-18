@@ -52,12 +52,15 @@
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
+ *   axf demo orchestrator start [--pause] | pause | resume | next | stop | state | summary   the guided Orchestrator demo
+ *                               (plugin.json "cli" word of orchestrator-demo; same REST routes as the console)  <!-- axf-plugin:orchestrator-demo -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
  *   axf watchdog status | run [--dry-run] [--force] | log [--kind K] [--action A] [--build B] | settings | set <key> <value>
  *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
  *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
+ *   axf console chrome get|set|reset|open <type> <id> [key] [value]   one chrome instance's Interface settings
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
  */
@@ -88,7 +91,7 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
-if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'place'].includes(rest[0] ?? '')) {
+if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'place', 'chrome'].includes(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));
 }

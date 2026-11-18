@@ -321,4 +321,75 @@ t('a journal write lands in the home, history reads it back, verify catches a ch
   assert.ok(readdirSync(join(data, '_claude/builds')).every((f) => f !== 'journal'), 'nothing journalled next to the store');
 });
 
+// ------------------------------------------------------------------ demo-build@1: the test-build sandbox
+t('demo: the tag comes from the id, never from the record', () => {
+  const d = c.normBuild({ id: 'demo-crash', title: 'Demo crash', steps: [step('s1', 'x')] }, { now: at });
+  assert.equal(d.demo, true);
+  const real = c.normBuild({ id: 'skins', title: 'Skins', demo: true, steps: [] }, { now: at });
+  assert.equal('demo' in real, false, 'a real build never gets the tag by writing it');
+  assert.equal(c.isDemo(d), true); assert.equal(c.isDemo(real), false);
+  assert.equal(c.isDemoId('demo-'), false); assert.equal(c.isDemoId('demonstration'), false); assert.equal(c.isDemoId('demo-a'), true);
+});
+t('demo: validateStore refuses a tag that disagrees with the id', () => {
+  const s = c.normalizeStore({ ...c.emptyStore(at), builds: [c.normBuild({ id: 'demo-ok', title: 'ok', steps: [step('s1', 'x')] }, { now: at }), c.normBuild({ id: 'real', title: 'real', steps: [] }, { now: at })] });
+  assert.deepEqual(c.validateStore(s).errors, []);
+  const bad = JSON.parse(JSON.stringify(s));
+  bad.builds[0].demo = false; bad.builds[1].demo = true;
+  const paths = c.validateStore(bad).errors.map((e) => e.path);
+  assert.ok(paths.includes('builds[0](demo-ok).demo') && paths.includes('builds[1](real).demo'), paths.join(', '));
+  const missing = JSON.parse(JSON.stringify(s)); delete missing.builds[0].demo;
+  assert.ok(c.validateStore(missing).errors.some((e) => e.path === 'builds[0](demo-ok).demo'), 'a demo- id without the tag is named');
+});
+t('demo: the projections mark it and an absorb never grants it', () => {
+  const s = c.normalizeStore({ ...c.emptyStore(at), builds: [c.normBuild({ id: 'demo-ok', title: 'ok', steps: [step('s1', 'x')] }, { now: at }), c.normBuild({ id: 'real', title: 'real', steps: [step('s1', 'y')] }, { now: at })] });
+  const o = c.projectOrchestrator(s, 'all');
+  assert.equal(o.builds.find((b) => b.id === 'demo-ok').demo, true); assert.equal('demo' in o.builds.find((b) => b.id === 'real'), false);
+  const p = c.projectPending(s, 'all');
+  assert.equal(p.items.find((b) => b.id === 'demo-ok').demo, true); assert.equal('demo' in p.items.find((b) => b.id === 'real'), false);
+  // an orchestrator file that claims demo on a real build, or drops it on a demo build, changes nothing
+  o.builds.find((b) => b.id === 'real').demo = true; delete o.builds.find((b) => b.id === 'demo-ok').demo;
+  const back = c.normalizeStore(c.absorbOrchestrator(s, 'all', o, { now: at }));
+  assert.equal('demo' in back.builds.find((b) => b.id === 'real'), false); assert.equal(back.builds.find((b) => b.id === 'demo-ok').demo, true);
+  // a pending file without the mark is not a change
+  const p2 = JSON.parse(JSON.stringify(p)); delete p2.items.find((b) => b.id === 'demo-ok').demo;
+  const back2 = c.absorbPending(s, 'all', p2, null, { now: at });
+  assert.equal(back2.builds.find((b) => b.id === 'demo-ok').updatedAt, s.builds.find((b) => b.id === 'demo-ok').updatedAt, 'not touched');
+  assert.deepEqual(c.validateStore(c.normalizeStore(back2)).errors, []);
+});
+t('demo: the guard refuses a demo write that touches a real build', () => {
+  const s = c.normalizeStore({ ...c.emptyStore(at), builds: [c.normBuild({ id: 'demo-ok', title: 'ok', steps: [] }, { now: at }), c.normBuild({ id: 'real', title: 'real', steps: [] }, { now: at })] });
+  const only = JSON.parse(JSON.stringify(s)); only.builds[0].status = 'queued';
+  assert.deepEqual(c.demoViolations(s, only), [], 'a demo build may change');
+  const both = JSON.parse(JSON.stringify(only)); both.builds[1].status = 'queued';
+  assert.deepEqual(c.demoViolations(s, both).map((x) => x.id), ['real'], 'a real build may not');
+  const added = JSON.parse(JSON.stringify(s)); added.builds.push(c.normBuild({ id: 'new-real', title: 'n', steps: [] }, { now: at }));
+  assert.deepEqual(c.demoViolations(s, added).map((x) => x.id), ['new-real'], 'nor be added');
+  const gone = JSON.parse(JSON.stringify(s)); gone.builds = gone.builds.filter((b) => b.id !== 'real');
+  assert.deepEqual(c.demoViolations(s, gone).map((x) => x.id), ['real'], 'nor removed');
+  assert.deepEqual(c.demoViolations(s, s), [], 'nothing changed: nothing refused');
+});
+t('demo: the IO guard refuses the write whole (nothing saved) and --demo on the CLI goes through it', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'axf-demo-'));
+  const env = { ...process.env, AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0', AXF_BUILD_HOOKS: '0' };
+  const io = fileURLToPath(new URL('../cli/builds-store.mjs', import.meta.url));
+  const code = `import * as io from ${JSON.stringify(io)}; import * as c from ${JSON.stringify(fileURLToPath(new URL('../plan/builds-store-core.mjs', import.meta.url)))};
+    const at = '2026-11-17T20:00:00.000Z';
+    io.withStore((s) => { s.builds.push(c.normBuild({ id: 'demo-ok', title: 'ok', steps: [] }, { now: at }), c.normBuild({ id: 'real', title: 'real', steps: [] }, { now: at })); return s; }, { by: 't' });
+    let refused = ''; try { io.withStore((s) => { for (const b of s.builds) b.status = 'queued'; return s; }, { by: 't', demo: true, action: 'demo-test' }); } catch (e) { refused = e.code + ':' + (e.builds || []).join(','); }
+    const after = io.loadStore();
+    const okWrite = io.withStore((s) => { s.builds.find((b) => b.id === 'demo-ok').status = 'queued'; return s; }, { by: 't', demo: true });
+    console.log(JSON.stringify({ refused, statuses: after.builds.map((b) => [b.id, b.status]), rev: after.rev, okRev: okWrite.rev, okStatus: io.loadStore().builds.find((b) => b.id === 'demo-ok').status }));`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', code], { env, encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  const o = JSON.parse(r.stdout.trim().split('\n').pop());
+  assert.equal(o.refused, 'not-demo-build:real');
+  assert.deepEqual(o.statuses, [['demo-ok', 'pending'], ['real', 'pending']], 'the refused write saved nothing, not even the demo build');
+  assert.equal(o.okRev, o.rev + 1); assert.equal(o.okStatus, 'queued');
+  const cli = (args) => spawnSync(process.execPath, [io, ...args, '--json'], { env, encoding: 'utf8' });
+  const d1 = JSON.parse(cli(['demo', 'demo-ok']).stdout); assert.equal(d1.ok, true); assert.equal(d1.demo, true);
+  const d2 = cli(['demo', 'real']); assert.equal(d2.status, 1); assert.equal(JSON.parse(d2.stdout).ok, false);
+  const s1 = cli(['set-status', 'real', 'queued', '--demo']); assert.notEqual(s1.status, 0, 'set-status --demo on a real build is refused');
+  assert.equal(JSON.parse(cli(['verify']).stdout).demo.builds.join(','), 'demo-ok');
+});
+
 console.log(`builds-store: ${n} checks passed`);

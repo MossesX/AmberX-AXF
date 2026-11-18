@@ -70,8 +70,11 @@ t('android.yml: runs on queue/**, every heavy job waits on scope and reads its o
 });
 t('the queue switch: the repo variable wins, else the committed .github/merge-queue.json', () => {
   const f = join(ROOT, '.github/merge-queue.json');
-  assert.equal(JSON.parse(readFileSync(f, 'utf8')).on, true);
-  assert.equal(queueIsOn({}, f), true);
+  // the committed switch is Brett's call (off since Nov 17 2026: PRs run the full CI themselves); the test holds the
+  // file to a boolean and the reader to the file, never to one value
+  const committed = JSON.parse(readFileSync(f, 'utf8')).on;
+  assert.equal(typeof committed, 'boolean');
+  assert.equal(queueIsOn({}, f), committed);
   assert.equal(queueIsOn({ AXF_MERGE_QUEUE: 'off' }, f), false);
   assert.equal(queueIsOn({ AXF_MERGE_QUEUE: 'on' }, '/nonexistent'), true);
   assert.equal(queueIsOn({}, '/nonexistent'), false);
