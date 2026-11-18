@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8900,
- "updatedAt": "2026-11-18T07:50:29.255Z",
+ "rev": 8901,
+ "updatedAt": "2026-11-18T07:56:34.846Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -316974,7 +316974,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -316982,8 +316982,8 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T07:50:13.060Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T07:55:44.837Z",
+   "builtAt": "2026-11-18T07:55:44.837Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -317100,6 +317100,10 @@
     {
      "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-18T07:29:01.036Z"
+    },
+    {
+     "text": "Reconciler: PR #836 names s11, s12 done",
+     "at": "2026-11-18T07:55:44.837Z"
     }
    ],
    "approvals": [
@@ -317422,12 +317426,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-18T07:55:44.837Z",
+     "note": "PR #836 (claude/approval-pass-covers-every-call)",
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T07:55:44.840Z"
     }
    ],
    "profiles": [
@@ -317438,7 +317442,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
