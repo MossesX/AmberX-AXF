@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8981,
- "updatedAt": "2026-11-18T13:43:51.033Z",
+ "rev": 8982,
+ "updatedAt": "2026-11-18T13:44:32.509Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319304,10 +319304,10 @@
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/every-plugin-gets-own-default-toolbar",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T13:30:48.723Z",
+   "updatedAt": "2026-11-18T13:43:28.524Z",
    "builtAt": "",
    "notes": [
     {
@@ -319337,6 +319337,10 @@
     {
      "text": "Launch failed on hulu0241: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
      "at": "2026-11-18T13:18:16.517Z"
+    },
+    {
+     "text": "Reconciler: branch claude/every-plugin-gets-own-default-toolbar (no PR yet)",
+     "at": "2026-11-18T13:43:28.524Z"
     }
    ],
    "approvals": [],
@@ -319558,7 +319562,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
