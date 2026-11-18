@@ -193,11 +193,12 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
                     f['data'] = json.loads(body) if r['kind'] == 'record' else base64.b64encode(body).decode('ascii')
                 return f
             inm = (req.headers.get('if-none-match') or '').strip('"')
-            headers = {'ETag': f'"{r["etag"]}"', 'X-Axf-Rev': str(r['rev']), 'X-Axf-At': r['at'], 'X-Axf-By': r['by'], 'X-Axf-Kind': r['kind'],
-                       'X-Axf-Deleted': '1' if r['deleted'] else '0'}
+            # A row the shadow mirror is still writing may lack a field: headers carry '' then, never None (a 500).
+            headers = {'ETag': f'"{r["etag"] or ""}"', 'X-Axf-Rev': str(r['rev'] or 0), 'X-Axf-At': r['at'] or '', 'X-Axf-By': r['by'] or '',
+                       'X-Axf-Kind': r['kind'] or '', 'X-Axf-Deleted': '1' if r['deleted'] else '0'}
             if inm and inm == r['etag']:
                 return Response(status_code=304, headers=headers)
-            return Response(body or b'', media_type=r['content_type'], headers=headers)
+            return Response(body or b'', media_type=r['content_type'] or 'application/octet-stream', headers=headers)
         if req.method == 'PUT':
             p.need('put', ns, path)
             body = await req.body()
