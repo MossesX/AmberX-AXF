@@ -838,13 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 04:31 UTC · `approval-pass-covers-every-call` note (all) · builds-live
-- 2026-11-18 04:58 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:00 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` branch claude/approval-pass-covers-every-call, note (all) · reconciler
-- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` s1 done, → running (all) · orchestrator
-- 2026-11-18 05:15 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:14 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
 - 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
@@ -1238,6 +1231,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:27 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
 - 2026-11-18 13:28 UTC · `every-plugin-gets-own-default-toolbar` s1 done, → running (all) · orchestrator
 - 2026-11-18 13:30 UTC · `every-plugin-gets-own-default-toolbar` s2 done (all) · orchestrator
+- 2026-11-18 13:38 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-18 13:38 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `plan-studio-2-open-button-working-deep` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done (all) · foreign-write
+- 2026-11-18 13:38 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
 
 ## Token passes (log)
 
