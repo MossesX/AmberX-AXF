@@ -501,6 +501,7 @@ t('dispatch gate: a build launch needs the orchestrator token for that build; ot
     assert.equal(P.classifyFailure(b, { now: T0 + (min + 60) * 60e3, land }), null, 'an escalated build is not classified again (no second push)');
     const a = P.alertFor('escalated', { id: 'sim', title: 'Sim', at: b.escalation.at, why: b.escalation.why, tried: b.escalation.tried });
     assert.equal(a.key, `pipeline:escalated:sim:${b.escalation.at}`); assert.equal(a.severity, 'error'); assert.match(a.body, /Tried: /);
+    assert.match(a.title, /^Build failed, every option used up: Sim/);
   });
 
   t('done-means-merged sim: the merged + green + verified path is the only way to complete', () => {
@@ -947,6 +948,37 @@ t('alertFor: an alert about a demo build is marked from its id alone', () => {
   const b = P.alertFor('launched', { id: 'q2', title: 'Real', account: 'w-pro', model: 'Opus', phase: '', session: 's' });
   assert.equal('demo' in b.meta, false); assert.match(b.title, /^Building: Real/);
   assert.equal(P.alertFor('failed', { id: 'demo-crash', title: 'Demo crash', note: 'exit 143' }).meta.demo, true);
+});
+
+// ---------------- vps-never-gives-up: the ladder is walked until every option is used up
+t('exhaustPolicy: the caps never cut the ladder short; untilExhausted off keeps them', () => {
+  const base = RL.normPolicy({});
+  const p = P.exhaustPolicy(base, {});
+  assert.equal(p.maxAttempts, 10); assert.equal(p.maxTotal, 30); assert.equal(p.untilExhausted, true);
+  assert.equal(P.exhaustPolicy(base, { untilExhausted: false }), base);
+  assert.equal(P.exhaustPolicy(RL.normPolicy({ maxAttempts: 10, maxTotal: 30 }), {}).maxAttempts, 10);
+  const ctx = { pinnedModel: 'Fable', model: 'Fable', account: 'a1', accounts: ['a1', 'a2', 'a3', 'a4', 'a5'] };
+  for (const kind of RL.REGISTRY.kinds ?? ['crash', 'ci-red', 'clash', 'push-fail', 'stalled', 'fell-to-pending']) {
+    const capped = RL.walk(kind, base, ctx); const full = RL.walk(kind, RL.normPolicy(p), ctx);
+    const last = full[full.length - 1];
+    assert.equal(last.strategy, 'escalate', kind);
+    assert.match(last.reason, /every rung of the ladder was tried/, `${kind}: gives up only when no rung is left`);
+    assert.ok(full.length >= capped.length, kind);
+  }
+  // ci-red: merge main / fix / regenerate / fresh session / another model / every other account, all before giving up
+  const ci = RL.walk('ci-red', RL.normPolicy(p), ctx).map((d) => d.strategy);
+  for (const s of ['fix', 'fresh-session', 'switch-model', 'switch-account']) assert.ok(ci.includes(s), s);
+  assert.equal(ci.filter((s) => s === 'switch-account').length, 4);
+  assert.ok(RL.walk('clash', RL.normPolicy(p), ctx).some((d) => d.strategy === 'merge-main'));
+});
+
+t('alertFor attempt: an FYI per attempt, one key per attempt, a registered notify type', () => {
+  const a = P.alertFor('attempt', { id: 'b1', title: 'B one', n: 3, kind: 'ci-red', why: 'check-theme red', step: 's2', strategy: 'fix', fixStrategy: 'regenerate', account: 'a2', model: 'Opus', left: ['fresh-session', 'switch-model'] });
+  assert.equal(a.key, 'pipeline:attempt:b1:3'); assert.equal(a.severity, 'info'); assert.match(a.title, /^FYI attempt 3: B one/);
+  assert.match(a.body, /Now trying: fix \(regenerate\) on a2 \(Opus\)/); assert.match(a.body, /Left after this: fresh-session, switch-model/);
+  assert.match(P.alertFor('attempt', { id: 'b1', n: 9, left: [] }).body, /last option before it is marked Failed/);
+  const types = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'notify.json'), 'utf8')).types;
+  assert.ok(types.some((x) => x.id === 'pipeline.attempt' && a.key.startsWith(x.match.keyPrefix) && x.push === true));
 });
 
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

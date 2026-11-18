@@ -828,7 +828,9 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
 
 /** The retry policy: the done-means-merged build rule's settings when it has them, else the defaults (retry-policy@1). */
 export function retryPolicy() {
-  try { const r = BR.load().store.rules.find((x) => x.id === 'done-means-merged'); return RL.normPolicy(r?.settings ?? {}); } catch { return RL.normPolicy({}); }
+  // vps-never-gives-up: the caps never cut the ladder short; only a ladder with no rung left gives up
+  const ceil = { maxAttempts: RL.MAX_ATTEMPTS_RANGE[1], maxTotal: RL.MAX_TOTAL_RANGE[1] };
+  try { const r = BR.load().store.rules.find((x) => x.id === 'done-means-merged'); return P.exhaustPolicy(RL.normPolicy(r?.settings ?? {}), r?.settings ?? {}, ceil); } catch { return P.exhaustPolicy(RL.normPolicy({}), {}, ceil); }
 }
 /** The auto-lander's land.json items by build id (the merge-queue provider's data; found by capability, never by folder). */
 export function landItems(env = process.env) {
@@ -1011,6 +1013,11 @@ export function retryFixing({ env = process.env, accounts = [], settings = loadS
       return s;
     }, { by: 'pipeline', action: 'pipeline:retry', note: `${b.id} ${d.strategy}` });
     logLine({ event: 'retry', build: b.id, kind: f.kind, strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, session: r.session, n: d.n });
+    try {
+      const lad = RL.ladderFor(f.kind, policy); const cur = d.strategy === 'fix' ? `fix:${d.fixStrategy || 'targeted'}` : d.strategy;
+      const left = lad.slice(lad.indexOf(cur) + 1).filter((x) => x !== 'escalate');
+      alert('attempt', { id: b.id, title: b.title, n: d.n, kind: f.kind, why: f.why, step: f.step, strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, left });
+    } catch (e) { logLine({ event: 'attempt-alert-failed', build: b.id, error: str(e.message, 300) }); }
     crewSay('dispatcher', 'start', `${b.id}: attempt ${d.n} (${d.strategy}${d.fixStrategy ? `: ${d.fixStrategy}` : ''}) on ${used.account}, ${model}.`, { ref: b.id });
     out.push({ id: b.id, action: 'launched', strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, session: r.session });
   }
@@ -1048,7 +1055,7 @@ export function escalateBuild(id, f, { at = nowIso(), policy = retryPolicy(), by
     esc = { ...RL.escalationOf(b.attempts, f, { at, policy, head: f.head }), bannerId: ESCALATION_BANNER };
     since = BP.normAttempts(b.attempts).find((a) => a.kind === esc.kind && a.result !== 'skipped')?.startedAt || BP.normFailure(b.failure)?.at || at;
     b.escalation = esc; b.status = 'escalated'; b.updatedAt = at; fresh = true;
-    b.notes.push({ text: `Escalated: ${esc.why} It is on the systems check banner with Retry; one push went to the phone.`, at });
+    b.notes.push({ text: `Failed: every option was used up (${esc.tried.join(', ') || 'nothing left to try'}). ${esc.why} It is on the systems check banner with Retry; one push went to the phone.`, at });
     return s;
   }, { by, action: 'pipeline:escalate', note: id });
   if (fresh && esc && !esc.pushedAt) {
@@ -1057,7 +1064,7 @@ export function escalateBuild(id, f, { at = nowIso(), policy = retryPolicy(), by
     const others = escalated().filter((x) => x.id !== id);
     if (others.length) alert('escalated', { id, title, at: esc.at, why: esc.why, tried: esc.tried, since });
     withStore((s) => { const b = storeCore.findBuild(s, id); if (b?.escalation && b.escalation.at === esc.at) { b.escalation = { ...b.escalation, pushedAt: nowIso() }; } return s; }, { by, action: 'pipeline:escalate-pushed', note: id });
-    crewSay('dispatcher', 'failed', `${id} is stuck after ${esc.attempts} tries (${esc.tried.join(', ')}). Brett, it's on the systems check banner with Retry.`, { ref: id });
+    crewSay('dispatcher', 'failed', `${id} failed: every option used up after ${esc.attempts} tries (${esc.tried.join(', ')}). Brett, it's on the systems check banner with Retry.`, { ref: id });
   }
   logLine({ event: 'escalated', build: id, kind: esc?.kind, attempts: esc?.attempts, tried: esc?.tried, pushed: fresh ? 'once' : 'already' });
   return { escalation: esc };
