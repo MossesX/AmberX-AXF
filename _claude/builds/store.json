@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8924,
- "updatedAt": "2026-11-18T12:30:50.639Z",
+ "rev": 8925,
+ "updatedAt": "2026-11-18T12:31:31.836Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318702,14 +318702,14 @@
    "title": "VPS never gives up: fix and land every build until all options are exhausted",
    "category": "",
    "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:29:56.542Z",
+   "updatedAt": "2026-11-18T12:31:12.439Z",
    "builtAt": "",
    "notes": [
     {
@@ -318745,6 +318745,10 @@
      "at": "2026-11-18T12:24:57.670Z"
     },
     {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-vps-never-gives-up-fix-land-every-build--paulie.",
+     "at": "2026-11-18T12:31:12.439Z"
+    },
+    {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:29:28.226Z"
     }
@@ -318766,13 +318770,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:21:46.349Z",
     "queuedBy": "Brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-vps-never-gives-up-fix-land-every-build--paulie",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-18T12:30:53.347Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -318783,9 +318787,9 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T12:30:53.347Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -318793,11 +318797,8 @@
      "at": "2026-11-18T12:23:45.055Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241",
-     "mossesx-max-"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-18T12:30:53.347Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -318903,7 +318904,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319137,18 +319138,47 @@
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
    "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T12:30:23.226Z",
+   "updatedAt": "2026-11-18T12:30:48.445Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:30:48.445Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-18T12:30:30.645Z",
+    "queuedBy": "Brett",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -319158,7 +319188,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

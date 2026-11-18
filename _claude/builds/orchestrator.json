@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:30:50.639Z",
+ "updatedAt": "2026-11-18T12:31:31.836Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192527,14 +192527,14 @@
    "title": "VPS never gives up: fix and land every build until all options are exhausted",
    "category": "",
    "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:29:56.542Z",
+   "updatedAt": "2026-11-18T12:31:12.439Z",
    "builtAt": "",
    "notes": [
     {
@@ -192568,6 +192568,10 @@
     {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:24:57.670Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-vps-never-gives-up-fix-land-every-build--paulie.",
+     "at": "2026-11-18T12:31:12.439Z"
     },
     {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
@@ -192821,16 +192825,21 @@
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
    "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T12:30:23.226Z",
+   "updatedAt": "2026-11-18T12:30:48.445Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:30:48.445Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": []
