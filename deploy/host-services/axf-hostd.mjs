@@ -391,6 +391,14 @@ export async function unitFacts(unit) {
   };
 }
 
+/** Drills only (deploy/dryrun/host-services-rollback.sh): shorter cut-over guards. Never set on the VPS. */
+function guardOverrides() {
+  const o = {};
+  if (process.env.AXF_HOST_MIN_SHADOW_MS) o.minShadowMs = Number(process.env.AXF_HOST_MIN_SHADOW_MS);
+  if (process.env.AXF_HOST_MIN_RUNS) o.minRuns = Number(process.env.AXF_HOST_MIN_RUNS);
+  return o;
+}
+
 export function makeHostApi(apiManifest, { manifestsFn = () => loadManifests(), facts = unitFacts } = {}) {
   let set = manifestsFn();
   const sudo = makeSudo(apiManifest);
@@ -453,7 +461,7 @@ export function makeHostApi(apiManifest, { manifestsFn = () => loadManifests(), 
     const cur = readModeState();
     const st = await stateOf(m, null);
     const f = await facts(m.unit);
-    const { state, changes } = H.changeMode(cur, set.manifests, { id, to, at: now(), by: body.by || 'svc:host-api', why: body.why || body.reason?.title || '', ctx: { state: st, unitInstalled: f.loaded !== false, hostApiUp: true, acceptDrift: body.acceptDrift } });
+    const { state, changes } = H.changeMode(cur, set.manifests, { id, to, at: now(), by: body.by || 'svc:host-api', why: body.why || body.reason?.title || '', ctx: { state: st, unitInstalled: f.loaded !== false, hostApiUp: true, acceptDrift: body.acceptDrift, ...guardOverrides() } });
     writeJson(MODE_FILE(), state);
     record({ service: id, kind: 'mode', changes, by: body.by || '', reason: body.reason || null });
     // Units follow the mode: shadow and host run the unit, container stops it.
