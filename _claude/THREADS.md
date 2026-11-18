@@ -839,7 +839,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 06:00 UTC · `approval-pass-covers-every-call` s2 done (all) · orchestrator
 - 2026-11-18 06:01 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
 - 2026-11-18 06:02 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
 - 2026-11-18 06:03 UTC · `approval-pass-covers-every-call` s2 done, note (all) · foreign-write
@@ -1239,6 +1238,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:00 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · orchestrator
 - 2026-11-18 14:01 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · orchestrator
 - 2026-11-18 14:01 UTC · `attach-widgets-to-any-toolbar-banner` → running, note (all) · orchestrator
+- 2026-11-18 14:02 UTC · `one-build-time-always-split-to-fill` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
