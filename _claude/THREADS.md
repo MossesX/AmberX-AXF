@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `rebuild-fresh-main-phone-connect-small` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `grids-layout-control-voice-controlled` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `rebuild-fresh-main-collapsible-sections` added (17 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `nothing-saved-browser-all-console` added (18 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `merge-queue-view-every-build-s-fully` added (15 steps) (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 17:20 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-18 17:21 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 17:27 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
+- 2026-11-18 17:27 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-18 17:27 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
 
 ## Token passes (log)
 

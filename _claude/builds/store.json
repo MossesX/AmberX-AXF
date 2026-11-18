@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9102,
- "updatedAt": "2026-11-18T17:27:36.134Z",
+ "rev": 9103,
+ "updatedAt": "2026-11-18T17:27:49.808Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320402,7 +320402,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T17:27:24.030Z",
+   "updatedAt": "2026-11-18T17:27:40.718Z",
    "builtAt": "",
    "notes": [
     {
@@ -320504,6 +320504,14 @@
     {
      "text": "Started run 2 on hulu0241 (Opus, Phase 2): axf-one-build-time-always-split-to-fill--gina.",
      "at": "2026-11-18T17:27:24.030Z"
+    },
+    {
+     "text": "Brief only: brief is 27402 characters (~6851 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-18T17:27:32.315Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-one-build-time-always-split-to-fill--gina, shared account login)",
+     "at": "2026-11-18T17:27:40.718Z"
     }
    ],
    "approvals": [
@@ -321255,7 +321263,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
