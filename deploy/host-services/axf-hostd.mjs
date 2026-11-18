@@ -250,7 +250,11 @@ export async function tickOnce(m, worker, { record = true } = {}) {
   const runRec = { at: now(), result: out.result, durationMs: Date.now() - t0, message: out.message, mode: toModeName(ctx.mode), ...(out.effects ? { effects: out.effects } : {}) };
   if (record) {
     writeJson(dataPath(`${m.dataDir}/state.json`), runRec);
-    if (ctx.mode === 'shadow') appendLine(dataPath(`${m.dataDir}/shadow.jsonl`), { side: 'host', ...runRec });
+    if (ctx.mode === 'shadow') {
+      appendLine(dataPath(`${m.dataDir}/shadow.jsonl`), { side: 'host', ...runRec });
+      // a clean dry run counts towards the cut-over guard (minRuns); drift is counted when the console reports its run
+      if (out.result === 'ok') { try { writeJson(MODE_FILE(), H.recordShadowRun(readModeState(), m.id, { at: runRec.at })); } catch (e) { log('warn', 'shadow run not counted', { error: String(e?.message || e) }); } }
+    }
   }
   log(out.result === 'error' ? 'warn' : 'info', 'tick', { result: out.result, durationMs: runRec.durationMs, mode: runRec.mode, message: out.message });
   return runRec;
@@ -497,8 +501,10 @@ export function makeHostApi(apiManifest, { manifestsFn = () => loadManifests(), 
     appendLine(dataPath(`${m.dataDir}/shadow.jsonl`), { side: 'container', ...container });
     const hostRun = host && host.mode === 'shadow' ? host : null;
     const drift = H.shadowDrift(m.id, hostRun, container, now());
-    if (drift) appendLine(dataPath(`${m.dataDir}/shadow.jsonl`), drift);
-    writeJson(MODE_FILE(), H.recordShadowRun(readModeState(), m.id, { at: now(), drift }));
+    if (drift) {
+      appendLine(dataPath(`${m.dataDir}/shadow.jsonl`), drift);
+      writeJson(MODE_FILE(), H.recordShadowRun(readModeState(), m.id, { at: now(), drift })); // clean runs are counted by the host runner itself
+    }
     return { ok: true, drift };
   }
 

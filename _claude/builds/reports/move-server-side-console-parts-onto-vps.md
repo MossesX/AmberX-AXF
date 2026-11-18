@@ -175,3 +175,85 @@ have no process to ask) get status, logs and run-now the same way as daemons; sh
 compared, never two copies doing the work; no container → host shortcut; `host-api` has no mode; the terminal moves
 last. The first manifests, the host API runner, the installer (`axf_host_services_install`), the `axf-host` user and the
 console's REST / MCP / CLI / voice surface are the next phase.
+
+Phase 3 changed one of these: manifests live in `deploy/host-services/services/<id>.json` (engine default
+`manifestGlob`; `deploy/<dir>/host-service.json` is still read), and every daemon runs from one runner,
+`deploy/host-services/axf-hostd.mjs`, with a worker module in `deploy/host-services/workers/<id>.mjs`.
+
+## 4. What moved (phase 3, s6-s16)
+
+| Service | Unit | Owning plugin | What runs on the host | Console copy (mode guard) | Sudo (all through `axf-task` or fixed lines) |
+|---|---|---|---|---|---|
+| host-api | `axf-host-api.service` | console | the gateway: list, state, health, unit verbs, actions, settings, logs, mode, shadow, rollback | — | `systemctl start/stop/restart <each named axf unit>`, one fixed `journalctl` line |
+| builds-live | `axf-builds-live.service` | build-orchestrator | outbox publish every 20 s, pull main every 15 passes | `flushLiveSoon` stops spawning flushes in host mode (`framework/cli/host-mode.mjs`) | `axf-task builds-live-flush / -pull / -sync` |
+| shipped-features | `axf-shipped-features.service` | shipped-features | ledger sync + ship landed manifests every 120 s | `_maybe_sync` returns in host mode (`server/host_mode.py`) | `axf-task shipped-sync / shipped-landed` |
+| hub-sync | `axf-hub-sync.service` | hub-sync | `claude-sync sync` + `persist.mjs push` every 300 s | the systems check's shared-data fix asks the host in host mode | `axf-task hub-sync / hub-status / persist-push / persist-pull` |
+| agent-swarm | `axf-agent-swarm.service` | agent-swarm | due jobs + sweep every 60 s; run-job / hire / event spooled and drained by root | `/jobs/run`, `/jobs/hire` send over the socket in host mode | `axf-task jobs-due / jobs-sweep / jobs-list / jobs-drain` |
+| systems-check | `axf-systems-check.service` | systems-check | the host report (`console-doctor.sh --report`), disk, Docker space, checkout git state → `checks.json`; Auto fixes | `hostfix.Jobs` sends `HOST_FIXES` to the host in host mode | `axf-task doctor-report / git-status / console-install / claude-pick-install / keyfile-perms`, `docker system df` |
+| maintenance | `axf-maintenance-actions.service` | maintenance | Clear Docker cache, Restart Docker, Measure now, Status through the plugin's own `engine/hostd.py` | (no container copy on main) | `axf-task maint-docker-cache / -norestart / maint-docker-restart / maint-status / maint-snapshot` |
+| auto-lander | `axf-auto-lander.service` + timer | gate | adopted as is | cron `axf-auto-land` until host mode | none (own unit) |
+| pipeline | `axf-pipeline.service` + timer (new unit files, same command) | build-orchestrator | adopted | cron `axf-pipeline` until host mode | none (own unit) |
+| build-watchdog | `axf-build-watchdog.service` + timer | build-orchestrator | adopted | cron `axf-watchdog` until host mode | none (own unit) |
+| stale-row-watchdog | `axf-stale-row-watchdog.service` + timer | build-orchestrator | adopted | cron `axf-stale-watchdog` until host mode | none (own unit) |
+
+`deploy/host-services/bin/axf-task` is the one root entry: a task name is its only argument, so no sudoers line can
+be widened. `gen-sudoers.mjs` writes `sudoers.d/axf-host` from the manifests only (`axf-*` expanded to named units,
+`ALL`, shells, `env`, `tee`, free wildcards refused, `visudo -c`).
+
+## 5. Runbook
+
+Install (VPS, root; idempotent, safe to re-run):
+
+    cd /opt/axf && bash deploy/install-host-services.sh --dry-run      # what it would do
+    bash deploy/install-host-services.sh                               # user + group, env files, units, sudoers, start
+    bash deploy/install-host-services.sh --only builds-live            # one service (+ host-api)
+    bash deploy/install-console.sh                                     # once: mounts /run/axf-host into the console
+                                                                       # (the auto-update does this on the next merge)
+    node framework/cli/host-services.mjs list                          # every row should be up or "in console"
+
+Everything starts in `container` mode: installed, running, idle. Nothing has moved until the migration says so.
+
+Migrate one service (container → shadow → host), verify each step:
+
+    node deploy/host-services/migrate.mjs status
+    node deploy/host-services/migrate.mjs shadow builds-live           # both run, the host dry-runs
+    node deploy/host-services/migrate.mjs verify builds-live
+    node deploy/host-services/migrate.mjs host builds-live             # after ≥ 30 min quiet shadow, ≥ 3 clean runs
+    node deploy/host-services/migrate.mjs next --apply                 # the next step for everything, in tier order
+
+Roll back (always allowed; mode flips first, unit stops, cron lines come back, verify):
+
+    node deploy/host-services/migrate.mjs rollback builds-live          # or: axf host rollback builds-live --yes
+    node deploy/host-services/migrate.mjs rollback builds-live --to shadow
+
+Remove: `bash deploy/install-host-services.sh --uninstall [--only a,b]` (data in `_data/host-services` is kept).
+Drills: `bash deploy/dryrun/host-services.sh`, `bash deploy/dryrun/host-services-rollback.sh`.
+
+## 6. How each feature is reached
+
+| Feature | UI | REST | MCP | CLI | Voice |
+|---|---|---|---|---|---|
+| list / status | Settings → Plugins → Host services (deep link `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=host-services`, `settings.open:host-services`); Systems check panel | `GET /api/host-services`, `GET /api/host-services/{id}` | `host_services_list`, `host_services_get` | `axf host list`, `axf host status <id>` | `host.status[:id]` |
+| restart / start / stop / run | row buttons (`host:<id>/unit:<verb>`) | `POST /api/host-services/{id}/unit/{verb}` (stop, restart: confirm) | `host_services_action {do}` | `axf host restart <id> --yes` | `host.restart:<id>` |
+| service actions | row detail (`host:<id>/action:<a>`) | `POST /api/host-services/{id}/actions/{a}` | `host_services_action {do: run-action}` | `axf host action <id> <a>` | through console control |
+| mode | row detail "Where it runs" (`host:<id>/mode`) | `PUT /api/host-services/{id}/mode` (back: confirm) | `host_services_set_mode`, `host_services_mode` | `axf host mode <id> <mode>`; `migrate.mjs` | `host.mode:<id>:<mode>` |
+| rollback | Roll back (`host:<id>/rollback`) | `POST /api/host-services/{id}/rollback` (confirm) | `host_services_rollback` | `axf host rollback <id> --yes` | `host.rollback:<id>` |
+| logs | Logs (`host:<id>/logs`) | `GET /api/host-services/{id}/logs` | `host_services_logs` | `axf host logs <id>` | — (read in the view) |
+| settings | (row detail lists them) | `GET/PUT /api/host-services/{id}/settings` | `host_services_settings`, `host_services_settings_set` | `axf host settings <id> k=v` | console control |
+| down state | HostServiceGate on Breakroom, Shipped features, Maintenance; systems-check items `host-api`, `host-service:<id>` with Auto fix | 503 `host_service_down` frame | tool error `host_service_down: …` | exit 3 | "The host API is down. …" |
+
+## 7. Known gaps
+
+- **Shadow comparison from the console side**: the host counts its own clean dry-runs and compares any run the console
+  reports (`POST /v1/services/{id}/shadow`, `host_services.report_shadow`), but the console loops do not report yet,
+  so drift is only seen when something posts a run. Cut-over still needs the shadow time and the clean host runs.
+- **Node 22 on the host**: the ledger (shipped-features) uses `node:sqlite`; the VPS shell runs Node 20 today. The
+  service reports itself degraded with the fix (install Node 22) until then; the installer warns.
+- **Maintenance** calls `engine/hostd.py` from `maintenance-plugin-clear-docker-cache`, which is not on main yet; until
+  it lands those actions answer "not in this checkout yet" (exit 69). Note left on that build.
+- **Adopted ticks** (auto-lander, pipeline, watchdogs) keep running as root under their own unit files; their manifests
+  declare no sudo and are listed, health-checked and controlled through the host API only.
+- **Not moved in this build** (audit 1e, no step here): session-checkin, container-access, console-terminal,
+  claude-handoff, project-wizard, github-app, ai-keys, claude-settings, activity, notify-control + alert delivery,
+  agent-manager tool backends. Each is a manifest + worker on the same runner; follow-up build.
+- Kotlin twin of the engine: deferred (PORTING.md).

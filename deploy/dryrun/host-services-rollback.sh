@@ -68,6 +68,10 @@ grep -q '"side":"container"' "$T/data/host-services/demo/shadow.jsonl" || fail "
 grep -q '"side":"host"' "$T/data/host-services/demo/shadow.jsonl" || fail "host dry-runs not logged"
 ! grep -q '"\$axf":"host-shadow-drift@1"' "$T/data/host-services/demo/shadow.jsonl" || fail "drift between identical runs"
 ok "shadow: console and host runs compared, no drift"
+# the cut-over guard counts clean host dry-runs (the runner records each one in the mode file): wait for two
+for _ in $(seq 40); do node -e "const d=require('$T/data/host-services/mode.json'); process.exit((d.services.demo||{}).runs>=2?0:1)" 2>/dev/null && break; sleep 0.5; done
+node -e "const d=require('$T/data/host-services/mode.json'); process.exit((d.services.demo||{}).runs>=2?0:1)" || fail "clean shadow runs not counted: $(cat "$T/data/host-services/mode.json")"
+ok "clean host dry-runs counted towards the cut-over guard"
 sleep 1.2
 
 $M host demo --json > "$T/host.json" || fail "host: $(cat "$T/host.json")"

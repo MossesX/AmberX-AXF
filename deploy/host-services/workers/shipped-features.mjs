@@ -10,7 +10,19 @@ const out = (r) => ({ ok: r.ok, code: r.code, output: `${r.stdout}${r.stderr}`.t
 
 export const intervalSec = 120;
 
+/** The ledger is node:sqlite (Node 22+); the console image has it, a host with an older node does not. */
+export function nodeProblem(version = process.versions.node) {
+  const major = Number(String(version).split('.')[0]);
+  return major >= 22 ? '' : `the feature ledger needs Node 22 or newer on the host (node:sqlite); this host runs Node ${version}. Fix: install Node 22 on the VPS (nodesource), then restart axf-shipped-features.service`;
+}
+
+export function health() {
+  const p = nodeProblem();
+  return p ? { ok: false, message: p } : { ok: true };
+}
+
 export async function tick(ctx) {
+  if (nodeProblem()) return { result: 'error', message: nodeProblem(), effects: [] };
   const effects = ['sync', ...(ctx.settings.shipLanded ? ['ship-landed'] : [])];
   if (ctx.dryRun) return { result: 'ok', message: `would run ${effects.join(' + ')}`, effects };
   const s = await task(ctx, 'shipped-sync');

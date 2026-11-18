@@ -59,6 +59,9 @@ SUDOERS="$PREFIX/etc/sudoers.d/axf-host"
 HOSTD="$DIR/deploy/host-services/axf-hostd.mjs"
 TEMPLATE="$DIR/deploy/host-services/axf-host@.service"
 command -v node >/dev/null || { echo "node is required on the host (it runs the auto-lander too)" >&2; exit 1; }
+NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
+[ "$NODE_MAJOR" -ge 22 ] || say "warning: Node $(node -v) on the host; shipped-features needs Node 22+ (node:sqlite) and reports itself degraded until it is upgraded"
+
 
 # ---- 1. manifests
 node "$HOSTD" --check >/dev/null || { node "$HOSTD" --check >&2 || true; echo "manifests or workers are broken: nothing installed" >&2; exit 1; }
