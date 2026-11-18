@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:45 UTC · `auto-lander-never-wait-missing-ui-review` s7 done (all) · orchestrator
-- 2026-11-18 00:46 UTC · `auto-lander-never-wait-missing-ui-review` s7 done (all) · foreign-write
-- 2026-11-18 00:47 UTC · `molly-console-commands` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `profile-filter-tables` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:51 UTC · `fix-ci-red-main-watchdog-test-vs-done` PR #830, note (all) · reconciler
 - 2026-11-18 01:51 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` note (all) · orchestrator
+- 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:52 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
+- 2026-11-18 01:52 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
+- 2026-11-18 01:52 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
