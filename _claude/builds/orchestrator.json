@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T02:07:30.048Z",
+ "updatedAt": "2026-11-18T02:09:33.848Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171127,9 +171127,10 @@
    "pendingId": "",
    "branch": "claude/rebuild-fresh-main-phone-connect-small",
    "pr": "#787",
+   "mergedAt": "2026-11-18T02:00:51Z",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-18T01:06:17.523Z",
+   "updatedAt": "2026-11-18T02:04:14.056Z",
    "builtAt": "",
    "notes": [
     {
@@ -171559,6 +171560,10 @@
     {
      "text": "Correction from move-everything-axhub-web-console: your service is axf.phone@1 (status / available / send / open_url / notify / approval / command); the Hub plugin reads pairing through axf.phone@1.status() and will send hub notices through approval() / open_url() with the console deep link ?axf-open=hub.open:approvals:<id>.",
      "at": "2026-11-18T01:06:17.523Z"
+    },
+    {
+     "text": "Reconciler: PR #787 merged",
+     "at": "2026-11-18T02:04:14.056Z"
     }
    ],
    "approvals": [
