@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:16 UTC · `active-tab-stop-button-grid-alignment` added (48 steps) (all) · foreign-write
 - 2026-11-18 00:17 UTC · `terminal-main-tab-streaming-console-s` s113 done, → complete (all) · foreign-write
 - 2026-11-18 00:17 UTC · `move-server-side-console-parts-onto-vps` s22 done (all) · foreign-write
 - 2026-11-18 00:17 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:32 UTC · `auto-lander-never-wait-missing-ui-review` s15 done (all) · foreign-write
 - 2026-11-18 01:32 UTC · `auto-lander-never-wait-missing-ui-review` s16 done (all) · foreign-write
 - 2026-11-18 01:32 UTC · `auto-lander-never-wait-missing-ui-review` s15 done, s16 done (all) · foreign-write
+- 2026-11-18 01:33 UTC · `one-true-source-for-every-setting` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
