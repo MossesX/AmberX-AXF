@@ -13,14 +13,25 @@
  *     kind (what a skin's `chrome` block names) that a skin can't pick as a slot,
  * and prints the coverage table so a reviewer sees how each type is reached.
  *
- *   node framework/spec/check-skin-coverage.mjs [--json] [--quiet]
+ * `--complete <skin>` (build flagship-professional-skin-covering-2, Nov 17 2026: a flagship skin covers everything)
+ * also fails when that skin, with its `extends` chain folded in, leaves anything empty: a registered `slot` type it
+ * does not pick (the four themes through layoutTheme / colorTheme / styleTheme / behaviorTheme, the rest through
+ * `assets`), a `parts` type with no style parts, a `reference` it does not name (iconPack, or the slot its via names),
+ * either tone of `colorThemes`, or any skin-slots@1 slot (motion, behavior, hooks, grid, dialog, settings) that is
+ * empty or misses a kind (motion per MOTION_KINDS, hooks per HOOK_KINDS, settings per SETTINGS_CHROME_KEYS, every grid
+ * field, the tap-confirm arm time). Bundles and `none` types are not a skin's to fill. The skin is looked up in
+ * framework/assets/skin, then in every plugin's assets/skin.
+ *
+ *   node framework/spec/check-skin-coverage.mjs [--json] [--quiet] [--complete <skin>[,<skin>…]]
  */
 import { readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { COVERAGE_KINDS, SKIN_SCOPE_DEFAULT, SKIN_SCOPE_KINDS, coverageSummary, coverageTable, declarationErrors, partsTypes, skinScopeChain } from '../core/engines/skin-coverage.mjs';
-import { SKIN_NEVER, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
+import { SKIN_NEVER, foldSkinExtends, normalizeSkinChrome, skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
+import { GRID_FIELDS, HOOK_KINDS, MOTION_KINDS, SETTINGS_CHROME_KEYS, SKIN_SLOT_KEYS, normalizeSkinSlots } from '../core/engines/skin-slots.mjs';
+import { existsSync, readdirSync } from 'node:fs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const readJson = (f) => JSON.parse(readFileSync(f, 'utf8'));
@@ -55,15 +66,68 @@ const chromeOk = Object.keys(normalizeSkinChrome({ toolbar: { interface: 'chrome
 if (JSON.stringify(chromeOk) !== JSON.stringify(['toolbar'])) problems.push('normalizeSkinChrome must keep chrome-settings@1 kinds only');
 if (!skinChromeErrors({ nope: {} }).length) problems.push('skinChromeErrors must refuse a kind outside chrome-settings@1');
 
+// --complete <skin>: every slot of that skin is filled
+const completeAt = process.argv.indexOf('--complete');
+const completeId = completeAt > 0 ? process.argv[completeAt + 1] : '';
+const completeList = [];
+if (completeAt > 0) {
+  if (!completeId || completeId.startsWith('--')) problems.push('--complete needs a skin id (several: a,b,c)');
+  else for (const id of completeId.split(',').map((x) => x.trim()).filter(Boolean)) {
+    const c = completeness(id);
+    completeList.push(c);
+    for (const g of c.gaps) problems.push(`skin "${id}": ${g}`);
+  }
+}
+
+/** Where a skin asset lives: framework/assets/skin, then every plugin's assets/skin. */
+function findSkin(id) {
+  const dirs = [join(ROOT, 'assets/skin')];
+  const plugins = join(ROOT, '../apps/console-web/plugins');
+  if (existsSync(plugins)) for (const p of readdirSync(plugins)) dirs.push(join(plugins, p, 'assets/skin'));
+  for (const d of dirs) { const f = join(d, `${id}.json`); if (existsSync(f)) return readJson(f); }
+  return null;
+}
+
+/** A skin's data with its `extends` chain folded in (skin@1 extends: the engine's own fold). */
+function foldedSkin(id) { const a = findSkin(id); return a ? foldSkinExtends(a.data ?? {}, (pid) => findSkin(pid)?.data ?? null) : null; }
+
+function completeness(id) {
+  const data = foldedSkin(id);
+  if (!data) return { id, filled: 0, total: 0, gaps: ['not found in framework/assets/skin or any plugin assets/skin'] };
+  const themes = { layout: 'layoutTheme', 'color-theme': 'colorTheme', 'style-theme': 'styleTheme', 'behavior-theme': 'behaviorTheme' };
+  const assets = data.assets ?? {};
+  const parts = data.parts ?? {};
+  const has = (v) => typeof v === 'string' ? v.trim() !== '' : v && typeof v === 'object' ? Object.keys(v).length > 0 : v !== undefined;
+  const checks = [];
+  const need = (label, ok) => checks.push({ label, ok: !!ok });
+  for (const r of rows) {
+    if (r.by === 'slot') need(`slot ${r.type} (${themes[r.type] ?? `assets.${r.type}`})`, has(themes[r.type] ? data[themes[r.type]] : assets[r.type]));
+    if (r.by === 'parts' || r.also.includes('parts')) need(`parts.${r.type}`, has(parts[r.type]));
+    if (r.by === 'reference') need(`reference ${r.type} (via ${r.via})`, r.via === 'iconPack' ? has(data.iconPack) : has(assets[r.via]));
+  }
+  for (const tone of ['light', 'dark']) need(`colorThemes.${tone}`, has(data.colorThemes?.[tone]));
+  const slots = normalizeSkinSlots(data);
+  for (const k of SKIN_SLOT_KEYS) need(`slot ${k} (skin-slots@1)`, has(slots[k]));
+  for (const k of MOTION_KINDS) need(`motion.chrome.${k}`, has(slots.motion?.chrome?.[k]));
+  for (const k of ['speed', 'easing', 'reduced']) need(`motion.${k}`, has(slots.motion?.[k]));
+  for (const k of HOOK_KINDS) need(`hooks.${k}`, has(slots.hooks?.[k]));
+  for (const k of SETTINGS_CHROME_KEYS) need(`settings.${k}`, has(slots.settings?.[k]));
+  for (const k of GRID_FIELDS) need(`grid.${k}`, has(slots.grid?.[k]));
+  need('behavior.tapConfirm.armMs', has(slots.behavior?.tapConfirm?.armMs));
+  for (const k of CHROME_TYPES) need(`behavior.tapConfirm.${k}`, has(slots.behavior?.tapConfirm?.[k]));
+  return { id, filled: checks.filter((c) => c.ok).length, total: checks.length, gaps: checks.filter((c) => !c.ok).map((c) => `${c.label} is empty`) };
+}
+
 const summary = coverageSummary(rows);
 if (json) {
-  console.log(JSON.stringify({ ok: problems.length === 0, summary, problems, rows, partsTypes: partsTypes(spec, targets) }));
+  console.log(JSON.stringify({ ok: problems.length === 0, summary, problems, rows, partsTypes: partsTypes(spec, targets), ...(completeList.length ? { complete: completeList } : {}) }));
 } else {
   if (!quiet) {
     const w = Math.max(...rows.map((r) => r.type.length));
     for (const r of rows) console.log(`  ${r.type.padEnd(w)}  ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : '          '}  ${r.elements.length ? r.elements.join('/') : '-'}${r.declared ? '  (declared)' : ''}${r.via ? `  via ${r.via}` : ''}`);
   }
   console.log(`check-skin-coverage: ${summary.total} types · slot ${summary.slot} · parts ${summary.parts} · reference ${summary.reference} · bundle ${summary.bundle} · none ${summary.none} · uncovered ${summary.uncovered}`);
+  for (const c of completeList) console.log(`check-skin-coverage --complete ${c.id}: ${c.filled} / ${c.total} filled`);
   for (const p of problems) console.error(`  ✗ ${p}`);
 }
-if (problems.length) { console.error(`check-skin-coverage: ${problems.length} problem(s). Give the type a style target in schemas/customize.json (widgets) or a "skin": { "by": … } declaration on its asset-types.json entry.`); process.exit(1); }
+if (problems.length) { console.error(`check-skin-coverage: ${problems.length} problem(s). A skin gap: pick an asset or fill the slot on that skin. Otherwise: give the type a style target in schemas/customize.json (widgets) or a "skin": { "by": … } declaration on its asset-types.json entry.`); process.exit(1); }

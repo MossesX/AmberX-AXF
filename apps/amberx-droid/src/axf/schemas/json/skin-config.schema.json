@@ -8632,6 +8632,21 @@
                         },
                         "settings": {
                           "$ref": "#/$defs/mode"
+                        },
+                        "motion": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "behavior": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "hooks": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "grid": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "dialog": {
+                          "$ref": "#/$defs/mode"
                         }
                       }
                     }

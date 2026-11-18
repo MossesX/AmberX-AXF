@@ -1,0 +1,219 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "nav-menu",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship navigation for the console, axHub web and AmberX as one product: five sections (Workspace, Make, Hub, Govern, You) listing every page the three apps have; each app shows the ones it has. Compact list with icons and text, a bar marks the active page, sub menus slide open through the flagship nav style.",
+  "tags": [
+    "flagship",
+    "professional",
+    "console",
+    "axhub",
+    "amberx"
+  ],
+  "data": {
+    "style": "list",
+    "header": "AmberX",
+    "density": "compact",
+    "indicator": "bar",
+    "showIcons": true,
+    "navStyle": true,
+    "sections": [
+      {
+        "label": "Workspace",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "plan",
+            "label": "Plan",
+            "icon": "list",
+            "view": "plan"
+          },
+          {
+            "id": "build",
+            "label": "Build queue",
+            "icon": "hammer",
+            "view": "build"
+          },
+          {
+            "id": "pending",
+            "label": "Pending builds",
+            "icon": "clock",
+            "view": "pending"
+          },
+          {
+            "id": "tracker",
+            "label": "Tracker",
+            "icon": "chart",
+            "view": "tracker"
+          },
+          {
+            "id": "catalog",
+            "label": "Features",
+            "icon": "check-circle",
+            "view": "catalog"
+          }
+        ]
+      },
+      {
+        "label": "Make",
+        "items": [
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "libraries",
+            "label": "Libraries",
+            "icon": "package",
+            "view": "libraries"
+          },
+          {
+            "id": "modules",
+            "label": "Modules",
+            "icon": "box",
+            "view": "modules"
+          },
+          {
+            "id": "boilerplates",
+            "label": "Boilerplates",
+            "icon": "file",
+            "view": "boilerplates"
+          },
+          {
+            "id": "demos",
+            "label": "Demos",
+            "icon": "play",
+            "view": "demos"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          }
+        ]
+      },
+      {
+        "label": "Hub",
+        "items": [
+          {
+            "id": "hub",
+            "label": "Hub",
+            "icon": "cloud",
+            "view": "hub"
+          },
+          {
+            "id": "services",
+            "label": "Services",
+            "icon": "zap",
+            "view": "services"
+          },
+          {
+            "id": "jobs",
+            "label": "Jobs",
+            "icon": "refresh",
+            "view": "jobs"
+          },
+          {
+            "id": "approvals-log",
+            "label": "Approvals",
+            "icon": "check",
+            "view": "approvals-log"
+          },
+          {
+            "id": "handoff",
+            "label": "Handoff",
+            "icon": "external",
+            "view": "handoff"
+          },
+          {
+            "id": "go-pass",
+            "label": "Go pass",
+            "icon": "rocket",
+            "view": "go-pass"
+          },
+          {
+            "id": "projects",
+            "label": "Hub projects",
+            "icon": "folder",
+            "view": "projects"
+          },
+          {
+            "id": "devices",
+            "label": "Devices",
+            "icon": "smartphone",
+            "view": "devices"
+          }
+        ]
+      },
+      {
+        "label": "Govern",
+        "items": [
+          {
+            "id": "audit",
+            "label": "Audit",
+            "icon": "eye",
+            "view": "audit"
+          },
+          {
+            "id": "vault",
+            "label": "Vault",
+            "icon": "key",
+            "view": "vault"
+          },
+          {
+            "id": "users",
+            "label": "Users",
+            "icon": "user",
+            "view": "users"
+          },
+          {
+            "id": "standards-rules",
+            "label": "Manifest rules",
+            "icon": "shield",
+            "view": "standards-rules"
+          },
+          {
+            "id": "standards-projects",
+            "label": "Projects",
+            "icon": "folder",
+            "view": "standards-projects"
+          }
+        ]
+      },
+      {
+        "label": "You",
+        "items": [
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ]
+  }
+}

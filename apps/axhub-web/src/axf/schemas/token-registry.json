@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-14",
+  "updatedAt": "2026-11-18",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -21,6 +21,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -74,6 +80,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -125,6 +137,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -415,6 +433,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -486,6 +510,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -801,6 +831,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -1186,7 +1222,8 @@
       "default": "",
       "source": "engine:framework/core/engines/components.ts",
       "sources": [
-        "engine:framework/core/engines/components.ts"
+        "engine:framework/core/engines/components.ts",
+        "engine:framework/core/engines/skin-map.mjs"
       ]
     },
     {
@@ -1237,6 +1274,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -1953,6 +1996,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -2507,6 +2556,8 @@
       "sources": [
         "engine:framework/core/engines/behavior.ts",
         "engine:framework/core/engines/customize.ts",
+        "engine:framework/core/engines/skin-map.mjs",
+        "engine:framework/core/engines/skin-slots.mjs",
         "engine:framework/core/engines/theme.ts",
         "engine:framework/core/engines/token-registry.mjs",
         "framework/ui/axf.css"
@@ -2515,6 +2566,384 @@
         "target": "tokens.style",
         "path": "motion"
       }
+    },
+    {
+      "id": "--fx-motion-app-menu-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: app menu dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-app-menu-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: app menu stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-banner-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: banner dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-banner-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: banner stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-context-menu-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: context menu dur.",
+      "default": "calc(var(--fx-motion) * 0.75)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-context-menu-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: context menu stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-dialog-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: dialog dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-dialog-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: dialog stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-ease-emphasized",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: easing emphasized.",
+      "default": "cubic-bezier(0.3, 0, 0, 1.2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-ease-exit",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: easing exit.",
+      "default": "var(--fx-ease)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-ease-standard",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: easing standard.",
+      "default": "var(--fx-ease)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-fast",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: fast.",
+      "default": "90ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-grid-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: grid dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-grid-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: grid stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-nav-menu-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: navigation menu dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-nav-menu-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: navigation menu stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-normal",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: normal.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-page-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: page dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-page-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: page stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-popup-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: popup dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-popup-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: popup stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-slow",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: slow.",
+      "default": "260ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-stagger-step",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: stagger step.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-tab-group-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: tab group dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-tab-group-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: tab group stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-toolbar-dur",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: toolbar dur.",
+      "default": "var(--fx-motion)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-motion-toolbar-stagger",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Motion: toolbar stagger.",
+      "default": "0ms",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
     },
     {
       "id": "--fx-muted",
@@ -2534,6 +2963,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -3116,6 +3551,62 @@
       ]
     },
     {
+      "id": "--fx-safe-bottom",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the bottom edge (the navigation bar or keyboard). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-bottom)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-safe-left",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the left edge (the left cutout or navigation bar). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-left)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-safe-right",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the right edge (the right cutout or navigation bar). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-right)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-safe-top",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the top edge (the status bar or camera cutout). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-top)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
       "id": "--fx-scrim",
       "element": "transparency",
       "area": "colour",
@@ -3123,7 +3614,7 @@
       "scheme": "both",
       "level": "pro",
       "description": "Dimming layer behind dialogs and sheets.",
-      "default": "color-mix(in srgb, #000 calc(var(--fx-opacity-scrim) * 100%), transparent)",
+      "default": "color-mix(in srgb, color-mix(in srgb, var(--fx-bg) 22%, #000) calc(var(--fx-opacity-scrim) * 100%), transparent)",
       "source": "engine:framework/core/engines/token-registry.mjs",
       "sources": [
         "engine:framework/core/engines/token-registry.mjs",
@@ -3176,6 +3667,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -3923,6 +4420,7 @@
       "source": "engine:framework/core/engines/navstyle.ts",
       "sources": [
         "engine:framework/core/engines/navstyle.ts",
+        "engine:framework/core/engines/skin-map.mjs",
         "engine:framework/core/engines/theme.ts",
         "engine:framework/core/engines/token-registry.mjs",
         "framework/ui/axf.css"
@@ -3950,6 +4448,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -4002,6 +4506,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -4053,6 +4563,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -4104,6 +4620,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -5052,6 +5574,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",
@@ -5662,6 +6190,12 @@
         "color-theme:coral-studio",
         "color-theme:crimson-dusk",
         "color-theme:deep-ocean",
+        "color-theme:flagship-dark",
+        "color-theme:flagship-daylight-dusk",
+        "color-theme:flagship-daylight-light",
+        "color-theme:flagship-graphite-dark",
+        "color-theme:flagship-graphite-light",
+        "color-theme:flagship-light",
         "color-theme:forest-night",
         "color-theme:fresh-dark",
         "color-theme:fresh-light",

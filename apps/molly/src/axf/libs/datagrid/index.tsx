@@ -12,8 +12,9 @@ import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { registerZone, startDrag, type DropPos } from '../dnd';
+import { GRID_KEY, normalizeSkinGrid } from '../../core/engines/skin-slots.mjs';
 import spec from './library.json';
-import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
+import { anyRowHooks, applyDataset, DATASET_TOOLBAR_SLOT, datasetFiltered, hasRowHook, noteDrawnRef, registerRowRefTarget, rowHooks, rowRefForContext, runRowHook, useDataset, useDatasetsRevision, type DatasetField, type RowRef } from './datasets';
 export * from './datasets';
 import './datagrid.css';
 
@@ -120,6 +121,10 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   // component-tokens@1: this one grid's own token values (axf.tokens.instances → --fx-grid-* on the element) win over the skin's
   const [, tokensTick] = useState(0);
   useEffect(() => rt.settings.onChange(INSTANCE_TOKENS_KEY, () => tokensTick((n) => n + 1)), [rt]);
+  // skin-slots@1: the skin's grid slot (axf.grid) → density / header / lines / rows attributes the stylesheet reads; the
+  // token side (--fx-grid-*) already arrives through axf.tokens.style, so this only adds what tokens cannot say
+  useEffect(() => rt.settings.onChange(GRID_KEY, () => tokensTick((n) => n + 1)), [rt]);
+  const skinGrid = normalizeSkinGrid(rt.settings.get(GRID_KEY));
   const template = { '--axf-grid-cols': `calc(var(--fx-space) * 3) ${cols.map((c) => c.width).join(' ')} ${tail}`, ...instanceTokenVars(rt.settings.get(INSTANCE_TOKENS_KEY), 'grid', p.id) } as CSSProperties;
   const headerTarget = `axf-grid-header:${p.id}`;
   const dsId = p.dataset === false ? '' : p.dataset ?? p.id;
@@ -203,7 +208,8 @@ export function DataGrid<R>(p: DataGridProps<R>) {
   } : {});
 
   const grid = (
-    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id}>
+    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id}
+      data-fx-grid-density={skinGrid.density} data-fx-grid-header={skinGrid.header} data-fx-grid-lines={skinGrid.lines} data-fx-grid-rows={skinGrid.rows}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (
@@ -288,6 +294,7 @@ export const library: AxfWebLibrary = {
   provides: ['axf.datagrid'],
   register(rt) {
     configureDataGrid((rt.manifest as { libraries?: Record<string, { parts?: Record<string, unknown> }> }).libraries?.datagrid);
+    rt.registerHookRegistry({ hook: hasRowHook }); // skin-slots@1: a skin's grid-row hook refs resolve against grid-hook@1
     rt.actions.register('axf.grid.do', ([grid = '', what = '', col = '']) => {
       const g = grids.get(grid); if (!g) return;
       if (what === 'col') g.col(col); else if (what === 'all') g.all(); else if (what === 'choose') g.choose(); else if (what === 'sort') g.sort(col); else if (what === 'unsort') g.sort(null);

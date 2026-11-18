@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "popup",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "Flagship notices: solid cards with an icon at the bottom right, 4.5 s on screen, three at most; they stack and never cover the banner or the toolbar.",
+  "tags": [
+    "flagship",
+    "professional",
+    "toast"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "solid",
+    "duration": 4500,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

@@ -27,6 +27,11 @@
  *        skin-config@1, what the AI may change (configMain below lists the arguments); make = a skin by AI held to it
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
+ *   node framework/cli/skins.mjs map [<skin>] [--slot <s>] [--json]   skin-map@1: what every skin slot controls (asset / dataset / layout,
+ *                                                          tokens, settings, components) and where every dataset and layout lives; with a skin
+ *                                                          id every row also shows what that skin sets there (extends folded); --slot keeps
+ *                                                          one slot (toolbar, parts.toolbar, motion…); any other word filters by token, key or name;
+ *                                                          --md prints it as the human-readable map (_claude/memory/docs/flagship-skin.md)
  *   node framework/cli/skins.mjs modes                     every skin's light and dark colour themes, and any skin missing one
  *   node framework/cli/skins.mjs mode <app> [light|dark|system] [--system light|dark] [--scope …]   the skin's light / dark theme, or the device's
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
@@ -38,8 +43,10 @@
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
+import { backToSkin, foldSkinExtends, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
+import { skinMap, skinMapFind, skinMapFor } from '../core/engines/skin-map.mjs';
+import { skinMapInputs } from './build-engine.mjs';
 import { effectiveScheme, isSkinMode, skinModeColor, skinModeProblems, skinModeRows, skinSchemeOf, SKIN_MODES } from '../core/engines/skin-modes.mjs';
 import { defaultSkinMigration, isDefaultSkin, skinDeleteError, SKIN_CONFIG_GLOBAL } from '../core/engines/skin-config-rules.mjs';
 import * as SC from '../core/engines/skin-config-rules.mjs';
@@ -124,7 +131,11 @@ export function writeGlobal(skin, by = 'skins-cli', colorTheme) {
 
 function assetsOf(type) {
   const dir = join(ROOT, 'framework/assets', type);
-  return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
+  const list = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
+  if (type !== 'skin') return list;
+  // skin@1 extends: every reader sees the whole skin (a variant's inherited slots folded in)
+  const raw = new Map(list.map((a) => [a.id, a.data]));
+  return list.map((a) => ({ ...a, data: foldSkinExtends(a.data, (id) => raw.get(id) ?? null) }));
 }
 /** The Default skins on the hub (`skins/<app>.json`), the hub-wide one first. */
 export function defaultSkins() {
@@ -548,9 +559,65 @@ function configMain(args, argv) {
   return configChange(sub, id, a, b, c);
 }
 
+/**
+ * skin-map@1 for the CLI, the theme-manager routes and the voice actions: the whole map; with a skin id, every row
+ * carries what that skin sets (its `extends` folded); `slot` keeps one slot; a word that is not a skin filters (find).
+ */
+export function mapOf(skinOrFind = '', slot = '') {
+  const m = skinMap(skinMapInputs(ROOT));
+  const skin = skinOrFind ? assetsOf('skin').find((a) => a.id === skinOrFind) ?? madeSkins().find((a) => a.id === skinOrFind) ?? null : null;
+  if (skinOrFind && !skin) return slot ? { ...skinMapFor(m, '', null, slot), find: skinOrFind, rows: skinMapFind(skinMapFor(m, '', null, slot), skinOrFind), slotFilter: slot } : { find: skinOrFind, rows: skinMapFind(m, skinOrFind) };
+  const out = skinMapFor(m, skin ? skin.id : '', skin ? skin.data : null, slot);
+  if (slot && !out.slots.length) throw new Error(`no slot "${slot}" in the skin map (try: toolbar, parts.toolbar, motion, colorTheme)`);
+  return slot ? { ...out, slotFilter: slot } : out;
+}
+
+/** skin-map@1 read through one skin as Markdown: every slot by surface, what the skin sets, tokens, readers, where it lives, the API. */
+export function mapMarkdown(m) {
+  const SURFACES = [
+    ['Colours, type and style', (r) => ['color-theme', 'style-theme', 'typography', 'density', 'sizing'].includes(r.type) || ['extras.spacing', 'extras.settings'].includes(r.slot)],
+    ['Layouts', (r) => ['layout', 'dock-layout', 'xlayout', 'nav-style'].includes(r.type)],
+    ['Menus and chrome', (r) => ['app-menu', 'nav-menu', 'context-menu', 'toolbar', 'tab-group', 'banner', 'settings'].includes(r.type) || ['chrome', 'settings'].includes(r.kind) || r.slot === 'extras.hidden'],
+    ['Controls and widgets', (r) => ['dialog', 'popup', 'container', 'button', 'slider', 'gauge', 'meter'].includes(r.type) || r.kind === 'dialog' || r.kind === 'parts'],
+    ['Motion, behaviour and hooks', (r) => r.type === 'behavior-theme' || ['motion', 'behavior', 'hooks'].includes(r.kind)],
+    ['Grids and data', (r) => r.kind === 'grid'],
+    ['Brand and icons', (r) => ['branding', 'logo-mark', 'animated-logo', 'icon-pack', 'agent-card'].includes(r.type) || r.slot === 'iconPack'],
+    ['Help and learning', (r) => ['demonstration', 'book', 'clip', 'docs'].includes(r.type)],
+  ];
+  const cell = (v) => String(v ?? '').replace(/\|/g, '\\|').replace(/\n/g, ' ');
+  const val = (v) => (v === null || v === undefined ? '—' : typeof v === 'string' ? `\`${v}\`` : `\`${JSON.stringify(v).slice(0, 140)}\``);
+  const lives = (l) => (!l ? '' : [l.repo, l.hub, l.field ? `${l.document ?? ''} ${l.field}` : '', l.pick?.field ? `pick app-look@1 ${l.pick.field}` : ''].filter(Boolean).map((x) => `\`${x}\``).join('<br>'));
+  const id = m.skin?.id ?? '';
+  const out = [];
+  out.push(`# ${id ? `The ${id} skin: ` : ''}where every slot lives`, '');
+  out.push('Generated from skin-map@1. Do not edit: `node framework/cli/skins.mjs map ' + (id || '') + ' --md > _claude/memory/docs/flagship-skin.md` rewrites it.', '');
+  if (id) out.push(`**${id}** sets ${m.skin.filled} of ${m.skin.rows} map rows (the rest are bundles, \`none\` types and Android-only types, or left to the level below). The skins check \`node framework/spec/check-skin-coverage.mjs --complete ${id}\` fails if any registered type or skin-slots@1 slot is empty.`, '');
+  out.push('## How to reach it (API)', '',
+    '| Way | Read the map | Apply a skin |', '| --- | --- | --- |',
+    `| UI | Settings → Appearance → Skin map (tap a row to open its asset) | Settings → Appearance → Skin |`,
+    `| Deep link | \`settings.open:skin-map\`, console-control \`view:settings/tab:settings.tabs=appearance/subtab:settings.subtabs=skin-map\`, rows \`grid:skin-map/row:<slot>\` | Skins: \`skin-gallery.focus:skin/<id>\` |`,
+    `| REST | \`GET /api/plugins/theme-manager/skin-map?skin=${id || '<id>'}\`, \`GET …/skin-map/<slot>?skin=\` | \`POST …/skins/global\`, \`POST …/skins/<app>/use\` {skin, scope?} |`,
+    `| MCP | the same routes as theme-manager plugin commands | the same |`,
+    `| CLI | \`node framework/cli/skins.mjs map ${id || '<skin>'} [--slot <s>] [--json]\` | \`skins.mjs global <id>\`, \`skins.mjs use <app> <id> [--scope ui:<v> or plugin:<id>]\` |`,
+    `| Voice (AmberX) | \`skin.map\`, \`skin.map.slot:<slot>\` | \`skin.use:<id>:<scope> (hub, app, ui:… or plugin:…)\`, \`skin.inherit:on\` |`, '');
+  for (const [title, test] of SURFACES) {
+    const rows = m.slots.filter((r) => r.kind !== 'bundle' && test(r));
+    if (!rows.length) continue;
+    out.push(`## ${title}`, '', `| Slot | ${id ? 'Set by the skin' : 'Kind'} | Controls | Tokens | Read by | Lives in |`, '| --- | --- | --- | --- | --- | --- |');
+    for (const r of rows) out.push(`| **${cell(r.label)}**<br>\`${r.slot}\` | ${id ? cell(val(r.value)) : r.kind} | ${r.controls.join(', ')} | ${r.tokens.length}${r.tokens.length ? `<br>\`${cell(r.tokens.slice(0, 3).join(' '))}\`${r.tokens.length > 3 ? ' …' : ''}` : ''} | ${cell(r.components.slice(0, 4).join(', '))} | ${lives(r.lives)} |`);
+    out.push('');
+  }
+  out.push('## Where the datasets go', '', '| Dataset | Contract | What | Hub | Data store | Repo |', '| --- | --- | --- | --- | --- | --- |');
+  for (const d of m.datasets) out.push(`| \`${d.id}\` | ${d.contract} | ${cell(d.what)} | ${d.hub ? `\`${d.hub}\`` : '—'} | ${d.dataStore ? `\`${d.dataStore}\`` : '—'} | \`${d.repo}\` |`);
+  out.push('', '## Layouts', '', '| Layout type | Assets | Picked at | Engine | Repo |', '| --- | --- | --- | --- | --- |');
+  for (const l of m.layouts) out.push(`| ${l.label} (\`${l.type}\`) | ${l.ids.length} | \`app-look@1 ${l.pick.field}\` | \`${l.engine}\` | \`${l.repo}\` |`);
+  out.push('', `Summary: ${m.summary.slots} slots, ${m.summary.datasets} datasets, ${m.summary.layouts} layout types, ${m.summary.tokens} tokens, ${m.summary.settings} settings keys.`);
+  return out.join('\n');
+}
+
 function main(argv) {
   const json = argv.includes('--json');
-  const valued = ['--scope', '--system', '--wish', '--from', '--json-doc'];
+  const valued = ['--scope', '--system', '--wish', '--from', '--json-doc', '--slot'];
   const args = argv.filter((a, i) => !a.startsWith('--') && !valued.includes(argv[i - 1]));
   const [cmd, app, arg] = args;
   const scope = cmd === 'config' ? '' : scopeArg(argv);
@@ -572,10 +639,19 @@ function main(argv) {
   else if (cmd === 'modes') out = { skins: modeRows(), problems: modeProblems() };
   else if (cmd === 'mode') { if (!app) throw new Error('mode needs <app> [light | dark | system] [--system light|dark]'); out = arg ? setMode(appId(app), arg, scope, optArg(argv, '--system')) : mode(appId(app), scope); }
   else if (cmd === 'covers') { if (!app) throw new Error('covers needs a skin id'); out = covers(app); }
+  else if (cmd === 'map') out = mapOf(app, optArg(argv, '--slot'));
   else throw new Error(`unknown command ${cmd}`);
+  if (cmd === 'map' && argv.includes('--md')) { console.log(mapMarkdown(out)); return; }
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
   else if (cmd === 'coverage') { for (const r of out.rows) console.log(`${r.type.padEnd(16)} ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : ''}${r.elements.length ? `  ${r.elements.join('/')}` : ''}`); const s = out.summary; console.log(`${s.total} types · slot ${s.slot} · parts ${s.parts} · reference ${s.reference} · bundle ${s.bundle} · none ${s.none} · uncovered ${s.uncovered}`); }
   else if (cmd === 'covers') for (const c of out) console.log(`${c.covered ? '✓' : '·'} ${c.type.padEnd(16)} ${c.by.padEnd(10)} ${c.how.join('; ')}`);
+  else if (cmd === 'map') {
+    const rows = out.rows ?? out.slots;
+    const shown = (v) => (v === null || v === undefined ? '·' : typeof v === 'string' ? v : JSON.stringify(v)).slice(0, 48);
+    if (out.skin) console.log(`skin ${out.skin.id}: ${out.skin.filled} / ${out.skin.rows} rows filled`);
+    for (const r of rows) console.log(`${r.slot.padEnd(28)} ${r.kind.padEnd(9)} ${out.skin ? `${shown(r.value).padEnd(30)} ` : ''}${String(r.controls.join('+')).padEnd(14)} tokens ${String(r.tokens.length).padStart(3)}  settings ${String(r.settings.length).padStart(2)}  ${r.components.slice(0, 3).join(', ')}${r.lives?.hub ? `  → ${r.lives.hub}` : r.lives?.repo ? `  → ${r.lives.repo}` : ''}`);
+    if (!out.rows && !out.slotFilter) { for (const d of out.datasets) console.log(`dataset ${d.id.padEnd(28)} ${d.contract.padEnd(14)} hub ${d.hub ?? '-'}  store ${d.dataStore ?? '-'}  repo ${d.repo}`); for (const l of out.layouts) console.log(`layout  ${l.type.padEnd(28)} ${l.ids.length} assets · ${l.repo} · pick ${l.pick.field}`); const s = out.summary; console.log(`${s.slots} slots · ${s.datasets} datasets · ${s.layouts} layout types · ${s.tokens} tokens · ${s.settings} settings keys`); }
+  }
   else console.log(Array.isArray(out) ? out.map((x) => JSON.stringify(x)).join('\n') : JSON.stringify(out));
 }
 

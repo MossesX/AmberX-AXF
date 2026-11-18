@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "color-theme",
+  "id": "flagship-graphite-dark",
+  "name": "Flagship Graphite Dark",
+  "description": "Flagship Graphite, dark tone: neutral graphite surfaces with no blue cast and a cool cyan accent; the engineering-desk take on the flagship.",
+  "tags": [
+    "dark",
+    "flagship",
+    "graphite",
+    "cool"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0e0f11",
+      "surface": "#141518",
+      "surface2": "#1a1c20",
+      "surface3": "#23262b",
+      "text": "#e6e8eb",
+      "muted": "#9298a1",
+      "border": "#2a2d33",
+      "accent": "#3cc8e0",
+      "accentText": "#04222a",
+      "accentSoft": "rgba(60,200,224,0.14)",
+      "danger": "#ef6a6a",
+      "success": "#45c486",
+      "warning": "#e8b84a",
+      "info": "#7aa7ff",
+      "focus": "#3cc8e0",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

@@ -264,15 +264,26 @@ export function normalizeInstanceOverride(type, raw) {
   return out;
 }
 
-/** An instance's effective data: the active asset's data with the instance's overrides written over it (a copy). */
-export function chromeInstanceData(type, base, override) {
-  return { ...(isObj(base) ? base : {}), ...normalizeInstanceOverride(type, override) };
+/**
+ * Kind-wide field defaults (skin-slots@1, build flagship-professional-skin-covering-2): a skin's behaviour slot sets
+ * overflow / sticky / collapsible for a whole kind through `axf.chrome.<kind>.*` (the `*` instance, never a real one:
+ * `isChromeInstanceId('*')` is false, so the overrides list skips it). They sit between the asset's data and an
+ * instance's own overrides: asset → kind defaults → instance.
+ */
+export const CHROME_KIND_DEFAULTS_INSTANCE = '*';
+export const CHROME_KIND_DEFAULTS_KEY = (type) => CHROME_INSTANCE_KEY(type, CHROME_KIND_DEFAULTS_INSTANCE);
+
+/** An instance's effective data: the active asset's data, the kind-wide defaults, then the instance's overrides (a copy). */
+export function chromeInstanceData(type, base, override, kindDefaults) {
+  return { ...(isObj(base) ? base : {}), ...normalizeInstanceOverride(type, kindDefaults), ...normalizeInstanceOverride(type, override) };
 }
 
-/** The value one field has after an override, else in the base, else undefined. */
-export function chromeFieldValue(type, base, override, key) {
+/** The value one field has after an override, else the kind-wide default, else in the base, else the field's default. */
+export function chromeFieldValue(type, base, override, key, kindDefaults) {
   const o = normalizeInstanceOverride(type, override);
   if (key in o) return o[key];
+  const k = normalizeInstanceOverride(type, kindDefaults);
+  if (key in k) return k[key];
   if (isObj(base) && base[key] !== undefined && base[key] !== null) return base[key];
   return CHROME_FIELDS[type]?.find((f) => f.key === key)?.default;
 }

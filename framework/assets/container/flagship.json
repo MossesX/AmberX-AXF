@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "container",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "Flagship containers: cards with a divided header, medium padding and one quiet elevation step; every container folds open and closed from its header (remembered per device), so long settings and dashboards stay short.",
+  "tags": [
+    "flagship",
+    "professional",
+    "collapsible"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "divided",
+    "padding": "md",
+    "elevation": 1,
+    "collapsible": true
+  }
+}

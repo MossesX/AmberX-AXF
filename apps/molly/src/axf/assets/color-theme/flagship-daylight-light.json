@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "color-theme",
+  "id": "flagship-daylight-light",
+  "name": "Flagship Daylight",
+  "description": "Flagship Daylight, light tone: warm ivory surfaces, a deep indigo accent and soft shadows; the reading-friendly, daylight take on the flagship.",
+  "tags": [
+    "light",
+    "flagship",
+    "daylight",
+    "warm"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f6f4ef",
+      "surface": "#fffdf8",
+      "surface2": "#faf8f3",
+      "surface3": "#ece8df",
+      "text": "#1d1b17",
+      "muted": "#6a6458",
+      "border": "#e0dbcf",
+      "accent": "#3f4bd1",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(63,75,209,0.1)",
+      "danger": "#c23a32",
+      "success": "#2a8752",
+      "warning": "#a66b00",
+      "info": "#2f6cc0",
+      "focus": "#3f4bd1",
+      "shadow": "rgba(40,32,16,0.1)"
+    }
+  }
+}

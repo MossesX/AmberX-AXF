@@ -329,7 +329,7 @@ function cliEntries() {
   if (!existsSync(dir)) return [];
   const out = [];
   for (const f of readdirSync(dir).filter((n) => /\.(mjs|mts)$/.test(n) && !/\.test\./.test(n)).sort()) {
-    const src = readFileSync(join(dir, f), 'utf8').slice(0, 4000);
+    const src = readFileSync(join(dir, f), 'utf8').slice(0, 16000); // long headers (skins.mjs) close past 4000 characters
     const head = src.match(/\/\*\*([\s\S]*?)\*\//);
     const text = head ? head[1].split('\n').map((l) => l.replace(/^\s*\*\s?/, '')).join(' ') : '';
     const name = f.replace(/\.(mjs|mts)$/, '');

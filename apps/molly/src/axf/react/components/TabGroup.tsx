@@ -21,7 +21,7 @@
  * `id` is the row's settings id: stable, unique in the app (`<plugin>.<row>`), and what check-chrome-assets.mjs asks for.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
-import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
+import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_KIND_DEFAULTS_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
 import { INSTANCE_TOKENS_KEY, instanceTokenVars } from '../../core/engines/component-tokens.mjs';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
@@ -79,14 +79,15 @@ export function tabGroupDataFor(rt: AxfRuntime, id: string, hostAsset?: string):
   const pick = rt.settings.get(CHROME_INSTANCE_ASSET_KEY('tab-group', id));
   const pickId = typeof pick === 'string' && pick ? pick : hostAsset;
   const base = (pickId && rt.registry.get('tab-group', pickId)?.data) || rt.assetOrNull('tab-group')?.data || null;
-  return normalizeTabGroup(chromeInstanceData('tab-group', base as Partial<TabGroupData> | null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id))));
+  // skin-slots@1: the skin's kind-wide defaults (axf.chrome.tab-group.*: overflow, sticky, collapsible) sit under the row's own overrides
+  return normalizeTabGroup(chromeInstanceData('tab-group', base as Partial<TabGroupData> | null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id)), rt.settings.get(CHROME_KIND_DEFAULTS_KEY('tab-group'))));
 }
 
 /** The row's effective tab-group data, live (re-renders on its settings and on any asset swap). */
 export function useTabGroupData(id: string, hostAsset?: string): Required<TabGroupData> {
   const rt = useRuntime();
   useAxfState();
-  useSettingsKeys(rt, [CHROME_INSTANCE_KEY('tab-group', id), CHROME_INSTANCE_ASSET_KEY('tab-group', id)]);
+  useSettingsKeys(rt, [CHROME_INSTANCE_KEY('tab-group', id), CHROME_INSTANCE_ASSET_KEY('tab-group', id), CHROME_KIND_DEFAULTS_KEY('tab-group')]);
   return tabGroupDataFor(rt, id, hostAsset);
 }
 

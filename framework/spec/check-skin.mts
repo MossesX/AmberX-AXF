@@ -11,6 +11,11 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, overriddenSlots, restoreLookBackup, setLookSlot, setSkinColorTheme, skinChromeErrors, skinChromeSettings, skinColorOf, skinColorTheme, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_SCOPE_DEFAULT, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
+// skin-slots@1 (build flagship-professional-skin-covering-2)
+import { BEHAVIOR_ARM_KEY, BEHAVIOR_ARM_RANGE, BEHAVIOR_FEEDBACK_ENUMS, BEHAVIOR_OVERRIDES_KEY, MOTION_EASING_NAMES, MOTION_KEY, SKIN_SLOT_KEYS, behaviorTapKindKey, normalizeSkinMotion, normalizeSkinSlots, resolveSkinHooks, skinBehaviorSettings, skinDialogSettings, skinGridSettings, skinGridTokens, skinHookSettings, skinMotionStyle, skinSettingsChrome, skinSlotSettings, skinSlotStyleKeys, skinSlotsErrors, skinSlotsJsonSchemas } from '../core/engines/skin-slots.mjs';
+import { TAP_ARM_RANGE, TAP_KEYS, TAP_KINDS, tapKindKey } from '../core/engines/tapconfirm';
+import { BEHAVIOR_ENUMS, MOTION_EASE, withBehaviorOverrides } from '../core/engines/behavior';
+import { componentTokenError } from '../core/engines/component-tokens.mjs';
 import { AxfRuntime, HUB_SKIN_ONLY_KEY, type AppearanceSource } from '../core/runtime';
 import { isAppearanceSetting } from '../core/engines/designpackage';
 import { combineAppearanceChanges, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
@@ -505,6 +510,66 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors({ ...skin, chrome: chromeBad }), skinErrors({ ...skin, chrome: chromeBad }), 'build engine agrees on the chrome block');
   eq(skinErrors({ ...skin, chrome: consoleSkin.chrome }), [], 'a clean chrome block passes');
   eq(skinChromeSettings(consoleSkin.chrome), hd.chrome.settings, 'chrome settings = fixture');
+  // skin-slots@1 (build flagship-professional-skin-covering-2): motion, behaviour, hooks, grid, dialog, settings chrome
+  {
+    const sl = fx.skinSlots;
+    const good = { motion: { speed: { fast: 60, normal: 200 }, easing: { exit: 'spring', standard: 'cubic-bezier(0.2, 0, 0, 1)' }, reduced: 'system', chrome: { toolbar: { enter: 'rise', duration: 'fast', stagger: 20 }, dialog: { exit: 'fade' }, page: { enter: 'slide' } } }, behavior: { tapConfirm: { armMs: 2500, toolbar: 'on', 'context-menu': 'off' }, hover: 'lift', press: 'ripple', overflow: { 'tab-group': 'more' }, sticky: { 'tab-group': true }, collapse: { toolbar: true, 'nav-menu': false } }, hooks: { toolbar: { hooks: ['notes.pin', { id: 'ai.amberx.axf.gate:run', args: { confirm: true } }], drop: ['axf-toolbar'] }, 'grid-row': { hooks: ['builds.open'] } }, grid: { density: 'compact', rows: 2, header: 'boxed', zebra: true, lines: 'cells', sticky: true }, dialog: { variant: 'sheet', backdrop: 'blur', width: 560 }, settings: { page: 'developer', toolbar: 'chrome-toolbar-axf-console' } };
+    const bad = { motion: { speed: { fast: -1, warp: 3 }, easing: { exit: 'wobble' }, reduced: 'maybe', chrome: { nope: {}, toolbar: { enter: 'spin', stagger: 999 } } }, behavior: { tapConfirm: { armMs: 5, gizmo: 'on', toolbar: 'maybe' }, hover: 'x', overflow: { toolbar: 'wrap', 'tab-group': 'x' }, sticky: { banner: true }, collapse: { 'tab-group': 'yes' } }, hooks: { grid: {}, toolbar: { hooks: [7, { args: {} }], drop: ['Bad Id!'] } }, grid: { density: 'huge', rows: 9, header: 'x', zebra: 'y', lines: 'z', sticky: 1, extra: 1 }, dialog: { variant: 'x', width: 10, bogus: 1 }, settings: { page: 'Bad', gizmo: 'x' } };
+    eq(SKIN_SLOT_KEYS, sl.keys, 'the five slots are the contract');
+    eq(normalizeSkinSlots(good), sl.normalized, 'normalise = fixture');
+    eq(normalizeSkinSlots(bad), sl.dropped, 'malformed values are dropped, never a crash');
+    eq(normalizeSkinSlots({}), {}, 'nothing in = nothing out');
+    ok(sl.empty.sameAsBefore === true, 'an old skin normalises byte-identical to before the slots landed');
+    ok(!('motion' in normalizeSkin(skin)) && !('behavior' in normalizeSkin(skin)) && !('hooks' in normalizeSkin(skin)) && !('grid' in normalizeSkin(skin)) && !('dialog' in normalizeSkin(skin)) && !('settings' in normalizeSkin(skin)), 'no slot key appears on a skin that sets none');
+    eq(skinSlotsErrors(good), [], 'a good set of slots passes');
+    eq(skinSlotsErrors(bad), sl.errors.bad, 'bad values are refused = fixture');
+    ok(sl.errors.bad.length >= 30, 'every bad value above is named');
+    eq(skinErrors({ ...skin, ...good }), [], 'skinErrors: a skin with the slots passes');
+    eq(skinErrors({ ...skin, ...bad }), sl.errors.skinBad, 'skinErrors carries the slot errors');
+    eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors({ ...skin, ...bad }), skinErrors({ ...skin, ...bad }), 'build engine agrees on the slots');
+    eq((engine as unknown as { skinErrors(d: unknown): string[] }).skinErrors({ ...skin, ...good }), [], 'build engine passes the good slots');
+    for (const f of readdirSync(join(root, 'assets/skin'))) ok(skinErrors(JSON.parse(readFileSync(join(root, 'assets/skin', f), 'utf8')).data).length === 0, `stored skin ${f} still validates`);
+    eq(skinMotionStyle(good.motion), sl.motion.style, 'motion compiles to --fx-motion-* tokens and enter / exit attributes');
+    eq(skinMotionStyle(good.motion).vars['--fx-motion'], '200ms', 'the everyday speed moves --fx-motion itself');
+    eq(skinMotionStyle(good.motion, true), sl.motion.reduced, 'system + the device asking = every named duration 0ms, enters none');
+    eq(skinMotionStyle({ ...good.motion, reduced: 'never' }, true).attrs['data-fx-motion-reduced'], '0', 'never = the device is ignored');
+    eq(skinMotionStyle({}), { vars: {}, attrs: {} }, 'no motion = nothing (the :root defaults stand)');
+    eq(skinBehaviorSettings(good.behavior), sl.behavior.settings, 'behaviour lands on the settings layer = fixture');
+    eq(skinBehaviorSettings(good.behavior)['axf.toolbars.armMs'], 2500, 'tap-confirm arm time → axf.toolbars.armMs');
+    eq(skinBehaviorSettings(good.behavior)['axf.chrome.tab-group.*'], { overflow: 'more', sticky: true }, 'overflow / sticky → kind-wide chrome defaults');
+    eq(skinBehaviorSettings({}), {}, 'no behaviour = nothing');
+    eq(behaviorTapKindKey('toolbar'), tapKindKey('toolbar'), 'the toolbar tap key is tapconfirm.ts\'s');
+    for (const k of TAP_KINDS) eq(behaviorTapKindKey(k), tapKindKey(k), `tap key for ${k} agrees with tapconfirm.ts`);
+    eq(BEHAVIOR_ARM_KEY, TAP_KEYS.armMs, 'the arm key is tapconfirm.ts\'s');
+    eq(BEHAVIOR_ARM_RANGE, TAP_ARM_RANGE, 'the arm range is tapconfirm.ts\'s');
+    eq(BEHAVIOR_FEEDBACK_ENUMS, { hover: BEHAVIOR_ENUMS['interaction.hover'], press: BEHAVIOR_ENUMS['interaction.press'], focusRing: BEHAVIOR_ENUMS['interaction.focusRing'] }, 'feedback enums are the behaviour theme\'s');
+    eq(MOTION_EASING_NAMES, MOTION_EASE, 'named easings are the behaviour theme\'s curves');
+    eq(withBehaviorOverrides({}, skinBehaviorSettings(good.behavior)[BEHAVIOR_OVERRIDES_KEY]).interaction.hover, 'lift', 'the feedback overrides fold into the behaviour theme');
+    eq(withBehaviorOverrides({}, { interaction: { hover: 'nope' } }).interaction.hover, 'theme', 'a bad feedback override is ignored');
+    eq(resolveSkinHooks(good.hooks, { hook: (id) => id === 'notes.pin' || id === 'builds.open', zone: (id) => id === 'axf-toolbar' }), sl.hooks.resolved, 'hooks resolve against a registry = fixture');
+    eq(sl.hooks.resolved.unknown, ['toolbar:ai.amberx.axf.gate:run'], 'the one ref nobody registered is listed');
+    eq(resolveSkinHooks(good.hooks, {}).unknown.length, 4, 'with no registry every ref is unknown, never a crash');
+    eq(skinHookSettings(good.hooks), sl.hooks.settings, 'hooks → axf.hooks.<kind>');
+    eq(skinGridTokens(good.grid), sl.grid.tokens, 'grid → component-tokens@1 grid paths');
+    eq(skinGridSettings(good.grid, { '*': { 'grid.radius': 6 }, windows: { 'grid.opacity': 0.9 } }), sl.grid.settings, 'grid paths merge into axf.tokens.style over what is there');
+    eq(skinGridSettings({}, { '*': { 'grid.radius': 6 } }), {}, 'no grid slot = axf.tokens.style untouched');
+    for (const [p, v] of Object.entries(skinGridTokens(good.grid))) ok(componentTokenError('grid', p.slice('grid.'.length), v) === null, `grid path ${p} = ${v} is a value the grid family accepts`);
+    eq(skinDialogSettings(good.dialog), { 'axf.chrome.dialog': { variant: 'sheet', backdrop: 'blur', width: 560 } }, 'dialog chrome → axf.chrome.dialog');
+    eq(skinSettingsChrome(good.settings), { slots: { settings: 'developer' }, settings: { 'axf.chrome.settings.toolbar': 'chrome-toolbar-axf-console' } }, 'settings chrome → the settings slot and the per-kind picks');
+    eq(skinSlotSettings(good, { '*': { 'grid.radius': 6 } }), sl.all.settings, 'all five at once = fixture');
+    for (const k of Object.keys(sl.all.settings)) ok(isAppearanceSetting(k), `${k} counts as an appearance setting (the look document carries it)`);
+    for (const k of skinSlotStyleKeys()) ok(isAppearanceSetting(k), `${k} (read by compileStyles) counts as an appearance setting`);
+    ok(!isAppearanceSetting('axf.nav.collapsed'), 'the user\'s own nav fold stays a device setting');
+    eq(sl.composed.settingsPage, 'developer', 'composed look: the settings page the skin names is the settings slot');
+    eq(sl.composed.chromeWins, 'chrome-toolbar-windows', 'composed look: chrome.<kind>.interface beats settings.<kind>');
+    eq(sl.composed.gridMerged, { '*': { 'grid.radius': 6, ...skinGridTokens(good.grid) } }, 'composed look: the grid adds its paths to the skin\'s axf.tokens.style');
+    eq(sl.composed.motion, normalizeSkinMotion(good.motion), 'composed look: the motion slot rides axf.motion');
+    ok(!sl.composed.withoutSlots.some((k: string) => k === MOTION_KEY || k.startsWith('axf.hooks.') || k === 'axf.grid' || k === 'axf.chrome.dialog'), 'a skin without the slots composes no slot settings');
+    eq(Object.keys(skinSlotsJsonSchemas()), [...SKIN_SLOT_KEYS], 'the JSON Schema covers the five slots');
+    const schema = JSON.parse(readFileSync(join(root, 'schemas/json/skin.schema.json'), 'utf8'));
+    for (const k of SKIN_SLOT_KEYS) ok(schema.properties.data.properties[k], `skin.schema.json lists ${k}`);
+    ok(!schema.properties.data.required.some((k: string) => (SKIN_SLOT_KEYS as readonly string[]).includes(k)), 'no slot is required');
+  }
   eq(hd.chrome.settings, { 'axf.chrome.settings.toolbar': 'chrome-toolbar', 'axf.chrome.tab-group.builds': { style: 'pills', position: 'left' } }, 'the chrome block lands on the chrome-settings@1 keys');
   // resolution
   const resolve = {
@@ -754,3 +819,31 @@ console.log(`check-skin (runtime scopes): ${n} checks passed`);
   ok(['appearance.hubskin', 'appearance.lock'].every((id) => rt.actions.list().some((x) => x.id === id)), 'both actions registered');
 }
 console.log(`check-skin (skin from axHub only): ${n} checks passed`);
+
+// skin@1 extends (build flagship-professional-skin-covering-2, Nov 17 2026): a variant names the skin it extends and
+// sets only what differs; every reader folds the chain (child wins, objects merge key by key, no `extends` left).
+{
+  const { foldSkinExtends, skinExtendsErrors } = await import('../core/engines/skin');
+  const parent = { layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: { toolbar: 't', banner: 'b' }, motion: { speed: { fast: 90, normal: 150 }, reduced: 'system' }, hooks: { toolbar: { hooks: ['a'] } } };
+  const child = { extends: 'p', layoutTheme: 'l', colorTheme: 'c2', styleTheme: 's', assets: { banner: 'b2' }, motion: { speed: { fast: 70 } } };
+  const lookup = (id: string) => ({ p: parent, child, loop: { extends: 'loop', layoutTheme: 'x' } } as Record<string, unknown>)[id] ?? null;
+  const folded = foldSkinExtends(child, lookup);
+  eq(folded, { layoutTheme: 'l', colorTheme: 'c2', styleTheme: 's', assets: { toolbar: 't', banner: 'b2' }, motion: { speed: { fast: 70, normal: 150 }, reduced: 'system' }, hooks: { toolbar: { hooks: ['a'] } } }, 'extends: the child wins, objects merge key by key, the rest comes from the parent');
+  ok(!('extends' in folded), 'extends: the folded skin carries no extends');
+  eq(foldSkinExtends({ extends: 'nope', layoutTheme: 'x' }, lookup), { layoutTheme: 'x' }, 'extends: an unknown parent leaves the skin as it is');
+  eq(foldSkinExtends({ extends: 'loop', layoutTheme: 'y' }, lookup), { layoutTheme: 'y' }, 'extends: a cycle stops');
+  eq(foldSkinExtends(parent, lookup), parent, 'extends: a skin without it is byte-identical');
+  eq(skinExtendsErrors({ extends: 'Bad Id' }), ['data.extends must be a skin asset id'], 'extends: must be an id');
+  eq(skinExtendsErrors({ extends: 'me' }, 'me'), ['data.extends must name another skin'], 'extends: never itself');
+  ok(skinErrors({ ...child, extends: 3 }).includes('data.extends must be a skin asset id'), 'extends: skinErrors reports it');
+  // the flagship variants: whole skins once folded, differing from Flagship only in colour and motion
+  const read = (id: string) => JSON.parse(readFileSync(join(import.meta.dirname, '..', 'assets/skin', `${id}.json`), 'utf8')).data;
+  const flag = foldSkinExtends(read('flagship'), read);
+  for (const v of ['flagship-graphite', 'flagship-daylight']) {
+    const f = foldSkinExtends(read(v), read) as Record<string, unknown>;
+    ok(skinErrors(read(v)).length === 0, `${v}: valid as written`);
+    const differs = Object.keys({ ...flag, ...f }).filter((k) => JSON.stringify((flag as Record<string, unknown>)[k]) !== JSON.stringify(f[k])).sort();
+    eq(differs.filter((k) => !['colorTheme', 'colorThemes', 'motion', 'preview'].includes(k)), [], `${v}: shares every slot but colour and motion with Flagship`);
+  }
+}
+console.log(`check-skin (extends): ${n} checks passed`);

@@ -1,0 +1,50 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "typography",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship type scale: a compact body (0.9em), firm 1.32em page titles, a small upper-case eyebrow and a mono size for ids and code.",
+  "tags": [
+    "flagship",
+    "compact"
+  ],
+  "data": {
+    "scale": {
+      "2xs": 0.66,
+      "xs": 0.74,
+      "sm": 0.82,
+      "md": 0.9,
+      "lg": 1.06,
+      "xl": 1.28,
+      "2xl": 1.72
+    },
+    "headings": {
+      "h1": 1.32,
+      "h2": 1.12,
+      "h3": 0.92,
+      "h4": 0.84,
+      "tracking": -0.02
+    },
+    "weights": {
+      "body": 400,
+      "medium": 550,
+      "strong": 620
+    },
+    "line": {
+      "tight": 1.2,
+      "normal": 1.42,
+      "loose": 1.62
+    },
+    "eyebrow": {
+      "size": 0.66,
+      "weight": 600,
+      "tracking": 0.07,
+      "case": "upper"
+    },
+    "mono": {
+      "size": 0.88
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "layout",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship page shape shared by the console, axHub web and AmberX: menu bar under the banner, toolbar on top, a 232 px left navigation that becomes the bottom strip on a phone, no inspector, a slim status bar, and content up to 1120 px. Region pads are tokens, so the three shells line up exactly.",
+  "tags": [
+    "flagship",
+    "professional",
+    "console",
+    "axhub",
+    "amberx"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 232,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 1120,
+    "statusHeight": 24,
+    "regionGap": 0,
+    "mainPadTop": 2.2,
+    "mainPadX": 3.2,
+    "mainPadBottom": 5,
+    "phoneMainPadTop": 1.4,
+    "phoneMainPadX": 1.4,
+    "phoneMainPadBottom": 4,
+    "phoneNavItemMin": 64,
+    "phoneEdge": 8,
+    "slots": {
+      "menubar": [
+        "app-menu"
+      ],
+      "toolbar": [
+        "toolbar"
+      ],
+      "nav": [
+        "nav-menu"
+      ],
+      "overlay": [
+        "dialog",
+        "popup",
+        "context-menu"
+      ]
+    }
+  }
+}

@@ -1,0 +1,246 @@
+{
+ "$axf": "plan@1",
+ "id": "flagship-professional-skin",
+ "title": "Flagship professional skin (Fable Ultra Code)",
+ "status": "building",
+ "priority": "P1",
+ "category": "Framework > Skins",
+ "tags": [
+  "skin",
+  "fable",
+  "console",
+  "axhub-web",
+  "amberx-droid",
+  "one-app"
+ ],
+ "project": "amberx-axf",
+ "profile": "current",
+ "summary": "One professional skin that covers every surface of the framework (colours, style, layout, context / app / nav menus, tab groups, toolbars, banners and widgets, grids, dialogs, settings interfaces, animations, behaviour, hooks) and reaches every app (Dev Console, axHub web, AmberX) as one app. The skin format gains the slots it is missing (motion, behaviour, hooks, grid, dialog / settings chrome) and a generated skin-map@1 says where every dataset and layout lives.",
+ "goal": "A skin asset can describe everything on screen and everything the screen does, in every app, and a reader can see from one generated document which asset, dataset, layout, token and component each slot controls and where each dataset and layout lives.",
+ "why": "Brett, Nov 17 2026 21:30 (verbatim): \"build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts, every single thing. Professional. One app: axHub, console, AmberX all as one app.\"",
+ "owner": "Brett",
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Plan the skin in Plan Studio: Brett's verbatim words, the surface inventory and the app inventory (this plan).",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s2",
+   "text": "Audit skin@1 against the registry: skin-coverage over asset-types.json, each surface covered (slot / parts / reference / bundle) or not expressible yet; gap table in the report.",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s3",
+   "text": "Design the new skin@1 slots for the gaps: motion, behaviour, hooks, grid, dialog / settings chrome, as optional additive slots in asset-types.json.",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s4",
+   "text": "Regenerate the JSON Schemas and update the skin validators (TS reference and mjs): old skins pass unchanged, bad values for the new slots are refused.",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s5",
+   "text": "Skin engine: motion compiles to --fx-motion-* tokens, behaviour to settings-layer defaults (tap-confirm arm time, overflow, sticky); unset slots compile to today's defaults.",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s6",
+   "text": "Skin engine: hook refs per chrome kind resolved through hook@1, grid density / rows feed the DataGrid tokens, dialog / settings chrome picks the settings asset per kind (chrome-settings@1).",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s7",
+   "text": "skin-map@1: a generated read-only document saying which asset / dataset / layout each slot controls, which tokens it writes, which components read them, where each dataset and layout lives (hub path, repo path, data-store namespace). Generator engine + schema entry.",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s8",
+   "text": "Regenerate fixtures for skin, skin-coverage and skin-map; record the deferred Kotlin twin in PORTING.md; gen-fixtures, check-skin.mts and check-skin-coverage.mjs green.",
+   "model": "Fable",
+   "minutes": 8,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s9",
+   "text": "APPEARANCE-SOURCE.md: the new slots, the motion / behaviour / hook token families and the skin-map contract (migration note: additive, no stored skin changes).",
+   "model": "Fable",
+   "minutes": 6,
+   "phase": "Phase 1 (format)"
+  },
+  {
+   "id": "s10",
+   "text": "Author the Fable Ultra Code skin asset in framework/assets/skin (layout, light + dark colour themes, style theme, behaviour theme, every chrome slot, motion, behaviour, hooks, grid, dialog / settings chrome, parts for every widget, icon pack) and the assets it names that do not exist yet.",
+   "model": "Fable",
+   "minutes": 10,
+   "phase": "Phase 2 (the skin)"
+  },
+  {
+   "id": "s11",
+   "text": "Three UI Review choices (ui-choices@1): the skin in the console, in axHub web and in AmberX, one screenshot set each; predicted look + asset per choice.",
+   "model": "Opus",
+   "minutes": 10,
+   "phase": "Phase 2 (the skin)"
+  },
+  {
+   "id": "s12",
+   "text": "One app: set the skin as the hub default (defaultSkin) so the console, axHub web and AmberX stand on it; shared-assets bake + check; every app ships the skin.",
+   "model": "Opus",
+   "minutes": 8,
+   "phase": "Phase 2 (the skin)"
+  },
+  {
+   "id": "s13",
+   "text": "API parity: skins CLI / theme-manager routes / MCP / voice expose the new slots and the skin map (skins.mjs map, /skins/map, console_show target settings/appearance); say in the PR how each is reached.",
+   "model": "Opus",
+   "minutes": 10,
+   "phase": "Phase 2 (the skin)"
+  },
+  {
+   "id": "s14",
+   "text": "Settings → Appearance: a 'Where everything lives' tab drawn from skin-map@1 (slot → asset / dataset / layout / tokens / components / paths), with search and deep links.",
+   "model": "Opus",
+   "minutes": 10,
+   "phase": "Phase 2 (the skin)"
+  }
+ ],
+ "requirements": [
+  {
+   "text": "Colours: a light and a dark colour theme (skin-modes@1), every --fx-* colour token, palette, opacity tokens (opacityDisabled / Muted / Hover / Tint / Scrim / Glass)."
+  },
+  {
+   "text": "Style: style theme (shapes, type, radii, borders, shadows), typography / density / sizing scale assets, component token families (grid, tabs)."
+  },
+  {
+   "text": "Layout: layout theme (regions, toolbar position, nav position), dock layout, x layout, spacing (tight / compact / regular), hidden chrome."
+  },
+  {
+   "text": "Context menus: the context-menu asset per app, its targets, its chrome settings interface, tap-to-confirm, hooks on each target."
+  },
+  {
+   "text": "App menus: the app-menu asset (menus, items, order), its chrome settings interface, position."
+  },
+  {
+   "text": "Navigation menus: the nav-menu asset, nav style, position, display (icons / text / both), collapse defaults, hooks."
+  },
+  {
+   "text": "Tab groups: the tab-group asset per row (style, position, display, density, overflow, sticky, collapsible, rememberLast, rows), tabs component tokens (--fx-tab-*)."
+  },
+  {
+   "text": "Toolbars: the toolbar asset (page-toolbar@1 groups and items), variant, overflow, tap-to-confirm arm time, hooks, drop zones."
+  },
+  {
+   "text": "Banners and widgets: the banner asset and every attachable widget (clock, search bar, action button, logo, label, status, counter, progress, avatar, link, theme switch, spacer, divider, badge) styled through parts (box / text / icon / items)."
+  },
+  {
+   "text": "Grids: every grid and table (lib-datagrid .axf-grid, .fx-table): row density, rows per item, header style, zebra, group headers, sticky, through --fx-grid-* tokens."
+  },
+  {
+   "text": "Dialogs and pop-ups: the dialog and popup assets, open / close motion, backdrop, dialog chrome."
+  },
+  {
+   "text": "Settings interfaces: the settings asset per chrome kind (chrome-settings@1: tab-group, toolbar, banner, nav-menu, app-menu, context-menu) and the app's settings page asset (layout, header, search, levels)."
+  },
+  {
+   "text": "Animations: durations, easings, enter / exit per chrome kind, reduced motion, swatch / skin-switch / picker animations, speed and intensity."
+  },
+  {
+   "text": "Behaviour: tap-to-confirm arm time, hover / press / focus feedback, overflow modes, sticky / collapse defaults, long-press and double-tap times, confirm before delete, toasts, sound, vibration."
+  },
+  {
+   "text": "Hooks: hook refs per chrome kind (toolbar, tab group, nav, app menu, context menu, banner, grid row) and drop targets (lib-dnd zones), resolved through hook@1 / grid-hook@1."
+  },
+  {
+   "text": "Brand: icon pack, logo mark, animated logo, branding."
+  },
+  {
+   "text": "Where everything lives: a generated skin-map@1 that names, per slot, the asset / dataset / layout it controls, the tokens it writes, the components that read them, and the hub path, repo path and data-store namespace of every dataset and layout."
+  },
+  {
+   "text": "Apps: the Dev Console, axHub web and AmberX stand on the same skin (hub default), one look, one app."
+  }
+ ],
+ "acceptance": [
+  {
+   "text": "node framework/spec/check-skin-coverage.mjs: every registered asset type covered; every surface above maps to a slot, parts, reference, bundle or one of the new slots."
+  },
+  {
+   "text": "Old skins (framework/assets/skin/*.json) validate unchanged; a skin with bad motion / behaviour / hooks / grid / chrome values is refused by both validators with the same messages."
+  },
+  {
+   "text": "Unset new slots compile to today's defaults (byte-identical composed look for every stored skin)."
+  },
+  {
+   "text": "skin-map@1 is generated, read-only, and names a hub path, repo path and data-store namespace for every dataset and layout."
+  },
+  {
+   "text": "gen-fixtures, check-skin.mts, check-skin-coverage.mjs, check-theme, check-controls, check-chrome-assets green; PORTING.md records the Kotlin twin as deferred."
+  },
+  {
+   "text": "The skin is reachable through REST, MCP, CLI and voice the same way; the PR says how."
+  }
+ ],
+ "decisions": [
+  {
+   "text": "The new slots are optional and additive on skin@1 (no skin@2, no stored skin changes): a skin without them draws exactly as today."
+  },
+  {
+   "text": "Motion rides the behaviour theme's token family (--fx-motion, --fx-anim-*) and adds --fx-motion-* per chrome kind; behaviour lands on the settings layer (axf.toolbars.armMs, axf.chrome.<kind>.<instance> overflow / sticky), never in a component."
+  },
+  {
+   "text": "Hooks are references (ids) resolved by the hook engine at runtime; a skin never carries code."
+  },
+  {
+   "text": "One app = the three apps stand on the same hub default skin; apps stay their own by default (Nov 4 rule), the default skin is the floor."
+  }
+ ],
+ "risks": [
+  {
+   "text": "hook@1 / drop-target@1 were dropped from build toolbar-tap-confirm (s13-s18): the skin's hook slot references grid-hook@1 and lib-dnd zones today and keeps a placeholder for hook@1 when it lands."
+  },
+  {
+   "text": "Android: no Kotlin twin now (on hold); PORTING.md records the gap."
+  }
+ ],
+ "outOfScope": [
+  {
+   "text": "Kotlin / Android port of the new slots and the skin map."
+  },
+  {
+   "text": "The plugin designer and scoped plugin looks (separate build)."
+  }
+ ],
+ "links": [
+  {
+   "kind": "build",
+   "ref": "current:flagship-professional-skin-covering-2",
+   "label": "Build flagship-professional-skin-covering-2"
+  },
+  {
+   "kind": "doc",
+   "ref": "framework/spec/APPEARANCE-SOURCE.md",
+   "label": "APPEARANCE-SOURCE.md"
+  },
+  {
+   "kind": "doc",
+   "ref": "_claude/builds/reports/flagship-professional-skin-covering-2.md",
+   "label": "Build report"
+  }
+ ],
+ "body": "# Flagship professional skin (Fable Ultra Code)\n\nBrett, Nov 17 2026 21:30 (verbatim):\n\n> build a skin with Fable Ultra Code, really sick professional skin that covers everything: context menus, app menus, navigation menus, animations, colors, behavior, hooks, everything. Show me where the data sets go, the layouts, every single thing. Professional. One app: axHub, console, AmberX all as one app.\n\n## Surface inventory\n\n| Surface | Today (skin@1) | How the skin reaches it | Gap |\n| --- | --- | --- | --- |\n| Colours | `colorTheme` + `colorThemes { light, dark }` | slot (color-theme), palette, --fx-opacity-* | none |\n| Style | `styleTheme`, `assets.typography / density / sizing` | slot (style-theme, scale assets), component tokens grid / tabs on the style theme | none |\n| Layout | `layoutTheme`, `assets.dock-layout / xlayout`, `extras.spacing`, `extras.hidden` | slot (layout, dock-layout, xlayout) | none |\n| Context menus | `assets.context-menu`, `chrome.context-menu` | slot + chrome-settings@1 | hooks per target, enter / exit motion |\n| App menus | `assets.app-menu`, `chrome.app-menu` | slot + chrome-settings@1 | enter / exit motion |\n| Navigation menus | `assets.nav-menu`, `assets.nav-style`, `chrome.nav-menu` | slot + chrome-settings@1 | collapse defaults, hooks, motion |\n| Tab groups | `assets.tab-group`, `chrome.tab-group.instances` | slot + chrome-settings@1 + --fx-tab-* | overflow / sticky defaults per kind, motion |\n| Toolbars | `assets.toolbar`, `chrome.toolbar` | slot + chrome-settings@1 (page-toolbar@1) | tap-confirm arm time, hooks, drop zones, motion |\n| Banners + widgets | `assets.banner`, `parts.<widget>` | slot + parts (box / text / icon / items) | motion |\n| Grids | style theme `grid` map | --fx-grid-* (component-tokens@1) | row density, rows per item, header style as skin slots |\n| Dialogs + pop-ups | `assets.dialog`, `assets.popup`, behaviour `windows.*` | slot + behaviour theme | dialog chrome (frame, backdrop, close) as a skin slot |\n| Settings interfaces | `assets.settings`, `chrome.<kind>.interface` | slot + chrome-settings@1 | settings-interface layout per kind |\n| Animations | `behaviorTheme` motion group | --fx-motion, --fx-anim-*, data-fx-* attrs | durations / easings / enter-exit per chrome kind, reduced-motion on the skin |\n| Behaviour | `behaviorTheme` interaction / windows / feedback | behaviour theme | tap-confirm arm time, overflow modes, sticky / collapse defaults on the skin |\n| Hooks | none | none | hook@1 / grid-hook@1 / drop-target refs per chrome kind |\n| Brand | `iconPack`, `assets.branding` | reference (icon-pack, logo-mark, animated-logo) | none |\n| Where everything lives | none | none | skin-map@1 (generated, read-only) |\n\n## App inventory\n\n| App | Id | Skin reaches it through |\n| --- | --- | --- |\n| Dev Console | `axf-console` | app-look@1 `shared/settings/looks/axf-console.json`, hub default skin `defaultSkin` |\n| axHub web | `axhub-web` | app-look@1 `shared/settings/looks/axhub-web.json`, hub default skin |\n| AmberX | `amberx-droid` | app-look@1 `shared/settings/looks/amberx-droid.json`, hub default skin |\n| Molly | `molly` | app-look@1 `shared/settings/looks/molly.json`, hub default skin (ships the shared set too) |\n\nOne app: all of them stand on the same hub default skin (`defaultSkin` on appearance@1); each app's own edits are drawn over it.\n"
+}

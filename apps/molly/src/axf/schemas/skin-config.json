@@ -23,7 +23,7 @@
   "summary": {
     "categories": 48,
     "groups": 289,
-    "options": 1150,
+    "options": 1155,
     "limits": 4,
     "sections": [
       "Themes",
@@ -3393,7 +3393,12 @@
           "kind": "look",
           "options": [
             "spacing",
-            "settings"
+            "settings",
+            "motion",
+            "behavior",
+            "hooks",
+            "grid",
+            "dialog"
           ]
         }
       ],

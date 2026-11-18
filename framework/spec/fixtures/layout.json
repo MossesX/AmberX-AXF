@@ -603,6 +603,81 @@
       "--fx-content-max": "none"
     }
   },
+  "flagship": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "toolbar",
+        "nav",
+        "status"
+      ],
+      "areas": "\"menubar menubar\" \"toolbar toolbar\" \"nav main\" \"status status\"",
+      "columns": "232px minmax(0, 1fr)",
+      "rows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      },
+      "columnRegions": [
+        "nav",
+        "main"
+      ]
+    },
+    "vars": {
+      "--fx-layout-nav-width": "232px",
+      "--fx-layout-inspector-width": "0px",
+      "--fx-layout-content-max-width": "1120px",
+      "--fx-layout-status-height": "24px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 2.2)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 3.2)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 5)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 1.4)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 1.4)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 4)",
+      "--fx-layout-phone-nav-item-min": "64px",
+      "--fx-layout-phone-edge": "8px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "760px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
+      "--fx-layout-nav": "left",
+      "--fx-layout-toolbar-position": "top",
+      "--fx-layout-inspector": "none",
+      "--fx-layout-show-menubar": "1",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "1",
+      "--fx-layout-nav-orientation": "vertical",
+      "--fx-grid-areas": "\"menubar menubar\" \"toolbar toolbar\" \"nav main\" \"status status\"",
+      "--fx-grid-cols": "var(--fx-layout-nav-width) minmax(0, 1fr)",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "var(--fx-layout-content-max-width)"
+    }
+  },
   "focus-top": {
     "compiled": {
       "regions": [

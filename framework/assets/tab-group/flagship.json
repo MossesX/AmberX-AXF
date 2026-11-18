@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "tab-group",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "Flagship tab rows: compact chips with icon and text along the top, tabs that do not fit go under a More menu, the row sticks to the top of its panel, count badges on, last tab remembered per device.",
+  "tags": [
+    "flagship",
+    "chips",
+    "sticky",
+    "more"
+  ],
+  "data": {
+    "style": "chips",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "more",
+    "display": "both",
+    "divider": true,
+    "sticky": true,
+    "collapsible": false,
+    "closable": true,
+    "reorderable": true,
+    "badges": true,
+    "rememberLast": true
+  }
+}

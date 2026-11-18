@@ -1,0 +1,70 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "sizing",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "Flagship component sizes: compact on a desktop yet finger-sized on a phone: 2.4-line buttons and fields (about 32 px at 13 px type), 2.4-line icon buttons, 2.6-line list rows, small chips and tidy cards.",
+  "tags": [
+    "flagship",
+    "compact",
+    "touch-safe"
+  ],
+  "data": {
+    "button": {
+      "height": 2.4,
+      "padX": 1,
+      "font": 0.88,
+      "icon": 1
+    },
+    "iconButton": {
+      "size": 2.4
+    },
+    "chip": {
+      "height": 1.6,
+      "padX": 0.7,
+      "font": 0.76,
+      "radius": "pill"
+    },
+    "field": {
+      "height": 2.4,
+      "padX": 0.8,
+      "font": 0.9
+    },
+    "tab": {
+      "padY": 0.7,
+      "padX": 1.1,
+      "font": 0.88
+    },
+    "segment": {
+      "padY": 0.45,
+      "padX": 1,
+      "font": 0.84
+    },
+    "card": {
+      "pad": 1.2,
+      "headFont": 0.92,
+      "radius": "md"
+    },
+    "listRow": {
+      "minHeight": 2.6,
+      "padX": 1,
+      "metaFont": 0.8
+    },
+    "countStrip": {
+      "number": 1.2,
+      "label": 0.7,
+      "pad": 0.6
+    },
+    "table": {
+      "padY": 0.6,
+      "padX": 0.9,
+      "font": 0.86
+    },
+    "pageHead": {
+      "descriptionFont": 0.9,
+      "descriptionLines": 2
+    }
+  }
+}

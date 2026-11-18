@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "type": "style-theme",
+  "id": "flagship",
+  "name": "Flagship",
+  "description": "The flagship skin style: Inter at 13 px, compact density, 4 / 8 / 12 px corners, hairline borders, three quiet elevation steps, 140 ms motion, and every transparency (disabled, muted, hover, tint, scrim, glass) themed.",
+  "tags": [
+    "flagship",
+    "professional",
+    "compact"
+  ],
+  "data": {
+    "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Inter', system-ui, sans-serif",
+    "fontMono": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+    "fontSize": 13,
+    "radius": {
+      "sm": 4,
+      "md": 8,
+      "lg": 12
+    },
+    "space": 7,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 2px 4px var(--fx-shadow), 0 6px 16px var(--fx-shadow)",
+      "lg": "0 12px 36px var(--fx-shadow)"
+    },
+    "density": "compact",
+    "motion": 140,
+    "blur": 10,
+    "headingWeight": 600,
+    "tracking": -0.01,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.68,
+    "opacityHover": 0.07,
+    "opacityTint": 0.12,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.86,
+    "wrapGroups": true
+  }
+}

@@ -43,7 +43,8 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
   const state = useAxfState();
   const view = state.view;
   const narrow = 'data-fx-narrow' in rt.viewportAttrs();
-  const collapsed = rt.settings.get(NAV_COLLAPSED_KEY) === true && style.width.collapsible && !narrow;
+  // the user's own fold on this device, else the skin's default (skin-slots@1 behaviour.collapse.nav-menu); the fold button sets false, never clears
+  const collapsed = rt.navCollapsed() && style.width.collapsible && !narrow;
   const show = useCallback((it: NavItem) => rt.gate(it.requires) !== 'hide' && !(it.view && rt.takenByHost({ view: it.view })), [rt]);
 
   // pinned / hidden / ordered top-level items (the style's `items` group), then what can be shown
@@ -84,7 +85,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
   const leaveTimer = useRef(0);
 
   const pick = (it: NavItem) => {
-    if (collapsed && it.items?.length) rt.settings.clear(NAV_COLLAPSED_KEY);
+    if (collapsed && it.items?.length) rt.settings.set(NAV_COLLAPSED_KEY, false);
     if (it.items?.length) {
       const isOpen = openRef.current.includes(it.id);
       // a group with a page: the first tap opens both; tapping it again on its own page closes the sub menu
@@ -192,7 +193,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
           <div className="fx-nav__head">
             {header && <div className="fx-nav__header">{header}</div>}
             {style.width.collapsible && !narrow && (
-              <button type="button" data-axf-target="button:nav.fold" className="fx-iconbtn fx-nav__fold" title={collapsed ? 'Show labels' : 'Collapse to icons'} aria-label={collapsed ? 'Show labels' : 'Collapse to icons'} onClick={() => (collapsed ? rt.settings.clear(NAV_COLLAPSED_KEY) : rt.settings.set(NAV_COLLAPSED_KEY, true))}>
+              <button type="button" data-axf-target="button:nav.fold" className="fx-iconbtn fx-nav__fold" title={collapsed ? 'Show labels' : 'Collapse to icons'} aria-label={collapsed ? 'Show labels' : 'Collapse to icons'} onClick={() => rt.settings.set(NAV_COLLAPSED_KEY, !collapsed)}>
                 <Icon name={collapsed ? 'chevron-right' : 'chevron-left'} size={14} />
               </button>
             )}

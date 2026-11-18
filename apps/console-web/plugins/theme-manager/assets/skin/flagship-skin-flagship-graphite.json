@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "skin",
+ "id": "flagship-skin-flagship-graphite",
+ "name": "flagship-skin: Flagship Graphite (graphite and cyan)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Neutral graphite, cyan accent, dark first; quick flat motion (70 / 120 / 200 ms). Everything else from Flagship through extends.",
+ "tags": [
+  "ui-choice",
+  "choice-set:flagship-skin",
+  "choice-option:flagship-graphite"
+ ],
+ "data": {
+  "extends": "flagship-graphite",
+  "layoutTheme": "flagship",
+  "colorTheme": "flagship-graphite-dark",
+  "styleTheme": "flagship",
+  "assets": {}
+ }
+}

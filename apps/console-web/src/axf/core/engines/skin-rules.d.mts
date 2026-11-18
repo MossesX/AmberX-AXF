@@ -93,3 +93,8 @@ export function setScopeOverride(look: AppLookDocument, key: string, slot: strin
 export function scopeEntries(look: AppLookDocument | null): ({ key: string } & SkinScopeState)[];
 /** The skin in force at a place over the chain plugin → ui → app → global → default (`hubDefault` = the hub default skin pointer, the floor every app stands on). */
 export function resolveLookSkin(look: AppLookDocument | null, global: GlobalSkin | null | undefined, scope: Partial<SkinScope> | null | undefined, hubDefault?: GlobalSkin | null): ResolvedSkin;
+
+/** skin@1 `extends`: the skin's data with the chain it extends folded in (child wins, objects merge; no `extends` left). */
+export const SKIN_EXTENDS_DEPTH: number;
+export function foldSkinExtends<T = Record<string, unknown>>(data: T, lookup: (id: string) => unknown, seen?: string[]): T;
+export function skinExtendsErrors(raw: unknown, selfId?: string): string[];

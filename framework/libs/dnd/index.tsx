@@ -55,6 +55,10 @@ let trashHandler: ((p: DragPayload) => void) | null = null;
 
 /** Register a zone; returns the remover (use it as an effect cleanup). */
 export function registerZone(name: string, z: DropZone): () => void { zones.set(name, z); return () => { if (zones.get(name) === z) zones.delete(name); }; }
+/** Is a drop zone registered under this name? (skin-slots@1: a skin's `hooks.<kind>.drop` refs resolve against it.) */
+export function hasZone(name: string): boolean { return zones.has(name); }
+/** Every registered zone name (for the skin map and the hook resolver). */
+export function zoneNames(): string[] { return [...zones.keys()]; }
 /** What dropping on the trash can does for payloads without their own `onTrash`. */
 export function setTrashHandler(fn: ((p: DragPayload) => void) | null) { trashHandler = fn; }
 /** The live drag (null payload = nothing dragged). */
@@ -141,5 +145,8 @@ export const library: AxfWebLibrary = {
   label: 'Drag and drop',
   version: '0.1.0',
   provides: ['axf.dnd'],
-  register(rt) { configureDnd((rt.manifest as { libraries?: Record<string, { parts?: Record<string, unknown> }> }).libraries?.dnd); },
+  register(rt) {
+    configureDnd((rt.manifest as { libraries?: Record<string, { parts?: Record<string, unknown> }> }).libraries?.dnd);
+    rt.registerHookRegistry({ zone: hasZone }); // skin-slots@1: a skin's drop refs resolve against the zones on screen
+  },
 };

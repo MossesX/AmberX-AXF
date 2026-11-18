@@ -5166,6 +5166,22 @@
         "app/settings→action:app.settings"
       ]
     },
+    "flagship": {
+      "record": {
+        "id": "flagship",
+        "contract": "page-toolbar@1",
+        "wasOldShape": false,
+        "changed": true,
+        "changes": [
+          "scope: app"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "pages/home→action:nav:home",
+        "app/settings→action:app.settings"
+      ]
+    },
     "kiosk-lite": {
       "record": {
         "id": "kiosk-lite",
