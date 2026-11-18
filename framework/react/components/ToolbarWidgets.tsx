@@ -18,7 +18,7 @@
 import { useState } from 'react';
 import { BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, type BannerWidgetShow, type BannerWidgetSize } from '../../core/engines/bannerwidgets';
 import { TOOLBAR_SIDES as TOOLBAR_SIDES_LIST, WIDGET_TYPES } from '../../core/engines/widgets';
-import { TOOLBAR_APP_INSTANCE, findToolbarWidget, isShapeId, parseToolbarWidgetArgs, parseToolbarWidgetShapeArgs, type ResolvedToolbarWidget } from '../../core/engines/toolbar-widgets';
+import { TOOLBAR_APP_INSTANCE, findToolbarWidget, isShapeId, matchToolbarInstance, parseToolbarWidgetArgs, parseToolbarWidgetShapeArgs, type ResolvedToolbarWidget } from '../../core/engines/toolbar-widgets';
 import type { AxfRuntime } from '../../core/runtime';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -125,6 +125,14 @@ function runGrammar(rt: AxfRuntime, args: readonly string[]): boolean {
   const norm = args.length > 3 ? [args[0]!, args.slice(1, -1).join(':'), args[args.length - 1]!] : [...args];
   const p = parseToolbarWidgetArgs(norm);
   if (!p) return false;
+  // a toolbar named in words (voice: "main", "settings", "ui-review") → the instance on screen it means
+  const known = toolbarWidgetInstances(rt);
+  if (!known.includes(p.instance)) {
+    const onScreen = typeof document === 'undefined' ? [] : Array.from(document.querySelectorAll<HTMLElement>('[role="toolbar"][data-axf-toolbar]')).map((el) => ({ id: el.dataset.axfToolbar ?? '', label: el.getAttribute('aria-label') ?? '' }));
+    const hit = matchToolbarInstance([...onScreen, ...known.map((id) => ({ id, label: id }))], p.instance.replace(/-/g, ' '));
+    if (!hit) { rt.toast(`No toolbar "${p.instance}" on screen.`, 'warning', 'Toolbar widgets'); return false; }
+    p.instance = hit;
+  }
   const rows = toolbarWidgetRows(rt, p.instance);
   const w = findToolbarWidget(rows, p.name);
   if (!w) { rt.toast(`No widget "${p.name}" for that toolbar.`, 'warning', 'Toolbar widgets'); return false; }

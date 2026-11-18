@@ -532,6 +532,15 @@ def _strip(s: str) -> str:
     return re.sub(r"\s+(screen|page|view)$", "", s).strip()
 
 
+def _toolbar_words(s: str) -> str:
+    """A toolbar named in words → its settings id as the grammar takes it (the JS twin's toolbarWords)."""
+    return re.sub(r"[^a-z0-9._-]", "", re.sub(r"\s+", "-", _strip(s))) or "app"
+
+
+def _widget_intent(toolbar: str, widget: str, op: str) -> dict[str, Any]:
+    return {"verb": "press", "address": "function:toolbar.widget", "value": f"{_toolbar_words(toolbar)}:{_strip(widget).replace(':', ' ')}:{op}"}
+
+
 def _num(w: str) -> int | None:
     return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
 
@@ -568,6 +577,15 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2) == "on"}
+    # toolbar widgets (toolbar-widgets@1): the console action toolbar.widget:<toolbar>:<widget>:<op> (same as the JS twin)
+    if m := re.match(r"^(?:move|put)(?: the)? (.+?)(?: widget)? (?:to|at) the (start|end) of(?: the)? (.+?) toolbar$", p):
+        return _widget_intent(m.group(3), m.group(1), m.group(2))
+    if m := re.match(r"^(?:attach|add|put|pin)(?: the)? (.+?)(?: widget)? (?:to|on|onto)(?: the)? (.+?) toolbar(?: at the (start|end))?$", p):
+        return _widget_intent(m.group(2), m.group(1), m.group(3) or "add")
+    if m := re.match(r"^(?:detach|remove|take)(?: the)? (.+?)(?: widget)? (?:from|off)(?: of)?(?: the)? (.+?) toolbar$", p):
+        return _widget_intent(m.group(2), m.group(1), "remove")
+    if m := re.match(r"^make(?: the)? (.+?)(?: widget)? (?:on|in)(?: the)? (.+?) toolbar (icon only|icon|compact|normal|wide)$", p):
+        return _widget_intent(m.group(2), m.group(1), "icon" if m.group(3) == "icon only" else m.group(3))
     # page toolbars (page-toolbar@1): a button named with its toolbar, and what a toolbar holds
     if m := re.match(r"^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)? (?:on|in|of)(?: the)? (.+?) toolbar$", p):
         return {"verb": "press", "find": {"q": f"{_strip(m.group(2))} {_strip(m.group(1))}", "kinds": ["button"]}, "toolbar": _strip(m.group(2))}
