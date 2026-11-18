@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9048,
- "updatedAt": "2026-11-18T15:06:37.034Z",
+ "rev": 9049,
+ "updatedAt": "2026-11-18T15:08:19.305Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319193,8 +319193,8 @@
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T15:05:21.420Z",
-   "builtAt": "2026-11-18T15:05:21.420Z",
+   "updatedAt": "2026-11-18T15:07:09.923Z",
+   "builtAt": "2026-11-18T15:07:09.923Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319247,6 +319247,14 @@
     {
      "text": "Watchdog gave up on Every app gets its own locked default navigation menu and application menu (step s2): mossesx-max- hit its usage limit and every usable account (hulu0241, mossesx-max-) was tried: back in Pending for Brett.",
      "at": "2026-11-18T14:50:11.420Z"
+    },
+    {
+     "text": "Headless run axf-every-app-gets-own-locked-default--lenny: brief only · start 15.7K tokens ($0.05) · cost $4.02 · 106 turns · 6 tools, MCP none",
+     "at": "2026-11-18T15:06:42.106Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T15:07:09.923Z"
     }
    ],
    "approvals": [],
@@ -319275,14 +319283,14 @@
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-18T12:45:04.157Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "reason": "",
-     "stepsLeft": 6,
+     "at": "2026-11-18T15:06:41.919Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 2,
      "account": "mossesx-max-",
-     "session": "axf-every-app-gets-own-locked-default--sully",
-     "phase": ""
+     "session": "",
+     "phase": "Phase 1"
     },
     "split": {
      "at": "2026-11-18T12:28:57.431Z",
@@ -319292,7 +319300,7 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-18T12:39:46.830Z",
     "planned": {
@@ -319455,7 +319463,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -320253,7 +320261,7 @@
    "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
    "category": "",
    "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -320261,7 +320269,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T15:01:03.340Z",
+   "updatedAt": "2026-11-18T15:08:03.730Z",
    "builtAt": "",
    "notes": [
     {
@@ -320315,6 +320323,10 @@
     {
      "text": "Fable phase (s1–s5) done on claude/one-build-time-always-split-to-fill. For the Opus phase: framework/spec/check-build-split.mjs already exists (63 checks: ids, planner, validator, part/run machines, roll-up, combine readiness, main lock) with fixtures/build-split.json and is wired into .github/workflows/android.yml, so s6 extends it and s24's CI line is in place. The dispatcher already launches one build a tick and locks main (pipeline.mjs syncMainLock, CLI 'pipeline.mjs main-lock [release --force]'); s8 builds the part launcher on top of planParts(). API addresses for phase 2 are fixed in framework/spec/BUILD-SPLIT.md → API.",
      "at": "2026-11-18T14:59:23.218Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 22 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T15:08:03.730Z"
     }
    ],
    "approvals": [],
@@ -320342,7 +320354,16 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-18T15:07:47.021Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "reason": "phase-done",
+     "stepsLeft": 22,
+     "account": "",
+     "session": "",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-18T12:46:17.539Z",
      "by": "orchestrator",
@@ -320351,7 +320372,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "Session finished phase Phase 1 with 22 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -321060,7 +321081,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

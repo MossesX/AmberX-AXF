@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:07 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 08:10 UTC · `approval-pass-covers-every-call` note (all) · builds-live
-- 2026-11-18 08:59 UTC · `molly-console-commands` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `profile-filter-tables` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 15:05 UTC · `every-app-gets-own-locked-default` s6 done (all) · orchestrator
 - 2026-11-18 15:06 UTC · `every-app-gets-own-locked-default` s3 done, s4 done (all) · foreign-write
 - 2026-11-18 15:06 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
+- 2026-11-18 15:06 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
+- 2026-11-18 15:07 UTC · `every-app-gets-own-locked-default` note (all) · foreign-write
+- 2026-11-18 15:07 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-18 15:07 UTC · `every-app-gets-own-locked-default` → pending, note (all) · pipeline
+- 2026-11-18 15:08 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
