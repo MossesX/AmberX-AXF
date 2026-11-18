@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8690,
- "updatedAt": "2026-11-18T01:19:49.367Z",
+ "rev": 8691,
+ "updatedAt": "2026-11-18T01:20:05.164Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -263124,7 +263124,7 @@
      "action": "retry",
      "attempt": 1,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-18T01:19:55.690Z",
      "session": "axf-move-server-side-console-parts-onto-vps--lenny",
      "note": "session on hulu0241 was killed (exit 143): step s26 reset, slot released, back in the Queue (retry 1 of 3)."
     }
@@ -263801,7 +263801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
