@@ -121,8 +121,6 @@ export function ToolbarWidgetItem({ instance, w }: { instance: string; w: Resolv
       data-axf-toolbar-widget={w.key}
       data-axf-origin={w.origin}
       data-axf-target={toolbarWidgetAddress(instance, w.key)}
-      data-fx-ctx-target="toolbar-widget"
-      data-fx-ctx-payload={`${instance}|${w.key}`}
       {...toolbarWidgetItemProps(w)}
     >
       <ToolbarWidgetBody w={w} />

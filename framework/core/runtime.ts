@@ -1480,6 +1480,8 @@ export class AxfRuntime {
   /** Everything that ever attached itself to the banner while this page ran. */
   /** The widget under the last right-click or long-press on the banner (`type:id`), set by the context menu host. */
   contextBannerWidget: string | null = null;
+  /** The toolbar widget (`type:id`) under the pointer when the context menu opened (toolbar-widgets@1: Style… / Move / Detach), or null. */
+  contextToolbarWidget: string | null = null;
   private readonly bannerSeen = new Map<string, { type: string; id: string; origin: string; at: string; order: number; hint?: BannerWidgetHint }>();
 
   /** The setting holding the widget choices: one per app and form factor. A look setting, so it syncs through axHub. */

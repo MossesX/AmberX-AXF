@@ -106,7 +106,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const resolvedOf = (key: string) => Object.values(resolvedWidgets.sides).flat().find((r) => r.key === key);
   const drawWidget = (w: PlacedAttachment, i: number) => {
     const r = resolvedOf(w.key);
-    return arrange.item(w, i, `fx-banner__item fx-toolbar__widget${r?.shape ? ' fx-shaped' : ''}`, { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin, 'data-axf-target': toolbarWidgetAddress('app', w.key), 'data-fx-ctx-target': 'toolbar-widget', 'data-fx-ctx-payload': `app|${w.key}`, ...(r ? toolbarWidgetItemProps(r) : {}) }, r ? <ToolbarWidgetBody w={r} /> : <WidgetView type={w.type} id={w.id} host="toolbar" />);
+    return arrange.item(w, i, `fx-banner__item fx-toolbar__widget${r?.shape ? ' fx-shaped' : ''}`, { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin, 'data-axf-target': toolbarWidgetAddress('app', w.key), ...(r ? toolbarWidgetItemProps(r) : {}) }, r ? <ToolbarWidgetBody w={r} /> : <WidgetView type={w.type} id={w.id} host="toolbar" />);
   };
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;

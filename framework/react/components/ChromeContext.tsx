@@ -50,6 +50,7 @@ import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
 import { addDerivedTargets, type ControlTargetDef } from '../controlTargets';
+import { installToolbarWidgets } from './ToolbarWidgets';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -191,6 +192,8 @@ export function installChrome(rt: AxfRuntime): void {
   if (installed.has(rt)) return;
   installed.add(rt);
   rt.actions.withModule(FRAMEWORK_MODULE, () => {
+    // toolbar-widgets@1: Attach widget… / Style… / Move / Detach on every toolbar, and their actions
+    installToolbarWidgets(rt);
     const t = (v: unknown): ChromeType | null => (isChromeType(v) ? v : null);
     const inst = (type: ChromeType, v: unknown, ctx?: { payload?: unknown }) => instanceOf(type, (typeof v === 'string' && v) || (typeof ctx?.payload === 'string' ? ctx.payload : undefined)) || CHROME_APP_INSTANCE;
     rt.actions.register('chrome.settings', ([type, instance, tab], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_SETTINGS_DIALOG, { type: ty, instance: inst(ty, instance, ctx), ...(tab ? { tab } : {}) }); }, { label: 'Chrome settings (chrome.settings:<type>:<instance>[:look|behaviour|asset|interface])', params: true });
