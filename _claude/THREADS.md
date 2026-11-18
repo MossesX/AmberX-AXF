@@ -832,13 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:46 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `stop-auto-lander-committing-tracking` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `server-rule-done-means-merged-working` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `terminal-main-tab-streaming-console-s` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `auto-lander-settings-log-placeholder` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `remove-amberx-app-code-once-phone` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
 - 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
@@ -1232,6 +1225,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:49 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 00:49 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
 - 2026-11-18 00:49 UTC · `move-server-side-console-parts-onto-vps` PR #828 (all) · builds-live
+- 2026-11-18 00:19 UTC · `move-everything-axhub-web-console` s9 done (all) · orchestrator
+- 2026-11-18 00:50 UTC · `move-server-side-console-parts-onto-vps` s24 done, s25 done (all) · foreign-write
+- 2026-11-18 00:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 00:50 UTC · `flagship-professional-skin-covering-2` s26 done (all) · foreign-write
+- 2026-11-18 00:50 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, note (all) · foreign-write
+- 2026-11-18 00:50 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 00:50 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
 
 ## Token passes (log)
 
