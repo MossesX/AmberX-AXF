@@ -71,6 +71,7 @@
         ]
       }
     ],
-    "navStyle": true
+    "navStyle": true,
+    "builtFor": "app:molly"
   }
 }

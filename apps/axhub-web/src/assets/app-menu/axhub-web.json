@@ -31,7 +31,7 @@
           },
           {
             "id": "search",
-            "label": "Search everything\u2026",
+            "label": "Search everything…",
             "icon": "search",
             "action": "axhub.search",
             "shortcut": "Ctrl+K"
@@ -407,6 +407,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "app:axhub-web"
   }
 }

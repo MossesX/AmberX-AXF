@@ -682,6 +682,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "app:console-web"
   }
 }

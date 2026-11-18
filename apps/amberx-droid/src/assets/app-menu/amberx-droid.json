@@ -245,6 +245,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "app:amberx-droid"
   }
 }

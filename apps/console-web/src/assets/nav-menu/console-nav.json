@@ -129,6 +129,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "app:console-web"
   }
 }
