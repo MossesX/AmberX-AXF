@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8933,
- "updatedAt": "2026-11-18T12:38:20.640Z",
+ "rev": 8934,
+ "updatedAt": "2026-11-18T12:38:50.534Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318917,7 +318917,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:37:10.621Z",
+   "updatedAt": "2026-11-18T12:37:58.545Z",
    "builtAt": "",
    "notes": [
     {
@@ -318931,6 +318931,10 @@
     {
      "text": "Launch failed on mossesx-max-, hulu0241: worktree for every-app-gets-own-locked-default: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:37:10.621Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-, hulu0241: worktree for every-app-gets-own-locked-default: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:37:58.545Z"
     }
    ],
    "approvals": [],
@@ -319119,7 +319123,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319420,7 +319424,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:34:52.636Z",
+     "at": "2026-11-18T12:37:56.421Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -319552,12 +319556,49 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-18T12:33:23.845Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "one-build-time-always-split-split-id",
+   "title": "One build at a time, always split: split-ID gate, Splitting status, expandable queue row with live per-part badges",
+   "category": "",
+   "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. Every build is split into parts that can run in parallel without touching the same files; each part gets its own branch and slot (up to 4), merges current main first, then parts are combined into one branch, one CI run, one landing. 2) GATE: the VPS rejects any build start that lacks an orchestrator build ID AND a split ID proving it went through the orchestrator splitter; rejected starts go back to the orchestrator Failed tab with the reason. Rule shown on Gate & rules, on by default. 3) PENDING: shows one row per build. As soon as the orchestrator receives a pending build it auto-splits it; while splitting the row status reads Splitting with an animated split icon. 4) QUEUE: when split is done the build moves to the Queue as ONE expandable row. Expanded, it lists every part with its slot and a live animated status badge (waiting, building, testing, rebuilding, failed, done; animation only while actually working). The main row shows the overall status. 5) Once all parts are built it is sent on and the queue row keeps updating continuously (combining, running CI, merging, merged, live, Finished). Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and supersedes the 4-builds rule; coordinate with the server-gate build queued just before.",
+   "status": "pending",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T12:38:28.230Z",
+   "updatedAt": "2026-11-18T12:38:28.230Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1004
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
