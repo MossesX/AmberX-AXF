@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9134,
- "updatedAt": "2026-11-18T19:54:45.237Z",
+ "rev": 9135,
+ "updatedAt": "2026-11-18T19:58:02.945Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321768,7 +321768,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T19:51:35.914Z",
+   "updatedAt": "2026-11-18T19:57:55.426Z",
    "builtAt": "",
    "notes": [
     {
@@ -321805,20 +321805,20 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "hulu0241",
-    "session": "axf-urgent-all-data-to-postgres-builds-store--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-18T19:51:27.620Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
-    "dispatchedAt": "2026-11-18T19:51:27.620Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -321826,8 +321826,10 @@
      "at": "2026-11-18T14:46:58.838Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-18T19:51:27.620Z",
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -321848,12 +321850,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T19:57:55.426Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-18T14:45:31.829Z"
+     "updatedAt": "2026-11-18T19:57:56.448Z"
     },
     {
      "id": "s2",
