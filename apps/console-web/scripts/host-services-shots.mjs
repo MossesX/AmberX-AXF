@@ -7,11 +7,12 @@
  *   gate   the Breakroom with agent-swarm down on the host: the shared HostServiceGate note above the page
  *
  *   node scripts/host-services-shots.mjs <out-dir>        (build first: npm run build)
- *   HS_SHOTS_PORT=7098 · PW_CHROMIUM=<chromium path> · HS_TOOLBAR=<toolbar asset id> (the option being shown)
+ *   HS_SHOTS_PORT=<port> (default: a free one) · PW_CHROMIUM=<chromium path> · HS_TOOLBAR=<toolbar asset id> (the option being shown)
  */
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { mkdirSync } from 'node:fs';
+import { createServer } from 'node:net';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -20,7 +21,10 @@ const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = join(APP, '../..');
 const OUT = process.argv[2];
 if (!OUT) { console.error('usage: node scripts/host-services-shots.mjs <out-dir>'); process.exit(2); }
-const PORT = Number(process.env.HS_SHOTS_PORT) || 7098;
+// a free port of our own unless one is named: other checkouts leave `vite preview` servers on the usual ports, and
+// shooting one of them would picture another branch's console
+const freePort = () => new Promise((res, rej) => { const s = createServer(); s.once('error', rej); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => res(port)); }); });
+const PORT = Number(process.env.HS_SHOTS_PORT) || await freePort();
 let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }
 if (!playwright) { console.error('playwright not found'); process.exit(2); }
@@ -45,12 +49,17 @@ const DOWN = { $axf: 'host-service-list@1', at: at(23), downSince: at(23), down:
   services: SERVICES.map((s) => ({ ...s, status: 'unknown', since: at(23), reason: 'the host API cannot be reached', code: 'host_service_down', reachable: false, health: null, heartbeat: null, lastRun: null })) };
 const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 
-const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: process.env.HS_SHOTS_DEBUG ? 'inherit' : 'ignore' });
-process.on('exit', () => { try { server.kill('SIGTERM'); } catch { /* gone */ } });
+const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, detached: true, stdio: process.env.HS_SHOTS_DEBUG ? 'inherit' : 'ignore' });
+// npx starts vite as a child: stop the whole group, or a preview server is left behind on every run
+const stopServer = () => { try { process.kill(-server.pid, 'SIGTERM'); } catch { /* gone */ } };
+let exited = null;
+server.on('exit', (code) => { exited = code ?? 'signal'; });
+process.on('exit', stopServer);
 let browser;
 try {
   let up = false;
-  for (let i = 0; i < 120 && !up; i++) { try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { /* not yet */ } if (!up) await sleep(500); }
+  for (let i = 0; i < 120 && !up; i++) {
+    if (exited !== null) throw new Error(`vite preview exited (${exited}): is port ${PORT} taken?`); try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { /* not yet */ } if (!up) await sleep(500); }
   if (!up) throw new Error(`vite preview on :${PORT} (is dist/ built?)`);
   browser = await playwright.chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
   mkdirSync(OUT, { recursive: true });
@@ -71,26 +80,39 @@ try {
         return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'offline (shots)' }) });
       });
       await page.goto(`http://127.0.0.1:${PORT}/`);
-      await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 30_000 });
+      await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 90_000 });
       const run = (cmd) => page.evaluate((c) => window.axfConsoleControl(c), cmd);
+      // a fresh profile loads every plugin once to learn its shape: wait until this one is registered
+      let known = false;
+      for (let i = 0; i < 150 && !known; i++) { known = !!(await run({ verb: 'state', address: 'plugin:ai.amberx.axf.console.host-services' })).ok; if (!known) await sleep(1000); }
+      if (!known) say(`${scene} ${device}: the host-services plugin never registered`);
       if (tag !== 'host-services') say(`toolbar option ${tag}: ${JSON.stringify(await run({ verb: 'set', address: `setting:axf.chrome.toolbar.host-services.asset`, value: tag }).catch((e) => String(e))).slice(0, 160)}`);
       if (scene === 'gate') {
         await run({ verb: 'open', address: 'view:agent-swarm' });
-        await page.waitForSelector('[data-host-service-down="agent-swarm"]', { timeout: 15_000 }).catch((e) => say(`gate: ${e.message.split('\n')[0]}`));
+        await page.waitForSelector('[data-host-service-down="agent-swarm"]', { timeout: 60_000 }).catch((e) => say(`gate: ${e.message.split('\n')[0]}`));
       } else {
-        const r = await run({ verb: 'open', address: 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=host-services' });
-        say(`${scene} ${device}: open → ${JSON.stringify(r).slice(0, 160)}`);
-        await page.waitForSelector('[data-axf-target="view:host-services"]', { timeout: 15_000 }).catch((e) => say(`view: ${e.message.split('\n')[0]}`));
+        // the deep link first; when the settings page (list layout) does not follow it, press the same rows a user
+        // would: Plugins, then Host services. On a busy host the sub-tab can take a while to be listed.
+        let r;
+        for (let i = 0; i < 20; i++) { r = await run({ verb: 'open', address: 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=host-services' }); if (r.ok) break; await sleep(3000); }
+        const onView = () => page.locator('[data-axf-target="view:host-services"]').count();
+        await sleep(1500);
+        if (!(await onView())) {
+          await page.locator('.axf-settings__navlist button', { hasText: /^Plugins/ }).first().click({ timeout: 30_000 }).catch((e) => say(`plugins row: ${e.message.split('\n')[0]}`));
+          await page.locator('.axf-settings__navlist--subs button', { hasText: /^Host services/ }).first().click({ timeout: 30_000 }).catch((e) => say(`host-services row: ${e.message.split('\n')[0]}`));
+        }
+        say(`${scene} ${device}: open → ${JSON.stringify(r).slice(0, process.env.HS_SHOTS_DEBUG ? 4000 : 160)}`);
+        await page.waitForSelector('[data-axf-target="view:host-services"]', { timeout: 60_000 }).catch((e) => say(`view: ${e.message.split('\n')[0]}`));
         if (scene === 'list') await page.locator('[data-axf-target="view:host-services"] [aria-expanded="false"]').nth(4).click({ timeout: 4000 }).catch((e) => say(`expand: ${e.message.split('\n')[0]}`));
       }
       await sleep(900);
       const file = join(OUT, `host-services-${scene}${tag === 'host-services' ? '' : `-${tag}`}-${device}.png`);
-      await page.screenshot({ path: file, fullPage: !mobile });
+      await page.screenshot({ path: file, fullPage: !mobile, timeout: 120_000 });
       shots.push(file);
       await ctx.close();
     }
   }
   console.log(shots.join('\n'));
   await browser.close(); browser = null;
-  server.kill('SIGTERM'); process.exit(0);
+  stopServer(); process.exit(0);
 } catch (e) { console.error(e.message); process.exitCode = 1; } finally { await browser?.close(); }

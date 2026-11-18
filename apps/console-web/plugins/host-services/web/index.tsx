@@ -14,7 +14,7 @@
  * tools (plugin commands), the CLI (`axf host …`) and voice (host.status / host.restart / host.rollback) use.
  */
 import { useState } from 'react';
-import { Button, Note, PageToolbar, SelectField, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
+import { Button, Note, PageToolbar, SelectField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -99,22 +99,28 @@ function Detail({ s }: { s: HostServiceState }) {
   );
 }
 
-function useColumns(): GridColumn<HostServiceState>[] {
+/** Fixed token widths: every row's grid lines up with the head (fr tracks size from each row's own content). */
+function useColumns(narrow = false): GridColumn<HostServiceState>[] {
+  const w = (wide: number, phone: number) => `calc(var(--fx-space) * ${narrow ? phone : wide})`;
   return [
-    { id: 'name', label: 'Service', width: 'minmax(calc(var(--fx-space) * 10), 2fr)', fixed: true, sortable: true, sortValue: (s) => s.id,
+    { id: 'name', label: 'Service', width: w(30, 18), fixed: true, sortable: true, sortValue: (s) => s.id,
       render: (s) => <span className="axp-host-services__name"><b>{s.manifest?.title || s.id}</b><span className="fx-small fx-muted">{s.id} · {s.unit}</span></span> },
-    { id: 'status', label: 'Status', width: 'minmax(calc(var(--fx-space) * 7), 1fr)', sortable: true, sortValue: (s) => s.status,
+    { id: 'status', label: 'Status', width: w(11, 9), sortable: true, sortValue: (s) => s.status,
       render: (s) => <span className="axp-host-services__name"><HostStatusChip s={s} /><span className="fx-small fx-muted">{s.since ? `for ${since(s.since)}` : ''}</span></span> },
-    { id: 'mode', label: 'Mode', width: 'minmax(calc(var(--fx-space) * 6), 1fr)', sortable: true, sortValue: (s) => s.mode ?? '', render: (s) => <span className="fx-small">{s.mode ?? 'container'}</span> },
-    { id: 'heartbeat', label: 'Heartbeat', width: 'minmax(calc(var(--fx-space) * 6), 1fr)', render: (s) => <span className="fx-small fx-muted">{s.heartbeat?.at ? `${since(s.heartbeat.at)} ago` : s.kind === 'tick' ? 'tick' : '—'}</span> },
-    { id: 'last', label: 'Last run', width: 'minmax(calc(var(--fx-space) * 9), 2fr)', render: (s) => <span className="fx-small fx-muted" title={s.lastRun?.message}>{s.lastRun ? `${s.lastRun.result} · ${since(s.lastRun.at)} ago` : '—'}</span> },
-    { id: 'actions', label: 'Actions', width: 'minmax(calc(var(--fx-space) * 14), 2fr)', render: (s) => <Row s={s} /> },
+    { id: 'mode', label: 'Mode', width: w(9, 7), sortable: true, sortValue: (s) => s.mode ?? '', render: (s) => <span className="fx-small">{s.mode ?? 'container'}</span> },
+    { id: 'heartbeat', label: 'Heartbeat', width: w(11, 11), render: (s) => <span className="fx-small fx-muted">{s.heartbeat?.at ? `${since(s.heartbeat.at)} ago` : s.kind === 'tick' ? 'tick' : '—'}</span> },
+    { id: 'last', label: 'Last run', width: w(15, 15), render: (s) => <span className="fx-small fx-muted" title={s.lastRun?.message}>{s.lastRun ? `${s.lastRun.result} · ${since(s.lastRun.at)} ago` : '—'}</span> },
+    { id: 'actions', label: 'Actions', width: w(22, 14), render: (s) => <Row s={s} /> },
   ];
 }
 
 export function HostServicesView({ compact = false }: { compact?: boolean }) {
   const { list, error } = useHostServices();
   const [expanded, setExpanded] = useState<string[]>([]);
+  // a phone gets the short column set (service, status, mode, actions); the rest is in each row's detail
+  const rt = useRuntime(); useAxfState();
+  const phone = 'data-fx-narrow' in rt.viewportAttrs();
+  const narrow = compact || phone;
   const rows = list?.services ?? [];
   const counts = list?.counts ?? {};
   usePublishPageState(VIEW, { services: rows.length, down: (counts.down ?? 0) + (counts.unknown ?? 0), hostApiUp: !list?.down });
@@ -127,7 +133,7 @@ export function HostServicesView({ compact = false }: { compact?: boolean }) {
       return { restarted: down.map((r) => r.id) };
     },
   });
-  const cols = useColumns();
+  const cols = useColumns(phone);
   return (
     <div className="axp-host-services" data-axf-target={compact ? 'panel:host-services.syscheck' : 'view:host-services'}>
       {!compact && <PageToolbar view={VIEW} />}
@@ -139,9 +145,9 @@ export function HostServicesView({ compact = false }: { compact?: boolean }) {
         {(['up', 'degraded', 'down', 'unknown'] as const).filter((k) => counts[k]).map((k) => <span key={k} className="fx-small">{counts[k]} {k}</span>)}
       </div>
       <DataGrid<HostServiceState>
-        id="host-services.grid" label="Host services" compact={compact}
+        id="host-services.grid" label="Host services" compact={narrow}
         groups={[{ id: 'all', title: `${rows.length} service${rows.length === 1 ? '' : 's'}`, rows, groups: [], fixed: true }]}
-        columns={compact ? cols.filter((c) => ['name', 'status', 'mode', 'actions'].includes(c.id)) : cols}
+        columns={narrow ? cols.filter((c) => ['name', 'status', 'mode', 'actions'].includes(c.id)) : cols}
         rowId={(s) => s.id} rowLabel={(s) => s.manifest?.title || s.id} hidden={[]}
         rowCtx={(s) => ({ target: `row:${s.id}` })}
         expanded={expanded} onToggleExpand={(rid) => setExpanded((e) => (e.includes(rid) ? e.filter((x) => x !== rid) : [...e, rid]))}
