@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8649,
- "updatedAt": "2026-11-18T01:06:24.139Z",
+ "rev": 8650,
+ "updatedAt": "2026-11-18T01:06:45.634Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288523,7 +288523,7 @@
      "action": "requeue",
      "attempt": 0,
      "account": "hulu0241",
-     "notified": "",
+     "notified": "2026-11-18T01:05:52.585Z",
      "session": "",
      "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -289251,7 +289251,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
