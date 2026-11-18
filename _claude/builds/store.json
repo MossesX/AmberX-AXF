@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8851,
- "updatedAt": "2026-11-18T05:38:53.153Z",
+ "rev": 8852,
+ "updatedAt": "2026-11-18T05:44:32.529Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -316970,7 +316970,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -316978,7 +316978,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:35:21.460Z",
+   "updatedAt": "2026-11-18T05:43:55.345Z",
    "builtAt": "",
    "notes": [
     {
@@ -317040,6 +317040,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T05:35:21.460Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T05:43:55.345Z"
     }
    ],
    "approvals": [],
@@ -317068,7 +317072,7 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-18T05:34:51.140Z",
+     "at": "2026-11-18T05:43:43.825Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
@@ -317394,7 +317398,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
