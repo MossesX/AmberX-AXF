@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T05:13:27.735Z",
+ "updatedAt": "2026-11-18T05:14:19.138Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -191203,7 +191203,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -191211,7 +191211,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:13:02.426Z",
+   "updatedAt": "2026-11-18T05:13:32.534Z",
    "builtAt": "",
    "notes": [
     {
@@ -191267,8 +191267,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T05:13:32.534Z",
      "note": "",
      "uid": "st-mwlgr9vm01j4ye",
      "createdAt": "2026-11-18T01:49:40.384Z"
