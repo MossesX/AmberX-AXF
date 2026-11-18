@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8915,
- "updatedAt": "2026-11-18T12:23:47.443Z",
+ "rev": 8916,
+ "updatedAt": "2026-11-18T12:24:16.537Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318047,7 +318047,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:22:31.441Z",
+   "updatedAt": "2026-11-18T12:23:58.636Z",
    "builtAt": "",
    "notes": [
     {
@@ -318057,6 +318057,10 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:22:31.441Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:23:58.636Z"
     }
    ],
    "approvals": [],
@@ -318081,11 +318085,20 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "launch failed: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-18T12:23:45.055Z",
+     "why": "subscription account hulu0241"
+    },
+    "tried": [
+     "hulu0241",
+     "mossesx-max-"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -318192,7 +318205,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -318385,7 +318398,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:23:38.942Z",
+   "updatedAt": "2026-11-18T12:24:06.930Z",
    "builtAt": "",
    "notes": [
     {
@@ -318398,11 +318411,15 @@
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
-     "at": "2026-11-18T12:23:38.942Z"
+     "at": "2026-11-18T12:22:55.932Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:24:06.930Z"
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
-     "at": "2026-11-18T12:22:55.932Z"
+     "at": "2026-11-18T12:23:38.942Z"
     }
    ],
    "approvals": [],
@@ -318419,18 +318436,18 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": null,
-    "split": {
-     "at": "2026-11-18T12:23:38.942Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 4,
-     "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
-    },
+    "split": null,
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "launch failed: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-18T12:23:45.055Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [
      "hulu0241",
      "mossesx-max-"
@@ -318440,99 +318457,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwm3ek72012sf7",
-     "title": "",
-     "text": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T12:23:38.942Z",
-     "updatedAt": "2026-11-18T12:23:38.942Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwm3ek7302408p",
-     "title": "",
-     "text": "Only then does it go back to the orchestrator, which marks it Failed straight away.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T12:23:38.942Z",
-     "updatedAt": "2026-11-18T12:23:38.942Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwm3ek7303mmp5",
-     "title": "",
-     "text": "FYI notification to Brett on each attempt.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T12:23:38.942Z",
-     "updatedAt": "2026-11-18T12:23:38.942Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwm3ek7304emkg",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/vps-never-gives-up-fix-land-every-build.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/vps-never-gives-up-fix-land-every-build.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T12:23:38.942Z",
-     "updatedAt": "2026-11-18T12:23:38.942Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -318541,12 +318466,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-18T12:23:38.942Z",
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

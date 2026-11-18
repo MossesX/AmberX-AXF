@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:23:47.443Z",
+ "updatedAt": "2026-11-18T12:24:16.537Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192040,7 +192040,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:22:31.441Z",
+   "updatedAt": "2026-11-18T12:23:58.636Z",
    "builtAt": "",
    "notes": [
     {
@@ -192050,6 +192050,10 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:22:31.441Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:23:58.636Z"
     }
    ],
    "approvals": [],
@@ -192252,7 +192256,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:23:38.942Z",
+   "updatedAt": "2026-11-18T12:24:06.930Z",
    "builtAt": "",
    "notes": [
     {
@@ -192265,96 +192269,20 @@
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
-     "at": "2026-11-18T12:23:38.942Z"
+     "at": "2026-11-18T12:22:55.932Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:24:06.930Z"
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
-     "at": "2026-11-18T12:22:55.932Z"
+     "at": "2026-11-18T12:23:38.942Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": [
-    {
-     "id": "s1",
-     "text": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm3ek72012sf7",
-     "createdAt": "2026-11-18T12:23:38.942Z"
-    },
-    {
-     "id": "s2",
-     "text": "Only then does it go back to the orchestrator, which marks it Failed straight away.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm3ek7302408p",
-     "createdAt": "2026-11-18T12:23:38.942Z"
-    },
-    {
-     "id": "s3",
-     "text": "FYI notification to Brett on each attempt.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm3ek7303mmp5",
-     "createdAt": "2026-11-18T12:23:38.942Z"
-    },
-    {
-     "id": "s4",
-     "text": "Tests green, report _claude/builds/reports/vps-never-gives-up-fix-land-every-build.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/vps-never-gives-up-fix-land-every-build.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm3ek7304emkg",
-     "createdAt": "2026-11-18T12:23:38.942Z"
-    }
-   ]
+   "steps": []
   }
  ]
 }

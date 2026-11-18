@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:40 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:39 UTC · `watchdog-plugin-owns-every-vps` → queued, note (all) · console
 - 2026-11-18 01:40 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · orchestrator
 - 2026-11-18 01:41 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:41 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · console
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:22 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
 - 2026-11-18 12:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · pipeline
 - 2026-11-18 12:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
+- 2026-11-18 12:23 UTC · `plan-studio-2-open-button-working-deep` note (all) · pipeline
+- 2026-11-18 12:24 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · pipeline
 
 ## Token passes (log)
 
