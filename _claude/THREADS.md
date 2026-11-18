@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:37 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · foreign-write
-- 2026-11-18 00:38 UTC · `fix-ci-red-main-watchdog-test-vs-done` → running, note (all) · pipeline
-- 2026-11-18 00:38 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · orchestrator
 - 2026-11-18 00:38 UTC · `fix-ci-red-main-watchdog-test-vs-done` branch claude/fix-ci-red-main-watchdog-test-vs-done (all) · pipeline
 - 2026-11-18 00:39 UTC · `auto-lander-never-wait-missing-ui-review` s5 done (all) · orchestrator
 - 2026-11-18 00:39 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:47 UTC · `one-true-source-for-every-setting` s5 done, s6 done (all) · foreign-write
 - 2026-11-18 01:47 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` → landing, note (all) · pipeline
+- 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
+- 2026-11-18 01:48 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
+- 2026-11-18 01:48 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 
 ## Token passes (log)
 

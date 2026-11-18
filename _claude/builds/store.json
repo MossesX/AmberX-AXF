@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8801,
- "updatedAt": "2026-11-18T01:49:09.181Z",
+ "rev": 8802,
+ "updatedAt": "2026-11-18T01:49:29.105Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27478,7 +27478,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -89746,7 +89749,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -96794,7 +96800,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -105602,7 +105611,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -118495,7 +118507,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -118777,7 +118792,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -119174,7 +119192,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -132889,7 +132910,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -135471,7 +135495,10 @@
     "pickedAt": "2026-11-14T22:45:32.880Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -135904,7 +135931,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -141915,7 +141945,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -142354,7 +142387,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -142938,7 +142974,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -144343,7 +144382,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -146680,7 +146722,10 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -146910,7 +146955,10 @@
     "pickedAt": "2026-11-17T19:06:31.477Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -148718,7 +148766,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -150927,7 +150978,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -151144,7 +151198,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -151711,7 +151768,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -151907,7 +151967,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152124,7 +152187,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152345,7 +152411,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152565,7 +152634,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152790,7 +152862,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153019,7 +153094,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153255,7 +153333,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153488,7 +153569,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153729,7 +153813,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153979,7 +154066,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -154637,7 +154727,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -155451,7 +155544,10 @@
     "pickedAt": "2026-11-15T01:24:21.442Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-molly-gap-axhub-cors",
@@ -155694,7 +155790,10 @@
     "pickedAt": "2026-11-16T16:47:14.644Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -155933,7 +156032,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156185,7 +156287,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156371,7 +156476,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156574,7 +156682,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156858,7 +156969,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157052,7 +157166,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157259,7 +157376,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157457,7 +157577,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157900,7 +158023,10 @@
     "pickedAt": "2026-11-14T23:56:20.868Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-axhub-36-pull-main-in-failed",
@@ -158693,7 +158819,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -158893,7 +159022,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -159119,7 +159251,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -159465,7 +159600,10 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159648,7 +159786,10 @@
     "pickedAt": "2026-11-13T10:43:09.520Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159792,7 +159933,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159894,7 +160038,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160040,7 +160187,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160235,7 +160385,10 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -160366,7 +160519,10 @@
     "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160535,7 +160691,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160708,7 +160867,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -160822,7 +160984,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168592,7 +168757,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168769,7 +168937,10 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168883,7 +169054,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169001,7 +169175,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169154,7 +169331,10 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169312,7 +169492,10 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169395,7 +169578,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -169599,7 +169785,10 @@
     "pickedAt": "2026-11-13T00:46:14.486Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
@@ -169789,7 +169978,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
@@ -170092,7 +170284,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -170165,7 +170360,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -170457,7 +170655,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
@@ -170662,7 +170863,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -170909,7 +171113,10 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171013,7 +171220,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171155,7 +171365,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171310,7 +171523,10 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171476,7 +171692,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171659,7 +171878,10 @@
     "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
@@ -171864,7 +172086,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
@@ -172134,7 +172359,10 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172296,7 +172524,10 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172484,7 +172715,10 @@
     "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
@@ -172662,7 +172896,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172767,7 +173004,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172901,7 +173141,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -173016,7 +173259,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
@@ -173212,7 +173458,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173379,7 +173628,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173605,7 +173857,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173799,7 +174054,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -173979,7 +174237,10 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -174137,7 +174398,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
@@ -174351,7 +174615,10 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -174467,7 +174734,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
@@ -174707,7 +174977,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
@@ -174911,7 +175184,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
@@ -175219,7 +175495,10 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175407,7 +175686,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175592,7 +175874,10 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175740,7 +176025,10 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175940,7 +176228,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -176105,7 +176396,10 @@
     "pickedAt": "2026-11-16T23:25:51.201Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -176585,7 +176879,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
@@ -177533,7 +177830,10 @@
     "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -177644,7 +177944,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -177816,7 +178119,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -177944,7 +178250,10 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -178064,7 +178373,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-android-approval-overlay-a-small-always-on-float",
@@ -178315,7 +178627,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -179037,7 +179352,10 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -179182,7 +179500,10 @@
     "pickedAt": "2026-11-13T11:37:09.309Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-overlay-opens-pages-the-floating-toolbar-expands",
@@ -179457,7 +179778,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-server-watchdog-orchestrator-auto-recovers-stuck",
@@ -180204,7 +180528,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -180738,7 +181065,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -181469,7 +181799,10 @@
     "pickedAt": "2026-11-13T12:17:15.710Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -181994,7 +182327,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182274,7 +182610,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -182369,7 +182708,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182594,7 +182936,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182815,7 +183160,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182977,7 +183325,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183249,7 +183600,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183535,7 +183889,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183768,7 +184125,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -184138,7 +184498,10 @@
     "pickedAt": "2026-11-17T19:08:15.640Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "push-fail",
@@ -184989,7 +185352,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185307,7 +185673,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185527,7 +185896,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185736,7 +186108,10 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185984,7 +186359,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186214,7 +186592,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186491,7 +186872,10 @@
     "pickedAt": "2026-11-14T23:10:32.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186782,7 +187166,10 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -187444,7 +187831,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-every-skin-ships-light-dark-colour-theme",
@@ -187711,7 +188101,10 @@
     "pickedAt": "2026-11-16T13:12:13.730Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-build-whose-session-finishes-phase-e",
@@ -188177,7 +188570,10 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188394,7 +188790,10 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188571,7 +188970,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188845,7 +189247,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -189092,7 +189497,10 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -189507,7 +189915,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -190109,7 +190520,10 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -190633,7 +191047,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191028,7 +191445,10 @@
     "pickedAt": "2026-11-14T23:08:13.680Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191244,7 +191664,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191475,7 +191898,10 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -191771,7 +192197,10 @@
     "pickedAt": "2026-11-14T23:06:12.490Z",
     "heldAt": "2026-11-16T18:30:25.768Z",
     "heldBy": "cli",
-    "heldWhy": "Brett review Nov 16: on hold"
+    "heldWhy": "Brett review Nov 16: on hold",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-owner-recognized-everywhere-veto",
@@ -191970,7 +192399,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -192209,7 +192641,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -192478,7 +192913,10 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193118,7 +193556,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193353,7 +193794,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193607,7 +194051,10 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193821,7 +194268,10 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194307,7 +194757,10 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194561,7 +195014,10 @@
     "pickedAt": "2026-11-14T23:04:23.303Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194859,7 +195315,10 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -195146,7 +195605,10 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-configuration-panel-before-ai-makes",
@@ -195602,7 +196064,10 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skins-plugin-own-removable-console",
@@ -196873,7 +197338,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197105,7 +197573,10 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197311,7 +197782,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197507,7 +197981,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197825,7 +198302,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -198078,7 +198558,10 @@
     "pickedAt": "2026-11-13T17:49:19.495Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-instance-settings-window-picker",
@@ -198288,7 +198771,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-tab-groups-choose-how-many-rows-tabs",
@@ -198518,7 +199004,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -198871,7 +199360,10 @@
     "pickedAt": "2026-11-16T18:36:18.505Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-all-settings-interfaces-open-floating",
@@ -199120,7 +199612,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -199503,7 +199998,10 @@
     "pickedAt": "2026-11-15T00:27:21.094Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -199884,7 +200382,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -200266,7 +200767,10 @@
     "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -200652,7 +201156,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -200998,7 +201505,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201343,7 +201853,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201597,7 +202110,10 @@
     "pickedAt": "2026-11-13T18:36:14.104Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-transparency-token-works-every-dialog",
@@ -202013,7 +202529,10 @@
     "pickedAt": "2026-11-16T13:23:15.243Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -202566,7 +203085,10 @@
     "pickedAt": "2026-11-13T19:19:07.577Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -203019,7 +203541,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -203522,7 +204047,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-console-app-part-2-native-floating",
@@ -203889,7 +204417,10 @@
     "pickedAt": "2026-11-13T19:29:11.351Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204188,7 +204719,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204512,7 +205046,10 @@
     "pickedAt": "2026-11-13T19:30:50.870Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204835,7 +205372,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -205223,7 +205763,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-custom-groups-custom-tabs",
@@ -205655,7 +206198,10 @@
     "pickedAt": "2026-11-15T01:03:18.277Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-axhub-override-switch-greyed-out",
@@ -205983,7 +206529,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206179,7 +206728,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206558,7 +207110,10 @@
     "pickedAt": "2026-11-14T23:15:54.090Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206807,7 +207362,10 @@
     "pickedAt": "2026-11-13T19:53:15.999Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207023,7 +207581,10 @@
     "pickedAt": "2026-11-13T19:35:33.966Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207226,7 +207787,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207441,7 +208005,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207658,7 +208225,10 @@
     "pickedAt": "2026-11-13T19:43:15.087Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-instance-settings-picker-merge-main",
@@ -207933,7 +208503,10 @@
     "pickedAt": "2026-11-14T23:35:28.763Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-config-panel-merge-main-and-land",
@@ -208164,7 +208737,10 @@
     "pickedAt": "2026-11-13T19:56:14.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skins-plugin-merge-main-and-land",
@@ -208377,7 +208953,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -208716,7 +209295,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-animations-swatches-skin-switch",
@@ -209049,7 +209631,10 @@
     "pickedAt": "2026-11-13T19:59:07.053Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -209348,7 +209933,10 @@
     "pickedAt": "2026-11-14T03:35:14.704Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -209668,7 +210256,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -210009,7 +210600,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -210270,7 +210864,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-own-token-sets-for-grids-and-tab-groups",
@@ -210598,7 +211195,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-token-registry-skin-editor-live-sandbox",
@@ -210994,7 +211594,10 @@
     "pickedAt": "2026-11-13T20:18:14.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-dispatcher-gate-never-launch-build",
@@ -211250,7 +211853,10 @@
     "pickedAt": "2026-11-14T23:17:21.049Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-toolbar-settings-fix-failing-chrome",
@@ -211435,7 +212041,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -211878,7 +212487,10 @@
     "pickedAt": "2026-11-17T19:08:26.677Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -212223,7 +212835,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212591,7 +213206,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212797,7 +213415,10 @@
     "pickedAt": "2026-11-13T20:50:31.267Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212975,7 +213596,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -213233,7 +213857,10 @@
     "pickedAt": "2026-11-14T23:23:17.794Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-lander-regenerates-generated-files-clash",
@@ -213488,7 +214115,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-desktop-console-draws-app-menu",
@@ -213686,7 +214316,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-main-ci-red-test-sandbox-profile-export",
@@ -213875,7 +214508,10 @@
     "pickedAt": "2026-11-13T23:41:19.408Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -214277,7 +214913,10 @@
     "pickedAt": "2026-11-14T23:23:43.044Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-batch-merge-main-each-finished",
@@ -214975,7 +215614,10 @@
     "pickedAt": "2026-11-14T23:28:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -215575,7 +216217,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-voice-listener-use-claude-when-connected",
@@ -216055,7 +216700,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -216949,7 +217597,10 @@
     "pickedAt": "2026-11-14T12:28:09.521Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-get-main-ci-green-theme-swap",
@@ -217207,7 +217858,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218122,7 +218776,10 @@
     "pickedAt": "2026-11-14T03:51:29.271Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218378,7 +219035,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218768,7 +219428,10 @@
     "pickedAt": "2026-11-16T13:24:57.284Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -219545,7 +220208,10 @@
     "pickedAt": "2026-11-16T13:13:13.711Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "push-fail",
@@ -219841,7 +220507,10 @@
     "pickedAt": "2026-11-14T16:46:23.975Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-builds-share-one-claude-login-write",
@@ -220118,7 +220787,10 @@
     "pickedAt": "2026-11-14T16:51:21.042Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -220340,7 +221012,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-toolbar-settings-still-change",
@@ -220641,7 +221316,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -221401,7 +222079,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -222156,7 +222837,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -223114,7 +223798,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-all-skin-builds",
@@ -223910,7 +224597,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-replace-merge-queue-one-time-landing",
@@ -224707,7 +225397,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -225700,7 +226393,10 @@
     "pickedAt": "2026-11-16T13:24:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -226348,7 +227044,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -226705,7 +227404,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-change-to-move-amberx",
@@ -227044,7 +227746,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -227409,7 +228114,10 @@
     "pickedAt": "2026-11-14T23:46:40.547Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -227765,7 +228473,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228102,7 +228813,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228464,7 +229178,10 @@
     "pickedAt": "2026-11-15T00:15:47.364Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228825,7 +229542,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-voice-listener-use",
@@ -229215,7 +229935,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-console-axhub-retry",
@@ -229631,7 +230354,10 @@
     "pickedAt": "2026-11-15T19:57:09.845Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -230243,7 +230969,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -231412,7 +232141,10 @@
     "pickedAt": "2026-11-16T23:31:13.598Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -232303,7 +233035,10 @@
     "pickedAt": "2026-11-15T11:54:29.199Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -232811,7 +233546,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -233617,7 +234355,10 @@
     "pickedAt": "2026-11-15T11:58:22.439Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-gate-rules-plugin-in-the-console",
@@ -234366,7 +235107,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -234643,7 +235387,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -235224,7 +235971,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -235443,7 +236193,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -236027,7 +236780,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-build-rules-tab-gate-rules-vps-owns",
@@ -236949,7 +237705,10 @@
     "pickedAt": "2026-11-16T16:26:37.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238013,7 +238772,10 @@
     "pickedAt": "2026-11-15T14:57:29.625Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238568,7 +239330,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238771,7 +239536,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -239391,7 +240159,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -241058,7 +241829,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -241687,7 +242461,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -242351,7 +243128,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243091,7 +243871,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243526,7 +244309,10 @@
     "pickedAt": "2026-11-17T12:28:43.007Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243787,7 +244573,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -244056,7 +244845,10 @@
     "pickedAt": "2026-11-16T23:17:52.842Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-axhub-veto-countdown-setting-read-only",
@@ -244609,7 +245401,10 @@
     "pickedAt": "2026-11-17T19:08:43.298Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -245382,7 +246177,10 @@
     "pickedAt": "2026-11-16T18:34:01.102Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -246248,7 +247046,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -246742,7 +247543,10 @@
     "pickedAt": "2026-11-16T23:17:18.218Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247319,7 +248123,10 @@
     "pickedAt": "2026-11-16T19:05:58.434Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247772,7 +248579,10 @@
     "pickedAt": "2026-11-16T19:16:48.399Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247971,7 +248781,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248223,7 +249036,10 @@
     "pickedAt": "2026-11-17T12:28:56.306Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248484,7 +249300,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248708,7 +249527,10 @@
     "pickedAt": "2026-11-16T19:46:04.279Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248906,7 +249728,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249107,7 +249932,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249339,7 +250167,10 @@
     "pickedAt": "2026-11-16T20:24:12.031Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249541,7 +250372,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250361,7 +251195,10 @@
     "pickedAt": "2026-11-16T20:29:03.156Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250550,7 +251387,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250687,7 +251527,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -250792,7 +251635,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -251425,7 +252271,10 @@
     "pickedAt": "2026-11-16T22:49:42.023Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -251957,7 +252806,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -252576,7 +253428,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -253181,7 +254036,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -254127,7 +254985,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -255056,7 +255917,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -255882,7 +256746,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -256418,7 +257285,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -257425,7 +258295,10 @@
     "pickedAt": "2026-11-17T22:10:38.850Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -258118,7 +258991,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -258934,7 +259810,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -259698,7 +260577,10 @@
     "pickedAt": "2026-11-17T12:38:16.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-stop-auto-lander-committing-tracking",
@@ -260203,7 +261085,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -260673,7 +261558,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -261307,7 +262195,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -261848,7 +262739,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -262355,7 +263249,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -262877,7 +263774,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -263136,6 +264036,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:27:13.513Z",
      "exit": 0,
@@ -263990,7 +264893,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -264480,7 +265386,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -265043,7 +265952,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -265712,7 +266624,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -266225,7 +267140,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -267300,7 +268218,10 @@
     "pickedAt": "2026-11-18T00:34:47.468Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -268201,7 +269122,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -268700,7 +269624,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -269280,7 +270207,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -270111,7 +271041,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -271071,7 +272004,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -271702,7 +272638,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -272262,7 +273201,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -272854,7 +273796,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273349,7 +274294,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273487,7 +274435,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273972,7 +274923,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -274734,7 +275688,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -275605,7 +276562,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -276443,7 +277403,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -276804,7 +277767,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -277057,7 +278023,10 @@
     "pickedAt": "2026-11-17T20:16:29.639Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -278013,7 +278982,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -278734,7 +279706,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -279227,7 +280202,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -279772,6 +280750,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-18T00:17:54.575Z",
      "exit": 0,
@@ -284521,7 +285502,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -284868,7 +285852,10 @@
     "pickedAt": "2026-11-17T20:55:33.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285079,7 +286066,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285290,7 +286280,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285505,7 +286498,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285720,7 +286716,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285934,7 +286933,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -286248,6 +287250,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:32:12.309Z",
      "exit": 0,
@@ -286772,7 +287777,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -287266,7 +288274,10 @@
     "pickedAt": "2026-11-17T21:27:56.788Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -287591,7 +288602,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -288628,7 +289642,10 @@
     "pickedAt": "2026-11-18T01:08:11.137Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "recoveries": [
     {
@@ -289539,7 +290556,10 @@
     "pickedAt": "2026-11-17T21:43:26.212Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -289932,7 +290952,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -290260,7 +291283,10 @@
     "pickedAt": "2026-11-17T22:28:58.757Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -292643,7 +293669,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -293058,7 +294087,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -293697,7 +294729,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-18T01:47:23.191Z"
+     "updatedAt": "2026-11-18T01:48:18.293Z"
     },
     {
      "id": "s30",
@@ -297295,7 +298327,10 @@
     "pickedAt": "2026-11-18T00:19:41.557Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -312090,7 +313125,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -312658,7 +313696,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -313141,7 +314182,10 @@
     "pickedAt": "",
     "heldAt": "2026-11-17T22:53:22.354Z",
     "heldBy": "console",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -313669,7 +314713,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -314140,7 +315187,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -314567,7 +315617,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -318889,7 +319942,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -319819,7 +320875,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -331458,7 +332517,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -334366,7 +335428,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -337485,7 +338550,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -340284,11 +341352,806 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwlgpf88019hcy",
+     "title": "",
+     "text": "[Fable] Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwlgpf8802wqn6",
+     "title": "",
+     "text": "[Opus] Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwlgpf88037h86",
+     "title": "",
+     "text": "[Opus] Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwlgpf8804mqmd",
+     "title": "",
+     "text": "[Opus] Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwlgpf8805xgry",
+     "title": "",
+     "text": "[Opus] Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwlgpf8806dikc",
+     "title": "",
+     "text": "[Opus] Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwlgpf88077ua3",
+     "title": "",
+     "text": "[Opus] Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwlgpf8808ca27",
+     "title": "",
+     "text": "[Opus] Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwlgpf8809quvm",
+     "title": "",
+     "text": "[Opus] API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwlgpf880aw3yn",
+     "title": "",
+     "text": "[Opus] Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwlgpf880bs3jw",
+     "title": "",
+     "text": "[Opus] CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwlgpf880cum8t",
+     "title": "",
+     "text": "[Opus] Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwlgpf880d2na9",
+     "title": "",
+     "text": "[Fable] Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwlgpf880eshuj",
+     "title": "",
+     "text": "[Opus] Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwlgpf880f6pfo",
+     "title": "",
+     "text": "[Opus] Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwlgpf880g85t4",
+     "title": "",
+     "text": "[Opus] Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwlgpf880he4sr",
+     "title": "",
+     "text": "[Opus] Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwlgpf880ihgsd",
+     "title": "",
+     "text": "[Opus] Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwlgpf880jh1b4",
+     "title": "",
+     "text": "[Opus] Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwlgpf880k0tls",
+     "title": "",
+     "text": "[Opus] Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwlgpf880lsp8p",
+     "title": "",
+     "text": "[Opus] API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s22",
+     "uid": "st-mwlgpf880m706i",
+     "title": "",
+     "text": "[Opus] Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s23",
+     "uid": "st-mwlgpf880nsmbc",
+     "title": "",
+     "text": "[Opus] CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.552Z"
+    },
+    {
+     "id": "s24",
+     "uid": "st-mwlgpf890obxmn",
+     "title": "",
+     "text": "[Opus] Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s25",
+     "uid": "st-mwlgpf890p4vbh",
+     "title": "",
+     "text": "[Fable] Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s26",
+     "uid": "st-mwlgpf890q36v3",
+     "title": "",
+     "text": "[Opus] Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s27",
+     "uid": "st-mwlgpf890rurbv",
+     "title": "",
+     "text": "[Opus] Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s28",
+     "uid": "st-mwlgpf890s4un2",
+     "title": "",
+     "text": "[Opus] Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s29",
+     "uid": "st-mwlgpf890tck9w",
+     "title": "",
+     "text": "[Opus] Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s30",
+     "uid": "st-mwlgpf890urvjy",
+     "title": "",
+     "text": "[Opus] Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s31",
+     "uid": "st-mwlgpf890vgmnh",
+     "title": "",
+     "text": "[Opus] Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s32",
+     "uid": "st-mwlgpf890wj2qn",
+     "title": "",
+     "text": "[Opus] Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s33",
+     "uid": "st-mwlgpf890xq9l4",
+     "title": "",
+     "text": "[Opus] API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s34",
+     "uid": "st-mwlgpf890ytycp",
+     "title": "",
+     "text": "[Opus] Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s35",
+     "uid": "st-mwlgpf890z0ge5",
+     "title": "",
+     "text": "[Opus] CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s36",
+     "uid": "st-mwlgpf8910lkui",
+     "title": "",
+     "text": "[Opus] Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:48:13.985Z",
+     "updatedAt": "2026-11-18T01:48:14.553Z"
+    },
+    {
+     "id": "s37-36",
      "uid": "st-mwlgo9m801z64w",
      "title": "",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
@@ -340310,7 +342173,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s2",
+     "id": "s38-37",
      "uid": "st-mwlgo9m9022mpp",
      "title": "",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
@@ -340332,7 +342195,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s3",
+     "id": "s39-38",
      "uid": "st-mwlgo9m9033386",
      "title": "",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
@@ -340354,7 +342217,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s4",
+     "id": "s40-39",
      "uid": "st-mwlgo9m90423fg",
      "title": "",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
@@ -340376,7 +342239,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s5",
+     "id": "s41-40",
      "uid": "st-mwlgo9m905qckj",
      "title": "",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
@@ -340398,7 +342261,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s6",
+     "id": "s42-41",
      "uid": "st-mwlgo9m906gz33",
      "title": "",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
@@ -340420,7 +342283,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s7",
+     "id": "s43-42",
      "uid": "st-mwlgo9m907qck4",
      "title": "",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
@@ -340442,7 +342305,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s8",
+     "id": "s44-43",
      "uid": "st-mwlgo9m9080mzx",
      "title": "",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
@@ -340464,7 +342327,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s9",
+     "id": "s45-44",
      "uid": "st-mwlgo9m909ih8x",
      "title": "",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
@@ -340486,7 +342349,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s10",
+     "id": "s46-45",
      "uid": "st-mwlgo9m90av8fv",
      "title": "",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
@@ -340508,7 +342371,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s11",
+     "id": "s47-46",
      "uid": "st-mwlgo9m90b99y6",
      "title": "",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
@@ -340530,7 +342393,7 @@
      "updatedAt": "2026-11-18T01:47:20.625Z"
     },
     {
-     "id": "s12",
+     "id": "s48-47",
      "uid": "st-mwlgo9m90cp015",
      "title": "",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
