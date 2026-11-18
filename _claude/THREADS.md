@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 00:31 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `fix-launcher-crash-duplicate-steps-brief` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, → complete, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · builds-live
 - 2026-11-18 01:43 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · orchestrator
 - 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · builds-live
+- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · foreign-write
+- 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 
 ## Token passes (log)
 
