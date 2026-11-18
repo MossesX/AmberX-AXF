@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T23:22:24.223Z",
+ "updatedAt": "2026-11-18T23:23:14.941Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195269,12 +195269,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T23:20:06.039Z",
-   "updatedAt": "2026-11-18T23:20:57.231Z",
+   "updatedAt": "2026-11-18T23:22:58.546Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T23:20:57.231Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"aac21928-23b2-48fa-9705-70c97e75215f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-18T23:22:58.546Z"
     }
    ],
    "approvals": [],
@@ -195296,8 +195300,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmqvuz301q0bu",
-     "createdAt": "2026-11-18T23:20:57.231Z"
+     "uid": "st-mwmqygky01pwra",
+     "createdAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s2",
@@ -195315,8 +195319,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmqvuz30234zo",
-     "createdAt": "2026-11-18T23:20:57.231Z"
+     "uid": "st-mwmqygky02ye5m",
+     "createdAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s3",
@@ -195334,8 +195338,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmqvuz303ain7",
-     "createdAt": "2026-11-18T23:20:57.231Z"
+     "uid": "st-mwmqygky03bi8s",
+     "createdAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s4",
@@ -195353,8 +195357,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmqvuz304np7d",
-     "createdAt": "2026-11-18T23:20:57.231Z"
+     "uid": "st-mwmqygky040217",
+     "createdAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s5",
@@ -195375,8 +195379,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmqvuz3057j74",
-     "createdAt": "2026-11-18T23:20:57.231Z"
+     "uid": "st-mwmqygky055n92",
+     "createdAt": "2026-11-18T23:22:58.546Z"
     }
    ]
   }

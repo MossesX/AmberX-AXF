@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9158,
- "updatedAt": "2026-11-18T23:22:24.223Z",
+ "rev": 9159,
+ "updatedAt": "2026-11-18T23:23:14.941Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322465,12 +322465,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T23:20:06.039Z",
-   "updatedAt": "2026-11-18T23:20:57.231Z",
+   "updatedAt": "2026-11-18T23:22:58.546Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T23:20:57.231Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"aac21928-23b2-48fa-9705-70c97e75215f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-18T23:22:58.546Z"
     }
    ],
    "approvals": [],
@@ -322488,11 +322492,11 @@
     "crashes": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-18T23:20:57.231Z",
+     "at": "2026-11-18T23:22:58.546Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 5,
-     "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"aac21928-23b2-48fa-9705-70c97e75215f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
     "note": "steps made by rules: review them",
@@ -322514,7 +322518,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwmqvuz301q0bu",
+     "uid": "st-mwmqygky01pwra",
      "title": "",
      "text": "Brett (voice, Nov 18 2026): console_open with screen settings, tab plugins, item phone-connect answers ok/started but the console only refreshes the main page; the Phone Connect settings never open.",
      "model": "Opus",
@@ -322531,12 +322535,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T23:20:57.231Z",
-     "updatedAt": "2026-11-18T23:20:57.231Z"
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwmqvuz30234zo",
+     "uid": "st-mwmqygky02ye5m",
      "title": "",
      "text": "Settings → Plugins also just lists plugins with no link into each plugin's settings.",
      "model": "Opus",
@@ -322553,12 +322557,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T23:20:57.231Z",
-     "updatedAt": "2026-11-18T23:20:57.231Z"
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwmqvuz303ain7",
+     "uid": "st-mwmqygky03bi8s",
      "title": "",
      "text": "Known from another build log: the deep link to a settings sub-tab answers ok but the shared settings code doesn't move to it.",
      "model": "Opus",
@@ -322575,12 +322579,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T23:20:57.231Z",
-     "updatedAt": "2026-11-18T23:20:57.231Z"
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwmqvuz304np7d",
+     "uid": "st-mwmqygky040217",
      "title": "",
      "text": "Fix in the shared settings code so every plugin settings sub-tab is reachable by deep link (REST, MCP, CLI, voice) and by tapping the plugin in the list.",
      "model": "Opus",
@@ -322597,12 +322601,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T23:20:57.231Z",
-     "updatedAt": "2026-11-18T23:20:57.231Z"
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwmqvuz3057j74",
+     "uid": "st-mwmqygky055n92",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/deep-links-to-plugin-s-settings-don-t.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -322622,8 +322626,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T23:20:57.231Z",
-     "updatedAt": "2026-11-18T23:20:57.231Z"
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
     }
    ],
    "profiles": [
@@ -322634,12 +322638,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-18T23:20:57.231Z",
+   "defaultAt": "2026-11-18T23:22:58.546Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
