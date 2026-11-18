@@ -123,7 +123,8 @@ eq(fx.pick['view + slot'].asset, 'gate-auto-lander', 'view + slot picks the page
 eq(fx.pick['view main slot: none'].asset, null, 'a page with no main asset keeps its handwritten bar');
 eq(fx.pick['plugin main'].asset, 'builds-main', 'plugin scope matches the plugin');
 eq(fx.pick['plugin with its view too'].asset, 'builds-main', 'the view is tried first, then the plugin');
-eq(fx.pick['user pick wins'].asset, 'editor-classic-copy', 'the user pick for the slot wins');
+eq(fx.pick['user pick lends its look (buttons stay)'].asset, 'gate-auto-lander', 'a pick never replaces the screen\'s own buttons (toolbar-owner@1)');
+eq(fx.pick['user pick lends its look (buttons stay)'].lookFrom, 'editor-classic-copy', 'the generic pick lends its look');
 eq(fx.pick['user pick of an unknown asset falls back'].asset, 'gate-auto-lander', 'an unknown pick falls back to the scope match');
 eq(fx.pick['case-insensitive view'].asset, 'gate-auto-lander', 'view ids match case-insensitively');
 eq(fx.pick['unknown page'].asset, null, 'unknown page: nothing');

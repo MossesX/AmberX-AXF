@@ -50,6 +50,8 @@ import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
 import { addDerivedTargets, type ControlTargetDef } from '../controlTargets';
+import { pageOfToolbarInstance, pageToolbarChoices, pageToolbarPick, setPageToolbarPick } from '../pageToolbar';
+import { pickPageToolbar, type ToolbarAssetLike } from '../../core/engines/toolbar-actions';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -102,9 +104,9 @@ function baseDataOf(rt: AxfRuntime, type: ChromeType, instance: string): Record<
   // a page toolbar is its own instance (page-toolbar@1: the page's settings id, `gate`, `gate.auto-lander`): it renders
   // its own asset (the pick for that id, else the asset scoped to it, else an asset of that id), so its fields compare with it
   if (type === 'toolbar' && instance !== CHROME_APP_INSTANCE) {
-    const list = rt.registry.list('toolbar');
-    const pick = rt.settings.get(CHROME_INSTANCE_ASSET_KEY('toolbar', instance));
-    const page = (typeof pick === 'string' ? list.find((a) => a.id === pick) : undefined)
+    // toolbar-owner@1: the screen's own toolbar with a pick's look laid over it (pickPageToolbar), else an asset of that id
+    const list = rt.registry.list('toolbar') as unknown as ToolbarAssetLike[];
+    const page = pickPageToolbar(list, pageOfToolbarInstance(rt, instance), (k) => rt.settings.get(k))
       ?? list.find((a) => { const d = a.data as unknown as { scope?: string; slot?: string }; const sc = parseToolbarScope(d.scope); return !!sc && sc.kind !== 'app' && pageToolbarSettingsId(sc, d.slot) === instance; })
       ?? list.find((a) => a.id === instance);
     if (page) return page.data as unknown as Record<string, unknown>;
@@ -152,6 +154,17 @@ export function moveChrome(rt: AxfRuntime, type: ChromeType, instance: string, p
 
 /** Use another asset: a tab group picks for itself, every other kind swaps the app's slot. `next` cycles. */
 export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, asset: string): boolean {
+  // a screen's toolbar picks for itself, only among generic toolbars and the ones built for that screen (toolbar-owner@1)
+  if (type === 'toolbar' && instance !== CHROME_APP_INSTANCE) {
+    let id = asset;
+    if (asset === 'next' || asset === 'prev') {
+      const ids = pageToolbarChoices(rt, instance).map((c) => c.id);
+      if (!ids.length) return false;
+      const i = ids.indexOf(pageToolbarPick(rt, instance).id ?? '');
+      id = ids[(i + (asset === 'next' ? 1 : ids.length - 1) + ids.length) % ids.length]!;
+    }
+    return setPageToolbarPick(rt, instance, id) === null;
+  }
   const list = rt.registry.list(type as AssetType);
   if (!list.length) return false;
   let id = asset;
@@ -194,6 +207,8 @@ export function installChrome(rt: AxfRuntime): void {
     const t = (v: unknown): ChromeType | null => (isChromeType(v) ? v : null);
     const inst = (type: ChromeType, v: unknown, ctx?: { payload?: unknown }) => instanceOf(type, (typeof v === 'string' && v) || (typeof ctx?.payload === 'string' ? ctx.payload : undefined)) || CHROME_APP_INSTANCE;
     rt.actions.register('chrome.settings', ([type, instance, tab], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_SETTINGS_DIALOG, { type: ty, instance: inst(ty, instance, ctx), ...(tab ? { tab } : {}) }); }, { label: 'Chrome settings (chrome.settings:<type>:<instance>[:look|behaviour|asset|interface])', params: true });
+    rt.actions.register('toolbar.pick', ([id = '', ...which], ctx) => { const i = id || (typeof ctx?.payload === 'string' ? ctx.payload : ''); if (!i) return; const err = setPageToolbarPick(rt, i, which.join(':') || 'default'); if (err) rt.toast(err, 'warning', 'Toolbar'); }, { label: "Pick a screen's toolbar (toolbar.pick:<settings id>:<asset id|default>; generic or built for that screen; look only)", params: true, requires: 'assets.swap' });
+    rt.actions.register('toolbar.choose', ([id = ''], ctx) => { const i = id || (typeof ctx?.payload === 'string' ? ctx.payload : ''); if (i) rt.openDialog(CHROME_PICK_DIALOG, { type: 'toolbar', instance: i }); }, { label: "Open a screen's toolbar picker (toolbar.choose:<settings id>)", params: true });
     rt.actions.register('chrome.pick', ([type, instance], ctx) => { const ty = t(type); if (ty) rt.openDialog(CHROME_PICK_DIALOG, { type: ty, instance: inst(ty, instance, ctx) }); }, { label: 'Change a chrome asset (picker)', params: true });
     rt.actions.register('chrome.move', ([type, instance, position = ''], ctx) => { const ty = t(type); if (ty && !moveChrome(rt, ty, inst(ty, instance, ctx), position)) rt.toast(`${chromeLabel(ty ?? type ?? '')} can't move to "${position}".`, 'warning', 'Move'); }, { label: 'Move a chrome piece (top / bottom / left / right)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.set', ([type, instance, key = '', ...rest], ctx) => {
@@ -410,6 +425,43 @@ function fieldInput(field: ChromeField, value: unknown, hint: string | undefined
 
 /** The asset picker for a kind: tab groups pick for themselves (plus "the app's default"); the rest swap the app's slot. */
 export function ChromeAssetPicker({ type, instance }: { type: ChromeType; instance: string }) {
+  if (type === 'toolbar' && instance !== CHROME_APP_INSTANCE) return <PageToolbarPicker instance={instance} />;
+  return <ChromeSlotPicker type={type} instance={instance} />;
+}
+
+/**
+ * A screen's toolbar picker (toolbar-owner@1): the screen's own toolbar (locked, the default) until "Use another
+ * toolbar" is ticked; then only generic toolbars and the ones built for this screen are offered, and a pick changes the
+ * look and style only, never the buttons. Same keys by API: toolbar.pick:<id>:<asset|default> (REST, MCP, CLI, voice).
+ */
+export function PageToolbarPicker({ instance }: { instance: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsTick(rt, [CHROME_INSTANCE_ASSET_KEY('toolbar', instance)]);
+  const choices = pageToolbarChoices(rt, instance);
+  const pick = pageToolbarPick(rt, instance);
+  const [open, setOpen] = useState(!pick.locked);
+  const using = open || !pick.locked;
+  const set = (id: string) => { const err = setPageToolbarPick(rt, instance, id); if (err) rt.toast(err, 'warning', 'Toolbar'); };
+  const own = choices.find((c) => c.isDefault);
+  return (
+    <div className="fx-stack" data-axf-target={`toolbar:${instance}/pick`}>
+      <Switch label="Use another toolbar" checked={using} onChange={(on) => { setOpen(on); if (!on) set('default'); }} />
+      {!using && <Note tone="info">This screen uses its own toolbar{own ? ` (${own.name})` : ''}. Tick the box to borrow the look of another one.</Note>}
+      {using && (
+        <ChoiceGrid
+          label="Toolbar"
+          choices={choices.map((c) => ({ id: c.id, title: c.name, text: c.description, icon: CHROME_ICONS.toolbar, tag: c.isDefault ? 'own' : c.generic ? 'generic' : 'this screen' }))}
+          selected={[pick.id ?? '']}
+          onToggle={set}
+        />
+      )}
+      {using && <Note tone="info">Only generic toolbars and toolbars built for this screen are listed. Another toolbar changes the look and style only; the buttons stay this screen's own.</Note>}
+    </div>
+  );
+}
+
+function ChromeSlotPicker({ type, instance }: { type: ChromeType; instance: string }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsTick(rt, [CHROME_INSTANCE_ASSET_KEY(type, instance)]);

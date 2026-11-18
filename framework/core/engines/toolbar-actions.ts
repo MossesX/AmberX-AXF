@@ -29,6 +29,7 @@ import {
   type ToolbarActionRef, type ToolbarOverflow, type ToolbarScope,
 } from './toolbar-rules.mjs';
 import { migrateToolbar } from './toolbar-migrate.mjs';
+import { layerToolbarLook, pageDefaultToolbar, toolbarPick } from './toolbar-owner-rules.mjs';
 
 export { PAGE_TOOLBAR_CONTRACT };
 
@@ -160,17 +161,21 @@ export function pageToolbarId(page: ToolbarPage): string {
 }
 
 /**
- * Pick the toolbar asset for a page: the user's pick for the slot (`axf.chrome.toolbar.<settings id>.asset`) when it
- * names a registered toolbar, else the first asset whose scope is the view, else the first whose scope is the plugin.
- * Null when the page has no toolbar asset (the page keeps its handwritten bar).
+ * Pick the toolbar asset for a page (toolbar-owner@1, core/engines/toolbar-owner-rules.mjs). The screen's own toolbar
+ * (the asset scoped to the view, else to the plugin, else the plugin's locked `default-<plugin>-toolbar`) draws the
+ * buttons. The person's pick for the slot (`axf.chrome.toolbar.<settings id>.asset`) counts only when the picker offers
+ * it (a generic toolbar or one built for this screen), and it lends the look and style only: the returned asset keeps
+ * the own toolbar's id and buttons, `lookFrom` names the picked one. A page with no own toolbar draws a generic pick
+ * as it is. Null when the page has no toolbar at all (the page keeps its handwritten bar).
  */
-export function pickPageToolbar<T extends ToolbarAssetLike>(assets: readonly T[], page: ToolbarPage, get: (key: string) => unknown): T | null {
+export function pickPageToolbar<T extends ToolbarAssetLike>(assets: readonly T[], page: ToolbarPage, get: (key: string) => unknown): (T & { lookFrom?: string }) | null {
   const id = pageToolbarId(page);
-  const pick = get(CHROME_INSTANCE_ASSET_KEY('toolbar', id));
-  if (typeof pick === 'string') { const hit = assets.find((a) => a.id === pick); if (hit) return hit; }
-  const byView = page.view ? assets.find((a) => toolbarMatchesPage(a.data, { view: page.view, slot: page.slot })) : undefined;
-  if (byView) return byView;
-  return (page.plugin ? assets.find((a) => toolbarMatchesPage(a.data, { plugin: page.plugin, slot: page.slot })) : undefined) ?? null;
+  const own = pageDefaultToolbar(page, assets as never) as T | null;
+  const pick = toolbarPick(get(CHROME_INSTANCE_ASSET_KEY('toolbar', id)), page, assets as never);
+  const picked = pick.locked ? null : assets.find((a) => a.id === pick.id) ?? null;
+  if (!picked) return own;
+  if (!own) return picked;
+  return { ...own, data: layerToolbarLook(own.data, picked.data) as ToolbarData, lookFrom: picked.id };
 }
 
 /* ================================================================== resolving */

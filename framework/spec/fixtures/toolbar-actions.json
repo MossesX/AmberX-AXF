@@ -4702,7 +4702,7 @@
     "gate-auto-lander ← view main slot: none": false,
     "gate-auto-lander ← plugin main": false,
     "gate-auto-lander ← plugin with its view too": false,
-    "gate-auto-lander ← user pick wins": true,
+    "gate-auto-lander ← user pick lends its look (buttons stay)": true,
     "gate-auto-lander ← user pick of an unknown asset falls back": true,
     "gate-auto-lander ← case-insensitive view": true,
     "gate-auto-lander ← unknown page": false,
@@ -4710,7 +4710,7 @@
     "builds-main ← view main slot: none": false,
     "builds-main ← plugin main": true,
     "builds-main ← plugin with its view too": true,
-    "builds-main ← user pick wins": false,
+    "builds-main ← user pick lends its look (buttons stay)": false,
     "builds-main ← user pick of an unknown asset falls back": false,
     "builds-main ← case-insensitive view": false,
     "builds-main ← unknown page": false,
@@ -4718,7 +4718,7 @@
     "editor-classic-copy ← view main slot: none": false,
     "editor-classic-copy ← plugin main": false,
     "editor-classic-copy ← plugin with its view too": false,
-    "editor-classic-copy ← user pick wins": false,
+    "editor-classic-copy ← user pick lends its look (buttons stay)": false,
     "editor-classic-copy ← user pick of an unknown asset falls back": false,
     "editor-classic-copy ← case-insensitive view": false,
     "editor-classic-copy ← unknown page": false
@@ -4740,9 +4740,10 @@
       "id": "builds",
       "asset": "builds-main"
     },
-    "user pick wins": {
+    "user pick lends its look (buttons stay)": {
       "id": "gate.auto-lander",
-      "asset": "editor-classic-copy"
+      "asset": "gate-auto-lander",
+      "lookFrom": "editor-classic-copy"
     },
     "user pick of an unknown asset falls back": {
       "id": "gate.auto-lander",

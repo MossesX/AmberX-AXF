@@ -75,7 +75,7 @@ const PICKS: { name: string; page: ToolbarPage; settings?: Record<string, unknow
   { name: 'view main slot: none', page: { view: 'gate' } },
   { name: 'plugin main', page: { plugin: 'ai.amberx.axf.console.builds-page' } }, // axf-not-plugin:builds-page (test data)
   { name: 'plugin with its view too', page: { view: 'builds', plugin: 'ai.amberx.axf.console.builds-page' } }, // axf-not-plugin:builds-page (test data)
-  { name: 'user pick wins', page: { view: 'gate', slot: 'auto-lander' }, settings: { 'axf.chrome.toolbar.gate.auto-lander.asset': 'editor-classic-copy' } },
+  { name: 'user pick lends its look (buttons stay)', page: { view: 'gate', slot: 'auto-lander' }, settings: { 'axf.chrome.toolbar.gate.auto-lander.asset': 'editor-classic-copy' } },
   { name: 'user pick of an unknown asset falls back', page: { view: 'gate', slot: 'auto-lander' }, settings: { 'axf.chrome.toolbar.gate.auto-lander.asset': 'nope' } },
   { name: 'case-insensitive view', page: { view: 'GATE', slot: 'auto-lander' } },
   { name: 'unknown page', page: { view: 'nowhere' } },
@@ -107,7 +107,7 @@ export function toolbarFixtureOutputs(cases: ToolbarResolveCase[], starters: { i
     contract: 'page-toolbar@1',
     resolve: Object.fromEntries(cases.map((c) => [c.name, strip(resolvePageToolbar(c.asset, c.page, c.state, c.env))])),
     match: Object.fromEntries(ASSETS.flatMap((a) => PICKS.map((p) => [`${a.id} ← ${p.name}`, toolbarMatchesPage(a.data, p.page)]))),
-    pick: Object.fromEntries(PICKS.map((p) => [p.name, { id: pageToolbarId(p.page), asset: pickPageToolbar(ASSETS, p.page, (k) => p.settings?.[k])?.id ?? null }])),
+    pick: Object.fromEntries(PICKS.map((p) => { const t = pickPageToolbar(ASSETS, p.page, (k) => p.settings?.[k]); return [p.name, { id: pageToolbarId(p.page), asset: t?.id ?? null, ...(t?.lookFrom ? { lookFrom: t.lookFrom } : {}) }]; })),
     settingsIds: Object.fromEntries([['view:gate', undefined], ['view:gate', 'auto-lander'], ['view:gate', 'main'], ['plugin:ai.amberx.axf.console.builds-page', 'queue'], ['app', 'x'], ['view:PlanStudio2', 'tree']].map(([s, slot]) => [`${s} / ${slot ?? '-'}`, pageToolbarSettingsId(s, slot)])), // axf-not-plugin:builds-page (test data)
     overflow: Object.fromEntries(OVERFLOW_RULES.map((r) => { const p = planToolbarOverflow(first.buttons, r.rule, r.fit); return [r.name, { bar: p.bar.map((b) => b.id), more: p.more.map((b) => b.id), label: p.label }]; })),
     invocations: Object.fromEntries(['file.save', 'nav:home', 'swap:layout:next', 'action:plan.focus', 'command:gate/lander-run', 'control:view:builds', 'control:view:builds/button:refresh', 'control:setting:axf.display.fontScale', 'control:button:save', 'control:view:settings/tab:settings.tabs=plugins', 'handler:gate.pause'].map((a) => [a, toolbarInvocation(parseActionRef(a), { build: 'b1' })])),
