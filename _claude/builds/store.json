@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8964,
- "updatedAt": "2026-11-18T13:16:59.131Z",
+ "rev": 8965,
+ "updatedAt": "2026-11-18T13:18:11.317Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319265,14 +319265,14 @@
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
    "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T13:16:46.741Z",
+   "updatedAt": "2026-11-18T13:17:54.832Z",
    "builtAt": "",
    "notes": [
     {
@@ -319286,6 +319286,18 @@
     {
      "text": "Launch failed on hulu0241: worktree for every-plugin-gets-own-default-toolbar: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T13:14:59.013Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-every-plugin-gets-own-default-toolbar--earl.",
+     "at": "2026-11-18T13:17:29.035Z"
+    },
+    {
+     "text": "Brief only: brief is 24433 characters (~6109 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-18T13:17:41.815Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-every-plugin-gets-own-default-toolbar--earl, shared account login)",
+     "at": "2026-11-18T13:17:54.832Z"
     }
    ],
    "approvals": [],
@@ -319305,13 +319317,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:30:30.645Z",
     "queuedBy": "Brett",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-every-plugin-gets-own-default-toolbar--earl",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-18T13:17:14.831Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -319322,9 +319334,9 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: worktree for every-plugin-gets-own-default-toolbar: fatal: not a git repository (or any of the parent directories): .git",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T13:17:14.831Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -319332,10 +319344,8 @@
      "at": "2026-11-18T12:52:31.420Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-18T13:17:14.831Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -319507,7 +319517,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
