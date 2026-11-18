@@ -72,6 +72,7 @@ errors scrubbed. Nothing here returns the token, and everything GitHub says is d
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -769,6 +770,75 @@ class Pushes:
             self._cache = None
 
     # ---- writes
+    # ---- the orchestrator demo's real landing (Nov 18 2026): a demo branch with one commit, made through the console's token
+    DEMO_BRANCH_RE = re.compile(r"^demo/demo-[a-z0-9][a-z0-9-]{0,80}$")
+    DEMO_PATH_PREFIX = "_claude/builds/demo/"
+
+    def _demo_branch_body(self, body: Any, keys: set[str]) -> tuple[str, str]:
+        if not isinstance(body, dict) or set(body) - keys:
+            raise HTTPException(400, f"send {{{', '.join(sorted(keys))}}}")
+        repo, branch = body.get("repo") or UI_REVIEW_REPO, str(body.get("branch") or "")
+        if repo not in self.config()["repos"]:
+            raise HTTPException(400, "that repo isn't watched here")
+        if not self.DEMO_BRANCH_RE.match(branch):
+            raise HTTPException(400, "only a demo branch (demo/demo-<id>) can be made or deleted here")
+        return repo, branch
+
+    def demo_branch(self, body: Any) -> dict[str, Any]:
+        """Create (or reuse) a demo branch from the default branch and append one line to a file under _claude/builds/demo/
+        on it: the one commit the orchestrator demo lands for real through the merge queue. Demo branches only."""
+        repo, branch = self._demo_branch_body(body, {"repo", "branch", "build", "path", "line", "message"})
+        path = str(body.get("path") or f"{self.DEMO_PATH_PREFIX}landings.md")
+        if not path.startswith(self.DEMO_PATH_PREFIX) or ".." in path or not re.match(r"^[a-zA-Z0-9_./-]+$", path):
+            raise HTTPException(400, f"the file must sit under {self.DEMO_PATH_PREFIX}")
+        line = _text(body.get("line"), 300) or f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())} landed by the orchestrator demo"
+        message = _text(body.get("message"), 120) or f"Orchestrator demo: {branch} lands for real"
+        gh = self.gh()
+        try:
+            info = gh.repo(repo)
+            base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
+            base_sha = _text(self._head(gh, repo, base).get("sha"), 40)
+            if not base_sha:
+                raise HTTPException(502, f"can't read the head of {base}")
+            existing = True
+            try:
+                gh.get(github.repo_path(repo, "git", "ref", "heads", *branch.split("/")))
+            except github.GitHubError as e:
+                if e.status != 404:
+                    raise
+                existing = False
+            if not existing:
+                gh.json("POST", github.repo_path(repo, "git", "refs"), {"ref": f"refs/heads/{branch}", "sha": base_sha})
+            old_sha, old_text = "", ""
+            try:
+                cur = gh.get(github.repo_path(repo, "contents", *path.split("/"), query={"ref": branch}))
+                if isinstance(cur, dict) and cur.get("sha"):
+                    old_sha = _text(cur.get("sha"), 40)
+                    old_text = base64.b64decode(str(cur.get("content") or "").encode()).decode("utf-8", "replace")
+            except github.GitHubError as e:
+                if e.status != 404:
+                    raise
+            header = "" if old_text else "# Orchestrator demo landings\n\nOne line per demo PR the real merge queue merged (orchestrator-demo, real-landing.mjs).\n\n"
+            content = base64.b64encode(f"{header}{old_text}{'' if not old_text or old_text.endswith(chr(10)) else chr(10)}{line}\n".encode()).decode()
+            put = gh.json("PUT", github.repo_path(repo, "contents", *path.split("/")), {"message": message, "content": content, "branch": branch, **({"sha": old_sha} if old_sha else {})})
+            sha = _text(((put or {}).get("commit") or {}).get("sha") if isinstance(put, dict) else "", 40)
+        except github.GitHubError as e:
+            raise HTTPException(502, _text(str(e))) from None
+        self._forget()
+        return {"ok": True, "repo": repo, "branch": branch, "base": base, "existing": existing, "sha": sha, "path": path}
+
+    def demo_branch_delete(self, body: Any) -> dict[str, Any]:
+        """Delete a demo branch (its open PR closes with it). Demo branches only."""
+        repo, branch = self._demo_branch_body(body, {"repo", "branch"})
+        gh = self.gh()
+        try:
+            gh.json("DELETE", github.repo_path(repo, "git", "refs", "heads", *branch.split("/")))
+        except github.GitHubError as e:
+            if e.status not in (404, 422):
+                raise HTTPException(502, _text(str(e))) from None
+        self._forget()
+        return {"ok": True, "repo": repo, "branch": branch, "deleted": True}
+
     def open_pr(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "branch"}:
             raise HTTPException(400, "send {repo, branch}")
@@ -1474,6 +1544,19 @@ def _tracked(kind: str, verb: str, body: Any, fn: Callable[[Any], dict[str, Any]
 @router.post("/pr")
 def open_pr(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("push", "Open pull request", body, PUSHES.open_pr)
+
+
+@router.post("/demo-branch")
+def demo_branch(body: Any = Body(None)) -> dict[str, Any]:
+    """The orchestrator demo's real landing: a demo branch (demo/demo-<id>) with one commit under _claude/builds/demo/, made
+    with the console's GitHub token. Body {repo?, branch, build?, path?, line?, message?}. Demo branches only."""
+    return _tracked("push", "Create demo branch", body, PUSHES.demo_branch)
+
+
+@router.post("/demo-branch/delete")
+def demo_branch_delete(body: Any = Body(None)) -> dict[str, Any]:
+    """Delete a demo branch left unmerged by the orchestrator demo. Body {repo?, branch}. Demo branches only."""
+    return PUSHES.demo_branch_delete(body)
 
 
 @router.post("/merge")

@@ -22,10 +22,10 @@ build, so a tour never queues, lands or notifies about a real one.
 4. **Summary**: a grid of acts with pass / fail and evidence links, Run again.
 
 Acts (`acts/*.mjs`, demo-act@1): queue → launch → steps ticked one by one → running animation; a deliberate crash of
-the fake session → watchdog → retry to the Queue; red CI on a demo branch → auto-fix → merge-main → dry-run landing; a
+the fake session → watchdog → retry to the Queue; red CI on a demo branch → auto-fix → merge-main → the lander self-test → the real landing (the demo PR through the real merge queue); a
 build that dies for good (red row + break alert) → stale-row cleanup → demo phone notification (`notify.json`).
 
-No Claude account is spent: sessions are `fake-runner.sh`; landing goes through a dry-run lander, never the merge queue.
+No Claude account is spent: sessions are `fake-runner.sh`. Red CI, the fix and merge-main go through the dry-run lander (the real auto-lander decisions, recorded only). The landing is real since Nov 18 2026 (Brett: "If it recorded the test of the pipeline and didn't merge it on its own, then the test failed."): first the lander self-test (`selftest.mjs`, demo-selftest@1: the live gate verdict, the review lookup in the console, the merge queue in check mode; a failure stops the demo and raises the `demo-selftest` systems check item), then the demo PR (`demo/<build>`, one line in `_claude/builds/demo/landings.md`) is opened and put in the real merge queue (`real-landing.mjs`) and the act passes only once the queue merged it. `axf demo selftest`, `POST /api/plugins/orchestrator-demo/selftest`, MCP `orchestrator-demo_selftest`, voice "run the demo self-test".
 
 ## Reach it (all four the same)
 

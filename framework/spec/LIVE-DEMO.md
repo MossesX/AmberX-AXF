@@ -129,11 +129,38 @@ Deep link `view:build-orchestrator/demo:<id>`; state readable at `GET /api/plugi
 `finish`, `next`, `skip`, `stop`, `tick`, through REST, MCP (`build_orchestrator_demo_*`), `axf demo …` and voice.
 The driver fires `focused` / `start` / `finish` / `tick` itself; Brett presses Continue, Next, Pause, Skip and Stop.
 
+## The lander tests itself, then lands for real (Nov 18 2026)
+
+Build `auto-lander-never-wait-missing-ui-review`. Brett: "If it recorded the test of the pipeline and didn't merge it on
+its own, then the test failed. It should have tested itself before it did the demo." Two acts replace the dry-run landing:
+
+- `self-test` (`demo.self-test`, `apps/console-web/plugins/orchestrator-demo/selftest.mjs`, `demo-selftest@1`): the real
+  lander path on a throwaway PR state (#999001 on `demo/selftest`, nothing written): the live gate rule set through the gate
+  plugin's `check_pr` (a green PR whose UI Review item is missing lands flagged `ui-review-missing`; one whose item waits
+  holds; a failed lookup never holds), the real review item lookup in the console (`land.mjs lookupReview` → `GET
+  /api/plugins/ui-review/state`) and `land-core.blockReason` on its answer, the merge queue rules in check mode
+  (`merge-queue-core.notReady` with the live control and config, the lander CLI's `queue list`), and the held-prs state.
+  The result is saved (`selftest.json`) and shown by the systems check item `demo-selftest` (red when the last test failed,
+  Auto fix = Run the self-test again). A failing self-test is a failed act with `stop`: the driver stops the run
+  (`stoppedBy: error`), raises the alert `orchestrator-demo:selftest`, and the landing act never runs.
+- `land` (`demo.land`, `real-landing.mjs`): the lander's decision on the green snapshot, then for real: a demo branch
+  `demo/<build>` with one commit (a line in `_claude/builds/demo/landings.md`) through `POST /api/plugins/push-banner/demo-branch`
+  (console token; demo branches only), the PR through `POST …/pr`, the real merge queue through `POST …/queue/add`. The
+  expectation `landed` holds only once `GET …/queue` lists the PR as merged (then `s3` is crossed off and the build is
+  `landed`); its `within` is 45 min. A PR that does not reach the queue or does not merge is a failed act; a context with
+  no real landing (tests, `AXF_DEMO_LAND=dry`) is a failed act too: a dry run is not a landing. Cleanup deletes demo
+  branches still unmerged (`POST …/demo-branch/delete`); merged ones the queue tidies.
+
+Reached the same way everywhere: `POST /api/plugins/orchestrator-demo/selftest` (and `GET` for the saved result), MCP
+`orchestrator-demo_selftest` / `orchestrator-demo_selftest-last`, `axf demo selftest [--last]`, console action
+`demo.selftest`, voice "run the demo self-test".
+
 ## Demo builds (the sandbox)
 
 Every act touches only builds with the `demo: true` tag and the `demo-` id prefix (`framework/spec/BUILDS.md` → Demo
 builds): the store refuses a demo action on any other build, and every projection, the dispatcher, the lander, alerts
-and builds-live mark them demo-only, so a tour never queues, lands or notifies about a real build.
+and builds-live mark them demo-only, so a tour never queues, lands or notifies about a real build. The one thing a tour
+lands for real is its own demo PR (`demo/<build>`, above), through the real merge queue.
 
 ## Deferred
 
