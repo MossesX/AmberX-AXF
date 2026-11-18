@@ -11,11 +11,9 @@
     "axf-console"
   ],
   "provides": [
-    "asset:status/main-build",
-    "banner:right",
     "settings-tab:main-build-status"
   ],
-  "optional": [],
+  "optional": ["service:axf.banner-widgets@1"],
   "scopes": [
     "ROUTES"
   ],

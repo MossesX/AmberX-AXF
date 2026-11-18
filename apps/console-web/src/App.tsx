@@ -3,6 +3,7 @@ import { installConsoleControl } from './control';
 import { installNative } from './native/axfNative';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
+import { dropBannerData } from './bannerData';
 import { installLibraries } from './axf/react/library';
 import { dialogs } from './dialogs';
 import { ConsoleStoreProvider, useStore } from './store';
@@ -151,7 +152,7 @@ function usePlugins() {
     const all = managed ? hostEnabledPlugins(hostIds) : loaded ? enabledPlugins(status) : [];
     const enabled = all.filter((p) => loader.config.modes[p.folder] !== 'off');
     const off = all.filter((p) => !enabled.includes(p)).map((p) => loader.disabledLibrary(p.folder, p.manifest.name)).filter((l): l is AxfWebLibrary => !!l);
-    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); rt.removePlacement(p.manifest.id); }
+    for (const p of bundledPlugins) if (!enabled.includes(p)) { rt.removeNavSection(p.manifest.id); rt.removeContextItems(p.manifest.id); rt.removeAppMenuItems(p.manifest.id); rt.settings.removeModule(p.manifest.id); rt.detachAll(p.manifest.id); dropBannerData(p.manifest.id); rt.removePlacement(p.manifest.id); }
     return installLibraries(rt, [settingsLibrary, toolbarsLibrary, alertsLibrary, consoleSettings, accountLibrary, hubAppearanceLibrary, menuLibrary, ashesLibrary, hubStatusLibrary, dataGridLibrary, pluginThemeLibrary, ...enabled.map(underPlugins), ...off]);
   }, [rt, status, loaded, managed, hostIds, lazy]);
   useEffect(() => { loader.markInstalled(); }, [contributed]);

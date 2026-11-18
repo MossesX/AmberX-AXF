@@ -75,18 +75,15 @@ t('widget asset: framework status widget, unread count in the label, opens the p
   assert.equal(c.statusAsset(items, c.readSet(items.map((i) => i.id)), 0).data.offLabel, "What's new · Feature a");
   assert.equal(c.statusAsset([], new Set(), 0, true).data.onLabel, "What's new · What's new …");
 });
-t('paint: registers, counts unread, attaches on the right or takes it off', () => {
+t('paint: counts unread and supplies the ticker as banner data (the banner widgets plugin draws it)', () => {
   const log: string[] = [];
   const badges: Record<string, number> = {};
-  const host: c.BannerHost = {
-    registry: { register: (raw) => { log.push(`reg ${(raw as { id: string }).id}`); } },
-    setBadge: (k, v) => { badges[k] = v; },
-    attachToBanner: (a) => { log.push(`attach ${a.type}:${a.id}@${a.at}/${a.origin}`); },
-    detachFromBanner: (k) => { log.push(`detach ${k}`); },
-  };
-  c.paintWhatsNew(host, items, c.readSet(['a']), 0, true);
-  c.paintWhatsNew(host, items, new Set(), 0, false);
-  assert.deepEqual(log, ['reg shipped', `attach status:shipped@right/${c.ID}`, 'reg shipped', 'detach status:shipped']);
+  const host: c.BannerHost = { setBadge: (k, v) => { badges[k] = v; } };
+  const supply: c.Supply = (w, d) => { log.push(`${w} ${d?.type} ${String(d?.data.onLabel)}`); };
+  c.paintWhatsNew(host, supply, items, c.readSet(['a']), 0);
+  assert.deepEqual(log, [`${c.ASSET_ID} status 3 new · Feature b`]);
+  assert.equal(badges[c.COUNTER], 3);
+  c.paintWhatsNew(host, supply, items, new Set(), 0);
   assert.equal(badges[c.COUNTER], 4);
 });
 t('ago', () => {

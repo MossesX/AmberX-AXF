@@ -49,18 +49,17 @@ export function statusAsset(it: BuildItem | null, error: string, now = Date.now(
 
 /** What the runtime needs to offer (structural, so this file imports nothing). */
 export interface BannerHost {
-  registry: { register(raw: unknown, source: 'app', origin: string): unknown };
   setBadge(name: string, n: number): void;
-  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string; widget?: Record<string, unknown> }): unknown;
-  detachFromBanner(keyOrOrigin: string): void;
 }
+/** Hands a banner widget its data (the console's banner data service, axf.banner-data@1); null = nothing to show. */
+export type Supply = (widget: string, s: { type: 'status' | 'counter' | 'badge' | 'action-button'; name?: string; description?: string; tags?: string[]; data: Record<string, unknown> } | null) => void;
+/** An asset's envelope as banner data: the banner widgets plugin registers and draws it. */
+const asData = (a: { type: string; name: string; description: string; tags: string[]; data: Record<string, unknown> }) => ({ type: a.type as 'status', name: a.name, description: a.description, tags: a.tags, data: a.data });
 
-/** Repaint the widget and the counters; attach it on the right, just after the clock (before the alerts bell at 30), or take it off when hidden. */
-export function paintBuild(rt: BannerHost, it: BuildItem | null, error: string, show: boolean, now = Date.now()): void {
-  rt.registry.register(statusAsset(it, error, now), 'app', ID);
+/** Set the counters and hand the widget its words; the banner widgets plugin draws it and owns its show switch. */
+export function paintBuild(rt: BannerHost, supply: Supply, it: BuildItem | null, error: string, now = Date.now()): void {
   rt.setBadge(COUNTERS.known, it ? 1 : 0);
   rt.setBadge(COUNTERS.running, it?.state === 'running' ? 1 : 0);
   rt.setBadge(COUNTERS.failing, it?.state === 'failure' ? 1 : 0);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 25, origin: ID, widget: { label: 'Main build status', size: 'compact', priority: 4, aliases: ['main build', 'ci'] } });
-  else rt.detachFromBanner(`status:${ASSET_ID}`);
+  supply(ASSET_ID, asData(statusAsset(it, error, now)));
 }

@@ -7,8 +7,6 @@ export const ID = 'ai.amberx.axf.console.alerts-bell';
 export const ASSET_ID = 'alerts-bell';
 /** The alerts library's unread counter (framework/libs/alerts → ALERTS_BADGE). */
 export const COUNTER = 'alerts.unread';
-export const SIDES = ['right', 'left'] as const;
-export type Side = (typeof SIDES)[number];
 
 /** Two framework widgets (no new asset type): the bell button and the unread counter next to it. */
 export const ASSETS = [
@@ -24,23 +22,16 @@ export const ASSETS = [
   },
 ] as const;
 
-/** The side the bell sits on; anything else stored falls back to the right. */
-export const sideOf = (v: unknown): Side => (v === 'left' ? 'left' : 'right');
-/** Shown unless switched off (missing / unreadable settings = shown). */
-export const showOf = (v: unknown) => v !== false;
 
-/** What the runtime needs to offer (structural, so this file imports nothing). */
-export interface BannerHost {
-  registry: { register(raw: unknown, source: 'app', origin: string): unknown };
-  attachToBanner(a: { type: string; id: string; at: 'left' | 'center' | 'right'; order?: number; origin: string; widget?: Record<string, unknown> }): unknown;
-  detachFromBanner(keyOrOrigin: string): void;
-}
+/** Hands a banner widget its data (the console's banner data service, axf.banner-data@1); null = nothing to show. */
+export type Supply = (widget: string, s: { type: 'status' | 'counter' | 'badge' | 'action-button'; name?: string; description?: string; tags?: string[]; data: Record<string, unknown> } | null) => void;
+/** An asset's envelope as banner data: the banner widgets plugin registers and draws it. */
+const asData = (a: { type: string; name: string; description: string; tags: string[]; data: Record<string, unknown> }) => ({ type: a.type as 'status', name: a.name, description: a.description, tags: a.tags, data: a.data });
+/** The banner data ids of the bell and its count. */
+export const WIDGETS = { bell: 'alerts-bell', count: 'alerts-count' } as const;
 
-/** Register the two assets and put them on the banner after the clock (or take them off when hidden). */
-export function placeBell(rt: BannerHost, show: boolean, side: Side): void {
-  for (const a of ASSETS) rt.registry.register(a, 'app', ID);
-  rt.detachFromBanner(ID);
-  if (!show) return;
-  rt.attachToBanner({ type: 'action-button', id: ASSET_ID, at: side, order: 30, origin: ID, widget: { label: 'Alerts bell', icon: 'bell', priority: 9, overflow: false, aliases: ['bell', 'alerts'] } });
-  rt.attachToBanner({ type: 'counter', id: ASSET_ID, at: side, order: 31, origin: ID, widget: { label: 'Alerts count', icon: 'bell', priority: 9, aliases: ['alert count'] } });
+/** Hand the bell and its count to the banner widgets plugin, which draws them and owns their show and side settings. */
+export function supplyBell(supply: Supply): void {
+  supply(WIDGETS.bell, asData(ASSETS[0] as never));
+  supply(WIDGETS.count, asData(ASSETS[1] as never));
 }

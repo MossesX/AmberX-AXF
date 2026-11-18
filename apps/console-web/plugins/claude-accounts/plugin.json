@@ -462,5 +462,8 @@
       "/root/.claude-accounts and /usr/local/bin/claude-account on the VPS host: the saved logins and the script belong to the host, not to this plugin"
     ]
   },
-  "opens": "main"
+  "opens": "main",
+  "optional": [
+    "service:axf.banner-widgets@1"
+  ]
 }

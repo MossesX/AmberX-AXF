@@ -21,6 +21,7 @@ import { Button, Chip, Container, Note, SelectField, Switch, TextField, useRunti
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { supplyBannerData } from '@console/bannerData';
 import { CLAUDE_TIMEOUT_MAX, CLAUDE_TIMEOUT_MIN, DEFAULTS, ENGINE_LABEL, FOLDER, SETTING_KEYS, hear, modeIndicator, type ClaudeView, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
 import { available, chime, createEngine, say, type Engine } from './engine';
 import { cancelFloor, floorLabel, handleCommand, hasFloor } from './flow';
@@ -188,14 +189,13 @@ function paintBanner() {
   const key = JSON.stringify([l.label, l.tone, show]);
   if (key === painted) return;
   painted = key;
-  rt.registry.register({
-    $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'Wake listener', version: '0.1.0', author: 'Wake listener plugin',
-    description: 'The mic-on light: lit while the console listens for its wake phrase; tap to switch the listener on or off.', tags: ['voice', 'mic', 'status'],
-    data: { counter: COUNTER, onLabel: l.label, offLabel: l.label, onTone: TONE_OF[l.tone] ?? 'neutral', offTone: 'neutral', dot: true, link: 'wake-listener.toggle' },
-  } as never, 'app', ID);
   rt.setBadge(COUNTER, l.lit ? 1 : 0);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 23, origin: ID, widget: { label: 'Wake listener', size: 'compact', priority: 4, aliases: ['mic', 'listener'] } });
-  else rt.detachFromBanner(`status:${ASSET_ID}`);
+  // the listener's own Mic light choice says when there is a light at all; the banner widgets plugin draws it
+  supplyBannerData(ASSET_ID, !show ? null : {
+    type: 'status', name: 'Wake listener', tags: ['voice', 'mic', 'status'],
+    description: 'The mic-on light: lit while the console listens for its wake phrase; tap to switch the listener on or off.',
+    data: { counter: COUNTER, onLabel: l.label, offLabel: l.label, onTone: TONE_OF[l.tone] ?? 'neutral', offTone: 'neutral', dot: true, link: 'wake-listener.toggle' },
+  }, ID);
 }
 
 /* ------------------------------------------------------------------ the settings panel */

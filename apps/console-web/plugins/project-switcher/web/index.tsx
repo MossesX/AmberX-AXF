@@ -20,6 +20,7 @@ import { Button, Chip, Icon, Note, Switch, TextField, useRuntime } from '@consol
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { getToken, post } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { supplyBannerData } from '@console/bannerData';
 import { LoadingSkeleton } from '@console/emptyState';
 import './projects.css';
 import { appMenu } from './menu';
@@ -29,7 +30,6 @@ const FOLDER = 'project-switcher';
 const DIALOG = 'projects';
 const ASSET_ID = 'project';
 const COUNTER = 'project.known';
-const SHOW_KEY = 'projects.show';
 const RELOAD_KEY = 'projects.reload';
 const API = `plugins/${FOLDER}`;
 export const PROJECT_CHANGED = 'axf:project-changed';
@@ -64,18 +64,16 @@ const find = (key: string): Project | null => {
   return st.data?.projects.find((p) => p.id === k || p.name.toLowerCase() === k) ?? null;
 };
 
-/** Repaint the banner chip (a framework status widget) and attach it, or take it off when hidden. */
+/** Hand the banner chip its words (axf.banner-data@1); the banner widgets plugin draws it and owns its show switch. */
 function paint(rt: AxfRuntime) {
   const p = current();
   const text = p ? `Project: ${p.name}` : 'Project: …';
-  rt.registry.register({
-    $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'Project', version: '0.1.0', author: 'Projects plugin',
-    description: 'The project the console works on (its builds, notes, to-dos and plans). Tap to switch or start a new one.', tags: ['projects', 'status'],
-    data: { counter: COUNTER, onLabel: text, offLabel: text, onTone: p && !p.base ? 'accent' : 'muted', offTone: 'muted', dot: true, link: 'projects.open' },
-  }, 'app', ID);
   rt.setBadge(COUNTER, p ? 1 : 0);
-  if (rt.settings.get(SHOW_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 19, origin: ID, widget: { label: 'Project', size: 'compact', priority: 7, aliases: ['project', 'workspace'] } });
-  else rt.detachFromBanner(`status:${ASSET_ID}`);
+  supplyBannerData(ASSET_ID, {
+    type: 'status', name: 'Project', tags: ['projects', 'status'],
+    description: 'The project the console works on (its builds, notes, to-dos and plans). Tap to switch or start a new one.',
+    data: { counter: COUNTER, onLabel: text, offLabel: text, onTone: p && !p.base ? 'accent' : 'muted', offTone: 'muted', dot: true, link: 'projects.open' },
+  }, ID);
 }
 
 async function change(rt: AxfRuntime, cmd: string, body: Record<string, unknown>, done: string): Promise<boolean> {
@@ -197,7 +195,6 @@ function Switcher() {
 
 function SettingsPanel() {
   const rt = useRuntime();
-  const [show, setShow] = useState(rt.settings.get(SHOW_KEY) !== false);
   const [reload, setReload] = useState(rt.settings.get(RELOAD_KEY) !== false);
   useProjects();
   const p = current();
@@ -209,7 +206,7 @@ function SettingsPanel() {
         <Button tone="primary" icon="layers" onClick={() => rt.openDialog(DIALOG)}>Switch or manage projects</Button>
         <Button tone="neutral" icon="plus" onClick={() => rt.dispatch('projects.new')}>New project</Button>
       </div>
-      <Switch label="Show the project on the banner" checked={show} onChange={(on) => flip(SHOW_KEY, on, setShow)} />
+      <div className="fx-row fx-row--wrap"><Button tone="ghost" icon="layout" onClick={() => rt.dispatch(`banner.widgets:status:${ASSET_ID}`)}>The project on the banner…</Button></div>
       <Switch label="Reload the console after switching" hint="Every page then reads the new project's data." checked={reload} onChange={(on) => flip(RELOAD_KEY, on, setReload)} />
       <p className="fx-small fx-muted axp-projects__desc">
         CLI: <span className="fx-mono">node framework/cli/projects.mjs [new "&lt;name&gt;" | select &lt;id&gt; | archive &lt;id&gt; --confirm &lt;id&gt; | delete &lt;id&gt; --confirm &lt;id&gt;]</span>.

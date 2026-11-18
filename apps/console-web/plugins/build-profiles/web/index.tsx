@@ -20,6 +20,7 @@ import { Button, Chip, Icon, Note, Switch, TextField, useRuntime } from '@consol
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { getToken, post } from '@console/api';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { supplyBannerData } from '@console/bannerData';
 import './build-profiles.css';
 import { appMenu } from './menu';
 import { LoadingSkeleton } from '@console/emptyState';
@@ -29,7 +30,6 @@ const FOLDER = 'build-profiles';
 const DIALOG = 'build-profiles';
 const ASSET_ID = 'build-profile';
 const COUNTER = 'build.profile.known';
-const SHOW_KEY = 'build-profiles.show';
 const RELOAD_KEY = 'build-profiles.reload';
 export const PROFILE_CHANGED = 'axf:profile-changed';
 
@@ -59,18 +59,16 @@ export async function loadProfiles(): Promise<void> {
 
 const current = (): Profile | null => st.data?.profiles.find((p) => p.id === st.data?.effective) ?? null;
 
-/** Repaint the banner chip (a framework status widget) and attach it, or take it off when hidden. */
+/** Hand the banner chip its words (axf.banner-data@1); the banner widgets plugin draws it and owns its show switch. */
 function paint(rt: AxfRuntime) {
   const p = current();
   const text = p ? `Profile: ${p.name}` : 'Profile: …';
-  rt.registry.register({
-    $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'Build profile', version: '0.1.0', author: 'Build profiles plugin',
-    description: 'The build profile the console works on (plan, queue, pending builds, tracking). Tap to switch.', tags: ['builds', 'status'],
-    data: { counter: COUNTER, onLabel: text, offLabel: text, onTone: p && !p.base ? 'accent' : 'muted', offTone: 'muted', dot: true, link: 'build-profiles.open' },
-  }, 'app', ID);
   rt.setBadge(COUNTER, p ? 1 : 0);
-  if (rt.settings.get(SHOW_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 20, origin: ID, widget: { label: 'Build profile', size: 'compact', priority: 6, aliases: ['profile'] } });
-  else rt.detachFromBanner(`status:${ASSET_ID}`);
+  supplyBannerData(ASSET_ID, {
+    type: 'status', name: 'Build profile', tags: ['builds', 'status'],
+    description: 'The build profile the console works on (plan, queue, pending builds, tracking). Tap to switch.',
+    data: { counter: COUNTER, onLabel: text, offLabel: text, onTone: p && !p.base ? 'accent' : 'muted', offTone: 'muted', dot: true, link: 'build-profiles.open' },
+  }, ID);
 }
 
 async function change(rt: AxfRuntime, body: Record<string, unknown>, done: string): Promise<boolean> {
@@ -192,7 +190,6 @@ function Picker() {
 
 function SettingsPanel() {
   const rt = useRuntime();
-  const [show, setShow] = useState(rt.settings.get(SHOW_KEY) !== false);
   const [reload, setReload] = useState(rt.settings.get(RELOAD_KEY) !== false);
   const s = useProfiles();
   const p = current();
@@ -201,7 +198,7 @@ function SettingsPanel() {
     <div className="fx-stack">
       <p style={{ margin: 0 }}>In use: <strong>{p?.name ?? '…'}</strong>{s.data && <span className="fx-muted"> · data in {s.data.dataRoot}</span>}</p>
       <div className="fx-row fx-row--wrap"><Button tone="primary" icon="layers" onClick={() => rt.openDialog(DIALOG)}>Switch or manage profiles</Button></div>
-      <Switch label="Show the profile on the banner" checked={show} onChange={(on) => flip(SHOW_KEY, on, setShow)} />
+      <div className="fx-row fx-row--wrap"><Button tone="ghost" icon="layout" onClick={() => rt.dispatch(`banner.widgets:status:${ASSET_ID}`)}>The profile on the banner…</Button></div>
       <Switch label="Reload the console after switching" hint="Every page then reads the new profile's data." checked={reload} onChange={(on) => flip(RELOAD_KEY, on, setReload)} />
       <p className="fx-small fx-muted" style={{ margin: 0 }}>
         CLI: <span className="fx-mono">node framework/cli/profiles.mjs [select &lt;id&gt; | create "&lt;name&gt;" | where]</span>. A session can work on another profile without changing the pick: <span className="fx-mono">AXF_BUILD_PROFILE=&lt;id&gt;</span>.

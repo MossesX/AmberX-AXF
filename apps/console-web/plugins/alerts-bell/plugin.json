@@ -11,12 +11,9 @@
     "axf-console"
   ],
   "provides": [
-    "asset:action-button/alerts-bell",
-    "asset:counter/alerts-bell",
-    "banner:right",
     "settings-tab:alerts-bell"
   ],
-  "optional": [],
+  "optional": ["service:axf.banner-widgets@1"],
   "scopes": [],
   "enabledByDefault": true,
   "commands": { "$axf": "plugin-commands@1", "auto": true },

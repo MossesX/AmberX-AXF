@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Self-test for the Claude badge plugin (fake AI assistant service).
 
-    python3 apps/console-web/plugins/claude-badge/test.py
+    python3 apps/console-web/plugins/banner-widgets/test.py
 """
 from __future__ import annotations
 
@@ -18,14 +18,14 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[3]
-os.environ["AXF_CLAUDE_BADGE_DIR"] = tempfile.mkdtemp(prefix="axf-cb-test-")
+os.environ["AXF_BANNER_WIDGETS_DIR"] = tempfile.mkdtemp(prefix="axf-cb-test-")
 sys.path.insert(0, str(HERE.parent.parent / "server"))
 import console_context as cx  # noqa: E402
 import plugin_services  # noqa: E402
 
 cx.set_context(ROOT=REPO)
 sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
-spec = importlib.util.spec_from_file_location("axf_console_plugins.claude_badge_test", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
+spec = importlib.util.spec_from_file_location("axf_console_plugins.banner_widgets_test", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
 mod = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = mod
 spec.loader.exec_module(mod)
@@ -64,7 +64,7 @@ class FakeLlm:
         return {"text": "OK", "model": self.model, "profile": "anthropic-main"}
 
 
-print("claude-badge self-test")
+print("banner-widgets self-test")
 check(c.get("/p/status").json()["last"] is None, "no result before the first test")
 r = c.post("/p/test").json()
 check(not r["ok"] and "AI assistant" in r["error"] and r["state"] == "error", "no assistant: AI unavailable, says why")
@@ -91,7 +91,7 @@ check(c.post("/p/test").json()["state"] == "no-credit", "usage limit reached cou
 for msg, want in [("402 Payment Required", "no-credit"), ("insufficient_quota", "no-credit"), ("401 invalid x-api-key", "error"), ("connection refused", "error"), ("", "error")]:
     check(mod.classify(False, msg) == want, f"classify {msg!r} → {want}")
 check(mod.classify(True, "quota") == "ok", "a working answer is ok whatever the text")
-f0 = Path(os.environ["AXF_CLAUDE_BADGE_DIR"]) / "status.json"
+f0 = Path(os.environ["AXF_BANNER_WIDGETS_DIR"]) / "status.json"
 saved = f0.read_text("utf-8")
 f0.write_text(json.dumps({"at": 1, "ok": False, "error": "credit balance is too low"}), "utf-8")
 check(c.get("/p/status").json()["last"]["state"] == "no-credit", "an older saved result without a state gets one")
@@ -102,7 +102,7 @@ r = c.post("/p/test").json()
 check(not r["ok"] and r["state"] == "error", "an empty answer counts as unavailable")
 last = c.get("/p/status").json()["last"]
 check(last and not last["ok"] and "OK" not in json.dumps(last), "last result kept, no reply text stored")
-f = Path(os.environ["AXF_CLAUDE_BADGE_DIR"]) / "status.json"
+f = Path(os.environ["AXF_BANNER_WIDGETS_DIR"]) / "status.json"
 check((f.stat().st_mode & 0o777) == 0o600, "result file is private (0600)")
 plugin_services.withdraw("fake-assistant")
 check(not c.post("/p/test").json()["ok"], "assistant removed: unavailable again")

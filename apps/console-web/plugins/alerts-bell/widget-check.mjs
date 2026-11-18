@@ -23,22 +23,19 @@ const rt = new AxfRuntime({ manifest, assets, storageKey: 'test:alerts-bell' });
 const toolbar = JSON.parse(readFileSync(join(dir, 'toolbar/console-search.json'), 'utf8'));
 const keys = (side) => rt.banner().placed[side].map((p) => `${p.key}@${p.origin}`);
 
+// The plugin only supplies data now (axf.banner-data@1); the banner widgets plugin registers and places it (its own
+// widget-check covers placement). This stand-in registers what is supplied, as that plugin does.
+const supplied = [];
+const supply = (w, s) => { supplied.push(s ? w : `-${w}`); if (s) rt.registry.register({ $axf: 'asset@1', type: s.type, id: w === 'alerts-count' ? 'alerts-bell' : w, name: s.name, version: '0.1.0', author: 'test', description: s.description, tags: s.tags, data: s.data }, 'app', 'test'); };
 const out = { valid: core.ASSETS.map((a) => validateAsset(a)), banner: rt.assetOrNull('banner')?.id ?? null };
-core.placeBell(rt, true, core.sideOf(undefined));
-out.right = keys('right');
-out.left0 = keys('left');
-core.placeBell(rt, true, core.sideOf('left'));
-out.left = keys('left');
-out.rightAfterMove = keys('right');
-core.placeBell(rt, false, 'right');
-out.hidden = rt.hostAttachments('banner').filter((a) => a.origin === core.ID).length;
-core.placeBell(rt, true, core.sideOf('nonsense'));
-out.fallbackSide = keys('right').filter((k) => k.endsWith(core.ID)).length;
+core.supplyBell(supply);
+out.supplied = supplied;
+out.registered = [rt.registry.has('action-button', core.ASSET_ID), rt.registry.has('counter', core.ASSET_ID)];
+out.attachedByItself = rt.hostAttachments('banner').length;
+void keys;
 out.counter = [0, 5, 150].map((n) => counterText(n, 99, true));
 rt.setBadge(core.COUNTER, 7);
 out.badge = rt.badge(core.COUNTER);
-rt.detachAll(core.ID);
-out.afterDetachAll = rt.hostAttachments('banner').filter((a) => a.origin === core.ID).length;
 out.toolbarBell = JSON.stringify(toolbar).includes('alerts.open') || JSON.stringify(toolbar).includes('alerts.unread');
 out.warnings = rt.terminal.lines.filter((l) => l.level === 'warn' && l.channel === 'widgets').map((l) => l.text);
 console.log(JSON.stringify(out));

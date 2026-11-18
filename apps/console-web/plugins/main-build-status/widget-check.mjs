@@ -26,6 +26,10 @@ const now = Date.parse('2026-10-21T10:10:00Z');
 const item = (state, extra = {}) => ({ repo: 'MossesX/AmberX-AXF', branch: 'main', workflow: 'android.yml', state, title: 't', name: 'n', sha: 'abc', url: '', runNumber: 1, event: 'push', startedAt: '2026-10-21T10:07:00Z', updatedAt: '2026-10-21T10:08:00Z', failedJobs: [], previous: null, error: '', ...extra });
 const data = () => rt.assetOrNull('status', core.ASSET_ID)?.data ?? rt.registry.get?.('status', core.ASSET_ID)?.data;
 
+// The plugin only supplies data now (axf.banner-data@1); the banner widgets plugin registers and places it (its own
+// widget-check covers placement). This stand-in registers what is supplied, as that plugin does.
+const supplied = [];
+const supply = (w, s) => { supplied.push(s ? w : `-${w}`); if (s) rt.registry.register({ $axf: 'asset@1', type: s.type, id: w, name: s.name, version: '0.1.0', author: 'test', description: s.description, tags: s.tags, data: s.data }, 'app', 'test'); };
 const out = { texts: {}, tones: {}, valid: [] };
 for (const s of ['success', 'failure', 'running', 'unknown']) {
   const a = core.statusAsset(item(s), '', now);
@@ -37,20 +41,17 @@ out.none = core.bannerText(null, now);
 out.errorNoItem = core.statusAsset(null, 'boom', now).data.onLabel;
 out.ago = [core.shortAgo('2026-10-21T10:09:50Z', now), core.shortAgo('2026-10-21T07:00:00Z', now), core.shortAgo('2026-10-18T10:00:00Z', now), core.shortAgo('x', now)];
 
-core.paintBuild(rt, null, '', true, now);
+core.paintBuild(rt, supply, null, '', now);
 out.knownBefore = rt.badge(core.COUNTERS.known);
 out.onBefore = statusOn(rt.badge(core.COUNTERS.known));
-core.paintBuild(rt, item('failure'), '', true, now);
-out.right = rt.banner().placed.right.map((p) => `${p.key}@${p.origin}`);
+core.paintBuild(rt, supply, item('failure'), '', now);
+out.supplied = [...new Set(supplied)];
+out.failLabel = rt.registry.get('status', core.ASSET_ID)?.data?.onLabel ?? null;
 out.counters = [rt.badge(core.COUNTERS.known), rt.badge(core.COUNTERS.running), rt.badge(core.COUNTERS.failing)];
 out.repainted = rt.registry.has('status', core.ASSET_ID);
-core.paintBuild(rt, item('running'), '', true, now);
+core.paintBuild(rt, supply, item('running'), '', now);
 out.countersRunning = [rt.badge(core.COUNTERS.known), rt.badge(core.COUNTERS.running), rt.badge(core.COUNTERS.failing)];
-core.paintBuild(rt, item('success'), '', false, now);
-out.hidden = rt.hostAttachments('banner').filter((a) => a.origin === core.ID).length;
-core.paintBuild(rt, item('success'), '', true, now);
-rt.detachAll(core.ID);
-out.afterDetachAll = rt.hostAttachments('banner').filter((a) => a.origin === core.ID).length;
+out.attachedByItself = rt.hostAttachments('banner').length;
 out.warnings = rt.terminal.lines.filter((l) => l.level === 'warn' && l.channel === 'widgets').map((l) => l.text);
 out.conflicts = diags.filter((d) => String(d.kind ?? '').includes('conflict')).length;
 console.log(JSON.stringify(out));

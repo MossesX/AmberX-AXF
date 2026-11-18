@@ -13,14 +13,13 @@
   ],
   "provides": [
     "view:builds",
-    "settings-tab:builds-page",
-    "banner:right"
+    "settings-tab:builds-page"
   ],
   "scopes": [
     "ROUTES"
   ],
   "enabledByDefault": true,
-  "optional": [],
+  "optional": ["service:axf.banner-widgets@1"],
   "banner": false,
   "tabable": {
     "view": "builds",

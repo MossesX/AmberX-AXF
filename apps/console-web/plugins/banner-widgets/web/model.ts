@@ -1,7 +1,12 @@
 /**
- * Badges: what each of the five banner badges is, and what its settings mean. Pure (no React, no runtime), so test.mts
+ * Banner widgets: what each of the five status badges is, and what its settings mean (the badges whose readings this plugin
+ * takes itself; registry.ts lists every widget). Pure (no React, no runtime), so test.mts
  * runs it directly. The keys keep their old names where a setting already existed, so nobody's choices are lost.
  */
+/** The plugin's settings tab. `claude-badge` was its id before the plugin became Banner widgets; a saved target still opens it. */
+export const SETTINGS_TAB = 'banner-widgets';
+const OLD_TAB = 'settings.open:claude-badge';
+
 export type BadgeKind = 'console' | 'vps' | 'axhub' | 'amberx' | 'usage';
 export type BadgeState = 'ok' | 'warn' | 'error' | 'off';
 export type TapKind = 'dropdown' | 'screen' | 'command' | 'toggle' | 'none';
@@ -28,7 +33,7 @@ export interface BadgeDef {
 export const BADGES: Record<BadgeKind, BadgeDef> = {
   console: {
     id: 'claude', label: 'Claude', title: 'Claude (console AI)', icon: 'sparkles', order: 5, side: 'left', aliases: ['claude', 'console connection'],
-    tap: 'screen', target: 'settings.open:claude-badge', about: 'The AI connection, tested when the console loads.',
+    tap: 'screen', target: `settings.open:${SETTINGS_TAB}`, about: 'The AI connection, tested when the console loads.',
     states: {
       ok: { label: 'connected', icon: 'sparkles', setting: 'Connected (has credits)' },
       warn: { label: 'out of credits', icon: 'zap', setting: 'Account works, out of credits' },
@@ -38,7 +43,7 @@ export const BADGES: Record<BadgeKind, BadgeDef> = {
   },
   vps: {
     id: 'claude-vps', label: 'VPS', title: 'VPS (Claude login)', icon: 'cloud', order: 6, side: 'left', aliases: ['vps', 'vps connection'],
-    tap: 'screen', target: 'settings.open:claude-badge', about: 'The Claude Code login on the VPS.',
+    tap: 'screen', target: `settings.open:${SETTINGS_TAB}`, about: 'The Claude Code login on the VPS.',
     states: {
       ok: { label: 'logged in', icon: 'cloud', setting: 'Logged in and working' },
       warn: { label: 'limit hit', icon: 'zap', setting: 'Limit hit or out of credits' },
@@ -118,7 +123,8 @@ export function tapPlan(read: Read, kind: BadgeKind): TapPlan {
   const target = typeof raw === 'string' ? raw.trim() : '';
   if (tap === 'dropdown') return { do: 'drop' };
   if (tap === 'screen') {
-    const to = target || (BADGES[kind].tap === 'screen' ? BADGES[kind].target : `settings.open:claude-badge`);
+    const picked = target === OLD_TAB ? `settings.open:${SETTINGS_TAB}` : target;
+    const to = picked || (BADGES[kind].tap === 'screen' ? BADGES[kind].target : `settings.open:${SETTINGS_TAB}`);
     return { do: 'dispatch', spec: /[.:]/.test(to) ? to : `nav:${to}` };
   }
   if (tap === 'command') return target ? { do: 'dispatch', spec: target } : { do: 'none' };

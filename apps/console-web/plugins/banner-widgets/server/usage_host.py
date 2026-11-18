@@ -1,4 +1,4 @@
-"""Runs on the VPS host (sent by the Badges plugin through axf.headless@1): every saved Claude login's usage, as one JSON line.
+"""Runs on the VPS host (sent by the Banner widgets plugin through axf.headless@1): every saved Claude login's usage, as one JSON line.
 
 Plain HTTP, no model call, so it costs no tokens. The token is read here and sent only to api.anthropic.com; what is
 printed is a fixed list of fields, never the token or the answer's raw text. An expired token is not refreshed and not

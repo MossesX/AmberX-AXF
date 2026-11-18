@@ -10,6 +10,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { supplyBannerData } from '@console/bannerData';
 import { appMenu } from './menu';
 import { JobRouting, ROUTING_ASSETS, loadRouting } from './routing';
 import './claude-accounts.css';
@@ -309,18 +310,17 @@ function Page() {
   );
 }
 
-/** The banner chip: a framework status widget naming the active account; tap = the switch dialog. */
+/** The banner chip's words (axf.banner-data@1): the active account; tap = the switch dialog. The banner widgets plugin draws it. */
 function paint(rt: AxfRuntime, v: View | null) {
-  if (!v?.active) { rt.setBadge(COUNTER, 0); rt.detachFromBanner(`status:${ASSET_ID}`); return; }
+  if (!v?.active) { rt.setBadge(COUNTER, 0); supplyBannerData(ASSET_ID, null, ID); return; }
   const only = v.one?.buildAccount ?? '';
   const label = `Claude: ${only || v.active}${only ? ' · only' : ''}${v.pending || (only && only !== v.active) ? ' · waiting' : ''}`;
-  rt.registry.register({
-    $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'Claude account', version: '0.1.0', author: 'Claude accounts plugin',
-    description: 'The Claude account on the VPS (· only: the one account the console and every build use). Tap to pick it.', tags: ['claude', 'status'],
-    data: { counter: COUNTER, onLabel: label, offLabel: label, onTone: v.pending || (only && only !== v.active) ? 'warning' : 'accent', offTone: 'muted', dot: true, link: 'claude-accounts.switch' },
-  }, 'app', ID);
   rt.setBadge(COUNTER, 1);
-  rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 21, origin: ID });
+  supplyBannerData(ASSET_ID, {
+    type: 'status', name: 'Claude account', tags: ['claude', 'status'],
+    description: 'The Claude account on the VPS (· only: the one account the console and every build use). Tap to pick it.',
+    data: { counter: COUNTER, onLabel: label, offLabel: label, onTone: v.pending || (only && only !== v.active) ? 'warning' : 'accent', offTone: 'muted', dot: true, link: 'claude-accounts.switch' },
+  }, ID);
 }
 
 export const plugin: AxfWebLibrary = {

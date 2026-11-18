@@ -1,4 +1,4 @@
-/** Badges: the pure model. `npx -y tsx apps/console-web/plugins/claude-badge/test.mts` */
+/** Badges: the pure model. `npx -y tsx apps/console-web/plugins/banner-widgets/test.mts` */
 import { BADGES, ICONS, KINDS, STATE_IDS, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, shapeOf, shownOf, sideOf, tapPlan } from './web/model.ts';
 import type { UsageResult } from './web/model.ts';
 
@@ -24,12 +24,12 @@ ok(sideOf(none, 'axhub') === 'right' && sideOf(none, 'usage') === 'left' && side
 
 ok(tapPlan(none, 'usage').do === 'drop', 'usage meter: drop-down by default');
 ok(tapPlan(none, 'axhub').spec === 'hubstatus.open', 'axHub: its details by default');
-ok(tapPlan(none, 'console').spec === 'settings.open:claude-badge', 'Claude: settings by default, as before');
+ok(tapPlan(none, 'console').spec === 'settings.open:banner-widgets', 'Claude: settings by default, as before');
 const set = (o: object) => settings(Object.fromEntries(Object.entries(o).map(([k, v]) => [keyOf('usage', k as 'tap'), v])));
 ok(tapPlan(set({ tap: 'none' }), 'usage').do === 'none', 'nothing');
 ok(tapPlan(set({ tap: 'screen', 'tap-target': 'alerts' }), 'usage').spec === 'nav:alerts', 'a page id');
 ok(tapPlan(set({ tap: 'screen', 'tap-target': 'settings.open:alerts' }), 'usage').spec === 'settings.open:alerts', 'an action');
-ok(tapPlan(set({ tap: 'screen' }), 'usage').spec === 'settings.open:claude-badge', 'a screen with no target opens the badge settings');
+ok(tapPlan(set({ tap: 'screen' }), 'usage').spec === 'settings.open:banner-widgets', 'a screen with no target opens the badge settings');
 ok(tapPlan(set({ tap: 'command', 'tap-target': 'terminal.claude' }), 'usage').spec === 'terminal.claude', 'a command');
 ok(tapPlan(set({ tap: 'command' }), 'usage').do === 'none', 'a command with no target does nothing');
 ok(tapPlan(set({ tap: 'toggle' }), 'usage').key === keyOf('usage', 'icon-only'), 'toggle flips Icons only by default');
@@ -42,4 +42,5 @@ ok(meterText(r({ fiveHour: win(12.4), weekly: win(13) })) === '5h 12% · wk 13%'
 ok(meterText(r({ weekly: win(13) })) === '5h – · wk 13%', 'no 5-hour window open');
 ok(meterText(r({ weekly: win(13) }), 'Max') === 'Max 5h – · wk 13%', 'a label in front');
 ok(meterText(null) === 'no reading' && meterText(r({ status: 'no-meter' })) === 'no reading', 'nothing to read');
-console.log(`claude-badge model: ${n} checks passed`);
+ok(tapPlan(set({ tap: 'screen', 'tap-target': 'settings.open:claude-badge' }), 'usage').spec === 'settings.open:banner-widgets', 'a target saved before the move opens the new tab');
+console.log(`banner-widgets model: ${n} checks passed`);

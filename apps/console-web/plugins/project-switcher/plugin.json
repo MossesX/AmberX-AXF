@@ -14,7 +14,7 @@
     "dialog:projects",
     "settings-tab:projects"
   ],
-  "optional": [],
+  "optional": ["service:axf.banner-widgets@1"],
   "scopes": [
     "ROUTES"
   ],

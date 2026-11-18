@@ -2,7 +2,7 @@
 /**
  * Banner guard: the connection badges (Claude, VPS, axHub, AmberX) are on the console's banner by default.
  *
- *   npx -y tsx apps/console-web/plugins/claude-badge/banner.test.mts
+ *   npx -y tsx apps/console-web/plugins/banner-widgets/banner.test.mts
  *
  * Builds the console's own runtime (its framework copy, manifest and every asset it ships), attaches each badge exactly
  * as the plugin does (web/model.ts badgeAttachment) and asks the banner what it draws. Fails when the banner draws zero
@@ -18,7 +18,7 @@ import { BADGES, CONNECTION_KINDS, KINDS, badgeAttachment, shownOf } from './web
 
 const here = dirname(fileURLToPath(import.meta.url));
 const app = join(here, '../..');
-const ORIGIN = 'ai.amberx.axf.console.claude-badge';
+const ORIGIN = 'ai.amberx.axf.console.banner-widgets';
 let checks = 0;
 const ok = (v: unknown, what: string) => { assert.ok(v, what); checks += 1; };
 
@@ -105,4 +105,4 @@ for (const phone of [false, true]) {
   } finally { g.matchMedia = before; }
 }
 
-console.log(`claude-badge banner guard: ${checks} checks passed`);
+console.log(`banner-widgets banner guard: ${checks} checks passed`);

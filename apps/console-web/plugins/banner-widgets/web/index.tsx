@@ -6,14 +6,23 @@ import { Button, Chip, Icon, Meter, useIsPhone } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { startSupplied } from './supplied';
+import { SUPPLIED } from './registry';
+import { registerCommands } from './commands';
+import { WidgetsScreen } from './WidgetsScreen';
 
 import { ASSET_ID as HUB_ASSET, COUNTER as HUB_COUNTER } from '@console/axf/libs/hubstatus';
 import { BADGES, CHIPS, ICONS, KINDS, STATE_IDS, STATE_NAMES, TAPS, TONES, badgeAttachment, iconKey, iconOf, keyOf, labelOf, meterText, shapeOf, shownOf, statusWord, tapPlan, typeWord } from './model';
+import { SETTINGS_TAB } from './model';
 import type { BadgeKind, BadgeState, BadgeTone, UsageAccount, UsageResult, UsageWindow } from './model';
-import './badges.css';
+import './banner-widgets.css';
 
 /*
- * Badges (folder claude-badge): five badges on the banner, one plugin. Claude tests the AI connection when the console
+ * Banner widgets (folder banner-widgets, formerly the Badges plugin claude-badge): every chip and badge on the console's
+ * banner, in one plugin. registry.ts is the table of all of them; supplied.ts draws the ones other plugins hand data for
+ * (axf.banner-data@1); WidgetsScreen.tsx is the one settings screen; commands.ts the API and voice actions.
+ *
+ * This file is the five status badges whose readings the plugin takes itself. Claude tests the AI connection when the console
  * loads (axf.llm@1). VPS watches the Claude Code login on the host. axHub shows the framework's live check (hubLive): green
  * only while settings come live from axHub, red otherwise. AmberX shows whether the phone app is connected. The usage
  * meter shows how much of its 5-hour and weekly limits the active account has used. Everything but the Claude test is
@@ -21,14 +30,18 @@ import './badges.css';
  * Each badge: shown or hidden, Icons only, label, an icon per state, side and order on the banner, and what a tap does.
  * Settings are hot: a badge repaints the moment one changes. model.ts holds the table.
  */
-const ID = 'ai.amberx.axf.console.claude-badge';
-const FOLDER = 'claude-badge';
+const ID = 'ai.amberx.axf.console.banner-widgets';
+const FOLDER = 'banner-widgets';
+/** Where the badges' taps used to be registered; kept so a saved command or shortcut still works. */
+const OLD_TAP = 'claude-badge.tap';
+/** The badges are the console's own (they read the console host); on AmberX only the supplied widgets run. */
+const BADGE_APPS = ['axf-console'];
 const POP_MS = 5000;
 const VPS_POLL_MS = 60000;
 const USAGE_POLL_MS = 300000;
 const OLD_HUB_SHOW = 'hubstatus.show';
 const HUB_MOVED = 'claude-badge.axhub.moved';
-const P = 'axp-badges';
+const P = 'axp-banner-widgets';
 
 interface TestResult { at: number; ok: boolean; model: string; name: string; provider: string; ms: number; error: string; claude?: boolean; state?: string; account?: string }
 /** One read of the Claude Code login on the VPS (GET /vps): plain code, no tokens, never a credential. */
@@ -71,7 +84,7 @@ function badgeAsset(rt: AxfRuntime, kind: BadgeKind, st: BadgeState, tone: Badge
   return {
     $axf: 'asset@1', type: 'badge', id: d.id, name: d.title, version: '0.2.0', author: 'Badges plugin',
     description: `${d.about} Attached to the banner by the Badges plugin.`, tags: ['status', kind],
-    data: { icon: iconOf(read(rt), kind, st), label: text, shape: shapeOf(read(rt), kind), tone, tooltip, ...(tapPlan(read(rt), kind).do === 'none' ? {} : { link: `claude-badge.tap.${kind}` }) },
+    data: { icon: iconOf(read(rt), kind, st), label: text, shape: shapeOf(read(rt), kind), tone, tooltip, ...(tapPlan(read(rt), kind).do === 'none' ? {} : { link: `banner-widgets.tap.${kind}` }) },
   };
 }
 
@@ -126,12 +139,13 @@ const live = () => liveListeners.forEach((f) => f());
 const placed: Partial<Record<BadgeKind, string>> = {};
 let timers: ReturnType<typeof setInterval>[] = [];
 let stopped = false;
+let badgesHere = true;
 
 /** Put one badge on the banner as its settings say, or take it off. A new side or order re-attaches it. */
 function paint(rt: AxfRuntime, kind: BadgeKind) {
   const d = BADGES[kind];
   const key = `badge:${d.id}`;
-  if (!shownOf(read(rt), kind)) { rt.detachFromBanner(key); delete placed[kind]; return; }
+  if (!badgesHere || !shownOf(read(rt), kind)) { rt.detachFromBanner(key); delete placed[kind]; return; }
   rt.registry.register(ASSETS[kind](rt) as never, 'app', ID);
   const a = badgeAttachment(read(rt), kind, ID);
   const place = `${a.at}:${a.order}`;
@@ -274,7 +288,7 @@ function StatusList({ rt, kind }: { rt: AxfRuntime; kind: BadgeKind }) {
       <p className="fx-small">{data.tooltip}</p>
       <div className="fx-row fx-row--wrap">
         {kind !== 'axhub' && <Button size="sm" icon="refresh" disabled={busy} onClick={() => { setBusy(true); void CHECK[kind](rt).finally(() => setBusy(false)); }}>{busy ? 'Checking…' : 'Check now'}</Button>}
-        <Button size="sm" tone="ghost" icon="settings" onClick={() => { setDrop(null); rt.dispatch(`settings.open:${FOLDER}`); }}>Badge settings</Button>
+        <Button size="sm" tone="ghost" icon="settings" onClick={() => { setDrop(null); rt.dispatch(`settings.open:${SETTINGS_TAB}`); }}>Badge settings</Button>
       </div>
     </div>
   );
@@ -383,7 +397,7 @@ function StatesPreview({ rt }: { rt: AxfRuntime }) {
 
 /** One badge's settings group: how it draws, where it sits, what a tap does and the icon for each state. */
 const badgeGroup = (kind: BadgeKind, id: string, order: number) => ({
-  id, label: BADGES[kind].title, icon: BADGES[kind].icon, tab: 'claude-badge', order,
+  id, label: BADGES[kind].title, icon: BADGES[kind].icon, tab: SETTINGS_TAB, order,
   description: `${BADGES[kind].about} Whether it is on the banner, how it draws, what a tap does and the icon for each state.`,
   settings: [
     { key: keyOf(kind, 'show'), label: 'Show on the banner', kind: 'toggle' as const, default: true, scope: 'device' as const },
@@ -396,6 +410,26 @@ const badgeGroup = (kind: BadgeKind, id: string, order: number) => ({
     ...STATE_IDS.map((st) => ({ key: iconKey(kind, st), label: `${STATE_NAMES[st]} icon: ${BADGES[kind].states[st].setting}`, kind: 'choice' as const, default: BADGES[kind].states[st].icon, scope: 'device' as const, options: ICONS.map((i) => ({ value: i, label: i.charAt(0).toUpperCase() + i.slice(1) })) })),
   ],
 });
+
+/**
+ * The switches of the widgets other plugins supply data for. They keep the keys (and so the values) they had in the plugins
+ * that used to draw them; the Every banner widget list above flips the same switches.
+ */
+function suppliedGroup() {
+  const seen = new Set<string>();
+  const settings = [];
+  for (const w of SUPPLIED) {
+    const name = w.sideKey ? 'the alerts bell and its count' : w.title;
+    if (w.showKey && !seen.has(w.showKey)) { seen.add(w.showKey); settings.push({ key: w.showKey, label: `Show ${name} on the banner`, kind: 'toggle' as const, default: true, scope: 'device' as const, description: w.about }); }
+    if (w.when && !seen.has(w.when.key)) { seen.add(w.when.key); settings.push({ key: w.when.key, label: `${w.title} on the banner`, kind: 'choice' as const, default: w.when.default, scope: 'device' as const, options: w.when.options }); }
+    if (w.sideKey && !seen.has(w.sideKey)) { seen.add(w.sideKey); settings.push({ key: w.sideKey, label: `Side of ${name}`, kind: 'choice' as const, default: w.at, scope: 'device' as const, options: [{ value: 'right', label: 'Right' }, { value: 'left', label: 'Left' }] }); }
+  }
+  return {
+    id: 'banner-widgets.supplied', label: 'Widgets from other plugins', icon: 'layers', tab: SETTINGS_TAB, order: 18,
+    description: 'Whether each one is on the banner, and when. The plugins that supply the numbers no longer carry these switches; the keys and your choices are unchanged.',
+    settings,
+  };
+}
 
 /** The axHub badge moves in once: the framework's own badge steps aside, keeping whether it was shown. It stays switchable. */
 function moveHubBadge(rt: AxfRuntime) {
@@ -411,18 +445,25 @@ let hubSeen = '';
 
 export const plugin: AxfWebLibrary = {
   id: ID,
-  label: 'Badges',
-  version: '0.5.0',
+  label: 'Banner widgets',
+  version: '0.6.0',
   appMenu,
-  provides: ['banner.badge.claude', 'banner.badge.claude-vps', 'banner.badge.axhub', 'banner.badge.amberx-phone', 'banner.badge.claude-usage'],
+  provides: ['axf.banner-widgets@1', 'banner.badge.claude', 'banner.badge.claude-vps', 'banner.badge.axhub', 'banner.badge.amberx-phone', 'banner.badge.claude-usage'],
   // Only badges on the app's banner: inside a host that hides the banner it isn't loaded (embed@1 skipWhen).
   embed: { skipWhen: ['hidden:banner'] },
-  slots: { 'app.frame.cover': [{ id: 'claude-badge.drop', order: 97, render: () => <Drop /> }] },
+  slots: { 'app.frame.cover': [{ id: 'banner-widgets.drop', order: 97, render: () => <Drop /> }] },
   register(rt) {
     runtime = rt;
+    badgesHere = BADGE_APPS.includes(rt.manifest.app.id);
+    startSupplied(rt, ID);
+    registerCommands(rt);
+    if (!badgesHere) return;
     moveHubBadge(rt);
     if (!watching) document.addEventListener('pointerdown', (e) => { lastPressed = (e.target as Element | null)?.closest?.('.fx-banner__badge') ?? null; }, true);
-    for (const k of KINDS) rt.actions.register(`claude-badge.tap.${k}`, () => tap(rt, k), { label: `${BADGES[k].title}: tap` });
+    for (const k of KINDS) {
+      rt.actions.register(`banner-widgets.tap.${k}`, () => tap(rt, k), { label: `${BADGES[k].title}: tap` });
+      rt.actions.register(`${OLD_TAP}.${k}`, () => tap(rt, k), { label: `${BADGES[k].title}: tap (old name)`, searchable: false });
+    }
     if (!watching) {
       watching = true; // hot render: any setting of a badge repaints it at once
       for (const k of KINDS) {
@@ -451,13 +492,14 @@ export const plugin: AxfWebLibrary = {
     if (shownOf(read(rt), 'usage')) setTimeout(() => void checkUsage(rt), 1200);
     if (stopped || !timers.length) startReads(rt);
   },
-  settingsTabs: [{ id: 'claude-badge', label: 'Badges', icon: 'sparkles', parent: 'plugins', order: 46, description: 'The Claude, VPS, axHub, AmberX and usage badges on the banner.' }],
-  settings: [badgeGroup('console', 'claude-badge.icons', 20), badgeGroup('vps', 'claude-badge.vps', 21), badgeGroup('axhub', 'claude-badge.axhub', 22), badgeGroup('amberx', 'claude-badge.amberx', 23), badgeGroup('usage', 'claude-badge.usage', 24)],
+  settingsTabs: [{ id: SETTINGS_TAB, label: 'Banner widgets', icon: 'layout', parent: 'plugins', order: 46, description: 'Every chip and badge on the banner: show or hide, order, side, size, shape and icon, and the Claude, VPS, axHub, AmberX and usage badges.' }],
+  settings: [suppliedGroup(), badgeGroup('console', 'banner-widgets.console', 20), badgeGroup('vps', 'banner-widgets.vps', 21), badgeGroup('axhub', 'banner-widgets.axhub', 22), badgeGroup('amberx', 'banner-widgets.amberx', 23), badgeGroup('usage', 'banner-widgets.usage', 24)],
   settingsPanels: [
-    { id: 'claude-badge.states', tab: 'claude-badge', title: 'The four states', icon: 'eye', order: 15, render: () => (runtime ? <StatesPreview rt={runtime} /> : null) },
-    { id: 'claude-badge.status', tab: 'claude-badge', title: 'AI connection', icon: 'sparkles', order: 10, render: () => (runtime ? <ConsolePanel rt={runtime} /> : null) },
-    { id: 'claude-badge.vps-status', tab: 'claude-badge', title: 'VPS connection', icon: 'cloud', order: 12, render: () => (runtime ? <VpsPanel rt={runtime} /> : null) },
-    { id: 'claude-badge.usage-status', tab: 'claude-badge', title: 'Usage of every account', icon: 'clock', order: 13, render: () => (runtime ? <UsagePanel rt={runtime} /> : null) },
-    { id: 'claude-badge.lifecycle', tab: 'claude-badge', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+    { id: 'banner-widgets.all', tab: SETTINGS_TAB, title: 'Every banner widget', icon: 'layout', order: 5, render: () => <WidgetsScreen /> },
+    { id: 'banner-widgets.states', tab: SETTINGS_TAB, title: 'The four states', icon: 'eye', order: 15, render: () => (runtime ? <StatesPreview rt={runtime} /> : null) },
+    { id: 'banner-widgets.status', tab: SETTINGS_TAB, title: 'AI connection', icon: 'sparkles', order: 10, render: () => (runtime ? <ConsolePanel rt={runtime} /> : null) },
+    { id: 'banner-widgets.vps-status', tab: SETTINGS_TAB, title: 'VPS connection', icon: 'cloud', order: 12, render: () => (runtime ? <VpsPanel rt={runtime} /> : null) },
+    { id: 'banner-widgets.usage-status', tab: SETTINGS_TAB, title: 'Usage of every account', icon: 'clock', order: 13, render: () => (runtime ? <UsagePanel rt={runtime} /> : null) },
+    { id: 'banner-widgets.lifecycle', tab: SETTINGS_TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
 };

@@ -22,7 +22,8 @@
   "enabledByDefault": true,
   "optional": [
     "axf.llm@1",
-    "axf.agent-voice@1"
+    "axf.agent-voice@1",
+    "service:axf.banner-widgets@1"
   ],
   "banner": false,
   "tabable": {
