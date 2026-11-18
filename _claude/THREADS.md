@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → running, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `auto-recover-stuck-builds` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `ui-review-gate-switch-default-off` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `fix-toolbar-settings-doing-nothing` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `merge-all-ready-buttons-server-side` note (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:00 UTC · `attach-widgets-to-any-toolbar-banner` s13 done (all) · orchestrator
 - 2026-11-18 16:03 UTC · `stop-push-storm-builds-live-pushes-build` s1 done, → running (all) · orchestrator
 - 2026-11-18 16:05 UTC · `attach-widgets-to-any-toolbar-banner` s14 done (all) · orchestrator
+- 2026-11-18 16:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-18 16:06 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
 
 ## Token passes (log)
 
