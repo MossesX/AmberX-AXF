@@ -30,7 +30,9 @@
 # Prints one line: "started <tmux session> in <folder>" (or "started pid …").
 # Model upgrades (Brett, Nov 3 2026): before anything starts, framework/cli/model-gate.mjs checks the model against the
 # orchestrator build the run belongs to (--name, AXF_BUILD_ID or the brief's "Continue build … (<id>)"): a higher model
-# than its step, or an upgrade phase Brett hasn't approved, is refused with exit 3 and one line saying why. Every brief
+# than its step, or an upgrade phase Brett hasn't approved, is refused with exit 3 and one line saying why. The same call
+# enforces the gate rule require-split-id (split-plan@1): a build start with no orchestrator build id or no valid split id
+# in the builds store is refused with exit 3 and the reason, and lands in the orchestrator Failed tab. Every brief
 # gets a line saying upgrades need Brett and downgrades are fine.
 # One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): framework/cli/dispatch-gate.mjs refuses a
 # launch that belongs to a build (an orchestrator build, or a session named build-*) unless it carries the orchestrator
@@ -228,10 +230,10 @@ fi
 if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GATE" ]]; then
   model="${AXF_MODEL:-}"; prev=""
   for a in "$@"; do [[ "$prev" == --model ]] && model="$a"; prev="$a"; done
-  if [[ -n "$model" ]]; then
-    verdict="$(node "$GATE" launch --model "$model" --name "$name" --brief "$brief" 2>&1)"; gate_st=$?
-    if (( gate_st == 3 )); then echo "claude-headless: $verdict" >&2; echo "$verdict"; exit 3; fi
-  fi
+  # always asked (gate rule require-split-id: a build start needs its orchestrator build id and split id); the model
+  # check inside it only applies when a model is given
+  verdict="$(node "$GATE" launch --model "$model" --name "$name" --brief "$brief" 2>&1)"; gate_st=$?
+  if (( gate_st == 3 )); then echo "claude-headless: $verdict" >&2; echo "$verdict"; exit 3; fi
 fi
 # One way to start builds (framework/cli/dispatch-gate.mjs, Brett, Nov 9 2026: "It has to be the orchestrator"): a launch
 # that belongs to a build starts only with the orchestrator dispatcher's token for that build (AXF_DISPATCH_TOKEN, set by

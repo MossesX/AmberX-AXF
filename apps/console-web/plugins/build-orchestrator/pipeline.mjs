@@ -505,6 +505,21 @@ export function planSplit(id, { by = 'orchestrator', slots: sl = null, provider 
   return { id: b0.id, ok: !error, splitId: error ? '' : r.plan.id, parts: error ? 0 : r.plan.parts.length, why: error || r.why, status: out.status, steps: stepSplit, provider: stepSplit?.provider ?? '', note: stepSplit?.note ?? '' };
 }
 
+/**
+ * Gate rule require-split-id: every orchestrator launch carries a split id. A build launched without one (a retry of a
+ * run from before split-plan@1, a fixing build) gets a one-part plan for its open steps on the spot: the whole build in
+ * one part, its own session and branch, nothing else changes. → the split id ('' when there is nothing to plan).
+ */
+export function ensureSplitFor(b, { by = 'dispatcher' } = {}) {
+  const cur = storeCore.findBuild(loadStore(), b.id) ?? b;
+  if (isSplitId(cur.splitId) && cur.split?.id === cur.splitId && cur.split.parts.length) return cur.splitId;
+  const run = nextRunOf(cur);
+  const r = planParts({ ...cur, splitId: run > 1 ? splitIdOf(cur.id, run - 1) : '' }, 1, {}, { run, by });
+  if (!r.ok) return '';
+  setPipeline(cur.id, {}, { by, action: 'pipeline:split-plan', note: `One-part plan ${r.plan.id} for this launch (gate rule require-split-id).`, mutate: (rec) => { rec.splitId = r.plan.id; rec.split = r.plan; } });
+  return r.plan.id;
+}
+
 /** Builds stuck in 'splitting' (a crash mid-split) go back to Pending so the one-at-a-time gate frees up. */
 export function recoverSplitting({ now = Date.now(), by = 'pipeline' } = {}) {
   const stuck = live(loadStore()).filter((b) => b.status === 'splitting' && now - Date.parse(b.split?.at || b.updatedAt || 0) > SPLITTING_STALE_MS);
@@ -845,6 +860,7 @@ export function fitBriefFor(b, rules, { account, model, kind = '', retry = '', m
 export function launch(b, { account, model, kind = '', phase = '', retry = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   // vps-reaper@1: ghosts (finished sessions still running, dead slots, leftover servers) go before anything starts
   reapFirstSync('launch', { env });
+  ensureSplitFor(b);
   const { dir } = ensureWorktree(b.id, env);
   // the dispatch gate (build-lock@1): never a second session on a build or its worktree. Throws code 'live' (not a
   // launch failure) while a tmux session, a claude pid or a fresh lock says the build is still running.

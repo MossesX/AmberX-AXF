@@ -14,14 +14,18 @@
  * jobs), so launching or relaunching a build on a higher model than its orchestrator step is refused like an
  * unapproved upgrade phase. The build is found by --build (AXF_BUILD_ID), else the session name, else the brief's
  * `Continue build "…" (<id>)` line. Not an orchestrator build = nothing to compare, it starts.
+ * Gate rule require-split-id (Gate & rules, on by default; split-plan@1): before the model check, `launch` refuses a
+ * build start with no orchestrator build id or no valid split id in the store (exit 3, the reason on one line) and
+ * writes the refusal to the orchestrator's Failed tab (split-gate-reject.mjs).
  */
 import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { MODEL_LABELS, modelKey, modelRank } from '../core/model-policy.mjs';
 import { phaseApproved, stepPhases, upgradeLine, upgradeNeedsApproval } from '../core/model-switch.mjs';
 import { loadUpgradePolicy } from './upgrade-policy.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
+import { parseSplitId } from '../core/build-split.mjs';
 
 const label = (m) => MODEL_LABELS[modelKey(m)] ?? m;
 const open = (s) => !s.done && !s.skip;
@@ -53,6 +57,39 @@ export function launchCheck(b, model) {
   }
   const auto = p.gate && p.kind === 'upgrade' && !upgradeNeedsApproval() && !(b.approvals ?? []).some((a) => a.phase === p.index) ? ' (upgrade: no approval needed, recorded when its first step is ticked)' : '';
   return { ok: true, build: b.id, phase: p.index, why: `${b.id} phase ${p.index + 1} runs on ${label(p.model)}${auto}; ${label(want)} is ${modelRank(want) < modelRank(p.model) ? 'a downgrade (fine)' : 'the same model'}` };
+}
+
+// ------------------------------------------------------------------ split gate (gate rule require-split-id, split-plan@1)
+
+export const SPLIT_RULE = 'require-split-id';
+/** Is the gate rule on? Read from the Gate & rules set (gate plugin data); on when no set is saved (the default). */
+export function splitRuleOn(env = process.env) {
+  if (env.AXF_SPLIT_GATE === 'off') return false; // tests only
+  const root = env.AXF_CONSOLE_ROOT && env.AXF_CONSOLE_ROOT !== 'off' ? env.AXF_CONSOLE_ROOT : resolve(fileURLToPath(import.meta.url), '../../..');
+  const f = env.AXF_GATE_DIR ? join(env.AXF_GATE_DIR, 'rules.json') : join(root, '.axf-console', 'plugins', 'gate', 'rules.json');
+  try { const set = JSON.parse(readFileSync(f, 'utf8')); const r = (set.rules ?? []).find((x) => x.id === SPLIT_RULE); return r ? r.enabled !== false : true; } catch { return true; }
+}
+
+/**
+ * May this build start? (pure) A launch that belongs to a build (an orchestrator build, or a session named build-* /
+ * build:*) needs an orchestrator build id AND a valid split id on the record: splitId is `<build>.r<n>` for that build,
+ * the plan on the record carries the same id and has parts. A part launch (AXF_SPLIT_ID + AXF_PART_ID) must name the
+ * build's current split and one of its parts. → { ok, build, why, missing: [] }
+ */
+export function splitGate(b, { name = '', splitId = '', partId = '', on = true } = {}) {
+  const bare = String(name).replace(/^axf-/, '');
+  const byName = /^build[-:]/.test(bare);
+  if (!on) return { ok: true, build: b?.id ?? '', why: `${SPLIT_RULE} is off (Gate & rules)`, missing: [] };
+  if (!b && !byName) return { ok: true, build: '', why: 'not a build: no split id needed', missing: [] };
+  if (!b) return { ok: false, build: bare.replace(/^build[-:]/, ''), why: `refused (${SPLIT_RULE}): "${bare}" has no orchestrator build id. File it with the orchestrator (pipeline.mjs request --title "…" --queue): it is split and started from the Queue.`, missing: ['build-id', 'split-id'] };
+  const p = parseSplitId(b.splitId);
+  if (!b.splitId || !p || p.build !== b.id) return { ok: false, build: b.id, why: `refused (${SPLIT_RULE}): ${b.id} has no ${b.splitId ? `valid split id ("${b.splitId}")` : 'split id'} in the builds store: it never went through the orchestrator splitter. Queue it (pipeline.mjs queue ${b.id}): intake splits it, then the dispatcher starts it.`, missing: ['split-id'] };
+  if (b.split?.id !== b.splitId || !(b.split?.parts?.length)) return { ok: false, build: b.id, why: `refused (${SPLIT_RULE}): ${b.id}'s split ${b.splitId} has no part plan on the record. Resplit it (pipeline.mjs resplit ${b.id}).`, missing: ['split-plan'] };
+  if (splitId || partId) {
+    if (splitId !== b.splitId) return { ok: false, build: b.id, why: `refused (${SPLIT_RULE}): the start names split ${splitId || '(none)'}, ${b.id}'s current split is ${b.splitId}.`, missing: ['split-id'] };
+    if (!b.split.parts.some((x) => x.id === partId)) return { ok: false, build: b.id, why: `refused (${SPLIT_RULE}): ${b.splitId} has no part ${partId || '(none)'}.`, missing: ['part-id'] };
+  }
+  return { ok: true, build: b.id, why: `${b.id}: split ${b.splitId}${partId ? ` part ${partId}` : ''} (${b.split.parts.length} part${b.split.parts.length === 1 ? '' : 's'})`, missing: [] };
 }
 
 /**
@@ -92,6 +129,12 @@ async function main(argv) {
     loadUpgradePolicy();
     const briefFile = opt('brief'); const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
     const b = findBuild(loadStore(), { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief });
+    // gate rule require-split-id first: no orchestrator build id or no valid split id = refused (exit 3) and sent to Failed
+    const g = splitGate(b, { name: opt('name'), splitId: process.env.AXF_SPLIT_ID || '', partId: process.env.AXF_PART_ID || '', on: splitRuleOn() });
+    if (!g.ok) {
+      try { const { rejectStart } = await import('./split-gate-reject.mjs'); rejectStart({ build: g.build, why: g.why, missing: g.missing, name: opt('name'), by: process.env.AXF_ACTOR || process.env.AXF_SURFACE || 'launcher' }); } catch { /* the refusal stands even when its record can't be written */ }
+      console.log(json ? JSON.stringify({ ...g, gate: SPLIT_RULE }) : g.why); process.exitCode = 3; return;
+    }
     const r = launchCheck(b, opt('model') || process.env.AXF_MODEL || '');
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why}`);
     if (!r.ok) process.exitCode = 3;
