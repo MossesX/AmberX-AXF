@@ -4,7 +4,7 @@
   "displayName": "AXHub",
   "description": "AXHub — web app to approve and manage axHub",
   "kind": "app",
-  "status": "active",
+  "status": "archived",
   "version": "0.1.0",
   "platforms": [
     "web"
@@ -32,5 +32,15 @@
   "owners": [
     "MossesX"
   ],
-  "created": "2026-10-22"
+  "created": "2026-10-22",
+  "notes": "Retired 2026-11-18 (build move-everything-axhub-web-console): every page moved into the Dev Console's Hub plugin (apps/console-web/plugins/hub-admin, hub-console@1). axhub.amberxai.com's UI paths redirect to the console's Hub screens (deploy/redirect.html); the axHub server stays backend + MCP only.",
+  "x": {
+    "retired": {
+      "at": "2026-11-18",
+      "build": "move-everything-axhub-web-console",
+      "replacedBy": "apps/console-web/plugins/hub-admin",
+      "redirect": "deploy/redirect.html",
+      "spec": "framework/spec/HUB-CONSOLE.md"
+    }
+  }
 }

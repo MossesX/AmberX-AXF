@@ -106,5 +106,10 @@
       "settings": true,
       "data": "off"
     }
+  },
+  "retired": {
+    "at": "2026-11-18",
+    "replacedBy": "console:hub-admin",
+    "note": "The AXHub web UI is retired: its pages live in the Dev Console (Hub). The build and the baked assets stay so the redirect container and the shared-asset history keep working."
   }
 }

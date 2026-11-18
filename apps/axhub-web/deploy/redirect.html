@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex"><title>AXHub moved into the console</title>
+<style>html{color-scheme:light dark;font-family:system-ui,sans-serif}body{margin:0;display:grid;place-items:center;min-height:100vh}main{max-width:36rem;padding:2rem;text-align:center}a{color:inherit}</style>
+</head><body><main>
+<h1>AXHub is in the console now</h1>
+<p>Every hub page lives in the Dev Console's Hub screens. Taking you there…</p>
+<p><a id="go" href="https://console.amberxai.com/?axf-open=view:hub">Open the console</a></p>
+</main>
+<script>
+(function(){
+  var MAP={"home":"approvals","screens":[{"id":"overview","routes":[["hub"]],"rowPattern":null},{"id":"approvals","routes":[["approvals"],["approvals"],["approvals","\u003cid>"],["approvals","\u003cid>"],["approvals","\u003cid>"]],"rowPattern":"^[0-9a-f-]{36}$"},{"id":"log","routes":[["approvals","log"],["approvals","log"],["approvals","log"]],"rowPattern":null},{"id":"passes","routes":[["passes"],["go-pass"]],"rowPattern":null},{"id":"users","routes":[["users"]],"rowPattern":null},{"id":"account","routes":[["account"]],"rowPattern":null},{"id":"connectors","routes":[["services"]],"rowPattern":"^[a-z][a-z0-9_-]{0,63}$"},{"id":"handoff","routes":[["handoff"],["handoff","\u003cid>"],["handoff","\u003cid>"]],"rowPattern":"^\\d{8}-\\d{6}-[a-z0-9]{4}$"},{"id":"auth","routes":[],"rowPattern":null},{"id":"apps","routes":[["apps"]],"rowPattern":null}],"deferred":["jobs","audit","vault","projects","devices","assets"]};
+  var DEFAULT_BASE="https://console.amberxai.com";
+  var q=new URLSearchParams(location.search);
+  var base=DEFAULT_BASE;
+  var c=q.get('console');
+  if(c){try{var u=new URL(c);if(u.protocol==='https:')base=u.origin;}catch(e){}}
+  var raw=(location.hash||'').replace(/^#/,'').replace(/^\/+/,'');
+  var path=raw.split('?')[0];
+  var segs=path.split('/').filter(Boolean);
+  var target='view:hub';
+  if(!segs.length){target='hub.open:'+MAP.home;}
+  else{
+    var best=null,bestLit=-1;
+    MAP.screens.forEach(function(s){s.routes.forEach(function(r){
+      if(r.length!==segs.length)return;
+      var lit=0,row=null,ok=true;
+      for(var i=0;i<segs.length;i++){
+        if(/^<.*>$/.test(r[i])){ if(!s.rowPattern||new RegExp(s.rowPattern).test(segs[i]))row=segs[i]; }
+        else if(r[i]===segs[i])lit++; else {ok=false;break;}
+      }
+      if(ok&&lit>bestLit){bestLit=lit;best={id:s.id,row:row};}
+    });});
+    if(best)target='hub.open:'+best.id+(best.row?':'+best.row:'');
+    else if(MAP.deferred.indexOf(segs[0])>=0)target='view:hub';
+  }
+  var href=base+'/?axf-open='+encodeURIComponent(target);
+  document.getElementById('go').href=href;
+  location.replace(href);
+})();
+</script></body></html>
