@@ -242,7 +242,31 @@ Drills: `bash deploy/dryrun/host-services.sh`, `bash deploy/dryrun/host-services
 | settings | (row detail lists them) | `GET/PUT /api/host-services/{id}/settings` | `host_services_settings`, `host_services_settings_set` | `axf host settings <id> k=v` | console control |
 | down state | HostServiceGate on Breakroom, Shipped features, Maintenance; systems-check items `host-api`, `host-service:<id>` with Auto fix | 503 `host_service_down` frame | tool error `host_service_down: …` | exit 3 | "The host API is down. …" |
 
-## 7. Known gaps
+## 7. UI Review (s26)
+
+Item `r-20261118-38820c16` (pending) (group "move-server-side-console-parts-onto-vps"), choice set `toolbar-host-services` (ui-choices@1,
+type `toolbar`, owner `host-services`): three page-toolbar options for the Host services view, each an asset in
+`apps/console-web/plugins/host-services/assets/toolbar/` (shipped picked or not):
+
+| Option | Asset | Look |
+|---|---|---|
+| Icons + labels, overflow (default) | `host-services` (+ `toolbar-host-services-labels`) | List / Fix groups, icon + label, folds into More |
+| Dense icons | `toolbar-host-services-dense` | icons only, labels in tooltips: most room on a phone |
+| Flat row | `toolbar-host-services-flat` | one row, Restart down services first, no overflow |
+
+Each option is shot desktop (1440) and phone (412, S26 Ultra width) in three scenes by
+`apps/console-web/scripts/host-services-shots.mjs` against `vite preview` with a fixed fixture: **list** (every row
+kind: up, degraded, down, in console, a tick; one row opened), **down** (the host API unreachable: the "Host service
+down" note, every row unknown) and **gate** (the Breakroom with agent-swarm down: the shared HostServiceGate note).
+The script picks its own free port: other checkouts leave `vite preview` servers on the usual ports, and the first
+captures of this step pictured another branch's console.
+
+Fixed while shooting: rows drifted right with the service name (the grid's `fr` tracks sized each row from its own
+content), now fixed widths in `--fx-font-size` units with a phone column set (service, status, mode, actions); and the
+Breakroom and Shipped features returned their empty state before HostServiceGate rendered, so a page whose own data
+failed never said the host side was down.
+
+## 8. Known gaps
 
 - **Shadow comparison from the console side**: the host counts its own clean dry-runs and compares any run the console
   reports (`POST /v1/services/{id}/shadow`, `host_services.report_shadow`), but the console loops do not report yet,
@@ -257,3 +281,10 @@ Drills: `bash deploy/dryrun/host-services.sh`, `bash deploy/dryrun/host-services
   claude-handoff, project-wizard, github-app, ai-keys, claude-settings, activity, notify-control + alert delivery,
   agent-manager tool backends. Each is a manifest + worker on the same runner; follow-up build.
 - Kotlin twin of the engine: deferred (PORTING.md).
+- **Look, open in review**: the toolbar's count badges sit over the end of the Refresh / Restart down services labels
+  (the shared page-toolbar badge placement, seen in every option), and on desktop the grid runs about 50 px past the
+  panel. Left for the pick in item `r-20261118-38820c16`.
+- **Deep link in list layout**: `open view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=host-services`
+  answers ok but the settings page in list layout (the console's default) stays on its section list; the shots script
+  presses Plugins → Host services instead. The console-control settings opener needs to follow sub-tabs in list layout
+  (shared, not this plugin's code); `settings.open:host-services` from the Gate button works.
