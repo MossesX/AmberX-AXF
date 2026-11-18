@@ -13,6 +13,7 @@
  *   node apps/console-web/plugins/plan-studio-2/tree.mjs tree [<item>] [--md]     the tree (indented), or one branch
  *   … list [--kind step] [--under <item>] [--q words]                            flat rows
  *   … show <item>                                                                one item with its path and progress
+ *   … open <plan> [--local]                                                      open it on its own in the console (view:plan-studio-2/plan:<id>)
  *   … find <words> [--kind k] [--under <item>]                                   matches, best first (focus to open each)
  *   … add <kind> "<title>" [--in <item>] [--at n] [--body …] [--model Opus] [--minutes 20] [--priority P1] [--tags a,b]
  *   … rename <item> "<title>" · edit <item> --title … --status … --done true --priority … --model … --minutes … --kind …
@@ -109,6 +110,10 @@ export function api(r, { by = '' } = {}) {
   switch (r.op) {
     case 'state': return stateView(s);
     case 'tree': { const root = r.id ? tc.resolve(s, r.id) : null; if (r.id && !root) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, rev: s.rev, root: root ? view(s, root) : null, tree: tc.tree(s, root?.id ?? null) }; }
+    // the one Open handler (REST GET/POST /plans/{id}[/open], the `plan`/`open` plugin commands → MCP + `axf plan-studio-2`,
+    // `tree.mjs open`, voice "open X"): what opening a plan means, the same answer everywhere; the server relays `action`
+    // to the open console (console-commands@1), the console page dispatches it itself.
+    case 'open': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no plan "${r.id}"`); return { ok: true, ...openAnswer(s, it) }; }
     case 'get': { const it = tc.resolve(s, r.id); if (!it) throw new tc.TreeError('not_found', `no item "${r.id}"`); return { ok: true, item: view(s, it), children: tc.children(s, it.id).map((c) => view(s, c)), ancestors: tc.ancestors(s, it.id).map((a) => ({ id: a.id, title: a.title, kind: a.kind })) }; }
     case 'find': { const under = r.under ? tc.resolve(s, r.under)?.id ?? '' : ''; return { ok: true, hits: tc.find(s, r.q ?? '', { kind: r.kind ?? '', limit: Math.max(1, Math.min(Number(r.limit) || 20, 200)), under }) }; }
     case 'export': { if (r.format === 'json') return { ok: true, format: 'json', data: tc.toJson(s, r.id || null) }; return { ok: true, format: 'md', markdown: tc.toMarkdown(s, r.id || null) }; }
@@ -131,7 +136,7 @@ export function api(r, { by = '' } = {}) {
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
-      if (cmd.op === 'open') { const it = tc.resolve(s, cmd.id); if (!it) throw new tc.TreeError('not_found', `no item "${cmd.id}"`); return { ok: true, understood: true, command: cmd, item: view(s, it), focus: `plan-studio-2.focus:${it.id}`, say: `Opening "${it.title}".` }; }
+      if (cmd.op === 'open') { const it = tc.resolve(s, cmd.id); if (!it) throw new tc.TreeError('not_found', `no item "${cmd.id}"`); return { ok: true, understood: true, command: cmd, ...openAnswer(s, it), focus: `plan-studio-2.focus:${it.id}` }; }
       if (cmd.op === 'find') { const hits = tc.find(s, cmd.q, { limit: 5 }); return { ok: true, understood: true, command: cmd, hits, say: hits.length ? `Found ${hits.length}: ${hits.map((h) => h.title).join(', ')}.` : 'Nothing matches.' }; }
       if (cmd.op === 'export') { const it = tc.resolve(s, cmd.id); if (!it) throw new tc.TreeError('not_found', `no item "${cmd.id}"`); return { ok: true, understood: true, command: cmd, markdown: tc.toMarkdown(s, it.id), say: `Exported "${it.title}" as Markdown.` }; }
       const map = { 'send-to-build': { op: 'build', id: cmd.id, said: r.text }, add: { op: 'add', kind: cmd.kind, title: cmd.title, parent: cmd.parent }, collapse: { op: 'collapse', id: cmd.id, all: !!cmd.all, collapsed: cmd.collapsed } };
@@ -141,6 +146,23 @@ export function api(r, { by = '' } = {}) {
     case 'clear': { if (r.confirm !== true && r.yes !== true) throw new tc.TreeError('confirm', 'clearing everything needs confirm: true'); const res = tc.clearAll(s); const st = save(res.state); return { ok: true, rev: st.rev, removed: res.removed, say: `Cleared ${res.removed} items.` }; }
     default: throw new tc.TreeError('validation', `unknown op "${r.op}"`);
   }
+}
+
+/** What opening an item means: the item, its deep-link address and link, and the console action that opens it. */
+export function openAnswer(s, it) {
+  const address = `view:plan-studio-2/plan:${it.id}`;
+  return { item: view(s, it), address, link: `?axf-target=view:plan-studio-2/plan:${encodeURIComponent(it.id)}`, action: `plan-studio-2.open:${encodeURIComponent(it.id)}`, say: `Opening "${it.title}".` };
+}
+
+/** Ask the running console (AXF_CONSOLE_URL + AXF_TOKEN) to open it on screen; null when no console is configured. */
+async function relayOpen(id) {
+  const base = process.env.AXF_CONSOLE_URL, token = process.env.AXF_TOKEN;
+  if (!base || !token) return null;
+  try {
+    const res = await fetch(`${base.replace(/\/$/, '')}/api/plugins/plan-studio-2/plans/${encodeURIComponent(id)}/open`, { method: 'POST', headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' }, body: '{}' });
+    const body = await res.json().catch(() => ({}));
+    return res.ok ? body : { ok: false, error: body.detail ?? `console answered ${res.status}` };
+  } catch (e) { return { ok: false, error: `console unreachable: ${e.message}` }; }
 }
 
 /* ------------------------------------------------------------------ CLI */
@@ -167,6 +189,13 @@ export async function main(argv = process.argv.slice(2)) {
       case 'tree': { const r = api({ op: 'tree', id: a[0] }); if (flags.md) return out(r, api({ op: 'export', id: a[0] }).markdown); return out(r, indentTree(r.tree).join('\n') || '(empty: nothing in Plan Studio 2.0 yet)'); }
       case 'list': { const s = load(); const under = flags.under ? tc.resolve(s, flags.under)?.id ?? '' : ''; const rows = tc.find(s, flags.q ?? '', { kind: flags.kind ?? '', limit: 1000, under }); return out({ ok: true, rows }, rows.map((h) => `${h.kind.padEnd(7)} ${h.id.padEnd(40)} ${h.path}`).join('\n')); }
       case 'show': { const r = api({ op: 'get', id: a[0] }); return out(r, `${r.item.path}\n${r.item.kind} · ${r.item.status || '-'} · ${r.item.priority || '-'} · ${r.item.model || '-'}${r.item.minutes ? ` · ${r.item.minutes} min` : ''} · ${r.item.progress.done}/${r.item.progress.total} done\n${r.item.body}\n${r.item.links.map((l) => `↳ ${l.type}: ${l.label || l.ref}`).join('\n')}`); }
+      case 'open': {
+        const r = api({ op: 'open', id: a.join(' ') });
+        const relayed = flags.local ? null : await relayOpen(r.item.id);
+        const res = { ...r, ...(relayed ? { console: relayed } : {}) };
+        const where = relayed ? (relayed.ok ? (relayed.delivered === false ? 'no console page is open' : 'opened in the console') : `console: ${relayed.error}`) : 'set AXF_CONSOLE_URL + AXF_TOKEN to open it in the console';
+        return out(res, `${r.say} ${r.address}\n${where}\nlink: ${r.link}`);
+      }
       case 'find': { const r = api({ op: 'find', q: a.join(' '), kind: flags.kind, under: flags.under }); return out(r, r.hits.map((h) => `${h.kind.padEnd(7)} ${h.path}  →  ${h.focus}`).join('\n') || 'nothing matches'); }
       case 'add': { const r = api({ op: 'add', kind: a[0], title: a.slice(1).join(' '), parent: flags.in, index: flags.at === undefined ? undefined : Number(flags.at), body: flags.body, model: flags.model, minutes: flags.minutes, priority: flags.priority, status: flags.status, tags: flags.tags ? String(flags.tags).split(',') : undefined }); return out(r, `${r.say} id ${r.item.id}`); }
       case 'rename': return out(api({ op: 'rename', id: a[0], title: a.slice(1).join(' ') }), 'renamed');
@@ -190,7 +219,7 @@ export async function main(argv = process.argv.slice(2)) {
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }
       case 'api': { const raw = a[0] ?? readFileSync(0, 'utf8'); const r = api(JSON.parse(raw)); return console.log(JSON.stringify(r)); }
-      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|say|clear|api|where'); process.exitCode = 2;
+      default: console.error('usage: tree.mjs tree|list|show|open|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|say|clear|api|where'); process.exitCode = 2;
     }
   } catch (e) {
     const err = { ok: false, error: e.message, code: e.code ?? 'error' };

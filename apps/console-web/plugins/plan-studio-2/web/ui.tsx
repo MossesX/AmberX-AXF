@@ -262,7 +262,8 @@ function CommandBox() {
     try { r = await sayCommand(h); } catch (e) { r = { ok: false, say: (e as Error).message }; }
     const said = r.say ?? (r.ok ? 'Done.' : 'That did not work.');
     setLog((l) => [{ heard: h, said, ok: r.ok }, ...l].slice(0, 8));
-    if (r.focus) requestFocus(r.focus.replace(/^plan-studio-2\.focus:/, ''));
+    if (r.action) rt.dispatch(r.action);
+    else if (r.focus) requestFocus(r.focus.replace(/^plan-studio-2\.focus:/, ''));
     else if (r.item?.id) select(r.item.id);
     if (speak) await speakOut(said, { agentVoice, lang });
   };
