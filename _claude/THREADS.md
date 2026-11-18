@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:27 UTC · `every-app-gets-own-locked-default` → queued, note (all) · Brett
 - 2026-11-18 12:28 UTC · `plan-studio-2-open-button-working-deep` → running, note (all) · pipeline
 - 2026-11-18 12:28 UTC · `plan-studio-2-open-button-working-deep` branch claude/plan-studio-2-open-button-working-deep (all) · pipeline
 - 2026-11-18 12:28 UTC · `plan-studio-2-open-button-working-deep` note (all) · orchestrator
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 19:57 UTC · `urgent-all-data-to-postgres-builds-store` s1 done, → running (all) · orchestrator
 - 2026-11-18 19:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
 - 2026-11-18 19:59 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-18 20:03 UTC · `host-phone-connect-apk-axhub-browser` added (3 steps) (all) · voice session
 
 ## Token passes (log)
 
