@@ -70,12 +70,18 @@ const localLines = (part) => journalPartText(part).split('\n').filter((l) => l.t
 async function syncPart(store, part, { apply, log }) {
   const lines = localLines(part);
   const remote = await remoteEntries(store, part);
-  const rep = { part, local: lines.length, remote: remote.length, shared: 0, extraRemote: 0, mismatch: null, appended: 0, large: 0 };
+  const rep = { part, local: lines.length, remote: remote.length, shared: 0, extraRemote: 0, mismatch: null, appended: 0, large: 0, truncated: [] };
   const have = new Set(remote.map((e) => canonical(e)));
   const mine = new Set();
   const missing = [];
   for (let i = 0; i < lines.length; i += 1) {
-    let e; try { e = JSON.parse(lines[i]); } catch { rep.mismatch = `local line ${i + 1} is not JSON`; return rep; }
+    let e;
+    try { e = JSON.parse(lines[i]); }
+    catch {
+      // a torn write (the line stops mid-JSON): not an entry, nothing to copy; reported with its head so the fragment is on record
+      rep.truncated.push({ line: i + 1, bytes: Buffer.byteLength(lines[i]), head: lines[i].slice(0, 120) });
+      continue;
+    }
     const c = canonical(e); mine.add(c);
     if (have.has(c)) rep.shared += 1; else missing.push(e);
   }
@@ -194,7 +200,7 @@ export async function cutover({ store = files.remoteStore(), apply = false, flip
       const r = await syncPart(store, part, { apply, log });
       if (r.mismatch) { report.journal.push(r); report.problems.push(`journal ${part}: ${r.mismatch}`); report.ok = false; return report; }
       prepass.set(part, r);
-      report.prepass = [...(report.prepass || []), { part: r.part, local: r.local, remote: r.remote, appended: r.appended, large: r.large, extraRemote: r.extraRemote }];
+      report.prepass = [...(report.prepass || []), { part: r.part, local: r.local, remote: r.remote, appended: r.appended, large: r.large, extraRemote: r.extraRemote, truncated: r.truncated }];
     }
   }
   // hold the store lock for the check and the flip: no local writer can change the file or the journal meanwhile. The lock
