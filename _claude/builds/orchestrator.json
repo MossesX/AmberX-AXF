@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T14:19:23.414Z",
+ "updatedAt": "2026-11-18T14:21:29.425Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162586,7 +162586,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T14:17:40.230Z",
+   "updatedAt": "2026-11-18T14:20:00.348Z",
    "builtAt": "",
    "notes": [
     {
@@ -162624,6 +162624,10 @@
     {
      "text": "Launch failed on hulu0241: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T14:17:40.230Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T14:20:00.348Z"
     }
    ],
    "approvals": [],
