@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8852,
- "updatedAt": "2026-11-18T05:44:32.529Z",
+ "rev": 8853,
+ "updatedAt": "2026-11-18T05:46:27.234Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -316978,7 +316978,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:43:55.345Z",
+   "updatedAt": "2026-11-18T05:44:56.546Z",
    "builtAt": "",
    "notes": [
     {
@@ -317044,6 +317044,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T05:43:55.345Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s2): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T05:44:56.546Z"
     }
    ],
    "approvals": [],
@@ -317111,6 +317115,20 @@
    "recoveries": [
     {
      "at": "2026-11-18T05:21:02.546Z",
+     "buildId": "approval-pass-covers-every-call",
+     "phase": "",
+     "step": "s2",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-18T05:43:43.746Z",
      "buildId": "approval-pass-covers-every-call",
      "phase": "",
      "step": "s2",
@@ -317398,7 +317416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
