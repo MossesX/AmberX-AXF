@@ -3,7 +3,9 @@
  * model-gate — no build starts on a higher model than Brett approved (Brett, Nov 3 2026: "You can downgrade, but you
  * can't upgrade."; framework/core/model-switch.mjs).
  *
- *   node framework/cli/model-gate.mjs launch --model <m> [--build <id>] [--name <session name>] [--brief <file>] [--json]
+ *   node framework/cli/model-gate.mjs launch --model <m> [--build <id>] [--name <session name>] [--brief <file>] [--step <id>] [--json]
+ *        --step (a parallel step launch, BUILD-PARALLEL): the check is that step's own: open, its phase approved, and
+ *        never a model above the step's pin
  *        exit 0 = may start; exit 3 = refused (one plain line says why and what to do)
  *   node framework/cli/model-gate.mjs audit [--all] [--json]
  *        every model upgrade approved so far (--all: downgrades too) and whether Brett approved it
@@ -55,6 +57,20 @@ export function launchCheck(b, model) {
   return { ok: true, build: b.id, phase: p.index, why: `${b.id} phase ${p.index + 1} runs on ${label(p.model)}${auto}; ${label(want)} is ${modelRank(want) < modelRank(p.model) ? 'a downgrade (fine)' : 'the same model'}` };
 }
 
+/** { ok, why, build?, step? }: may this one step (a parallel step session) start on `model` now? Checked per step. */
+export function stepLaunchCheck(b, stepId, model) {
+  if (!b) return { ok: false, why: `step launch ${stepId}: no orchestrator build found` };
+  const s = (b.steps ?? []).find((x) => x.id === stepId);
+  if (!s) return { ok: false, build: b.id, why: `${b.id} has no step ${stepId}` };
+  if (!open(s)) return { ok: false, build: b.id, step: s.id, why: `${b.id} ${s.id} is ${s.done ? 'done' : 'skipped'}: nothing to launch` };
+  const want = modelKey(model);
+  if (!want) return { ok: true, build: b.id, step: s.id, why: `model "${model}" unknown to the policy: the launcher's own check decides` };
+  const p = stepPhases(b.steps).find((x) => x.stepIds.includes(s.id));
+  if (p && !phaseApproved(b.approvals, p)) return { ok: false, build: b.id, step: s.id, phase: p.index, why: `${upgradeLine(b.id, p)} and Brett hasn't approved it: ${s.id} waits.` };
+  if (modelRank(want) > modelRank(s.model)) return { ok: false, build: b.id, step: s.id, why: `${b.id} ${s.id} is pinned to ${label(s.model)}: never launched on ${label(want)} (raise the step first)` };
+  return { ok: true, build: b.id, step: s.id, why: `${b.id} ${s.id} runs on ${label(s.model)}; ${label(want)} is ${modelRank(want) < modelRank(s.model) ? 'a downgrade (fine)' : 'the same model'}` };
+}
+
 /**
  * Every model switch approval in the store, with its kind (upgrade / downgrade, from the steps' phases), who gave it
  * (`by`/`via`; old records have neither: the journal revision that first holds it and git history say who wrote it)
@@ -92,7 +108,8 @@ async function main(argv) {
     loadUpgradePolicy();
     const briefFile = opt('brief'); const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
     const b = findBuild(loadStore(), { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief });
-    const r = launchCheck(b, opt('model') || process.env.AXF_MODEL || '');
+    const step = opt('step') || process.env.AXF_STEP_ID || '';
+    const r = step ? stepLaunchCheck(b, step, opt('model') || process.env.AXF_MODEL || '') : launchCheck(b, opt('model') || process.env.AXF_MODEL || '');
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why}`);
     if (!r.ok) process.exitCode = 3;
     return;

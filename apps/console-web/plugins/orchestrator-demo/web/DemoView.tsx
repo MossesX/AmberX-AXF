@@ -3,23 +3,25 @@
  * (✓ pass, ✗ fail with what failed, – skipped, ▶ now), and Start / Summary on a toolbar. The live caption bar does the
  * guiding; this page is where the whole list is.
  */
-import { Button, useRuntime } from '@console/axf/react';
-import { DIALOG_START, DIALOG_SUMMARY, isLive, useDemoState } from './api';
+import { PageToolbar } from '@console/axf/react';
+import { useDemoState } from './api';
 import './orchestrator-demo.css';
 
 export function DemoView() {
-  const rt = useRuntime();
   const { state, error } = useDemoState(1000, 5000);
   const run = state?.run ?? null;
   const sum = state?.summary ?? null;
   return (
     <div className="axp-orchestrator-demo__page" data-axf-target="view:orchestrator-demo">
-      <div className="axp-orchestrator-demo__toolbar is-head" role="toolbar" aria-label="Orchestrator demo">
-        <Button tone="primary" icon="play" disabled={isLive(state) && run?.state !== 'overlay'} onClick={() => rt.openDialog(DIALOG_START)}>Start the demo</Button>
-        <Button icon="list" disabled={!run} onClick={() => rt.openDialog(DIALOG_SUMMARY)}>Summary</Button>
-        <span className="axp-orchestrator-demo__spacer" />
-        {sum && run && <span className="axp-orchestrator-demo__muted">{run.state} · {sum.pass} passed · {sum.fail} failed · {sum.skipped} skipped · {sum.remaining} to go</span>}
-      </div>
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Plugins · Orchestrator demo</p>
+          <h1>Orchestrator demo</h1>
+          <p className="fx-muted">Runs a guided demo of the build orchestrator on demo builds and checks each step as it happens.</p>
+        </div>
+      </header>
+      <PageToolbar view="orchestrator-demo" />
+      {sum && run && <p className="axp-orchestrator-demo__muted">{run.state} · {sum.pass} passed · {sum.fail} failed · {sum.skipped} skipped · {sum.remaining} to go</p>}
       {error && <p className="axp-orchestrator-demo__error" role="alert">{error}</p>}
       {!run && !error && <p className="axp-orchestrator-demo__muted">No demo run yet. Start the demo to watch the orchestrator queue, launch, crash, retry, fix, land and fail on throwaway demo builds.</p>}
       {run && (

@@ -1,0 +1,26 @@
+{
+ "$axf": "asset@1",
+ "type": "toolbar",
+ "id": "build-orchestrator-slots-list",
+ "name": "build-orchestrator-slots: List, one slot per line",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Each slot on its own line with the build and step spelled out; tallest, best when Brett wants the whole picture.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-orchestrator-slots",
+  "choice-option:list"
+ ],
+ "data": {
+  "toolbar": "build-orchestrator.slots",
+  "scope": "view:build-orchestrator",
+  "layout": "list",
+  "role": "toolbar",
+  "ariaLabel": "Agent slots",
+  "items": [
+   "slot-chips",
+   "fill-now"
+  ],
+  "summary": true
+ }
+}

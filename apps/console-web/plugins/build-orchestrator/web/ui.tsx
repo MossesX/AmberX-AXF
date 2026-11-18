@@ -9,6 +9,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
+import { readSlotsLayout } from './Settings';
 import { GroupTab, GroupsBoard } from './groups';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import { RecoveriesList, WatchdogTab } from './watchdog';
@@ -115,7 +116,7 @@ export function OrchestratorPage() {
       </header>
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={tabRow(custom).map((t) => ({ value: t.id as Tab, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : t.count || undefined }))} />
-      {PIPELINE_VIEWS.has(tab) && <PipelineTab key={tab} api={api} log={log} view={tab as PipelineView} />}
+      {PIPELINE_VIEWS.has(tab) && <PipelineTab key={tab} api={api} log={log} view={tab as PipelineView} slotsLayout={readSlotsLayout()} />}
       {tab === 'groups' && <GroupsBoard api={api} log={log} />}
       {tab.startsWith('group:') && <GroupTab key={tab} api={api} log={log} group={tab.slice(6)} />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
