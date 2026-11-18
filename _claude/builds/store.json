@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9073,
- "updatedAt": "2026-11-18T16:00:23.620Z",
+ "rev": 9074,
+ "updatedAt": "2026-11-18T16:04:08.426Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321277,14 +321277,14 @@
    "title": "Stop the push storm: builds-live pushes at build end only, Expenses rebuilds only on its own changes",
    "category": "orchestrator",
    "detail": "Brett's words: \"We don't need it to do a update main on every fucking little thing. It needs to do it just at the end of the build.\" (about builds-live) and, about Expenses: \"Why is that shit even running? ... I just want to do what it needs to do to fucking update.\"\n\nFound on the VPS (load average 60): framework/cli/builds-live.mjs pushes a status-only [skip ci] commit to main for every store write (step, note, status), rewriting _claude/builds/store.json (over 2 MB), the orchestrator export and a THREADS.md live-log line, roughly every 30 s. apps/expenses/deploy/install.sh then builds a new expenses-axf image tagged with every new main commit (the live container is tagged with a status-only commit), so every status push also triggers a Docker build.\n\nReplaces the Nov 3 2026 'Builds go live to main' rule: store writes stay local/in the build's branch while it runs; one push to main when the build finishes (built/landed/failed). Update CLAUDE.md and _claude/builds/README.md to match.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-18T15:02:23.319Z",
+   "updatedAt": "2026-11-18T16:03:22.916Z",
    "builtAt": "",
    "notes": [
     {
@@ -321366,12 +321366,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T16:03:22.916Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T14:09:32.825Z",
-     "updatedAt": "2026-11-18T14:09:32.825Z"
+     "updatedAt": "2026-11-18T16:03:25.632Z"
     },
     {
      "id": "s2",
@@ -321404,7 +321404,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
