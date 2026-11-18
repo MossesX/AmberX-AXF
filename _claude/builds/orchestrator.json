@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T13:06:46.013Z",
+ "updatedAt": "2026-11-18T13:12:56.017Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192568,9 +192568,9 @@
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
-   "pr": "",
+   "pr": "#842",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T13:06:21.328Z",
+   "updatedAt": "2026-11-18T13:12:35.033Z",
    "builtAt": "",
    "notes": [
     {
@@ -192620,6 +192620,10 @@
     {
      "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T13:06:21.328Z"
+    },
+    {
+     "text": "Reconciler: PR #842",
+     "at": "2026-11-18T13:12:35.033Z"
     }
    ],
    "approvals": [],

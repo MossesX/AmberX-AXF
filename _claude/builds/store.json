@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8961,
- "updatedAt": "2026-11-18T13:06:46.013Z",
+ "rev": 8962,
+ "updatedAt": "2026-11-18T13:12:56.017Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318771,9 +318771,9 @@
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
-   "pr": "",
+   "pr": "#842",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T13:06:21.328Z",
+   "updatedAt": "2026-11-18T13:12:35.033Z",
    "builtAt": "",
    "notes": [
     {
@@ -318823,6 +318823,10 @@
     {
      "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T13:06:21.328Z"
+    },
+    {
+     "text": "Reconciler: PR #842",
+     "at": "2026-11-18T13:12:35.033Z"
     }
    ],
    "approvals": [],
@@ -318987,7 +318991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
