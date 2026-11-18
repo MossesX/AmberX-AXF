@@ -32,7 +32,8 @@
   /* brand palette slots (branding@1 overrides them from its palette; without a branding package they follow the theme) */
   --fx-brand-1: var(--fx-accent); --fx-brand-2: var(--fx-info); --fx-brand-3: var(--fx-text); /* theme-ok */
   /* derived like the Android ThemeEngine (black at opacityScrim); a colour theme that authors "scrim" overrides it */
-  --fx-scrim: color-mix(in srgb, #000 calc(var(--fx-opacity-scrim) * 100%), transparent); /* theme-ok */
+  /* the dialog scrim: a very dark tint of the colour theme's background (so it follows the theme), at the style theme's scrim opacity */
+  --fx-scrim: color-mix(in srgb, color-mix(in srgb, var(--fx-bg) 22%, #000) calc(var(--fx-opacity-scrim) * 100%), transparent); /* theme-ok */
   /* Safe area (console-android-app, Brett Nov 13 2026: "AmberX's banner was behind the camera, the clock and the
      notification panel"): the browser's own insets, which the Android console shell (apps/console-droid) overrides
      on <html> with the real status bar / cutout / navigation bar / keyboard sizes, so nothing is drawn under them. */

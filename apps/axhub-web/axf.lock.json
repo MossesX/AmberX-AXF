@@ -1017,8 +1017,8 @@
     "src/axf/schemas/skin-map.json": "06469c22aff50c58",
     "src/axf/schemas/stale-row.json": "76f381941cdcc6ff",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
-    "src/axf/schemas/token-registry.json": "475bacc40e8d03d8",
+    "src/axf/schemas/token-registry.json": "958828d5afbe58ff",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "afb3f360818a7789"
+    "src/axf/ui/axf.css": "e5279ca2cf575deb"
   }
 }

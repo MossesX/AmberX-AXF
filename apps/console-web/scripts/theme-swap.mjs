@@ -20,6 +20,10 @@ const log = (m) => { lines.push(m); console.log(m); };
 /** In CI, problems also become annotations so they're readable without downloading logs. */
 const annotate = (m) => { if (process.env.GITHUB_ACTIONS) console.log(`::error title=Theme swap::${m.replace(/\n/g, '%0A')}`); };
 const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { stdio: 'inherit' });
+// A preview server left running by another checkout on the same port would answer the probe below, and the check would
+// test that build instead of this one: when our own server exits (port in use, --strictPort) before it is up, stop.
+let serverExited = false;
+server.on('exit', () => { serverExited = true; });
 let failed = false;
 let page;
 const errors = [];
@@ -28,6 +32,7 @@ try {
   // Bind and probe 127.0.0.1 explicitly: on CI runners "localhost" can resolve to ::1 only.
   let up = false;
   for (let i = 0; i < 60 && !up; i += 1) {
+    if (serverExited) throw new Error(`vite preview exited before it was up (port ${PORT} in use by another process? set THEME_SWAP_PORT)`);
     try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { /* not up yet */ }
     if (!up) await sleep(500);
   }
