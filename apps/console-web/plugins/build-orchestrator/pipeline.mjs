@@ -16,7 +16,12 @@
  *   … hold <id…> [--why w] | release <id…>   On hold: stays in the Queue, the dispatcher skips it until released
  *   … archive <id…> | unarchive <id…>        the Archive (finished and retired builds; complete ones show there by themselves)
  *   … delete <id…> [--why w] | restore <id…> soft delete: kept in the store forever, Deleted tab, restorable
- *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
+ *   … split <id>                    split-plan@1: the build's part plan, run state and roll-up (REST GET split/<id>)
+ *   … split <id> --now|--request [--provider claude|rules]   split a build's steps now (or ask the next tick to)
+ *   … run                           the one active run and the main lock (REST GET run/active)
+ *   … resplit <id>                  plan its parts again now (REST POST split/<id>/resplit)
+ *   … cancel <id> --confirm [--why w]  stop its split run: nothing lands, main unlocks, back to Pending (REST POST run/<id>/cancel)
+ *   … split-gate [on|off]           the gate rule require-split-id (REST GET / PUT split-gate)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
  *   … requeue-stuck [--apply]       Pending builds whose last run ended phase-done with steps left (parked by the old rule):
@@ -86,7 +91,7 @@ import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
-import { applyRollUp, isActiveRun, isSplitId, lockMain, mainLocked, nextRunOf, normSplit, partBranch, partNext, partRef, planParts, splitIdOf, unlockMain } from '../../../../framework/core/build-split.mjs';
+import { applyRollUp, isActiveRun, isSplitId, lockMain, mainLocked, nextRunOf, normSplit, partBranch, partNext, partRef, planParts, rollUpBadge, splitIdOf, unlockMain } from '../../../../framework/core/build-split.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
 import * as RL from '../../../../framework/core/retry-ladder.mjs';
 import * as V from './verify.mjs';
@@ -107,7 +112,7 @@ import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { reapFirstSync } from '../../../../framework/cli/reaper.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
-import { combineTick, landingTick } from './combine.mjs';
+import { combineTick, failRun, landingTick } from './combine.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
@@ -237,8 +242,24 @@ const row = (b) => {
   return { id: b.id, alias: b.alias ?? '', title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
     tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', demo: b.demo === true, requeue: requeueOf(b), stuck: P.stuckAfterPhase(b), stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })),
-    ...attemptsView(b) };
+    ...splitView(b), ...attemptsView(b) };
 };
+/**
+ * split-plan@1 on a row: the split id, the run with its rolled-up badge, each part (slot, branch, account, status), the
+ * combine; and a start the gate refused (gateReason + the gate-rejection@1 record). Absent fields for a build never split.
+ */
+export function splitView(b) {
+  const out = {};
+  if (b?.gateReason) out.gateReason = str(b.gateReason, 600);
+  if (b?.gateRejection) out.gateRejection = b.gateRejection;
+  const sp = b?.split; if (!sp) return out;
+  out.splitId = b.splitId ?? sp.id;
+  out.split = { id: sp.id, run: sp.run, base: sp.base, badge: rollUpBadge(sp), at: sp.at,
+    parts: sp.parts.map((x) => ({ id: x.id, status: x.status, slot: x.slot, branch: x.branch, account: x.account, session: x.session, model: x.model, steps: x.steps, files: x.files.length, rebuilds: x.rebuilds, startedAt: x.startedAt, endedAt: x.endedAt, lastError: x.lastError, head: x.head })),
+    combine: { branch: sp.combine.branch, head: sp.combine.head, pr: sp.combine.pr, ci: sp.combine.ci, mergedAt: sp.combine.mergedAt, liveAt: sp.combine.liveAt, finishedAt: sp.combine.finishedAt },
+    failure: sp.failure, maxRebuilds: sp.maxRebuilds };
+  return out;
+}
 /** done-means-merged@1 on a row: every attempt, the open failure, the merge + verify evidence, the escalation, what the ladder tries next. */
 export function attemptsView(b) {
   const failure = BP.normFailure(b.failure);
@@ -1494,6 +1515,61 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   return result;
 }
 
+// ------------------------------------------------------------------ split runs: read and control (REST, MCP, CLI, voice)
+
+/** One build's split: the plan (parts, slots, branches, statuses), the run state with its roll-up, the main lock. */
+export function splitShow(id) {
+  const s = loadStore(); const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const lock = mainLocked(s.meta, { builds: live(s) });
+  return { id: b.id, title: b.title, status: b.status, tab: BP.tabOf(b), splitId: b.splitId ?? '', split: b.split ?? null, badge: b.split ? rollUpBadge(b.split) : null, ...(b.gateReason ? { gateReason: b.gateReason, gateRejection: b.gateRejection ?? null } : {}), mainLock: lock.lock ? { ...lock.lock, locked: lock.locked, why: lock.why } : null, holdsMain: !!lock.locked && lock.lock?.build === b.id };
+}
+/** The one active run (one build at a time) and the main lock: { active: splitShow | null, mainLock, why }. */
+export function runActive() {
+  const s = loadStore(); const builds = live(s);
+  const a = builds.filter(isActiveRun).sort((x, y) => Date.parse(x.pipeline?.launchedAt || 0) - Date.parse(y.pipeline?.launchedAt || 0))[0] ?? null;
+  const lock = mainLocked(s.meta, { builds });
+  const landing = !a && lock.locked && lock.lock ? builds.find((b) => b.id === lock.lock.build) : null;
+  const cur = a ?? landing;
+  return { active: cur ? splitShow(cur.id) : null, mainLock: lock.lock ? { ...lock.lock, locked: lock.locked } : null, why: cur ? `${cur.id} is ${cur.status}${cur.split ? ` (${rollUpBadge(cur.split).label})` : ''}` : lock.why };
+}
+/** Plan a build's parts again now (a Pending or Queued build; a failed run's build goes back to Pending first). */
+export function resplit(id, { by = process.env.AXF_ACTOR || 'cli' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (isActiveRun(b) || (b.split && ['building', 'combining', 'ci', 'merging', 'merged', 'live'].includes(b.split.run) && !['pending', 'queued'].includes(b.status))) throw Object.assign(new Error(`${b.id} is ${b.status}${b.split ? ` (run ${b.split.run})` : ''}: cancel its run first (pipeline.mjs cancel ${b.id} --confirm)`), { code: 2 });
+  if (!['pending', 'queued'].includes(b.status)) setPipeline(b.id, {}, { status: 'pending', by, action: 'pipeline:resplit', note: `Back to Pending to resplit (was ${b.status}).` });
+  return planSplit(b.id, { by });
+}
+/**
+ * Cancel a build's split run (destructive: needs confirm): its part sessions stop, the run fails with why, nothing lands,
+ * main unlocks, and the build goes back to Pending for Brett. Journalled.
+ */
+export function cancelRun(id, { confirm = false, by = process.env.AXF_ACTOR || 'cli', why = '' } = {}) {
+  if (!confirm) throw Object.assign(new Error('cancel stops every part session and lands nothing: confirm it (--confirm, confirm: true)'), { code: 2 });
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (!b.split) throw Object.assign(new Error(`${b.id} has no split run`), { code: 2 });
+  const f = failRun(b.id, `cancelled by ${by}${why ? `: ${str(why, 200)}` : ''}`, { by });
+  if (b.pipeline?.session) { try { spawnSync('tmux', ['kill-session', '-t', `=${b.pipeline.session}`]); } catch { /* best effort */ } }
+  setPipeline(b.id, { session: '', note: 'run cancelled' }, { status: 'pending', by, action: 'pipeline:cancel', note: `Run ${f.splitId} cancelled by ${by}: back to Pending.` });
+  logLine({ event: 'run-cancelled', build: b.id, splitId: f.splitId, by });
+  return { ...splitShow(b.id), cancelled: f.splitId, stopped: f.stopped };
+}
+/** The gate plugin's CLI (found by capability: service:axf.gate@1), or ''. */
+function gateCli(root = REPO_ROOT) {
+  const base = join(root, 'apps/console-web/plugins');
+  let dirs = []; try { dirs = readdirSync(base).sort(); } catch { return ''; }
+  for (const d of dirs) { const m = readJson(join(base, d, 'plugin.json')); if (m?.provides?.includes?.('service:axf.gate@1') && existsSync(join(base, d, 'gate.mjs'))) return join(base, d, 'gate.mjs'); }
+  return '';
+}
+/** The gate rule require-split-id (Gate & rules): read it, or switch it on / off (same op the Gate page uses). */
+export function splitGateRule(set = '', { by = process.env.AXF_ACTOR || 'cli' } = {}) {
+  const cli = gateCli(); if (!cli) throw new Error('no gate plugin (service:axf.gate@1)');
+  const args = set ? ['rules', set === 'on' ? 'on' : 'off', 'require-split-id', '--by', str(by, 80)] : ['rules', 'get', 'require-split-id'];
+  const r = spawnSync(process.execPath, [cli, ...args, '--json'], { cwd: REPO_ROOT, encoding: 'utf8', timeout: 60e3, env: process.env });
+  let j = null; try { j = JSON.parse((r.stdout || '').trim()); } catch { try { j = JSON.parse((r.stdout || '').trim().split('\n').pop()); } catch { /* below */ } }
+  if (!j?.rule) throw new Error(str(j?.error || r.stderr || r.stdout || 'gate CLI gave no rule', 300));
+  return { ok: true, rule: { id: j.rule.id, title: j.rule.title, description: j.rule.description, enabled: j.rule.enabled, severity: j.rule.severity, settings: j.rule.settings } };
+}
+
 // ------------------------------------------------------------------ main lock (main-lock@1, split-plan@1)
 
 /** The sha of origin/main as this checkout last fetched it ('' when git cannot say: tests, no remote). */
@@ -1886,6 +1962,12 @@ async function main(argv) {
     const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
     return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
   }
+  // split-plan@1: split <id> shows the plan (with --request / --provider / --now it splits the steps as before)
+  if (cmd === 'split' && rest[0] && !has('request') && !flag('provider') && !has('now')) { const r = splitShow(rest[0]); return out({ ok: true, ...r }, `${r.id}: ${r.status} · ${r.splitId ? `${r.splitId} · ${r.badge.label}\n${r.split.parts.map((p) => `  ${p.id} ${p.status.padEnd(10)} ${p.slot || '-'} ${p.branch} ${p.account || ''} [${p.steps.join(', ')}]`).join('\n')}` : 'not split yet'}${r.gateReason ? `\ngate: ${r.gateReason}` : ''}`); }
+  if (cmd === 'run') { const r = runActive(); return out({ ok: true, ...r }, r.active ? `active: ${r.why}${r.mainLock ? ` · main locked on ${r.mainLock.base.slice(0, 12)} since ${r.mainLock.lockedAt}` : ''}` : `no active run · ${r.why}`); }
+  if (cmd === 'resplit') { const r = resplit(rest[0], { by }); return out({ ok: r.ok, ...r }, r.ok ? `${r.id}: ${r.splitId}, ${r.parts} part${r.parts === 1 ? '' : 's'} (${r.why})` : `${r.id}: not split: ${r.why}`); }
+  if (cmd === 'cancel') { const r = cancelRun(rest[0], { confirm: has('confirm'), by, why: flag('why') }); return out({ ok: true, ...r }, `${r.id}: run ${r.cancelled} cancelled; back to Pending, main unlocked`); }
+  if (cmd === 'split-gate') { const r = splitGateRule(['on', 'off'].includes(rest[0]) ? rest[0] : '', { by }); return out(r, `${r.rule.id}: ${r.rule.enabled ? 'on' : 'off'} · ${r.rule.title}`); }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
     const r = splitBuild(rest[0], { provider: flag('provider'), by }); return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
@@ -2013,7 +2095,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | launch-crashed [--requeue] | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> (the part plan) [--request | --now] [--provider claude|rules] | run | resplit <id> | cancel <id> --confirm [--why w] | split-gate [on|off] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | launch-crashed [--requeue] | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

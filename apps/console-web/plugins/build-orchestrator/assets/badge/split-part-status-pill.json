@@ -1,0 +1,128 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "split-part-status-pill",
+ "name": "split-part-status: pill",
+ "version": "0.1.0",
+ "author": "one-build-time-always-split-to-fill",
+ "description": "Pill chips: a toned pill with its icon and label; working states pulse softly. Reads like the Status chips next to it.",
+ "tags": [
+  "ui-choice",
+  "choice-set:split-part-status",
+  "choice-option:pill",
+  "split-plan@1"
+ ],
+ "data": {
+  "icon": "branch",
+  "label": "Building",
+  "tone": "accent",
+  "shape": "pill",
+  "motion": "pulse",
+  "animateWhile": [
+   "waiting",
+   "building",
+   "testing",
+   "rebuilding"
+  ],
+  "statuses": {
+   "waiting": {
+    "label": "Waiting",
+    "tone": "muted",
+    "icon": "clock",
+    "animate": true
+   },
+   "building": {
+    "label": "Building",
+    "tone": "accent",
+    "icon": "hammer",
+    "animate": true
+   },
+   "testing": {
+    "label": "Testing",
+    "tone": "accent",
+    "icon": "check-circle",
+    "animate": true
+   },
+   "rebuilding": {
+    "label": "Rebuilding",
+    "tone": "warning",
+    "icon": "refresh",
+    "animate": true
+   },
+   "failed": {
+    "label": "Failed",
+    "tone": "danger",
+    "icon": "x-circle",
+    "animate": false
+   },
+   "done": {
+    "label": "Done",
+    "tone": "success",
+    "icon": "check",
+    "animate": false
+   }
+  },
+  "runs": {
+   "splitting": {
+    "label": "Splitting",
+    "tone": "accent",
+    "icon": "branch",
+    "animate": true
+   },
+   "queued": {
+    "label": "Queued",
+    "tone": "muted",
+    "icon": "clock",
+    "animate": false
+   },
+   "building": {
+    "label": "Building",
+    "tone": "accent",
+    "icon": "hammer",
+    "animate": true
+   },
+   "combining": {
+    "label": "Combining",
+    "tone": "accent",
+    "icon": "branch",
+    "animate": true
+   },
+   "ci": {
+    "label": "CI",
+    "tone": "accent",
+    "icon": "refresh",
+    "animate": true
+   },
+   "merging": {
+    "label": "Merging",
+    "tone": "accent",
+    "icon": "branch",
+    "animate": true
+   },
+   "merged": {
+    "label": "Merged",
+    "tone": "success",
+    "icon": "check",
+    "animate": false
+   },
+   "live": {
+    "label": "Live",
+    "tone": "success",
+    "icon": "rocket",
+    "animate": false
+   },
+   "finished": {
+    "label": "Finished",
+    "tone": "success",
+    "icon": "check-circle",
+    "animate": false
+   },
+   "failed": {
+    "label": "Failed",
+    "tone": "danger",
+    "icon": "x-circle",
+    "animate": false
+   }
+  }
+ }
+}

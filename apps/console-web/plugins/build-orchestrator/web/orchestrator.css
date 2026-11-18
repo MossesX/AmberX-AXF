@@ -100,3 +100,21 @@ button.oc-model { cursor: pointer }
 .axp-build-orchestrator__wd-rows > li.is-done, .axp-build-orchestrator__wd-rows > li.is-complete { border-left-color: var(--fx-success) }
 .axp-build-orchestrator__wd-rows > li.is-remove { border-left-color: var(--fx-warning) }
 .axp-build-orchestrator__wd-rows > li.is-skipped { color: var(--fx-muted) }
+
+/* split-plan@1 (web/split.tsx): split / part status badges from assets/badge/split-*; durations are --fx-motion multiples */
+.axp-orch-badge { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); color: var(--fx-muted) }
+.axp-orch-badge__mark { display: inline-flex; align-items: center; margin-inline-end: var(--fx-dens-gap-xs) }
+.axp-orch-badge.is-icon .axp-orch-badge__mark, .axp-orch-badge.is-dot .axp-orch-badge__mark { margin-inline-end: 0 }
+.axp-orch-badge__dot { display: inline-block; inline-size: calc(var(--fx-space) * 1); block-size: calc(var(--fx-space) * 1); border-radius: 999px; background: currentColor }
+.axp-orch-badge[data-tone="accent"] { color: var(--fx-accent) }
+.axp-orch-badge[data-tone="success"] { color: var(--fx-success) }
+.axp-orch-badge[data-tone="warning"] { color: var(--fx-warning) }
+.axp-orch-badge[data-tone="danger"] { color: var(--fx-danger) }
+.axp-orch-badge.is-anim.is-spin .axp-orch-badge__mark { animation: axp-orch-spin calc(var(--fx-motion) * 8) linear infinite }
+.axp-orch-badge.is-anim.is-pulse .axp-orch-badge__mark, .axp-orch-badge.is-anim.is-pulse .axp-orch-badge__dot { animation: axp-orch-pulse calc(var(--fx-motion) * 8) ease-in-out infinite }
+.axp-orch-badge.is-anim.is-blink .axp-orch-badge__dot, .axp-orch-badge.is-anim.is-blink .axp-orch-badge__mark { animation: axp-orch-blink calc(var(--fx-motion) * 6) step-end infinite }
+@keyframes axp-orch-spin { to { transform: rotate(360deg) } }
+@keyframes axp-orch-pulse { 50% { opacity: var(--fx-opacity-muted); transform: scale(.85) } }
+@keyframes axp-orch-blink { 50% { opacity: var(--fx-opacity-muted) } }
+@media (prefers-reduced-motion: reduce) { .axp-orch-badge.is-anim .axp-orch-badge__mark, .axp-orch-badge.is-anim .axp-orch-badge__dot { animation: none } }
+.axp-orch-gate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-danger) }

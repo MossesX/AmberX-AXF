@@ -8,6 +8,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import { RecoveriesList } from './watchdog';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
+import { GateReason, SplitParts, SplitStatus, type GateRejection, type SplitRow } from './split';
 
 /*
  * Nov 10 2026 (build retire-build-manager-the-orchestrator-is-the-onl): the orchestrator is the only place that browses
@@ -33,7 +34,7 @@ type Planned = { model: string; account: string; kind: string; at: string; why: 
 type Health = { at: string; startedAt: string; line: string; problems: string[]; accounts: { name: string; kind: string; signedIn: boolean | null; credits: boolean | null; fable: boolean | null; error: string; skipped?: boolean; at: string }[] } | null;
 type Pipeline = { route?: string; planned?: Planned; tried?: string[]; pickedAt?: string; heldAt?: string; heldBy?: string; heldWhy?: string; queuedAt: string; queuedBy: string; account: string; session: string; model: string; launchedAt: string; runs: number; note: string; splitRequested: string; split: { at: string; by: string; provider: string; steps: number; note: string } | null; lastRun: { at: string; exit: number | null; outcome: string; reason?: string; phase?: string; stepsLeft: number; account: string } | null } | null;
 type StepRow = { id: string; text: string; model: string; estimate: string; done: boolean; skip: boolean };
-type Row = AttemptsData & { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string; requeue?: { reason: string; phase: string; next: string; at: string } | null; stuck?: { id: string; phase: string; next: string; why: string } | null };
+type Row = AttemptsData & { id: string; title: string; status: string; tab: BuildTab | ''; stepList: StepRow[]; builtAt: string; priority: string; steps: { done: number; total: number; left: number }; minutesLeft: number; nextModel: string; nextStep: string; needsApproval: boolean; needsSplit: boolean; pipeline: Pipeline; said: string; branch: string; pr: string; createdAt: string; updatedAt: string; held?: boolean; actions?: BuildAction[]; deleted?: boolean; deletedAt?: string; requeue?: { reason: string; phase: string; next: string; at: string } | null; stuck?: { id: string; phase: string; next: string; why: string } | null; splitId?: string; split?: SplitRow; gateReason?: string; gateRejection?: GateRejection };
 type Account = { name: string; email: string; plan: string; role: string; kind?: string; label?: string; fable: boolean; fableFrom: string; parallel: number; running: number; free: number; usable: boolean; why: string; api?: { usable: boolean; why: string; spend: { day: number; week: number; dayCap: number; weekCap: number; state: string } | null } | null };
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
@@ -48,6 +49,11 @@ type SelfCheck = { at: string; reason: string; by: string; line: string; fixes: 
 const CHECK_TONE: Record<Finding['state'], 'success' | 'accent' | undefined | 'danger'> = { ready: 'success', busy: 'accent', standby: undefined, blocked: 'danger' };
 type Api = { call: <T>(path: string) => Promise<T>; post: <T>(path: string, body: unknown) => Promise<T> };
 const REFRESH_MS = 10_000;
+/** split-plan@1 live updates: while a build is splitting or a split run is on, the view re-reads the feed this often. */
+const LIVE_MS = 3_000;
+/** A split row worth watching live: splitting, or a multi-part run that has not finished or failed. */
+const liveSplit = (r: Row) => r.status === 'splitting' || (!!r.split && r.split.parts.length > 1 && !['finished', 'failed', 'queued'].includes(r.split.run));
+const multiPart = (r: Row) => !!r.split && r.split.parts.length > 1;
 const fmtTime = (v: string) => { const d = new Date(v); return Number.isNaN(d.getTime()) ? '' : d.toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }); };
 const ago = (v: string) => { const ms = Date.now() - new Date(v).getTime(); if (!Number.isFinite(ms)) return ''; const m = Math.round(ms / 60000); return m < 1 ? 'just now' : m < 60 ? `${m} min ago` : `${Math.round(m / 60)} h ago`; };
 
@@ -74,8 +80,9 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
   const [busy, setBusy] = useState('');
   const [sel, setSel] = useState<Set<string>>(() => new Set());
   const timer = useRef<number | null>(null);
+  const liveRef = useRef(false);
   const load = async () => {
-    try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); setS(r); setError(''); }
+    try { const r = await api.call<Status & { error?: string }>('pipeline'); if (!r.ok) throw new Error(r.error); liveRef.current = Object.values(r.tabs ?? {}).some((rows) => rows.some(liveSplit)); setS(r); setError(''); }
     catch (e) { setError((e as Error).message); }
   };
   useEffect(() => {
@@ -83,8 +90,10 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     // console load: the dispatcher checks every account on its next tick (quietly: no toast)
     void api.post('pipeline/selfcheck', { reason: 'console-load' }).catch(() => undefined);
     // one timer, only while the page is on screen (the console's pollers once starved the picture fetches: never per render)
-    const tickIt = () => { if (document.visibilityState === 'visible') void load(); };
-    timer.current = window.setInterval(tickIt, REFRESH_MS);
+    // split-plan@1: every LIVE_MS while a split run or a split is live (badges move without a reload), else REFRESH_MS
+    let last = 0;
+    const tickIt = () => { if (document.visibilityState !== 'visible') return; const every = liveRef.current ? LIVE_MS : REFRESH_MS; if (Date.now() - last < every - 250) return; last = Date.now(); void load(); };
+    timer.current = window.setInterval(tickIt, LIVE_MS);
     document.addEventListener('visibilitychange', tickIt);
     return () => { if (timer.current) window.clearInterval(timer.current); document.removeEventListener('visibilitychange', tickIt); };
   }, []);
@@ -293,10 +302,10 @@ function PipelineTable({ view, rows, sel, toggle, focusId, detail }: { view: Bui
     ...(selectable ? [{ id: 'sel', label: '', width: 'calc(var(--fx-font-size) * 2.5)', fixed: true,
       render: (r: Row) => (r.actions?.length ?? 0) > 0 ? <span onClick={(e) => e.stopPropagation()}><Checkbox label="" title={`Select ${r.title}`} checked={sel.has(r.id)} onChange={(on) => toggle(r.id, on)} /></span> : null } as GridColumn<Row>] : []),
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 14), 4fr)', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
-      render: (r) => <span className="pl-row-title" title={r.said ? `“${r.said}”` : r.id}><strong>{r.title}</strong> <span className="fx-small fx-muted fx-mono">{r.id}</span></span> },
+      render: (r) => <span className="pl-row-title" title={r.said ? `“${r.said}”` : r.id}><strong>{r.title}</strong> <span className="fx-small fx-muted fx-mono">{r.id}</span>{r.gateReason && view === 'errors' && <GateReason reason={r.gateReason} />}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 8)', render: (r) => (r.deleted ? <Chip tone="danger">Deleted</Chip> : <PriorityTag build={r.id} />) },
-    { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.status,
-      render: (r) => <StatusChip status={r.status} data={r} held={!!r.held} /> },
+    { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => r.status,
+      render: (r) => (r.status === 'splitting' || multiPart(r) ? <SplitStatus status={r.status} split={r.split} /> : <StatusChip status={r.status} data={r} held={!!r.held} />) },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (r) => r.steps.total ? r.steps.done / r.steps.total : 0,
       render: (r) => <span className="fx-small" title={r.nextStep}>{r.steps.done}/{r.steps.total}</span> },
     { id: 'account', label: 'Account', width: 'calc(var(--fx-font-size) * 8)', sortable: true, sortValue: rowAccount,
@@ -355,6 +364,8 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
       {pl && table !== 'building' && table !== 'done' && <p className="fx-small" title={pl.why}><Icon name="layers" size={13} /> Planned: <b>{pl.model}</b> on <b>{pl.account || 'no account yet'}</b>{pl.kind === 'api' ? ' (API key)' : ''}</p>}
       {p?.account && p.pickedAt && (table === 'building' || table === 'done') && <p className="fx-small" title={`Picked ${fmtTime(p.pickedAt)}`}><Icon name="user" size={13} /> Taken by <b>{p.account}</b>{pl && pl.account && pl.account !== p.account ? ` (planned ${pl.account})` : ''}{p.tried?.length ? ` · refused: ${p.tried.join(', ')}` : ''}</p>}
       {table === 'done' && p?.tried?.length ? <p className="fx-small oc-flag"><Icon name="alert" size={13} /> Refused by {p.tried.join(', ')}</p> : null}
+      {embedded && r.gateRejection && <GateReason reason={r.gateReason} rejection={r.gateRejection} full />}
+      {embedded && multiPart(r) && r.split && <SplitParts build={r.id} split={r.split} />}
       {embedded && <BuildDetail id={r.id} data={r} busy={busy} steps={r.stepList.length > 0 ? <StepsGrid r={r} /> : <p className="fx-muted fx-small">No steps yet.</p>}
         onRetry={(strategy) => void act(`retry/${encodeURIComponent(r.id)}`, { id: r.id, ...(strategy ? { strategy } : {}) }, `${r.id}: retry${strategy ? ` (${strategy})` : ''}`)} />}
       {!embedded && showSteps && r.stepList.length > 0 && (

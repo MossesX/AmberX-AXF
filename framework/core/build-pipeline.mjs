@@ -308,7 +308,9 @@ export function tabOf(b) {
   const p = b.pipeline ?? {};
   if (b.status === 'failed' || b.status === 'escalated' || /^launch failed/.test(str(p.note, 40))) return 'errors';
   if (b.status === 'pending' && p.lastRun?.outcome === 'failed') return 'errors'; // the crash limit sent it back to Pending
-  if (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing' || b.status === 'splitting') return 'active';
+  // split-plan@1 (Brett, Nov 18 2026): a build being split stays on its Pending row, which reads Splitting
+  if (b.status === 'splitting') return 'pending';
+  if (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing') return 'active';
   if (b.status === 'queued') return 'queue';
   if (b.status === 'built' || b.status === 'landing') return 'complete'; // every step done, not merged yet: the lander's (done-means-merged@1)
   if (b.status === 'blocked') return 'incomplete';

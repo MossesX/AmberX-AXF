@@ -1,0 +1,20 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "split-splitting",
+ "name": "Splitting (Pending row)",
+ "version": "0.1.0",
+ "author": "one-build-time-always-split-to-fill",
+ "description": "The Pending row's status while the orchestrator splits a build into parts: the branch icon turns while it works (the animation is token-driven: --fx-motion; a theme with motion off stops it).",
+ "tags": [
+  "split-plan@1"
+ ],
+ "data": {
+  "icon": "branch",
+  "label": "Splitting",
+  "tone": "accent",
+  "shape": "pill",
+  "motion": "spin",
+  "tooltip": "The orchestrator is splitting this build into parts that never touch the same files"
+ }
+}

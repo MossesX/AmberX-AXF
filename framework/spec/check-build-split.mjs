@@ -52,8 +52,8 @@ t('normMainLock: a lock without build, split id, sha or time is no lock; the spl
   assert.equal(S.normMainLock({ build: 'a', splitId: 'b.r1', base: SHA, lockedAt: AT }), null); assert.equal(S.normMainLock({ build: 'a', splitId: 'a.r1', base: 'short', lockedAt: AT }), null);
 });
 t('buildStatusOf: every run state maps onto a builds@1 status', () => { for (const r of S.RUN_STATES) assert.ok(core.STATUSES.includes(S.buildStatusOf(r)), r); assert.equal(S.buildStatusOf('splitting'), 'splitting'); assert.equal(S.buildStatusOf('finished'), 'complete'); assert.equal(S.buildStatusOf('failed'), 'fixing'); assert.equal(S.buildStatusOf('nope'), ''); });
-t('builds@1 carries splitting (table building, Active tab, live) and the record fields', () => {
-  assert.ok(core.STATUSES.includes('splitting')); assert.equal(BP.tableOf({ status: 'splitting' }), 'building'); assert.equal(BP.tabOf({ status: 'splitting' }), 'active'); assert.ok(BP.isLive({ status: 'splitting' }));
+t('builds@1 carries splitting (table building, Pending tab, live) and the record fields', () => {
+  assert.ok(core.STATUSES.includes('splitting')); assert.equal(BP.tableOf({ status: 'splitting' }), 'building'); assert.equal(BP.tabOf({ status: 'splitting' }), 'pending', 'the Pending row reads Splitting'); assert.ok(BP.isLive({ status: 'splitting' }));
   const b = core.normBuild({ id: 'a', title: 'A', status: 'splitting', splitId: 'a.r1', split: { id: 'a.r1', parts: [{ id: 'p1', steps: ['s1'] }] }, steps: [{ id: 's1', text: 'x' }], later: { field: 1 } });
   assert.equal(b.splitId, 'a.r1'); assert.equal(b.split.id, 'a.r1'); assert.deepEqual(b.later, { field: 1 }, 'unknown fields are carried over');
   assert.equal(core.validateStore({ $axf: 'builds@1', rev: 1, builds: [b] }).ok, true);
