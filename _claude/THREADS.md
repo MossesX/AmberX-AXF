@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:22 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · orchestrator
 - 2026-11-18 12:22 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
 - 2026-11-18 12:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · pipeline
 - 2026-11-18 12:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 19:47 UTC · `attach-widgets-to-any-toolbar-banner` → pending (all) · voice session
 - 2026-11-18 19:47 UTC · `urgent-all-data-to-postgres-builds-store` → queued (all) · voice session
 - 2026-11-18 19:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-18 19:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 
 ## Token passes (log)
 
