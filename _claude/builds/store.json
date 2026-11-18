@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9133,
- "updatedAt": "2026-11-18T19:52:36.517Z",
+ "rev": 9134,
+ "updatedAt": "2026-11-18T19:54:45.237Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244419,7 +244419,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244428,8 +244428,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T19:51:27.816Z",
-   "builtAt": "2026-11-18T19:51:27.816Z",
+   "updatedAt": "2026-11-18T19:54:25.323Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -244670,6 +244670,10 @@
     {
      "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
      "at": "2026-11-18T19:51:27.816Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-18T19:54:25.323Z"
     }
    ],
    "approvals": [],
@@ -244730,6 +244734,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "ci-red",
+    "at": "2026-11-18T19:54:25.323Z",
+    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
+    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
+    "step": "",
+    "exit": null
    },
    "landed": {
     "pr": 767,
@@ -245277,7 +245289,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
