@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9095,
- "updatedAt": "2026-11-18T16:37:04.040Z",
+ "rev": 9096,
+ "updatedAt": "2026-11-18T16:49:32.822Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252587,7 +252587,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T16:24:45.124Z",
+   "updatedAt": "2026-11-18T16:48:51.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -252645,6 +252645,10 @@
     {
      "text": "Claude account: hulu0241 (axf-attach-widgets-to-any-toolbar-banner--earl, shared account login)",
      "at": "2026-11-18T15:18:58.418Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T16:48:51.024Z"
     }
    ],
    "approvals": [
@@ -252706,17 +252710,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-18T16:24:45.124Z",
-     "exit": 129,
-     "signal": "HUP",
-     "kind": "crash",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axt-claude-console-dxwztt",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -253207,7 +253201,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {

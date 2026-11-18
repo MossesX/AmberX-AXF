@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T16:37:04.040Z",
+ "updatedAt": "2026-11-18T16:49:32.822Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162618,7 +162618,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T16:24:45.124Z",
+   "updatedAt": "2026-11-18T16:48:51.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -162676,6 +162676,10 @@
     {
      "text": "Claude account: hulu0241 (axf-attach-widgets-to-any-toolbar-banner--earl, shared account login)",
      "at": "2026-11-18T15:18:58.418Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T16:48:51.024Z"
     }
    ],
    "approvals": [
