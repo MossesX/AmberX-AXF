@@ -840,13 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:22 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
-- 2026-11-18 12:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · pipeline
-- 2026-11-18 12:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
-- 2026-11-18 12:23 UTC · `plan-studio-2-open-button-working-deep` note (all) · pipeline
-- 2026-11-18 12:24 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · pipeline
-- 2026-11-18 12:24 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
-- 2026-11-18 12:24 UTC · `plan-studio-2-open-button-working-deep` note (all) · pipeline
 - 2026-11-18 12:25 UTC · `plan-studio-2-open-button-working-deep` note (all) · orchestrator
 - 2026-11-18 12:26 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
 - 2026-11-18 12:26 UTC · `plan-studio-2-open-button-working-deep` note (all) · pipeline
@@ -1240,6 +1233,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 19:47 UTC · `urgent-all-data-to-postgres-builds-store` → queued (all) · voice session
 - 2026-11-18 19:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-18 19:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-18 19:51 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 19:51 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 19:51 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 19:51 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-18 19:51 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · pipeline
+- 2026-11-18 19:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-18 19:51 UTC · `urgent-all-data-to-postgres-builds-store` branch claude/urgent-all-data-to-postgres-builds-store (all) · pipeline
 
 ## Token passes (log)
 
