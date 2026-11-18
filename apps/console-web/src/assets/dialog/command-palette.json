@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "command-palette",
+  "name": "Command palette: centred",
+  "version": "1.0.0",
+  "description": "Ctrl+K command palette: a centred modal over a dimmed page, results as a list under the field, scales in.",
+  "author": "AmberX AXF console",
+  "tags": [
+    "command-palette",
+    "console"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 640,
+    "backdrop": "dim",
+    "animation": "scale",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

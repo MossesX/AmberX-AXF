@@ -7,9 +7,10 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { useRuntime, Button } from '@console/axf/react';
+import { addLoadedSource } from '@console/control/search';
 import { appMenu } from './menu';
 import { BuildDialog, ItemDialog, LinkDialog, MoveDialog, PlanStudio2Page } from './ui';
-import { CTX_TARGET, DIALOGS, FOLDER, openPlan, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
+import { CTX_TARGET, DIALOGS, FOLDER, openPlan, rowAddress, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
 import * as tc from './tree-core.mjs';
 import * as lc from './layout-core.mjs';
 import { readDock, setLayout, showSection, writeDock } from './layout';
@@ -91,6 +92,17 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plan-studio-2.collapse-all', () => { setCollapsed(null, true); rt.toast('Collapsed everything.', 'info', T); }, { label: 'Plan Studio 2.0: collapse all' });
     rt.actions.register('plan-studio-2.expand-all', () => { setCollapsed(null, false); rt.toast('Expanded everything.', 'info', T); }, { label: 'Plan Studio 2.0: expand all' });
     rt.actions.register('plan-studio-2.reload', () => void reload(), { label: 'Reload Plan Studio 2.0' });
+    // the command palette, REST /search, MCP console_control_search and voice "find …" find plans (and their sections)
+    // as rows of the tree; picking one opens the plan (view:plan-studio-2/plan:<id>)
+    let asked = false;
+    addLoadedSource('plan-studio-2.plans', () => {
+      const s = treeState();
+      if (!s) { if (!asked) { asked = true; void reload(); } return []; }
+      return s.items.filter((i) => i.kind === 'plan' || i.kind === 'section').map((i) => ({
+        address: rowAddress(i.id), kind: 'row' as const, label: i.title, detail: `Plan Studio 2.0 · ${tc.KIND_LABEL[i.kind]}${i.parent ? ` · ${tc.pathOf(s, i.id)}` : ''}`,
+        icon: tc.KIND_ICON[i.kind], keywords: ['plan', 'plan studio', ...i.tags], open: () => rt.dispatch(`plan-studio-2.open:${i.id}`),
+      }));
+    });
   },
   contextMenu: [
     {

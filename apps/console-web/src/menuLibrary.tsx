@@ -92,7 +92,7 @@ const visibleSearch = () => [...document.querySelectorAll<HTMLInputElement>('.fx
 function search(rt: AxfRuntime) {
   const input = visibleSearch();
   if (input) { input.focus(); input.select(); return; }
-  rt.openDialog(SEARCH_DIALOG);
+  rt.dispatch('console.control.search'); // no bar on screen: the command palette
 }
 
 function SearchDialog({ close }: { close: () => void }) {
@@ -255,13 +255,7 @@ function start(rt: AxfRuntime) {
   badge();
   globalThis.addEventListener('axf:pending-changed', badge);
   setInterval(badge, REFRESH_MS);
-  // Ctrl/Cmd+K must always search, even with every search bar hidden.
-  globalThis.addEventListener('keydown', (e: KeyboardEvent) => {
-    if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'k' || e.altKey || e.shiftKey) return;
-    if (visibleSearch() || rt.getState().dialog) return; // the bar's own handler takes it
-    e.preventDefault();
-    rt.openDialog(SEARCH_DIALOG);
-  });
+  // Ctrl/Cmd+K is the command palette's (src/control/SearchPalette.tsx): one palette, no second search.
   // One-time moves (per browser) when a saved look still names another asset: the console app menu, the Amber context menu.
   for (const [type, id, key] of MOVES) {
     let done = (() => { try { return globalThis.localStorage?.getItem(key) === '1'; } catch { return true; } })();

@@ -54,6 +54,8 @@ export function actionCommand(verb: Verb, args: string[]): Record<string, unknow
 export function installConsoleControlActions(rt: AxfRuntime): () => void {
   const offs = (Object.keys(CONSOLE_CONTROL_ACTIONS) as Verb[]).map((verb) => rt.actions.register(`console.control.${verb}`, (args) => {
     const cmd = actionCommand(verb, args);
+    // no words: the command palette opens empty (the banner's Search button, Ctrl+K's action)
+    if (!cmd && verb === 'search' && typeof window !== 'undefined' && !window.dispatchEvent(new CustomEvent('axf:console-control.search', { detail: { q: '' }, cancelable: true }))) return true;
     if (!cmd) { rt.toast(`console.control.${verb} needs an argument`, 'warning', 'Console control'); return false; }
     // the search palette answers a bare search itself (it listens for this event)
     if (verb === 'search' && typeof window !== 'undefined' && !window.dispatchEvent(new CustomEvent('axf:console-control.search', { detail: { q: (cmd.query as { q: string }).q }, cancelable: true }))) return true;
