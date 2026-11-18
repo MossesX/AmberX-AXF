@@ -155,7 +155,11 @@ export async function cutover({ store = files.remoteStore(), apply = false, flip
     }
     if (!report.store.same) report.problems.push(apply ? 'the store on axf-data does not read back equal to the local file' : 'the store on axf-data differs from the local file (--apply writes it)');
     for (const part of Object.keys(journalParts()).sort()) {
-      const r = await syncPart(store, part, { apply, log });
+      // a part the pre-pass verified and that neither side has touched since is not downloaded again under the lock
+      const pre = prepass.get(part);
+      const r = pre && localLines(part).length === pre.local && (await remoteCount(store, part)) === pre.remote + pre.appended
+        ? { ...pre, remote: pre.remote + pre.appended, appended: 0, pending: 0, fromPrepass: true }
+        : await syncPart(store, part, { apply, log });
       report.journal.push(r);
       if (r.mismatch) report.problems.push(`journal ${part}: ${r.mismatch}`);
       else if (r.pending) report.problems.push(`journal ${part}: ${r.pending} line(s) not on axf-data yet${apply ? '' : ' (--apply appends them)'}`);
@@ -184,11 +188,13 @@ export async function cutover({ store = files.remoteStore(), apply = false, flip
   };
   // the bulk of the journal (gigabytes) is copied before the lock, so writers wait seconds, not minutes; under the lock only
   // the tail written meanwhile is appended and every part is checked again
+  const prepass = new Map();
   if (apply) {
     for (const part of Object.keys(journalParts()).sort()) {
       const r = await syncPart(store, part, { apply, log });
       if (r.mismatch) { report.journal.push(r); report.problems.push(`journal ${part}: ${r.mismatch}`); report.ok = false; return report; }
-      report.prepass = [...(report.prepass || []), { part: r.part, appended: r.appended, large: r.large }];
+      prepass.set(part, r);
+      report.prepass = [...(report.prepass || []), { part: r.part, local: r.local, remote: r.remote, appended: r.appended, large: r.large, extraRemote: r.extraRemote }];
     }
   }
   // hold the store lock for the check and the flip: no local writer can change the file or the journal meanwhile. The lock
