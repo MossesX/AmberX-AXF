@@ -835,50 +835,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:53 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 00:53 UTC · `auto-lander-never-wait-missing-ui-review` s4 done, s5 done, s6 done, s7 done, s8 done (all) · foreign-write
-- 2026-11-18 00:53 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 00:53 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
-- 2026-11-18 00:54 UTC · `move-everything-axhub-web-console` s10 done, s11 done (all) · foreign-write
-- 2026-11-18 00:54 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · foreign-write
-- 2026-11-18 00:53 UTC · `flagship-professional-skin-covering-2` s27 done (all) · orchestrator
-- 2026-11-18 00:55 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
-- 2026-11-18 00:55 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
-- 2026-11-18 00:56 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
-- 2026-11-18 00:56 UTC · `move-everything-axhub-web-console` s11 done (all) · foreign-write
-- 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s9 done (all) · orchestrator
-- 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s10 done (all) · orchestrator
-- 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s9 done (all) · foreign-write
-- 2026-11-18 00:56 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
-- 2026-11-18 00:57 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
-- 2026-11-18 00:57 UTC · `auto-lander-never-wait-missing-ui-review` s9 done, s10 done (all) · foreign-write
-- 2026-11-18 01:00 UTC · `auto-lander-never-wait-missing-ui-review` s9 done, s10 done (all) · foreign-write
-- 2026-11-18 01:00 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
-- 2026-11-18 01:00 UTC · `move-everything-axhub-web-console` s9 done, s10 done, s11 done (all) · foreign-write
-- 2026-11-18 01:00 UTC · `auto-lander-never-wait-missing-ui-review` s8 done, s9 done, s10 done (all) · foreign-write
-- 2026-11-18 01:00 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
-- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done (all) · orchestrator
-- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done, note (all) · foreign-write
-- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` s28 done (all) · foreign-write
-- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done (all) · foreign-write
-- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` PR #829, note (all) · reconciler
-- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
-- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
-- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
-- 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
-- 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
-- 2026-11-18 01:04 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:04 UTC · `flagship-professional-skin-covering-2` s27 done, s28 done, note (all) · foreign-write
-- 2026-11-18 01:04 UTC · `auto-lander-never-wait-missing-ui-review` s9 done, s10 done (all) · foreign-write
-- 2026-11-18 01:05 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
-- 2026-11-18 01:05 UTC · `flagship-professional-skin-covering-2` s28 done, note (all) · foreign-write
-- 2026-11-18 01:05 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
-- 2026-11-18 01:05 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
-- 2026-11-18 01:05 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-18 01:05 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
 - 2026-11-18 01:06 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
 - 2026-11-18 01:06 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-18 01:07 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
@@ -1235,6 +1191,50 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 05:37 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
 - 2026-11-18 05:35 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
 - 2026-11-18 05:40 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:43 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
+- 2026-11-18 05:44 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-18 05:48 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:52 UTC · `approval-pass-covers-every-call` → running, note (all) · pipeline
+- 2026-11-18 05:53 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 06:00 UTC · `approval-pass-covers-every-call` s2 done (all) · orchestrator
+- 2026-11-18 06:01 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
+- 2026-11-18 06:02 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
+- 2026-11-18 06:03 UTC · `approval-pass-covers-every-call` s2 done, note (all) · foreign-write
+- 2026-11-18 06:20 UTC · `approval-pass-covers-every-call` s3 done (all) · orchestrator
+- 2026-11-18 06:25 UTC · `approval-pass-covers-every-call` s4 done (all) · orchestrator
+- 2026-11-18 01:42 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-18 01:42 UTC · `move-everything-axhub-web-console` s27 done, s28 done (all) · foreign-write
+- 2026-11-18 01:42 UTC · `auto-lander-never-wait-missing-ui-review` s15 done, s16 done, s17 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s3 done, s4 done (all) · foreign-write
+- 2026-11-18 01:42 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s2 done, s3 done, s4 done, s5 done, s6 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
+- 2026-11-18 01:44 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
+- 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
+- 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → landing (all) · orchestrator
+- 2026-11-18 06:32 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
+- 2026-11-18 06:32 UTC · `approval-pass-covers-every-call` s3 done, s4 done (all) · foreign-write
+- 2026-11-18 06:30 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
+- 2026-11-18 06:34 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
+- 2026-11-18 06:31 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · builds-live
+- 2026-11-18 06:35 UTC · `approval-pass-covers-every-call` s5 done (all) · orchestrator
+- 2026-11-18 06:31 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
+- 2026-11-18 06:36 UTC · `move-server-side-console-parts-onto-vps` → complete (all) · foreign-write
+- 2026-11-18 06:38 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
+- 2026-11-18 06:40 UTC · `move-server-side-console-parts-onto-vps` note (all) · pipeline
+- 2026-11-18 06:43 UTC · `approval-pass-covers-every-call` s6 done (all) · orchestrator
+- 2026-11-18 06:45 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
+- 2026-11-18 06:45 UTC · `approval-pass-covers-every-call` s2 done, s3 done, s4 done, note (all) · foreign-write
+- 2026-11-18 06:43 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-18 06:44 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
+- 2026-11-18 06:49 UTC · `approval-pass-covers-every-call` s7 done (all) · orchestrator
+- 2026-11-18 06:50 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
+- 2026-11-18 06:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 06:50 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
+- 2026-11-18 06:50 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-18 06:50 UTC · `approval-pass-covers-every-call` s1 done, s2 done, s3 done, s4 done, note (all) · foreign-write
+- 2026-11-18 06:48 UTC · `approval-pass-covers-every-call` s6 done, → running (all) · foreign-write
+- 2026-11-18 06:52 UTC · `approval-pass-covers-every-call` s7 done, → running (all) · foreign-write
+- 2026-11-18 06:53 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-18 06:53 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
 
 ## Token passes (log)
 
