@@ -833,7 +833,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `icon-picker-every-banner-settings-widget` s9 done, s10 done, s11 done, s12 done, → complete, note (all) · foreign-write
@@ -1233,6 +1232,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 02:07 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
 - 2026-11-18 02:09 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 02:10 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
+- 2026-11-18 02:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 
 ## Token passes (log)
 
