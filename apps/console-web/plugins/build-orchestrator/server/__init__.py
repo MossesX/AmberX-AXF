@@ -778,6 +778,55 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
     return _pipeline("split", _build_id(body.get("id")), "--request", "--by", (brett_click(request) or "console")[:80])
 
 
+# ---------------------------------------------------------------- split runs (split-plan@1): one build at a time, split
+# into parts. Every route runs the same pipeline.mjs subcommand as the CLI, the MCP plugin commands and AmberX voice.
+
+
+@router.get("/split/{build}")
+def split_show(build: str) -> dict[str, Any]:
+    """One build's split: the plan (parts with slot, branch, account, status), the run state with its roll-up badge,
+    a gate refusal if any, and the main lock. Same as `pipeline.mjs split <id>` and MCP pipeline-split."""
+    return _pipeline("split", _build_id(build))
+
+
+@router.get("/run/active")
+def run_active() -> dict[str, Any]:
+    """The one active run (one build at a time) with its split, and the main lock (`pipeline.mjs run`)."""
+    return _pipeline("run")
+
+
+@router.post("/split/{build}/resplit")
+async def split_resplit(build: str, request: Request) -> dict[str, Any]:
+    """Plan the build's parts again now (Pending or Queued; refused while its run is on: cancel it first)."""
+    return _pipeline("resplit", _build_id(build), "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/run/{build}/cancel")
+async def run_cancel(build: str, request: Request) -> dict[str, Any]:
+    """{confirm: true, why?}: stop the build's split run (destructive: every part session stops, nothing lands, main
+    unlocks, the build goes back to Pending). Without confirm: 400."""
+    body = await _json_body(request)
+    if body.get("confirm") is not True:
+        raise HTTPException(400, "cancel stops every part session and lands nothing: send confirm: true")
+    why = str(body.get("why") or "")[:200]
+    return _pipeline("cancel", _build_id(build), "--confirm", *(["--why", why] if why else []), "--by", (brett_click(request) or "console")[:80])
+
+
+@router.get("/split-gate")
+def split_gate_get() -> dict[str, Any]:
+    """The gate rule require-split-id (Gate & rules): its description and whether it is on."""
+    return _pipeline("split-gate")
+
+
+@router.put("/split-gate")
+async def split_gate_put(request: Request) -> dict[str, Any]:
+    """{enabled: bool}: switch the gate rule require-split-id on or off (the same op as its switch on Gate & rules)."""
+    body = await _json_body(request)
+    if not isinstance(body.get("enabled"), bool):
+        raise HTTPException(400, "send enabled: true | false")
+    return _pipeline("split-gate", "on" if body["enabled"] else "off", "--by", (brett_click(request) or "console")[:80])
+
+
 @router.post("/pipeline/account")
 async def pipeline_account(request: Request) -> dict[str, Any]:
     """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential)."""
