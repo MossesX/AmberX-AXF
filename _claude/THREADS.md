@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `group-chat-audio-hear-agents-talk-while` → complete, note (all) · foreign-write
-- 2026-11-18 00:31 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-18 00:31 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
-- 2026-11-18 00:31 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `move-server-side-console-parts-onto-vps` s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:41 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:41 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · console
 - 2026-11-18 01:41 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · foreign-write
+- 2026-11-18 01:41 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-18 01:41 UTC · `vps-frees-stale-build-slots-every-2` added (15 steps) (all) · foreign-write
+- 2026-11-18 01:41 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
+- 2026-11-18 01:41 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
