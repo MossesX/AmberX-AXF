@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8567,
- "updatedAt": "2026-11-18T00:30:30.575Z",
+ "rev": 8568,
+ "updatedAt": "2026-11-18T00:31:12.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244506,6 +244506,10 @@
     {
      "text": "Refused pending → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T23:48:48.513Z"
+    },
+    {
+     "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-17T23:47:18.834Z"
     }
    ],
    "approvals": [],
@@ -263232,7 +263236,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s6",
@@ -263256,7 +263260,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s7",
@@ -263281,7 +263285,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s8",
@@ -263305,7 +263309,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s9",
@@ -263331,7 +263335,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s10",
@@ -263357,7 +263361,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s11",
@@ -263383,7 +263387,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s12",
@@ -263408,7 +263412,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s13",
@@ -263434,7 +263438,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s14",
@@ -263460,7 +263464,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s15",
@@ -263486,7 +263490,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s16",
@@ -263510,7 +263514,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s17",
@@ -263535,7 +263539,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s18",
@@ -263559,7 +263563,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s19",
@@ -263584,7 +263588,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s20",
@@ -263609,7 +263613,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s21",
@@ -263635,7 +263639,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:18:56.184Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s22",
@@ -263660,7 +263664,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:18:56.184Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s23",
@@ -263686,7 +263690,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:19:08.752Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s24",
@@ -263711,7 +263715,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:25:16.972Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s25",
@@ -263737,7 +263741,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T12:28:31.327Z",
-     "updatedAt": "2026-11-18T00:27:41.999Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s26",
@@ -266720,7 +266724,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -267906,6 +267910,50 @@
     },
     {
      "id": "s55",
+     "uid": "st-mwldy6ob01tb8i",
+     "title": "",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:31:04.043Z",
+     "updatedAt": "2026-11-18T00:31:04.523Z"
+    },
+    {
+     "id": "s56",
+     "uid": "st-mwldy6ob02zdhk",
+     "title": "",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:31:04.043Z",
+     "updatedAt": "2026-11-18T00:31:04.523Z"
+    },
+    {
+     "id": "s30-29",
      "uid": "st-mwldffmh01m8p0",
      "title": "",
      "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
@@ -286343,9 +286391,9 @@
      "done": true,
      "doneAt": "2026-11-17T23:29:24.518Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s12",
@@ -286370,7 +286418,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:21:51.104Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     }
    ],
    "profiles": [
@@ -292937,7 +292985,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s6",
@@ -292959,7 +293007,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s7",
@@ -292981,7 +293029,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s8",
@@ -293003,7 +293051,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s9",
@@ -297065,7 +297113,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:26:58.046Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s2",
@@ -297087,7 +297135,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:27:34.077Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s3",
@@ -297109,7 +297157,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:30:21.012Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s4",
@@ -297129,9 +297177,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s5",
@@ -297151,9 +297199,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s6",
@@ -297173,9 +297221,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s7",
@@ -297195,9 +297243,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s8",
@@ -297217,9 +297265,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s9",
@@ -297239,9 +297287,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s10",
@@ -297261,9 +297309,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s11",
@@ -297283,9 +297331,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s12",
@@ -297305,9 +297353,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s13",
@@ -297327,9 +297375,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s14",
@@ -297349,9 +297397,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s15",
@@ -297371,9 +297419,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s16",
@@ -297393,9 +297441,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     },
     {
      "id": "s17",
@@ -297415,9 +297463,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:16:35.271Z"
+     "updatedAt": "2026-11-18T00:31:07.104Z"
     }
    ],
    "profiles": [
