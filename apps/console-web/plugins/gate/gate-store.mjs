@@ -123,6 +123,14 @@ export function createStore(opts = {}) {
       return { ok: r.status === 0, code: r.status === 0 ? '' : 'failed', out: out.slice(-2000), err: (r.stderr || r.error?.message || '').trim().slice(-600), json };
     },
 
+    /** A build note through the orchestrator (act note): what Land now overrode. Never throws; { ok }. */
+    buildNote(build, text) {
+      const cli = join(root, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
+      if (!build || !existsSync(cli) || process.env.AXF_GATE_NO_BUILD_NOTES === '1') return { ok: false, skipped: true };
+      const r = spawnSync(process.execPath, [cli, 'act', 'note', String(build), String(text).slice(0, 600)], { cwd: root, encoding: 'utf8', timeout: 60000 });
+      return { ok: r.status === 0, out: (r.stdout || '').trim().slice(-300), err: (r.stderr || '').trim().slice(-300) };
+    },
+
     // ---------------------------------------------------------------- history (append-only JSONL)
     historyFile: f(HISTORY_FILE),
     appendHistory(entry) { mkdirSync(dataDir, { recursive: true }); appendFileSync(f(HISTORY_FILE), `${JSON.stringify(entry)}\n`); return entry; },

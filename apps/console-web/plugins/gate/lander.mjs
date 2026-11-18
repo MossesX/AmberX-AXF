@@ -114,14 +114,18 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
      * Land now (two-step): the first call answers { confirm, pr, title }; the second, with that token, puts the PR at the
      * head of the line in the current mode. It still passes every rule; nothing merges here.
      */
-    landNow({ pr: raw, by = 'console', reason = '', confirm = '' } = {}) {
+    landNow({ pr: raw, by = 'console', reason = '', confirm = '', override = null } = {}) {
       const n = pr(raw);
       if (!n) throw err('invalid', 'pr is a PR number');
       const snap = lander.snapshot(n);
-      if (!confirm) return { ok: false, code: 'confirmation_required', confirm: store.issueConfirm('lander.land_now', n), pr: n, title: snap?.title || '' };
+      const held = lander.state().waiting.find((w) => w.pr === n && gate.HELD_STATES.includes(w.state)) || null;
+      if (!confirm) return { ok: false, code: 'confirmation_required', confirm: store.issueConfirm('lander.land_now', n), pr: n, title: snap?.title || '', ...(held ? { held: { state: held.state, holdReason: held.holdReason, heldSince: held.heldSince, reviewFlag: held.reviewFlag } } : {}) };
       if (!store.takeConfirm('lander.land_now', n, confirm)) throw err('invalid', 'the confirm token is wrong or expired: ask again');
       const m = lander.mode();
       let via; let r;
+      // Land now from the held-prs item (Nov 18 2026): a hand hold on the build is released first, so the queue takes it
+      const item = (store.land().items || []).find((x) => x.pr === n);
+      if (override && item && store.landControl().holds?.[item.id]) { const rel = store.landerCommand(['release', item.id]); if (!rel.ok) throw err('failed', `couldn't release the hold on ${item.id}: ${rel.err || rel.out}`); }
       if (m.mergeQueue) {
         via = 'merge-queue';
         const inQueue = (store.queue().items || []).some((x) => x.pr === n);
@@ -129,13 +133,14 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
         r = store.landerCommand(['queue', 'move', String(n), '0']);
       } else {
         via = 'auto-lander';
-        const item = (store.land().items || []).find((x) => x.pr === n);
         if (!item) throw err('not_found', `#${n} is not a finished build the auto-lander knows`);
         r = store.landerCommand(['now', item.id]);
       }
       if (!r.ok) throw err('failed', `the lander refused: ${r.err || r.out}`);
-      log('land-now', { by, reason, pr: n, after: { via, position: 0 } });
-      return { ok: true, pr: n, position: 0, via };
+      const note = override ? String(override.note || 'Land now: moved to the front ahead of its hold.').slice(0, 300) : '';
+      log('land-now', { by, reason: reason || note, pr: n, before: held ? { state: held.state, holdReason: held.holdReason, heldSince: held.heldSince } : undefined, after: { via, position: 0, ...(note ? { override: note } : {}) } });
+      if (note && (item?.id || snap?.build)) store.buildNote(item?.id || snap.build, `#${n}: ${note}`);
+      return { ok: true, pr: n, position: 0, via, ...(note ? { override: { note, held: held ? { state: held.state, holdReason: held.holdReason, heldSince: held.heldSince } : null } } : {}) };
     },
 
     pause({ why = '', by = 'console', reason = '' } = {}) {

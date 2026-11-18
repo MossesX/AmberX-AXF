@@ -15,6 +15,7 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   GET  lander/runs [?limit&result]      the last runs, newest first
   GET  lander/mode · POST lander/mode {mergeQueue}   the one Merge queue on/off switch (takes effect at once)
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
+  GET  held-prs [?limitMin=] · POST land-now {pr, note?, confirm?}   held PRs with how long (held-prs@1); Land now with an override note
   POST lander/pause {why?} · POST lander/resume
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?, heldAlertMin?}
   Server auto-lander (auto-lander@1, framework/spec/AUTO-LANDER.md; deploy/auto-lander/auto-lander.mjs):
@@ -60,6 +61,9 @@ _spec.loader.exec_module(health)  # type: ignore[union-attr]
 _spec_al = importlib.util.spec_from_file_location("axf_gate_auto_lander_health", Path(__file__).resolve().parent / "auto_lander_health.py")
 al_health = importlib.util.module_from_spec(_spec_al)  # the server auto-lander's systems-check item (pure)
 _spec_al.loader.exec_module(al_health)  # type: ignore[union-attr]
+_spec_hp = importlib.util.spec_from_file_location("axf_gate_held_prs_health", Path(__file__).resolve().parent / "held_prs_health.py")
+hp_health = importlib.util.module_from_spec(_spec_hp)  # held PRs on the systems check (pure; Nov 18 2026)
+_spec_hp.loader.exec_module(hp_health)  # type: ignore[union-attr]
 AL_CLI = ROOT / "deploy" / "auto-lander" / "auto-lander.mjs"
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
@@ -192,6 +196,16 @@ def _status_for_health() -> dict[str, Any]:
     return st
 
 
+def _land_now_confirmed(pr: int, by: str = "systems-check") -> dict[str, Any]:
+    """Land now for the systems check's Auto fix: Brett's press on the item is the confirm, so the two steps run here."""
+    first = run("land_now", {"pr": pr, "by": by})
+    if first.get("ok"):
+        return first
+    if first.get("code") != "confirmation_required" or not first.get("confirm"):
+        return first
+    return run("land_now", {"pr": pr, "by": by, "confirm": first["confirm"]})
+
+
 def ensure_health() -> None:
     with _health_lock:
         if _health_on["done"]:
@@ -202,7 +216,8 @@ def ensure_health() -> None:
             return
         lander = health.ensure(plugin_services, _status_for_health)
         server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))
-        _health_on["done"] = lander and server
+        held = hp_health.ensure(plugin_services, lambda: run("held_prs"), _land_now_confirmed)
+        _health_on["done"] = lander and server and held
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
@@ -302,6 +317,21 @@ async def lander_pause(request: Request) -> JSONResponse:
 async def lander_resume(request: Request) -> JSONResponse:
     """Resume the auto-lander in its current mode."""
     return await _write("lander_resume", request)
+
+
+# ---------------------------------------------------------------------- held PRs (held-prs@1, Nov 18 2026)
+@router.get("/held-prs")
+async def held_prs(limitMin: int = 0) -> JSONResponse:
+    """Every PR the lander truly holds (held, kicked, paused) with its build, the reason, heldSince and how long; `over` = older than
+    heldAlertMin (or ?limitMin=). The state behind the systems check's held-prs item; the same record as MCP gate_held_prs and `axf gate held-prs`."""
+    return await _read("held_prs", {"limitMin": limitMin or None})
+
+
+@router.post("/land-now")
+async def land_now(request: Request) -> JSONResponse:
+    """Land now from the held-prs item ({pr, note?, confirm?}): two-step confirm; the PR goes to the front of the merge queue with an
+    override note in History and on the build. It still passes every rule; never a direct merge."""
+    return await _write("land_now", request)
 
 
 # ---------------------------------------------------------------------- the plugin's settings
