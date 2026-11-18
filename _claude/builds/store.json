@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9042,
- "updatedAt": "2026-11-18T15:00:30.215Z",
+ "rev": 9043,
+ "updatedAt": "2026-11-18T15:02:36.636Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320278,7 +320278,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T14:59:23.218Z",
+   "updatedAt": "2026-11-18T15:01:03.340Z",
    "builtAt": "",
    "notes": [
     {
@@ -320324,6 +320324,10 @@
     {
      "text": "Reconciler: branch claude/one-build-time-always-split-to-fill (no PR yet)",
      "at": "2026-11-18T14:27:54.924Z"
+    },
+    {
+     "text": "Headless run axf-one-build-time-always-split-to-fill--gina: brief only · start 18.4K tokens ($0.17) · cost $16.29 · 131 turns · 6 tools, MCP none",
+     "at": "2026-11-18T15:01:03.340Z"
     },
     {
      "text": "Fable phase (s1–s5) done on claude/one-build-time-always-split-to-fill. For the Opus phase: framework/spec/check-build-split.mjs already exists (63 checks: ids, planner, validator, part/run machines, roll-up, combine readiness, main lock) with fixtures/build-split.json and is wired into .github/workflows/android.yml, so s6 extends it and s24's CI line is in place. The dispatcher already launches one build a tick and locks main (pipeline.mjs syncMainLock, CLI 'pipeline.mjs main-lock [release --force]'); s8 builds the part launcher on top of planParts(). API addresses for phase 2 are fixed in framework/spec/BUILD-SPLIT.md → API.",
@@ -320380,7 +320384,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-18T15:00:16.730Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-one-build-time-always-split-to-fill--gina",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
@@ -321063,7 +321077,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
