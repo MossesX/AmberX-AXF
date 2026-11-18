@@ -840,10 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:42 UTC · `vps-never-gives-up-fix-land-every-build` s2 done (all) · orchestrator
-- 2026-11-18 12:43 UTC · `plan-studio-2-open-button-working-deep` s2 done (all) · orchestrator
-- 2026-11-18 12:41 UTC · `every-app-gets-own-locked-default` → running, note (all) · builds-live
-- 2026-11-18 12:45 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
 - 2026-11-18 12:45 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 12:45 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
 - 2026-11-18 12:45 UTC · `plan-studio-2-open-button-working-deep` s3 done (all) · orchestrator
@@ -1240,6 +1236,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 23:22 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · orchestrator
 - 2026-11-18 23:24 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 23:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-18 23:40 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 23:40 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 23:40 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 23:40 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
