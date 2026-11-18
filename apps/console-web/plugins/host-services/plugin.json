@@ -7,11 +7,263 @@
   "apiLevel": 1,
   "author": "Brett",
   "description": "The console parts that run on the VPS host as systemd services (host-service@1, framework/spec/HOST-SERVICES.md).",
-  "targets": ["axf-console"],
-  "provides": ["settings-tab:host-services", "service:axf.host-services@1"],
-  "scopes": ["ROUTES"],
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:host-services",
+    "service:axf.host-services@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
   "enabledByDefault": true,
-  "optional": ["service:axf.health@1"],
+  "optional": [
+    "service:axf.health@1"
+  ],
   "banner": false,
-  "tabable": false
+  "tabable": false,
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "list",
+        "route": "GET /",
+        "title": "Host services: list",
+        "tool": "host_services_list",
+        "readOnly": true,
+        "description": "Every console part that runs on the VPS host: status (up, degraded, down, unknown) with since, mode (container, shadow, host), unit, heartbeat, last run; plus whether the host API itself answers and since when it is down.",
+        "output": "host-service-list@1 + hostApi + counts"
+      },
+      {
+        "id": "get",
+        "route": "GET /{id}",
+        "title": "Host services: one service",
+        "tool": "host_services_get",
+        "readOnly": true,
+        "description": "One host service: state, since, last heartbeat, manifest (actions, settings, sudo whitelist), mode entry and plan, and the last 30 log lines.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "host service id (builds-live, shipped-features, hub-sync, agent-swarm, systems-check, maintenance, auto-lander, pipeline, build-watchdog, stale-row-watchdog, host-api)"
+            },
+            "lines": {
+              "type": "integer",
+              "description": "log lines to include (default 30)"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "host-service-state@1 + manifest + logs"
+      },
+      {
+        "id": "logs",
+        "route": "GET /{id}/logs",
+        "title": "Host services: logs",
+        "tool": "host_services_logs",
+        "readOnly": true,
+        "description": "A host service's journal lines (journalctl -u its unit).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "host service id (builds-live, shipped-features, hub-sync, agent-swarm, systems-check, maintenance, auto-lander, pipeline, build-watchdog, stale-row-watchdog, host-api)"
+            },
+            "lines": {
+              "type": "integer",
+              "description": "1-2000, default 200"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "action",
+        "route": "POST /{id}/act",
+        "title": "Host services: act (restart, start, stop, run, run-action, set-mode, rollback)",
+        "tool": "host_services_action",
+        "description": "Drive one host service: do = restart | start | stop | run | run-action (with action and args) | set-mode (with to) | rollback | set-settings (with set). Stop, restart, a confirm action, moving back from host and rollback need confirm: true (they answer confirm_required first).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "host service id (builds-live, shipped-features, hub-sync, agent-swarm, systems-check, maintenance, auto-lander, pipeline, build-watchdog, stale-row-watchdog, host-api)"
+            },
+            "do": {
+              "type": "string",
+              "enum": [
+                "restart",
+                "start",
+                "stop",
+                "run",
+                "run-action",
+                "set-mode",
+                "rollback",
+                "set-settings"
+              ]
+            },
+            "action": {
+              "type": "string"
+            },
+            "args": {
+              "type": "object"
+            },
+            "to": {
+              "type": "string",
+              "enum": [
+                "container",
+                "shadow",
+                "host"
+              ]
+            },
+            "set": {
+              "type": "object"
+            },
+            "why": {
+              "type": "string"
+            },
+            "confirm": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "do"
+          ]
+        }
+      },
+      {
+        "id": "set-mode",
+        "route": "PUT /{id}/mode",
+        "title": "Host services: set mode",
+        "tool": "host_services_set_mode",
+        "description": "Move a service: container \u2192 shadow (both run, the host dry-runs and the outputs are compared) \u2192 host (the host runs it, the console's copy steps aside). Moving back needs confirm: true. Cut-over is refused until shadow has been quiet long enough with enough clean runs.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "host service id (builds-live, shipped-features, hub-sync, agent-swarm, systems-check, maintenance, auto-lander, pipeline, build-watchdog, stale-row-watchdog, host-api)"
+            },
+            "to": {
+              "type": "string",
+              "enum": [
+                "container",
+                "shadow",
+                "host"
+              ]
+            },
+            "why": {
+              "type": "string"
+            },
+            "acceptDrift": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "confirm": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id",
+            "to"
+          ]
+        }
+      },
+      {
+        "id": "rollback",
+        "route": "POST /{id}/rollback",
+        "title": "Host services: roll back (confirm)",
+        "tool": "host_services_rollback",
+        "description": "Give a part back to the console's copy: mode \u2192 container (or shadow), the unit stops, cron lines come back. Needs confirm: true.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "host service id (builds-live, shipped-features, hub-sync, agent-swarm, systems-check, maintenance, auto-lander, pipeline, build-watchdog, stale-row-watchdog, host-api)"
+            },
+            "to": {
+              "type": "string",
+              "enum": [
+                "container",
+                "shadow"
+              ]
+            },
+            "why": {
+              "type": "string"
+            },
+            "confirm": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "settings",
+        "route": "GET /{id}/settings",
+        "title": "Host services: settings",
+        "tool": "host_services_settings",
+        "readOnly": true,
+        "description": "A host service's settings with their declarations.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "host service id (builds-live, shipped-features, hub-sync, agent-swarm, systems-check, maintenance, auto-lander, pipeline, build-watchdog, stale-row-watchdog, host-api)"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        }
+      },
+      {
+        "id": "settings-set",
+        "route": "PUT /{id}/settings",
+        "title": "Host services: change settings",
+        "tool": "host_services_settings_set",
+        "description": "Change settings key by key ({set: {key: value}}); last save wins; read on the service's next pass.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "host service id (builds-live, shipped-features, hub-sync, agent-swarm, systems-check, maintenance, auto-lander, pipeline, build-watchdog, stale-row-watchdog, host-api)"
+            },
+            "set": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "id",
+            "set"
+          ]
+        }
+      },
+      {
+        "id": "mode",
+        "route": "GET /mode",
+        "title": "Host services: the mode document",
+        "tool": "host_services_mode",
+        "readOnly": true,
+        "description": "host-service-mode@1: where every service runs today, with shadow runs and drift counts."
+      }
+    ]
+  }
 }

@@ -201,7 +201,7 @@ a warn item without a push. The state is pure: `serviceState(manifest, facts, pr
    (`restart`, `stop` and `confirm` actions need `confirm`).
 4. **Place in the UI.** Settings → Plugins → Host services (one row per service: status chip with `since`, mode, unit,
    health, last run, Logs, Restart, Run now, its actions and settings) plus a status chip on each owning plugin's Plugin
-   Manager entry; `view:settings/tab:settings.tabs=plugins/tab:plugins.tabs=host-services` is its deep link.
+   Manager entry; `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=host-services` is its deep link (`settings.open:host-services`).
 
 ## Migration
 

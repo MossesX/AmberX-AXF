@@ -74,10 +74,12 @@ def _manifest(c: hs.HostServices, sid: str) -> dict[str, Any]:
     return st.get("manifest") or {}
 
 
-def router_for(auth: Callable[..., Any], client: Callable[[], hs.HostServices] = hs.client) -> APIRouter:
-    r = APIRouter(prefix="/api/host-services", dependencies=[Depends(auth)])
+def router_for(auth: Callable[..., Any] | None, client: Callable[[], hs.HostServices] = hs.client, prefix: str = "/api/host-services") -> APIRouter:
+    """The routes under `prefix` (the core mount), or with prefix "" for the host-services plugin's own mount
+    (/api/plugins/host-services/…, which the plugin commands and so the MCP tools call; the loader adds the auth)."""
+    r = APIRouter(prefix=prefix, dependencies=[Depends(auth)] if auth else [])
 
-    @r.get("")
+    @r.get("" if prefix else "/")
     def list_services(fresh: bool = False) -> dict[str, Any]:
         c = client()
         out = c.services(fresh=fresh)
