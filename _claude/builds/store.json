@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8646,
- "updatedAt": "2026-11-18T01:05:31.470Z",
+ "rev": 8647,
+ "updatedAt": "2026-11-18T01:05:49.080Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288238,7 +288238,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -289218,7 +289218,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-18T01:04:23.057Z"
+     "updatedAt": "2026-11-18T01:05:24.015Z"
     }
    ],
    "profiles": [
