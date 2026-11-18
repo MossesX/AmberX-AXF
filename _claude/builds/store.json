@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8580,
- "updatedAt": "2026-11-18T00:34:54.751Z",
+ "rev": 8581,
+ "updatedAt": "2026-11-18T00:35:24.819Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266728,7 +266728,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -266736,7 +266736,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-18T00:34:35.187Z",
+   "updatedAt": "2026-11-18T00:35:18.919Z",
    "builtAt": "",
    "notes": [
     {
@@ -267134,6 +267134,22 @@
     {
      "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s55): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-18T00:33:32.535Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-rebuild-fresh-main-phone-connect-small--gina.",
+     "at": "2026-11-18T00:34:52.803Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-rebuild-fresh-main-phone-connect-small--gina, shared account login)",
+     "at": "2026-11-18T00:34:56.460Z"
+    },
+    {
+     "text": "Brief only: brief is 31152 characters (~7788 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-18T00:35:07.436Z"
+    },
+    {
+     "text": "Headless run axf-rebuild-fresh-main-phone-connect-small--gina: brief only · start 20.4K tokens ($0.19) · cost $1.88 · 25 turns · 6 tools, MCP none",
+     "at": "2026-11-18T00:35:18.919Z"
     }
    ],
    "approvals": [
@@ -267162,13 +267178,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T22:55:37.373Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-rebuild-fresh-main-phone-connect-small--gina",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T20:39:27.512Z",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-18T00:34:47.468Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": {
      "at": "2026-11-18T00:33:16.083Z",
@@ -267188,9 +267204,9 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 4 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T20:39:27.512Z",
+    "dispatchedAt": "2026-11-18T00:34:47.468Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -267199,7 +267215,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T20:39:27.512Z",
+    "pickedAt": "2026-11-18T00:34:47.468Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -267965,7 +267981,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 135,
+   "rev": 139,
    "deleted": false,
    "deletedAt": "",
    "pending": {
