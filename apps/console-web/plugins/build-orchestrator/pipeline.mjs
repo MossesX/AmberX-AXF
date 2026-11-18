@@ -86,7 +86,7 @@ import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
-import { isActiveRun, lockMain, mainLocked, splitIdOf, unlockMain } from '../../../../framework/core/build-split.mjs';
+import { isActiveRun, isSplitId, lockMain, mainLocked, nextRunOf, normSplit, planParts, splitIdOf, unlockMain } from '../../../../framework/core/build-split.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
 import * as RL from '../../../../framework/core/retry-ladder.mjs';
 import * as V from './verify.mjs';
@@ -451,25 +451,91 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   return { id: b.id, provider: used, steps: out.steps.length, error, note };
 }
 
-/** Every build that needs the orchestrator's split gets one (a few per round); auto-queue when the Claude setting says so. */
-export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
+// ------------------------------------------------------------------ the part plan (split-plan@1)
+
+/** A build in 'splitting' longer than this crashed mid-split: intake puts it back to Pending so it gates nothing. */
+export const SPLITTING_STALE_MS = 15 * 60 * 1000;
+
+/** Does this build need a part plan? Pending / Queued, not hidden, with open steps and no plan for a live run. */
+export function needsPartPlan(b) {
+  if (!b || b.deleted || b.hidden || !['pending', 'queued'].includes(b.status)) return false;
+  if (!BP.openSteps(b).length) return false;
+  if (b.pipeline?.splitRequested) return true;
+  const sp = b.split;
+  if (!sp || !isSplitId(b.splitId) || sp.id !== b.splitId) return true;
+  if (['finished', 'failed'].includes(sp.run)) return true; // the last run ended: the next one gets a fresh plan
+  // the plan must still cover exactly the open steps (a step added, removed or reset since)
+  const open = BP.openSteps(b).map((s) => s.id).sort(); const planned = sp.parts.flatMap((p) => p.steps).sort();
+  return sp.run === 'queued' && JSON.stringify(open) !== JSON.stringify(planned);
+}
+
+/** Free agent slots the planner fills: free now, or the cap while another run holds them (one build at a time). */
+export function planSlots(sl = slotsNow()) {
+  const free = Math.max(0, Number(sl?.free) || 0); const cap = Math.max(1, Number(sl?.cap) || 1);
+  return free > 0 ? free : cap;
+}
+
+/**
+ * Auto-split one build on intake (split-plan@1): status 'splitting' at once (the Pending row shows Splitting), the step
+ * splitter when it has no steps (or the console asked for one), then the part planner with the free-slot count; the plan
+ * and its splitId go on the record and the build goes back to the status it came from, ready for the Queue. A failure
+ * puts it back too, with a note: nothing is lost.
+ */
+export function planSplit(id, { by = 'orchestrator', slots: sl = null, provider = '' } = {}) {
+  const b0 = storeCore.findBuild(loadStore(), id); if (!b0) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (!['pending', 'queued', 'splitting'].includes(b0.status)) throw Object.assign(new Error(`${b0.id} is ${b0.status}: only a Pending or Queued build is split`), { code: 2 });
+  const from = b0.status === 'splitting' ? 'pending' : b0.status;
+  const run = nextRunOf(b0); const splitId = splitIdOf(b0.id, run);
+  setPipeline(b0.id, {}, { status: 'splitting', by, action: 'pipeline:splitting', mutate: (rec, now) => { rec.splitId = splitId; rec.split = normSplit({ id: splitId, run: 'splitting', at: now, by, parts: [] }, { build: rec.id }); } });
+  logLine({ event: 'splitting', build: b0.id, splitId });
+  let stepSplit = null; let r = null; let error = '';
+  try {
+    if (!b0.steps.length || b0.pipeline?.splitRequested) stepSplit = splitBuild(b0.id, { provider, by });
+    const b = storeCore.findBuild(loadStore(), b0.id);
+    const free = planSlots(sl ?? slotsNow());
+    r = planParts({ ...b, splitId: run > 1 ? splitIdOf(b.id, run - 1) : '' }, free, {}, { run, by, used: Number((sl ?? {}).used) || 0 });
+    if (!r.ok) error = r.why;
+  } catch (e) { error = e.message; }
+  const out = setPipeline(b0.id, error ? { note: `split failed: ${str(error, 300)}` } : { splitRequested: '' }, {
+    status: from, by, action: 'pipeline:split-plan', note: error ? `Part plan failed (${str(error, 300)}): back to ${from}.` : `Split into ${r.plan.parts.length} part${r.plan.parts.length === 1 ? '' : 's'} (${r.why}), ${r.plan.id}.`,
+    mutate: (rec) => { if (error) { delete rec.split; if (run > 1 && b0.splitId) { rec.splitId = b0.splitId; if (b0.split) rec.split = b0.split; } else delete rec.splitId; } else { rec.splitId = r.plan.id; rec.split = r.plan; } },
+  });
+  logLine({ event: 'split-plan', build: b0.id, splitId: error ? '' : r.plan.id, parts: error ? 0 : r.plan.parts.length, error });
+  return { id: b0.id, ok: !error, splitId: error ? '' : r.plan.id, parts: error ? 0 : r.plan.parts.length, why: error || r.why, status: out.status, steps: stepSplit, provider: stepSplit?.provider ?? '', note: stepSplit?.note ?? '' };
+}
+
+/** Builds stuck in 'splitting' (a crash mid-split) go back to Pending so the one-at-a-time gate frees up. */
+export function recoverSplitting({ now = Date.now(), by = 'pipeline' } = {}) {
+  const stuck = live(loadStore()).filter((b) => b.status === 'splitting' && now - Date.parse(b.split?.at || b.updatedAt || 0) > SPLITTING_STALE_MS);
+  for (const b of stuck) setPipeline(b.id, { note: 'split interrupted: back to Pending' }, { status: 'pending', by, action: 'pipeline:split-recover', note: 'The split was interrupted (no answer in 15 min): back to Pending.' });
+  return stuck.map((b) => b.id);
+}
+
+/**
+ * Auto-split on intake (split-plan@1): every Pending / Queued build without a plan for its next run is set to
+ * 'splitting' at once and split into parts for the free slots (a few per round); auto-queue when the Claude setting says so.
+ */
+export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {}, slots: sl = null } = {}) {
   loadUpgradePolicy();
-  const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
-  const out = { split: [], queued: [], skipped: [] };
-  if (settings.splitProvider !== 'off' || process.env.AXF_PIPELINE_SPLITTER) {
-    // only a build with no steps at all is split by itself: steps someone wrote by hand (even with a missing estimate) are
-    // never replaced unless the console asked for a split (splitRequested); the table flags them as "needs split"
-    const want = live(store).filter((b) => (b.status === 'pending' || b.status === 'queued') && !b.hidden && (b.pipeline?.splitRequested || !b.steps.length));
-    for (const b of want.slice(0, max)) {
-      try {
-        const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note });
-        if (r.provider === 'rules') crewSay('orchestrator', 'waiting', `Split ${b.id} by rules into ${r.steps} steps (Claude couldn't). Brett, check the steps before it runs.`, { ref: b.id });
-        else crewSay('orchestrator', 'done', `Split ${b.id} into ${r.steps} steps.`, { ref: b.id });
+  const settings = loadSettings(); const rules = rulesOf(loadStore());
+  const out = { split: [], queued: [], skipped: [], recovered: recoverSplitting() };
+  const store = loadStore();
+  const canAsk = settings.splitProvider !== 'off' || !!process.env.AXF_PIPELINE_SPLITTER;
+  // a build with no steps needs the step splitter (unless it is off); every build with steps gets its part plan
+  const want = live(store).filter((b) => (['pending', 'queued'].includes(b.status) && !b.hidden && !b.steps.length && canAsk) || needsPartPlan(b));
+  for (const b of want.slice(0, max)) {
+    try {
+      const r = planSplit(b.id, { slots: sl, provider: canAsk ? '' : 'rules' }); out.split.push(r);
+      if (r.steps) {
+        alert('split', { id: b.id, title: b.title, steps: r.steps.steps, error: r.provider === 'rules' ? r.note : '', note: r.note });
+        if (r.provider === 'rules') crewSay('orchestrator', 'waiting', `Split ${b.id} by rules into ${r.steps.steps} steps (Claude couldn't). Brett, check the steps before it runs.`, { ref: b.id });
+        else crewSay('orchestrator', 'done', `Split ${b.id} into ${r.steps.steps} steps, ${r.parts} part${r.parts === 1 ? '' : 's'}.`, { ref: b.id });
       }
-      catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
+      if (!r.ok) out.skipped.push({ id: b.id, error: r.why });
     }
-    for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
+    catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
   }
+  for (const b of want.slice(max)) out.skipped.push({ id: b.id, error: 'next round' });
   if (settings.autoQueue) {
     const fresh = loadStore();
     for (const b of live(fresh)) {
@@ -1708,7 +1774,7 @@ async function main(argv) {
   if (cmd === 'retry-all') { const done = escalated().map((x) => retryBuild(x.id, { by, why: flag('why') || 'Retry from the systems check' })); return out({ ok: true, retried: done }, done.map((x) => `${x.id}: ${x.status}`).join('\n') || 'nothing escalated'); }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
-  if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
+  if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.ok ? `${x.splitId}, ${x.parts} part${x.parts === 1 ? '' : 's'}` : x.why}${x.steps ? `; ${x.provider} ${x.steps.steps} steps` : ''})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'requeue-stuck') {
     const r = requeueStuck({ apply: has('apply'), by });
     return out({ ok: true, ...r }, r.found.length ? [...r.found.map((f) => `${r.apply ? (r.moved.includes(f.id) ? 'requeued' : 'left') : 'would requeue'} ${f.id}: ${f.why}, next ${f.next || '?'}`), r.apply ? '' : '(dry run: --apply moves them)'].filter(Boolean).join('\n') : 'no Pending build is parked after a finished phase');

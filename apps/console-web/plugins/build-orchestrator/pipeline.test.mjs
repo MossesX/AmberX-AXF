@@ -585,9 +585,11 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
 
   orch('act', JSON.stringify({ action: 'add', id: 'alpha', title: 'Alpha feature', detail: 'Make the alpha thing.', said: 'build me alpha, kid' }));
   orch('act', JSON.stringify({ action: 'add', id: 'beta', title: 'Beta feature', steps: [{ text: 'do beta', model: 'Opus', estimate: '10 min' }] }));
-  t('e2e intake: a new build with no steps is split by the orchestrator (fake Claude) and stays in Pending', () => {
+  t('e2e intake: every Pending build is auto-split (steps by fake Claude when it has none, then parts + splitId) and stays in Pending', () => {
     const r = json(pipe('intake', '--json'));
-    assert.deepEqual(r.split.map((x) => x.id), ['alpha']);
+    assert.deepEqual(r.split.map((x) => x.id), ['alpha', 'beta']);
+    assert.equal(r.split[0].provider, 'claude'); assert.equal(r.split[1].steps, null, 'hand-written steps are kept: only the part plan is made');
+    for (const id of ['alpha', 'beta']) { const b = find(id); assert.equal(b.splitId, `${id}.r1`); assert.equal(b.split.id, `${id}.r1`); assert.equal(b.split.run, 'queued'); assert.ok(b.split.parts.length >= 1); assert.ok(b.notes.some((n) => /Split into \d part/.test(n.text))); }
     const a = find('alpha'); assert.equal(a.status, 'pending'); assert.equal(a.steps.length, 2); assert.equal(a.steps[0].model, 'Fable'); assert.equal(a.pipeline.split.provider, 'claude'); assert.equal(a.pipeline.split.steps, 2);
     assert.match(readFileSync(join(tmp, 'split-prompt.txt'), 'utf8'), /build me alpha, kid/);
     assert.equal(json(pipe('intake', '--json')).split.length, 0, 'a second intake splits nothing again');
@@ -867,7 +869,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   t('e2e rules fallback when the splitter fails', () => {
     writeFileSync(splitter, '#!/usr/bin/env bash\nexit 1\n');
     orch('act', JSON.stringify({ action: 'add', id: 'delta', title: 'Delta', detail: 'Add the delta screen.\nDesign the delta schema.' }));
-    const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
+    const r = json(pipe('intake', '--json')); assert.ok(r.split.some((x) => x.id === 'delta' && x.provider === 'rules'), JSON.stringify(r.split));
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
   });
 }
