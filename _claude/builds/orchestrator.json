@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:22:09.539Z",
+ "updatedAt": "2026-11-18T12:22:43.628Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192040,17 +192040,101 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:21:03.351Z",
+   "updatedAt": "2026-11-18T12:22:31.441Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
      "at": "2026-11-18T12:21:03.351Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T12:22:31.441Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Plan Studio 2 opens only its settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3d44201sa2a",
+     "createdAt": "2026-11-18T12:22:31.441Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3d44202wjqo",
+     "createdAt": "2026-11-18T12:22:31.441Z"
+    },
+    {
+     "id": "s3",
+     "text": "Full API/CLI/voice parity, tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3d44203qmxp",
+     "createdAt": "2026-11-18T12:22:31.441Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/plan-studio-2-open-button-working-deep.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/plan-studio-2-open-button-working-deep.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm3d44204wcye",
+     "createdAt": "2026-11-18T12:22:31.441Z"
+    }
+   ]
   },
   {
    "id": "land-watchdogs-pr-832-fix-two-red-ci",
