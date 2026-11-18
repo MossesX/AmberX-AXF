@@ -398,6 +398,20 @@
         "title": "Open Skins gallery",
         "text": "Opens the Skins gallery, where you preview skins and switch the one in force for the hub, this app, a screen or a plugin.",
         "kind": "button"
+      },
+      {
+        "target": "reset-this",
+        "title": "Reset this ()",
+        "text": "Resets this (). Your own changes go.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "this-settings-window-every",
+        "title": "This settings window (every )",
+        "text": "Shows “This settings window (every )”.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

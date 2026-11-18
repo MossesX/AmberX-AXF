@@ -65,6 +65,13 @@
         "title": "What for",
         "text": "Why the pass is granted. It is kept in the audit log with the pass.",
         "kind": "field"
+      },
+      {
+        "target": "one-quiet-line-on-my-phone-per-run-otherwise-nothing",
+        "title": "One quiet line on my phone per run (otherwise nothing)",
+        "text": "Turns “One quiet line on my phone per run (otherwise nothing)” on or off. It takes effect straight away and is remembered.",
+        "kind": "toggle",
+        "draft": true
       }
     ],
     "intros": []
