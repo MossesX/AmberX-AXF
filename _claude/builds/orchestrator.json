@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T15:04:56.613Z",
+ "updatedAt": "2026-11-18T15:05:57.633Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192876,15 +192876,15 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T15:04:23.920Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T15:05:21.420Z",
+   "builtAt": "2026-11-18T15:05:21.420Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -193043,8 +193043,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:05:03.937Z",
      "note": "",
      "uid": "st-mwm3ldy005e4f2",
      "createdAt": "2026-11-18T12:28:57.431Z"
@@ -193065,8 +193065,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:05:21.420Z",
      "note": "",
      "uid": "st-mwm3ldy0068i5p",
      "createdAt": "2026-11-18T12:28:57.431Z"
