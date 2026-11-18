@@ -99,18 +99,18 @@ function Detail({ s }: { s: HostServiceState }) {
   );
 }
 
-/** Fixed token widths: every row's grid lines up with the head (fr tracks size from each row's own content). */
+/** Fixed widths in text units (like the other grids): every row lines up with the head (fr tracks size from each row's own content). */
 function useColumns(narrow = false): GridColumn<HostServiceState>[] {
-  const w = (wide: number, phone: number) => `calc(var(--fx-space) * ${narrow ? phone : wide})`;
+  const w = (wide: number, phone: number) => `calc(var(--fx-font-size) * ${narrow ? phone : wide})`;
   return [
-    { id: 'name', label: 'Service', width: w(30, 18), fixed: true, sortable: true, sortValue: (s) => s.id,
+    { id: 'name', label: 'Service', width: w(16, 8), fixed: true, sortable: true, sortValue: (s) => s.id,
       render: (s) => <span className="axp-host-services__name"><b>{s.manifest?.title || s.id}</b><span className="fx-small fx-muted">{s.id} · {s.unit}</span></span> },
-    { id: 'status', label: 'Status', width: w(11, 9), sortable: true, sortValue: (s) => s.status,
+    { id: 'status', label: 'Status', width: w(6, 5), sortable: true, sortValue: (s) => s.status,
       render: (s) => <span className="axp-host-services__name"><HostStatusChip s={s} /><span className="fx-small fx-muted">{s.since ? `for ${since(s.since)}` : ''}</span></span> },
-    { id: 'mode', label: 'Mode', width: w(9, 7), sortable: true, sortValue: (s) => s.mode ?? '', render: (s) => <span className="fx-small">{s.mode ?? 'container'}</span> },
-    { id: 'heartbeat', label: 'Heartbeat', width: w(11, 11), render: (s) => <span className="fx-small fx-muted">{s.heartbeat?.at ? `${since(s.heartbeat.at)} ago` : s.kind === 'tick' ? 'tick' : '—'}</span> },
-    { id: 'last', label: 'Last run', width: w(15, 15), render: (s) => <span className="fx-small fx-muted" title={s.lastRun?.message}>{s.lastRun ? `${s.lastRun.result} · ${since(s.lastRun.at)} ago` : '—'}</span> },
-    { id: 'actions', label: 'Actions', width: w(22, 14), render: (s) => <Row s={s} /> },
+    { id: 'mode', label: 'Mode', width: w(5, 4), sortable: true, sortValue: (s) => s.mode ?? '', render: (s) => <span className="fx-small">{s.mode ?? 'container'}</span> },
+    { id: 'heartbeat', label: 'Heartbeat', width: w(6, 6), render: (s) => <span className="fx-small fx-muted">{s.heartbeat?.at ? `${since(s.heartbeat.at)} ago` : s.kind === 'tick' ? 'tick' : '—'}</span> },
+    { id: 'last', label: 'Last run', width: w(9, 9), render: (s) => <span className="fx-small fx-muted" title={s.lastRun?.message}>{s.lastRun ? `${s.lastRun.result} · ${since(s.lastRun.at)} ago` : '—'}</span> },
+    { id: 'actions', label: 'Actions', width: w(10, 6), render: (s) => <Row s={s} /> },
   ];
 }
 
