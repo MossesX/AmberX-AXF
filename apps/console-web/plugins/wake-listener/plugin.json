@@ -28,7 +28,8 @@
     "service:axf.wake-listener@1"
   ],
   "optional": [
-    "service:axf.speech@1"
+    "service:axf.speech@1",
+    "service:axf.banner-widgets@1"
   ],
   "scopes": [
     "ROUTES"

@@ -21,8 +21,9 @@ import { AgentAvatar, Button, Checkbox, Chip, Icon, Segmented, SelectField, Swit
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { bannerData, supplyBannerData } from '@console/bannerData';
 import './whats-shipped.css';
-import { GROUPS, ID, KEYS, ago, firstRunRead, groupItems, isNewSince, markRead, paintWhatsNew, readSet, search, unread, type Feed, type FeedItem, type GroupBy } from './core';
+import { ASSET_ID, GROUPS, ID, KEYS, ago, firstRunRead, groupItems, isNewSince, markRead, paintWhatsNew, readSet, search, unread, type Feed, type FeedItem, type GroupBy } from './core';
 import { appMenu } from './menu';
 
 const FOLDER = 'whats-shipped';
@@ -44,11 +45,10 @@ const useFeed = () => useSyncExternalStore((f) => { subs.add(f); return () => su
 
 let runtime: AxfRuntime | null = null;
 const items = () => st.feed?.items ?? [];
-const shown = (rt: AxfRuntime) => rt.settings.get(KEYS.show) !== false;
 const reads = (rt: AxfRuntime | null) => readSet(rt?.settings.get(KEYS.read));
 const tickerOn = (rt: AxfRuntime) => rt.settings.get(KEYS.ticker) !== false;
 
-function paint(rt: AxfRuntime) { paintWhatsNew(rt, items(), reads(rt), tickerOn(rt) ? st.tick : 0, shown(rt), st.loading); }
+function paint(rt: AxfRuntime) { paintWhatsNew(rt, (w, s) => supplyBannerData(w, s, ID), items(), reads(rt), tickerOn(rt) ? st.tick : 0, st.loading); }
 
 function setRead(rt: AxfRuntime, ids: string[]) {
   rt.settings.set(KEYS.read, markRead(reads(rt), ids, items().map((i) => i.id)));
@@ -81,8 +81,8 @@ export async function refresh(force = false): Promise<void> {
 
 let poll: ReturnType<typeof setInterval> | null = null;
 let ticker: ReturnType<typeof setInterval> | null = null;
-/** Still on? The console detaches a switched-off plugin's banner items, so a missing item (while shown) means off. */
-const stillOn = (rt: AxfRuntime) => !shown(rt) || rt.hostAttachments('banner').some((a) => a.origin === ID);
+/** Still on? The console drops a switched-off plugin's banner data, so data no longer ours means off. */
+const stillOn = (_rt: AxfRuntime) => bannerData(ASSET_ID)?.origin === ID;
 const onFocus = () => { if (runtime && stillOn(runtime)) void refresh(); };
 const onVisible = () => { if (document.visibilityState === 'visible') onFocus(); };
 
@@ -257,7 +257,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('whats-new.open', () => rt.openDialog('whats-shipped.panel'), { label: "Open the What's new panel", searchable: false });
     rt.actions.register('whats-shipped.read-all', () => setRead(rt, items().map((i) => i.id)), { label: "Mark everything in What's new read" });
     rt.actions.register('whats-shipped.check', () => void refresh(true), { label: "Check what's new now" });
-    if (!runtime) for (const k of [KEYS.show, KEYS.ticker, KEYS.read]) rt.settings.onChange(k, () => { if (runtime) paint(runtime); });
+    if (!runtime) for (const k of [KEYS.ticker, KEYS.read]) rt.settings.onChange(k, () => { if (runtime) paint(runtime); });
     start(rt);
   },
   dialogs: {
@@ -267,7 +267,6 @@ export const plugin: AxfWebLibrary = {
   settings: [{
     id: 'whats-shipped.look', label: 'On the banner', icon: 'eye', tab: 'whats-shipped', order: 5,
     settings: [
-      { key: KEYS.show, label: "Show What's new on the banner", kind: 'toggle', default: true, scope: 'device' },
       { key: KEYS.ticker, label: 'Step through the unread titles', kind: 'toggle', default: true, scope: 'device', description: 'Off: the banner shows only the newest one.' },
     ],
   }],

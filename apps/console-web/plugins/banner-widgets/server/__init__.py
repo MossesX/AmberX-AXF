@@ -1,4 +1,5 @@
-"""Badges — server part (folder claude-badge). Mounted at /api/plugins/claude-badge/ (console token, 404 when disabled).
+"""Banner widgets — server part (folder banner-widgets, formerly claude-badge). Mounted at /api/plugins/banner-widgets/
+(console token, 404 when disabled). It reads the five status badges; the other widgets get their data from their own plugins.
 
 POST /test runs one tiny request through the AI assistant's model service (axf.llm@1) and says whether AI answers and
 which model did, and which of three states it is in: `ok` (answers), `no-credit` (the account or key works but is out
@@ -44,7 +45,8 @@ PROMPT = "Connection check from the AmberX console. Reply with one word: OK."
 
 
 def data_dir() -> Path:
-    return Path(os.environ.get("AXF_CLAUDE_BADGE_DIR") or (cx.ROOT / ".axf-console" / "plugins" / "claude-badge"))
+    # AXF_CLAUDE_BADGE_DIR is the variable's name from before the plugin became Banner widgets; still honoured
+    return Path(os.environ.get("AXF_BANNER_WIDGETS_DIR") or os.environ.get("AXF_CLAUDE_BADGE_DIR") or (cx.ROOT / ".axf-console" / "plugins" / "banner-widgets"))
 
 
 def pretty_model(model: str) -> str:
@@ -311,7 +313,7 @@ def read_amberx() -> dict[str, Any]:
                 if not ready:
                     res["text"] = str(why)[:200]
                 else:
-                    r = svc.call("amberx.recorder_status", {}, timeout=15, reason="Badges: is the AmberX phone connected")
+                    r = svc.call("amberx.recorder_status", {}, timeout=15, reason="Banner widgets: is the AmberX phone connected")
                     res = amberx_classify(str(r.get("ok") or ""), int(now * 1000)) if "ok" in r else {**res, "text": "axHub wants an approval for this read"}
             except Exception as e:  # noqa: BLE001 — the badge says why
                 res["text"] = (str(e).strip("'\"") or e.__class__.__name__)[:200]

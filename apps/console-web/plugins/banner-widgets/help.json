@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "banner-widgets-help",
+  "name": "banner-widgets help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:banner-widgets. Drafts (draft: true) were written from the code by framework/cli/help-coverage.mjs --draft; edit them into plain English and drop the draft flag.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:banner-widgets",
+    "entries": [
+      {
+        "target": "every-banner-widget",
+        "title": "Every banner widget",
+        "text": "The list of every widget this plugin puts on the banner. Each row: show or hide, move up or down, side, size, shape where the framework has it, and icon. Hiding one hides it on this kind of device (phone or desktop). More opens the banner's own widget picker for that widget.",
+        "kind": "card"
+      },
+      {
+        "target": "widgets-from-other-plugins",
+        "title": "Widgets from other plugins",
+        "text": "The switches of the widgets whose numbers come from other plugins (project, build profile, Claude account, Following Amber, What's new, agent voice, wake listener, builds progress, main build, alerts bell, + Plan). They kept their old keys, so your choices carried over.",
+        "kind": "card"
+      },
+      {
+        "target": "show-on-the-banner",
+        "title": "Show on the banner",
+        "text": "Puts this badge on the banner, or takes it off. Hiding the console badge also stops its test when the console loads.",
+        "kind": "field"
+      },
+      {
+        "target": "icons-only",
+        "title": "Icons only",
+        "text": "Shows just the icon, without the word. The colour still shows the state. Each badge has its own switch.",
+        "kind": "field"
+      },
+      {
+        "target": "badges",
+        "title": "Banner widgets",
+        "text": "Every chip and badge on the banner: show or hide each one, move it, pick its side, size, shape and icon. Also the Claude, VPS, axHub, AmberX and usage badges.",
+        "kind": "tab"
+      },
+      {
+        "target": "badge-settings",
+        "title": "Badge settings",
+        "text": "Opens Settings → Plugins → Badges.",
+        "kind": "button"
+      }
+    ],
+    "intros": []
+  }
+}

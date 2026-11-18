@@ -21,13 +21,13 @@ import { Button, Chip, Icon, RefText, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { bannerData, supplyBannerData } from '@console/bannerData';
 import './main-build-status.css';
-import { ID, TONE, WORD, bannerText, paintBuild, shortAgo, type BuildItem } from './core';
+import { ASSET_ID, ID, TONE, WORD, bannerText, paintBuild, shortAgo, type BuildItem } from './core';
 import { appMenu } from './menu';
 
 const FOLDER = 'main-build-status';
 const POLL_MS = 30_000;
-const SHOW_KEY = 'main-build-status.show';
 const api = pluginApi(FOLDER, 'Main build status');
 
 interface StatusReply { checkedAt: number; cacheS: number; items: BuildItem[] }
@@ -43,12 +43,10 @@ const set = (p: Partial<State>) => { st = { ...st, ...p }; subs.forEach((f) => f
 const useStatus = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 let runtime: AxfRuntime | null = null;
-let watching = false;
 const primary = (): BuildItem | null => st.reply?.items[0] ?? null;
-const shown = (rt: AxfRuntime) => rt.settings.get(SHOW_KEY) !== false;
 
-/** Repaint the widget and the counters, and attach it (or take it off when hidden). */
-function paint(rt: AxfRuntime) { paintBuild(rt, primary(), st.error, shown(rt)); }
+/** Repaint the counters and hand the widget its words (the banner widgets plugin draws it). */
+function paint(rt: AxfRuntime) { paintBuild(rt, (w, s) => supplyBannerData(w, s, ID), primary(), st.error); }
 
 let inflight = false;
 export async function checkNow(refresh = false): Promise<void> {
@@ -67,8 +65,8 @@ export async function checkNow(refresh = false): Promise<void> {
 }
 
 let timer: ReturnType<typeof setInterval> | null = null;
-/** Still on? The console detaches a switched-off plugin's banner items, so a missing item (while shown) means off. */
-const stillOn = (rt: AxfRuntime) => !shown(rt) || rt.hostAttachments('banner').some((a) => a.origin === ID);
+/** Still on? The console drops a switched-off plugin's banner data, so data no longer ours means off. */
+const stillOn = (_rt: AxfRuntime) => bannerData(ASSET_ID)?.origin === ID;
 const onFocus = () => { if (runtime && stillOn(runtime)) void checkNow(); };
 const onVisible = () => { if (document.visibilityState === 'visible') onFocus(); };
 
@@ -213,17 +211,12 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('main-build-status.open', () => rt.openDialog('main-build-status.run'), { label: 'Show the main build' });
     rt.actions.register('main-build-status.github', () => { const u = primary()?.url; if (u) globalThis.open(u, '_blank', 'noopener'); }, { label: 'Open the main build on GitHub' });
     rt.actions.register('main-build-status.check', () => void checkNow(true), { label: 'Check the main build now' });
-    if (!watching) { watching = true; rt.settings.onChange(SHOW_KEY, () => { if (runtime) paint(runtime); }); }
     start(rt);
   },
   dialogs: {
     'main-build-status.run': { title: 'Main build', icon: 'play', render: () => <RunDialog /> },
   },
   settingsTabs: [{ id: 'main-build-status', label: 'Main build status', icon: 'play', parent: 'plugins', order: 47, description: 'The CI result dot on the banner.' }],
-  settings: [{
-    id: 'main-build-status.look', label: 'On the banner', icon: 'eye', tab: 'main-build-status', order: 5,
-    settings: [{ key: SHOW_KEY, label: 'Show the build status on the banner', kind: 'toggle', default: true, scope: 'device' }],
-  }],
   settingsPanels: [
     { id: 'main-build-status.status', tab: 'main-build-status', title: 'Now', icon: 'play', order: 10, render: () => <StatusPanel /> },
     { id: 'main-build-status.watch', tab: 'main-build-status', title: 'What it watches', icon: 'branch', order: 20, render: () => <WatchPanel /> },

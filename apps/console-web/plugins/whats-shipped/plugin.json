@@ -11,12 +11,10 @@
     "axf-console"
   ],
   "provides": [
-    "asset:status/shipped",
-    "banner:right",
     "dialog:whats-shipped.panel",
     "settings-tab:whats-shipped"
   ],
-  "optional": [],
+  "optional": ["service:axf.banner-widgets@1"],
   "scopes": [
     "ROUTES"
   ],

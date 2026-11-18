@@ -26,6 +26,7 @@ import { approvalsWatcher, countdownOf, type ApprovalItem } from '@console/axf/l
 import { approvalsHost } from '@console/axf/libs/approvals/react';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { supplyBannerData } from '@console/bannerData';
 import { arrived, decide, drawable, highlightIsSelector, offers, parseFrame, pickNext, queueOf, routeOf, type DecideEnv, type FollowDecision } from './core';
 import { appMenu } from './menu';
 import './follow-amber.css';
@@ -36,7 +37,6 @@ const DIALOG = 'follow-amber.approval';
 const ASSET_ID = 'follow-amber';
 const COUNTER = 'follow-amber.on';
 const KEY = 'follow-amber.on';
-const CHIP_KEY = 'follow-amber.chip';
 
 /* ---------------- a tiny store: the switch, the hub, the approvals queue ---------------- */
 
@@ -77,16 +77,14 @@ export async function setFollow(on: boolean): Promise<void> {
   } catch (e) { runtime?.toast((e as Error).message, 'danger', 'Follow Amber'); }
 }
 
-/** The banner chip (a framework status widget) while it's on. */
+/** The banner chip while it's on: its words go to the banner widgets plugin (axf.banner-data@1), which draws it. */
 function paint(rt: AxfRuntime) {
-  rt.registry.register({
-    $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'Follow Amber', version: '0.1.0', author: 'Follow Amber plugin',
-    description: 'Follow Amber is on: what Amber talks about opens here and approvals pop up. Tap to turn it off.', tags: ['amber', 'status'],
-    data: { counter: COUNTER, onLabel: 'Following Amber', offLabel: 'Not following', onTone: 'accent', offTone: 'muted', dot: true, link: 'follow-amber.toggle' },
-  }, 'app', ID);
   rt.setBadge(COUNTER, st.on ? 1 : 0);
-  if (st.on && rt.settings.get(CHIP_KEY) !== false) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'left', order: 22, origin: ID, widget: { label: 'Following Amber', size: 'compact', priority: 4, aliases: ['follow amber', 'following'] } });
-  else rt.detachFromBanner(`status:${ASSET_ID}`);
+  supplyBannerData(ASSET_ID, !st.on ? null : {
+    type: 'status', name: 'Follow Amber', tags: ['amber', 'status'],
+    description: 'Follow Amber is on: what Amber talks about opens here and approvals pop up. Tap to turn it off.',
+    data: { counter: COUNTER, onLabel: 'Following Amber', offLabel: 'Not following', onTone: 'accent', offTone: 'muted', dot: true, link: 'follow-amber.toggle' },
+  }, ID);
 }
 
 /* ---------------- approvals: watch the feed while following, pop new ones up ---------------- */
@@ -414,7 +412,6 @@ export const plugin: AxfWebLibrary = {
     description: 'One switch for all your consoles.',
     settings: [
       { key: KEY, label: 'Follow Amber', kind: 'toggle', default: false, scope: 'device', description: 'On: what Amber mentions opens here and approvals pop up. The same value for every console.' },
-      { key: CHIP_KEY, label: 'Show the banner chip while following', kind: 'toggle', default: true, scope: 'device', description: 'A small "Following Amber" chip in the banner; tap it to turn Follow Amber off.' },
     ],
   }],
   settingsPanels: [

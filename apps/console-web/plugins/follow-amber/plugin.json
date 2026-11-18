@@ -18,7 +18,8 @@
     "banner:follow-amber"
   ],
   "optional": [
-    "service:console-commands@1"
+    "service:console-commands@1",
+    "service:axf.banner-widgets@1"
   ],
   "scopes": [
     "ROUTES"

@@ -24,6 +24,7 @@ const consoleAliases = [
   { find: /^@console\/pluginLifecycle$/, replacement: `${src}/console/pluginLifecycle.tsx` },
   { find: /^@console\/watchLive$/, replacement: `${src}/console/watchLive.tsx` }, // Watch live previews need the console token: none here
   { find: /^@console\/changeBatch$/, replacement: join(consoleSrc, 'changeBatch.tsx') },
+  { find: /^@console\/bannerData$/, replacement: join(consoleSrc, 'bannerData.ts') }, // banner widget data (axf.banner-data@1): pure module state
   { find: /^@console\/emptyState$/, replacement: join(consoleSrc, 'emptyState.tsx') }, // branded empty states + skeletons (enterprise-branding s34)
 ];
 function consolePlugins(): { folder: string; manifest: Record<string, unknown> }[] {

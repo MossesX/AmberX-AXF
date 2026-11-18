@@ -18,7 +18,7 @@ branch is stacked on it until it lands.
 ## How "Claude is connected" is worked out
 
 The Claude badge sends one tiny request through `axf.llm@1` and is green when the reply came from a Claude model
-(`claude-badge/server`: `state == ok` and the model name starts with Claude). The listener must not read another
+(`banner-widgets/server`, formerly `claude-badge/server`: `state == ok` and the model name starts with Claude). The listener must not read another
 plugin's data by folder name, so it keeps its own copy of the same test:
 
 - `axf.llm@1` missing → `no-llm`.

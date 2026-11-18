@@ -3,6 +3,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import { Button, Container, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { supplyBannerData } from '@console/bannerData';
 import { LIGHT_LABEL, type LightState } from './core';
 import { startBridge, type AssistantReply } from './bridge';
 import { pauseSpeaking, resumeSpeaking, speak, speakerState, stopSpeaking, FOLDER } from './engine';
@@ -28,8 +29,8 @@ import './agent-voice.css';
 export const ID = 'ai.amberx.axf.console.agent-voice';
 const ASSET_ID = 'agent-voice';
 const COUNTER = 'agentvoice.live';
-const K = { banner: 'agent-voice.banner', assistantLight: 'agent-voice.assistantLight' } as const;
-const BANNER_MODES = ['lit', 'always', 'off'] as const;
+// the banner light's When it shows (agent-voice.banner) moved to the banner widgets plugin with its key
+const K = { assistantLight: 'agent-voice.assistantLight' } as const;
 
 /** The agent to open the console on (set by agent-voice.configure:<id>). */
 let pendingAgent = '';
@@ -40,19 +41,16 @@ const TONE: Record<LightState, string> = { off: 'neutral', ready: 'success', spe
 let painted = '';
 function paintBanner(rt: AxfRuntime) {
   const l = light();
-  const mode = String(rt.settings.get(K.banner) ?? 'lit');
-  const show = mode === 'always' || (mode === 'lit' && l.state !== 'off');
-  const key = JSON.stringify([l.state, l.agentName, show]);
+  const key = JSON.stringify([l.state, l.agentName, l.agentId]);
   if (key === painted) return;
   painted = key;
-  rt.registry.register({
-    $axf: 'asset@1', type: 'status', id: ASSET_ID, name: 'Agent voice', version: '0.1.0', author: 'Agent voice plugin',
-    description: 'Lit while the selected agent is a voice agent: ready, speaking, listening, paused.', tags: ['voice', 'status'],
-    data: { counter: COUNTER, onLabel: `${l.agentName || 'Voice'} · ${LIGHT_LABEL[l.state].toLowerCase()}`, offLabel: 'Voice off', onTone: TONE[l.state], offTone: 'neutral', dot: true, link: l.agentId ? `agent-voice.configure:${encodeURIComponent(l.agentId)}` : 'agent-voice.open' },
-  } as never, 'app', ID);
   rt.setBadge(COUNTER, l.state === 'off' ? 0 : 1);
-  if (show) rt.attachToBanner({ type: 'status', id: ASSET_ID, at: 'right', order: 22, origin: ID, widget: { label: 'Agent voice', size: 'compact', priority: 4, aliases: ['voice'] } });
-  else rt.detachFromBanner(`status:${ASSET_ID}`);
+  // when it shows (always / only while lit / never) is the banner widgets plugin's setting (agent-voice.banner, unchanged)
+  supplyBannerData(ASSET_ID, {
+    type: 'status', name: 'Agent voice', tags: ['voice', 'status'],
+    description: 'Lit while the selected agent is a voice agent: ready, speaking, listening, paused.',
+    data: { counter: COUNTER, onLabel: `${l.agentName || 'Voice'} · ${LIGHT_LABEL[l.state].toLowerCase()}`, offLabel: 'Voice off', onTone: TONE[l.state], offTone: 'neutral', dot: true, link: l.agentId ? `agent-voice.configure:${encodeURIComponent(l.agentId)}` : 'agent-voice.open' },
+  }, ID);
 }
 
 /* ---------------------------------------------------------------- replies → speech */
@@ -138,7 +136,6 @@ export const plugin: AxfWebLibrary = {
     startBridge(onReply);
     const paint = () => { paintBanner(rt); };
     onLight(paint);
-    rt.settings.onChange(K.banner, () => { painted = ''; paint(); });
     paint();
     onVoiceData(() => syncTalkActions(rt));
     window.addEventListener('axf:agent-voice.say', (e) => { const d = (e as CustomEvent<{ agentId: string; agentName: string; text: string }>).detail; if (d?.text) sayAs(d.agentId, d.agentName, d.text); });
@@ -167,7 +164,6 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'agent-voice', label: 'Agent voice', icon: 'mic', order: 35, parent: 'plugins', description: 'Agent voices, the Assistant microphone, cloud voices and pronunciations. Keys stay on the server.' }],
   settings: [
     { id: 'agent-voice.light', label: 'Live status light', icon: 'eye', tab: 'agent-voice', order: 5, settings: [
-      { key: K.banner, label: 'On the banner', kind: 'choice', default: 'lit', options: BANNER_MODES.map((v) => ({ value: v, label: v === 'lit' ? 'Only while a voice agent is selected' : v === 'always' ? 'Always (grey when off)' : 'Never' })) },
       { key: K.assistantLight, label: 'In the Assistant title bar', kind: 'toggle', default: true },
     ] },
   ],
