@@ -834,7 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s11 done (all) · orchestrator
 - 2026-11-18 00:52 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · foreign-write
 - 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s10 done (all) · foreign-write
 - 2026-11-18 00:53 UTC · `move-everything-axhub-web-console` s9 done, s10 done, s11 done (all) · foreign-write
@@ -1234,6 +1233,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 05:27 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
 - 2026-11-18 05:28 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-18 05:30 UTC · `approval-pass-covers-every-call` → running, PR #836, note (all) · reconciler
+- 2026-11-18 05:31 UTC · `approval-pass-covers-every-call` PR #836, note (all) · builds-live
 
 ## Token passes (log)
 
