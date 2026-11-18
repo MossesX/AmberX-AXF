@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `fix-refreshing-console-jumps-back` added (11 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `remove-amberx-app-code-once-phone` added (7 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `settings-fix-part-2-blank-toolbars` added (21 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `dispatcher-split-builds-evenly-across` added (13 steps) (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 18:05 UTC · `one-build-time-always-split-to-fill` s25 done, s26 done (all) · foreign-write
 - 2026-11-18 18:06 UTC · `one-build-time-always-split-to-fill` s25 done, s26 done (all) · foreign-write
 - 2026-11-18 18:10 UTC · `one-build-time-always-split-to-fill` s27 done, → complete (all) · foreign-write
+- 2026-11-18 18:11 UTC · `one-build-time-always-split-to-fill` s27 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 
