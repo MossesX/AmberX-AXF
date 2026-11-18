@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8988,
- "updatedAt": "2026-11-18T13:52:12.126Z",
+ "rev": 8989,
+ "updatedAt": "2026-11-18T13:52:41.823Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320086,7 +320086,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T13:49:47.513Z",
+   "updatedAt": "2026-11-18T13:50:41.135Z",
    "builtAt": "",
    "notes": [
     {
@@ -320116,6 +320116,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T13:49:47.513Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T13:50:41.135Z"
     }
    ],
    "approvals": [],
@@ -320839,7 +320843,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
