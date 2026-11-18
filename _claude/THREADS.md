@@ -838,7 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
 - 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
 - 2026-11-18 05:18 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
@@ -1238,6 +1237,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:38 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 - 2026-11-18 13:38 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
 - 2026-11-18 13:39 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-18 13:40 UTC · `every-app-gets-own-locked-default` note (all) · builds-live
 
 ## Token passes (log)
 
