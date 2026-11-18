@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9096,
- "updatedAt": "2026-11-18T16:49:32.822Z",
+ "rev": 9097,
+ "updatedAt": "2026-11-18T16:51:30.632Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244419,7 +244419,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244428,8 +244428,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T16:36:18.424Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T16:51:12.710Z",
+   "builtAt": "2026-11-18T16:51:12.710Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -244618,6 +244618,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T16:36:18.424Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T16:51:12.710Z"
     }
    ],
    "approvals": [],
@@ -244678,14 +244682,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "failure": {
-    "kind": "ci-red",
-    "at": "2026-11-18T16:36:18.424Z",
-    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
-    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
-    "step": "",
-    "exit": null
    },
    "landed": {
     "pr": 767,
@@ -245233,7 +245229,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275336,8 +275332,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T16:35:50.922Z",
-   "builtAt": "2026-11-18T16:35:50.922Z",
+   "updatedAt": "2026-11-18T16:51:12.710Z",
+   "builtAt": "2026-11-18T16:51:12.710Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -275650,6 +275646,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T16:35:50.922Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T16:51:12.710Z"
     }
    ],
    "approvals": [
@@ -276448,7 +276448,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313704,8 +313704,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T16:35:50.922Z",
-   "builtAt": "2026-11-18T16:35:50.922Z",
+   "updatedAt": "2026-11-18T16:51:12.710Z",
+   "builtAt": "2026-11-18T16:51:12.710Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -313790,6 +313790,10 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T16:35:50.922Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T16:51:12.710Z"
     }
    ],
    "approvals": [],
@@ -314215,7 +314219,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -318998,8 +319002,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T16:35:50.922Z",
-   "builtAt": "2026-11-18T16:35:50.922Z",
+   "updatedAt": "2026-11-18T16:51:12.710Z",
+   "builtAt": "2026-11-18T16:51:12.710Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319072,6 +319076,10 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-18T16:35:50.922Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T16:51:12.710Z"
     }
    ],
    "approvals": [],
@@ -319239,7 +319247,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
