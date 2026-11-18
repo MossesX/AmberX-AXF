@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `server-auto-lander-fixes-lands` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `orchestrator-runs-long-builds-across` → complete, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `move-server-side-console-parts-onto-vps` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, → complete, note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `rebuild-fresh-main-hide-any-asset` s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, → complete, note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `rebuild-fresh-main-phone-connect-small` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, note (all) · foreign-write
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:51 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 - 2026-11-18 16:51 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-18 16:51 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 17:18 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
+- 2026-11-18 17:20 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 17:20 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 17:20 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 17:20 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
