@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9017,
- "updatedAt": "2026-11-18T14:28:21.621Z",
+ "rev": 9018,
+ "updatedAt": "2026-11-18T14:29:22.725Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318188,15 +318188,15 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T14:18:20.242Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T14:29:07.628Z",
+   "builtAt": "2026-11-18T14:29:07.628Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -318645,12 +318645,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:29:07.628Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:25:38.639Z",
-     "updatedAt": "2026-11-18T12:25:38.639Z"
+     "updatedAt": "2026-11-18T14:29:09.919Z"
     }
    ],
    "profiles": [
@@ -318661,7 +318661,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
