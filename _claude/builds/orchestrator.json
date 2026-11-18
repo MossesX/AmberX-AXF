@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T15:16:51.124Z",
+ "updatedAt": "2026-11-18T15:17:33.810Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162602,7 +162602,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T15:16:22.911Z",
+   "updatedAt": "2026-11-18T15:17:09.529Z",
    "builtAt": "",
    "notes": [
     {
@@ -162648,6 +162648,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T15:16:22.911Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T15:17:09.529Z"
     }
    ],
    "approvals": [],
@@ -193635,7 +193639,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T15:16:38.132Z",
+   "updatedAt": "2026-11-18T15:16:49.512Z",
    "builtAt": "",
    "notes": [
     {
@@ -193713,6 +193717,10 @@
     {
      "text": "Started run 1 on hulu0241 (Opus, Phase 2): axf-one-build-time-always-split-to-fill--sully.",
      "at": "2026-11-18T15:16:38.132Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-one-build-time-always-split-to-fill--sully, shared account login)",
+     "at": "2026-11-18T15:16:49.512Z"
     }
    ],
    "approvals": [],
