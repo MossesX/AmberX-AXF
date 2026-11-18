@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:21 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 00:23 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-18 00:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-18 00:25 UTC · `move-server-side-console-parts-onto-vps` s24 done (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:35 UTC · `axhub-routes-for-console-hub` note (all) · orchestrator
 - 2026-11-18 01:35 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · watchdog
 - 2026-11-18 01:35 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
+- 2026-11-18 01:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
 
 ## Token passes (log)
 
