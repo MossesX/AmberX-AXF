@@ -47,6 +47,8 @@ export function parseRoute(hash: string): Route {
     const pick = pickOf(query.get('do'));
     return { view: 'approval', params: pick ? { id: b, do: pick } : { id: b } };
   }
+  // `#/passes/<id>`: one pass, opened (decision 120: console_open / the deep link reach it)
+  if (a === 'passes' && b && PASS_FILTER_RE.test(b) && b !== 'any' && parts.length === 2) return { view: 'passes', params: { id: b } };
   if (a === 'handoff' && !b) return { view: 'handoff', params: {} };
   if (a === 'handoff' && b && RUN_ID_RE.test(b) && parts.length === 2) {
     const file = query.get('file') ?? '';
@@ -66,6 +68,8 @@ export function routeHash(view: string, params: Record<string, string> = {}): st
     case 'approval':
       if (!APPROVAL_ID_RE.test(params.id ?? '')) return '#/approvals';
       return pickOf(params.do) ? `#/approvals/${params.id}?do=${params.do}` : `#/approvals/${params.id}`;
+    case 'passes':
+      return params.id && params.id !== 'any' && PASS_FILTER_RE.test(params.id) ? `#/passes/${encodeURIComponent(params.id)}` : '#/passes';
     case 'handoff-run':
       if (!RUN_ID_RE.test(params.id ?? '')) return '#/handoff';
       return params.file && safeFilePath(params.file) ? `#/handoff/${params.id}?file=${encodeURIComponent(params.file)}` : `#/handoff/${params.id}`;
@@ -395,6 +399,25 @@ export function passClock(seconds: number): string {
 export function passCovers(p: { service: string; tools: string[]; scope?: string[] }): string {
   const tools = p.tools.length === 1 && p.tools[0] === '*' ? 'every tool' : p.tools.join(', ');
   return [p.service, tools, p.scope?.length ? `scope ${p.scope.join(', ')}` : ''].filter(Boolean).join(' · ');
+}
+
+/** What a pass covers, as chips: `all` → one "All tools" chip; else one per entry (decision 120). */
+export function coverageChips(covers: 'all' | string[] | undefined): string[] {
+  if (!covers || covers === 'all') return ['All tools'];
+  return covers.map((e) => (e.startsWith('scope:') ? `scope ${e.slice(6)}` : e));
+}
+
+/** One line per policy class a pass lifted: "3 veto · 1 approval · 0 explicit". */
+export function passRunsLine(runs: { veto?: number; confirm?: number; explicit?: number } | undefined): string {
+  const r = runs ?? {};
+  return `${r.veto ?? 0} veto · ${r.confirm ?? 0} approval · ${r.explicit ?? 0} explicit`;
+}
+
+/** Picker state → the `covers` a grant or update sends: `all`, or the picked services plus typed entries. */
+export function coversFrom(mode: 'all' | 'pick', picked: string[], typed: string): 'all' | string[] | null {
+  if (mode === 'all') return 'all';
+  const list = [...new Set([...picked, ...(patternList(typed) ?? [])])];
+  return list.length ? list.slice(0, 40) : null;
 }
 
 /** A comma or space separated field → patterns (empty → undefined). */

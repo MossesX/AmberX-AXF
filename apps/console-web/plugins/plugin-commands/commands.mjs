@@ -34,6 +34,23 @@ import {
   pluginRouteRequest, resolvePluginCommand, commandToolName,
 } from '../../../../framework/core/engines/plugin-commands.mjs';
 import { registry } from '../../../../framework/cli/plugin-commands.mjs';
+import { PASS_CONSOLE_SERVICE, passActive, passCoversCall, passCoversOf, passRanUnder, passReachesIrreversible } from '../../../../framework/core/engines/control-pass.mjs';
+
+/**
+ * The pass that lifts this command's confirm (decision 120), or null: the first active one whose `covers` names the
+ * console service, the command's MCP tool or its control@1 target. `passes`: the console's own active passes and the
+ * one axHub sent with the call (verified by the server). A deleting command counts as irreversible only when the
+ * plugin says so; then only an all pass with include_irreversible covers it.
+ */
+export function commandPass(passes, plugin, cmd, c, now = Date.now()) {
+  const call = { service: PASS_CONSOLE_SERVICE, tool: cmd.tool || commandToolName(plugin.folder, cmd.id), target: c.target, path: c.path };
+  return (Array.isArray(passes) ? passes : []).find((p) => p && passActive(p, now) && passCoversCall(passCoversOf(p), call) && (cmd.irreversible !== true || passReachesIrreversible(p))) ?? null;
+}
+
+/** The console's own active passes (token-control's store), or none when that plugin is missing. */
+async function localPasses(now = Date.now()) {
+  try { const m = await import('../token-control/lib/pass.mjs'); return (m.loadPasses(now).passes ?? []).filter((p) => passActive(p, now)); } catch { return []; }
+}
 
 export { registry };
 
@@ -146,7 +163,7 @@ const listItem = (p, c) => ({ id: `${p.folder}/${c.id}`, plugin: p.folder, app: 
  * Gate and plan one plugins.* command. Answers the control@1 envelope for list / get / local reads and failures, or
  * `{ ok: true, dispatch, command, effect }` for the console server to run (route in-process, action in the open console).
  */
-export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.now(), reg = null } = {}) {
+export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.now(), reg = null, pass = null, passes = [] } = {}) {
   const c = normalizeControl(raw);
   if (!c.by && by) c.by = by;
   const gate = controlGate(c, grants, { salt: confirmSalt(), now });
@@ -185,7 +202,10 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
     // the command's own effect on top of the gate (a read needs read, a deleting command delete + a confirm token)
     const need = `control.plugins.${{ read: 'read', write: 'write', navigate: 'write', destructive: 'delete' }[cmd.effect]}`;
     if (!controlGranted(grants, need)) throw new PluginError(CONTROL_WIRE.DENIED, `${c.path} needs ${need}`, { requires: need });
-    if (cmd.confirm && !controlConfirmValid(c, c.confirm, confirmSalt(), now)) {
+    // decision 120: a covering pass runs a confirm command at once (no confirmation_required); logged ranUnder
+    const covering = cmd.confirm && !controlConfirmValid(c, c.confirm, confirmSalt(), now) ? commandPass([...(pass ? [pass] : []), ...passes], plugin, cmd, c, now) : null;
+    const under = covering ? passRanUnder(covering, 'confirm') : null;
+    if (cmd.confirm && !covering && !controlConfirmValid(c, c.confirm, confirmSalt(), now)) {
       return fail(CONTROL_WIRE.CONFIRMATION_REQUIRED, `${plugin.name}: ${cmd.title} ${cmd.effect === 'destructive' ? 'deletes or resets' : 'needs a confirm'}; send the same command again with this confirm token within ${CONTROL_CONFIRM_TTL_MS / 60000} minutes`, { requires: need, effect: cmd.effect, confirm: controlConfirmToken(c, confirmSalt(), now), ttlMs: CONTROL_CONFIRM_TTL_MS });
     }
     if (cmd.run.info) return controlResult(c, { value: { folder: plugin.folder, app: plugin.app, id: plugin.id, name: plugin.name, version: plugin.version, description: plugin.description, provides: plugin.provides, needs: plugin.needs, optional: plugin.optional, dataDir: plugin.dataDir, commands: plugin.commands.map((x) => listItem(plugin, x)), skipped: plugin.skipped } });
@@ -197,7 +217,7 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
     const dispatch = cmd.run.route
       ? { kind: 'route', ...pluginRouteRequest(plugin.folder, cmd, input) }
       : { kind: 'action', action: cmd.run.action, args: input.args ?? null, to: input.to ?? 'recent' };
-    return { ok: true, dispatch, command: c, effect: cmd.effect, plugin: plugin.folder, name: plugin.name, title: cmd.title };
+    return { ok: true, dispatch, command: c, effect: cmd.effect, plugin: plugin.folder, name: plugin.name, title: cmd.title, ...(under ? { ranUnder: under.ranUnder, skippedPolicy: under.skippedPolicy } : {}) };
   } catch (e) {
     if (e instanceof PluginError) return fail(e.code, e.message, e.extra);
     if (e?.code && Object.values(CONTROL_WIRE).includes(e.code)) return fail(e.code, e.message);
@@ -206,10 +226,12 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
 }
 
 /** The answer of a dispatched command, as a control@1 envelope (the console server calls this after running it). */
-export function finish(command, outcome) {
+export function finish(command, outcome, under = null) {
   const c = normalizeControl(command);
   const ok = typeof outcome.ok === 'boolean' ? outcome.ok : outcome.status === undefined || (outcome.status >= 200 && outcome.status < 300);
-  if (c.target === 'plugins.commands') audit({ by: c.by || 'unknown', reason: c.reason ?? '', path: c.path, input: c.input, status: outcome.status ?? null, ok });
+  // decision 120: a run under a pass says which one and what it skipped
+  const ran = under && typeof under.ranUnder === 'string' && under.ranUnder ? { ranUnder: under.ranUnder, pass: under.ranUnder, skippedPolicy: under.skippedPolicy || 'confirm' } : {};
+  if (c.target === 'plugins.commands') audit({ by: c.by || 'unknown', reason: c.reason ?? '', path: c.path, input: c.input, status: outcome.status ?? null, ok, ...ran });
   if (!ok) {
     const code = outcome.status === 401 || outcome.status === 403 ? CONTROL_WIRE.DENIED : outcome.status === 404 ? CONTROL_WIRE.NOT_FOUND : outcome.status === 400 || outcome.status === 422 ? CONTROL_WIRE.VALIDATION : outcome.code ?? CONTROL_WIRE.UNEXPECTED;
     return controlFailure(code, outcome.message || `the plugin answered ${outcome.status}`, { op: c.op, target: c.target, path: c.path, status: outcome.status, result: outcome.result });
@@ -271,11 +293,12 @@ export async function main(argv) {
   if (cmd === 'audit') { out(readAudit(Number(rest[0]) || 50), readAudit(Number(rest[0]) || 50).map((a) => `${a.at} ${a.by} ${a.path} ${a.ok ? 'ok' : `failed ${a.status}`}`).join('\n')); return 0; }
   if (cmd === 'plan') {
     const body = JSON.parse(read('/dev/stdin') || '{}');
-    console.log(JSON.stringify(plan(body.command ?? {}, { grants: body.grants ?? ['*'], by: body.by ?? '', enabled: body.enabled ?? null, reg: body.registry ?? null })));
+    const passes = await localPasses();
+    console.log(JSON.stringify(plan(body.command ?? {}, { grants: body.grants ?? ['*'], by: body.by ?? '', enabled: body.enabled ?? null, reg: body.registry ?? null, pass: body.pass ?? null, passes })));
     return 0;
   }
   if (cmd === 'bundle') { const body = JSON.parse(read('/dev/stdin') || '{}'); const reg = registry({ enabled: body.enabled ?? null }); console.log(JSON.stringify({ registry: reg, tools: pluginCommandTools(reg) })); return 0; }
-  if (cmd === 'finish') { const body = JSON.parse(read('/dev/stdin') || '{}'); console.log(JSON.stringify(finish(body.command ?? {}, body.outcome ?? {}))); return 0; }
+  if (cmd === 'finish') { const body = JSON.parse(read('/dev/stdin') || '{}'); console.log(JSON.stringify(finish(body.command ?? {}, body.outcome ?? {}, body.under ?? null))); return 0; }
   if (cmd === 'check') {
     const reg = registry({ folders: rest.length ? rest : null, apps: ['console-web'] });
     const res = reg.plugins.map((p) => ({ folder: p.folder, ...pluginCommandCoverage(p) }));
