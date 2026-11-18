@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:46:17.328Z",
+ "updatedAt": "2026-11-18T12:46:42.625Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192542,7 +192542,7 @@
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:42:01.735Z",
+   "updatedAt": "2026-11-18T12:46:22.941Z",
    "builtAt": "",
    "notes": [
     {
@@ -192652,8 +192652,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T12:46:22.941Z",
      "note": "",
      "uid": "st-mwm3hqpb03n1o4",
      "createdAt": "2026-11-18T12:26:07.343Z"

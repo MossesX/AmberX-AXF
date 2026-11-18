@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8941,
- "updatedAt": "2026-11-18T12:46:17.328Z",
+ "rev": 8942,
+ "updatedAt": "2026-11-18T12:46:42.625Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318726,7 +318726,7 @@
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:42:01.735Z",
+   "updatedAt": "2026-11-18T12:46:22.941Z",
    "builtAt": "",
    "notes": [
     {
@@ -318883,12 +318883,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T12:46:22.941Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:26:07.343Z",
-     "updatedAt": "2026-11-18T12:26:07.343Z"
+     "updatedAt": "2026-11-18T12:46:27.137Z"
     },
     {
      "id": "s4",
@@ -318924,7 +318924,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
