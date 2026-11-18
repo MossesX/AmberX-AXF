@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "default-plan-studio-toolbar",
+  "name": "Plan Studio toolbar (default)",
+  "version": "1.0.0",
+  "description": "The default toolbar of the Plan Studio plugin: locked until another toolbar (generic, or built for this screen) is picked; a pick changes the look only, never the buttons (toolbar-owner@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "toolbar-owner@1",
+    "plugin",
+    "placeholder"
+  ],
+  "data": {
+    "scope": "plugin:plan-studio",
+    "builtFor": "plugin:plan-studio",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "plugin",
+        "label": "Plan Studio",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "plugin.settings.open:plan-studio"
+          }
+        ]
+      }
+    ]
+  }
+}

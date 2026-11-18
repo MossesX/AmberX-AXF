@@ -310,7 +310,8 @@
         "groups[].visibleWhen": "when \u2014 shows or hides the whole group",
         "groups[].priority": "number \u2014 default priority for the group's items",
         "groups[].overflow": "auto | never | always \u2014 default for the group's items",
-        "slot": "string \u2014 the place on its page this toolbar fills when a page has several (`main` by default; a tab's toolbar names the tab: `auto-lander`). Its settings id is <scope id>.<slot> (`gate.auto-lander`), `<scope id>` alone for main; the page asks usePageToolbar(viewId, slot)"
+        "slot": "string \u2014 the place on its page this toolbar fills when a page has several (`main` by default; a tab's toolbar names the tab: `auto-lander`). Its settings id is <scope id>.<slot> (`gate.auto-lander`), `<scope id>` alone for main; the page asks usePageToolbar(viewId, slot)",
+        "builtFor": "generic | view:<view id> | plugin:<name> \u2014 toolbar-owner@1 (core/engines/toolbar-owner-rules.mjs): a generic toolbar is offered on every screen, a screen toolbar only on its own screen. Absent = read from scope (app \u2192 generic). Every plugin has a locked default `default-<plugin>-toolbar`; picking another toolbar for a screen changes its look and style only, never its buttons."
       },
       "hideable": true,
       "widgets": {

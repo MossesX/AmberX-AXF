@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "default-approvals-banner-toolbar",
+  "name": "Approvals banner toolbar (default)",
+  "version": "1.0.0",
+  "description": "The default toolbar of the Approvals banner plugin: locked until another toolbar (generic, or built for this screen) is picked; a pick changes the look only, never the buttons (toolbar-owner@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "toolbar-owner@1",
+    "plugin",
+    "placeholder"
+  ],
+  "data": {
+    "scope": "plugin:approvals-banner",
+    "builtFor": "plugin:approvals-banner",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "plugin",
+        "label": "Approvals banner",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "plugin.settings.open:approvals-banner"
+          }
+        ]
+      }
+    ]
+  }
+}

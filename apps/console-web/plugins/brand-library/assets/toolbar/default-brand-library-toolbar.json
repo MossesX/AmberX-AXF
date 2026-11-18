@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "default-brand-library-toolbar",
+  "name": "Brand library toolbar (default)",
+  "version": "1.0.0",
+  "description": "The default toolbar of the Brand library plugin: locked until another toolbar (generic, or built for this screen) is picked; a pick changes the look only, never the buttons (toolbar-owner@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "toolbar-owner@1",
+    "plugin",
+    "placeholder"
+  ],
+  "data": {
+    "scope": "plugin:brand-library",
+    "builtFor": "plugin:brand-library",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "plugin",
+        "label": "Brand library",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "plugin.settings.open:brand-library"
+          }
+        ]
+      }
+    ]
+  }
+}
