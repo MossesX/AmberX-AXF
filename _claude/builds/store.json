@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8654,
- "updatedAt": "2026-11-18T01:08:07.704Z",
+ "rev": 8655,
+ "updatedAt": "2026-11-18T01:08:26.869Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288246,7 +288246,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -288254,7 +288254,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:08:00.794Z",
+   "updatedAt": "2026-11-18T01:08:13.305Z",
    "builtAt": "",
    "notes": [
     {
@@ -288436,6 +288436,10 @@
     {
      "text": "Self-check: flagship-professional-skin-covering-2 was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-18T01:06:40.779Z"
+    },
+    {
+     "text": "Started run 3 on mossesx-max- (Opus, Phase 2): axf-flagship-professional-skin-covering-2--sully.",
+     "at": "2026-11-18T01:08:13.305Z"
     }
    ],
    "approvals": [
@@ -288464,13 +288468,13 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-flagship-professional-skin-covering-2--sully",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-17T21:58:22.524Z",
-    "runs": 2,
+    "model": "Opus",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-18T01:08:11.137Z",
+    "runs": 3,
     "crashes": 2,
     "lastRun": {
      "at": "2026-11-18T01:05:12.564Z",
@@ -288490,9 +288494,9 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-17T21:58:22.524Z",
+    "dispatchedAt": "2026-11-18T01:08:11.137Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -288501,7 +288505,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-17T21:58:22.524Z",
+    "pickedAt": "2026-11-18T01:08:11.137Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -289259,7 +289263,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
