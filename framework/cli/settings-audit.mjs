@@ -115,8 +115,8 @@ export function auditServer({ liveData = LIVE_DATA } = {}) {
 /** Hub settings documents under <projects>/_shared/_data (settings/**, claude/settings.json) and a project's _data folders. */
 export function auditHubDocs(paths) {
   const rows = []; const docs = [];
-  for (const { dir, ns, prefix = '', editor = '', owner = '' } of paths) {
-    for (const f of walk(dir, (p) => p.endsWith('.json'))) {
+  for (const { dir, ns, prefix = '', editor = '', owner = '', all = false } of paths) {
+    for (const f of walk(dir, (p) => p.endsWith('.json') && !/\.tmp$|\/runs\/|\/history\//.test(p) && (all || SETTINGS_LIKE.test(basename(p)) || /^(workers|build-limit|store)\.json$/.test(basename(p))))) {
       const d = readLive(f); if (!d) continue;
       const r = relative(dir, f).split('\\').join('/');
       const storeKey = `${ns}/${prefix}${r}`;
@@ -156,6 +156,7 @@ export function audit(scope) {
     // stores the orchestrator keeps outside its plugin folder
     const extra = auditHubDocs([
       { dir: pipeline, ns: 'builds', prefix: 'pipeline/', editor: 'view:builds/tab:pipeline', owner: 'apps/console-web/plugins/build-orchestrator/pipeline.mjs' },
+      { dir: join(PROJECTS, 'amberx-axf/_data/auto-lander'), ns: 'console', prefix: 'auto-lander/', editor: 'view:builds/tab:gate', owner: 'framework/core/auto-lander.mjs', all: true },
       { dir: join(PROJECTS, 'amberx-axf/_data/agent-slots'), ns: 'console', prefix: 'agent-slots/', editor: 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots', owner: 'framework/cli/agent-slots.mjs' },
       { dir: join(PROJECTS, 'amberx-axf/_data/build-rules'), ns: 'console', prefix: 'build-rules/', editor: 'view:builds/tab:rules', owner: 'framework/core/build-rules.mjs' },
       { dir: join(PROJECTS, '_shared/_data/claude'), ns: 'settings', prefix: 'claude/', editor: 'view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings', owner: 'apps/console-web/plugins/claude-settings/core.mjs' },
@@ -168,7 +169,7 @@ export function audit(scope) {
   }
   if (scope === 'framework') {
     const reg = auditRegistryKeys(['framework/react', 'framework/libs', 'framework/core', 'apps/console-web/src', 'apps/axhub-web/src', 'apps/demo/src']);
-    const hub = auditHubDocs([{ dir: join(PROJECTS, '_shared/_data/settings'), ns: 'settings', editor: 'view:settings/tab:appearance', owner: 'framework/react/hubAppearance.ts + framework/cli/skins.mjs' }]);
+    const hub = auditHubDocs([{ dir: join(PROJECTS, '_shared/_data/settings'), ns: 'settings', editor: 'view:settings/tab:appearance', owner: 'framework/react/hubAppearance.ts + framework/cli/skins.mjs', all: true }]);
     const shared = walk(join(PROJECTS, '_shared/_data'), (p) => p.endsWith('.json') && !p.includes('/settings/') && !p.includes('app-catalog') && !p.includes('plugin-catalog')).map((f) => ({ file: f, frame: readLive(f)?.$axf || '', keys: topKeys(readLive(f)) }));
     const adapters = walk(join(REPO, 'apps/axhub-web'), (p) => /\.(tsx?|mjs|py)$/.test(p) && /setting|look|skin|appearance/i.test(basename(p)) && !/test/.test(p)).map(rel);
     const kotlin = walk(join(REPO, 'framework/android'), (p) => p.endsWith('.kt') && /Settings|Appearance|Hub/.test(basename(p))).map(rel);
