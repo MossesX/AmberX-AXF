@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `pending-tab-one-collapsed-row-per-2` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `gate-rules-plugin-in-the-console` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `shipped-features-organized-sortable` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `vps-sends-shipped-features-every-merge` note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:17 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 - 2026-11-18 16:17 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-18 16:19 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 16:20 UTC · `attach-widgets-to-any-toolbar-banner` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
