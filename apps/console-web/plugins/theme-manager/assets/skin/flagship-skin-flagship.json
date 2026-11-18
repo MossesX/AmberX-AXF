@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "skin",
+ "id": "flagship-skin-flagship",
+ "name": "flagship-skin: Flagship (blue-black and amber)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Blue-black surfaces, amber accent, dark first with a light tone; 90 / 150 / 240 ms motion. Every slot filled (108 / 108).",
+ "tags": [
+  "ui-choice",
+  "choice-set:flagship-skin",
+  "choice-option:flagship"
+ ],
+ "data": {
+  "extends": "flagship",
+  "layoutTheme": "flagship",
+  "colorTheme": "flagship-dark",
+  "styleTheme": "flagship",
+  "assets": {}
+ }
+}

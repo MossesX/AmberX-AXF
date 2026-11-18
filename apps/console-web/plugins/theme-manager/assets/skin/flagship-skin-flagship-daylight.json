@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "skin",
+ "id": "flagship-skin-flagship-daylight",
+ "name": "flagship-skin: Flagship Daylight (ivory and indigo)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Warm ivory, indigo accent, light first with a dusk tone; calm motion (110 / 200 / 320 ms). Everything else from Flagship through extends.",
+ "tags": [
+  "ui-choice",
+  "choice-set:flagship-skin",
+  "choice-option:flagship-daylight"
+ ],
+ "data": {
+  "extends": "flagship-daylight",
+  "layoutTheme": "flagship",
+  "colorTheme": "flagship-daylight-light",
+  "styleTheme": "flagship",
+  "assets": {}
+ }
+}
