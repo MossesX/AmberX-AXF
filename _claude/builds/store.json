@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8891,
- "updatedAt": "2026-11-18T07:17:07.524Z",
+ "rev": 8892,
+ "updatedAt": "2026-11-18T07:17:50.818Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -317140,6 +317140,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T07:11:45.210Z",
+     "buildId": "approval-pass-covers-every-call",
+     "phase": "",
+     "step": "s11",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -317414,7 +317430,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
