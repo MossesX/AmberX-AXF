@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8603,
- "updatedAt": "2026-11-18T00:47:27.644Z",
+ "rev": 8604,
+ "updatedAt": "2026-11-18T00:49:08.160Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262908,10 +262908,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/move-server-side-console-parts-onto-vps",
-   "pr": "",
+   "pr": "#828",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-18T00:27:03.211Z",
+   "updatedAt": "2026-11-18T00:49:04.245Z",
    "builtAt": "",
    "notes": [
     {
@@ -263783,7 +263783,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -289168,7 +289168,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-18T00:47:07.950Z"
+     "updatedAt": "2026-11-18T00:49:01.990Z"
     },
     {
      "id": "s27",
@@ -297171,7 +297171,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:32:31.308Z"
+     "updatedAt": "2026-11-18T00:49:01.990Z"
     },
     {
      "id": "s3",
@@ -297193,7 +297193,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:32:31.308Z"
+     "updatedAt": "2026-11-18T00:49:01.990Z"
     },
     {
      "id": "s4",
@@ -297213,9 +297213,9 @@
      "done": true,
      "doneAt": "2026-11-18T00:35:26.359Z",
      "note": "",
-     "rev": 4,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:37:59.648Z"
+     "updatedAt": "2026-11-18T00:49:01.990Z"
     },
     {
      "id": "s5",
@@ -297235,9 +297235,9 @@
      "done": true,
      "doneAt": "2026-11-18T00:39:29.346Z",
      "note": "",
-     "rev": 4,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:41:27.194Z"
+     "updatedAt": "2026-11-18T00:49:01.990Z"
     },
     {
      "id": "s6",
@@ -297257,9 +297257,9 @@
      "done": true,
      "doneAt": "2026-11-18T00:42:59.486Z",
      "note": "",
-     "rev": 4,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:44:49.973Z"
+     "updatedAt": "2026-11-18T00:49:01.990Z"
     },
     {
      "id": "s7",
@@ -297279,9 +297279,9 @@
      "done": true,
      "doneAt": "2026-11-18T00:45:31.157Z",
      "note": "",
-     "rev": 4,
+     "rev": 3,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:47:09.628Z"
+     "updatedAt": "2026-11-18T00:49:01.990Z"
     },
     {
      "id": "s8",
