@@ -170,7 +170,7 @@ test('the dependency check names what is missing and passes when everything is t
     assert.equal(none.missing.length, REQUIREMENTS.length);
     assert.match(none.reason, /can't start/);
     for (const r of REQUIREMENTS.filter((x) => x.file)) { mkdirSync(dirname(join(root, r.file)), { recursive: true }); writeFileSync(join(root, r.file), ''); }
-    const p = join(root, 'apps/console-web/plugins/build-orchestrator');
+    const p = join(root, 'apps/console-web/plugins/build-orchestrator');  // axf-plugin:build-orchestrator
     mkdirSync(join(p, 'web'), { recursive: true });
     writeFileSync(join(p, 'notify.json'), JSON.stringify({ $axf: 'notify-types@1', types: [{ id: 'build-live.broke' }] }));
     writeFileSync(join(p, 'web/index.tsx'), "dialogs: { 'build-live': { title: 'Broke' } }");

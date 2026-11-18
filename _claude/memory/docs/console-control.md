@@ -78,3 +78,15 @@ A toolbar drawn from a page toolbar asset (page-toolbar@1) is `toolbar:<settings
 transport: REST `GET /api/console-control/toolbars`, `GET …/toolbars/<id>`, `POST …/toolbars/<id>/press {button}`; MCP
 `console_control_toolbar`; control@1 `console.toolbars`; CLI `axf console toolbar list|get|press`; voice "press <button> on
 the <x> toolbar", "what's on the <x> toolbar".
+
+## Saved place (Nov 17 2026, build fix-refreshing-console-jumps-back)
+
+A reload of any kind (browser, pull-down refresh, `axf console refresh [--hard]`, a new version) comes back to the same
+view, tabs, grid selection and scroll (`apps/console-web/src/place`, sessionStorage `axf:console-place@1`, keyed by
+control addresses). A URL deep link (`?axf-open=`, `?axf-cmd=`, `?axf-ref=`) wins over it. `panel:console-place`
+`state` reads the saved place, the live one and a running restore; `function:console.place.restore` `press` puts it
+back. REST `GET /api/console-control/state?address=panel:console-place`, `POST …/do {verb:'press', address:
+'function:console.place.restore'}`; MCP `console_control_state` / `console_control_do` with those addresses; CLI
+`axf console place [get|restore]`; voice "put me back", "back to where I was", "restore my place", "where was I";
+link `?axf-open=console.place.restore`. Tests: `npx -y tsx apps/console-web/scripts/place-state-check.mts`,
+`node apps/console-web/scripts/place-refresh.e2e.mjs` (after `npm run build`).

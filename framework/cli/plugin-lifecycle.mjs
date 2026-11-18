@@ -55,6 +55,9 @@ const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
 // Generated fixtures that snapshot real data: the shipped-features manifest (files a build shipped, history) and the
 // demonstration fixture generated from a glossary entry. A plugin removed later only leaves a stale snapshot behind.
 const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo)\.json$/;
+// Spec test data that names plugins as page contexts or sample paths: the golden fixtures regenerated from the engines
+// (live-demo@1 acts, toolbar migration, toolbar actions) and the toolbar-actions case table they replay. Values, not references.
+const SPEC_TEST_DATA = /^framework\/spec\/(fixtures\/(live-demo|toolbar-migrate|toolbar-actions)\.json|toolbar-actions-cases\.ts)$/;
 // data-store@1 maps every plugin's data folder to a namespace key (the path map, its fixtures), names the SQLite files it
 // mirrors as tables (the data-store plugin, the axf data CLIs, the axf-data service), and its specs and tests seed plugin
 // data files as fixtures: a plugin removed later leaves a line that maps nothing, data, not a reference.
@@ -137,6 +140,9 @@ export function namesHostPlugin(line, folder, id = '') {
   return line.includes(`${basename(CONSOLE_APP_DIR)}/plugins/${folder}`) || line.includes(`axf-plugin:${folder}`) || (!!id && line.includes(id));
 }
 
+/** `id` in `line` as a whole word (not followed by another id character). */
+const idIn = (line, id) => { for (let i = line.indexOf(id); i >= 0; i = line.indexOf(id, i + 1)) if (!/[\w.-]/.test(line[i + id.length] ?? '') || (line[i + id.length] === '.' && !/[\w-]/.test(line[i + id.length + 1] ?? ''))) return true; return false; };
+
 /** Every line outside the plugin's folder that names it. Marker lines in listed mention files are "managed", the rest "stale". */
 export function scanReferences(p) {
   const id = p.manifest?.id;
@@ -148,7 +154,7 @@ export function scanReferences(p) {
   for (const file of walk(ROOT)) {
     if (file.startsWith(p.dir + '/') || file === STATE) continue;
     // Rebuild and harvest reports (and their screenshots) and the changes log are history: they describe a plugin version and must outlive it.
-    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file)) || DATA_STORE_MAP.test(relative(ROOT, file))) continue;
+    if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file)) || SPEC_TEST_DATA.test(relative(ROOT, file)) || DATA_STORE_MAP.test(relative(ROOT, file))) continue;
     // The console's public/data is generated from the builds store and is git-ignored: build notes there are history too.
     if (file.startsWith(join(CONSOLE_APP_DIR, 'public/data') + '/')) continue;
     // The console-control inventory is generated from the installed plugins (scripts/control-inventory.mjs, run by every
@@ -166,14 +172,19 @@ export function scanReferences(p) {
     // to share the name: only a path that reaches the console's plugins folder counts there.
     const inOtherApp = file.startsWith(APPS_DIR + '/') && !file.startsWith(CONSOLE_APP_DIR + '/');
     const lines = readFileSync(file, 'utf8').split('\n');
-    lines.forEach((line, i) => {
-      let hit = needles.some((n) => line.includes(n)) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
+    // another plugin's own lifecycle.mentions list names the files it marks: its bookkeeping, not a reference to us
+    let ownMentions = null;
+    if (file.startsWith(PLUGINS_DIR + '/') && file.endsWith('/plugin.json')) { try { ownMentions = new Set(JSON.parse(lines.join('\n')).lifecycle?.mentions ?? []); } catch { /* not JSON */ } }
+    lines.forEach((full, i) => {
+      const line = ownMentions ? [...ownMentions].reduce((l, m) => l.split(JSON.stringify(m)).join('""'), full) : full;
+      // the plugin id and its marker name this plugin only as a whole word: plan-studio is not plan-studio-2
+      let hit = needles.some((n) => (n === id || n === `axf-plugin:${p.folder}` ? idIn(line, n) : line.includes(n))) || (inOtherPlugin && quoted.some((q) => line.includes(q)));
       // a line that uses the folder name as a plain word of its own vocabulary says so: `axf-not-plugin:<folder>`
-      if (hit && line.includes(`axf-not-plugin:${p.folder}`)) hit = false;
+      if (hit && idIn(line, `axf-not-plugin:${p.folder}`)) hit = false;
       if (hit && inOtherApp && !namesHostPlugin(line, p.folder, id)) hit = false;
       if (!hit) return;
-      const managed = line.includes(`axf-plugin:${p.folder}`) && mentions.has(file);
-      hits.push({ file: relative(ROOT, file), line: i + 1, text: line.trim().slice(0, 200), managed });
+      const managed = idIn(line, `axf-plugin:${p.folder}`) && mentions.has(file);
+      hits.push({ file: relative(ROOT, file), line: i + 1, text: full.trim().slice(0, 200), managed });
     });
   }
   return hits;
@@ -185,7 +196,7 @@ function stripMentions(p, dry, log) {
     const file = resolve(ROOT, m);
     if (!file.startsWith(ROOT + '/') || !existsSync(file)) continue;
     const lines = readFileSync(file, 'utf8').split('\n');
-    const kept = lines.filter((l) => !l.includes(`axf-plugin:${p.folder}`));
+    const kept = lines.filter((l) => !idIn(l, `axf-plugin:${p.folder}`));
     if (kept.length !== lines.length) {
       n += lines.length - kept.length;
       log(`${dry ? 'would strip' : 'stripped'} ${lines.length - kept.length} line(s) from ${m}`);
@@ -343,7 +354,7 @@ function publishRemoval(p, log) {
       const f = resolve(wt, mm);
       if (!f.startsWith(wt + '/') || !existsSync(f)) continue;
       const lines = readFileSync(f, 'utf8').split('\n');
-      const kept = lines.filter((l) => !l.includes(`axf-plugin:${p.folder}`));
+      const kept = lines.filter((l) => !idIn(l, `axf-plugin:${p.folder}`));
       if (kept.length !== lines.length) { writeFileSync(f, kept.join('\n')); git(['-C', wt, 'add', '--', mm]); }
     }
   }, `Uninstall plugin ${p.manifest?.name ?? p.folder} (${p.folder}): remove its code and doc lines (plugin-lifecycle)`, log, 'GitHub already has this removal');

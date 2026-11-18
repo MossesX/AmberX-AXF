@@ -42,7 +42,7 @@ import * as attempts from './attempts.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../..');
-export const LAND_CLI = join(REPO_ROOT, 'apps/console-web/plugins/push-banner/land/land.mjs');
+export const LAND_CLI = join(REPO_ROOT, 'apps/console-web/plugins/push-banner/land/land.mjs');  // axf-plugin:push-banner
 export const LOCK_STALE_MS = 30 * 60e3;
 export const SETTINGS_DEFAULTS = Object.freeze({ enabled: true, maxAttempts: 3, backoffBaseMin: 5, backoffFactor: 3, backoffMaxMin: 60, attemptTimeoutMin: 45, pushOnEscalation: true });
 export const SETTING_KEYS = Object.freeze(Object.keys(SETTINGS_DEFAULTS));
@@ -134,9 +134,9 @@ const prNum = (v) => { const n = Number(String(v ?? '').replace(/^#/, '')); retu
 
 /** The real dependencies, loaded on first use (tests pass their own). */
 export async function realDeps() {
-  const land = await import('../../apps/console-web/plugins/push-banner/land/land.mjs');
+  const land = await import('../../apps/console-web/plugins/push-banner/land/land.mjs');  // axf-plugin:push-banner
   const { loadStore } = await import('../../framework/cli/builds-store.mjs');
-  const { createStore } = await import('../../apps/console-web/plugins/gate/gate-store.mjs');
+  const { createStore } = await import('../../apps/console-web/plugins/gate/gate-store.mjs');  // axf-plugin:gate
   const { ciStatus } = await import('./ci-status.mjs');
   const { mergeMainFor } = await import('./merge-main.mjs');
   const { launchFix } = await import('./fix-session.mjs');

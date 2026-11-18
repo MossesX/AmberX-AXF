@@ -17,7 +17,7 @@
  */
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { makeGitHub, settings as landSettings } from '../../apps/console-web/plugins/push-banner/land/land.mjs';
+import { makeGitHub, settings as landSettings } from '../../apps/console-web/plugins/push-banner/land/land.mjs';  // axf-plugin:push-banner
 
 export const ISSUE_TITLE = 'CI build errors';
 export const MAX_JOBS = 4;

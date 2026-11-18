@@ -1,7 +1,7 @@
 {
   "$axf": "page-toolbar-voice@1",
   "note": "One AmberX phrase per page toolbar button and the address it reaches (framework/spec/check-page-toolbar-voice.mts --write).",
-  "count": 97,
+  "count": 104,
   "phrases": [
     {
       "phrase": "press hire on the breakroom toolbar",
@@ -366,6 +366,55 @@
       "button": "settings",
       "address": "toolbar:notify-control/button:settings",
       "asset": "notify-control"
+    },
+    {
+      "phrase": "press start the demo on the orchestrator demo toolbar",
+      "toolbar": "orchestrator-demo",
+      "button": "start",
+      "address": "toolbar:orchestrator-demo/button:start",
+      "asset": "orchestrator-demo"
+    },
+    {
+      "phrase": "press summary on the orchestrator demo toolbar",
+      "toolbar": "orchestrator-demo",
+      "button": "summary",
+      "address": "toolbar:orchestrator-demo/button:summary",
+      "asset": "orchestrator-demo"
+    },
+    {
+      "phrase": "press next on the orchestrator demo toolbar",
+      "toolbar": "orchestrator-demo",
+      "button": "next",
+      "address": "toolbar:orchestrator-demo/button:next",
+      "asset": "orchestrator-demo"
+    },
+    {
+      "phrase": "press pause on the orchestrator demo toolbar",
+      "toolbar": "orchestrator-demo",
+      "button": "pause",
+      "address": "toolbar:orchestrator-demo/button:pause",
+      "asset": "orchestrator-demo"
+    },
+    {
+      "phrase": "press resume on the orchestrator demo toolbar",
+      "toolbar": "orchestrator-demo",
+      "button": "resume",
+      "address": "toolbar:orchestrator-demo/button:resume",
+      "asset": "orchestrator-demo"
+    },
+    {
+      "phrase": "press skip on the orchestrator demo toolbar",
+      "toolbar": "orchestrator-demo",
+      "button": "skip",
+      "address": "toolbar:orchestrator-demo/button:skip",
+      "asset": "orchestrator-demo"
+    },
+    {
+      "phrase": "press stop on the orchestrator demo toolbar",
+      "toolbar": "orchestrator-demo",
+      "button": "stop",
+      "address": "toolbar:orchestrator-demo/button:stop",
+      "asset": "orchestrator-demo"
     },
     {
       "phrase": "press new plan on the plans toolbar",

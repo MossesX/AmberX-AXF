@@ -42,7 +42,7 @@ The item is also red when the service has not ticked for 5 minutes.
 | | |
 | --- | --- |
 | Deep link | `view:gate/tab:gate.tabs=auto-lander/tab:gate.auto-lander.tabs=server`, rows `grid:gate.auto-lander/row:<build>`, action `gate.auto-lander.open:<build>` |
-| REST | `GET /api/plugins/gate/auto-lander`, `GET …/builds/<build>`, `POST …/run`, `…/retry/<b>`, `…/fix/<b>`, `…/pause`, `…/resume`, `GET/POST …/settings` |
+| REST | `GET /api/plugins/gate/auto-lander`, `GET …/builds/<build>`, `POST …/run`, `…/retry/<b>`, `…/fix/<b>`, `…/pause`, `…/resume`, `GET/POST …/settings` | <!-- axf-plugin:gate -->
 | MCP | `gate_auto_lander_status|build|run|retry|fix|pause|resume|settings|settings_set` |
 | CLI | `axf gate auto-lander status|show <b>|run [--now]|retry <b>|fix <b>|pause|resume|settings|set <k> <v>` |
 | Voice | console actions `gate.auto-lander.status|open|run|retry|fix|pause|resume|set:<k>:<v>` |
@@ -54,6 +54,6 @@ sudo bash /opt/axf/deploy/install-console.sh          # installs the timer (axf_
 systemctl status axf-auto-lander.timer; journalctl -u axf-auto-lander -n 50
 node deploy/auto-lander/auto-lander.mjs status        # or tick --dry-run
 node --test deploy/auto-lander/test/                  # unit + the whole loop with fakes
-python3 apps/console-web/plugins/gate/test_auto_lander.py
+python3 apps/console-web/plugins/gate/test_auto_lander.py <!-- axf-plugin:gate -->
 ```
 Spec: `framework/spec/AUTO-LANDER.md`. Report: `_claude/builds/reports/server-auto-lander-fixes-lands.md`.

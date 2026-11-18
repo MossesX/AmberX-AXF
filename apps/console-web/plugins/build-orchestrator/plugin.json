@@ -54,7 +54,11 @@
       "framework/spec/check-build-pipeline.mjs",
       "framework/cli/builds-reconcile.mjs",
       "framework/spec/check-projects.mjs",
-      "framework/spec/DONE-MEANS-MERGED.md"
+      "framework/spec/DONE-MEANS-MERGED.md",
+      "apps/console-web/plugins/orchestrator-demo/deps.mjs",
+      "apps/console-web/plugins/orchestrator-demo/test.mjs",
+      "deploy/auto-lander/fix-session.mjs",
+      "framework/spec/LIVE-DEMO.md"
     ]
   },
   "commands": {

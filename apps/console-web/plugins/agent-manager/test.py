@@ -488,15 +488,16 @@ def rpc(sid, method, params, t):
 check(ht.follow_job(rpc, "s0", JID, 60, reinit=lambda: "s9", poll_s=0) == "exit 0", "the job is followed (new session on 404) to its output")
 # Approved shell runs are kept for the terminal (axf.hub-runs@1): only after an approval, only shell tools
 hr = ht.HubRuns()  # the service object itself (an earlier check withdraws the plugin's services on purpose)
-# after every run earlier checks logged (one may share this millisecond, so "now - 1" alone was flaky in CI)
-t0 = max([int(r.get("at") or 0) for r in hr.runs(0)] + [int(time.time() * 1000) - 1])
+# the runs this part logs, by id: a time cut-off was flaky in CI (a run in the same millisecond as an earlier one fell out)
+logged_before = {r.get("id") for r in hr.runs(0)}
+fresh = lambda: [r for r in hr.runs(0) if r.get("id") not in logged_before]  # noqa: E731
 ht.run({"tool": "vps.run", "arguments": {"command": "uptime"}, "wait": False}, {}, call=hub(["ok"]))
-check(hr.runs(t0) == [], "a command that ran without an approval isn't logged")
+check(fresh() == [], "a command that ran without an approval isn't logged")
 ht.run({"tool": "vps.check", "arguments": {"name": "disk"}, "confirmation_id": "11111111-2222-3333-4444-555555555555", "wait": False}, {}, call=hub(["ok"]))
-check(hr.runs(t0) == [], "read-only checks aren't logged")
+check(fresh() == [], "read-only checks aren't logged")
 ht.run({"tool": "vps.run", "arguments": {"command": "ufw allow 60000:61000/udp"}, "reason": "mosh ports"}, {"agent": {"name": "Mosses"}},
        call=hub(["confirm", "ok"]), delays=lambda: [0], sleep=lambda s: None)
-got = hr.runs(t0)
+got = fresh()
 check(len(got) == 1 and got[0]["command"] == "ufw allow 60000:61000/udp" and got[0]["exit"] == 0 and got[0]["agent"] == "Mosses"
       and got[0]["reason"] == "mosh ports" and "exit 0" in got[0]["output"], "an approved vps.run is logged with its command, output and exit code")
 check(hr.get(got[0]["id"])["id"] == got[0]["id"] and hr.runs(got[0]["at"]) == [], "runs are read back by id and by time")
