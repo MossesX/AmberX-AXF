@@ -838,9 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:49 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:49 UTC · `watchdog-plugin-owns-every-vps` note (all) · mcp
-- 2026-11-18 01:50 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:51 UTC · `watchdog-plugin-owns-every-vps` note (all) · mcp
 - 2026-11-18 01:51 UTC · `fix-ci-red-main-watchdog-test-vs-done` PR #830, note (all) · reconciler
 - 2026-11-18 01:51 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
@@ -1238,6 +1235,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:06 UTC · `vps-never-gives-up-fix-land-every-build` → fixing, note (all) · pipeline
 - 2026-11-18 13:12 UTC · `vps-never-gives-up-fix-land-every-build` PR #842, note (all) · reconciler
 - 2026-11-18 13:14 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
+- 2026-11-18 13:16 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 13:16 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 13:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
