@@ -110,9 +110,8 @@
         "id": "detach",
         "route": "POST /widgets/detach",
         "title": "Detach a widget from a toolbar",
-        "description": "Take a widget off a toolbar (one the toolbar or a plugin put there is hidden and can be shown again). Destructive: needs confirm.",
+        "description": "Take a widget off a toolbar (one the toolbar or a plugin put there is hidden and can be shown again). Destructive: the console-control Detach button answers confirmation_required until confirm is true.",
         "readOnly": false,
-        "destructive": true,
         "input": {
           "type": "object",
           "properties": {
@@ -125,7 +124,8 @@
               "description": "the widget as <type>:<id> (status:cpu, clock:digital-12h)"
             },
             "confirm": {
-              "type": "boolean"
+              "type": "boolean",
+              "description": "true to really detach (console-control confirm)"
             },
             "to": {
               "type": "string",

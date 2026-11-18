@@ -26,9 +26,11 @@ import { Button, IconButton } from './Controls';
 import { Note, SelectField, Switch } from './Forms';
 import type { DialogMap } from './Overlays';
 import { addDerivedTargets, type ControlTargetDef } from '../controlTargets';
-import { TOOLBARS_WIDGET_STYLE_KEY, TOOLBAR_WIDGETS_KEY, TOOLBAR_WIDGET_STYLE_KEY } from '../../core/engines/toolbar-widgets';
+import { TOOLBARS_WIDGET_STYLE_KEY, TOOLBAR_WIDGETS_KEY, TOOLBAR_WIDGET_STYLE_KEY, normalizeToolbarWidgetSlots, normalizeWidgetStyle } from '../../core/engines/toolbar-widgets';
 
 export const TOOLBAR_WIDGETS_DIALOG = 'axf.toolbar.widgets';
+/** The console actions (console.actions, console_action, `axf console action`, voice) this module registers. */
+export const TOOLBAR_WIDGET_ACTION_IDS = ['toolbar.widgets', 'toolbar.widget.attach', 'toolbar.widget.detach', 'toolbar.widget.move', 'toolbar.widget.style', 'toolbar.widget', 'toolbar.widget.shape', 'toolbar.widgets.reset'] as const;
 
 const SIZE_LABEL: Record<BannerWidgetSize, string> = { icon: 'Icon only', compact: 'Compact', normal: 'Normal', wide: 'Wide' };
 const SHOW_LABEL: Record<BannerWidgetShow, string> = { auto: 'Its own mix', both: 'Icon and text', icon: 'Icon only', text: 'Text only', number: 'Number only' };
@@ -332,7 +334,24 @@ export function toolbarWidgetTargets(rt: AxfRuntime, hint?: string): ControlTarg
     out.push({
       address: toolbarWidgetsListAddress(instance), kind: 'widget', label: `Widgets on toolbar ${instance}`, icon: 'layers', keywords: ['widgets', 'toolbar', 'attach'],
       requires: 'assets.swap', can: ['open', 'state', 'list'],
-      get: () => toolbarWidgetsState(rt, instance), open: () => rt.dispatch(`toolbar.widgets:${instance}`),
+      get: () => toolbarWidgetsState(rt, instance), open: () => rt.dispatch(`toolbar.widgets:${instance}`), expand: () => rt.dispatch(`toolbar.widgets:${instance}`),
+      element: () => (typeof document === 'undefined' ? null : document.querySelector(`[role="toolbar"][data-axf-toolbar="${instance}"]`)),
+    });
+    // the settings behind it: what the person added and chose (slots) and the toolbar's default widget style
+    const save = (key: string, norm: (v: unknown) => unknown, empty: (v: unknown) => boolean) => (value: unknown) => {
+      if (!rt.canArrange()) return { ok: false, message: 'this account can\'t change the look' };
+      const next = norm(typeof value === 'string' ? value : JSON.stringify(value ?? null));
+      if (empty(next)) rt.settings.clear(key); else rt.settings.set(key, JSON.stringify(next));
+      return { ok: true, value: next };
+    };
+    out.push({
+      address: `setting:${TOOLBAR_WIDGETS_KEY(instance)}`, kind: 'setting', label: `Widgets on toolbar ${instance} (slots)`, detail: 'toolbar-widgets@1 slots: [{ type, id, at?, order?, hidden?, size?, show?, shape?, … }]', icon: 'layers', requires: 'assets.swap',
+      get: () => rt.toolbarWidgetSlots(instance), set: save(TOOLBAR_WIDGETS_KEY(instance), normalizeToolbarWidgetSlots, (v) => !(v as unknown[]).length),
+      open: () => rt.dispatch(`chrome.settings:toolbar:${instance}:widgets`),
+    }, {
+      address: `setting:${TOOLBAR_WIDGET_STYLE_KEY(instance)}`, kind: 'setting', label: `Widget style on toolbar ${instance}`, detail: '{ size?, show?, priority?, hideWhenEmpty?, overflow?, shape? }', icon: 'layers', requires: 'assets.swap',
+      get: () => normalizeWidgetStyle(rt.settings.get(TOOLBAR_WIDGET_STYLE_KEY(instance))), set: save(TOOLBAR_WIDGET_STYLE_KEY(instance), normalizeWidgetStyle, (v) => !Object.keys(v as object).length),
+      open: () => rt.dispatch(`chrome.settings:toolbar:${instance}:widgets`),
     });
     for (const w of toolbarWidgetRows(rt, instance)) {
       const address = `toolbar:${instance}/widget:${w.key}`;
