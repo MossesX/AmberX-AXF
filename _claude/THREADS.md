@@ -840,14 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `rebuild-every-context-menu-toolbar-nav` added (3 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `live-build-status-real-time-grids-15` added (22 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `guided-live-demo-test-watch-orchestrator` added (24 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `right-click-running-build-open-headless` added (15 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `right-click-running-build-pop-open` added (14 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `terminal-main-tab-streaming-console-s` added (18 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `auto-lander-settings-log-placeholder` added (9 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `toolbars-1-5-build-orchestrator-incl` added (4 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `toolbars-3-5-settings-appearance-systems` added (4 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `toolbars-2-5-plan-studio-ui-review` added (4 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `toolbars-4-5-chat-viewer-codebase` added (4 steps) (all) · foreign-write
@@ -1240,6 +1232,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 17:31 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 17:33 UTC · `attach-widgets-to-any-toolbar-banner` s15 done (all) · foreign-write
 - 2026-11-18 17:33 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
+- 2026-11-18 17:34 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
+- 2026-11-18 17:34 UTC · `attach-widgets-to-any-toolbar-banner` s16 done, s17 done, note (all) · foreign-write
+- 2026-11-18 17:34 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-18 17:34 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 17:34 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-18 17:34 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
+- 2026-11-18 17:34 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, note (all) · foreign-write
+- 2026-11-18 17:34 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
 
 ## Token passes (log)
 
