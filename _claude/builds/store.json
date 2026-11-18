@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8648,
- "updatedAt": "2026-11-18T01:06:06.088Z",
+ "rev": 8649,
+ "updatedAt": "2026-11-18T01:06:24.139Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266736,7 +266736,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-18T00:36:17.226Z",
+   "updatedAt": "2026-11-18T01:05:31.166Z",
    "builtAt": "",
    "notes": [
     {
@@ -267158,6 +267158,10 @@
     {
      "text": "Fixing: the session crashed on s55 (the session exited 3). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T00:36:17.226Z"
+    },
+    {
+     "text": "Overlap with move-everything-axhub-web-console (hub-console@1): hub approval and veto notices should open the console's Hub → Approvals screen through a Phone Connect deep link (https://console.amberxai.com/?axf-open=hub.open:approvals:<request id>; the screen opens that row), not the AmberX app. The Hub plugin reads a pairing state through plugin_services.get('axf.phone-connect@1').pairing_state() when that service exists (optional: the Account screen shows 'Phone Connect not installed' otherwise). Please provide that service name or say which one Phone Connect provides.",
+     "at": "2026-11-18T01:05:31.166Z"
     }
    ],
    "approvals": [
@@ -268019,7 +268023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 141,
+   "rev": 142,
    "deleted": false,
    "deletedAt": "",
    "pending": {
