@@ -37,7 +37,7 @@ import { registry } from '../../../../framework/cli/plugin-commands.mjs';
 import { PASS_CONSOLE_SERVICE, passActive, passCoversCall, passCoversOf, passRanUnder, passReachesIrreversible } from '../../../../framework/core/engines/control-pass.mjs';
 
 /**
- * The pass that lifts this command's confirm (decision #120), or null: the first active one whose `covers` names the
+ * The pass that lifts this command's confirm (decision 120), or null: the first active one whose `covers` names the
  * console service, the command's MCP tool or its control@1 target. `passes`: the console's own active passes and the
  * one axHub sent with the call (verified by the server). A deleting command counts as irreversible only when the
  * plugin says so; then only an all pass with include_irreversible covers it.
@@ -202,7 +202,7 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
     // the command's own effect on top of the gate (a read needs read, a deleting command delete + a confirm token)
     const need = `control.plugins.${{ read: 'read', write: 'write', navigate: 'write', destructive: 'delete' }[cmd.effect]}`;
     if (!controlGranted(grants, need)) throw new PluginError(CONTROL_WIRE.DENIED, `${c.path} needs ${need}`, { requires: need });
-    // decision #120: a covering pass runs a confirm command at once (no confirmation_required); logged ranUnder
+    // decision 120: a covering pass runs a confirm command at once (no confirmation_required); logged ranUnder
     const covering = cmd.confirm && !controlConfirmValid(c, c.confirm, confirmSalt(), now) ? commandPass([...(pass ? [pass] : []), ...passes], plugin, cmd, c, now) : null;
     const under = covering ? passRanUnder(covering, 'confirm') : null;
     if (cmd.confirm && !covering && !controlConfirmValid(c, c.confirm, confirmSalt(), now)) {
@@ -229,7 +229,7 @@ export function plan(raw, { grants = ['*'], by = '', enabled = null, now = Date.
 export function finish(command, outcome, under = null) {
   const c = normalizeControl(command);
   const ok = typeof outcome.ok === 'boolean' ? outcome.ok : outcome.status === undefined || (outcome.status >= 200 && outcome.status < 300);
-  // decision #120: a run under a pass says which one and what it skipped
+  // decision 120: a run under a pass says which one and what it skipped
   const ran = under && typeof under.ranUnder === 'string' && under.ranUnder ? { ranUnder: under.ranUnder, pass: under.ranUnder, skippedPolicy: under.skippedPolicy || 'confirm' } : {};
   if (c.target === 'plugins.commands') audit({ by: c.by || 'unknown', reason: c.reason ?? '', path: c.path, input: c.input, status: outcome.status ?? null, ok, ...ran });
   if (!ok) {

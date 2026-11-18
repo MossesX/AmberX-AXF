@@ -89,7 +89,7 @@ const THREADS_HEAD = '## Token passes (log)';
 /** One line in THREADS.md (under its Token passes section, added at the end once) and one audit row. */
 export function logLine(p, text, extra = {}) {
   const line = `- ${new Date().toISOString().slice(0, 16).replace('T', ' ')} UTC · pass \`${p.id}\` (${p.scope}) · ${text}`;
-  // `pass` names the pass the line is about; `ranUnder` (decision #120) is set on the lines for commands that ran under it
+  // `pass` names the pass the line is about; `ranUnder` (decision 120) is set on the lines for commands that ran under it
   audit({ by: extra.by || p.approvedBy || p.requestedBy || 'unknown', op: 'pass', target: 'pass.scopes', path: p.scope, action: extra.action ?? 'log', pass: p.id, ...(extra.action === 'change' ? { ranUnder: p.id } : {}), text, ...(extra.change ? { change: extra.change } : {}) });
   const f = threadsFile();
   if (!f) return;
@@ -188,7 +188,7 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       // a waiting request for the same scope is replaced (one request per scope)
       for (const p of d.passes) if (p.scope === c.path && passPending(p, now)) { p.state = 'lapsed'; p.endedAt = new Date(now).toISOString(); p.endedBy = 'replaced'; }
       const irr = c.path === 'all' && input.include_irreversible === true;
-      // decision #120: every new record says what it covers (`all` unless the grant names entries; see passCoversOf for older records)
+      // decision 120: every new record says what it covers (`all` unless the grant names entries; see passCoversOf for older records)
       const covers = input.covers !== undefined ? input.covers : passCoversForScope(c.path);
       const req = { id: newId(), scope: c.path, covers, state: 'pending', minutes, reason: String(input.reason ?? c.reason ?? '').slice(0, 300), ...(irr ? { includeIrreversible: true } : {}), requestedBy: by, requestedAt: new Date(now).toISOString(), changes: [] };
       d.passes.unshift(req);

@@ -235,7 +235,7 @@ await test('pass engine: scopes, coverage, minutes, narrow scopes never cover de
   assert.equal(pc.passCovering([p], { op: 'set', target: 'tokens.theme' }, 1e12 + 60000), null, 'expiry is the clock');
 });
 
-await test('pass coverage (decision #120): covers, migration of older records, ranUnder', async () => {
+await test('pass coverage (decision 120): covers, migration of older records, ranUnder', async () => {
   const { readAudit } = await import('./lib/common.mjs');
   assert.equal(pc.passCoversOf({ scope: 'all' }), 'all', 'an all pass with no field reads as all');
   assert.equal(pc.passCoversOf({ scope: 'all', covers: ['vps'] })[0], 'vps', 'a stored list is kept');
