@@ -246,7 +246,11 @@ def _backup_state() -> dict:
     import backup
     out = _backups()
     last = out / 'last.json'
-    return {'$axf': 'data-backups@1', 'dir': str(out), 'last': json.loads(last.read_text('utf-8')) if last.is_file() else None,
+    try:
+        last_doc = json.loads(last.read_text('utf-8')) if last.is_file() else None
+    except (OSError, ValueError):  # an older writer mid-write: report no last backup rather than a 500
+        last_doc = None
+    return {'$axf': 'data-backups@1', 'dir': str(out), 'last': last_doc,
             'kept': [{'file': p.name, 'bytes': p.stat().st_size} for p in backup.backups(out)] if out.is_dir() else [],
             'job': dict(_backup_job)}
 
@@ -282,7 +286,7 @@ def _backup_start(kind: str, by: str, st) -> dict:
                     doc = json.loads(last.read_text('utf-8'))
                     if doc.get('file') == f.name:
                         doc['verify'] = r
-                        last.write_text(json.dumps(doc, indent=1), 'utf-8')
+                        backup.write_last(out, doc)
                 _backup_job.update(state='done', ok=bool(r['ok']), file=f.name, finishedAt=now_iso())
         except BaseException as e:  # noqa: BLE001 — reported on the job (SystemExit included), never raised into the server
             _backup_job.update(state='failed', ok=False, error=f'{type(e).__name__}: {e}'[:300], finishedAt=now_iso())
