@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:30:20.529Z",
+ "updatedAt": "2026-11-18T12:30:50.639Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192815,6 +192815,25 @@
      "createdAt": "2026-11-18T12:28:57.431Z"
     }
    ]
+  },
+  {
+   "id": "every-plugin-gets-own-default-toolbar",
+   "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
+   "category": "",
+   "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
+   "status": "pending",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T12:30:23.226Z",
+   "updatedAt": "2026-11-18T12:30:23.226Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
