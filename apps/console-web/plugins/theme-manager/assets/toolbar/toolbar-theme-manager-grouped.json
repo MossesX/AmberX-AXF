@@ -1,0 +1,106 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-theme-manager-grouped",
+  "name": "Theme manager: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-theme-manager",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:theme-manager",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "skin",
+        "label": "Skin",
+        "items": [
+          {
+            "id": "use",
+            "icon": "palette",
+            "label": "Use skin",
+            "action": "handler:theme-manager.use-skin",
+            "checked": "state:skin.on",
+            "badge": "state:skin.id",
+            "enabledWhen": [
+              "skins>0",
+              "!locked"
+            ],
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "back",
+            "icon": "undo",
+            "label": "Back to skin",
+            "action": "handler:theme-manager.back-to-skin",
+            "badge": "state:overrides",
+            "enabledWhen": [
+              "overrides>0",
+              "!locked"
+            ],
+            "priority": 260
+          },
+          {
+            "id": "preview",
+            "icon": "eye",
+            "label": "Preview",
+            "action": "handler:theme-manager.preview",
+            "checked": "state:previewing",
+            "enabledWhen": "skins>0",
+            "priority": 240
+          },
+          {
+            "id": "scope",
+            "icon": "layout",
+            "label": "Scope here",
+            "action": "handler:theme-manager.scope-here",
+            "checked": "state:scoped",
+            "enabledWhen": [
+              "skin.id",
+              "!locked"
+            ],
+            "priority": 200
+          }
+        ]
+      },
+      {
+        "id": "assets",
+        "label": "Assets",
+        "items": [
+          {
+            "id": "pick",
+            "icon": "layers",
+            "label": "Pick asset",
+            "action": "handler:theme-manager.pick-asset",
+            "badge": "state:selection.type",
+            "priority": 220,
+            "overflow": "always"
+          },
+          {
+            "id": "restore",
+            "icon": "refresh",
+            "label": "Restore to default",
+            "action": "handler:theme-manager.restore",
+            "enabledWhen": "!locked",
+            "destructive": true,
+            "confirm": "Put this app back on its default look? (One undo.)",
+            "priority": 120,
+            "overflow": "always"
+          }
+        ]
+      }
+    ]
+  }
+}

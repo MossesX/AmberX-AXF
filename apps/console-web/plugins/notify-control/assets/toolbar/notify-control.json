@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "notify-control",
+  "name": "Notifications",
+  "version": "1.0.0",
+  "description": "The Notifications toolbar: mark the sent and blocked list read, filter the notification types by the plugin that sends them (tap again for the next, then all), and open the notification settings.",
+  "author": "AmberX AXF",
+  "tags": ["page", "notify-control", "notifications"],
+  "data": {
+    "scope": "view:notify-control",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "notifications",
+        "label": "Notifications",
+        "items": [
+          { "id": "read", "icon": "check", "label": "Mark read", "action": "handler:notify-control.mark-read", "badge": "state:unread", "enabledWhen": "unread>0", "priority": 300, "overflow": "never" },
+          { "id": "plugin", "icon": "package", "label": "Filter by plugin", "action": "handler:notify-control.filter-plugin", "checked": "state:plugin", "badge": "state:plugin", "enabledWhen": "plugins>1", "priority": 250 },
+          { "id": "settings", "icon": "settings", "label": "Notification settings", "action": "handler:notify-control.settings", "priority": 200 }
+        ]
+      }
+    ]
+  }
+}

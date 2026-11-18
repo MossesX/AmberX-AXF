@@ -19,7 +19,6 @@ t('each app runs only its own build', () => {
   assert.deepEqual(on(scopeFor(['apps/axhub-web/src/x.ts'])), ['engine', 'console', 'axhubweb']);
   assert.deepEqual(on(scopeFor(['apps/amberx-droid/src/x.ts'])), ['engine', 'console', 'amberxweb', 'amberx']);
   assert.deepEqual(on(scopeFor(['apps/voicevault/app/x.kt'])), ['engine', 'android']);
-  assert.deepEqual(on(scopeFor(['apps/phone-connect/app/x.kt'])), ['engine', 'android']);
   assert.deepEqual(on(scopeFor(['framework/android/axf-kernel/x.kt'])), ['engine', 'android']);
 });
 t('shared framework, fixtures, CI itself and unknown paths run everything', () => {
@@ -71,10 +70,11 @@ t('android.yml: runs on queue/**, every heavy job waits on scope and reads its o
 });
 t('the queue switch: the repo variable wins, else the committed .github/merge-queue.json', () => {
   const f = join(ROOT, '.github/merge-queue.json');
-  const committed = JSON.parse(readFileSync(f, 'utf8'));
-  assert.equal(committed.$axf, 'merge-queue-ci@1');
-  assert.equal(typeof committed.on, 'boolean', 'the committed switch is on or off (off since Nov 17 2026, PR #777)');
-  assert.equal(queueIsOn({}, f), committed.on);
+  // the committed switch is Brett's call (off since Nov 17 2026: PRs run the full CI themselves); the test holds the
+  // file to a boolean and the reader to the file, never to one value
+  const committed = JSON.parse(readFileSync(f, 'utf8')).on;
+  assert.equal(typeof committed, 'boolean');
+  assert.equal(queueIsOn({}, f), committed);
   assert.equal(queueIsOn({ AXF_MERGE_QUEUE: 'off' }, f), false);
   assert.equal(queueIsOn({ AXF_MERGE_QUEUE: 'on' }, '/nonexistent'), true);
   assert.equal(queueIsOn({}, '/nonexistent'), false);

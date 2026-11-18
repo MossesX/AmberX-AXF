@@ -1,0 +1,60 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-notify-control-grouped",
+  "name": "Notifications: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-notify-control",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:notify-control",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "notifications",
+        "label": "Notifications",
+        "items": [
+          {
+            "id": "read",
+            "icon": "check",
+            "label": "Mark read",
+            "action": "handler:notify-control.mark-read",
+            "badge": "state:unread",
+            "enabledWhen": "unread>0",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "plugin",
+            "icon": "package",
+            "label": "Filter by plugin",
+            "action": "handler:notify-control.filter-plugin",
+            "checked": "state:plugin",
+            "badge": "state:plugin",
+            "enabledWhen": "plugins>1",
+            "priority": 250
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Notification settings",
+            "action": "handler:notify-control.settings",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-ui-review-shots-grouped",
+  "name": "Screenshots: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-ui-review-shots",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:ui-review",
+    "slot": "shots",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "shots",
+        "label": "Screenshots",
+        "items": [
+          {
+            "id": "send",
+            "icon": "eye",
+            "label": "Send to review",
+            "action": "handler:ui-review.send-to-review",
+            "enabledWhen": "picked>0",
+            "badge": "state:picked",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "group-by",
+            "icon": "grid",
+            "label": "Group by",
+            "action": "handler:ui-review.shots-group-by",
+            "badge": "state:shotGroupLabel",
+            "priority": 250
+          },
+          {
+            "id": "compare",
+            "icon": "copy",
+            "label": "Compare before/after",
+            "action": "handler:ui-review.shots-compare",
+            "checked": "state:comparing",
+            "enabledWhen": "pairs>0",
+            "priority": 220
+          },
+          {
+            "id": "rename",
+            "icon": "edit",
+            "label": "Rename group",
+            "action": "handler:ui-review.rename-group",
+            "enabledWhen": "group",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}
