@@ -19,7 +19,9 @@
     "action:hub.approvals",
     "action:hub.approvalLog",
     "action:hub.passes",
-    "action:hub.users"
+    "action:hub.users",
+    "action:hub.account",
+    "action:hub.overview"
   ],
   "requires": [
     "service:control@1"
@@ -471,6 +473,72 @@
         "confirm": true,
         "destructive": true,
         "description": "Deletes an account (a confirm; the hub keeps the last admin and Brett's own account safe)."
+      },
+      {
+        "route": "POST /account/password",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /account/signout",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /overview/sign-out",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "id": "account-profile",
+        "route": "POST /account/profile",
+        "title": "Account: save name and email",
+        "tool": "hub_account_profile",
+        "description": "Saves your hub account's name and email.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "id": "account-signout-others",
+        "route": "POST /account/signout-others",
+        "title": "Account: sign the other browsers out",
+        "tool": "hub_account_signout_others",
+        "confirm": true,
+        "description": "Signs your other browsers out of the hub (a confirm)."
+      },
+      {
+        "id": "account-phone",
+        "route": "POST /account/phone",
+        "title": "Account: the linked phone",
+        "tool": "hub_account_phone",
+        "description": "Answers the console address of Phone Connect's settings, where the linked phone is managed (a navigate)."
+      },
+      {
+        "id": "account-notifications",
+        "route": "POST /account/notifications",
+        "title": "Account: notification preferences",
+        "tool": "hub_account_notifications",
+        "description": "Answers the console address of Claude settings → Notifications (a navigate)."
+      },
+      {
+        "id": "overview-sign-in",
+        "route": "POST /overview/sign-in",
+        "title": "Hub: where to sign in",
+        "tool": "hub_sign_in",
+        "description": "Answers the hub's sign-in page address (a navigate)."
+      },
+      {
+        "id": "overview-check",
+        "route": "POST /overview/check",
+        "title": "Hub: check now",
+        "tool": "hub_check",
+        "description": "Reads axHub again now and answers the Hub status (hub-status@1)."
       }
     ]
   },

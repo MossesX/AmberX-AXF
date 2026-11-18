@@ -1052,6 +1052,73 @@ async def delete_user(request: Request, row: str) -> dict[str, Any]:
     return await _user(request, row, "delete", _user_action("delete", lambda b: {"sure": True}))
 
 
+# ---- Account (s15 / s16): profile is a command, the password and signing out are Brett's tap, signing the others out confirms
+
+@router.post("/account/profile")
+async def post_account_profile(request: Request) -> dict[str, Any]:
+    """Save your hub account's name and email."""
+    return await run_action(request, "account", "profile", None, lambda s, b: ("/auth/api/account/profile", {"name": _str(b, "name"), "email": _str(b, "email")}))
+
+
+@router.post("/account/password")
+async def post_account_password(request: Request) -> dict[str, Any]:
+    """Change your hub password (Brett's own tap; never stored or logged here)."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any]:
+        current, password, confirm = _str(b, "current", 200, True), _str(b, "password", 200, True), _str(b, "confirm", 200, True)
+        if password != confirm:
+            raise HTTPException(400, "the new passwords do not match")
+        return "/auth/api/account/password", {"current": current, "password": password, "confirm": confirm}
+    return await run_action(request, "account", "password", None, call)
+
+
+@router.post("/account/signout-others")
+async def post_account_signout_others(request: Request) -> dict[str, Any]:
+    """Sign your other browsers out of the hub (a confirm)."""
+    return await run_action(request, "account", "signout-others", None, lambda s, b: ("/auth/api/account/signout-others", {}))
+
+
+@router.post("/account/signout")
+async def post_account_signout(request: Request) -> dict[str, Any]:
+    """Sign this browser out of the hub (Brett's own tap)."""
+    return await run_action(request, "account", "signout", None, lambda s, b: ("/auth/api/logout", {}))
+
+
+@router.post("/account/phone")
+async def post_account_phone(request: Request) -> dict[str, Any]:
+    """Where the linked phone is managed: the Phone Connect settings (a navigate; the console opens the address)."""
+    out = await run_action(request, "account", "phone", None, None)
+    a = _action(load_table(), "account", "phone")
+    return {**out, "opens": a.get("opens", ""), "message": "Open Phone Connect in Settings → Plugins."}
+
+
+@router.post("/account/notifications")
+async def post_account_notifications(request: Request) -> dict[str, Any]:
+    """Where notification preferences live: Claude settings → Notifications (a navigate)."""
+    out = await run_action(request, "account", "notifications", None, None)
+    a = _action(load_table(), "account", "notifications")
+    return {**out, "opens": a.get("opens", ""), "message": "Open Claude settings → Notifications."}
+
+
+@router.post("/overview/sign-out")
+async def post_overview_sign_out(request: Request) -> dict[str, Any]:
+    """Sign this browser out of axHub (Brett's own tap)."""
+    return await run_action(request, "overview", "sign-out", None, lambda s, b: ("/auth/api/logout", {}))
+
+
+@router.post("/overview/sign-in")
+async def post_overview_sign_in(request: Request) -> dict[str, Any]:
+    """Where to sign in: the hub's own sign-in page (a navigate)."""
+    out = await run_action(request, "overview", "sign-in", None, None)
+    return {**out, "opens": f"{hub_base()}/auth/login", "message": "Sign in on axHub's own page; this browser's session then reaches the console."}
+
+
+@router.post("/overview/check")
+async def post_overview_check(request: Request) -> dict[str, Any]:
+    """Read the hub again now and answer the Hub status."""
+    out = await run_action(request, "overview", "check", None, None)
+    return {**out, "state": await read_screen(request, "overview")}
+
+
 # ---- Approval log (s10): the hub's whole log as JSON, a command
 
 @router.post("/log/download")

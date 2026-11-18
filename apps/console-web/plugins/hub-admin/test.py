@@ -310,7 +310,7 @@ class FakeRelayWrites(FakeRelay):
             return {"ok": True, "status": 200, "json": {"ok": True, "state": "approved-now", "message": "Approved, running now"}, "via": "browser"}
         if path.endswith("/auto/stop"):
             return {"ok": True, "status": 200, "json": {"message": "Stopped."}, "via": "owner"}
-        if path.startswith("/auth/api/users"):
+        if path.startswith("/auth/api/users") or path.startswith("/auth/api/account") or path == "/auth/api/logout":
             return {"ok": True, "status": 200, "json": {"ok": True, "message": "Saved."}, "via": "browser"}
         return {"ok": True, "status": 200, "json": {"ok": True, "message": "Done.", "item": {"id": ID, "status": "declined"}}, "via": "browser"}
 
@@ -460,6 +460,23 @@ ok(confirmed("/users/u1/signout")["ok"] and writes[-1][1] == {"action": "signout
 j = confirmed("/users/u1", None, "DELETE")
 ok(j["ok"] and writes[-1][1] == {"action": "delete", "sure": True}, "delete is a DELETE that confirms and carries sure")
 ok(c.delete("/users/u1").json()["code"] == "confirmation_required", "a bare DELETE only hands out a token")
+
+# ---------------------------------------------------------------- account (s15 / s16) and the overview actions
+j = post("/account/profile", {"name": "Brett", "email": "b@example.test"}).json()
+ok(j["ok"] and writes[-1] == ("/auth/api/account/profile", {"name": "Brett", "email": "b@example.test"}, False), "account profile is a command")
+j = post("/account/password", {"current": "old-pass-1", "password": "new-pass-12345", "confirm": "new-pass-12345"}).json()
+ok(j["ok"] and writes[-1][2] is True and writes[-1][0] == "/auth/api/account/password", "changing the password is Brett's tap")
+ok(post("/account/password", {"current": "a", "password": "b", "confirm": "c"}).status_code == 400, "mismatched new passwords are refused")
+ok(confirmed("/account/signout-others")["ok"] and writes[-1][0] == "/auth/api/account/signout-others", "signing the other browsers out confirms")
+j = post("/account/signout").json()
+ok(j["ok"] and writes[-1] == ("/auth/api/logout", {}, True), "signing out is Brett's tap on the hub's logout")
+j = post("/account/phone").json()
+ok(j["ok"] and j["opens"].startswith("view:settings/tab:settings.tabs=plugins"), "the phone action answers the Phone Connect settings address")
+ok(post("/account/notifications").json()["opens"].startswith("view:claude-settings"), "the notifications action answers the Claude settings address")
+j = post("/overview/check").json()
+ok(j["ok"] and j["state"]["screen"] == "overview", "overview check reads again")
+ok(post("/overview/sign-in").json()["opens"].endswith("/auth/login"), "sign-in answers the hub's own page")
+ok(post("/overview/sign-out").json()["ok"] and writes[-1] == ("/auth/api/logout", {}, True), "sign-out from the overview is Brett's tap")
 
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 

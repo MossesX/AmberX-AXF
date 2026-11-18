@@ -17,6 +17,7 @@ import { FOLDER, VIEW } from './ids';
 import { ApprovalsScreen } from './approvals';
 import { LogScreen } from './log';
 import { PassesScreen } from './passes';
+import { AccountScreen } from './account';
 import { AppsScreen, OverviewScreen } from './overview';
 import { UsersScreen } from './users';
 import { registerHubActions } from './actions';
@@ -72,6 +73,7 @@ export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX
   approvals: (screen) => <ApprovalsScreen screen={screen} />,
   log: (screen) => <LogScreen screen={screen} />,
   passes: (screen) => <PassesScreen screen={screen} />,
+  account: (screen) => <AccountScreen screen={screen} />,
   apps: (screen) => <AppsScreen screen={screen} />,
   overview: (screen) => <OverviewScreen screen={screen} table={TABLE} />,
   users: (screen) => <UsersScreen screen={screen} />,
