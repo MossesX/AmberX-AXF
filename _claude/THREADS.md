@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `live-build-status-real-time-grids-15` added (22 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `guided-live-demo-test-watch-orchestrator` added (24 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `right-click-running-build-open-headless` added (15 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `right-click-running-build-pop-open` added (14 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:08 UTC · `fix-launcher-crash-duplicate-steps-brief` s15 done (all) · foreign-write
 - 2026-11-18 00:08 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-18 00:08 UTC · `fix-launcher-crash-duplicate-steps-brief` s12 done, s13 done, s14 done, s15 done (all) · foreign-write
+- 2026-11-18 00:10 UTC · `move-server-side-console-parts-onto-vps` s20 done (all) · orchestrator
 
 ## Token passes (log)
 
