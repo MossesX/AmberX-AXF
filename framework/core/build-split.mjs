@@ -176,3 +176,171 @@ export function normMainLock(l) {
   if (!build || !splitId || !base || !lockedAt || parseSplitId(splitId).build !== build) return null;
   return { $axf: LOCK_SCHEMA, build, splitId, base, lockedAt, by: str(x.by, 80), ...(str(x.note).trim() ? { note: str(x.note, 300) } : {}) };
 }
+
+// ------------------------------------------------------------------ planner (planParts) and validator (validatePlan)
+
+/** A step's file claims, normalised: trimmed, a leading `./` dropped, no empties, no repeats, ≤ 300 chars each. */
+export function claimsOf(step, fileClaims = {}) {
+  const s = obj(step) ?? {};
+  const extra = obj(fileClaims)?.[s.id];
+  const raw = [...(Array.isArray(s.files) ? s.files : []), ...(Array.isArray(extra) ? extra : [])];
+  return [...new Set(raw.map((f) => str(f, 300).trim().replace(/^\.\//, '')).filter(Boolean))];
+}
+
+/** A step's estimate in minutes (`10 min`, `~15m`, `1 h`, `1.5 h`); DEFAULT_STEP_MINUTES when it says nothing usable. */
+export const DEFAULT_STEP_MINUTES = 10;
+export function estimateMinutes(step) {
+  const m = /(\d+(?:\.\d+)?)\s*(h|hr|hour|hours|m|min|mins|minute|minutes)?\b/i.exec(str(obj(step)?.estimate, 20));
+  if (!m) return DEFAULT_STEP_MINUTES;
+  const n = Number(m[1]); const unit = (m[2] || 'min').toLowerCase();
+  const mins = /^h/.test(unit) ? n * 60 : n;
+  return Number.isFinite(mins) && mins > 0 ? Math.round(mins) : DEFAULT_STEP_MINUTES;
+}
+
+/** The open steps of a build (not done, not skipped), with their index in the build's list. */
+export const openStepsOf = (build) => (Array.isArray(obj(build)?.steps) ? build.steps : []).map((s, i) => ({ step: s, i })).filter(({ step }) => obj(step) && !step.done && !step.skip);
+
+/**
+ * Open steps grouped by shared file claims (union-find): two steps that claim the same file are one group; a step
+ * with no claim joins the previous step's group (it keeps its checkpoint order), the first such step opens its own.
+ * Groups come back in first-step order: [{ steps: [step id…], files: [path…], minutes }].
+ */
+export function groupSteps(build, fileClaims = {}) {
+  const open = openStepsOf(build);
+  const parent = open.map((_, i) => i);
+  const find = (x) => { while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; } return x; };
+  const union = (a, b) => { const ra = find(a); const rb = find(b); if (ra !== rb) parent[Math.max(ra, rb)] = Math.min(ra, rb); };
+  const owner = new Map(); // file → first open-step index claiming it
+  const claims = open.map(({ step }) => claimsOf(step, fileClaims));
+  claims.forEach((files, i) => {
+    if (!files.length) { if (i > 0) union(i, i - 1); return; }
+    for (const f of files) { if (owner.has(f)) union(i, owner.get(f)); else owner.set(f, i); }
+  });
+  const groups = new Map();
+  open.forEach(({ step }, i) => {
+    const r = find(i);
+    const g = groups.get(r) ?? { steps: [], files: new Set(), minutes: 0, first: i };
+    g.steps.push(str(step.id, 40)); for (const f of claims[i]) g.files.add(f); g.minutes += estimateMinutes(step);
+    groups.set(r, g);
+  });
+  return [...groups.values()].sort((a, b) => a.first - b.first).map((g) => ({ steps: g.steps, files: [...g.files].sort(), minutes: g.minutes }));
+}
+
+/**
+ * Groups packed into at most `n` bins: heaviest first (minutes, ties by first appearance) onto the lightest bin so the
+ * parts finish close together. Bins come back ordered by the index of their earliest group; each bin's steps keep the
+ * build's order.
+ */
+export function packGroups(groups, n) {
+  const bins = Math.max(0, Math.min(Number(n) || 0, groups.length));
+  if (!bins) return [];
+  const order = groups.map((g, i) => ({ g, i })).sort((a, b) => b.g.minutes - a.g.minutes || a.i - b.i);
+  const out = Array.from({ length: bins }, () => ({ groups: [], minutes: 0, first: Infinity }));
+  for (const { g, i } of order) {
+    const bin = out.reduce((best, b) => (b.minutes < best.minutes || (b.minutes === best.minutes && b.first < best.first) ? b : best), out[0]);
+    bin.groups.push({ g, i }); bin.minutes += g.minutes; bin.first = Math.min(bin.first, i);
+  }
+  return out.filter((b) => b.groups.length).sort((a, b) => a.first - b.first).map((b) => {
+    const gs = b.groups.sort((x, y) => x.i - y.i).map((x) => x.g);
+    return { steps: gs.flatMap((g) => g.steps), files: [...new Set(gs.flatMap((g) => g.files))].sort(), minutes: b.minutes };
+  });
+}
+
+/** The run number the next plan of a build gets: its last split id's run + 1 (1 for a build never split). */
+export const nextRunOf = (build) => (parseSplitId(obj(build)?.splitId)?.run ?? parseSplitId(obj(obj(build)?.split)?.id)?.run ?? 0) + 1;
+
+/**
+ * Plan a run: as many parts as there are free slots, never more than the build's independent file groups, never fewer
+ * than one while a slot is free; no two parts claim the same file; every open step in exactly one part.
+ *   build       a builds@1 record (id, splitId, steps)
+ *   freeSlots   free agent slots right now (0 → nothing is planned)
+ *   fileClaims  { [step id]: [path…] } extra claims (the splitter's predictions), merged with step.files
+ *   opts        { base: main sha ('' until main is locked), run, at, by, maxRebuilds, used }
+ * → { ok, plan | null, why, groups, fill: { parts, slots } }. The plan is in shape (normSplit) and valid (validatePlan).
+ */
+export function planParts(build, freeSlots, fileClaims = {}, opts = {}) {
+  const b = obj(build) ?? {};
+  const id = str(b.id, 80);
+  const free = Math.max(0, Math.floor(Number(freeSlots) || 0));
+  const out = (ok, plan, why, groups = [], parts = 0) => ({ ok, plan, why, groups, fill: { parts, slots: free } });
+  if (!BUILD_ID_RE.test(id)) return out(false, null, `"${id}" is not a build id (build-id@1)`);
+  const run = Number.isInteger(opts.run) && opts.run >= 1 ? opts.run : nextRunOf(b);
+  const splitId = splitIdOf(id, run);
+  if (!splitId) return out(false, null, `run ${run} of ${id} has no valid split id`);
+  const groups = groupSteps(b, fileClaims);
+  if (!groups.length) return out(false, null, 'no open step: nothing to plan', groups);
+  if (!free) return out(false, null, 'no free agent slot: the run waits', groups);
+  const bins = packGroups(groups, Math.min(free, MAX_PARTS)).map((bin) => ({ ...bin, steps: inBuildOrder(b, bin.steps) }));
+  const base = sha(opts.base);
+  const at = iso(opts.at) || new Date().toISOString();
+  const parts = bins.map((bin, k) => ({ id: `p${k + 1}`, status: 'waiting', steps: bin.steps, files: bin.files, branch: partBranch(splitId, `p${k + 1}`), base, slot: '', account: '', session: '', model: oneOf(MODELS, firstModel(b, bin.steps), ''), head: '', startedAt: '', endedAt: '', rebuilds: 0, lastError: '', note: `${bin.minutes} min planned` }));
+  const plan = normSplit({
+    $axf: SCHEMA, id: splitId, run: 'queued', base, at, by: str(opts.by, 80) || 'dispatcher',
+    slots: { free, used: int(opts.used) }, parts, combine: { branch: combineBranch(id) },
+    maxRebuilds: opts.maxRebuilds === undefined ? DEFAULT_MAX_REBUILDS : int(opts.maxRebuilds, DEFAULT_MAX_REBUILDS, 10),
+    failure: null, history: [{ at, from: 'splitting', to: 'queued', why: `${parts.length} part${parts.length === 1 ? '' : 's'} for ${free} free slot${free === 1 ? '' : 's'} (${groups.length} file group${groups.length === 1 ? '' : 's'})` }],
+  }, { build: id });
+  const v = validatePlan(plan, b);
+  if (!v.ok) return out(false, null, `planned, but invalid: ${v.errors.join('; ')}`, groups, parts.length);
+  const why = parts.length < free ? `${parts.length} part${parts.length === 1 ? '' : 's'}: only ${groups.length} independent file group${groups.length === 1 ? '' : 's'}, ${free} slot${free === 1 ? '' : 's'} free` : `${parts.length} part${parts.length === 1 ? '' : 's'}: every free slot filled`;
+  return out(true, plan, why, groups, parts.length);
+}
+/** Step ids sorted by their place in the build's list (a part's steps run in build order). */
+function inBuildOrder(build, stepIds) {
+  const at = new Map((Array.isArray(build.steps) ? build.steps : []).map((s, i) => [str(obj(s)?.id, 40), i]));
+  return [...stepIds].sort((x, y) => (at.get(x) ?? 1e9) - (at.get(y) ?? 1e9));
+}
+/** The model of a part's first step (the phase it launches on), '' when unknown. */
+function firstModel(build, stepIds) {
+  const first = (Array.isArray(build.steps) ? build.steps : []).find((s) => obj(s) && str(s.id, 40) === stepIds[0]);
+  return first ? str(first.model, 20) : '';
+}
+
+/**
+ * Is this plan sound for this build? → { ok, errors[] }. Shape (normSplit round-trip), the id names the build, part
+ * ids p1..pn in order, no file in two parts, every open step in exactly one part and no done / skipped / unknown step
+ * in any, one base on every part equal to the plan's, part branches and the combine branch in format, parts ≤ free
+ * slots when slots are recorded, failure only on a failed run.
+ */
+export function validatePlan(plan, build, opts = {}) {
+  const errors = []; const err = (m) => errors.push(m);
+  const b = obj(build) ?? {};
+  const p = obj(plan);
+  if (!p) return { ok: false, errors: ['no plan'] };
+  const norm = normSplit(p, { build: str(b.id, 80) });
+  if (!norm) return { ok: false, errors: [str(b.id) ? `not a split-plan@1 of ${b.id}` : 'not a split-plan@1'] };
+  if (JSON.stringify(norm) !== JSON.stringify(p)) err('not in shape: differs from its normSplit form');
+  if (str(b.splitId) && str(b.splitId) !== norm.id && parseSplitId(b.splitId).run >= parseSplitId(norm.id).run) err(`run ${parseSplitId(norm.id).run} is not after the build's last run (${b.splitId})`);
+  if (norm.parts.length > MAX_PARTS) err(`more than ${MAX_PARTS} parts`);
+  norm.parts.forEach((part, k) => { if (part.id !== `p${k + 1}`) err(`parts[${k}].id is ${part.id}, expected p${k + 1} (ids in order)`); });
+  // files: one part per file
+  const fileOwner = new Map();
+  for (const part of norm.parts) for (const f of part.files) { if (fileOwner.has(f) && fileOwner.get(f) !== part.id) err(`file ${f} is in ${fileOwner.get(f)} and ${part.id}`); else fileOwner.set(f, part.id); }
+  // steps: every open step once, nothing else
+  const steps = Array.isArray(b.steps) ? b.steps.filter(obj) : [];
+  const byId = new Map(steps.map((s) => [str(s.id, 40), s]));
+  const seen = new Map();
+  for (const part of norm.parts) {
+    if (!part.steps.length) err(`${part.id} has no step`);
+    for (const sid of part.steps) {
+      const s = byId.get(sid);
+      if (!s) err(`${part.id} names step ${sid}, which the build does not have`);
+      else if (s.done || s.skip) err(`${part.id} names step ${sid}, which is ${s.done ? 'done' : 'skipped'}`);
+      if (seen.has(sid) && seen.get(sid) !== part.id) err(`step ${sid} is in ${seen.get(sid)} and ${part.id}`); else seen.set(sid, part.id);
+    }
+  }
+  if (steps.length) for (const s of steps) { const sid = str(s.id, 40); if (!s.done && !s.skip && !seen.has(sid)) err(`open step ${sid} is in no part`); }
+  for (const part of norm.parts) { const idx = part.steps.map((sid) => steps.findIndex((s) => str(s.id, 40) === sid)); if (idx.some((x, i) => i && x >= 0 && idx[i - 1] >= 0 && x < idx[i - 1])) err(`${part.id} steps are not in the build's order`); }
+  // one base, branches in format
+  for (const part of norm.parts) {
+    if (part.base !== norm.base) err(`${part.id} base ${part.base || '(none)'} differs from the plan's ${norm.base || '(none)'}`);
+    if (part.branch !== partBranch(norm.id, part.id)) err(`${part.id} branch ${part.branch || '(none)'} is not ${partBranch(norm.id, part.id)}`);
+    if (opts.base && sha(opts.base) && part.base && part.base !== sha(opts.base)) err(`${part.id} base is not the main lock's (${sha(opts.base)})`);
+  }
+  if (norm.combine.branch !== combineBranch(parseSplitId(norm.id).build)) err(`combine branch ${norm.combine.branch || '(none)'} is not ${combineBranch(parseSplitId(norm.id).build)}`);
+  if (norm.slots && norm.parts.length > norm.slots.free) err(`${norm.parts.length} parts for ${norm.slots.free} free slot${norm.slots.free === 1 ? '' : 's'}`);
+  if (norm.run !== 'splitting' && !norm.parts.length) err(`run is ${norm.run} with no parts`);
+  if (norm.failure && norm.run !== 'failed') err(`failure recorded while the run is ${norm.run}`);
+  if (norm.run === 'failed' && !norm.failure) err('a failed run says why (failure)');
+  return { ok: !errors.length, errors };
+}
