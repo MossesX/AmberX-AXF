@@ -16,6 +16,7 @@ import { appMenu } from './menu';
 import { FOLDER, VIEW } from './ids';
 import { ApprovalsScreen } from './approvals';
 import { LogScreen } from './log';
+import { PassesScreen } from './passes';
 import { registerHubActions } from './actions';
 import { setActiveScreen, useActiveScreen } from './store';
 import './hub-admin.css';
@@ -67,6 +68,7 @@ function ScreenPlaceholder({ screen }: { screen: HubScreen }) {
 export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX.Element>> = {
   approvals: (screen) => <ApprovalsScreen screen={screen} />,
   log: (screen) => <LogScreen screen={screen} />,
+  passes: (screen) => <PassesScreen screen={screen} />,
 };
 
 export function HubPage() {
