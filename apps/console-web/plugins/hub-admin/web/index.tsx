@@ -15,6 +15,7 @@ import { homeScreen, screensOf, type HubConsoleTable, type HubScreen } from '@co
 import { appMenu } from './menu';
 import { FOLDER, VIEW } from './ids';
 import { ApprovalsScreen } from './approvals';
+import { LogScreen } from './log';
 import { registerHubActions } from './actions';
 import { setActiveScreen, useActiveScreen } from './store';
 import './hub-admin.css';
@@ -65,6 +66,7 @@ function ScreenPlaceholder({ screen }: { screen: HubScreen }) {
 /** The screen renderers, filled in as the screens land; a screen without one shows its placeholder. */
 export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX.Element>> = {
   approvals: (screen) => <ApprovalsScreen screen={screen} />,
+  log: (screen) => <LogScreen screen={screen} />,
 };
 
 export function HubPage() {
