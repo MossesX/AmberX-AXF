@@ -54,6 +54,7 @@ BACKOFF_S = 0.3
 MESSAGE_MAX = 300
 # Codes a read answers when it can't be served (HUB-CONSOLE.md).
 CODES = ("signed_out", "forbidden", "old_hub", "hub_unavailable", "hub_missing", "relay_off", "hub_error")
+HUB_MISSING = "hub_missing"
 HUB_LINK = HubLink.from_env(client_name="axf-console-hub")
 
 _table_cache: dict[str, Any] = {}
@@ -1206,6 +1207,70 @@ def ensure_connectors_health() -> bool:
         return False
     _connectors_health_done = True
     return True
+
+
+# ---- Handoff (s20 / s21): send marks a run sent; accept and clear say what the hub lacks
+
+@router.post("/handoff/{row}/send")
+async def post_handoff_send(request: Request, row: str) -> dict[str, Any]:
+    """Mark a handoff run sent to a session (the console copies or opens its prompt first)."""
+    return await run_action(request, "handoff", "send", row, lambda s, b: (f"/auth/api/handoff/{row}/sent", {}))
+
+
+@router.post("/handoff/{row}/accept")
+async def post_handoff_accept(request: Request, row: str) -> dict[str, Any]:
+    """Accept a handoff on this device: waits on the hub protocol (hub_missing)."""
+    return await run_action(request, "handoff", "accept", row, None)
+
+
+@router.delete("/handoff/{row}")
+async def delete_handoff(request: Request, row: str) -> dict[str, Any]:
+    """Clear a handoff run: the hub has no delete route yet (hub_missing)."""
+    return await run_action(request, "handoff", "clear", row, None)
+
+
+# ---- Auth admin (s22 / s23): no admin routes on today's hub; every action answers hub_missing with the route to grow
+
+@router.post("/auth/token-create")
+async def post_auth_token_create(request: Request) -> dict[str, Any]:
+    """Create an API token (Brett's own tap; the secret would be shown once and never kept): hub_missing on today's hub."""
+    return await run_action(request, "auth", "token-create", None, None)
+
+
+@router.delete("/auth/{row}")
+async def delete_auth_token(request: Request, row: str) -> dict[str, Any]:
+    """Revoke an API token (a confirm): hub_missing on today's hub."""
+    return await run_action(request, "auth", "token-revoke", row, None)
+
+
+@router.post("/auth/client-add")
+async def post_auth_client_add(request: Request) -> dict[str, Any]:
+    """Add an OAuth client (a confirm): hub_missing on today's hub."""
+    return await run_action(request, "auth", "client-add", None, None)
+
+
+@router.post("/auth/client-remove")
+async def post_auth_client_remove(request: Request) -> dict[str, Any]:
+    """Remove an OAuth client (a confirm): hub_missing on today's hub."""
+    return await run_action(request, "auth", "client-remove", None, None)
+
+
+# ---- Apps: download is a navigation to the hub's own download path
+
+@router.post("/apps/{row}/download")
+async def post_apps_download(request: Request, row: str) -> dict[str, Any]:
+    """Where an app's latest build downloads: the hub's own path for that project (a navigate)."""
+    out = await run_action(request, "apps", "download", row, None)
+    s = Session(request)
+    r = await run_in_threadpool(s.get, "/apps.json")
+    url = ""
+    if r["ok"]:
+        for a in r["json"].get("apps", []) if isinstance(r["json"], dict) else []:
+            if isinstance(a, dict) and a.get("project") == row and isinstance(a.get("latest"), dict):
+                url = str(a["latest"].get("url") or "")
+    if not url:
+        return {**out, "ok": False, "code": "not_found", "message": f"No build of {row} in the hub's catalog."}
+    return {**out, "opens": url, "message": f"Download {row} from the hub."}
 
 
 # ---- Approval log (s10): the hub's whole log as JSON, a command

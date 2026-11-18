@@ -100,7 +100,7 @@ def hub(req: httpx.Request) -> httpx.Response:
     if p in ("/auth/api/auth/clients", "/auth/api/auth/tokens"):
         return httpx.Response(404, json={"error": {"code": "not_found", "message": "no such page"}})
     if p == "/apps.json":
-        return httpx.Response(200, json={"apps": [{"project": "amberx", "name": "AmberX"}], "updatedAt": "2026-11-17T00:00:00Z"})
+        return httpx.Response(200, json={"apps": [{"project": "amberx", "name": "AmberX", "latest": {"url": "https://hub.example.test/apps/download/amberx/amberx.apk"}}], "updatedAt": "2026-11-17T00:00:00Z"})
     if p == "/auth/api/policy" and req.method == "PUT":
         return httpx.Response(200, json={"ok": True, "table": {"$axf": "policy-table@1"}})
     if p == "/auth/api/policy":
@@ -310,7 +310,7 @@ class FakeRelayWrites(FakeRelay):
             return {"ok": True, "status": 200, "json": {"ok": True, "state": "approved-now", "message": "Approved, running now"}, "via": "browser"}
         if path.endswith("/auto/stop"):
             return {"ok": True, "status": 200, "json": {"message": "Stopped."}, "via": "owner"}
-        if path.startswith("/auth/api/users") or path.startswith("/auth/api/account") or path == "/auth/api/logout":
+        if path.startswith("/auth/api/users") or path.startswith("/auth/api/account") or path == "/auth/api/logout" or path.startswith("/auth/api/handoff"):
             return {"ok": True, "status": 200, "json": {"ok": True, "message": "Saved."}, "via": "browser"}
         return {"ok": True, "status": 200, "json": {"ok": True, "message": "Done.", "item": {"id": ID, "status": "declined"}}, "via": "browser"}
 
@@ -492,6 +492,21 @@ ok(c.delete("/connectors/vps").json()["code"] == "hub_missing", "remove: hub_mis
 ok(c.delete("/connectors/Bad Name").status_code == 400, "a bad service id is 400")
 h = srv.connectors_health_probe()
 ok(h["status"] == "error" and any(d.startswith("dead:") for d in h["details"]), f"the health probe names the stale connector ({h['details']})")
+
+# ---------------------------------------------------------------- handoff (s20 / s21), auth admin (s22 / s23), apps
+RUN = "20261117-093000-ab12"
+j = post(f"/handoff/{RUN}/send").json()
+ok(j["ok"] and writes[-1] == (f"/auth/api/handoff/{RUN}/sent", {}, False), "handoff send is a command on the hub's sent route")
+ok(post(f"/handoff/{RUN}/accept").json()["code"] == "hub_missing", "accept: hub_missing")
+ok(c.delete(f"/handoff/{RUN}").json()["code"] == "hub_missing", "clear: hub_missing")
+ok(post("/handoff/not-a-run/send").status_code == 400, "a bad run id is 400")
+j = post("/auth/token-create", {"label": "phone"}).json()
+ok(j["ok"] is False and j["code"] == "hub_missing" and j["proposed"].startswith("POST /auth/api/auth/tokens"), "token create: hub_missing with the route to grow")
+ok(c.delete("/auth/t1").json()["code"] == "hub_missing", "token revoke: hub_missing")
+ok(post("/auth/client-add", {"name": "x"}).json()["code"] == "hub_missing" and post("/auth/client-remove", {"id": "c1"}).json()["code"] == "hub_missing", "OAuth clients: hub_missing")
+j = post("/apps/amberx/download").json()
+ok(j["ok"] and j["opens"].endswith("/apps/download/amberx/amberx.apk"), "apps download answers the hub's own download path")
+ok(post("/apps/nope/download").json()["code"] == "not_found", "an unknown app: not_found")
 
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 

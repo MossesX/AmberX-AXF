@@ -23,7 +23,10 @@
     "action:hub.account",
     "action:hub.overview",
     "action:hub.connectors",
-    "health:hub-connectors"
+    "health:hub-connectors",
+    "action:hub.handoff",
+    "action:hub.auth",
+    "action:hub.apps"
   ],
   "requires": [
     "service:control@1"
@@ -606,6 +609,66 @@
         "confirm": true,
         "destructive": true,
         "description": "Removes a connector. axHub has no route for it yet: answers hub_missing."
+      },
+      {
+        "id": "handoff-send",
+        "route": "POST /handoff/{row}/send",
+        "title": "Handoff: mark sent",
+        "tool": "hub_handoff_send",
+        "description": "Marks a handoff run sent to a session."
+      },
+      {
+        "id": "handoff-accept",
+        "route": "POST /handoff/{row}/accept",
+        "title": "Handoff: accept on this device",
+        "tool": "hub_handoff_accept",
+        "description": "Accepts a handoff on this device: waits on the hub protocol (answers hub_missing)."
+      },
+      {
+        "id": "handoff-clear",
+        "route": "DELETE /handoff/{row}",
+        "title": "Handoff: clear",
+        "tool": "hub_handoff_clear",
+        "confirm": true,
+        "destructive": true,
+        "description": "Clears a handoff run: the hub has no delete route yet (answers hub_missing)."
+      },
+      {
+        "route": "POST /auth/token-create",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "id": "auth-token-revoke",
+        "route": "DELETE /auth/{row}",
+        "title": "Auth: revoke a token",
+        "tool": "hub_auth_token_revoke",
+        "confirm": true,
+        "destructive": true,
+        "description": "Revokes an API token (a confirm): the hub has no token admin route yet (answers hub_missing)."
+      },
+      {
+        "id": "auth-client-add",
+        "route": "POST /auth/client-add",
+        "title": "Auth: add an OAuth client",
+        "tool": "hub_auth_client_add",
+        "confirm": true,
+        "description": "Adds an OAuth client (a confirm): the hub has no route yet (answers hub_missing)."
+      },
+      {
+        "id": "auth-client-remove",
+        "route": "POST /auth/client-remove",
+        "title": "Auth: remove an OAuth client",
+        "tool": "hub_auth_client_remove",
+        "confirm": true,
+        "destructive": true,
+        "description": "Removes an OAuth client (a confirm): the hub has no route yet (answers hub_missing)."
+      },
+      {
+        "id": "apps-download",
+        "route": "POST /apps/{row}/download",
+        "title": "Apps: download",
+        "tool": "hub_apps_download",
+        "description": "Answers the hub's own download address of an app's latest build (a navigate)."
       }
     ]
   },

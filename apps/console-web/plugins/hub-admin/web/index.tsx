@@ -17,6 +17,8 @@ import { FOLDER, VIEW } from './ids';
 import { ApprovalsScreen } from './approvals';
 import { LogScreen } from './log';
 import { PassesScreen } from './passes';
+import { AuthScreen } from './auth';
+import { HandoffScreen } from './handoff';
 import { ConnectorsScreen } from './connectors';
 import { AccountScreen } from './account';
 import { AppsScreen, OverviewScreen } from './overview';
@@ -74,6 +76,8 @@ export const SCREEN_RENDERERS: Partial<Record<string, (screen: HubScreen) => JSX
   approvals: (screen) => <ApprovalsScreen screen={screen} />,
   log: (screen) => <LogScreen screen={screen} />,
   passes: (screen) => <PassesScreen screen={screen} />,
+  auth: (screen) => <AuthScreen screen={screen} />,
+  handoff: (screen) => <HandoffScreen screen={screen} />,
   connectors: (screen) => <ConnectorsScreen screen={screen} />,
   account: (screen) => <AccountScreen screen={screen} />,
   apps: (screen) => <AppsScreen screen={screen} />,
