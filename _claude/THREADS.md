@@ -840,23 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `professional-skins-rebuild-whole-app` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `remove-console-s-own-notes-manager` → landing, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `remove-no-new-android-kotlin-work-rule` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `remove-ui-review-gate-no-screenshots` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `server-every-failed-merge-alerts-brett` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `server-gate-one-session-per-build-no` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `show-commits-behind-main-every-build` → landing, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `tap-to-confirm-follows-label-visibility` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `unlink-plan-studio-builds-delete-all` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `vps-badge-shows-shell-commands-work` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `full-voice-api-control-type-fields-press` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `chrome-settings-actually-apply-toolbars` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `vps-builds-get-console-token-ui-review` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `decision-dialog-ui-review-other` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `prompting-engine-control-panel-to-create` → landing, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `prompting-engine-control-panel-events` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `orchestrator-settings-collapsible-split` → landing, note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `console-app-part-2-native-floating` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → complete, note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `console-app-part-3-native-bridge-mic` note (all) · foreign-write
@@ -1240,6 +1223,23 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:08 UTC · `stop-push-storm-builds-live-pushes-build` added (2 steps) (all) · foreign-write
 - 2026-11-18 16:08 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · foreign-write
 - 2026-11-18 16:08 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
+- 2026-11-18 16:09 UTC · `attach-widgets-to-any-toolbar-banner` s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `plan-studio-2-open-button-working-deep` s13 done, s14 done, s15 done, → complete, note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `every-app-gets-own-locked-default` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete, note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `every-plugin-gets-own-default-toolbar` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → complete, note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `one-build-time-always-split-to-fill` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, note (all) · foreign-write
+- 2026-11-18 16:09 UTC · `stop-push-storm-builds-live-pushes-build` added (2 steps) (all) · foreign-write
+- 2026-11-18 16:09 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · foreign-write
+- 2026-11-18 16:09 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
 
 ## Token passes (log)
 
