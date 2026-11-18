@@ -79,6 +79,9 @@ try {
         if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
         return r.fulfill({ status: 503, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'offline (shots)' }) });
       });
+      // the option being shown: the page toolbar's per-instance asset pick (axf.chrome.toolbar.<id>.asset), seeded in the
+      // console's saved settings before it starts (the pick is no console-control setting, so `set` cannot reach it)
+      if (tag !== 'host-services') await page.addInitScript((pick) => { const k = 'axf:axf-console:settings'; const v = JSON.parse(localStorage.getItem(k) || '{}'); v['axf.chrome.toolbar.host-services.asset'] = pick; localStorage.setItem(k, JSON.stringify(v)); }, tag);
       await page.goto(`http://127.0.0.1:${PORT}/`);
       await page.waitForFunction(() => typeof window.axfConsoleControl === 'function', null, { timeout: 90_000 });
       const run = (cmd) => page.evaluate((c) => window.axfConsoleControl(c), cmd);
@@ -86,7 +89,6 @@ try {
       let known = false;
       for (let i = 0; i < 150 && !known; i++) { known = !!(await run({ verb: 'state', address: 'plugin:ai.amberx.axf.console.host-services' })).ok; if (!known) await sleep(1000); }
       if (!known) say(`${scene} ${device}: the host-services plugin never registered`);
-      if (tag !== 'host-services') say(`toolbar option ${tag}: ${JSON.stringify(await run({ verb: 'set', address: `setting:axf.chrome.toolbar.host-services.asset`, value: tag }).catch((e) => String(e))).slice(0, 160)}`);
       if (scene === 'gate') {
         await run({ verb: 'open', address: 'view:agent-swarm' });
         await page.waitForSelector('[data-host-service-down="agent-swarm"]', { timeout: 60_000 }).catch((e) => say(`gate: ${e.message.split('\n')[0]}`));
