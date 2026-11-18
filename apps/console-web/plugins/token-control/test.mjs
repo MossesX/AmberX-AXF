@@ -416,5 +416,13 @@ await test('pass all: everything by default, ordinary deletes skip the confirm, 
   await runControl({ op: 'reset', target: 'tokens.theme' });
 });
 
+// pass-voice@1 (build approval-pass-covers-every-call s9): the engine answers every fixture phrase the same way
+{
+  const { passVoiceIntent } = await import('../../../../framework/core/engines/pass-voice.mjs');
+  const fx = JSON.parse(readFileSync(new URL('../../../../framework/spec/fixtures/pass-voice.json', import.meta.url), 'utf8'));
+  for (const c of fx.cases) assert.deepEqual(passVoiceIntent(c.phrase), c.intent, `voice: ${c.phrase}`);
+  n++;
+}
+
 rmSync(T, { recursive: true, force: true });
 console.log(`${process.exitCode ? '✗' : '✓'} token-control: ${n} tests passed`);
