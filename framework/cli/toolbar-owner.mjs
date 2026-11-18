@@ -18,8 +18,9 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { CHROME_FIELDS } from '../core/engines/chrome-settings-rules.mjs';
 import {
-  TOOLBAR_GENERIC, parseToolbarBuiltFor, pluginToolbarDefaultAsset, pluginToolbarDefaultId, toolbarBuiltForErrors, toolbarBuiltForOf, toolbarChoices,
+  TOOLBAR_GENERIC, TOOLBAR_LOOK_KEYS, TOOLBAR_OVERRIDE_KEYS, parseToolbarBuiltFor, pluginToolbarDefaultAsset, pluginToolbarDefaultId, toolbarBuiltForErrors, toolbarBuiltForOf, toolbarChoices,
 } from '../core/engines/toolbar-owner-rules.mjs';
 
 const ROOT = resolve(fileURLToPath(new URL('../..', import.meta.url)));
@@ -107,6 +108,9 @@ export function list(root = ROOT) {
 
 export function check(root = ROOT) {
   const problems = [];
+  // s4: the override switch changes look and style only, never the buttons
+  for (const k of ['groups', 'items', 'widgets', 'search', 'scope', 'slot', 'builtFor']) if (TOOLBAR_LOOK_KEYS.includes(k) || TOOLBAR_OVERRIDE_KEYS.includes(k)) problems.push(`toolbar-owner-rules.mjs: "${k}" must never be a look or override key (buttons and placement stay the screen's own)`);
+  for (const f of CHROME_FIELDS.toolbar ?? []) if (!TOOLBAR_OVERRIDE_KEYS.includes(f.key)) problems.push(`chrome-settings-rules.mjs: toolbar field "${f.key}" is not a look/style override key (TOOLBAR_OVERRIDE_KEYS); a per-toolbar override must never change buttons`);
   for (const { plugin, file, asset } of plannedDefaults(root)) {
     const rel = posix(relative(root, file));
     if (!existsSync(file)) { problems.push(`plugin:${plugin}: missing ${rel} (node framework/cli/toolbar-owner.mjs defaults --write)`); continue; }

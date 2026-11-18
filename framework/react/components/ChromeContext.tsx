@@ -497,8 +497,9 @@ export function InstanceInterfaceTab({ type, instance, show = () => true, descri
   const label = chromeLabel(type).toLowerCase();
   const list = rt.registry.list(type as AssetType);
   const own = type === 'tab-group' ? (rt.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance)) as string) || '' : '';
-  const asset = type === 'tab-group' ? own || 'default' : rt.getState().active[type as AssetType] ?? '';
-  const assetOptions = [
+  const pageBar = type === 'toolbar' && instance !== CHROME_APP_INSTANCE;
+  const asset = pageBar ? pageToolbarPick(rt, instance).id ?? '' : type === 'tab-group' ? own || 'default' : rt.getState().active[type as AssetType] ?? '';
+  const assetOptions = pageBar ? pageToolbarChoices(rt, instance).map((c) => ({ value: c.id, label: c.isDefault ? `${c.name} (this screen's own)` : c.generic ? `${c.name} (generic, look only)` : `${c.name} (this screen, look only)` })) : [
     ...(type === 'tab-group' ? [{ value: 'default', label: `The app's tab style (${rt.getState().active['tab-group'] ?? 'none'})` }] : []),
     ...list.map((a) => ({ value: a.id, label: a.name })),
   ];
@@ -507,7 +508,7 @@ export function InstanceInterfaceTab({ type, instance, show = () => true, descri
   return (
     <div className="fx-stack" data-axf-interface-for={`${type}:${instance}`}>
       <Note tone="info">Changes this {label}{instance !== CHROME_APP_INSTANCE ? ` (${instance})` : ''} right away. The settings window keeps its own look.</Note>
-      {assetOptions.length > 0 && <SelectField label={`${chromeLabel(type)} asset`} hint={type === 'tab-group' ? 'Only this tab row uses it.' : `The app's ${label}: every ${label} in this app uses it.`} value={asset} options={assetOptions} onChange={(id) => rt.dispatch(`chrome.swap:${type}:${instance}:${id}`)} />}
+      {assetOptions.length > 0 && <SelectField label={`${chromeLabel(type)} asset`} hint={pageBar ? 'Generic toolbars and the ones built for this screen; another one changes the look only, the buttons stay.' : type === 'tab-group' ? 'Only this tab row uses it.' : `The app's ${label}: every ${label} in this app uses it.`} value={asset} options={assetOptions} onChange={(id) => rt.dispatch(`chrome.swap:${type}:${instance}:${id}`)} />}
       {(['look', 'behaviour'] as const).map((g) => { const fs = group(g); return fs.length ? <Section key={g} title={g === 'look' ? 'Look' : 'Behaviour'}>{fs.map((f) => <FieldControl key={f.key} type={type} instance={instance} field={f} descriptions={descriptions} />)}</Section> : null; })}
       {n > 0 && <div className="fx-row"><Button size="sm" tone="neutral" icon="undo" onClick={() => rt.dispatch(`chrome.reset:${type}:${instance}`)}>Reset this {label} ({n})</Button></div>}
     </div>

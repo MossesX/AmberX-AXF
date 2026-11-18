@@ -29,7 +29,7 @@ import {
   type ToolbarActionRef, type ToolbarOverflow, type ToolbarScope,
 } from './toolbar-rules.mjs';
 import { migrateToolbar } from './toolbar-migrate.mjs';
-import { layerToolbarLook, pageDefaultToolbar, toolbarPick } from './toolbar-owner-rules.mjs';
+import { layerToolbarLook, pageDefaultToolbar, toolbarOverrideOnly, toolbarPick } from './toolbar-owner-rules.mjs';
 
 export { PAGE_TOOLBAR_CONTRACT };
 
@@ -324,7 +324,8 @@ export function resolvePageToolbar(asset: ToolbarAssetLike, page: ToolbarPage, s
   const scope = parseToolbarScope(migrated.scope) ?? { kind: 'app', id: '' };
   const slot = migrated.slot ?? page.slot ?? TOOLBAR_DEFAULTS.slot;
   const id = scope.kind === 'app' ? (page.view || page.plugin ? pageToolbarId({ ...page, slot }) : 'app') : pageToolbarSettingsId(scope, slot);
-  const data = chromeInstanceData('toolbar', migrated, env.get(CHROME_INSTANCE_KEY('toolbar', id))) as ToolbarData;
+  // the person's override changes look and style only, never the buttons (toolbar-owner@1)
+  const data = chromeInstanceData('toolbar', migrated, toolbarOverrideOnly(env.get(CHROME_INSTANCE_KEY('toolbar', id)))) as ToolbarData;
   const groups: ResolvedToolbarGroup[] = (data.groups ?? []).map((g) => {
     const fixed = (g.items ?? []).map((it) => resolveToolbarItem(it, g, id, state, env, 'asset'));
     const live = g.provider ? providerItemsOf(env.providerItems?.[g.provider]).map(({ item, locked }) => resolveToolbarItem(item, g, id, state, env, `provider:${g.provider}`, locked ? 'not available' : undefined)) : [];

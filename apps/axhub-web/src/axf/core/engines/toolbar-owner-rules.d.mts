@@ -7,6 +7,7 @@ export declare const TOOLBAR_DEFAULT_PREFIX: 'default-';
 export declare const TOOLBAR_DEFAULT_SUFFIX: '-toolbar';
 export declare const TOOLBAR_PLACEHOLDER_TAG: 'placeholder';
 export declare const TOOLBAR_LOOK_KEYS: readonly string[];
+export declare const TOOLBAR_OVERRIDE_KEYS: readonly string[];
 
 export interface ToolbarOwnerAsset { id: string; type?: string; name?: string; description?: string; tags?: string[]; data?: Record<string, unknown> | object }
 export interface ToolbarOwnerPage { view?: string | null; plugin?: string | null; slot?: string | null }
@@ -31,5 +32,6 @@ export declare function toolbarChoices(page: ToolbarOwnerPage | null | undefined
 export declare function toolbarPick(saved: unknown, page: ToolbarOwnerPage | null | undefined, assets: readonly ToolbarOwnerAsset[]): ToolbarPickResult;
 export declare function toolbarPickSet(page: ToolbarOwnerPage | null | undefined, which: unknown, assets: readonly ToolbarOwnerAsset[]): { value: string | null } | { error: string };
 export declare function toolbarLookOnly(data: unknown): Record<string, unknown>;
+export declare function toolbarOverrideOnly(override: unknown): Record<string, unknown>;
 export declare function toolbarNonLookKeys(data: unknown): string[];
 export declare function layerToolbarLook<T extends object>(ownData: T, pickedData: unknown): T;

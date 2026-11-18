@@ -37,6 +37,8 @@ export const TOOLBAR_DEFAULT_SUFFIX = '-toolbar';
 export const TOOLBAR_PLACEHOLDER_TAG = 'placeholder';
 /** Look and style: the only keys a picked toolbar or a per-instance override may change. Never buttons. */
 export const TOOLBAR_LOOK_KEYS = ['variant', 'align', 'density', 'surface', 'divider', 'collapsible', 'overflow'];
+/** What a person's per-instance override (`axf.chrome.toolbar.<id>`) may set: the look keys, the search box switch and tap to confirm (behaviour). Never buttons. */
+export const TOOLBAR_OVERRIDE_KEYS = [...TOOLBAR_LOOK_KEYS, 'showSearch', 'tapConfirm'];
 
 const NAME = /^[a-z0-9][a-z0-9-]{0,38}$/;
 const SCREEN_ID = /^[a-z0-9][a-z0-9._:-]{0,79}$/i;
@@ -232,6 +234,14 @@ export function toolbarLookOnly(data) {
   const out = {};
   if (!isObj(data)) return out;
   for (const k of TOOLBAR_LOOK_KEYS) if (k in data) out[k] = data[k];
+  return out;
+}
+
+/** Only the keys a per-instance override may set (TOOLBAR_OVERRIDE_KEYS); groups, items and widgets are dropped. */
+export function toolbarOverrideOnly(override) {
+  const out = {};
+  if (!isObj(override)) return out;
+  for (const k of TOOLBAR_OVERRIDE_KEYS) if (k in override) out[k] = override[k];
   return out;
 }
 
