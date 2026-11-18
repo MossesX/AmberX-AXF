@@ -467,6 +467,26 @@
       "escalateTo": "banner"
      },
      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "require-split-id",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Builds start only with a split ID",
+     "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+     "settings": {
+      "enforcedAt": "launch",
+      "checks": [
+       "build-id",
+       "split-id"
+      ],
+      "rejectTo": "failed",
+      "coordinatesWith": "server-gate-reject-any-build-without"
+     },
+     "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch"
     }
    ]
   },
@@ -637,6 +657,26 @@
       "escalateTo": "banner"
      },
      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "require-split-id",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Builds start only with a split ID",
+     "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+     "settings": {
+      "enforcedAt": "launch",
+      "checks": [
+       "build-id",
+       "split-id"
+      ],
+      "rejectTo": "failed",
+      "coordinatesWith": "server-gate-reject-any-build-without"
+     },
+     "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch"
     }
    ]
   },
@@ -938,6 +978,26 @@
       "escalateTo": "banner"
      },
      "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "require-split-id",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Builds start only with a split ID",
+     "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+     "settings": {
+      "enforcedAt": "launch",
+      "checks": [
+       "build-id",
+       "split-id"
+      ],
+      "rejectTo": "failed",
+      "coordinatesWith": "server-gate-reject-any-build-without"
+     },
+     "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch"
     }
    ]
   },
@@ -1125,6 +1185,28 @@
        "escalateTo": "banner"
       },
       "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "require-split-id",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Builds start only with a split ID",
+      "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+      "settings": {
+       "enforcedAt": "launch",
+       "checks": [
+        "build-id",
+        "split-id"
+       ],
+       "rejectTo": "failed",
+       "coordinatesWith": "server-gate-reject-any-build-without"
+      },
+      "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
      }
@@ -1326,6 +1408,28 @@
        "escalateTo": "banner"
       },
       "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "require-split-id",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Builds start only with a split ID",
+      "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+      "settings": {
+       "enforcedAt": "launch",
+       "checks": [
+        "build-id",
+        "split-id"
+       ],
+       "rejectTo": "failed",
+       "coordinatesWith": "server-gate-reject-any-build-without"
+      },
+      "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
      }
@@ -1530,6 +1634,28 @@
       "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "require-split-id",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Builds start only with a split ID",
+      "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+      "settings": {
+       "enforcedAt": "launch",
+       "checks": [
+        "build-id",
+        "split-id"
+       ],
+       "rejectTo": "failed",
+       "coordinatesWith": "server-gate-reject-any-build-without"
+      },
+      "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
      }
     ],
     "updatedBy": "migration",
@@ -1730,6 +1856,28 @@
       "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "migration"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "require-split-id",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Builds start only with a split ID",
+      "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+      "settings": {
+       "enforcedAt": "launch",
+       "checks": [
+        "build-id",
+        "split-id"
+       ],
+       "rejectTo": "failed",
+       "coordinatesWith": "server-gate-reject-any-build-without"
+      },
+      "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "migration"
      }
     ],
     "updatedBy": "migration",
@@ -1912,6 +2060,26 @@
        "escalateTo": "banner"
       },
       "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "require-split-id",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Builds start only with a split ID",
+      "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+      "settings": {
+       "enforcedAt": "launch",
+       "checks": [
+        "build-id",
+        "split-id"
+       ],
+       "rejectTo": "failed",
+       "coordinatesWith": "server-gate-reject-any-build-without"
+      },
+      "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch"
      }
     ],
     "updatedBy": "migration",
@@ -2092,10 +2260,33 @@
       "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags",
       "updatedAt": "2026-11-15T12:00:00Z",
       "updatedBy": "defaults"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "require-split-id",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Builds start only with a split ID",
+      "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+      "settings": {
+       "enforcedAt": "launch",
+       "checks": [
+        "build-id",
+        "split-id"
+       ],
+       "rejectTo": "failed",
+       "coordinatesWith": "server-gate-reject-any-build-without"
+      },
+      "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch",
+      "updatedAt": "2026-11-15T12:00:00Z",
+      "updatedBy": "defaults"
      }
     ],
     "joinedDefaults": [
-     "auto-lander"
+     "auto-lander",
+     "require-split-id"
     ]
    },
    "complete": {
@@ -2265,6 +2456,26 @@
        "escalateTo": "banner"
       },
       "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
+     },
+     {
+      "$axf": "gate-rule@1",
+      "id": "require-split-id",
+      "kind": "custom",
+      "enabled": true,
+      "severity": "block",
+      "owner": "console",
+      "title": "Builds start only with a split ID",
+      "description": "The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.",
+      "settings": {
+       "enforcedAt": "launch",
+       "checks": [
+        "build-id",
+        "split-id"
+       ],
+       "rejectTo": "failed",
+       "coordinatesWith": "server-gate-reject-any-build-without"
+      },
+      "source": "Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch"
      }
     ]
    }
@@ -2395,6 +2606,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [],
@@ -2494,6 +2714,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -2598,6 +2827,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -2700,6 +2938,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -2802,6 +3049,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -2900,6 +3156,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -3003,6 +3268,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -3106,6 +3380,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [],
@@ -3202,6 +3485,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -3310,6 +3602,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -3413,6 +3714,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -3511,6 +3821,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -3611,6 +3930,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -3713,6 +4041,15 @@
      "enabled": true,
      "verdict": "pass",
      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+    },
+    {
+     "id": "require-split-id",
+     "kind": "custom",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "pass",
+     "reason": "Checked when a build starts (split-plan@1), not on the PR."
     }
    ],
    "reasons": [
@@ -3817,6 +4154,15 @@
      "enabled": true,
      "verdict": "pass",
      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+    },
+    {
+     "id": "require-split-id",
+     "kind": "custom",
+     "severity": "block",
+     "owner": "console",
+     "enabled": true,
+     "verdict": "pass",
+     "reason": "Checked when a build starts (split-plan@1), not on the PR."
     }
    ],
    "reasons": [
@@ -3920,6 +4266,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -4018,6 +4373,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -4119,6 +4483,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -4220,6 +4593,15 @@
       "enabled": true,
       "verdict": "pass",
       "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "Checked when a build starts (split-plan@1), not on the PR."
      }
     ],
     "reasons": [
@@ -4318,6 +4700,15 @@
       "id": "auto-lander",
       "kind": "custom",
       "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "skip",
+      "reason": "evaluated by console."
+     },
+     {
+      "id": "require-split-id",
+      "kind": "custom",
+      "severity": "block",
       "owner": "console",
       "enabled": true,
       "verdict": "skip",

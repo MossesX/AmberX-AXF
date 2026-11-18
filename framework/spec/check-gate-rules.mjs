@@ -31,7 +31,7 @@ const CONFIG_HAND = { landWaitUi: false, queueMode: 'stack', queueDepth: 2, auto
 /** The auto-lander tuned by hand (Nov 16 2026 keys): five tries, two minutes before the second, no fix sessions. */
 const CONFIG_AUTO = { autoLander: { enabled: true, mode: 'serial', maxAttempts: 5, backoffMin: 2, fix: false } };
 /** A rule set saved before the auto-lander rule existed (the first eight defaults, rev 4). */
-const SAVED_EIGHT = (() => { const s = G.defaultRuleSet({ at: AT }); return { ...s, rev: 4, rules: s.rules.filter((r) => r.id !== 'auto-lander') }; })();
+const SAVED_EIGHT = (() => { const s = G.defaultRuleSet({ at: AT }); return { ...s, rev: 4, rules: s.rules.filter((r) => !['auto-lander', 'require-split-id'].includes(r.id)) }; })();
 
 const SNAPSHOTS = {
   green: { number: 701, title: 'Skins: hot-swap tokens', build: 'skins-hot-swap', branch: 'claude/skins-hot-swap', head: 'a701a701a701a701a701a701a701a701a701a701', ci: 'success', ui: '' },
@@ -117,8 +117,9 @@ for (const k of Object.keys(fx.out)) t(`fixture replay: ${k}`, () => assert.deep
 // ------------------------------------------------------------------ the rules themselves
 
 const ids = (s) => s.rules.map((r) => r.id);
-t('the default set: nine rules in gate order, every one on and console; every gate rule blocks, the auto-lander policy is info', () => {
-  assert.deepEqual(ids(actual.defaultRuleSet), ['merge-queue-only', 'ci-green', 'tests', 'theme', 'controls', 'toolbars', 'ui-review', 'clash', 'auto-lander']);
+t('the default set: ten rules in gate order (new rules appended), every one on and console; every gate rule blocks, the auto-lander policy is info', () => {
+  assert.deepEqual(ids(actual.defaultRuleSet), ['merge-queue-only', 'ci-green', 'tests', 'theme', 'controls', 'toolbars', 'ui-review', 'clash', 'auto-lander', 'require-split-id']);
+  assert.deepEqual(actual.defaultRuleSet.rules.find((r) => r.id === 'require-split-id').settings, { enforcedAt: 'launch', checks: ['build-id', 'split-id'], rejectTo: 'failed', coordinatesWith: 'server-gate-reject-any-build-without' });
   assert.ok(actual.defaultRuleSet.rules.every((r) => r.enabled && r.owner === 'console' && r.source));
   assert.ok(actual.defaultRuleSet.rules.every((r) => r.severity === (r.id === 'auto-lander' ? 'info' : 'block')));
   assert.deepEqual(actual.defaultRuleSet.rules.find((r) => r.id === 'auto-lander').settings, { maxAttempts: 3, backoff: { baseMin: 5, factor: 3, maxMin: 60 }, attemptTimeoutMin: 45, mergeMain: true, fixSessions: true, land: true, escalateTo: 'banner' });
@@ -152,8 +153,8 @@ t('the auto-lander rule: the lander switch is its switch, the new keys tune it, 
   assert.deepEqual(actual.migrate.auto.migratedFrom.keys, ['autoLander.enabled', 'autoLander.mode', 'autoLander.maxAttempts', 'autoLander.backoffMin', 'autoLander.fix']);
   assert.equal(actual.evaluate.green.results.find((r) => r.id === 'auto-lander').verdict, 'pass'); assert.equal(actual.evaluate.redCi.results.find((r) => r.id === 'auto-lander').verdict, 'pass'); // a policy, never a gate
 });
-t('a saved eight-rule set gains the auto-lander rule on read; a complete set is returned as is', () => {
-  const j = actual.joinDefaults.savedEight; assert.deepEqual(ids(j), ids(actual.defaultRuleSet)); assert.equal(j.rev, 4); assert.deepEqual(j.joinedDefaults, ['auto-lander']); assert.equal(j.rules.at(-1).updatedBy, 'defaults'); assert.deepEqual(G.ruleSetErrors(j), []);
+t('a saved eight-rule set gains the auto-lander and require-split-id rules on read, in default order; a complete set is returned as is', () => {
+  const j = actual.joinDefaults.savedEight; assert.deepEqual(ids(j), ids(actual.defaultRuleSet)); assert.equal(j.rev, 4); assert.deepEqual(j.joinedDefaults, ['auto-lander', 'require-split-id']); assert.equal(j.rules.at(-1).updatedBy, 'defaults'); assert.deepEqual(G.ruleSetErrors(j), []);
   assert.equal(actual.joinDefaults.complete.joinedDefaults, undefined); assert.deepEqual(ids(actual.joinDefaults.complete), ids(actual.defaultRuleSet));
 });
 t('an empty config migrates to the defaults with no keys named', () => { assert.deepEqual(actual.migrate.empty.migratedFrom.keys, []); assert.deepEqual(actual.migrate.empty.rules.map((r) => r.settings), actual.defaultRuleSet.rules.map((r) => r.settings)); });

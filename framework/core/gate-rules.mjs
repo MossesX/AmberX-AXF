@@ -298,6 +298,11 @@ export const DEFAULT_RULES = Object.freeze([
   // rule to do that. Make the server do it automatically without the console." The policy the VPS runner obeys with or
   // without the console; its settings are auto-lander-policy@1 (the same defaults as auto-lander.mjs POLICY_DEFAULTS).
   { id: 'auto-lander', kind: 'custom', enabled: true, severity: 'info', owner: 'console', title: 'Auto-lander fixes and lands', description: 'The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.', settings: { ...AUTO_LANDER_SETTINGS }, source: 'config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags' },
+  // Brett (Nov 18 2026): one build at a time, always split; the VPS starts no build that did not go through the
+  // orchestrator's splitter. A launch rule (claude-headless.sh, model-gate.mjs launch), not a landing one: on a PR it
+  // passes. It covers the orchestrator build id the server-gate build (server-gate-reject-any-build-without) asks for, so
+  // that build reuses this rule instead of adding a second one (coordinatesWith).
+  { id: 'require-split-id', kind: 'custom', enabled: true, severity: 'block', owner: 'console', title: 'Builds start only with a split ID', description: 'The VPS refuses any build start that has no orchestrator build ID or no valid split ID in the builds store (split-plan@1: proof it went through the orchestrator splitter). A refused start exits 3 with the reason and goes to the orchestrator Failed tab with the gate reason.', settings: { enforcedAt: 'launch', checks: ['build-id', 'split-id'], rejectTo: 'failed', coordinatesWith: 'server-gate-reject-any-build-without' }, source: 'Brett Nov 18 2026 (one-build-time-always-split-to-fill); deploy/claude-headless.sh + framework/cli/model-gate.mjs launch' },
 ]);
 
 /** The default rule set document. */
@@ -436,6 +441,7 @@ export function evaluateRule(rule, snapshot) {
     }
     default: {
       if (r.id === 'auto-lander') return V('pass', 'The server fixes and lands it on its own (auto-lander@1).');
+      if (r.id === 'require-split-id') return V('pass', 'Checked when a build starts (split-plan@1), not on the PR.');
       if (r.id === 'merge-queue-only' || st.directMerge === false) {
         if (s.draft) return V('fail', 'it is a draft.');
         if (s.fork) return V('fail', 'it comes from a fork.');

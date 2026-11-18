@@ -60,7 +60,7 @@ try {
   const s = createStore();
   t('rules are migrated from the lander config on read, and a read writes nothing', () => {
     const set = s.readRules();
-    assert.equal(set.$axf, 'gate-rule-set@1'); assert.equal(set.rules.length, 9); assert.ok(set.migratedFrom.keys.includes('mergeQueue'));
+    assert.equal(set.$axf, 'gate-rule-set@1'); assert.equal(set.rules.length, 10); assert.ok(set.migratedFrom.keys.includes('mergeQueue'));
     assert.equal(set.rules.find((r) => r.id === 'merge-queue-only').settings.mode, 'stack');
     assert.throws(() => readFileSync(join(GATE, 'rules.json')));
   });
@@ -139,7 +139,7 @@ try {
   seed();
   const g = createGate();
   t('rules ops: list, get, set, toggle, errors in words', () => {
-    assert.equal(g.run('rules_list', { enabled: 'true' }).rules.length, 9);
+    assert.equal(g.run('rules_list', { enabled: 'true' }).rules.length, 10);
     assert.equal(g.run('rules_get', { id: 'clash' }).default.id, 'clash');
     const set = g.run('rules_set', { id: 'theme', severity: 'warn', settings: { check: 'x.mjs' }, by: 'test' });
     assert.equal(set.rule.severity, 'warn'); assert.equal(set.before.severity, 'block'); assert.equal(set.rule.settings.check, 'x.mjs');
