@@ -62,7 +62,7 @@ export function PlanStudio2Page() {
     if (!state) return [];
     if (q.trim()) { const ids = new Set(tc.find(state, q, { limit: 500 }).map((h) => h.id)); return state.items.filter((i) => ids.has(i.id)).map((item) => ({ item, depth: 0, kids: tc.children(state, item.id).length, path: tc.pathOf(state, item.id) })); }
     const root = opened ? tc.resolve(state, opened) : null;
-    const all = root ? [{ item: root, depth: 0, kids: tc.children(state, root.id).length }, ...(root.collapsed ? [] : tc.flatten(state, { parent: root.id, depth: 1 }))] : tc.flatten(state);
+    const all = root ? [{ item: root, depth: 0, kids: tc.children(state, root.id).length }, ...(root.collapsed ? [] : tc.flatten(state, { parent: root.id }).map((r) => ({ ...r, depth: r.depth + 1 })))] : tc.flatten(state);
     return all.filter((r) => showDone || !(tc.CHECKABLE.has(r.item.kind) && r.item.done)).map((r) => ({ ...r, path: '' }));
   }, [state, q, showDone, opened]);
   const openedItem = state && opened ? tc.resolve(state, opened) : null;

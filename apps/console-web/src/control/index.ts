@@ -11,6 +11,7 @@ import { installControlExecutor } from './executor';
 import { installVoiceControl } from '../actions/voice-control';
 import { installConsoleControlActions } from '../actions/console-control';
 import { installSearchPalette } from './SearchPalette';
+import { installDeepLinks } from './deepLink';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
@@ -21,5 +22,7 @@ export function installConsoleControl(rt: AxfRuntime): () => void {
   const voice = installVoiceControl(rt);
   const verbs = installConsoleControlActions(rt);
   const palette = installSearchPalette(rt);
-  return () => { actions.off(); plugins(); toolbars(); search(); executor(); voice(); verbs(); palette(); };
+  // #/<view>, ?axf-target=, ?axf-open= (read before the first render, opened once their screen registered)
+  const links = installDeepLinks(rt);
+  return () => { actions.off(); plugins(); toolbars(); search(); executor(); voice(); verbs(); palette(); links(); };
 }

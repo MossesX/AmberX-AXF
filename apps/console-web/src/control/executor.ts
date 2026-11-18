@@ -71,8 +71,21 @@ const OPENS_SCREEN = new Set(['open', 'focus', 'press', 'set', 'state', 'scroll'
  * Run one console-control@1 command. Never throws: a failure is an envelope (with `state` too, so the caller sees where
  * the console is).
  */
+/**
+ * A deep link given to `open` / `focus` (a URL, `#/<view>…`, `?axf-target=…`, or an address with a segment the contract
+ * has no kind for, like `view:plan-studio-2/plan:<id>`): the deep-link resolver (./deepLink.ts) runs it, so a link and
+ * console_open / REST / `axf console open` / voice land on the same thing. Set by installDeepLinks.
+ */
+let linkOpener: ((rt: AxfRuntime, target: string) => Promise<ControlAnswer | null>) | null = null;
+export function setLinkOpener(fn: typeof linkOpener): void { linkOpener = fn; }
+
 export async function executeControl(rt: AxfRuntime, raw: unknown): Promise<ControlAnswer> {
   const reg = controlRegistry(rt);
+  const r0 = raw as { verb?: unknown; address?: unknown } | null;
+  if (linkOpener && r0 && (r0.verb === 'open' || r0.verb === 'focus') && typeof r0.address === 'string') {
+    const linked = await linkOpener(rt, r0.address);
+    if (linked) return linked;
+  }
   let cmd: ReturnType<typeof normalizeConsoleControl>;
   try { cmd = normalizeConsoleControl(raw); } catch {
     const r = await reg.run(raw); // the registry's own envelope for an invalid command
