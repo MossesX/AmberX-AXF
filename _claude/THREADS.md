@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:42 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s2 done, s3 done, s4 done, s5 done, s6 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 01:44 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
-- 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
 - 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → landing (all) · orchestrator
 - 2026-11-18 06:32 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
 - 2026-11-18 06:32 UTC · `approval-pass-covers-every-call` s3 done, s4 done (all) · foreign-write
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:06 UTC · `settings-fix-part-2-blank-toolbars` → pending (all) · foreign-write
 - 2026-11-18 14:09 UTC · `stop-push-storm-builds-live-pushes-build` added (2 steps) (all) · voice session
 - 2026-11-18 14:14 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · watchdog
+- 2026-11-18 14:15 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · foreign-write
+- 2026-11-18 14:16 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
+- 2026-11-18 14:16 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · foreign-write
 
 ## Token passes (log)
 
