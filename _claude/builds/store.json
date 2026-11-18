@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9053,
- "updatedAt": "2026-11-18T15:12:46.410Z",
+ "rev": 9054,
+ "updatedAt": "2026-11-18T15:13:56.836Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320269,7 +320269,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T15:12:30.822Z",
+   "updatedAt": "2026-11-18T15:13:35.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -320335,6 +320335,14 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 22 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T15:12:30.822Z"
+    },
+    {
+     "text": "Watchdog fixed One build at a time, always split to fill every slot: split-ID gate, Splitting s (step s6): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T15:13:01.110Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T15:13:35.129Z"
     }
    ],
    "approvals": [],
@@ -320366,11 +320374,11 @@
      "at": "2026-11-18T15:12:16.423Z",
      "exit": 0,
      "outcome": "requeued",
-     "reason": "phase-done",
+     "reason": "",
      "stepsLeft": 22,
      "account": "",
      "session": "",
-     "phase": "Phase 1"
+     "phase": ""
     },
     "split": {
      "at": "2026-11-18T12:46:17.539Z",
@@ -320380,14 +320388,14 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "Session finished phase Phase 1 with 22 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
+     "at": "2026-11-18T15:13:17.307Z",
      "why": "subscription account hulu0241"
     },
     "tried": [
@@ -321079,7 +321087,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
