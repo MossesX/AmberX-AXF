@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 06:45 UTC · `approval-pass-covers-every-call` s2 done, s3 done, s4 done, note (all) · foreign-write
-- 2026-11-18 06:43 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-18 06:44 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
 - 2026-11-18 06:49 UTC · `approval-pass-covers-every-call` s7 done (all) · orchestrator
 - 2026-11-18 06:50 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:24 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `vps-never-gives-up-fix-land-every-build` → landing, merged, note (all) · foreign-write
+- 2026-11-18 14:27 UTC · `vps-never-gives-up-fix-land-every-build` merged, note (all) · reconciler
+- 2026-11-18 14:27 UTC · `one-build-time-always-split-to-fill` branch claude/one-build-time-always-split-to-fill, note (all) · reconciler
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T14:26:46.925Z",
+ "updatedAt": "2026-11-18T14:28:21.621Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192667,7 +192667,7 @@
    "title": "VPS never gives up: fix and land every build until all options are exhausted",
    "category": "",
    "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -192675,8 +192675,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T14:23:46.233Z",
-   "builtAt": "2026-11-18T14:23:46.233Z",
+   "updatedAt": "2026-11-18T14:27:54.924Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -192729,6 +192729,10 @@
     {
      "text": "Reconciler: PR #842",
      "at": "2026-11-18T13:12:35.033Z"
+    },
+    {
+     "text": "Reconciler: PR #842 merged",
+     "at": "2026-11-18T14:27:54.924Z"
     },
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
@@ -193551,11 +193555,11 @@
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/one-build-time-always-split-to-fill",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T14:25:06.734Z",
+   "updatedAt": "2026-11-18T14:27:54.924Z",
    "builtAt": "",
    "notes": [
     {
@@ -193597,6 +193601,10 @@
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-one-build-time-always-split-to-fill--gina.",
      "at": "2026-11-18T13:53:50.015Z"
+    },
+    {
+     "text": "Reconciler: branch claude/one-build-time-always-split-to-fill (no PR yet)",
+     "at": "2026-11-18T14:27:54.924Z"
     }
    ],
    "approvals": [],
