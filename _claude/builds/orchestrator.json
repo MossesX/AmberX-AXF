@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:27:52.357Z",
+ "updatedAt": "2026-11-18T12:28:38.757Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192033,14 +192033,14 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:26:21.557Z",
+   "updatedAt": "2026-11-18T12:28:11.856Z",
    "builtAt": "",
    "notes": [
     {
@@ -192061,11 +192061,15 @@
     },
     {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
-     "at": "2026-11-18T12:26:21.557Z"
+     "at": "2026-11-18T12:24:49.545Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-plan-studio-2-open-button-working-deep--joey.",
+     "at": "2026-11-18T12:28:11.856Z"
     },
     {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for plan-studio-2-open-button-working-deep: fatal: not a git repository (or any of the parent directories): .git",
-     "at": "2026-11-18T12:24:49.545Z"
+     "at": "2026-11-18T12:26:21.557Z"
     }
    ],
    "approvals": [],
@@ -192651,16 +192655,21 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:27:40.646Z",
+   "updatedAt": "2026-11-18T12:27:58.754Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:27:58.754Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": []
