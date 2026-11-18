@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:47:26.421Z",
+ "updatedAt": "2026-11-18T01:47:41.962Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -73604,6 +73604,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -90304,6 +90305,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -115902,7 +115904,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -115910,8 +115912,8 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-18T01:46:50.600Z",
-   "builtAt": "2026-11-18T01:43:47.631Z",
+   "updatedAt": "2026-11-18T01:46:55.397Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -116084,6 +116086,10 @@
     {
      "text": "Headless run axf-always-fill-every-slot-when-slots-are--paulie: brief only · start 15.0K tokens ($0.05) · cost $145.41 · 354 turns · 6 tools, MCP none",
      "at": "2026-11-18T01:44:32.111Z"
+    },
+    {
+     "text": "Fixing: the push failed (pushing its branch failed (claude/always-fill-every-slot-when-slots-are has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-18T01:46:55.397Z"
     },
     {
      "text": "Session axf-always-fill-every-slot-when-slots-are--paulie on hulu0241 ended (exit 0); the build was already landing.",
@@ -129071,6 +129077,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -137714,6 +137721,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -186431,7 +186439,7 @@
    "branch": "claude/move-everything-axhub-web-console",
    "pr": "",
    "createdAt": "2026-11-17T22:28:32.914Z",
-   "updatedAt": "2026-11-18T01:33:58.450Z",
+   "updatedAt": "2026-11-18T01:45:59.033Z",
    "builtAt": "",
    "notes": [
     {
@@ -187019,8 +187027,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:45:59.033Z",
      "note": "",
      "uid": "st-mwl9wsjp4vnia3",
      "createdAt": "2026-11-17T22:33:53.520Z"
@@ -207151,6 +207159,234 @@
    "steps": [
     {
      "id": "s1",
+     "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m801z64w",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s2",
+     "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m9022mpp",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s3",
+     "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m9033386",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s4",
+     "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m90423fg",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s5",
+     "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m905qckj",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s6",
+     "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m906gz33",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s7",
+     "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m907qck4",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s8",
+     "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m9080mzx",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s9",
+     "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m909ih8x",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s10",
+     "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m90av8fv",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s11",
+     "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m90b99y6",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s12",
+     "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgo9m90cp015",
+     "createdAt": "2026-11-18T01:47:19.984Z"
+    },
+    {
+     "id": "s13-12",
      "text": "[Fable] Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "",
@@ -207169,7 +207405,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s2",
+     "id": "s14-13",
      "text": "[Opus] Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -207188,7 +207424,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s3",
+     "id": "s15-14",
      "text": "[Opus] Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -207207,7 +207443,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s4",
+     "id": "s16-15",
      "text": "[Opus] Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -207226,7 +207462,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s5",
+     "id": "s17-16",
      "text": "[Opus] Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -207245,7 +207481,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s6",
+     "id": "s18-17",
      "text": "[Opus] Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -207264,7 +207500,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s7",
+     "id": "s19-18",
      "text": "[Opus] Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -207283,7 +207519,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s8",
+     "id": "s20-19",
      "text": "[Opus] Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -207302,7 +207538,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s9",
+     "id": "s21-20",
      "text": "[Opus] API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -207321,7 +207557,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s10",
+     "id": "s22-21",
      "text": "[Opus] Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -207340,7 +207576,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s11",
+     "id": "s23-22",
      "text": "[Opus] CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -207359,7 +207595,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s12",
+     "id": "s24-23",
      "text": "[Opus] Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
@@ -207378,7 +207614,7 @@
      "createdAt": "2026-11-18T01:46:51.675Z"
     },
     {
-     "id": "s13-12",
+     "id": "s25-24",
      "text": "Design the pass coverage contract: extend the pass record schema with `covers` (default `all`, or an explicit tool/scope list), define how a pass decides each policy (veto, confirm, always-approve) and what it logs (`ranUnder: <pass id>`), and add a migration so existing passes with no field read as `all`. Write it in the axHub pass spec doc and the schema file.",
      "model": "Fable",
      "why": "Schema and migration design for a cross-app approval contract that every caller and UI depends on",
@@ -207401,7 +207637,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s14-13",
+     "id": "s26-25",
      "text": "Find out why calls still prompt while a pass is active: trace the pass check in the call path for veto tools (vps.run) and always-approve/confirm tools (console_terminal_sessions_stop), and write down each place that skips the pass. Add failing unit tests that reproduce both cases.",
      "model": "Opus",
      "why": "",
@@ -207424,7 +207660,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s15-14",
+     "id": "s27-26",
      "text": "Make the pass matcher cover every tool: `covers: all` matches any service and tool, an explicit list matches by service, tool or control@1 scope; remove the narrower scope-only match.",
      "model": "Opus",
      "why": "",
@@ -207446,7 +207682,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s16-15",
+     "id": "s28-27",
      "text": "Wire the pass into the veto path: when a matching pass is active, vps.run and other veto tools run at once with no countdown and no veto notice, and the job is recorded as run under the pass.",
      "model": "Opus",
      "why": "",
@@ -207468,7 +207704,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s17-16",
+     "id": "s29-28",
      "text": "Wire the pass into the confirm/always-approve path: console_terminal_sessions_stop and other confirm tools skip `confirmation_required` and run at once under a matching pass. Downstream proxy tools (the console's /mcp) go through the same check.",
      "model": "Opus",
      "why": "",
@@ -207490,7 +207726,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s18-17",
+     "id": "s30-29",
      "text": "Logging: every call that runs under a pass writes an audit/job-log entry with the pass id, tool, policy it skipped and the time; pass_status shows a count of covered runs per pass.",
      "model": "Opus",
      "why": "",
@@ -207512,7 +207748,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s19-18",
+     "id": "s31-30",
      "text": "Make sure covered calls never send a push notice: the AmberX notification sender checks the pass before sending veto and approval notices, and a covered run sends nothing (or one quiet 'ran under pass' line if the pass setting says so).",
      "model": "Opus",
      "why": "",
@@ -207534,7 +207770,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s20-19",
+     "id": "s32-31",
      "text": "Pass settings UI in axHub web: the pass grant/edit page shows which tools the pass covers, with 'All tools' selected by default and an optional per-service/tool picker; the active pass card lists its coverage and runs under it. Tokens and framework controls only.",
      "model": "Opus",
      "why": "",
@@ -207555,7 +207791,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s21-20",
+     "id": "s33-32",
      "text": "API part for the pass settings: deep link (#/passes/<id>), state read (pass_status returns covers and runs), actions and settings callable without the UI (axhub.pass_grant/pass_update with `covers`, pass_revoke) through REST, MCP, CLI and the AmberX voice command, all the same.",
      "model": "Opus",
      "why": "",
@@ -207579,7 +207815,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s22-21",
+     "id": "s34-33",
      "text": "Update the axHub MCP server instructions and the 'Passes' docs so they say a pass covers every tool by default, including veto and confirm tools; fix the 'pass_grant' tool description to match.",
      "model": "Opus",
      "why": "",
@@ -207601,7 +207837,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s23-22",
+     "id": "s35-34",
      "text": "CI check: a test that walks every registered tool policy (veto, confirm, always-approve) and fails if an active `covers: all` pass lets any of them prompt, count down or notify; add it to the test workflow.",
      "model": "Opus",
      "why": "",
@@ -207623,7 +207859,7 @@
      "createdAt": "2026-11-18T01:46:23.048Z"
     },
     {
-     "id": "s24-23",
+     "id": "s36-35",
      "text": "Run the full test suite (pnpm test), take desktop and phone shots of the pass settings page with 3 options for UI Review, write the report _claude/builds/reports/approval-pass-covers-every-call.md (cause, fix, before/after, how each API part is reached), add the THREADS row and open the PR.",
      "model": "Opus",
      "why": "",
