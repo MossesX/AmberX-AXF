@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9160,
- "updatedAt": "2026-11-18T23:24:27.918Z",
+ "rev": 9161,
+ "updatedAt": "2026-11-18T23:40:36.043Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321772,7 +321772,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T23:19:26.843Z",
+   "updatedAt": "2026-11-18T23:39:45.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -321826,6 +321826,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-18T23:19:26.843Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T23:39:45.838Z"
     }
    ],
    "approvals": [],
@@ -321994,7 +321998,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
