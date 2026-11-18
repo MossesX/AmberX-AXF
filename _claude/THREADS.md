@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:25 UTC · `move-server-side-console-parts-onto-vps` s5 done (all) · orchestrator
-- 2026-11-17 23:26 UTC · `move-server-side-console-parts-onto-vps` s5 done (all) · foreign-write
-- 2026-11-17 23:26 UTC · `active-tab-stop-button-grid-alignment` note (all) · mcp
 - 2026-11-17 23:26 UTC · `active-tab-stop-button-grid-alignment` added (0 steps) (all) · foreign-write
 - 2026-11-17 23:26 UTC · `active-tab-stop-button-grid-alignment` note (all) · foreign-write
 - 2026-11-17 23:27 UTC · `move-server-side-console-parts-onto-vps` note (all) · builds-live
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:21 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 00:23 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · pipeline
 - 2026-11-18 00:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-18 00:25 UTC · `move-server-side-console-parts-onto-vps` s24 done (all) · foreign-write
+- 2026-11-18 00:25 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-18 00:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 
 ## Token passes (log)
 
