@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:47:13.113Z",
+ "updatedAt": "2026-11-18T12:48:12.632Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193358,12 +193358,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T12:46:17.539Z",
+   "updatedAt": "2026-11-18T12:47:50.917Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
      "at": "2026-11-18T12:41:13.745Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T12:47:50.917Z"
     },
     {
      "text": "Split by Claude into 27 steps (5 Fable).",
@@ -193375,16 +193379,13 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Design the split-plan@1 contract: split id format, the parts list (part id, files claimed, branch, slot, base main sha), the part status enum (waiting, building, testing, rebuilding, failed, done) and the overall run states (splitting, queued, building, combining, ci, merging, merged, live, finished, failed). Write it in framework/spec/BUILD-SPLIT.md and the JSON schema.",
-     "model": "Fable",
-     "why": "New cross-surface contract that the store, gate, dispatcher and UI all read",
+     "text": "Brett (Nov 18). 1) ONE build at a time on the VPS.",
+     "model": "Opus",
+     "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/spec/BUILD-SPLIT.md",
-      "framework/schemas/split-plan.json"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193392,22 +193393,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv01anqh",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq01k3li",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s2",
-     "text": "Add split-plan@1 to the builds@1 record in the store. Add the optional splitId, split {parts[], combine} and the new 'splitting' status, and carry over unknown fields so normBuild keeps them. Migration: existing builds get no split, so nothing is lost.",
-     "model": "Fable",
-     "why": "Schema and migration design on the one builds store",
+     "text": "The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull).",
+     "model": "Opus",
+     "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/cli/builds-store.mjs",
-      "framework/core/build-pipeline.mjs",
-      "framework/schemas/builds.json"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193415,20 +193412,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv02ikii",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq02tz03",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s3",
-     "text": "Write the split engine core framework/core/build-split.mjs. planParts(build, freeSlots, fileClaims) makes as many parts as there are free slots and gives no two parts the same file. It assigns split ids and validates a plan (no overlap, every step in exactly one part).",
-     "model": "Fable",
-     "why": "Engine internals that the dispatcher and gate depend on",
+     "text": "When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason.",
+     "model": "Opus",
+     "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/core/build-split.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193436,21 +193431,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv03wof6",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq036edv",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s4",
-     "text": "Write the part and run state machine in build-split.mjs. Cover the allowed transitions, rollUp(parts) giving the overall row status, all-or-nothing combine readiness, and how a failed part triggers a rebuild or a failed run. Add golden fixtures.",
-     "model": "Fable",
-     "why": "Engine state machine with a fixture contract",
+     "text": "Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them.",
+     "model": "Opus",
+     "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/core/build-split.mjs",
-      "framework/spec/fixtures/build-split.json"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193458,21 +193450,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv04c0c6",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq04ohms",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s5",
-     "text": "Change the build-pipeline@1 dispatcher rule from up to 4 builds to ONE build at a time. Main is locked while a run is active (main-lock record) and every part's base is the same main sha. Retire the 4-builds setting with a migration note.",
-     "model": "Fable",
-     "why": "Changes the dispatcher contract and how every build runs",
+     "text": "Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working).",
+     "model": "Opus",
+     "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/core/build-pipeline.mjs",
-      "framework/core/build-split.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193480,20 +193469,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv055rz4",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq05vxmc",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s6",
-     "text": "Write the spec tests for split, state machine and one-at-a-time in framework/spec/check-build-split.mjs: no file overlap, every slot filled, roll-up, all-or-nothing, migration loses nothing.",
+     "text": "Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "framework/spec/check-build-split.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193501,20 +193488,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv065wz8",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq06s4dt",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s7",
-     "text": "Auto-split on intake in pipeline.mjs. A pending build is set to 'splitting' at once, the splitter runs with the current free-slot count, and the split plan and splitId are written to the store, after which the build is ready for the Queue. The old orchestrator-auto-split-tab path is removed.",
+     "text": "Full REST/MCP/CLI/voice parity, tests, CI checks.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193522,21 +193507,18 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv07kc1h",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq07ovd3",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s8",
-     "text": "Dispatcher tick: when the Queue gets a split build and no other run is active, lock main, then create one branch per part from the locked sha and start each part in its own agent slot with --account routing.",
+     "text": "Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "framework/cli/agent-slots.mjs"
-     ],
+     "files": [],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -193544,406 +193526,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv08pozq",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq08iy24",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     },
     {
      "id": "s9",
-     "text": "Report part status. The headless part runner writes waiting, building, testing, rebuilding, failed and done to the store through builds-live, using the part id and splitId from env, and records a slot heartbeat.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "deploy/claude-headless.sh",
-      "framework/cli/builds-live.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv09j2zv",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s10",
-     "text": "Combine step. When all parts are done, merge the part branches into one combine branch and set the status to 'combining'. A clash or any failed part marks the run failed, nothing lands, and main is unlocked.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/combine.mjs",
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0arwvm",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s11",
-     "text": "Landing hand-off. The combine branch becomes one PR in the landing line with one CI run. The run status follows ci, merging, merged, live (deploy seen) and finished, and main unlocks at finished or failed.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "framework/core/landing-line.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0b7cya",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s12",
-     "text": "Server gate rule 'require-split-id' (on by default). Add it to the default gate rule set and record that it coordinates with the server-gate build's rule instead of duplicating it.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/core/gate-rules.mjs",
-      "framework/spec/fixtures/gate-rules.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0cw2xp",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s13",
-     "text": "Enforce the gate at the launcher. deploy/claude-headless.sh and model-gate.mjs launch refuse any build start that has no orchestrator build id or no valid splitId in the store (exit 3 with the reason).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "deploy/claude-headless.sh",
-      "framework/cli/model-gate.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0desix",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s14",
-     "text": "Send rejected starts to the orchestrator Failed tab: write a rejection record (who, when, the reason, what was missing) to the store as failed with gateReason, journalled.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/cli/model-gate.mjs",
-      "framework/cli/builds-store.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0edrps",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s15",
-     "text": "Show the rule on Gate & rules with its description and on/off switch, and make sure the Failed tab shows the gate reason on rejected rows.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/gate/",
-      "apps/console-web/plugins/build-orchestrator/ui/FailedTab.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0fyl45",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s16",
-     "text": "Pending UI: one row per build, with a 'Splitting' status and an animated split icon (icon asset plus a token-driven animation, no hard-coded values).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/PendingTab.tsx",
-      "apps/console-web/plugins/build-orchestrator/assets/icon/split.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0gm5nr",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s17",
-     "text": "Queue UI: a split build is ONE expandable DataGrid row whose main row shows the overall status rolled up from the parts, and the row keeps updating through combining, CI, merging, merged, live and finished.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/QueueTab.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0hxwna",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s18",
-     "text": "Queue expanded parts: each part shows its slot, branch and a live status badge (asset badge per state). The badge animates only while waiting, building, testing or rebuilding and stays static when failed or done.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/SplitParts.tsx",
-      "apps/console-web/plugins/build-orchestrator/assets/badge/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0i0nlc",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s19",
-     "text": "Live updates: the Queue and Pending views subscribe to store changes (poll or SSE from the existing orchestrator feed) so badges and statuses change without a reload.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/useSplitRun.ts",
-      "apps/console-web/plugins/build-orchestrator/server/routes.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0jh99k",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s20",
-     "text": "REST API: GET /split/<id> (the plan, parts and run state), GET /run/active, POST /split/<id>/resplit and POST /run/<id>/cancel (cancel needs confirm), and GET/PUT for the gate rule setting.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/routes.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0kcgn5",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s21",
-     "text": "MCP + CLI + voice parity. Add plugin commands pipeline-split, pipeline-run-status, pipeline-resplit and pipeline-cancel, the subcommands pipeline.mjs split|run|resplit|cancel, and AmberX voice actions mapped to the same routes.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/commands.json",
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/voice.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0lme4i",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s22",
-     "text": "Deep links and control@1 targets: view:builds/tab:pending, row:<build>/part:<pN>, and the expanded queue row. Register them through data-axf-target so console_show and check-console-control pass. Append the new targets to the end of the registry.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/",
-      "framework/schemas/control-registry.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0m3g2q",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s23",
-     "text": "Server tests: intake auto-split, the one-at-a-time dispatcher, the gate rejecting a start without a splitId into Failed, all-or-nothing combine and the status roll-up through finished.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/test/pipeline-split.test.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0nxup9",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s24",
-     "text": "Add check-build-split.mjs to the CI workflow and run check-console-control, check-theme, check-controls, check-chrome-assets, check-gate-rules, check-landing-line and builds-store verify.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      ".github/workflows/android.yml"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0o53mj",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s25",
-     "text": "Update the docs: _claude/memory/docs/build-split.md, the build-orchestrator README and a line in decisions.md replacing the 4-builds rule and orchestrator-auto-split-tab (mark that build superseded in the store).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "_claude/memory/docs/build-split.md",
-      "apps/console-web/plugins/build-orchestrator/README.md",
-      "_claude/memory/decisions.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0pbcxv",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s26",
-     "text": "UI Review: shots of the Pending Splitting row and the Queue row collapsed and expanded, on desktop and phone, with 3 badge-style options as assets, sent through review.mjs submit --choices.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/assets/badge/",
-      "_claude/builds/reports/one-build-time-always-split-to-fill/shots/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwm47ohv0qb5bo",
-     "createdAt": "2026-11-18T12:46:17.539Z"
-    },
-    {
-     "id": "s27",
-     "text": "Final step: run every check and test, write the report _claude/builds/reports/one-build-time-always-split-to-fill.md (what changed, how each feature is reached via deep link, REST, MCP, CLI and voice, before/after tests), add the THREADS row, push the branch, open the PR and link it with builds-live.mjs link.",
+     "text": "Tests green, report _claude/builds/reports/one-build-time-always-split-to-fill.md, THREADS row, commit, push, PR",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -193960,8 +193548,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm47ohv0rmlwt",
-     "createdAt": "2026-11-18T12:46:17.539Z"
+     "uid": "st-mwm49ojq09ywe2",
+     "createdAt": "2026-11-18T12:47:50.917Z"
     }
    ]
   }
