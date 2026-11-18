@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `settings-fix-part-2-blank-toolbars` s1 done, s2 done, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `move-everything-axhub-web-console` s5 done, s6 done, s7 done, s8 done (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
 - 2026-11-18 01:42 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s6 done (all) · orchestrator
+- 2026-11-18 01:43 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
 
 ## Token passes (log)
 
