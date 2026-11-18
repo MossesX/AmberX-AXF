@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8907,
- "updatedAt": "2026-11-18T08:59:38.825Z",
+ "rev": 8908,
+ "updatedAt": "2026-11-18T09:15:08.429Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -313716,9 +313716,10 @@
    "pendingId": "",
    "branch": "claude/fix-launcher-crash-duplicate-steps-brief",
    "pr": "#827",
+   "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T00:33:55.014Z",
+   "updatedAt": "2026-11-18T09:14:24.414Z",
    "builtAt": "2026-11-18T00:12:42.641Z",
    "notes": [
     {
@@ -313764,6 +313765,14 @@
     {
      "text": "Headless run axf-fix-launcher-crash-duplicate-steps-brief--earl: brief only · start 28.9K tokens ($0.11) · cost $22.70 · 214 turns · 6 tools, MCP none · started with 28851 tokens of context, over the 25000 warning level",
      "at": "2026-11-18T00:33:55.014Z"
+    },
+    {
+     "text": "Reconciler: PR #827 merged",
+     "at": "2026-11-18T09:14:24.414Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-18T09:14:24.415Z"
     }
    ],
    "approvals": [],
@@ -314178,7 +314187,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
