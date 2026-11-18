@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9043,
- "updatedAt": "2026-11-18T15:02:36.636Z",
+ "rev": 9044,
+ "updatedAt": "2026-11-18T15:03:39.812Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319186,14 +319186,14 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T14:50:11.420Z",
+   "updatedAt": "2026-11-18T15:03:23.131Z",
    "builtAt": "",
    "notes": [
     {
@@ -319264,7 +319264,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
+    "queuedAt": "2026-11-18T12:27:47.559Z",
     "queuedBy": "Brett",
     "account": "mossesx-max-",
     "session": "",
@@ -319273,15 +319273,15 @@
     "phase": "",
     "launchedAt": "2026-11-18T12:39:46.830Z",
     "runs": 1,
-    "crashes": 1,
+    "crashes": 0,
     "lastRun": {
-     "at": "2026-11-18T14:49:21.812Z",
+     "at": "2026-11-18T12:45:04.157Z",
      "exit": 1,
-     "outcome": "failed",
-     "reason": "crash-limit",
-     "stepsLeft": 5,
+     "outcome": "requeued",
+     "reason": "",
+     "stepsLeft": 6,
      "account": "mossesx-max-",
-     "session": "",
+     "session": "axf-every-app-gets-own-locked-default--sully",
      "phase": ""
     },
     "split": {
@@ -319292,7 +319292,7 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "mossesx-max- hit its usage limit and every usable account (hulu0241, mossesx-max-) was tried: back in Pending for Brett.",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "2026-11-18T12:39:46.830Z",
     "planned": {
@@ -319303,30 +319303,13 @@
      "why": "subscription account hulu0241"
     },
     "tried": [
-     "hulu0241",
-     "mossesx-max-"
+     "hulu0241"
     ],
     "pickedAt": "2026-11-18T12:39:46.830Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-18T14:49:21.812Z",
-     "buildId": "every-app-gets-own-locked-default",
-     "phase": "",
-     "step": "s2",
-     "cause": "usage-limit",
-     "exit": 1,
-     "action": "give-up",
-     "attempt": 1,
-     "account": "mossesx-max-",
-     "notified": "",
-     "session": "",
-     "note": "mossesx-max- hit its usage limit and every usable account (hulu0241, mossesx-max-) was tried: back in Pending for Brett."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -319365,12 +319348,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:03:23.131Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:28:57.431Z",
-     "updatedAt": "2026-11-18T12:28:57.431Z"
+     "updatedAt": "2026-11-18T15:03:26.039Z"
     },
     {
      "id": "s3",
