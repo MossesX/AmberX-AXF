@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:16 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
-- 2026-11-18 00:16 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `fix-step-splitter-claude-exit-1-input` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
 - 2026-11-18 00:16 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:25 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-18 01:25 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-18 01:25 UTC · `one-true-source-for-every-setting` s1 done (all) · foreign-write
+- 2026-11-18 01:25 UTC · `move-everything-axhub-web-console` s24 done (all) · orchestrator
+- 2026-11-18 01:25 UTC · `move-everything-axhub-web-console` s25 done (all) · orchestrator
 
 ## Token passes (log)
 
