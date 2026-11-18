@@ -13,18 +13,22 @@
  */
 import { useState } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, builtForOf, ifaceChoices, ifaceDefaultAsset, ifaceKey, ifacePick, ifaceSet, layerIface, parseBuiltFor, parseIfaceArgs, pluginIfaceName, type AxfRuntime, type SettingsUi } from '../../core';
-import { Button, Checkbox, ChoiceGrid, Icon, Note, useAxfState, useRuntime } from '../../react';
+import { Button, Checkbox, ChoiceGrid, Container, Icon, Note, useAxfState, useRuntime } from '../../react';
 
 export const SETTINGS_IFACE_DIALOG = 'axf.settings.iface';
 export const SETTINGS_IFACE_ACTIONS = { pick: 'settings.iface', choose: 'settings.iface.choose' } as const;
 const PLUGINS_TAB = 'plugins';
+/** Settings → Appearance → Asset types: one card per asset type, each with its settings interface row. */
+export const ASSET_TYPES_TAB = { id: 'asset-types', label: 'Asset types', icon: 'layers', parent: 'appearance', order: 40, description: 'Every asset type and the settings interface its settings use.' } as const;
+/** Modules whose sub-tabs of Plugins are not plugins (the settings library's own Banners tab). */
+const NOT_PLUGINS = new Set(['ai.amberx.axf.settings']);
 const ORIGIN = 'settings-iface';
 const types = ASSET_TYPES as readonly string[];
 
 /** The plugin owner of a settings tab (a sub-tab of Settings → Plugins), or null. */
 export function tabIfaceOwner(rt: AxfRuntime, tabId: string): string | null {
   const tab = rt.settings.getTab(tabId);
-  if (!tab || tab.parent !== PLUGINS_TAB) return null;
+  if (!tab || tab.parent !== PLUGINS_TAB || (tab.module && NOT_PLUGINS.has(tab.module))) return null;
   const name = pluginIfaceName(tab.module ?? tab.plugin ?? tab.id);
   return name && parseBuiltFor(`plugin:${name}`) ? `plugin:${name}` : null;
 }
@@ -137,6 +141,32 @@ export function SettingsIfaceDialog({ owner }: { owner: string }) {
         choices={choices.map((c) => ({ id: c.id, title: c.name, text: c.description, icon: c.isDefault ? 'lock' : 'settings', ...(c.isDefault ? { tag: 'Default' } : {}) }))} />
       {choices.length < 2 && <Note tone="info">Only the default is built for this one so far. A settings asset with data.builtFor = "{owner}" shows up here.</Note>}
       <div className="fx-row"><Button tone="quiet" onClick={() => rt.closeDialog()}>Close</Button></div>
+    </div>
+  );
+}
+
+/** Settings → Appearance → Asset types: every asset type, its active asset and its settings interface. */
+export function AssetTypesIfacePanel() {
+  const rt = useRuntime();
+  const state = useAxfState();
+  const specs = assetTypeSpecs as Record<string, { label?: string; icon?: string }>;
+  return (
+    <div className="fx-stack axf-settings-iface__types" role="list" aria-label="Asset types">
+      {types.map((t) => {
+        const label = specs[t]?.label ?? t;
+        const active = (state.active as Record<string, string | undefined>)[t];
+        const name = active ? (rt.registry.get(t as never, active)?.name ?? active) : '';
+        return (
+          <div role="listitem" key={t} data-axf-anchor={`settings-asset-type:${t}`}>
+            <Container collapsible defaultOpen={false} title={label} icon={specs[t]?.icon ?? 'layers'}>
+              <div className="axf-settings__rows">
+                <SettingsIfaceRow owner={`asset:${t}`} label={label} />
+                {name && <p className="fx-muted axf-settings__desc">Active: {name}</p>}
+              </div>
+            </Container>
+          </div>
+        );
+      })}
     </div>
   );
 }

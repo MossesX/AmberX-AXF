@@ -24,7 +24,7 @@ import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWher
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
 export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
-import { isAppIface, ownerSettingsUi, registerIfaceActions, SETTINGS_IFACE_CSS, SETTINGS_IFACE_DIALOG, SettingsIfaceDialog, SettingsIfaceRow, syncIfaceDefaults, tabIfaceOwner } from './iface';
+import { ASSET_TYPES_TAB, AssetTypesIfacePanel, isAppIface, ownerSettingsUi, registerIfaceActions, SETTINGS_IFACE_CSS, SETTINGS_IFACE_DIALOG, SettingsIfaceDialog, SettingsIfaceRow, syncIfaceDefaults, tabIfaceOwner } from './iface';
 export { SETTINGS_IFACE_ACTIONS, SETTINGS_IFACE_DIALOG, SettingsIfaceRow, setOwnerIface, tabIfaceOwner } from './iface';
 import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
@@ -1162,7 +1162,7 @@ export const library: AxfWebLibrary = {
     [SETTINGS_IFACE_DIALOG]: { title: 'Choose a settings interface', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <SettingsIfaceDialog owner={String(p.owner ?? '')} /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },
   },
-  settingsTabs: Object.values(SETTINGS_TABS),
+  settingsTabs: [...Object.values(SETTINGS_TABS), ASSET_TYPES_TAB],
   settings: [
     {
       id: 'axf.display',
@@ -1195,6 +1195,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Skin', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: 'axf.appearance.asset-types', tab: ASSET_TYPES_TAB.id, title: 'Asset types', icon: 'layers', order: 10, render: () => <AssetTypesIfacePanel /> },
     { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
