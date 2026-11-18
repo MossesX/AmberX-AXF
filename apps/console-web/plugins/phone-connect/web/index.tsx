@@ -5,6 +5,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { addLoadedSource, type LoadedItem } from '@console/control/search';
 import { registerActions } from './actions';
+import { appMenu } from './menu';
 import { phone, type Device } from './client';
 import { panels, showInPanel } from './settings';
 
@@ -29,4 +30,5 @@ export const plugin: AxfWebLibrary = {
   },
   settingsTabs: [{ id: TAB, label: 'Phone Connect', icon: 'smartphone', order: 30, parent: 'plugins', description: 'Pair the Phone Connect app, see and revoke phones, switch phone features on or off, recent commands.' }],
   settingsPanels: panels,
+  appMenu,
 };
