@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8921,
- "updatedAt": "2026-11-18T12:29:09.959Z",
+ "rev": 8922,
+ "updatedAt": "2026-11-18T12:29:39.257Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318709,7 +318709,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T12:26:07.343Z",
+   "updatedAt": "2026-11-18T12:29:28.226Z",
    "builtAt": "",
    "notes": [
     {
@@ -318743,6 +318743,10 @@
     {
      "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:24:57.670Z"
+    },
+    {
+     "text": "Launch failed on hulu0241, mossesx-max-: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:29:28.226Z"
     }
    ],
    "approvals": [],
@@ -318767,7 +318771,7 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "launch failed: worktree for vps-never-gives-up-fix-land-every-build: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -318887,7 +318891,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
