@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T14:47:56.630Z",
+ "updatedAt": "2026-11-18T14:49:27.329Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194343,9 +194343,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-18T14:42:53.731Z",
+   "updatedAt": "2026-11-18T14:47:53.642Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T14:47:53.642Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [

@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 07:08 UTC · `approval-pass-covers-every-call` s10 done (all) · orchestrator
 - 2026-11-18 07:08 UTC · `approval-pass-covers-every-call` s9 done, → running (all) · foreign-write
 - 2026-11-18 07:11 UTC · `approval-pass-covers-every-call` s11 done (all) · orchestrator
 - 2026-11-18 07:12 UTC · `approval-pass-covers-every-call` s10 done (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:43 UTC · `every-plugin-gets-own-default-toolbar` PR #844, note (all) · reconciler
 - 2026-11-18 14:45 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · voice session
 - 2026-11-18 14:46 UTC · `every-app-gets-own-locked-default` s1 done, → running (all) · orchestrator
+- 2026-11-18 14:47 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
 
 ## Token passes (log)
 
