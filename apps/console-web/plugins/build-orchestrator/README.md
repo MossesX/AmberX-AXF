@@ -111,9 +111,28 @@ cron and runs one pass, through axHub `vps.run`) and **Builds the watchdog gave 
 | Voice / actions | `watchdog.status`, `watchdog.run[:<build>]` |
 | Deep link | `build-orchestrator.focus:watchdog[?build=<id>]` (console_open `build-orchestrator` focus `watchdog`; console_show `build-orchestrator/watchdog`) |
 
+## Split runs: one build at a time, split to fill every slot (split-plan@1)
+
+Since Nov 18 2026 the dispatcher runs ONE build at a time and splits it across every free agent slot. This replaces
+the old rule of up to 4 builds side by side. Intake sets a Pending build to `splitting` and plans its parts for the free
+slots (parts never share a file; split id `<build>.r<n>`). The dispatcher locks main on one sha and starts each part on
+its own branch, worktree and slot (`--account`). Parts report through `builds-live.mjs part`. `combine.mjs` merges them
+all or nothing into `claude/<build>`, one PR and one CI run, and the run follows ci → merging → merged → live →
+finished. Gate rule `require-split-id` refuses any start without a split id (exit 3) and puts it on the Failed tab with
+its gate reason. Contract `framework/spec/BUILD-SPLIT.md`; operator doc `_claude/memory/docs/build-split.md`.
+
+| Reach | How |
+|---|---|
+| Screen | Pending: **Splitting** row with the split badge · Queue / Active: one expandable row (rolled-up status), expanded = parts with slot, branch and a live badge · Failed: the gate reason · Gate & rules: `require-split-id` switch |
+| REST | `GET split/<build>`, `GET run/active`, `POST split/<build>/resplit`, `POST run/<build>/cancel {confirm: true}`, `GET/PUT split-gate`, `POST pipeline/split` |
+| MCP | `pipeline-split-show`, `pipeline-run-status`, `pipeline-split`, `pipeline-resplit`, `pipeline-cancel`, `pipeline-split-gate`, `pipeline-split-gate-set` |
+| CLI | `pipeline.mjs split <id> \| run \| resplit <id> \| cancel <id> --confirm \| split-gate [on\|off]` |
+| Voice / actions | `voice.json` → `build-orchestrator.run-status`, `.split-show:<build>`, `.split:<build>`, `.resplit:<build>`, `.cancel-run:<build>\|confirm`, `.split-gate[:on\|off]` |
+| Deep link | `view:builds/tab:pending`, `row:<build>` (open expands it), `row:<build>/part:<pN>` (console_show / console_open) |
+
 ## Tests
 
 `node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs` (pure rules and the CLI end to end on a scratch
 store with a fake launcher), `node …/test-watchdog.mjs` (the watchdog on a temp store, fake probe), `bash
 …/test-watchdog-e2e.sh` (a fake claude started through the dispatcher and claude-headless.sh, killed, recovered and
-relaunched; needs tmux), `node framework/spec/check-build-watchdog.mjs`, `node framework/spec/check-build-pipeline.mjs`, `node framework/spec/check-builds-store.mjs`.
+relaunched; needs tmux), `node framework/spec/check-build-watchdog.mjs`, `node framework/spec/check-build-pipeline.mjs`, `node framework/spec/check-builds-store.mjs`. Split runs: `node …/test/pipeline-split.test.mjs`, `node …/test/combine.test.mjs`, `node framework/spec/check-build-split.mjs`.
