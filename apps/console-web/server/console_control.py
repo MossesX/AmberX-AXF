@@ -659,3 +659,99 @@ def toolbar_button_address(ref: str, button: str) -> str:
     if not b:
         raise ControlError("invalid", "press needs the button id (see the toolbar's state)", field="button")
     return f"{toolbar_address(ref)}/button:{b}"
+
+
+# ---------------------------------------------------------------- deep links (twin of src/control/deepLink-core.mjs)
+
+LINK_KINDS = ("view", "tab", "subtab", "setting", "button", "function", "plugin", "grid", "row", "step", "panel", "scroll", "toolbar")
+LINK_PARAMS = ("axf-target", "axf-open")
+_SEGMENT_RE = re.compile(r"^[a-z][a-z-]*:[^/]*$")
+_ACTION_RE = re.compile(r"^[a-z0-9][\w-]*(\.[\w-]+)+(:.*)?$", re.I)
+
+
+def _address_like(s: str) -> bool:
+    first = s.split("/")[0]
+    at = first.find(":")
+    return at > 0 and bool(re.match(r"^[a-z][a-z-]*$", first[:at]))
+
+
+def parse_link(target: str) -> dict[str, Any] | None:
+    """A URL, `#/<view>[/<sub>…]`, `?axf-target=` / `?axf-open=` or a bare address → the link (same rules as the page)."""
+    from urllib.parse import parse_qs, unquote, urlsplit
+    t = str(target or "").strip()[:500]
+    if not t:
+        return None
+    if not re.match(r"^(https?:)?//|^[#?/]", t):
+        return {"address": t, "view": t[5:].split("/")[0] if t.startswith("view:") else None, "source": "address", "raw": t} if _address_like(t) else (
+            {"action": t, "source": "action", "raw": t} if _ACTION_RE.match(t) else {"error": f'"{t}" is not a console address or link', "raw": t})
+    u = urlsplit(t)
+    q = parse_qs(u.query, keep_blank_values=True)
+    for param in LINK_PARAMS:
+        if param not in q:
+            continue
+        raw = unquote(q[param][0]).strip()[:500]
+        if not raw:
+            return None
+        if _address_like(raw):
+            return {"address": raw, "view": raw[5:].split("/")[0] if raw.startswith("view:") else None, "source": "target" if param == "axf-target" else "open", "raw": raw}
+        if param == "axf-open" and _ACTION_RE.match(raw):
+            return {"action": raw, "source": "open", "raw": raw}
+        return {"error": f'"{raw}" is not a console address (like view:plan-studio-2 or view:settings/tab:settings.tabs=plugins)', "raw": raw}
+    frag = u.fragment
+    if not frag.startswith("/"):
+        return None
+    parts = [unquote(p) for p in frag.strip("/").split("/") if p]
+    if not parts:
+        return None
+    view = parts.pop(0)
+    if not re.match(r"^[a-z0-9][\w.-]*$", view, re.I):
+        return {"error": f'"#{frag}" does not name a screen', "raw": "#" + frag}
+    segs, sub = [f"view:{view}"], None
+    for i, p in enumerate(parts):
+        if _SEGMENT_RE.match(p):
+            segs.append(p)
+        elif view == "settings":
+            segs.append(f"tab:settings.tabs={p}" if i == 0 else f"subtab:settings.subtabs={p}")
+        elif sub is None:
+            sub = p
+    out: dict[str, Any] = {"address": "/".join(segs), "view": view, "source": "hash", "raw": "#" + frag}
+    if sub is not None:
+        out["sub"] = sub
+    return out
+
+
+def resolve_link(target: str) -> dict[str, Any]:
+    """What a link (or console_open / `axf console open` target) opens, from the inventory: the screen, the address or the
+    console action, and the link to give someone. Never opens anything (GET /api/console-control/resolve)."""
+    link = parse_link(target)
+    if link is None:
+        raise ControlError("invalid", f'"{target}" names nothing to open', field="target")
+    if link.get("error"):
+        raise ControlError("invalid", link["error"], field="target")
+    inv = inventory()
+    views = {v["id"]: v for v in inv.get("views", [])}
+    actions = {f.get("id") for f in inv.get("functions", []) or []}
+    out: dict[str, Any] = {"source": link["source"], "input": str(target)}
+    view = link.get("view")
+    if link.get("action"):
+        out.update(action=link["action"], known=link["action"].split(":")[0] in actions)
+    else:
+        address = link["address"]
+        segs = address.split("/")
+        foreign = next((s for s in segs[1:] if s.split(":", 1)[0] not in LINK_KINDS), None)
+        own = f"{view}.open" if view else ""
+        if foreign or link.get("sub") is not None:
+            ident = foreign.split(":", 1)[1] if foreign else link["sub"]
+            if own and own in actions:
+                out.update(action=f"{own}:{ident}")
+            elif foreign:
+                raise ControlError("not_found", f'"{view}" cannot open "{foreign}"', field="target")
+        out["address"] = address
+    if view:
+        if view not in views:
+            raise ControlError("not_found", f'no screen "{view}" in the console', field="target")
+        out.update(view=view, label=views[view].get("label") or view)
+    shown = out.get("address") or out.get("action")
+    out["link"] = f"?axf-target={shown}" if out.get("address") else f"?axf-open={shown}"
+    address = out.pop("address", None)
+    return {**ok("resolve", shown, **out), **({"opens": address} if address else {})}

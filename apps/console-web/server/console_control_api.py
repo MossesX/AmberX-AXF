@@ -15,6 +15,8 @@ Server-side settings, plugin toggles, and search / targets / state of the static
 """
 from __future__ import annotations
 
+import re
+
 import json
 import os
 import threading
@@ -322,6 +324,18 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     """A spoken phrase → its command (console_control.voice_intent), words resolved by the same search, then run with the
     same guards. The answer carries `heard`, `intent`, `command` and `say` (the line to speak back)."""
     g = grants if grants is not None else {"*"}
+    # "open <link>" ("open #/plan-studio-2", "open view:plan-studio-2/plan:<id>", a console URL): the deep-link resolver
+    if m := re.match(r"^\s*(?:open|go to|show(?: me)?)\s+(?:the )?(?:link\s+)?((?:https?://|[#?/])\S+|[a-z][a-z-]*:\S+)\s*$", text, re.I):
+        try:
+            res = cc.resolve_link(m.group(1))
+        except cc.ControlError:
+            res = None
+        if res:
+            cmd = {"$axf": cc.FRAME, "verb": "open", "address": m.group(1)}
+            ans = guarded(cmd, by, audience, g, to)
+            label = res.get("label") or res.get("address") or m.group(1)
+            return {**ans, "heard": text, "intent": {"verb": "open", "link": m.group(1)}, "command": {"verb": "open", "address": m.group(1)},
+                    "say": f"Opening {label}." if ans.get("ok") else f"I couldn't open {label}."}
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
@@ -406,6 +420,22 @@ def router_for(auth: Any) -> APIRouter:
         if not text:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
         return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
+
+    @r.get("/resolve")
+    async def resolve_route(target: str = "") -> JSONResponse:
+        """What a link opens without opening it: target = a URL, #/<view>[/<sub>], ?axf-target=<address>, ?axf-open=… or an
+        address → {view, label, opens (address), action (when a console action stands for it), link}."""
+        try:
+            return answer(await run_in_threadpool(cc.resolve_link, target))
+        except cc.ControlError as e:
+            return fail(e)
+
+    @r.post("/open")
+    async def open_route(request: Request) -> JSONResponse:
+        """{target, to?}: open a link or address in the open console (the same as following the link)."""
+        b = await _body(request)
+        target = str(b.get("target") or b.get("address") or "").strip()
+        return await from_body(request, {**{k: v for k, v in b.items() if k != "target"}, "verb": "open", "address": target})
 
     @r.get("/toolbars")
     async def toolbars_list(request: Request, view: str = "") -> JSONResponse:

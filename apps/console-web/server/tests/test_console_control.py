@@ -315,6 +315,32 @@ def test_mcp_plugin_settings() -> None:
     assert fake.sent[-1]["address"] == screen["settingsTab"]
 
 
+def test_deep_links_resolve_and_open() -> None:
+    """#/<view>, ?axf-target=, ?axf-open= and plugin sub-targets: resolve says what a link opens; open sends it as-is."""
+    reset()
+    view = next(v["id"] for v in cc.inventory()["views"] if v["id"] != "settings")
+    r = client.get(f"{U}/resolve", params={"target": f"#/{view}"})
+    assert r.status_code == 200 and r.json()["opens"] == f"view:{view}" and r.json()["view"] == view, r.json()
+    assert r.json()["link"] == f"?axf-target=view:{view}"
+    r = client.get(f"{U}/resolve", params={"target": "https://console.example/#/settings/plugins"})
+    assert r.json()["opens"] == "view:settings/tab:settings.tabs=plugins"
+    r = client.get(f"{U}/resolve", params={"target": "?axf-target=view:settings/tab:settings.tabs=plugins"})
+    assert r.json()["opens"] == "view:settings/tab:settings.tabs=plugins"
+    if any(v["id"] == "plan-studio-2" for v in cc.inventory()["views"]):
+        r = client.get(f"{U}/resolve", params={"target": "#/plan-studio-2/plan:launch-x"})
+        assert r.json()["action"] == "plan-studio-2.open:launch-x" and r.json()["opens"] == "view:plan-studio-2/plan:launch-x", r.json()
+    r = client.get(f"{U}/resolve", params={"target": "#/no-such-screen-here"})
+    assert r.status_code == 404 and r.json()["code"] == "not_found"
+    r = client.get(f"{U}/resolve", params={"target": "?axf-target=Not An Address"})
+    assert r.status_code == 400
+    # open: the link goes to the console unchanged (its resolver runs it there), the same from REST and voice
+    r = client.post(f"{U}/open", json={"target": f"#/{view}"})
+    assert r.status_code == 200 and fake.sent[-1]["verb"] == "open" and fake.sent[-1]["address"] == f"#/{view}", fake.sent[-1]
+    r = client.post(f"{U}/voice", json={"text": f"open #/{view}"})
+    assert r.json()["ok"] and fake.sent[-1]["address"] == f"#/{view}" and r.json()["say"].startswith("Opening")
+    assert mcp_server.LINK_RE.match(f"#/{view}") and mcp_server.LINK_RE.match("https://console.example/?axf-target=view:x") and not mcp_server.LINK_RE.match("plan studio")
+
+
 if __name__ == "__main__":
     n = 0
     for name, fn in list(globals().items()):
