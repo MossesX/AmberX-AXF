@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8985,
- "updatedAt": "2026-11-18T13:47:58.829Z",
+ "rev": 8986,
+ "updatedAt": "2026-11-18T13:49:50.716Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319486,7 +319486,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:32:10.647Z",
-     "updatedAt": "2026-11-18T13:47:13.536Z"
+     "updatedAt": "2026-11-18T13:48:48.313Z"
     },
     {
      "id": "s5",
@@ -320858,7 +320858,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:52:45.120Z",
-   "updatedAt": "2026-11-18T12:52:45.121Z",
+   "updatedAt": "2026-11-18T13:48:23.424Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -320898,12 +320898,12 @@
      "id": "s1",
      "uid": "st-mwm5liml26mj83",
      "title": "",
-     "text": "Detect out-of-credits responses per account and record the account state (dead, when, which build/step) in the builds store",
+     "text": "Orchestrator already splits jobs one-to-one across every subscription that has credits. When a subscription hits out-of-credits: deactivate it as a build target so the rotation just skips it, and set its status to \"waiting for credits\" everywhere it shows (banner, Builds page, orchestrator, axHub). Reactivate when credits come back. Reuse the existing rotation; no new allocator.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -320912,9 +320912,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:52:45.122Z",
-     "updatedAt": "2026-11-18T13:25:00.229Z"
+     "updatedAt": "2026-11-18T13:48:26.923Z"
     },
     {
      "id": "s2",
@@ -320969,7 +320969,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
