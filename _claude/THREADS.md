@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:51 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · orchestrator
-- 2026-11-17 23:51 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · foreign-write
-- 2026-11-17 23:51 UTC · `molly-console-commands` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `profile-filter-tables` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done, note (all) · foreign-write
 - 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` s28 done (all) · foreign-write
 - 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done (all) · foreign-write
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` PR #829, note (all) · reconciler
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

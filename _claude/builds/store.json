@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8641,
- "updatedAt": "2026-11-18T01:02:41.984Z",
+ "rev": 8642,
+ "updatedAt": "2026-11-18T01:03:08.317Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288243,10 +288243,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/flagship-professional-skin-covering-2",
-   "pr": "",
+   "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:01:47.529Z",
+   "updatedAt": "2026-11-18T01:02:17.973Z",
    "builtAt": "",
    "notes": [
     {
@@ -288396,6 +288396,18 @@
     {
      "text": "Reconciler: PR #829; PR #829 names s5, s26, s10, s11, s12, s13, s14, s15, s16, s17 done",
      "at": "2026-11-18T01:01:34.775Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 2 of 3).",
+     "at": "2026-11-18T01:01:46.017Z"
+    },
+    {
+     "text": "Headless run axf-flagship-professional-skin-covering-2--earl: brief only · start 19.7K tokens ($0.15) · cost $42.80 · 571 turns · 6 tools, MCP none",
+     "at": "2026-11-18T01:02:12.188Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T01:02:17.973Z"
     }
    ],
    "approvals": [
@@ -288425,7 +288437,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "axf-flagship-professional-skin-covering-2--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "phase": "Phase 1",
@@ -288433,11 +288445,11 @@
     "runs": 2,
     "crashes": 2,
     "lastRun": {
-     "at": "2026-11-18T00:55:09.790Z",
-     "exit": 129,
+     "at": "2026-11-18T01:02:10.730Z",
+     "exit": 0,
      "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 2,
+     "reason": "phase-done",
+     "stepsLeft": 1,
      "account": "hulu0241",
      "session": "axf-flagship-professional-skin-covering-2--earl",
      "phase": "Phase 1"
@@ -288450,7 +288462,7 @@
      "note": "Split by Claude into 28 steps (9 Fable)."
     },
     "splitRequested": "",
-    "note": "session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "2026-11-17T21:58:22.524Z",
     "planned": {
@@ -288987,10 +288999,10 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Reset by the watchdog (exit-failed, attempt 1) 2026-11-18T00:55:12.799Z",
-     "rev": 9,
+     "note": "Reset by the watchdog (exit-failed, attempt 2) 2026-11-18T01:01:46.017Z",
+     "rev": 10,
      "createdAt": "2026-11-17T21:34:10.438Z",
-     "updatedAt": "2026-11-18T00:55:12.802Z"
+     "updatedAt": "2026-11-18T01:02:04.073Z"
     },
     {
      "id": "s21",
@@ -289205,7 +289217,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
