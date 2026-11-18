@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T06:28:55.146Z",
+ "updatedAt": "2026-11-18T06:30:19.241Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -168156,7 +168156,7 @@
    "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
    "category": "",
    "detail": "Audit every console plugin. Anything that must keep running when the console is down, or touches Docker, disk or git, moves out of the axf-console container onto the VPS host as systemd services that start on boot and auto-restart, code at /opt/axf, run under a dedicated limited user with a sudo whitelist of only the commands needed (no general root). Candidates: Maintenance (coordinate with maintenance-plugin-clear-docker-cache), Systems check and its Auto fixes, agent-swarm job runner (CI-fix jobs), builds-live publisher, shipped-features watcher, axHub sync. Orchestrator/lander/watchdog are already moving in server-auto-lander-fixes-lands; reuse that, don't duplicate. App-only plugins (settings, skins, etc.) stay in the container. Console UI calls the host services over a local socket/API and shows a clear 'host service down' state. Include install script, health checks in Systems check, migration with rollback, and reachable via UI, REST, MCP, CLI, voice. Write the audit list into the report first.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -168164,8 +168164,8 @@
    "pr": "#828",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-18T01:22:17.133Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T06:29:08.928Z",
+   "builtAt": "2026-11-18T06:29:08.928Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -168888,8 +168888,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T06:29:08.928Z",
      "note": "Reset by the watchdog (exit-killed, attempt 1) 2026-11-18T01:18:22.145Z",
      "uid": "st-mwko4z4v0qndub",
      "createdAt": "2026-11-17T12:28:31.327Z"
