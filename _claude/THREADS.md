@@ -839,7 +839,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 05:23 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-18 05:29 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 05:27 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
 - 2026-11-18 05:28 UTC · `approval-pass-covers-every-call` note (all) · watchdog
@@ -1239,6 +1238,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 13:43 UTC · `every-plugin-gets-own-default-toolbar` branch claude/every-plugin-gets-own-default-toolbar, note (all) · reconciler
 - 2026-11-18 13:44 UTC · `every-plugin-gets-own-default-toolbar` s3 done (all) · orchestrator
 - 2026-11-18 13:47 UTC · `every-plugin-gets-own-default-toolbar` s4 done (all) · orchestrator
+- 2026-11-18 13:46 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
 
 ## Token passes (log)
 
