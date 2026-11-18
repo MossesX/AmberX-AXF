@@ -877,6 +877,37 @@ export function bounceClash(id, { files = [], head = '', why = '', now = Date.no
 }
 
 /**
+ * The clash a build's branch has with main right now, worked out by git itself (merge-tree, nothing checked out):
+ * { files, head, clash } (clash false = it merges clean). Fetches main and the branch first.
+ */
+export function clashOf(b, { cwd = REPO_ROOT } = {}) {
+  const branch = str(b.branch, 200) || `claude/${b.id}`;
+  spawnSync('git', ['fetch', '-q', 'origin', 'main', branch], { cwd, encoding: 'utf8', timeout: 120e3 });
+  const head = (spawnSync('git', ['rev-parse', `origin/${branch}`], { cwd, encoding: 'utf8' }).stdout || '').trim();
+  if (!head) throw Object.assign(new Error(`${b.id}: no branch origin/${branch}`), { code: 2 });
+  const r = spawnSync('git', ['merge-tree', '--write-tree', '--name-only', '--no-messages', 'origin/main', `origin/${branch}`], { cwd, encoding: 'utf8', timeout: 120e3 });
+  if (r.status !== 0 && r.status !== 1) throw new Error(`git merge-tree failed: ${str(r.stderr, 300)}`);
+  const files = r.status === 1 ? r.stdout.split('\n').slice(1).map((x) => x.trim()).filter(Boolean) : [];
+  return { files, head, clash: r.status === 1 };
+}
+
+/** Clear a build's launch-retry record (a given-up one too) and put it back in the Queue now: the hand's Retry. */
+export function requeueLaunch(id, { by = 'cli' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  if (SETTLED.includes(b.status) || ['running', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to requeue`), { code: 2 });
+  setPipeline(b.id, { launchRetry: null, session: '', slot: '', queuedAt: b.pipeline?.queuedAt || nowIso() }, { status: 'queued', note: `Requeued by ${by}: launch retries reset${b.pipeline?.launchRetry?.lastError ? ` (last launch error: ${b.pipeline.launchRetry.lastError})` : ''}.`, by, action: 'pipeline:requeue-launch' });
+  return { id: b.id, status: 'queued' };
+}
+
+/** What the dispatcher knows about a build's launches, crashes and bounces (readable through REST / MCP / CLI / voice). */
+export function launchState(b) {
+  const p = b.pipeline ?? {};
+  return { id: b.id, status: b.status, runs: p.runs ?? 0, crashes: p.crashes ?? 0, lastRun: p.lastRun ?? null, launchRetry: p.launchRetry ?? null,
+    lastLaunchError: p.launchRetry?.lastError ?? '', retries: p.launchRetry?.count ?? 0, retryAt: p.launchRetry?.retryAt ?? '', gaveUp: p.launchRetry?.gaveUp === true,
+    bounce: p.bounce ?? null, bounceReason: p.bounce?.why ?? '' };
+}
+
+/**
  * Classify every build the server still owes work on (pipeline-core classifyFailure): a crash, red CI, a clash, a push
  * that failed, a stalled run, a build that fell back to Pending. Each one found is written on the build in one journalled
  * store write (failure, status fixing, the open attempt closed, a note) and logged. → [{ id, failure }]
@@ -1590,6 +1621,30 @@ async function main(argv) {
     const r = retryBuild(rest[0], { strategy: st, by, why: flag('why') });
     return out({ ok: true, ...r }, `${r.id}: ${r.status}${r.strategy ? ` (${r.strategy})` : ''}${r.launch ? ` · ${r.launch.action}${r.launch.account ? ` on ${r.launch.account}` : ''}${r.launch.why ? `: ${r.launch.why}` : ''}` : ' · the next tick relaunches it'}`);
   }
+  // launch-retry / land-clash bounce / step-dedupe: the same calls as REST, MCP and voice (pipeline-requeue, pipeline-dedupe)
+  if (cmd === 'launch-state') {
+    const b = storeCore.findBuild(loadStore(), rest[0] || ''); if (!b) throw Object.assign(new Error(`launch-state <build>: no build "${rest[0] || ''}"`), { code: 2 });
+    const v = launchState(b);
+    return out({ ok: true, ...v }, `${v.id}: ${v.status} · run ${v.runs} · launch retries ${v.retries}${v.gaveUp ? ' (gave up)' : ''}${v.lastLaunchError ? ` · last launch error: ${v.lastLaunchError}` : ''}${v.retryAt ? ` · next try ${v.retryAt}` : ''}${v.bounce ? ` · bounced ${v.bounce.count}× (${v.bounce.step}): ${v.bounceReason}` : ''}`);
+  }
+  if (cmd === 'requeue-launch') {
+    if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('requeue-launch <build>'), { code: 2 });
+    const r = requeueLaunch(rest[0], { by }); return out({ ok: true, ...r }, `${r.id}: back in the Queue, launch retries reset`);
+  }
+  if (cmd === 'clash-bounce') {
+    if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('clash-bounce <build> [--files a,b] [--head sha]'), { code: 2 });
+    const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });
+    const given = flag('files') ? flag('files').split(',').map((x) => x.trim()).filter(Boolean) : null;
+    const c = given ? { files: given, head: flag('head') || '', clash: true } : clashOf(b);
+    if (!c.clash) return out({ ok: true, id: b.id, bounced: null, clash: false }, `${b.id}: merges clean with main, nothing to bounce`);
+    const r = bounceClash(b.id, { files: c.files, head: flag('head') || c.head, why: flag('why') || `merging main in conflicts in ${c.files.join(', ')}`, by });
+    return out({ ok: true, id: b.id, bounced: r, files: c.files, head: c.head }, r ? `${b.id}: ${r.step} added (${str(r.text, 140)}); back in the Queue` : `${b.id}: not bounced (steps still open, or this clash already has its step)`);
+  }
+  if (cmd === 'dedupe-steps') {
+    const S = await import('../../../../framework/cli/builds-store.mjs');
+    const r = S.dedupeStepsNow({ apply: has('apply'), ids: rest.filter((a) => !a.startsWith('--')), by });
+    return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s), ${r.total.before} → ${r.total.after} steps`);
+  }
   if (cmd === 'retry-all') { const done = escalated().map((x) => retryBuild(x.id, { by, why: flag('why') || 'Retry from the systems check' })); return out({ ok: true, retried: done }, done.map((x) => `${x.id}: ${x.status}`).join('\n') || 'nothing escalated'); }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
@@ -1648,7 +1703,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json] | launch-state <id> | requeue-launch <id> | clash-bounce <id> [--files a,b] [--head sha] | dedupe-steps [--apply] [id…]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
