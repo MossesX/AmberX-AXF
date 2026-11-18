@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T06:46:05.852Z",
+ "updatedAt": "2026-11-18T06:48:42.355Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -191207,7 +191207,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -191215,7 +191215,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T06:43:48.640Z",
+   "updatedAt": "2026-11-18T06:44:33.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -191293,6 +191293,10 @@
     {
      "text": "Claude account: hulu0241 (axf-approval-pass-covers-every-call--gina, shared account login)",
      "at": "2026-11-18T05:53:08.912Z"
+    },
+    {
+     "text": "Session stopped on its own with 8 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T06:44:33.029Z"
     },
     {
      "text": "Session stopped on its own with 8 steps left: back in Pending for Brett.",
