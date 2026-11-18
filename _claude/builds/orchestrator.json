@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T02:21:31.934Z",
+ "updatedAt": "2026-11-18T02:34:50.735Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186335,14 +186335,14 @@
    "title": "Move everything from axHub web into the console",
    "category": "",
    "detail": "Bring every axHub web page and option into the Dev Console as console screens/plugins: approvals (incl. log, passes, veto/countdown), users, account, apps/connectors and services, handoff, auth admin, and their settings. Same API reach (REST, MCP, CLI, voice). The console becomes the only UI; axHub stays as the backend/MCP hub only. Then retire the axHub web UI. Works together with Phone Connect (replaces the AmberX phone app) and remove-amberx-app-code-once-phone. Token-driven, console only. Plan in Plan Studio first.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "move-everything-axhub-web-console",
    "branch": "claude/move-everything-axhub-web-console",
    "pr": "",
    "createdAt": "2026-11-17T22:28:32.914Z",
-   "updatedAt": "2026-11-18T01:45:59.033Z",
+   "updatedAt": "2026-11-18T02:34:17.013Z",
    "builtAt": "",
    "notes": [
     {
@@ -186368,6 +186368,10 @@
     {
      "text": "Step list had the 31-step split appended five times (155 steps); collapsed back to the 31 real steps before starting s1.",
      "at": "2026-11-17T22:42:14.977Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-18T02:34:17.013Z"
     }
    ],
    "approvals": [],
@@ -187405,14 +187409,14 @@
    "title": "One true source for every setting",
    "category": "",
    "detail": "Rule from Brett: every setting has exactly one true source. Audit the console, plugins, orchestrator, axHub and framework for any setting stored or editable in more than one place (example found: Claude account on/off lived in both claude-accounts workers.json and the orchestrator's pipeline accounts.json, so Moses X looked on but never got builds). For each duplicate: pick the one source, migrate values, make every other place read from it (no copies), remove duplicate controls/APIs. Add a CI check that fails when a setting key is defined or written in two stores. Write the rule into the shared build rules so every future build follows it. Report listing each duplicate found and fixed.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-true-source-for-every-setting",
    "branch": "claude/one-true-source-for-every-setting",
    "pr": "",
    "createdAt": "2026-11-17T22:38:13.587Z",
-   "updatedAt": "2026-11-18T02:02:46.322Z",
+   "updatedAt": "2026-11-18T02:34:17.013Z",
    "builtAt": "",
    "notes": [
     {
@@ -187426,6 +187430,10 @@
     {
      "text": "Repeated steps collapsed: 720 → 20 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:31.040Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-18T02:34:17.013Z"
     }
    ],
    "approvals": [],
