@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9040,
- "updatedAt": "2026-11-18T14:57:24.518Z",
+ "rev": 9041,
+ "updatedAt": "2026-11-18T14:59:38.231Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320278,7 +320278,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T14:56:25.819Z",
+   "updatedAt": "2026-11-18T14:59:23.218Z",
    "builtAt": "",
    "notes": [
     {
@@ -320324,6 +320324,10 @@
     {
      "text": "Reconciler: branch claude/one-build-time-always-split-to-fill (no PR yet)",
      "at": "2026-11-18T14:27:54.924Z"
+    },
+    {
+     "text": "Fable phase (s1–s5) done on claude/one-build-time-always-split-to-fill. For the Opus phase: framework/spec/check-build-split.mjs already exists (63 checks: ids, planner, validator, part/run machines, roll-up, combine readiness, main lock) with fixtures/build-split.json and is wired into .github/workflows/android.yml, so s6 extends it and s24's CI line is in place. The dispatcher already launches one build a tick and locks main (pipeline.mjs syncMainLock, CLI 'pipeline.mjs main-lock [release --force]'); s8 builds the part launcher on top of planParts(). API addresses for phase 2 are fixed in framework/spec/BUILD-SPLIT.md → API.",
+     "at": "2026-11-18T14:59:23.218Z"
     }
    ],
    "approvals": [],
@@ -321059,7 +321063,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
