@@ -26,7 +26,8 @@ let n = 0; const t = async (name, fn) => { try { await fn(); n += 1; } catch (e)
 const step = (id, done) => ({ id, uid: `u-${id}`, text: id, model: 'Opus', done, doneAt: done ? '2026-11-16T00:00:00Z' : '' });
 const b = (id, status, pr, steps) => ({ id, title: id, status, pr, branch: `claude/${id}`, steps, notes: [] });
 const store = core.normalizeStore({ ...core.emptyStore(), builds: [
-  b('q-merged', 'queued', 'PR 101', [step('s1', true)]),           // queued, PR merged → complete
+  b('q-merged', 'queued', 'PR 101', [step('s1', true)]),           // queued, PR merged → landing with the merge evidence
+  b('q-nosha', 'queued', 'PR 107', [step('s1', true)]),            // PR merged, merge commit unknown → stays, one note
   b('q-open', 'queued', 'PR 102', [step('s1', false)]),            // PR still open → keeps
   b('r-merged', 'running', 'PR 103', [step('s1', true)]),          // running: never touched
   b('p-closed', 'pending', 'PR 104', [step('s1', false)]),         // PR closed → archived
@@ -46,9 +47,9 @@ const items = [
 ];
 const closeCalls = [];
 const closeLanded = (ids, o) => { const changed = []; for (const it of items) if (ids.includes(it.id) && !it.landed) { it.landed = { ...o, at: 'now' }; changed.push(it.id); } closeCalls.push(...changed); return { changed, skipped: [] }; };
-const pr = (number, state) => ({ number, state, mergedAt: state === 'merged' ? '2026-11-16T10:00:00Z' : '', mergeCommit: state === 'merged' ? `m${number}` : '', url: '', branch: '' });
+const pr = (number, state, sha = `m${number}`) => ({ number, state, mergedAt: state === 'merged' ? '2026-11-16T10:00:00Z' : '', mergeCommit: state === 'merged' ? sha : '', url: '', branch: '' });
 const factsFor = () => ({
-  prs: { 101: pr(101, 'merged'), 102: pr(102, 'open'), 103: pr(103, 'merged'), 104: pr(104, 'closed'), 105: pr(105, 'merged'), 106: pr(106, 'open') },
+  prs: { 101: pr(101, 'merged'), 102: pr(102, 'open'), 103: pr(103, 'merged'), 104: pr(104, 'closed'), 105: pr(105, 'merged'), 106: pr(106, 'open'), 107: pr(107, 'merged', '') },
   main: null, branches: null, builds: buildFacts(JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')).builds, new Set()), github: { requests: 0, notModified: 0 }, errors: [],
 });
 const opts = () => ({ facts: factsFor(), read: { 'merge-queue': { state: queue, control }, 'ui-review': { items } }, applyCtx: { control: ctl, closeLanded }, post: (m, p, a) => { posts.push(a); return { ok: true }; } });  // axf-not-plugin:ui-review (the stale-row@1 row kind)
@@ -57,7 +58,7 @@ const posts = [];
 // ---------------------------------------------------------------- table readers
 await t('builds reader: pending / queued / building rows, finished and deleted builds are none', async () => {
   const r = await builds.read();
-  assert.deepEqual(r.rows.map((x) => `${x.kind}:${x.id}`).sort(), ['building:r-merged', 'pending:p-closed', 'queued:q-merged', 'queued:q-open']);
+  assert.deepEqual(r.rows.map((x) => `${x.kind}:${x.id}`).sort(), ['building:r-merged', 'pending:p-closed', 'queued:q-merged', 'queued:q-nosha', 'queued:q-open']);
   assert.equal(r.rows.find((x) => x.id === 'q-merged').pr, 101);
   assert.equal(builds.rowOf({ id: 'x', status: 'queued', deleted: true }), null);
   assert.equal(builds.rowOf({ id: 'x', status: 'blocked' }).kind, 'building');
@@ -90,19 +91,38 @@ await t('dry run: the plan, and no writes anywhere', async () => {
 
 // ---------------------------------------------------------------- apply
 let first;
-await t('run: complete / archive builds under the store lock, remove queue entries, close review items', async () => {
+await t('run: record merge evidence / archive builds under the store lock, remove queue entries, close review items', async () => {
   first = await W.run({ ...opts(), by: 'test' });
   assert.equal(first.ok, true, first.error);
   const s = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'));
   const get = (id) => s.builds.find((x) => x.id === id);
-  assert.equal(get('q-merged').status, 'complete'); assert.equal(get('q-merged').mergedAt, '2026-11-16T10:00:00Z');
-  assert.ok(get('q-merged').notes.some((x) => /^Watchdog: Queued build q-merged → Complete/.test(x.text)), 'build note');
+  // done-means-merged@1: merge evidence recorded; CI on the merge commit is not known to the watchdog → landing, never complete
+  assert.equal(get('q-merged').status, 'landing'); assert.equal(get('q-merged').mergedAt, '2026-11-16T10:00:00Z');
+  assert.equal(get('q-merged').landed.sha, 'm101'); assert.equal(get('q-merged').landed.pr, 101); assert.equal(get('q-merged').landed.mergedAt, '2026-11-16T10:00:00Z');
+  assert.ok(get('q-merged').notes.some((x) => /^Watchdog: Queued build q-merged .*\(queued → landing\)/.test(x.text)), 'build note');
+  assert.ok(!get('q-merged').notes.some((x) => /^Refused/.test(x.text)), 'no refused transition');
+  // merge commit unknown: no transition attempted, one note says why
+  assert.equal(get('q-nosha').status, 'queued'); assert.equal(get('q-nosha').mergedAt ?? '', ''); assert.equal(get('q-nosha').landed ?? null, null);
+  assert.equal(get('q-nosha').notes.filter((x) => x.text === builds.NO_SHA_NOTE).length, 1);
+  assert.ok(!get('q-nosha').notes.some((x) => /^Refused/.test(x.text)), 'no refused transition');
+  assert.equal(first.changes.find((c) => c.id === 'q-nosha').applied, false);
   assert.equal(get('p-closed').status, 'archived');
   assert.equal(get('q-open').status, 'queued');
   assert.deepEqual(controlCalls, [105]);
   assert.deepEqual(closeCalls, ['r1']);
   assert.equal(items.find((x) => x.id === 'r1').landed.how, 'landed');
   assert.ok(s.rev > store.rev, 'journalled store write');
+});
+await t('CI green on the merge commit → landed with the evidence; complete only through verify', async () => {
+  const st = { builds: [b('x', 'queued', 'PR 9', [step('s1', true)])] };
+  const ws = (fn) => fn(st);
+  const v = { table: 'builds', row: { kind: 'queued', id: 'x', pr: 9, status: 'queued' }, action: 'complete', reason: 'pr-merged', mergedAt: '2026-11-16T10:00:00Z', mergeCommit: 'abc', ci: 'success', line: 'x' };
+  const out = await builds.apply([v], { withStore: ws });
+  assert.equal(out[0].applied, true); assert.equal(st.builds[0].status, 'landed');
+  assert.equal(st.builds[0].landed.sha, 'abc'); assert.equal(st.builds[0].landed.ci, 'success');
+  const st2 = { builds: [b('y', 'queued', 'PR 9', [step('s1', false)])] };
+  const o2 = await builds.apply([{ ...v, row: { ...v.row, id: 'y' } }], { withStore: (fn) => fn(st2) });
+  assert.equal(st2.builds[0].status, 'queued', 'open steps keep the status'); assert.equal(st2.builds[0].landed.sha, 'abc'); assert.equal(o2[0].applied, true);
 });
 await t('running builds are never touched (even with a merged PR)', () => {
   const s = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'));
