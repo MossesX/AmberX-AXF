@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9120,
- "updatedAt": "2026-11-18T18:12:44.637Z",
+ "rev": 9121,
+ "updatedAt": "2026-11-18T18:13:24.229Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320426,7 +320426,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T18:11:52.306Z",
+   "updatedAt": "2026-11-18T18:12:03.610Z",
    "builtAt": "2026-11-18T18:10:34.719Z",
    "notes": [
     {
@@ -320540,6 +320540,10 @@
     {
      "text": "Session axf-one-build-time-always-split-to-fill--gina on hulu0241 ended (exit 0); the build was already complete.",
      "at": "2026-11-18T18:11:52.306Z"
+    },
+    {
+     "text": "Headless run axf-one-build-time-always-split-to-fill--gina: brief only · start 18.4K tokens ($0.17) · cost $23.40 · 298 turns · 6 tools, MCP none",
+     "at": "2026-11-18T18:12:03.610Z"
     }
    ],
    "approvals": [
@@ -321301,7 +321305,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {

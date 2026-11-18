@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `dispatcher-split-builds-evenly-across` added (13 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `move-everything-axhub-web-console` added (31 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `auto-lander-never-wait-missing-ui-review` added (17 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `one-true-source-for-every-setting` added (20 steps) (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 18:11 UTC · `one-build-time-always-split-to-fill` s27 done, → complete (all) · foreign-write
 - 2026-11-18 18:11 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
 - 2026-11-18 18:12 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-18 18:12 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
 
 ## Token passes (log)
 
