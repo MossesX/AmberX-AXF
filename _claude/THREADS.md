@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `build-grids-full-column-set-date-time` added (18 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `context-menu-containers-show-hide-list` added (22 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `fix-pop-up-windows-don-t-close-x-only` added (0 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `fix-column-alignment-every-grid-table` added (0 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:02 UTC · `move-server-side-console-parts-onto-vps` s19 done (all) · foreign-write
 - 2026-11-18 00:02 UTC · `fix-launcher-crash-duplicate-steps-brief` s12 done (all) · orchestrator
 - 2026-11-18 00:02 UTC · `fix-launcher-crash-duplicate-steps-brief` s12 done (all) · foreign-write
+- 2026-11-18 00:03 UTC · `fix-launcher-crash-duplicate-steps-brief` s13 done (all) · orchestrator
 
 ## Token passes (log)
 
