@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `grids-layout-control-voice-controlled` added (33 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `change-asset-only-assets-built-screen` added (20 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `rebuild-fresh-main-collapsible-sections` added (17 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `nothing-saved-browser-all-console` added (18 steps) (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:03 UTC · `fix-launcher-crash-duplicate-steps-brief` s12 done, s13 done (all) · foreign-write
 - 2026-11-18 00:03 UTC · `fix-launcher-crash-duplicate-steps-brief` s13 done (all) · foreign-write
 - 2026-11-18 00:04 UTC · `rebuild-fresh-main-phone-connect-small` → queued, note (all) · fix-launcher-crash-duplicate-steps-brief
+- 2026-11-18 00:04 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 
 ## Token passes (log)
 
