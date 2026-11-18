@@ -69,7 +69,8 @@ export function SwarmPage() {
     'agent-swarm.card': () => { setTab('cards'); return agent ? { agent: agent.id } : null; },
     'agent-swarm.budget': () => { setTab('cost'); return state ? { total: state.meter.total } : null; },
   });
-  if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
+  // the host-down note shows even when the page's own data cannot load, so the reason is on screen either way
+  if (!state) return <div className="fx-stack fx-stack--lg"><HostServiceGate service="agent-swarm" what="Agent jobs (Run, Hire, scheduled and CI-fix jobs) are launched by the host job runner: nothing new starts until it is back." /><div className="fx-empty">{error || 'Loading the agent swarm…'}</div></div>;
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">

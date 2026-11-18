@@ -238,7 +238,8 @@ export function ShippedFeaturesPage() {
   const exportAs = (kind: 'csv' | 'md') => { void api.download(`export?kind=${kind}&view=${encodeURIComponent(JSON.stringify(view))}`, `shipped-features.${kind}`).catch((e: Error) => rt.toast(e.message, 'danger')); };
 
   if (!ledger && !error) return <LoadingSkeleton rows={6} label="Loading shipped features" />;
-  if (!ledger) return <EmptyState icon="alert">{error}</EmptyState>;
+  // the host-down note shows even when the ledger cannot load, so the reason is on screen either way
+  if (!ledger) return <div className="fx-stack"><HostServiceGate service="shipped-features" what="The ledger stops taking in new builds, PRs and deploys until the host watcher is back; what is here can still be read." /><EmptyState icon="alert">{error}</EmptyState></div>;
 
   const sortCol = ({ name: 'name', status: 'status', app: 'app', type: 'type', planned: 'plannedAt', merged: 'mergedAt', live: 'liveAt', edited: 'lastEditAt', edits: 'editCount' } as Record<string, L.SortKey>);
   const colOf: Record<string, string> = Object.fromEntries(Object.entries(sortCol).map(([k, v]) => [v, k]));
