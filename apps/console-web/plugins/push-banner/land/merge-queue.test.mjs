@@ -25,6 +25,17 @@ await t('not ready: draft, removed, kicked at the same head, UI Review, PR check
   assert.equal(q.notReady({ ...pr, head: 'b' }, { kicked: { 5: { head: 'a' } } }), '', 'a fix rejoins by itself');
   assert.equal(q.notReady(pr, { kicked: { 5: { head: 'a' } }, added: [5] }), '', 'Add puts a kicked PR back');
   assert.match(q.notReady({ ...pr, ui: 'waiting' }), /UI Review/);
+  assert.match(q.notReady({ ...pr, ui: 'changes' }), /UI Review holds it \(changes\)/); assert.match(q.notReady({ ...pr, ui: 'rejected' }), /UI Review/);
+  // Nov 18 2026: a hold needs an item in the console; missing / unposted / unreadable goes ahead with the review flagged
+  assert.equal(q.notReady({ ...pr, ui: 'unknown' }), '', 'a failed lookup is never a hold'); assert.equal(q.notReady({ ...pr, ui: 'missing' }), ''); assert.equal(q.notReady({ ...pr, ui: 'unposted' }), '');
+  assert.equal(q.reviewFlagOf({ ui: 'missing' }), 'missing'); assert.equal(q.reviewFlagOf({ ui: 'unknown' }), 'missing'); assert.equal(q.reviewFlagOf({ ui: 'unposted' }), 'unposted'); assert.equal(q.reviewFlagOf({ ui: 'waiting' }), 'waiting'); assert.equal(q.reviewFlagOf({ ui: '' }), '');
+  const held1 = q.heldEntry({ number: 7, title: 't', why: 'its screenshots wait for Brett in UI Review', ui: 'waiting', ci: 'success' }, undefined, '2026-11-18T10:00:00Z');
+  assert.deepEqual([held1.state, held1.heldSince, held1.holdReason, held1.reviewFlag], ['held', '2026-11-18T10:00:00Z', 'its screenshots wait for Brett in UI Review', 'waiting'], 'a new hold starts now and says why');
+  const held2 = q.heldEntry({ number: 7, why: 'its PR checks are red', ci: 'failure' }, held1, '2026-11-18T11:00:00Z');
+  assert.equal(held2.heldSince, '2026-11-18T10:00:00Z', 'a PR that stays held keeps when its hold began'); assert.equal(held2.holdReason, 'its PR checks are red'); assert.equal(held2.reviewFlag, '');
+  const kicked = q.heldEntry({ number: 8, why: 'kicked out: broke CI' }, { pr: 8, state: 'waiting', since: '2026-11-18T09:00:00Z' }, '2026-11-18T11:00:00Z');
+  assert.equal(kicked.state, 'kicked'); assert.equal(kicked.heldSince, '2026-11-18T11:00:00Z', 'a PR that was merely waiting starts its hold now');
+  assert.deepEqual(q.flaggedLandings([{ pr: 1, reviewFlag: 'missing', at: 'x' }], [{ number: 2, build: 'b2', branch: 'claude/b2', ui: 'missing' }, { number: 3, ui: '' }], new Set([2, 3]), '2026-11-18T11:00:00Z').map((f) => [f.pr, f.reviewFlag]), [[1, 'missing'], [2, 'missing']], 'what merged with a flagged review is kept, nothing else');
   assert.equal(q.notReady({ ...pr, ui: 'waiting' }, {}, { waitUi: false }), '');
   assert.match(q.notReady({ ...pr, ci: 'failure' }), /red/);
   assert.match(q.notReady({ ...pr, ci: 'running' }), /running/);
@@ -122,7 +133,7 @@ const gh = async (method, path, body) => {
   if (method === 'DELETE') return {};
   throw new Error(`unexpected ${method} ${path}`);
 };
-const api = async () => ({ hold: '' });
+const api = async () => ({ $axf: 'ui-review@1', state: 'none', holds: false, items: [] }); // the live console: no UI Review item for any PR
 const queueRef = (x) => sh(origin, 'rev-parse', '-q', '--verify', `refs/heads/queue/pr-${x}`);
 
 await t('round 1: three PRs are stacked on queue branches, each on top of the ones ahead', async () => {

@@ -77,8 +77,9 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
       if (!m.mergeQueue) {
         // one at a time: the line is land.json's finished builds in landing order
         const items = (store.land().items || []).filter((x) => pr(x.pr));
-        const row = (x) => ({ pr: x.pr, title: x.title, build: x.id, branch: x.branch, head: x.head, url: x.url, why: x.reason?.text?.replace(`${x.id}: `, '') || '', since: x.since, state: x.state === 'blocked' ? 'held' : 'waiting' });
-        queue = { items: items.filter((x) => x.state !== 'blocked').map(row), waiting: items.filter((x) => x.state === 'blocked').map(row), merged: queue.merged || [] };
+        // lander-state@1 (Nov 18 2026): a held record says since when (heldSince) and why (holdReason), and carries the UI Review flag
+        const row = (x) => ({ pr: x.pr, title: x.title, build: x.id, branch: x.branch, head: x.head, url: x.url, why: x.reason?.text?.replace(`${x.id}: `, '') || '', since: x.since, state: x.state === 'blocked' ? 'held' : 'waiting', heldSince: x.state === 'blocked' ? x.heldSince || x.since : '', holdReason: x.state === 'blocked' ? x.holdReason || x.reason?.text?.replace(`${x.id}: `, '') || '' : '', reviewFlag: x.reviewFlag || '' });
+        queue = { items: items.filter((x) => x.state !== 'blocked').map(row), waiting: items.filter((x) => x.state === 'blocked').map(row), merged: queue.merged || [], flagged: queue.flagged || [] };
       }
       const core = { ...cfg, autoLander: { enabled, mode: m.mergeQueue ? 'merge-queue' : 'serial' }, ...(m.mergeQueue ? { queueMode: cfg.queueMode === 'batch' ? 'batch' : 'stack' } : {}) };
       const st = gate.landerStateFrom({ config: core, queue, control: store.queueControl(), runs: store.runs(), pause: g.pause || null, at: store.iso() });

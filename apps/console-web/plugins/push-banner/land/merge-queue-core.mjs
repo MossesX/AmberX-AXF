@@ -65,7 +65,8 @@ export function notReady(pr, ctl = {}, { waitUi = true, redJoins = false } = {})
   const kicked = ctl.kicked?.[n];
   if (kicked && kicked.head === pr.head && !(ctl.added || []).includes(n)) return `kicked out: ${str(kicked.why, 300)} Push a fix and it rejoins by itself.`;
   if (pr.landHeld) return `held by hand in auto-land (${str(String(pr.landHeld), 120)})`;
-  if (waitUi && pr.ui) return pr.ui === 'waiting' ? 'its screenshots wait for Brett in UI Review' : `UI Review holds it (${str(pr.ui, 40)})`;
+  // Nov 18 2026: only a review item that exists in the console holds; missing / unposted / unreadable goes ahead, flagged
+  if (waitUi && UI_HOLDS.includes(pr.ui)) return pr.ui === 'waiting' ? 'its screenshots wait for Brett in UI Review' : `UI Review holds it (${str(pr.ui, 40)})`;
   if (pr.conflicts?.length) return `it conflicts with main in code (${pr.conflicts.slice(0, 3).join(', ')})`;
   // batch mode: the batch's one full run is the gate, so red light checks (often red only because main was, Nov 10 2026)
   // don't keep a finished build out; it goes behind the green ones and a split finds it if it really breaks CI
@@ -77,6 +78,29 @@ export function notReady(pr, ctl = {}, { waitUi = true, redJoins = false } = {})
   return '';
 }
 
+
+/** The UI Review states that hold a PR (gate-rules@1 holdOn); unknown / missing / unposted land with the review flagged. */
+export const UI_HOLDS = Object.freeze(['waiting', 'changes', 'rejected']);
+export const UI_FLAGGED = Object.freeze(['unknown', 'missing', 'unposted']);
+/** The review flag a queue record carries ('' | missing | unposted | waiting). */
+export const reviewFlagOf = (pr) => (pr?.reviewFlag ? str(pr.reviewFlag, 20) : pr?.ui === 'unposted' ? 'unposted' : UI_FLAGGED.includes(pr?.ui) ? 'missing' : UI_HOLDS.includes(pr?.ui) ? 'waiting' : '');
+
+/**
+ * A PR the queue holds back, as merge-queue@1.waiting[] writes it (lander-state@1 fields, Nov 18 2026): heldSince is when
+ * the hold began (kept from the previous round while the PR stayed held; a new hold starts now), holdReason the why in
+ * plain words, reviewFlag the UI Review flag.
+ */
+export function heldEntry(p, prev, at) {
+  const state = String(p.why || '').startsWith('kicked out') ? 'kicked' : 'held';
+  const wasHeld = prev && ['kicked', 'held'].includes(prev.state) && (prev.heldSince || prev.since);
+  return { pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state, why: p.why, prCi: p.ci, since: wasHeld ? prev.since || prev.heldSince : at, heldSince: wasHeld ? prev.heldSince || prev.since : at, holdReason: str(p.why, 600), reviewFlag: reviewFlagOf(p) };
+}
+
+/** PRs that merged this round with their review flagged → merge-queue@1.flagged[] entries (≤ 50 kept). */
+export function flaggedLandings(prev, prs, landed, at) {
+  const add = prs.filter((p) => landed.has(p.number) && ['missing', 'unposted'].includes(reviewFlagOf(p))).map((p) => ({ pr: p.number, build: p.build || '', branch: p.branch || '', title: p.title || '', reviewFlag: reviewFlagOf(p), at }));
+  return [...(Array.isArray(prev) ? prev : []), ...add].slice(-50);
+}
 /**
  * Queue order: Brett's own order (`ctl.order`, front first; Jump to front puts a PR at its start), then auto-land's
  * landing order (`rank`: PR number → index), then oldest first.

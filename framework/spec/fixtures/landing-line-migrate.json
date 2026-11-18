@@ -158,6 +158,20 @@
       "state": "held",
       "why": "it is a draft",
       "prCi": "none"
+     },
+     {
+      "pr": 816,
+      "title": "Orchestrator: live demo",
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/816",
+      "branch": "claude/orchestrator-live-demo",
+      "head": "a816a816a816a816a816a816a816a816a816a816",
+      "build": "orchestrator-live-demo",
+      "agent": "Opus",
+      "state": "held",
+      "why": "its screenshots wait for Brett in UI Review",
+      "prCi": "success",
+      "reviewFlag": "missing",
+      "heldSince": "2026-11-14T20:00:00Z"
      }
     ],
     "kicked": [
@@ -563,7 +577,9 @@
        "state": "held",
        "why": "its screenshots wait for Brett in UI Review"
       },
-      "hold": "its screenshots wait for Brett in UI Review"
+      "hold": "its screenshots wait for Brett in UI Review",
+      "heldSince": "2026-11-14T22:15:48Z",
+      "reviewFlag": "waiting"
      },
      {
       "$axf": "landing-entry@1",
@@ -584,7 +600,30 @@
        "state": "held",
        "why": "it is a draft"
       },
-      "hold": "it is a draft"
+      "hold": "it is a draft",
+      "heldSince": "2026-11-14T22:15:48Z"
+     },
+     {
+      "$axf": "landing-entry@1",
+      "id": "pr-816",
+      "pr": 816,
+      "build": "orchestrator-live-demo",
+      "branch": "claude/orchestrator-live-demo",
+      "title": "Orchestrator: live demo",
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/816",
+      "agent": "Opus",
+      "priority": "",
+      "head": "a816a816a816a816a816a816a816a816a816a816",
+      "state": "waiting",
+      "since": "2026-11-14T22:15:48Z",
+      "addedAt": "2026-11-14T22:15:48Z",
+      "attempts": [],
+      "legacy": {
+       "state": "held",
+       "why": "its screenshots wait for Brett in UI Review"
+      },
+      "reviewFlag": "missing",
+      "note": "UI Review item missing: flagged, not holding."
      }
     ],
     "history": [
@@ -729,7 +768,7 @@
     "migratedFrom": {
      "frame": "merge-queue@1",
      "at": "2026-11-14T22:15:48Z",
-     "entries": 8,
+     "entries": 9,
      "landed": 3
     }
    },
@@ -755,6 +794,7 @@
     ]
    },
    "notes": [
+    "#816: its UI Review item is missing; it goes ahead with the review flagged",
     "the manual order (2 PRs) is already the line's order; the control document goes",
     "1 \"add back\" marks dropped: an entry is in the line or it is not"
    ]

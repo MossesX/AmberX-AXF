@@ -95,6 +95,9 @@ export function normEntry(e, at = new Date().toISOString()) {
   if (e?.note) out.note = str(e.note, NOTE_MAX);
   if (e?.outcome && typeof e.outcome === 'object') out.outcome = { ...e.outcome };
   if (e?.hold) out.hold = str(e.hold, 200);
+  // lander-state@1 (Nov 18 2026): when the hold began and the UI Review flag; a flagged review (missing / unposted) is never a hold
+  if (e?.hold && e?.heldSince) out.heldSince = str(e.heldSince, 40);
+  if (['missing', 'unposted', 'waiting'].includes(e?.reviewFlag)) out.reviewFlag = e.reviewFlag;
   return out;
 }
 
@@ -408,6 +411,7 @@ export function view(line) {
     state: e.state, label: STATE_LABEL[e.state], tone: STATE_TONE[e.state], since: e.since, attempts: e.attempts.length,
     retries: e.attempts.reduce((n, a) => n + (a.retries?.length || 0), 0),
     why: e.hold ? `not ready: ${e.hold}` : e.outcome?.text || e.ci?.why?.join('; ') || '', fix: e.fix?.id || '', runUrl: e.ci?.runUrl || e.outcome?.runUrl || '',
+    heldSince: e.hold ? e.heldSince || e.since : '', reviewFlag: e.reviewFlag || '',
   }));
   const landed = (line?.history || []).filter((h) => h.state === 'landed');
   return { on: line?.on !== false, mainSha: line?.mainSha || '', inFlight: inFlight(line)?.id || '', items, landed: landed.slice(-20).reverse(), skipped: (line?.history || []).filter((h) => h.state === 'skipped').slice(-20).reverse() };
@@ -502,8 +506,12 @@ export function migrateMergeQueue(queue, control = {}, { at = new Date().toISOSt
     } else if (rm) {
       const rAt = str(rm.at, 40) || at;
       e = { ...e, state: 'paused', since: rAt, pausedFrom: 'waiting', outcome: { kind: 'paused', text: str(rm.why, NOTE_MAX) || 'taken out of the merge queue by hand', at: rAt, by: 'hand' } };
+    } else if (['missing', 'unposted'].includes(it.reviewFlag) && /ui review/i.test(str(it.why))) {
+      // held on a review the console has no item for: not a hold any more, it goes ahead with the flag (Nov 18 2026)
+      e = { ...e, reviewFlag: it.reviewFlag, note: `UI Review item ${it.reviewFlag}: flagged, not holding.` };
+      notes.push(`#${it.pr}: its UI Review item is ${it.reviewFlag}; it goes ahead with the review flagged`);
     } else {
-      e = { ...e, hold: str(it.why, 200) || 'not ready' };
+      e = { ...e, hold: str(it.why, 200) || 'not ready', heldSince: str(it.heldSince, 40) || str(it.since, 40) || at, ...(it.reviewFlag === 'waiting' || /ui review/i.test(str(it.why)) ? { reviewFlag: 'waiting' } : {}) };
     }
     line.entries.push(e);
   }
