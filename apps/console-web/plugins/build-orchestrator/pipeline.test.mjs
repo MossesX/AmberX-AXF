@@ -638,7 +638,9 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.notEqual(h2.status, 0, 'no brief: usage error first');
     writeFileSync(join(tmp, 'plain.md'), 'Fix the thing.\n');
     const h3 = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', 'build-feat-x', '--brief', join(tmp, 'plain.md'), '--log', 'x.log', '--', '-p'], { cwd: tmp, env, encoding: 'utf8', timeout: 60000 });
-    assert.equal(h3.status, 3); assert.match(h3.stdout, /build launch outside the orchestrator/);
+    // gate rule require-split-id runs first (split-plan@1): no orchestrator build id = refused, and the refusal is on Failed
+    assert.equal(h3.status, 3); assert.match(h3.stdout, /refused \(require-split-id\): "build-feat-x" has no orchestrator build id|build launch outside the orchestrator/);
+    assert.ok(store().builds.some((b) => b.status === 'failed' && b.gateRejection?.rule === 'require-split-id' && /feat-x/.test(b.id)), 'the refused start is a Failed row with its gate reason');
   });
   t('e2e request: every other path files a build with the orchestrator and queues it; route api is the per-build override', () => {
     const r = json(pipe('request', '--title', 'Fix the health check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'health-check', '--json'));
