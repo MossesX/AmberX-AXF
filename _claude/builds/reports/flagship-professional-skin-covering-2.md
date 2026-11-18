@@ -90,3 +90,84 @@ check-navstyle 98. tsc clean on `core/runtime.ts` and `core/engines/skin.ts`.
   was red after PR #761 merged; written with `token-registry.mjs manifest plan-studio-2 --write`.
 - A skin's `chrome` block (and now the slots) landed in the composed look's settings but `axf.chrome.*` was not an
   appearance setting, so the app level never applied it; it is one now, with the one-time adoption of local values.
+
+# Phase 2 (Opus): the flagship skin, its options, the skin map everywhere
+
+## What landed (s10 to s27)
+
+| Step | Piece | Where |
+| --- | --- | --- |
+| s10 | Colour themes `flagship-dark` / `flagship-light` (blue-black and amber, AA text pairs), style theme `flagship` (Inter 13 px, 4 / 8 / 12 radii, hairline borders, three elevation steps, every `opacity*` themed), typography `flagship`, skin `flagship` | `framework/assets/{color-theme,style-theme,typography,skin}/flagship*.json` |
+| s11 | Layout `flagship` (menu bar, top toolbar, 232 px nav, status bar, 1120 px content, token pads for desktop and phone), density and sizing `flagship` (compact, rows ≥ 2.4 lines so every row is a finger's tap) | `framework/assets/{layout,density,sizing}/flagship.json` |
+| s12 | Context menu, menu bar, navigation (five sections over every page of console / axHub / AmberX) and nav style `flagship` | `framework/assets/{context-menu,app-menu,nav-menu,nav-style}/flagship.json` |
+| s13 | Tab group (chips, top, More overflow, sticky, badges) and toolbar (icons + labels, live search, overflow keeps 2, collapsible); behaviour slot: tap-confirm armed 3 s on every chrome kind | `framework/assets/{tab-group,toolbar}/flagship.json` |
+| s14 | Banner `flagship` (lockup, live search that shrinks first, status, day / night, clock; snaps, never overlaps) and style parts for every widget and chrome kind with a style target | `framework/assets/banner/flagship.json`, skin `parts` |
+| s15 | Dialog, popup, container (collapsible), settings interface (level toolbar on, settings toolbar); grid, dialog and settings slots | `framework/assets/{dialog,popup,container,settings}/flagship.json` |
+| s16 | Motion (speeds, easings, reduced = system, enter / exit per chrome kind, dialog, popup, grid, page), press / hover / focus feedback, hooks and drop targets per chrome kind and grid row, house icon pack | skin `motion`, `behavior`, `hooks`, `iconPack` |
+| s17 | `check-skin-coverage.mjs --complete <skin>[,…]`: fails when a skin (extends folded) leaves any registered type, part, reference, colour tone or skin-slots@1 slot empty; in CI for the three flagship skins | `framework/spec/check-skin-coverage.mjs`, `.github/workflows/android.yml` |
+| s18 | Baked into every shared-set app; `check-flagship-one-product.mts`: console, axHub web, AmberX (and Molly) following the hub compose the same look and the same 53 colour + style tokens from their own baked assets | `apps/*/src/axf/assets`, `framework/spec/check-flagship-one-product.mts` |
+| s19 | skin@1 `extends` (`foldSkinExtends`, child wins, objects merge, depth ≤ 4); options `flagship-graphite` (graphite + cyan, quick flat motion) and `flagship-daylight` (ivory + indigo, calm motion) that differ only in colour and motion | `core/engines/skin-rules.mjs`, `runtime.ts` (`skinData`, `skinList`), validators, `skins.mjs`, `framework/assets/skin/flagship-{graphite,daylight}.json` + four colour themes |
+| s20 | `skins.mjs map [<skin>] [--slot <s>] [--json]` (each row with what the skin sets there); `skinMapFor` / `skinMapRowValue` | `framework/cli/skins.mjs`, `core/engines/skin-map.mjs` |
+| s21 | REST `GET /skin-map`, `GET /skin-map/{slot}` (`?skin=`, `?find=`), MCP through plugin-commands `auto`; actions `skin.map`, `skin.map.slot:<slot>` | theme-manager `server/__init__.py`, `libs/settings/SkinMap.tsx` |
+| s22 | Settings → Appearance → Skin map: framework TabGroup by surface + DataGrid (grouped, expandable detail: tokens, settings keys, attributes, readers, where it lives, what the skin sets), datasets and layout tables; tap opens the asset; tokens only | `framework/libs/settings/SkinMap.tsx`; framework re-baked into the four shared-set apps |
+| s23 | Console-control addresses: `view:settings/tab:settings.tabs=appearance/subtab:settings.subtabs=skin-map`, rows `grid:skin-map/row:<slot>`, tables `grid:skin-map-datasets/row:<id>`, `grid:skin-map-layouts/row:<id>` | `SkinMap.tsx`, inventory current |
+| s24 | `check-flagship-apply.mjs`: each flagship skin at hub, app, ui and plugin scope through the skins CLI (temp hub), refusal of an unknown id, and the REST / MCP / action / voice ways in | `framework/spec/check-flagship-apply.mjs` (CI) |
+| s25 | Generated map doc (`skins.mjs map flagship --md`), glossary concepts (flagship skin, skin map, skin extends); the catalog reads long CLI headers (ratchet 388 → 387) | `_claude/memory/docs/flagship-skin.md`, glossary `terms.json`, `catalog.mjs` |
+| s26 | Conformance sweep with the flagship skins on: theme, controls, toolbars, chrome assets, chrome-settings, console-control, token registry, theme-swap (all green). Fixed on the way: the dialog scrim was pure black in every colour theme (now a dark tint of `--fx-bg`, still at `--fx-opacity-scrim`); theme-swap tested another checkout's leftover preview server when its port was taken (now it stops); Skin map columns use fixed tracks so rows line up | `framework/ui/axf.css`, `apps/console-web/scripts/theme-swap.mjs`, `SkinMap.tsx`, fixtures regenerated (additions only) |
+| s27 | Shots: console, axHub web and AmberX, desktop and phone, under each option (home with banner / menu bar / toolbar / nav / status bar, Settings → Appearance → Skin map with tab group + grid + level toolbar + dialog chrome, context menu, asset dialog). The hub was stubbed in the browser to serve the option as the hub default skin (the production path). Submitted to UI Review with choices: item `r-20261118-e0399043`, group `flagship-professional-skin-covering-2 - 2026-11-18 00:52`, 60 screenshots; option assets `theme-manager/assets/skin/flagship-skin-*.json` (each extends its framework skin) | `apps/console-web/plugins/theme-manager/assets/skin/` |
+
+## Coverage before / after
+
+| Skin | `--complete` rows filled |
+| --- | --- |
+| control-room (an existing skin, before) | 18 / 108 |
+| flagship | 108 / 108 |
+| flagship-graphite (extends flagship) | 108 / 108 |
+| flagship-daylight (extends flagship) | 108 / 108 |
+
+Skin map read through flagship: 83 of 104 rows set; the other 21 are bundles, `none` types, Android-only types from
+`asset-types.android.json`, `extras.settings` and the `chrome` block (instance overrides belong to each app).
+
+## API reach for each feature
+
+| Feature | Deep link | State | Actions / settings | REST | MCP | CLI | Voice (AmberX) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| Flagship skins (3) | Skins `skin-gallery.focus:skin/<id>`; Settings → Appearance | `GET /skins/<app>/at?scope=`, `skins.mjs at` | use / off / follow / scope / colour / mode | `POST /skins/global`, `POST /skins/<app>/use` {skin, scope?} | theme-manager plugin commands | `skins.mjs global`, `use`, `at`, `covers` | `skin.use:<id>:<scope>` (hub, app, ui:…, plugin:…), `skin.inherit:on`, `skin.scope` |
+| Skin map | `settings.open:skin-map`, console-control address above, rows `grid:skin-map/row:<slot>` | `GET /skin-map[/<slot>]?skin=` | open, open on a slot, open a row's asset (`asset.json:<type>:<id>`) | `GET /skin-map`, `GET /skin-map/{slot}` | theme-manager plugin commands | `skins.mjs map [<skin>] [--slot <s>] [--json] [--md]` | `skin.map`, `skin.map.slot:<slot>` |
+| Completeness | n/a | `check-skin-coverage --complete <skin> --json` | n/a | n/a | n/a | `check-skin-coverage.mjs --complete` | n/a |
+
+## Notes and gaps
+
+- `extends` on skin@1 is a contract addition made on Opus (s19 was pinned Opus): additive, a skin without it is
+  byte-identical; the Kotlin twin is recorded in `spec/PORTING.md`. Worth the same Fable review as skin-slots@1
+  (plan `skins-possible-fable-review-6xha`).
+- Hook refs `chrome.<kind>.settings|change|move` and drop zones `axf.chrome.<kind>` / `axf.grid.row` are named by the
+  skin; `rt.skinHooks(kind)` lists the ones no host registers yet (the chrome hosts register them as they adopt hooks).
+  The grid-row hook `feature-matrix` resolves today.
+- The console's baked `ui/axf.css` was marked "edited" only because its lock hash was stale (content was an older
+  framework copy); the lock was realigned and the console re-baked with axHub web, AmberX and Molly.
+
+## UI Review hold
+
+The PR waits on UI Review item `r-20261118-e0399043` (choices `flagship-skin`: Flagship, Flagship Graphite, Flagship
+Daylight). Brett picks one in the item's Choices tab; the pick becomes the hub default skin
+(`node framework/cli/skins.mjs global <id>` or Settings → Appearance), the others stay as assets.
+
+## Tests (s28, after merging origin/main)
+
+| Check | Result |
+| --- | --- |
+| `axf.mjs validate --framework` | 569 assets valid |
+| `check-skin.mts` | 615 checks (15 new: extends, variants share every slot but colour and motion) |
+| `check-skin-coverage.mjs --complete flagship,flagship-graphite,flagship-daylight` | 108 / 108 each |
+| `check-skin-map.mjs` | 13 checks (1 new: skinMapFor) |
+| `check-flagship-one-product.mts` (new) | 366 checks, 3 skins × 4 apps, one look, 53 tokens |
+| `check-flagship-apply.mjs` (new) | 47 checks, 3 skins × hub / app / ui / plugin scope |
+| `shared-assets.mjs check --all` | 4 apps ship all 553 shared assets |
+| `tracker.mjs --check`, glossary catalog test | green (glossary ratchet 388 → 387) |
+| `check-theme`, `check-controls`, `check-toolbars`, `check-chrome-assets`, `chrome-settings check`, `check-console-control`, `check-token-registry`, `check-project-fixtures`, `check-chrome-settings.mts`, `check-navstyle.mts`, `check-component-tokens`, `check-layout-tokens.mts` | green |
+| `theme-swap.mjs` (built console) | every colour, transparency and size follows the active themes and scale assets, flagship themes included |
+| builds | console `tsc --noEmit` green after the merge; console, axHub web and AmberX `tsc --noEmit` + `vite build` green before it (s26 / s27) |
+
+Fixed from main on the way: `orchestrator-demo/plugin.json` had no token-registry@1 block (check-token-registry red);
+written with `token-registry.mjs manifest orchestrator-demo --write`.
