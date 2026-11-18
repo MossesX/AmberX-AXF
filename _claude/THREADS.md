@@ -834,8 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:05 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
-- 2026-11-18 01:05 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
 - 2026-11-18 01:06 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
 - 2026-11-18 01:06 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-18 01:07 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
@@ -1234,6 +1232,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 06:50 UTC · `approval-pass-covers-every-call` s1 done, s2 done, s3 done, s4 done, note (all) · foreign-write
 - 2026-11-18 06:48 UTC · `approval-pass-covers-every-call` s6 done, → running (all) · foreign-write
 - 2026-11-18 06:52 UTC · `approval-pass-covers-every-call` s7 done, → running (all) · foreign-write
+- 2026-11-18 06:53 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-18 06:53 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
 
 ## Token passes (log)
 
