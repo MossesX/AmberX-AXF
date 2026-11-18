@@ -36,6 +36,7 @@
 import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { DEMO_MARK, isDemo } from '../../../../framework/core/demo-build.mjs';
+import { stepKey } from '../../../../framework/plan/builds-store-core.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
@@ -618,6 +619,28 @@ const STRATEGY_TEXT = Object.freeze({
   'switch-account': 'The earlier attempts ran on another account and failed; the account may have been the problem, the code may not. Check the branch state first, then continue.',
 });
 const FAILURE_TEXT = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'the branch clashes with main', 'push-fail': 'the push or the PR failed', stalled: 'the session stalled (no sign of life)', 'fell-to-pending': 'the session stopped with steps left' });
+
+/**
+ * land-clash bounce (Nov 17 2026, Brett: "Nothing should be sitting there."): a build with every step done whose branch
+ * clashes with main gets one step to merge main in and resolve the conflicts, and goes back to the Queue so the
+ * dispatcher runs it. `clash` = { files, head } from either lander (land.json reason.files, landing-line fixRequest).
+ * The head is in the text, so a second report on the same head is the same step (never added twice) and a clash on a
+ * new head is a new step. Returns the step to append, or null (not all done, or this clash already has its step).
+ */
+export function clashBounceStep(b, { files = [], head = '' } = {}) {
+  if (!b || !allDone(b)) return null;
+  const fs = list(files).map((f) => str(f, 200).trim()).filter(Boolean).slice(0, 8);
+  const h = str(head, 64).slice(0, 7);
+  const branch = str(b.branch, 200) || `claude/${b.id}`;
+  const text = `Merge main into ${branch} and resolve conflicts in ${fs.length ? fs.join(', ') : 'the conflicting files'}${h ? ` (clash at ${h})` : ''}; keep both sides' intent, run the checks, push.`;
+  if (list(b.steps).some((x) => stepKey(x?.text) === stepKey(text))) return null;
+  return { text, model: 'Opus', estimate: '10 min', why: 'land-clash bounce', files: fs };
+}
+/** Is the auto-lander's fix agent live on this exact head (handed within attemptTimeoutMin)? Then the bounce waits for it. */
+export function landerAgentLive(land, { now = Date.now(), attemptTimeoutMin = 45 } = {}) {
+  const a = land?.agent;
+  return !!(a && a.exit === 0 && a.head && a.head === land.head && a.kind === land.reason?.kind && minsSince(a.at, now) < attemptTimeoutMin);
+}
 
 /**
  * Does the auto-lander own this failure? A PR-side failure (clash, red CI) on a build with every step done is the

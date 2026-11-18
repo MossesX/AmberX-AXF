@@ -847,6 +847,36 @@ export function beatOf(b, env = process.env) {
 }
 
 /**
+ * land-clash bounce (pipeline-core clashBounceStep): append the merge-main step (Opus, deduped by its text) to a build
+ * with every step done, move it back to the Queue (runs reset, the open failure cleared) and record pipeline.bounce
+ * { at, why, head, files, step, count }. Returns { id, step, status } or null when there is nothing to add.
+ */
+export function bounceClash(id, { files = [], head = '', why = '', now = Date.now(), by = 'pipeline' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const st = P.clashBounceStep(b, { files, head });
+  if (!st) return null;
+  const at = new Date(now).toISOString();
+  let added = null;
+  withStore((s) => {
+    const r = storeCore.findBuild(s, id); if (!r) return s;
+    const again = P.clashBounceStep(r, { files, head }); if (!again) return s; // a writer got there first
+    const taken = new Set(r.steps.map((x) => x.id)); let k = r.steps.length + 1; while (taken.has(`s${k}`)) k += 1;
+    added = storeCore.normStep({ ...again, id: `s${k}`, createdAt: at }, r.steps.length, { now: at });
+    r.steps.push(added);
+    r.status = 'queued'; r.builtAt = ''; delete r.failure;
+    r.pipeline = BP.normPipeline({ ...(r.pipeline ?? {}), queuedAt: r.pipeline?.queuedAt || at, session: '', slot: '', runs: 0, crashes: 0, note: `clash with main: ${added.id} merges main in`,
+      bounce: { at, why: str(why || `merging main in conflicts in ${files.join(', ') || 'code'}`, 300), head, files, step: added.id, count: (r.pipeline?.bounce?.count ?? 0) + 1 } }) ?? r.pipeline;
+    r.notes.push({ text: `Clashes with main${files.length ? ` in ${files.slice(0, 6).join(', ')}` : ''}: added ${added.id} (merge main in, resolve, push) and moved it back to the Queue.`, at });
+    r.updatedAt = at;
+    return s;
+  }, { by, action: 'pipeline:clash-bounce', note: id });
+  if (!added) return null;
+  logLine({ event: 'clash-bounce', build: id, step: added.id, head, files });
+  crewSay('dispatcher', 'start', `${id} clashes with main: added "${str(added.text, 120)}" and put it back in the Queue.`, { ref: id });
+  return { id, step: added.id, text: added.text, status: 'queued' };
+}
+
+/**
  * Classify every build the server still owes work on (pipeline-core classifyFailure): a crash, red CI, a clash, a push
  * that failed, a stalled run, a build that fell back to Pending. Each one found is written on the build in one journalled
  * store write (failure, status fixing, the open attempt closed, a note) and logged. → [{ id, failure }]
@@ -858,7 +888,18 @@ export function detectFailures({ ended = [], env = process.env, now = Date.now()
   for (const b of store.builds) {
     if (b.deleted) continue;
     const f = P.classifyFailure(b, { ended: endedBy.get(b.id) ?? null, land: land.get(b.id) ?? null, beatAt: beatOf(b, env), now, stalledAfterMin: policy.stalledAfterMin });
-    if (f) found.push({ id: b.id, failure: f });
+    if (!f) continue;
+    // land-clash bounce: a done build that clashes with main gets a merge-main step and goes back to the Queue (the
+    // dispatcher runs it) instead of sitting in fixing; only a live lander fix agent on this very head is waited for
+    if (f.kind === 'clash') {
+      const li = land.get(b.id) ?? null;
+      const open = b.pipeline?.bounce?.step && b.steps.some((x) => x.id === b.pipeline.bounce.step && !x.done && !x.skip);
+      if (open) continue; // already bounced: its merge-main step is queued or running
+      if (P.landerAgentLive(li, { now, attemptTimeoutMin: policy.attemptTimeoutMin })) continue;
+      const bounced = bounceClash(b.id, { files: li?.reason?.files ?? [], head: li?.head || f.head || '', why: f.why, now });
+      if (bounced) continue;
+    }
+    found.push({ id: b.id, failure: f });
   }
   if (!found.length) return [];
   const at = new Date(now).toISOString();
