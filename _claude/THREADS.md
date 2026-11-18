@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `queue-drag-and-drop-reorder-dispatcher-follows-t` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `rebuild-gizmo-from-scratch-full-claude-style-cha` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `bug-asset-settings-nav-menu-tab-bar-toolbar-chan` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `ai-assistant-in-molly-console-drives-by-api-open` note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 15:24 UTC · `attach-widgets-to-any-toolbar-banner` s6 done, → running (all) · orchestrator
 - 2026-11-18 15:28 UTC · `one-build-time-always-split-to-fill` s7 done (all) · orchestrator
 - 2026-11-18 15:31 UTC · `attach-widgets-to-any-toolbar-banner` s7 done (all) · orchestrator
+- 2026-11-18 15:33 UTC · `attach-widgets-to-any-toolbar-banner` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
