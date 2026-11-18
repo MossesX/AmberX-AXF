@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8838,
- "updatedAt": "2026-11-18T04:32:25.945Z",
+ "rev": 8849,
+ "updatedAt": "2026-11-18T05:33:30.949Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -316970,15 +316970,15 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/approval-pass-covers-every-call",
+   "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T04:28:26.230Z",
+   "updatedAt": "2026-11-18T05:30:03.941Z",
    "builtAt": "",
    "notes": [
     {
@@ -317000,6 +317000,42 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-approval-pass-covers-every-call--joey, shared account login)",
      "at": "2026-11-18T04:28:26.230Z"
+    },
+    {
+     "text": "Reconciler: branch claude/approval-pass-covers-every-call (no PR yet)",
+     "at": "2026-11-18T05:13:02.426Z"
+    },
+    {
+     "text": "s1 (Fable) done. Contract lives in both repos: AmberX-AXF commit c644df810 on claude/approval-pass-covers-every-call (CONTROL.md -> Coverage, control-pass.mjs covers/passCoversOf/ranUnder, control.json) and axHub PR #48 (MossesX/axHub branch claude/approval-pass-covers-every-call, worktree /root/axf-builds/approval-pass-covers-every-call.axhub: docs/veto-pass.md s1a-2d, PolicyPass.covers, passCoversOf). Steps s2-s12 continue on that axHub branch. s13 is a verbatim duplicate of s1 from the split; ticked with s1. VPS note: axHub server CLI tests need Node 22 (node:sqlite); Node 20 here, so run them in CI.",
+     "at": "2026-11-18T05:14:47.931Z"
+    },
+    {
+     "text": "Correction: the live build has 12 steps; there is no s13 (the duplicate was only in a stale repo snapshot of the store). Fable phase = s1, done.",
+     "at": "2026-11-18T05:17:29.545Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s2): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T05:23:43.836Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--joey: brief only · start 14.5K tokens ($0.12) · cost $22.64 · 122 turns · 6 tools, MCP none",
+     "at": "2026-11-18T05:21:08.937Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T05:21:43.849Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T05:27:18.149Z"
+    },
+    {
+     "text": "Reconciler: PR #836",
+     "at": "2026-11-18T05:30:03.941Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s2): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T05:28:58.541Z"
     }
    ],
    "approvals": [],
@@ -317027,7 +317063,16 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-18T05:26:59.931Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "reason": "phase-done",
+     "stepsLeft": 11,
+     "account": "",
+     "session": "",
+     "phase": "Phase 1"
+    },
     "split": {
      "at": "2026-11-18T01:46:23.048Z",
      "by": "orchestrator",
@@ -317036,7 +317081,7 @@
      "note": "Split by Claude into 12 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit null: claude-headless: origin: approval-pass-covers-every-call ← \"Why do I keep getting approvals when I set a pass?\"",
+    "note": "Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -317055,6 +317100,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T05:21:02.546Z",
+     "buildId": "approval-pass-covers-every-call",
+     "phase": "",
+     "step": "s2",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -317071,12 +317132,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T05:13:32.534Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T01:49:40.384Z",
-     "updatedAt": "2026-11-18T01:49:40.930Z"
+     "updatedAt": "2026-11-18T05:17:10.839Z"
     },
     {
      "id": "s2",
@@ -317329,10 +317390,33 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T01:41:28.108Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwlgr9vm01j4ye": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm021izx": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm032669": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm04ext1": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm05so2t": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm069d2n": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm07f2y1": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm08pip9": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm09f322": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm0aiolk": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm0bp70i": "2026-11-18T01:49:40.384Z",
+     "st-mwlgr9vm0cf0t7": "2026-11-18T01:49:40.384Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T01:46:23.048Z",
    "rearranged": false,
