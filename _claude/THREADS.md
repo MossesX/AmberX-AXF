@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:35 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
-- 2026-11-17 23:35 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
 - 2026-11-17 23:36 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
 - 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s1 done, → running (all) · orchestrator
 - 2026-11-17 23:36 UTC · `fix-launcher-crash-duplicate-steps-brief` s1 done (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:32 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, note (all) · foreign-write
 - 2026-11-18 00:32 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 00:32 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (0 steps) (all) · foreign-write
+- 2026-11-18 00:32 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (0 steps) (all) · fix-launcher-crash-duplicate-steps-brief
+- 2026-11-18 00:32 UTC · `fix-ci-red-main-watchdog-test-vs-done` → queued, note (all) · fix-launcher-crash-duplicate-steps-brief
 
 ## Token passes (log)
 
