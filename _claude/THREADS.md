@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:46 UTC · `dispatcher-split-builds-evenly-across` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `one-true-source-for-every-setting` note (all) · dedupe-steps
 - 2026-11-17 23:46 UTC · `vps-sets-every-build-status-manifest` note (all) · dedupe-steps
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:50 UTC · `move-everything-axhub-web-console` s9 done (all) · foreign-write
 - 2026-11-18 00:51 UTC · `move-everything-axhub-web-console` s9 done (all) · foreign-write
 - 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s10 done (all) · orchestrator
+- 2026-11-18 00:51 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
