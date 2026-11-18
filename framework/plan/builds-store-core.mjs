@@ -54,6 +54,7 @@ import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { guardStatus, normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
 import { normRecoveries, normRecovery } from '../core/build-watchdog.mjs';
+import { isSplitId, normMainLock, normSplit, parseSplitId } from '../core/build-split.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 import { DEMO_PREFIX, demoTag, demoViolations, isDemo, isDemoId } from '../core/demo-build.mjs';
 
@@ -79,7 +80,12 @@ export const MODELS = ['Fable', 'Opus'];
  * the merge commit), `complete` (landed + the feature verify passed), `escalated` (the retry ladder ran out: banner +
  * push). `built` stays as a legacy word read as landed; the pipeline never writes it again.
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+/*
+ * split-plan@1 (Nov 18 2026, framework/spec/BUILD-SPLIT.md): `splitting` = its turn came, the dispatcher is planning its
+ * parts (main locked, base taken); the parts then run as `running`. The run's record is `split` on the build (and its
+ * id `splitId`); the store's `meta.mainLock` is the main-lock@1 record while a run is active.
+ */
+export const STATUSES = ['pending', 'queued', 'splitting', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
 /** Statuses that count as finished work (progress, Pending list): every step done, whatever the PR is doing. */
 export const FINISHED = ['built', 'landing', 'landed', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 }; // ≤ 10 min (Nov 13 2026; was 30)
@@ -108,6 +114,18 @@ export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').
 export const newBuildId = (t) => shortBuildId(str(t, 300));
 const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'demo', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
+/**
+ * Every field normBuild reads or writes itself. Anything else on a record is carried over verbatim (split-plan@1, Nov 18
+ * 2026: "carry over unknown fields so normBuild keeps them"): a field a newer writer added survives a read and a
+ * rewrite by an older reader, so a store upgrade never drops data on the way through a session on older code.
+ */
+const BUILD_KEYS = new Set(['id', 'title', 'category', 'detail', 'status', 'hidden', 'demo', 'source', 'pendingId', 'alias', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'pipeline', 'attempts', 'failure', 'landed', 'escalation', 'shipped', 'recoveries', 'splitId', 'split', 'steps', 'profile', 'profiles', 'order', 'fromProfile', 'kind', 'planRef', 'rev', 'deleted', 'deletedAt', 'pending', 'queue', 'defaultSteps', 'defaultAt', 'rearranged', 'removedSteps', 'legacy', 'copies']);
+/** The fields of a record normBuild does not know, cloned (the carry-over above). */
+export function extraFields(o) {
+  const out = {};
+  for (const k of Object.keys(o && typeof o === 'object' ? o : {})) if (!BUILD_KEYS.has(k) && o[k] !== undefined) out[k] = clone(o[k]);
+  return out;
+}
 
 // ------------------------------------------------------------------ records
 
@@ -226,6 +244,10 @@ export function normBuild(b, ctx = {}) {
   const priority = normPriority(o.priority) || (retired.includes('urgent') ? 'P0' : '');
   const origin = normOrigin(o.origin); // build-origin@1: what Brett said that started it (framework/core/build-origin.mjs)
   const recoveries = normRecoveries(o.recoveries); // build-watchdog@1: the watchdog's fixes (framework/core/build-watchdog.mjs)
+  // split-plan@1 (framework/core/build-split.mjs): the run's plan and its id. A plan that names another build is not this
+  // build's; a splitId with no plan is kept (the gate still compares against it); a plan carries its id onto splitId.
+  const split = normSplit(o.split, { build: id });
+  const splitId = split ? split.id : isSplitId(o.splitId) && parseSplitId(o.splitId).build === id ? o.splitId : '';
   return {
     id,
     title: str(o.title, 300) || 'Untitled build',
@@ -256,6 +278,8 @@ export function normBuild(b, ctx = {}) {
     ...(normEscalation(o.escalation) ? { escalation: normEscalation(o.escalation) } : {}),
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
     ...(recoveries.length ? { recoveries } : {}), // build-watchdog@1: optional, only once the watchdog has fixed the build
+    ...(splitId ? { splitId } : {}), // split-plan@1: the active (or last) run's id; absent on a build never split (no migration needed)
+    ...(split ? { split } : {}), // split-plan@1: the run's parts, combine and state
     steps,
     profiles,
     order,
@@ -273,6 +297,7 @@ export function normBuild(b, ctx = {}) {
     removedSteps: Array.isArray(o.removedSteps) ? o.removedSteps.map((r) => ({ step: normStep(r?.step, 0, ctx), at: str(r?.at, 40), why: str(r?.why, 300), by: str(r?.by, 80) })) : [],
     legacy: Array.isArray(o.legacy) ? o.legacy.map((l) => ({ file: str(l?.file, 300), profile: str(l?.profile, 40), id: str(l?.id, 80) })) : [],
     copies: Array.isArray(o.copies) ? clone(o.copies) : [],
+    ...extraFields(o), // unknown fields carried over verbatim (BUILD_KEYS above)
   };
 }
 
@@ -287,7 +312,11 @@ export function normalizeStore(s) {
     rev: Number.isInteger(o.rev) ? o.rev : 0,
     migratedAt: str(o.migratedAt, 40),
     rules: foldRetired(o.rules && typeof o.rules === 'object' ? clone(o.rules) : {}),
-    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})), ...(o.meta?.doneMeansMerged && typeof o.meta.doneMeansMerged === 'object' ? { doneMeansMerged: clone(o.meta.doneMeansMerged) } : {}) }, // doneMeansMerged: the one-off migration's record (build-pipeline.mjs migrateDoneStore)
+    meta: {
+      queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})),
+      ...(o.meta?.doneMeansMerged && typeof o.meta.doneMeansMerged === 'object' ? { doneMeansMerged: clone(o.meta.doneMeansMerged) } : {}), // doneMeansMerged: the one-off migration's record (build-pipeline.mjs migrateDoneStore)
+      ...(normMainLock(o.meta?.mainLock) ? { mainLock: normMainLock(o.meta.mainLock) } : {}), // main-lock@1 (split-plan@1): main is locked for one active run; absent when free
+    },
     drafts: foldRetired(o.drafts && typeof o.drafts === 'object' ? clone(o.drafts) : {}, (a, b) => ({ ...a, ops: [...(a.ops ?? []), ...(b.ops ?? [])] })),
     builds: (Array.isArray(o.builds) ? o.builds : []).map((b) => normBuild(b)),
   };
@@ -403,6 +432,20 @@ export function validateStore(store) {
       if (!Array.isArray(b.recoveries) || !b.recoveries.length) err(`${at}.recoveries`, 'is absent until the watchdog fixed the build, then a non-empty list');
       else b.recoveries.forEach((r, j) => { const x = normRecovery(r); if (!x) err(`${at}.recoveries[${j}]`, 'is not a watchdog-recovery@1 (needs at, a known action, a cause)'); else if (x.cause === 'unknown' && r.cause !== 'unknown') err(`${at}.recoveries[${j}].cause`, `"${r.cause}" is not a watchdog cause`); });
     }
+    // split-plan@1: optional; a splitId names this build's run, a split is a plan of this build whose id is the splitId
+    if (b.splitId !== undefined) {
+      if (!isSplitId(b.splitId)) err(`${at}.splitId`, 'is not a split id (<build id>.r<n>)');
+      else if (parseSplitId(b.splitId).build !== b.id) err(`${at}.splitId`, `"${b.splitId}" names another build`);
+    }
+    if (b.split !== undefined) {
+      const sp = normSplit(b.split, { build: b.id });
+      if (!sp) err(`${at}.split`, 'is not a split-plan@1 of this build');
+      else {
+        if (b.splitId !== sp.id) err(`${at}.splitId`, `must equal split.id (${sp.id})`);
+        if (JSON.stringify(sp) !== JSON.stringify(normSplit(sp, { build: b.id }))) err(`${at}.split`, 'does not round-trip through normSplit');
+      }
+    }
+    if (b.status === 'splitting' && b.splitId === undefined) err(`${at}.status`, 'splitting needs a splitId: the run is named before the parts are planned');
     if (!Array.isArray(b.steps)) return err(`${at}.steps`, 'must be a list');
     const sids = new Set();
     b.steps.forEach((s, j) => {

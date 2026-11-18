@@ -130,7 +130,7 @@ t('one lifecycle: features and edits share STATUSES; cancelled / removed never c
   for (const s of L.STATUSES) { assert.equal(L.canTransition('cancelled', s), s === 'cancelled'); assert.equal(L.canTransition('removed', s), s === 'removed'); }
   assert.deepEqual([...L.PENDING_STATUSES, ...L.COMPLETED_STATUSES, 'cancelled'].sort(), [...L.STATUSES].sort());
 });
-t('build → status mapping covers every builds@1 status', () => { for (const s of ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived']) assert.ok(L.STATUSES.includes(L.statusFromBuild({ status: s }).status)); });
+t('build → status mapping covers every builds@1 status', () => { for (const s of ['pending', 'queued', 'splitting', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived']) assert.ok(L.STATUSES.includes(L.statusFromBuild({ status: s }).status)); });
 t('build → status reads a build the way build-hook@1 does: pending = planned, archived without a merge = cancelled, a merge wins, failed with a PR = in PR (stalled)', () => {
   const s = actual.statusFromBuild.map((x) => `${x.status}${x.stalled ? '!' : ''}`);
   // done-means-merged@1: fixing = building, landing = in PR, landed = merged, escalated = stalled (building, or in PR with one)

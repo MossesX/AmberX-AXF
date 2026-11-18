@@ -94,7 +94,7 @@ export function statusFromBuild({ status = '', pr = '', mergedAt = '', live = fa
   if (mergedAt || s === 'complete' || s === 'landed') return { status: 'merged', stalled: false };
   if (deleted === true || s === 'archived') return { status: 'cancelled', stalled: false };
   if (s === 'built' || s === 'landing' || (pr && s !== 'pending')) return { status: 'in-pr', stalled: s === 'failed' || s === 'blocked' || s === 'escalated' };
-  if (s === 'running' || s === 'fixing') return { status: 'building', stalled: false };
+  if (s === 'running' || s === 'fixing' || s === 'splitting') return { status: 'building', stalled: false };
   if (s === 'failed' || s === 'escalated') return { status: 'building', stalled: true };
   if (s === 'blocked' || s === 'waiting' || s === 'queued') return { status: 'queued', stalled: s === 'blocked' };
   return { status: 'planned', stalled: false };

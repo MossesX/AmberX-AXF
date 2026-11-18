@@ -7,7 +7,8 @@
  * accounts (which have Fable, how many may run in parallel) and the agent slots; when a slot is free it takes the next
  * Queue build and starts a headless session on an account that can run the next phase's model (**Building**).
  *
- *   status flow:  pending → queued → running (Building) ⇄ fixing → landing → landed → complete  (done-means-merged@1, below)
+ *   status flow:  pending → queued → splitting → running (Building) ⇄ fixing → landing → landed → complete  (done-means-merged@1, below;
+ *                 splitting = split-plan@1, framework/spec/BUILD-SPLIT.md: one build at a time, its parts planned to fill every free slot)
  *                 a session that ends with steps left: nextStatusOnExit(). Its phase done (any model, Fable → Opus or
  *                 Opus → Fable with the upgrade policy satisfied) = back to queued, same queue position, the next phase
  *                 starts by itself ('phase-done'). A crash = queued again ('crash') until maxRuns crashes, then pending
@@ -61,7 +62,7 @@
 export const SCHEMA = 'build-pipeline@1';
 export const DONE_SCHEMA = 'done-means-merged@1';
 /** The pipeline table: what each builds@1 status shows as (fixing is a kind of building: a session may be on it). */
-export const TABLE = Object.freeze({ pending: 'pending', queued: 'queued', running: 'building', waiting: 'building', fixing: 'building' });
+export const TABLE = Object.freeze({ pending: 'pending', queued: 'queued', splitting: 'building', running: 'building', waiting: 'building', fixing: 'building' }); // splitting (split-plan@1): its turn came, the parts are being planned
 export const TABLE_STATES = ['pending', 'queued', 'building'];
 export const TABLE_LABEL = Object.freeze({ pending: 'Pending', queued: 'Queue', building: 'Building' });
 export const OUTCOMES = ['finished', 'requeued', 'returned', 'failed'];
@@ -307,7 +308,7 @@ export function tabOf(b) {
   const p = b.pipeline ?? {};
   if (b.status === 'failed' || b.status === 'escalated' || /^launch failed/.test(str(p.note, 40))) return 'errors';
   if (b.status === 'pending' && p.lastRun?.outcome === 'failed') return 'errors'; // the crash limit sent it back to Pending
-  if (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing') return 'active';
+  if (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing' || b.status === 'splitting') return 'active';
   if (b.status === 'queued') return 'queue';
   if (b.status === 'built' || b.status === 'landing') return 'complete'; // every step done, not merged yet: the lander's (done-means-merged@1)
   if (b.status === 'blocked') return 'incomplete';
@@ -323,8 +324,8 @@ export const canUnqueue = (b) => !!b && b.status === 'queued' && !b.deleted;
 export const isHeld = (b) => !!b && b.status === 'queued' && !!b.pipeline?.heldAt;
 /** A build may be put on hold: queued (not launched) and not held already. */
 export const canHold = (b) => !!b && b.status === 'queued' && !b.deleted && !isHeld(b);
-/** A build with a live session (running, waiting on an approval, or a fix attempt on it) is never archived or deleted underneath it. */
-export const isLive = (b) => !!b && (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing');
+/** A build with a live run (splitting, running, waiting on an approval, or a fix attempt on it) is never archived or deleted underneath it. */
+export const isLive = (b) => !!b && (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing' || b.status === 'splitting');
 /** A build may move to the Archive: not live, not deleted, not archived already. */
 export const canArchive = (b) => !!b && !b.deleted && !isLive(b) && b.status !== 'archived';
 /** A build may be (soft-)deleted: not live, not deleted already. Deleting never drops the record. */

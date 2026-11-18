@@ -17,6 +17,7 @@
   "buildStatuses": [
     "pending",
     "queued",
+    "splitting",
     "running",
     "waiting",
     "fixing",

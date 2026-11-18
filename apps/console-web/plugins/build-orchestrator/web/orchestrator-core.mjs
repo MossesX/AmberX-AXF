@@ -20,7 +20,7 @@ export const MODELS = ['Fable', 'Opus'];
  * `built` = every step done but the build's PR is not merged yet; `complete` once it merged (or it has no PR).
  * `queued` (Nov 8 2026) = in the Queue: Brett moved it from Pending, the dispatcher starts it when a slot is free.
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+export const STATUSES = ['pending', 'queued', 'splitting', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
 export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Building', waiting: 'Needs approval', fixing: 'Fixing', blocked: 'Blocked', failed: 'Failed', built: 'Landed (legacy)', landing: 'Landing', landed: 'Landed · merged, CI green', complete: 'Complete · verified', escalated: 'Escalated', archived: 'Archived' };
 /** Finished work: no steps left (landing waits only on its PR; done-means-merged@1). */
 export const isFinished = (status) => status === 'built' || status === 'landing' || status === 'landed' || status === 'complete';

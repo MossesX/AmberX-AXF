@@ -39,12 +39,19 @@ journalled.
 | `removedSteps` | steps taken out (removed, divided, harvested away) with why, when, by |
 | `legacy`, `copies` | where the record came from in the migration; other copies kept verbatim |
 | `alias` | optional: the short name of a build whose `id` is not a valid build name (made before build-id@1); `findBuild` and every orchestrator / pipeline command accept it |
+| `splitId`, `split` | optional (split-plan@1, `framework/spec/BUILD-SPLIT.md`, Nov 18 2026): the active or last run's id `<build id>.r<n>` and its plan `{ id, run, base, parts[], combine, … }`; absent on a build never split (no migration: existing records are untouched). `normSplit` drops a plan that names another build; `validateStore` wants `splitId === split.id` |
+| *(anything else)* | carried over verbatim (`extraFields`): a field a newer writer added survives a read and a rewrite on older code, so a store upgrade never drops data on the way through |
+
+The store's `meta` also carries `mainLock` (main-lock@1: `{ build, splitId, base, lockedAt, by }`) while one run holds main
+(split-plan@1); absent when main is free.
 
 **StepRecord** = orchestrator@1 step fields (`id`, `text`, `model`, `why`, `phase`, `group`, `estimate`, `files`, `checks`,
 `session`, `agent`, `skip`, `done`, `doneAt`, `note`) plus `uid` (never changes, also across a harvest), `title` (rename),
 `rev`, `createdAt`, `updatedAt`, `origin { build, step, how: divided | harvested }`.
 
-Statuses: `pending running waiting blocked failed complete archived`. Step models: **`Fable` or `Opus` only** (model
+Statuses: `pending queued splitting running waiting fixing blocked failed built landing landed complete escalated archived`
+(`splitting`: split-plan@1, its turn came and the parts are being planned; `fixing landing landed escalated`:
+done-means-merged@1; `built` legacy, read as landed). Step models: **`Fable` or `Opus` only** (model
 policy `framework/core/model-policy.mjs`; a legacy `[Sonnet]` prefix reads as Opus).
 
 ## Invariants (`validateStore`)

@@ -66,6 +66,7 @@
           "enum": [
             "pending",
             "queued",
+            "splitting",
             "running",
             "waiting",
             "fixing",
