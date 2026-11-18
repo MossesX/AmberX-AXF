@@ -63,7 +63,7 @@ def hub(req: httpx.Request) -> httpx.Response:
     bearer = (req.headers.get("authorization") or "") == f"Bearer {os.environ.get('AXHUB_TOKEN', '')}" and bool(os.environ.get("AXHUB_TOKEN"))
     if p == "/auth/api/policy" and not bearer and cookie not in state["sessions"]:
         return httpx.Response(401, json={"error": {"code": "signed_out", "message": "Sign in"}})
-    if (p.startswith("/auth/api/") and p != "/auth/api/policy") or p == "/apps.json":
+    if (p.startswith("/auth/api/") and p != "/auth/api/policy") or p in ("/apps.json", "/auth/admin/approvals/log.json"):
         if cookie not in state["sessions"]:
             return httpx.Response(401, json={"error": {"code": "signed_out", "message": "Sign in"}})
     if p == "/auth/api/session":
@@ -72,11 +72,17 @@ def hub(req: httpx.Request) -> httpx.Response:
         return httpx.Response(200, json={**APPROVALS, "filter": req.url.params.get("status", "all"), "page": int(req.url.params.get("page", "1"))})
     if p == f"/auth/api/approvals/{ID}":
         return httpx.Response(200, json={"item": APPROVALS["items"][0], "auto": APPROVALS["auto"]})
+    if p == "/auth/admin/approvals/log.json":
+        return httpx.Response(200, json={"entries": [{"id": "e1"}], "total": 1})
     if p == "/auth/api/approvals/log":
         return httpx.Response(200, json={"total": 1, "page": 1, "pages": 1, "tools": ["vps.run"], "statuses": ["approved"], "counts": {"approved": 1}, "entries": [{"id": "e1", "qualifiedTool": "vps.run", "status": "approved"}], "underPass": 0, "windows": [],
                                          "echo": dict(req.url.params)})
     if p == "/auth/api/passes":
+        if req.method == "POST":
+            return httpx.Response(200, json={"ok": True, "message": "Pass on", "pass": {"id": "p2"}})
         return httpx.Response(200, json={"active": [{"id": "p1", "secondsLeft": 100}], "recent": [], "minutes": {"min": 5, "max": 240, "presets": [30]}, "now": "2026-11-17T12:00:00Z"})
+    if p in ("/auth/api/passes/p1/revoke", "/auth/api/passes/p1/extend", "/auth/api/go-pass/end") and req.method == "POST":
+        return httpx.Response(200, json={"ok": True, "message": "Done"})
     if p == "/auth/api/go-pass":
         return httpx.Response(200, json={"live": False, "hours": [4], "repos": [], "branch": "go-pass", "file": "GO", "writes": []})
     if p == "/auth/api/users":
@@ -370,6 +376,44 @@ ok(j["ok"] and j["via"] == "browser" and any(r.url.path == f"/auth/api/approvals
 j = post(f"/approvals/{ID}/deny", {}, cookies=None).json()
 ok(j["ok"] is False and j["code"] == "relay_off", "relay off and no cookie: relay_off")
 plugin_services.provide("axf.hub-relay@1", relay, "approvals-banner")
+
+# ---------------------------------------------------------------- approval log (s10): download is a command
+j = post("/log/download").json()
+ok(j["ok"] and j["action"] == "download" and j["log"]["total"] == 1, "the whole log as JSON through the session")
+relay.mode = "signed_out"
+j = post("/log/download", cookies=None).json()
+ok(j["ok"] is False and j["code"] == "signed_out", "no session anywhere: an unavailable state, not a stack trace")
+relay.mode = "owner"
+
+# ---------------------------------------------------------------- passes (s11 / s12): grant and go are Brett's tap, revoke confirms, the rest are commands
+plugin_services.provide("axf.hub-relay@1", relay_w, "approvals-banner")
+writes.clear()
+j = post("/passes/grant", {"service": "vps", "scope": ["tokens.*"], "minutes": 30, "reason": "Theme work"}).json()
+ok(j["ok"] and writes[-1] == ("/auth/api/passes", {"service": "vps", "scope": ["tokens.*"], "minutes": 30, "reason": "Theme work"}, True), f"grant: the hub's passes route as Brett's tap ({writes[-1]})")
+ok(post("/passes/grant", {"service": "vps", "minutes": 30, "reason": "x"}).status_code == 400, "a grant without scope or tools is refused")
+ok(post("/passes/grant", {"service": "vps", "scope": "a", "minutes": 0, "reason": "x"}).status_code == 400, "minutes out of range is refused")
+j = post("/passes/request", {"service": "github", "tools": ["list_repos"], "minutes": 15, "reason": "Look at PRs"}).json()
+ok(j["ok"] and j["request"]["state"] == "open" and j["request"]["service"] == "github", "a request is written and waits")
+rid = j["request"]["id"]
+reqs = get("/passes").json()["requests"]
+ok(any(r["id"] == rid for r in reqs), "the request shows on the Passes screen")
+j = post("/passes/grant", {"service": "github", "tools": ["list_repos"], "minutes": 15, "reason": "Look at PRs", "requestId": rid}).json()
+ok(j["ok"] and not any(r["id"] == rid for r in get("/passes").json()["requests"]), "granting a request marks it granted")
+n_writes = len(writes)
+j = post("/passes/p1/revoke").json()
+ok(j["ok"] is False and j["code"] == "confirmation_required" and j["confirm"] and len(writes) == n_writes, "revoke: the first call answers a token and nothing reaches the hub")
+j2 = post("/passes/p1/revoke", {"confirm": "wrong"}).json()
+ok(j2["code"] == "confirmation_required" and j2["confirm"] != j["confirm"], "a wrong token: a fresh token, still nothing sent")
+j3 = post("/passes/p1/revoke", {"confirm": j2["confirm"]}).json()
+ok(j3["ok"] and writes[-1] == ("/auth/api/passes/p1/revoke", {}, False), "the second call with the token revokes (person=False: a confirm command)")
+j = post("/passes/p1/extend", {"minutes": 30}).json()
+ok(j["ok"] and writes[-1] == ("/auth/api/passes/p1/extend", {"minutes": 30}, False), "extend is a plain command")
+ok(post("/passes/p1/extend", {"minutes": "lots"}).status_code == 400, "extend needs minutes")
+j = post("/passes/go", {"hours": 4, "note": "phone"}).json()
+ok(j["ok"] and writes[-1] == ("/auth/api/go-pass", {"hours": 4, "note": "phone"}, True), "go pass is Brett's tap")
+j = post("/passes/go-end").json()
+ok(j["ok"] and writes[-1] == ("/auth/api/go-pass/end", {}, False), "ending the go pass is a command")
+ok(post(f"/passes/{'x' * 201}/revoke").status_code == 400, "an absurd pass id (over 200 characters) is 400")
 
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 

@@ -283,10 +283,11 @@ def read_passes(s: Session, table: dict[str, Any], p: dict[str, Any]) -> dict[st
     pol = policy_table()
     no_wait = None
     cs = plugin_services.get("axf.claude-settings@1")
-    fn = getattr(cs, "no_wait_state", None) if cs is not None else None
+    fn = getattr(cs, "get", None) if cs is not None else None
     if callable(fn):
         try:
-            no_wait = fn()
+            v = fn()
+            no_wait = v.get("noWait") if isinstance(v, dict) else None
         except Exception:  # noqa: BLE001 — No wait is shown read-only here; its owner reports its own health
             no_wait = None
     return {"ok": True, "via": r["via"], "active": r["json"].get("active", []), "recent": r["json"].get("recent", []), "minutes": r["json"].get("minutes"),
@@ -623,6 +624,33 @@ async def _body(request: Request) -> dict[str, Any]:
     return b if isinstance(b, dict) else {}
 
 
+# ---- confirm tokens (hub-console@1 who: confirm): the first call answers confirmation_required + a token, the second carries it
+import secrets as _secrets
+
+CONFIRM_TTL_S = 300
+_confirms: dict[str, tuple[float, str]] = {}
+
+
+def _confirm_key(sid: str, aid: str, row: str | None, caller: str) -> str:
+    return f"{caller}|{sid}|{aid}|{row or ''}"
+
+
+def confirm_check(sid: str, aid: str, row: str | None, caller: str, given: Any) -> dict[str, Any] | None:
+    """None when the call may go ahead; else the confirmation_required answer carrying the token to send back."""
+    now = time.time()
+    for k, (exp, _) in list(_confirms.items()):
+        if exp < now:
+            _confirms.pop(k, None)
+    key = _confirm_key(sid, aid, row, caller)
+    held = _confirms.get(key)
+    if isinstance(given, str) and given and held and held[1] == given:
+        _confirms.pop(key, None)
+        return None
+    token = _secrets.token_urlsafe(18)
+    _confirms[key] = (now + CONFIRM_TTL_S, token)
+    return {"ok": False, "code": "confirmation_required", "confirm": token, "message": f"{sid} {aid}{' ' + row if row else ''} changes the hub: send it again with confirm set to this token (valid {CONFIRM_TTL_S // 60} min)."}
+
+
 async def run_action(request: Request, sid: str, aid: str, row: str | None, hub_call: Callable[[Session, dict[str, Any]], tuple[str, Any]] | None, body: dict[str, Any] | None = None) -> dict[str, Any]:
     """One action of the route table: checks who may run it, finds the hub route, posts through the console's own hub
     session, audits, and answers {ok, message, state?, …} or the unavailable / refusal state."""
@@ -633,6 +661,10 @@ async def run_action(request: Request, sid: str, aid: str, row: str | None, hub_
         raise HTTPException(400, f"not a {sid} row id")
     b = body if body is not None else await _body(request)
     person = a.get("who") == "person"
+    if a.get("who") == "confirm" and not a.get("missing"):
+        need = confirm_check(sid, aid, row, _caller(request), b.get("confirm"))
+        if need is not None:
+            return {"screen": sid, "action": aid, **({"row": row} if row is not None else {}), **need}
     if a.get("missing"):
         out = {"ok": False, "code": HUB_MISSING, "message": a["missing"].get("why", "axHub has no route for this yet."), "proposed": a["missing"].get("proposed", ""), **({"cli": a["missing"]["cli"]} if a["missing"].get("cli") else {})}
     elif hub_call is None:
@@ -768,6 +800,131 @@ async def post_check(request: Request) -> dict[str, Any]:
     out = await run_action(request, "approvals", "check", None, None)
     state = await read_screen(request, "approvals")
     return {**out, "state": state}
+
+
+# ---- Passes and veto (s11 / s12): grant and go are Brett's tap; request, extend and go-end are commands; revoke confirms
+
+def _patterns(v: Any) -> list[str] | None:
+    if isinstance(v, list):
+        out = [str(x).strip() for x in v if str(x).strip()]
+    elif isinstance(v, str):
+        out = [x.strip() for x in v.split(",") if x.strip()]
+    else:
+        return None
+    return out[:40] or None
+
+
+def _pass_body(b: dict[str, Any]) -> dict[str, Any]:
+    service = str(b.get("service") or "").strip()[:80]
+    minutes = b.get("minutes")
+    reason = str(b.get("reason") or "").strip()[:300]
+    scope = _patterns(b.get("scope"))
+    tools = _patterns(b.get("tools"))
+    if not service or not reason or not (scope or tools):
+        raise HTTPException(400, "a pass needs service, reason and a scope or tools")
+    if not isinstance(minutes, int) or isinstance(minutes, bool) or minutes < 1 or minutes > 1440:
+        raise HTTPException(400, "minutes: 1 to 1440")
+    return {"service": service, **({"scope": scope} if scope else {}), **({"tools": tools} if tools else {}), "minutes": minutes, "reason": reason}
+
+
+def _requests_file() -> Path:
+    return _data() / "requests.jsonl"
+
+
+def _mark_request(rid: str, state: str, by: str) -> None:
+    f = _requests_file()
+    if not f.exists():
+        return
+    out = []
+    for line in f.read_text(encoding="utf-8").splitlines():
+        try:
+            j = json.loads(line)
+        except ValueError:
+            continue
+        if isinstance(j, dict) and j.get("id") == rid:
+            j = {**j, "state": state, "decidedAt": _now(), "decidedBy": by}
+        out.append(json.dumps(j))
+    f.write_text("\n".join(out) + ("\n" if out else ""), encoding="utf-8")
+
+
+@router.post("/passes/grant")
+async def post_pass_grant(request: Request) -> dict[str, Any]:
+    """Switch a pass on (Brett's own tap): service, scope and/or tools, minutes, reason; requestId marks a waiting request granted."""
+    b = await _body(request)
+    payload = _pass_body(b)
+    rid = str(b.get("requestId") or "")
+    out = await run_action(request, "passes", "grant", None, lambda s, _b: ("/auth/api/passes", payload), b)
+    if out.get("ok") and rid:
+        _mark_request(rid, "granted", _caller(request))
+    return out
+
+
+@router.post("/passes/request")
+async def post_pass_request(request: Request) -> dict[str, Any]:
+    """Ask Brett for a pass: the request waits on the Passes screen with a Grant button (the grant stays his click)."""
+    b = await _body(request)
+    payload = _pass_body(b)
+    rid = f"req-{int(time.time() * 1000):x}-{_secrets.token_hex(2)}"
+    entry = {"id": rid, "state": "open", "by": _caller(request), "at": _now(), **payload}
+    d = _data()
+    d.mkdir(parents=True, exist_ok=True)
+    with _requests_file().open("a", encoding="utf-8") as f:
+        f.write(json.dumps(entry) + "\n")
+    notify = plugin_services.get("axf.notify@1")
+    fn = getattr(notify, "send", None) if notify is not None else None
+    if callable(fn):
+        try:
+            fn({"type": "hub.pass-request", "title": f"Pass asked: {payload['service']} for {payload['minutes']} min", "body": payload["reason"], "open": "view:hub/tab:hub.tabs=passes", "owner": FOLDER})
+        except Exception:  # noqa: BLE001 — the request is written whether or not the phone hears about it
+            pass
+    out = await run_action(request, "passes", "request", None, None, b)
+    return {**out, "request": entry, "message": "Asked. It waits on Hub → Passes for Brett's Grant."}
+
+
+@router.post("/passes/{row}/revoke")
+async def post_pass_revoke(request: Request, row: str) -> dict[str, Any]:
+    """Revoke a pass now (a confirm: the first call answers a token, the second carries it)."""
+    return await run_action(request, "passes", "revoke", row, lambda s, b: (f"/auth/api/passes/{row}/revoke", {}))
+
+
+@router.post("/passes/{row}/extend")
+async def post_pass_extend(request: Request, row: str) -> dict[str, Any]:
+    """Extend a pass: {minutes} from now."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any]:
+        minutes = b.get("minutes")
+        if not isinstance(minutes, int) or isinstance(minutes, bool) or minutes < 1 or minutes > 1440:
+            raise HTTPException(400, "minutes: 1 to 1440")
+        return f"/auth/api/passes/{row}/extend", {"minutes": minutes}
+    return await run_action(request, "passes", "extend", row, call)
+
+
+@router.post("/passes/go")
+async def post_go_pass(request: Request) -> dict[str, Any]:
+    """Go pass for N hours (Brett's own tap): sessions that cannot reach axHub may work."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any]:
+        hours = b.get("hours")
+        if not isinstance(hours, int) or isinstance(hours, bool) or hours < 1 or hours > 72:
+            raise HTTPException(400, "hours: 1 to 72")
+        return "/auth/api/go-pass", {"hours": hours, "note": str(b.get("note") or "")[:200]}
+    return await run_action(request, "passes", "go", None, call)
+
+
+@router.post("/passes/go-end")
+async def post_go_pass_end(request: Request) -> dict[str, Any]:
+    """End the go pass now."""
+    return await run_action(request, "passes", "go-end", None, lambda s, b: ("/auth/api/go-pass/end", {}))
+
+
+# ---- Approval log (s10): the hub's whole log as JSON, a command
+
+@router.post("/log/download")
+async def post_log_download(request: Request) -> dict[str, Any]:
+    """The hub's whole approval log as JSON (the same file its Download JSON button serves), through the console's hub session."""
+    s = Session(request)
+    r = await run_in_threadpool(s.get, "/auth/admin/approvals/log.json")
+    out = {"ok": True, "via": r["via"], "log": r["json"], "message": "The hub's approval log."} if r["ok"] else r
+    _audit({"by": _caller(request), "screen": "log", "action": "download", "row": None, "who": "command", "ok": out["ok"], "code": out.get("code", ""), "via": out.get("via", "")})
+    return {"screen": "log", "action": "download", **out}
 
 
 # ---------------------------------------------------------------- systems check: can the console read the hub?

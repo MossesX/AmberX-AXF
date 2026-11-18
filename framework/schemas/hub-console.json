@@ -35,12 +35,50 @@
       "icon": "shield",
       "order": 0,
       "gate": "none",
-      "replaces": ["#/hub"],
-      "state": { "channel": "session", "hub": "GET /auth/api/session", "tool": "hub_status", "shape": "hub-status@1", "fields": ["signedIn", "admin", "user", "can", "waiting", "heldCount", "hub", "checkedAt", "relay"] },
+      "replaces": [
+        "#/hub"
+      ],
+      "state": {
+        "channel": "session",
+        "hub": "GET /auth/api/session",
+        "tool": "hub_status",
+        "shape": "hub-status@1",
+        "fields": [
+          "signedIn",
+          "admin",
+          "user",
+          "can",
+          "waiting",
+          "heldCount",
+          "hub",
+          "checkedAt",
+          "relay"
+        ]
+      },
       "actions": [
-        { "id": "check", "label": "Check the hub now", "who": "command", "effect": "read", "hub": null, "tool": "hub_check" },
-        { "id": "sign-in", "label": "Sign in to axHub", "who": "command", "effect": "navigate", "hub": "GET /auth/login", "tool": "hub_sign_in" },
-        { "id": "sign-out", "label": "Sign out of axHub", "who": "person", "effect": "write", "hub": "POST /auth/api/logout" }
+        {
+          "id": "check",
+          "label": "Check the hub now",
+          "who": "command",
+          "effect": "read",
+          "hub": null,
+          "tool": "hub_check"
+        },
+        {
+          "id": "sign-in",
+          "label": "Sign in to axHub",
+          "who": "command",
+          "effect": "navigate",
+          "hub": "GET /auth/login",
+          "tool": "hub_sign_in"
+        },
+        {
+          "id": "sign-out",
+          "label": "Sign out of axHub",
+          "who": "person",
+          "effect": "write",
+          "hub": "POST /auth/api/logout"
+        }
       ],
       "settings": []
     },
@@ -50,30 +88,182 @@
       "icon": "shield",
       "order": 1,
       "gate": "admin",
-      "replaces": ["#/approvals", "#/approvals?status=<filter>", "#/approvals/<id>", "#/approvals/<id>?do=approve", "#/approvals/<id>?postpone=1"],
+      "replaces": [
+        "#/approvals",
+        "#/approvals?status=<filter>",
+        "#/approvals/<id>",
+        "#/approvals/<id>?do=approve",
+        "#/approvals/<id>?postpone=1"
+      ],
       "state": {
-        "channel": "session", "hub": "GET /auth/api/approvals?status={status}&page={page}", "tool": "hub_approvals_list", "shape": "approval-grid@1",
-        "params": { "status": ["all", "pending", "postponed", "approved", "declined", "ignored", "revoked", "used", "expired"], "page": "integer ≥ 1" },
-        "fields": ["filters", "filter", "page", "pages", "total", "waiting", "heldCount", "postponed", "items", "auto", "log"],
-        "poll": { "idleMs": 10000, "heldMs": 3000 }
+        "channel": "session",
+        "hub": "GET /auth/api/approvals?status={status}&page={page}",
+        "tool": "hub_approvals_list",
+        "shape": "approval-grid@1",
+        "params": {
+          "status": [
+            "all",
+            "pending",
+            "postponed",
+            "approved",
+            "declined",
+            "ignored",
+            "revoked",
+            "used",
+            "expired"
+          ],
+          "page": "integer ≥ 1"
+        },
+        "fields": [
+          "filters",
+          "filter",
+          "page",
+          "pages",
+          "total",
+          "waiting",
+          "heldCount",
+          "postponed",
+          "items",
+          "auto",
+          "log"
+        ],
+        "poll": {
+          "idleMs": 10000,
+          "heldMs": 3000
+        }
       },
-      "rows": { "grid": "hub.approvals", "idField": "id", "path": "items", "idPattern": "^[0-9a-f-]{36}$", "read": { "channel": "session", "hub": "GET /auth/api/approvals/{id}", "tool": "hub_approval_get", "shape": "approval-item@1", "fields": ["item", "auto"] } },
+      "rows": {
+        "grid": "hub.approvals",
+        "idField": "id",
+        "path": "items",
+        "idPattern": "^[0-9a-f-]{36}$",
+        "read": {
+          "channel": "session",
+          "hub": "GET /auth/api/approvals/{id}",
+          "tool": "hub_approval_get",
+          "shape": "approval-item@1",
+          "fields": [
+            "item",
+            "auto"
+          ]
+        }
+      },
       "actions": [
-        { "id": "approve", "label": "Approve", "who": "person", "effect": "write", "row": true, "hub": "POST /auth/api/approvals/{id} {action: approve, rev} · held: POST /auth/api/approvals/{id}/approve-now" },
-        { "id": "deny", "label": "Deny", "who": "person", "effect": "write", "row": true, "hub": "POST /auth/api/approvals/{id} {action: decline, rev} · held: POST /auth/api/approvals/{id}/deny" },
-        { "id": "shelve", "label": "Shelve", "who": "person", "effect": "write", "row": true, "hub": "POST /auth/api/approvals/{id}/shelve" },
-        { "id": "postpone", "label": "Postpone…", "who": "person", "effect": "write", "row": true, "hub": "GET /auth/api/approvals/{id}/postpone → POST /auth/api/approvals/{id} {action: postpone, …}" },
-        { "id": "ignore", "label": "Ignore", "who": "person", "effect": "write", "row": true, "hub": "POST /auth/api/approvals/{id} {action: ignore, rev}" },
-        { "id": "revoke", "label": "Revoke", "who": "person", "effect": "destructive", "row": true, "hub": "POST /auth/api/approvals/{id} {action: revoke, rev}" },
-        { "id": "reopen", "label": "Reopen", "who": "person", "effect": "write", "row": true, "hub": "POST /auth/api/approvals/{id} {action: reopen, rev}" },
-        { "id": "auto-start", "label": "Approve everything for N minutes", "who": "person", "effect": "write", "hub": "POST /auth/api/approvals/auto {minutes}" },
-        { "id": "auto-stop", "label": "Stop approving automatically", "who": "command", "effect": "write", "hub": "POST /auth/api/approvals/auto/stop", "tool": "hub_approvals_auto_stop" },
-        { "id": "check", "label": "Check now", "who": "command", "effect": "read", "hub": null, "tool": "hub_approvals_check" }
+        {
+          "id": "approve",
+          "label": "Approve",
+          "who": "person",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/approvals/{id} {action: approve, rev} · held: POST /auth/api/approvals/{id}/approve-now"
+        },
+        {
+          "id": "deny",
+          "label": "Deny",
+          "who": "person",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/approvals/{id} {action: decline, rev} · held: POST /auth/api/approvals/{id}/deny"
+        },
+        {
+          "id": "shelve",
+          "label": "Shelve",
+          "who": "person",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/approvals/{id}/shelve"
+        },
+        {
+          "id": "postpone",
+          "label": "Postpone…",
+          "who": "person",
+          "effect": "write",
+          "row": true,
+          "hub": "GET /auth/api/approvals/{id}/postpone → POST /auth/api/approvals/{id} {action: postpone, …}"
+        },
+        {
+          "id": "ignore",
+          "label": "Ignore",
+          "who": "person",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/approvals/{id} {action: ignore, rev}"
+        },
+        {
+          "id": "revoke",
+          "label": "Revoke",
+          "who": "person",
+          "effect": "destructive",
+          "row": true,
+          "hub": "POST /auth/api/approvals/{id} {action: revoke, rev}"
+        },
+        {
+          "id": "reopen",
+          "label": "Reopen",
+          "who": "person",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/approvals/{id} {action: reopen, rev}"
+        },
+        {
+          "id": "auto-start",
+          "label": "Approve everything for N minutes",
+          "who": "person",
+          "effect": "write",
+          "hub": "POST /auth/api/approvals/auto {minutes}"
+        },
+        {
+          "id": "auto-stop",
+          "label": "Stop approving automatically",
+          "who": "command",
+          "effect": "write",
+          "hub": "POST /auth/api/approvals/auto/stop",
+          "tool": "hub_approvals_auto_stop"
+        },
+        {
+          "id": "check",
+          "label": "Check now",
+          "who": "command",
+          "effect": "read",
+          "hub": null,
+          "tool": "hub_approvals_check"
+        }
       ],
       "settings": [
-        { "key": "axf.hub.approvals.grid", "kind": "json", "label": "Approvals grid columns and sort", "default": { "hidden": [], "sort": null } },
-        { "key": "axf.hub.approvals.source", "kind": "choice", "label": "Source filter", "default": "", "options": ["", "claude_ai", "claude_code", "headless", "console", "agent", "system", "unknown"] },
-        { "key": "axf.hub.poll", "kind": "json", "label": "How often the hub is read (ms, idle / with a held call)", "default": { "idleMs": 10000, "heldMs": 3000 } }
+        {
+          "key": "axf.hub.approvals.grid",
+          "kind": "json",
+          "label": "Approvals grid columns and sort",
+          "default": {
+            "hidden": [],
+            "sort": null
+          }
+        },
+        {
+          "key": "axf.hub.approvals.source",
+          "kind": "choice",
+          "label": "Source filter",
+          "default": "",
+          "options": [
+            "",
+            "claude_ai",
+            "claude_code",
+            "headless",
+            "console",
+            "agent",
+            "system",
+            "unknown"
+          ]
+        },
+        {
+          "key": "axf.hub.poll",
+          "kind": "json",
+          "label": "How often the hub is read (ms, idle / with a held call)",
+          "default": {
+            "idleMs": 10000,
+            "heldMs": 3000
+          }
+        }
       ]
     },
     {
@@ -81,19 +271,82 @@
       "title": "Approval log",
       "icon": "list",
       "order": 2,
+      "aliases": [
+        "approval-log"
+      ],
       "gate": "admin",
-      "replaces": ["#/approvals/log", "#/approvals/log?pass=any", "#/approvals/log?pass=<id>"],
+      "replaces": [
+        "#/approvals/log",
+        "#/approvals/log?pass=any",
+        "#/approvals/log?pass=<id>"
+      ],
       "state": {
-        "channel": "session", "hub": "GET /auth/api/approvals/log?q=&status=&via=&tool=&sort=&page=&pass=", "tool": "hub_approval_log", "shape": "approval-log@1",
-        "params": { "q": "string", "status": "string", "via": ["", "pending", "web", "cli", "auto", "other"], "tool": "string", "sort": ["newest", "oldest", "tool", "status", "wait"], "page": "integer ≥ 1", "pass": "'' | any | <pass id>" },
-        "fields": ["total", "page", "pages", "tools", "statuses", "counts", "entries", "underPass", "windows"]
+        "channel": "session",
+        "hub": "GET /auth/api/approvals/log?q=&status=&via=&tool=&sort=&page=&pass=",
+        "tool": "hub_approval_log",
+        "shape": "approval-log@1",
+        "params": {
+          "q": "string",
+          "status": "string",
+          "via": [
+            "",
+            "pending",
+            "web",
+            "cli",
+            "auto",
+            "other"
+          ],
+          "tool": "string",
+          "sort": [
+            "newest",
+            "oldest",
+            "tool",
+            "status",
+            "wait"
+          ],
+          "page": "integer ≥ 1",
+          "pass": "'' | any | <pass id>"
+        },
+        "fields": [
+          "total",
+          "page",
+          "pages",
+          "tools",
+          "statuses",
+          "counts",
+          "entries",
+          "underPass",
+          "windows"
+        ]
       },
-      "rows": { "grid": "hub.log", "idField": "id", "path": "entries" },
+      "rows": {
+        "grid": "hub.log",
+        "idField": "id",
+        "path": "entries"
+      },
       "actions": [
-        { "id": "download", "label": "Download JSON", "who": "command", "effect": "read", "hub": "GET /auth/admin/approvals/log.json", "tool": "hub_approval_log_download" }
+        {
+          "id": "download",
+          "label": "Download JSON",
+          "who": "command",
+          "effect": "read",
+          "hub": "GET /auth/admin/approvals/log.json",
+          "tool": "hub_approval_log_download"
+        }
       ],
       "settings": [
-        { "key": "axf.hub.log.filters", "kind": "json", "label": "Approval log filters", "default": { "q": "", "status": "", "via": "", "tool": "", "sort": "newest" } }
+        {
+          "key": "axf.hub.log.filters",
+          "kind": "json",
+          "label": "Approval log filters",
+          "default": {
+            "q": "",
+            "status": "",
+            "via": "",
+            "tool": "",
+            "sort": "newest"
+          }
+        }
       ]
     },
     {
@@ -102,24 +355,119 @@
       "icon": "clock",
       "order": 3,
       "gate": "admin",
-      "replaces": ["#/passes", "#/go-pass"],
+      "replaces": [
+        "#/passes",
+        "#/go-pass"
+      ],
       "state": {
-        "channel": "session", "hub": "GET /auth/api/passes + GET /auth/api/go-pass + GET /auth/api/policy (veto block) + console: pending pass requests", "tool": "hub_passes_list", "shape": "hub-passes@1",
-        "fields": ["active", "recent", "minutes", "requests", "goPass", "veto", "noWait", "now"]
+        "channel": "session",
+        "hub": "GET /auth/api/passes + GET /auth/api/go-pass + GET /auth/api/policy (veto block) + console: pending pass requests",
+        "tool": "hub_passes_list",
+        "shape": "hub-passes@1",
+        "fields": [
+          "active",
+          "recent",
+          "minutes",
+          "requests",
+          "goPass",
+          "veto",
+          "noWait",
+          "now"
+        ]
       },
-      "rows": { "grid": "hub.passes", "idField": "id", "path": "active" },
+      "rows": {
+        "grid": "hub.passes",
+        "idField": "id",
+        "path": "active"
+      },
       "actions": [
-        { "id": "grant", "label": "Switch a pass on", "who": "person", "effect": "write", "hub": "POST /auth/api/passes {service, scope[], tools[], minutes, reason}" },
-        { "id": "request", "label": "Ask Brett for a pass", "who": "command", "effect": "write", "hub": null, "channel": "console", "tool": "hub_pass_request", "input": ["service", "scope", "tools", "minutes", "reason"] },
-        { "id": "revoke", "label": "Revoke", "who": "confirm", "effect": "destructive", "row": true, "hub": "POST /auth/api/passes/{id}/revoke", "tool": "hub_pass_revoke" },
-        { "id": "extend", "label": "Extend", "who": "command", "effect": "write", "row": true, "hub": "POST /auth/api/passes/{id}/extend {minutes}", "tool": "hub_pass_extend" },
-        { "id": "go", "label": "Go for N hours", "who": "person", "effect": "write", "hub": "POST /auth/api/go-pass {hours, note}" },
-        { "id": "go-end", "label": "End the go pass", "who": "command", "effect": "write", "hub": "POST /auth/api/go-pass/end", "tool": "hub_go_pass_end" }
+        {
+          "id": "grant",
+          "label": "Switch a pass on",
+          "who": "person",
+          "effect": "write",
+          "hub": "POST /auth/api/passes {service, scope[], tools[], minutes, reason}"
+        },
+        {
+          "id": "request",
+          "label": "Ask Brett for a pass",
+          "who": "command",
+          "effect": "write",
+          "hub": null,
+          "channel": "console",
+          "tool": "hub_pass_request",
+          "input": [
+            "service",
+            "scope",
+            "tools",
+            "minutes",
+            "reason"
+          ]
+        },
+        {
+          "id": "revoke",
+          "label": "Revoke",
+          "who": "confirm",
+          "effect": "destructive",
+          "row": true,
+          "hub": "POST /auth/api/passes/{id}/revoke",
+          "tool": "hub_pass_revoke"
+        },
+        {
+          "id": "extend",
+          "label": "Extend",
+          "who": "command",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/passes/{id}/extend {minutes}",
+          "tool": "hub_pass_extend"
+        },
+        {
+          "id": "go",
+          "label": "Go for N hours",
+          "who": "person",
+          "effect": "write",
+          "hub": "POST /auth/api/go-pass {hours, note}"
+        },
+        {
+          "id": "go-end",
+          "label": "End the go pass",
+          "who": "command",
+          "effect": "write",
+          "hub": "POST /auth/api/go-pass/end",
+          "tool": "hub_go_pass_end"
+        }
       ],
       "settings": [
-        { "key": "axf.hub.passes.grant", "kind": "json", "label": "Grant form defaults", "default": { "service": "axf-console", "scope": "tokens.theme", "tools": "", "reason": "Theme changes with Claude" } },
-        { "key": "axf.hub.veto.countdownSeconds", "kind": "number", "label": "Veto countdown (seconds)", "default": 90, "min": 10, "max": 1800, "who": "confirm", "writes": "PUT /auth/api/policy {changes: [{service: *, vetoSeconds}], reason}" },
-        { "key": "axf.hub.veto.noWait", "kind": "toggle", "label": "No wait (owner-only, shown read-only here)", "default": false, "personOnly": true, "ownedBy": "claude-settings" }
+        {
+          "key": "axf.hub.passes.grant",
+          "kind": "json",
+          "label": "Grant form defaults",
+          "default": {
+            "service": "axf-console",
+            "scope": "tokens.theme",
+            "tools": "",
+            "reason": "Theme changes with Claude"
+          }
+        },
+        {
+          "key": "axf.hub.veto.countdownSeconds",
+          "kind": "number",
+          "label": "Veto countdown (seconds)",
+          "default": 90,
+          "min": 10,
+          "max": 1800,
+          "who": "confirm",
+          "writes": "PUT /auth/api/policy {changes: [{service: *, vetoSeconds}], reason}"
+        },
+        {
+          "key": "axf.hub.veto.noWait",
+          "kind": "toggle",
+          "label": "No wait (owner-only, shown read-only here)",
+          "default": false,
+          "personOnly": true,
+          "ownedBy": "claude-settings"
+        }
       ]
     },
     {
@@ -128,19 +476,135 @@
       "icon": "user",
       "order": 4,
       "gate": "admin",
-      "replaces": ["#/users"],
-      "state": { "channel": "session", "hub": "GET /auth/api/users", "tool": "hub_users_list", "shape": "hub-users@1", "fields": ["you", "roles", "passwordMin", "tempPasswordMin", "hints", "users"] },
-      "rows": { "grid": "hub.users", "idField": "id", "path": "users", "read": { "channel": "session", "hub": "GET /auth/api/users (one row)", "tool": "hub_users_get", "shape": "hub-user@1", "fields": ["id", "username", "role", "disabled", "name", "email", "permissions", "mustChangePassword", "weakPassword", "createdAt", "passwordChangedAt"] } },
+      "replaces": [
+        "#/users"
+      ],
+      "state": {
+        "channel": "session",
+        "hub": "GET /auth/api/users",
+        "tool": "hub_users_list",
+        "shape": "hub-users@1",
+        "fields": [
+          "you",
+          "roles",
+          "passwordMin",
+          "tempPasswordMin",
+          "hints",
+          "users"
+        ]
+      },
+      "rows": {
+        "grid": "hub.users",
+        "idField": "id",
+        "path": "users",
+        "read": {
+          "channel": "session",
+          "hub": "GET /auth/api/users (one row)",
+          "tool": "hub_users_get",
+          "shape": "hub-user@1",
+          "fields": [
+            "id",
+            "username",
+            "role",
+            "disabled",
+            "name",
+            "email",
+            "permissions",
+            "mustChangePassword",
+            "weakPassword",
+            "createdAt",
+            "passwordChangedAt"
+          ]
+        }
+      },
       "actions": [
-        { "id": "invite", "label": "Add an account", "who": "confirm", "effect": "write", "hub": "POST /auth/api/users {username, name, email, password, role}", "tool": "hub_users_invite", "input": ["username", "name", "email", "password", "role"] },
-        { "id": "profile", "label": "Save name and email", "who": "command", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: profile, name, email}", "tool": "hub_users_profile" },
-        { "id": "role", "label": "Change role", "who": "confirm", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: role, role}", "tool": "hub_users_role" },
-        { "id": "permissions", "label": "Save permissions", "who": "confirm", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: permissions, permissions[]}", "tool": "hub_users_permissions" },
-        { "id": "password", "label": "Set a temporary password", "who": "person", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: password, password}" },
-        { "id": "enable", "label": "Enable", "who": "command", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: enable}", "tool": "hub_users_enable" },
-        { "id": "disable", "label": "Disable", "who": "confirm", "effect": "destructive", "row": true, "hub": "POST /auth/api/users/{id} {action: disable}", "tool": "hub_users_disable" },
-        { "id": "signout", "label": "Sign out everywhere", "who": "confirm", "effect": "write", "row": true, "hub": "POST /auth/api/users/{id} {action: signout}", "tool": "hub_users_signout" },
-        { "id": "delete", "label": "Delete", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": "POST /auth/api/users/{id} {action: delete, sure: true}", "tool": "hub_users_delete" }
+        {
+          "id": "invite",
+          "label": "Add an account",
+          "who": "confirm",
+          "effect": "write",
+          "hub": "POST /auth/api/users {username, name, email, password, role}",
+          "tool": "hub_users_invite",
+          "input": [
+            "username",
+            "name",
+            "email",
+            "password",
+            "role"
+          ]
+        },
+        {
+          "id": "profile",
+          "label": "Save name and email",
+          "who": "command",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/users/{id} {action: profile, name, email}",
+          "tool": "hub_users_profile"
+        },
+        {
+          "id": "role",
+          "label": "Change role",
+          "who": "confirm",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/users/{id} {action: role, role}",
+          "tool": "hub_users_role"
+        },
+        {
+          "id": "permissions",
+          "label": "Save permissions",
+          "who": "confirm",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/users/{id} {action: permissions, permissions[]}",
+          "tool": "hub_users_permissions"
+        },
+        {
+          "id": "password",
+          "label": "Set a temporary password",
+          "who": "person",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/users/{id} {action: password, password}"
+        },
+        {
+          "id": "enable",
+          "label": "Enable",
+          "who": "command",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/users/{id} {action: enable}",
+          "tool": "hub_users_enable"
+        },
+        {
+          "id": "disable",
+          "label": "Disable",
+          "who": "confirm",
+          "effect": "destructive",
+          "row": true,
+          "hub": "POST /auth/api/users/{id} {action: disable}",
+          "tool": "hub_users_disable"
+        },
+        {
+          "id": "signout",
+          "label": "Sign out everywhere",
+          "who": "confirm",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/users/{id} {action: signout}",
+          "tool": "hub_users_signout"
+        },
+        {
+          "id": "delete",
+          "label": "Delete",
+          "who": "confirm",
+          "effect": "destructive",
+          "row": true,
+          "method": "DELETE",
+          "hub": "POST /auth/api/users/{id} {action: delete, sure: true}",
+          "tool": "hub_users_delete"
+        }
       ],
       "settings": []
     },
@@ -150,16 +614,78 @@
       "icon": "key",
       "order": 5,
       "gate": "user",
-      "replaces": ["#/account"],
-      "state": { "channel": "session", "hub": "GET /auth/api/account + console: Phone Connect pairing + claude-settings notifications", "tool": "hub_account_get", "shape": "hub-account@1", "fields": ["user", "passwordMin", "browsers", "phone", "notifications"] },
-      "rows": { "grid": "hub.sessions", "idField": "id", "path": "browsers" },
+      "replaces": [
+        "#/account"
+      ],
+      "state": {
+        "channel": "session",
+        "hub": "GET /auth/api/account + console: Phone Connect pairing + claude-settings notifications",
+        "tool": "hub_account_get",
+        "shape": "hub-account@1",
+        "fields": [
+          "user",
+          "passwordMin",
+          "browsers",
+          "phone",
+          "notifications"
+        ]
+      },
+      "rows": {
+        "grid": "hub.sessions",
+        "idField": "id",
+        "path": "browsers"
+      },
       "actions": [
-        { "id": "profile", "label": "Save name and email", "who": "command", "effect": "write", "hub": "POST /auth/api/account/profile {name, email}", "tool": "hub_account_profile" },
-        { "id": "password", "label": "Change your password", "who": "person", "effect": "write", "hub": "POST /auth/api/account/password {current, password, confirm}" },
-        { "id": "signout-others", "label": "Sign out the other browsers", "who": "confirm", "effect": "write", "hub": "POST /auth/api/account/signout-others", "tool": "hub_account_signout_others" },
-        { "id": "signout", "label": "Sign out", "who": "person", "effect": "write", "hub": "POST /auth/api/logout" },
-        { "id": "phone", "label": "Linked phone (Phone Connect)", "who": "command", "effect": "navigate", "hub": null, "channel": "console", "tool": "hub_account_phone", "opens": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect" },
-        { "id": "notifications", "label": "Notification preferences", "who": "command", "effect": "navigate", "hub": null, "channel": "console", "tool": "hub_account_notifications", "opens": "view:claude-settings/tab:claude-settings.tabs=notifications" }
+        {
+          "id": "profile",
+          "label": "Save name and email",
+          "who": "command",
+          "effect": "write",
+          "hub": "POST /auth/api/account/profile {name, email}",
+          "tool": "hub_account_profile"
+        },
+        {
+          "id": "password",
+          "label": "Change your password",
+          "who": "person",
+          "effect": "write",
+          "hub": "POST /auth/api/account/password {current, password, confirm}"
+        },
+        {
+          "id": "signout-others",
+          "label": "Sign out the other browsers",
+          "who": "confirm",
+          "effect": "write",
+          "hub": "POST /auth/api/account/signout-others",
+          "tool": "hub_account_signout_others"
+        },
+        {
+          "id": "signout",
+          "label": "Sign out",
+          "who": "person",
+          "effect": "write",
+          "hub": "POST /auth/api/logout"
+        },
+        {
+          "id": "phone",
+          "label": "Linked phone (Phone Connect)",
+          "who": "command",
+          "effect": "navigate",
+          "hub": null,
+          "channel": "console",
+          "tool": "hub_account_phone",
+          "opens": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect"
+        },
+        {
+          "id": "notifications",
+          "label": "Notification preferences",
+          "who": "command",
+          "effect": "navigate",
+          "hub": null,
+          "channel": "console",
+          "tool": "hub_account_notifications",
+          "opens": "view:claude-settings/tab:claude-settings.tabs=notifications"
+        }
       ],
       "settings": []
     },
@@ -169,22 +695,121 @@
       "icon": "layers",
       "order": 6,
       "gate": "admin",
-      "replaces": ["#/services"],
-      "state": { "channel": "bearer", "hub": "MCP list_services + GET /auth/api/policy (policy-table@1)", "tool": "hub_services_list", "shape": "hub-services@1", "fields": ["services", "veto", "health", "checkedAt"] },
+      "replaces": [
+        "#/services"
+      ],
+      "state": {
+        "channel": "bearer",
+        "hub": "MCP list_services + GET /auth/api/policy (policy-table@1)",
+        "tool": "hub_services_list",
+        "shape": "hub-services@1",
+        "fields": [
+          "services",
+          "veto",
+          "health",
+          "checkedAt"
+        ]
+      },
       "rows": {
-        "grid": "hub.connectors", "idField": "namespace", "path": "services", "idPattern": "^[a-z][a-z0-9_-]{0,63}$",
-        "read": { "channel": "bearer", "hub": "MCP describe_service {service} + policy row + GET /auth/api/approvals/log?tool={namespace}.* (session)", "tool": "hub_service_get", "shape": "hub-service@1", "fields": ["namespace", "type", "enabled", "defaultPolicy", "policyPreset", "toolsStale", "tools", "recentCalls", "health"] }
+        "grid": "hub.connectors",
+        "idField": "namespace",
+        "path": "services",
+        "idPattern": "^[a-z][a-z0-9_-]{0,63}$",
+        "read": {
+          "channel": "bearer",
+          "hub": "MCP describe_service {service} + policy row + GET /auth/api/approvals/log?tool={namespace}.* (session)",
+          "tool": "hub_service_get",
+          "shape": "hub-service@1",
+          "fields": [
+            "namespace",
+            "type",
+            "enabled",
+            "defaultPolicy",
+            "policyPreset",
+            "toolsStale",
+            "tools",
+            "recentCalls",
+            "health"
+          ]
+        }
       },
       "actions": [
-        { "id": "policy", "label": "Set a tool's policy", "who": "confirm", "effect": "write", "row": true, "hub": "PUT /auth/api/policy {changes: [{service, tool, policy, vetoSeconds}], reason}", "tool": "hub_policy_set", "input": ["service", "tool", "policy", "vetoSeconds", "reason"] },
-        { "id": "add", "label": "Add a connector", "who": "confirm", "effect": "write", "hub": null, "missing": { "why": "axHub configures services in its own CLI (axhub services add); no JSON route yet.", "proposed": "POST /auth/api/services {namespace, type, config}", "cli": "axhub services add <namespace> --type <type>" }, "tool": "hub_connector_add" },
-        { "id": "reconnect", "label": "Reconnect", "who": "confirm", "effect": "write", "row": true, "hub": null, "missing": { "why": "No reconnect route on the hub yet.", "proposed": "POST /auth/api/services/{namespace}/reconnect", "cli": "axhub services refresh <namespace>" }, "tool": "hub_connector_reconnect" },
-        { "id": "remove", "label": "Remove", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": null, "missing": { "why": "No remove route on the hub yet.", "proposed": "DELETE /auth/api/services/{namespace}", "cli": "axhub services remove <namespace>" }, "tool": "hub_connector_remove" }
+        {
+          "id": "policy",
+          "label": "Set a tool's policy",
+          "who": "confirm",
+          "effect": "write",
+          "row": true,
+          "hub": "PUT /auth/api/policy {changes: [{service, tool, policy, vetoSeconds}], reason}",
+          "tool": "hub_policy_set",
+          "input": [
+            "service",
+            "tool",
+            "policy",
+            "vetoSeconds",
+            "reason"
+          ]
+        },
+        {
+          "id": "add",
+          "label": "Add a connector",
+          "who": "confirm",
+          "effect": "write",
+          "hub": null,
+          "missing": {
+            "why": "axHub configures services in its own CLI (axhub services add); no JSON route yet.",
+            "proposed": "POST /auth/api/services {namespace, type, config}",
+            "cli": "axhub services add <namespace> --type <type>"
+          },
+          "tool": "hub_connector_add"
+        },
+        {
+          "id": "reconnect",
+          "label": "Reconnect",
+          "who": "confirm",
+          "effect": "write",
+          "row": true,
+          "hub": null,
+          "missing": {
+            "why": "No reconnect route on the hub yet.",
+            "proposed": "POST /auth/api/services/{namespace}/reconnect",
+            "cli": "axhub services refresh <namespace>"
+          },
+          "tool": "hub_connector_reconnect"
+        },
+        {
+          "id": "remove",
+          "label": "Remove",
+          "who": "confirm",
+          "effect": "destructive",
+          "row": true,
+          "method": "DELETE",
+          "hub": null,
+          "missing": {
+            "why": "No remove route on the hub yet.",
+            "proposed": "DELETE /auth/api/services/{namespace}",
+            "cli": "axhub services remove <namespace>"
+          },
+          "tool": "hub_connector_remove"
+        }
       ],
-      "health": { "id": "hub-connectors", "label": "Connector keys", "what": "A connector whose token the hub reports dead, expired or under-scoped (toolsStale, enabled with no tools, describe_service error)" },
       "settings": [
-        { "key": "axf.hub.connectors.show", "kind": "choice", "label": "Connectors shown", "default": "enabled", "options": ["enabled", "all"] }
-      ]
+        {
+          "key": "axf.hub.connectors.show",
+          "kind": "choice",
+          "label": "Connectors shown",
+          "default": "enabled",
+          "options": [
+            "enabled",
+            "all"
+          ]
+        }
+      ],
+      "health": {
+        "id": "hub-connectors",
+        "label": "Connector keys",
+        "what": "A connector whose token the hub reports dead, expired or under-scoped (toolsStale, enabled with no tools, describe_service error)"
+      }
     },
     {
       "id": "handoff",
@@ -192,16 +817,86 @@
       "icon": "package",
       "order": 7,
       "gate": "admin",
-      "replaces": ["#/handoff", "#/handoff/<id>", "#/handoff/<id>?file=<path>"],
-      "state": { "channel": "session", "hub": "GET /auth/api/handoff", "tool": "hub_handoff_list", "shape": "hub-handoffs@1", "fields": ["runs"] },
+      "replaces": [
+        "#/handoff",
+        "#/handoff/<id>",
+        "#/handoff/<id>?file=<path>"
+      ],
+      "state": {
+        "channel": "session",
+        "hub": "GET /auth/api/handoff",
+        "tool": "hub_handoff_list",
+        "shape": "hub-handoffs@1",
+        "fields": [
+          "runs"
+        ]
+      },
       "rows": {
-        "grid": "hub.handoff", "idField": "id", "path": "runs", "idPattern": "^\\d{8}-\\d{6}-[a-z0-9]{4}$",
-        "read": { "channel": "session", "hub": "GET /auth/api/handoff/{id} (+ /progress poll, /file?path=)", "tool": "hub_handoff_get", "shape": "hub-handoff@1", "fields": ["id", "at", "project", "repo", "commit", "published", "failed", "note", "instructions", "prompt", "files", "log", "elapsed", "steps", "sentAt"] }
+        "grid": "hub.handoff",
+        "idField": "id",
+        "path": "runs",
+        "idPattern": "^\\d{8}-\\d{6}-[a-z0-9]{4}$",
+        "read": {
+          "channel": "session",
+          "hub": "GET /auth/api/handoff/{id} (+ /progress poll, /file?path=)",
+          "tool": "hub_handoff_get",
+          "shape": "hub-handoff@1",
+          "fields": [
+            "id",
+            "at",
+            "project",
+            "repo",
+            "commit",
+            "published",
+            "failed",
+            "note",
+            "instructions",
+            "prompt",
+            "files",
+            "log",
+            "elapsed",
+            "steps",
+            "sentAt"
+          ]
+        }
       },
       "actions": [
-        { "id": "send", "label": "Send to a session (copy / open) and mark sent", "who": "command", "effect": "write", "row": true, "hub": "POST /auth/api/handoff/{id}/sent", "tool": "hub_handoff_send" },
-        { "id": "accept", "label": "Accept on this device", "who": "command", "effect": "write", "row": true, "hub": null, "missing": { "why": "Device-to-device handoff waits on the hub protocol (AXPP).", "proposed": "POST /auth/api/handoff/{id}/accept {device}" }, "tool": "hub_handoff_accept" },
-        { "id": "clear", "label": "Clear", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": null, "missing": { "why": "No delete route for a handoff run yet.", "proposed": "DELETE /auth/api/handoff/{id}" }, "tool": "hub_handoff_clear" }
+        {
+          "id": "send",
+          "label": "Send to a session (copy / open) and mark sent",
+          "who": "command",
+          "effect": "write",
+          "row": true,
+          "hub": "POST /auth/api/handoff/{id}/sent",
+          "tool": "hub_handoff_send"
+        },
+        {
+          "id": "accept",
+          "label": "Accept on this device",
+          "who": "command",
+          "effect": "write",
+          "row": true,
+          "hub": null,
+          "missing": {
+            "why": "Device-to-device handoff waits on the hub protocol (AXPP).",
+            "proposed": "POST /auth/api/handoff/{id}/accept {device}"
+          },
+          "tool": "hub_handoff_accept"
+        },
+        {
+          "id": "clear",
+          "label": "Clear",
+          "who": "confirm",
+          "effect": "destructive",
+          "row": true,
+          "method": "DELETE",
+          "hub": null,
+          "missing": {
+            "why": "No delete route for a handoff run yet.",
+            "proposed": "DELETE /auth/api/handoff/{id}"
+          },
+          "tool": "hub_handoff_clear"
+        }
       ],
       "settings": []
     },
@@ -212,13 +907,73 @@
       "order": 8,
       "gate": "admin",
       "replaces": [],
-      "state": { "channel": "session", "hub": "GET /auth/api/users (sign-in rules) + GET /auth/api/auth/clients + GET /auth/api/auth/tokens (missing on today's hub → hub_missing per block)", "tool": "hub_auth_get", "shape": "hub-auth@1", "fields": ["signIn", "clients", "tokens", "missing"] },
-      "rows": { "grid": "hub.tokens", "idField": "id", "path": "tokens" },
+      "state": {
+        "channel": "session",
+        "hub": "GET /auth/api/users (sign-in rules) + GET /auth/api/auth/clients + GET /auth/api/auth/tokens (missing on today's hub → hub_missing per block)",
+        "tool": "hub_auth_get",
+        "shape": "hub-auth@1",
+        "fields": [
+          "signIn",
+          "clients",
+          "tokens",
+          "missing"
+        ]
+      },
+      "rows": {
+        "grid": "hub.tokens",
+        "idField": "id",
+        "path": "tokens"
+      },
       "actions": [
-        { "id": "token-create", "label": "Create an API token (shown once)", "who": "person", "effect": "write", "hub": null, "missing": { "why": "No token admin route on the hub yet; the secret is shown once and never stored in the console.", "proposed": "POST /auth/api/auth/tokens {label, scopes[], expiresInDays}" } },
-        { "id": "token-revoke", "label": "Revoke a token", "who": "confirm", "effect": "destructive", "row": true, "method": "DELETE", "hub": null, "missing": { "why": "No token admin route on the hub yet.", "proposed": "DELETE /auth/api/auth/tokens/{id}" }, "tool": "hub_auth_token_revoke" },
-        { "id": "client-add", "label": "Add an OAuth client", "who": "confirm", "effect": "write", "hub": null, "missing": { "why": "OAuth clients are configured on the hub itself today.", "proposed": "POST /auth/api/auth/clients {name, redirectUris[]}" }, "tool": "hub_auth_client_add" },
-        { "id": "client-remove", "label": "Remove an OAuth client", "who": "confirm", "effect": "destructive", "hub": null, "missing": { "why": "OAuth clients are configured on the hub itself today.", "proposed": "DELETE /auth/api/auth/clients/{id}" }, "tool": "hub_auth_client_remove" }
+        {
+          "id": "token-create",
+          "label": "Create an API token (shown once)",
+          "who": "person",
+          "effect": "write",
+          "hub": null,
+          "missing": {
+            "why": "No token admin route on the hub yet; the secret is shown once and never stored in the console.",
+            "proposed": "POST /auth/api/auth/tokens {label, scopes[], expiresInDays}"
+          }
+        },
+        {
+          "id": "token-revoke",
+          "label": "Revoke a token",
+          "who": "confirm",
+          "effect": "destructive",
+          "row": true,
+          "method": "DELETE",
+          "hub": null,
+          "missing": {
+            "why": "No token admin route on the hub yet.",
+            "proposed": "DELETE /auth/api/auth/tokens/{id}"
+          },
+          "tool": "hub_auth_token_revoke"
+        },
+        {
+          "id": "client-add",
+          "label": "Add an OAuth client",
+          "who": "confirm",
+          "effect": "write",
+          "hub": null,
+          "missing": {
+            "why": "OAuth clients are configured on the hub itself today.",
+            "proposed": "POST /auth/api/auth/clients {name, redirectUris[]}"
+          },
+          "tool": "hub_auth_client_add"
+        },
+        {
+          "id": "client-remove",
+          "label": "Remove an OAuth client",
+          "who": "confirm",
+          "effect": "destructive",
+          "hub": null,
+          "missing": {
+            "why": "OAuth clients are configured on the hub itself today.",
+            "proposed": "DELETE /auth/api/auth/clients/{id}"
+          },
+          "tool": "hub_auth_client_remove"
+        }
       ],
       "settings": []
     },
@@ -228,21 +983,70 @@
       "icon": "download",
       "order": 9,
       "gate": "user",
-      "replaces": ["#/apps"],
-      "state": { "channel": "session", "hub": "GET /apps (catalog feed; downloads on the hub's own path)", "tool": "hub_apps_list", "shape": "hub-apps@1", "fields": ["status", "apps", "updatedAt", "error"] },
-      "rows": { "grid": "hub.apps", "idField": "project", "path": "apps" },
+      "replaces": [
+        "#/apps"
+      ],
+      "state": {
+        "channel": "session",
+        "hub": "GET /apps (catalog feed; downloads on the hub's own path)",
+        "tool": "hub_apps_list",
+        "shape": "hub-apps@1",
+        "fields": [
+          "status",
+          "apps",
+          "updatedAt",
+          "error"
+        ]
+      },
+      "rows": {
+        "grid": "hub.apps",
+        "idField": "project",
+        "path": "apps"
+      },
       "actions": [
-        { "id": "download", "label": "Download", "who": "command", "effect": "navigate", "row": true, "hub": "GET <download url from the feed>", "tool": "hub_apps_download" }
+        {
+          "id": "download",
+          "label": "Download",
+          "who": "command",
+          "effect": "navigate",
+          "row": true,
+          "hub": "GET <download url from the feed>",
+          "tool": "hub_apps_download"
+        }
       ],
       "settings": []
     }
   ],
   "deferred": [
-    { "id": "jobs", "title": "Jobs", "why": "Long-running calls with progress and cancel: waits on the hub's admin API (hub step 4)." },
-    { "id": "audit", "title": "Audit log", "why": "Who called what and how it ended: waits on the hub's admin API (hub step 4)." },
-    { "id": "vault", "title": "Vault", "why": "Names of stored secrets; values are write-only: waits on the hub's admin API (hub step 4)." },
-    { "id": "projects", "title": "Projects", "why": "The /projects tree the hub serves: waits on the hub's admin API (hub step 4)." },
-    { "id": "devices", "title": "Devices", "why": "Phones and computers on the hub protocol: waits on AXPP (hub step 6)." },
-    { "id": "assets", "title": "Assets", "why": "Framework AssetStudio, not a hub page; the console has its own." }
+    {
+      "id": "jobs",
+      "title": "Jobs",
+      "why": "Long-running calls with progress and cancel: waits on the hub's admin API (hub step 4)."
+    },
+    {
+      "id": "audit",
+      "title": "Audit log",
+      "why": "Who called what and how it ended: waits on the hub's admin API (hub step 4)."
+    },
+    {
+      "id": "vault",
+      "title": "Vault",
+      "why": "Names of stored secrets; values are write-only: waits on the hub's admin API (hub step 4)."
+    },
+    {
+      "id": "projects",
+      "title": "Projects",
+      "why": "The /projects tree the hub serves: waits on the hub's admin API (hub step 4)."
+    },
+    {
+      "id": "devices",
+      "title": "Devices",
+      "why": "Phones and computers on the hub protocol: waits on AXPP (hub step 6)."
+    },
+    {
+      "id": "assets",
+      "title": "Assets",
+      "why": "Framework AssetStudio, not a hub page; the console has its own."
+    }
   ]
 }

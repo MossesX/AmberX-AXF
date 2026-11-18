@@ -72,6 +72,7 @@
         "title": { "type": "string", "minLength": 1, "maxLength": 40 },
         "icon": { "type": "string", "minLength": 1 },
         "order": { "type": "integer", "minimum": 0 },
+        "aliases": { "type": "array", "items": { "$ref": "#/$defs/id" }, "description": "Other words that name this screen on the CLI (axf hub approval-log) and in voice (hub.approvalLog); never another screen's id." },
         "gate": { "enum": ["none", "user", "admin"], "description": "Who the hub lets read it: nobody signed in / any hub account / a hub admin." },
         "replaces": { "type": "array", "items": { "type": "string", "pattern": "^#/" }, "description": "The axHub web routes this screen replaces (parity)." },
         "state": { "$ref": "#/$defs/read" },

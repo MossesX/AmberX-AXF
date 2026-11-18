@@ -7,6 +7,7 @@
  *   axf hub <screen> <row>                    one row                   GET  …/<screen>/<row>
  *   axf hub <screen> <action> [<row>] [--k v]…  a command or confirm action  POST …/<screen>[/<row>]/<action>
  *   axf hub table                             the route table
+ *   axf hub approval-log                      an alias of a screen (the table's `aliases`) is its own word on the wire
  *   --json on any word prints the answer as one JSON object; --status <s> --page <n> … become query parameters on a read.
  *
  * Person actions (approve, deny, shelve, grant, …) are refused here on purpose: they are Brett's own tap in his signed-in
@@ -18,7 +19,7 @@ import * as hc from '../../../../framework/core/hub-console.mjs';
 
 const TABLE_FILE = new URL('../../../../framework/schemas/hub-console.json', import.meta.url);
 export const table = JSON.parse(readFileSync(TABLE_FILE, 'utf8'));
-export const cliWords = [...hc.screensOf(table).map((s) => s.id), 'table'];
+export const cliWords = [...hc.screenWords(table), 'table'];
 
 /** Flags → { flags, words } (`--k v`, `--k=v`, `--json`). */
 export function parseArgs(argv) {
@@ -47,12 +48,13 @@ export function plan(argv) {
   if (screen === 'table') return { method: 'GET', path: '/table', json: !!flags.json };
   const s = hc.screenOf(table, screen);
   if (!s) return { error: `no hub screen "${screen}"; one of ${cliWords.join(', ')}` };
+  const sid = s.id; // an alias (approval-log) is the screen's own word on the wire
   const { json, ...rest } = flags;
-  if (!second) return { method: 'GET', path: `/${screen}`, query: rest, json: !!json };
-  const action = hc.actionOf(table, screen, second);
+  if (!second) return { method: 'GET', path: `/${sid}`, query: rest, json: !!json };
+  const action = hc.actionOf(table, sid, second);
   if (!action) {
     if (!hc.rowIdOk(s, second)) return { error: `"${second}" is neither an action of ${screen} (${s.actions.map((a) => a.id).join(', ')}) nor a row id` };
-    return { method: 'GET', path: `/${screen}/${encodeURIComponent(second)}`, query: rest, json: !!json };
+    return { method: 'GET', path: `/${sid}/${encodeURIComponent(second)}`, query: rest, json: !!json };
   }
   if (action.who === 'person') return { error: `${screen} ${second} is Brett's own tap in his signed-in console browser; it has no command line (HUB-CONSOLE.md → who)` };
   const row = third ?? '';
@@ -61,7 +63,7 @@ export function plan(argv) {
   const body = {};
   for (const [k, v] of Object.entries(rest)) body[k] = v === 'true' ? true : v === 'false' ? false : /^-?\d+$/.test(String(v)) ? Number(v) : v;
   const method = action.method === 'DELETE' && row ? 'DELETE' : 'POST';
-  const path = method === 'DELETE' ? `/${screen}/${encodeURIComponent(row)}` : `/${screen}${row ? `/${encodeURIComponent(row)}` : ''}/${second}`;
+  const path = method === 'DELETE' ? `/${sid}/${encodeURIComponent(row)}` : `/${sid}${row ? `/${encodeURIComponent(row)}` : ''}/${second}`;
   return { method, path, body, json: !!json, confirm: action.who === 'confirm' };
 }
 

@@ -16,7 +16,9 @@
     "service:axf.hub-console@1",
     "action:hub.open",
     "action:hub.focus",
-    "action:hub.approvals"
+    "action:hub.approvals",
+    "action:hub.approvalLog",
+    "action:hub.passes"
   ],
   "requires": [
     "service:control@1"
@@ -225,6 +227,97 @@
         "title": "Approvals: check the hub now",
         "tool": "hub_approvals_check",
         "description": "Reads axHub again at once and answers the Approvals state (approval-grid@1)."
+      },
+      {
+        "id": "log-download",
+        "route": "POST /log/download",
+        "title": "Approval log: download JSON",
+        "tool": "hub_approval_log_download",
+        "description": "The hub's whole approval log as JSON (what its Download JSON button serves)."
+      },
+      {
+        "route": "POST /passes/grant",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "route": "POST /passes/go",
+        "skip": "Brett's own tap through the approvals-banner relay (hub-console@1 who: person): never a tool, CLI line or voice action"
+      },
+      {
+        "id": "pass-request",
+        "route": "POST /passes/request",
+        "title": "Passes: ask Brett for a pass",
+        "tool": "hub_pass_request",
+        "description": "Asks for a timed pass (service, scope and/or tools, minutes, reason). It waits on Hub → Passes with a Grant button: the grant stays Brett's click.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "service": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "tools": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "minutes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1440
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "service",
+            "minutes",
+            "reason"
+          ]
+        }
+      },
+      {
+        "id": "pass-revoke",
+        "route": "POST /passes/{row}/revoke",
+        "title": "Passes: revoke a pass",
+        "tool": "hub_pass_revoke",
+        "confirm": true,
+        "destructive": true,
+        "description": "Ends a pass now; the first call answers confirmation_required with a token, the second carries it as confirm."
+      },
+      {
+        "id": "pass-extend",
+        "route": "POST /passes/{row}/extend",
+        "title": "Passes: extend a pass",
+        "tool": "hub_pass_extend",
+        "description": "Extends a pass by {minutes} from now.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "minutes": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1440
+            }
+          },
+          "required": [
+            "minutes"
+          ]
+        }
+      },
+      {
+        "id": "go-pass-end",
+        "route": "POST /passes/go-end",
+        "title": "Passes: end the go pass",
+        "tool": "hub_go_pass_end",
+        "description": "Ends the go pass now: sessions that cannot reach axHub wait again."
       }
     ]
   },

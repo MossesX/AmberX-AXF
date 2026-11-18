@@ -36,7 +36,7 @@ export interface HubSetting {
 }
 export interface HubRows { grid: string; idField: string; path: string; idPattern?: string; read?: HubRead }
 export interface HubScreen {
-  id: string; title: string; icon: string; order: number; gate: HubGate; replaces: string[];
+  id: string; title: string; icon: string; order: number; aliases?: string[]; gate: HubGate; replaces: string[];
   state: HubRead; rows?: HubRows; actions: HubAction[]; settings: HubSetting[];
   health?: { id: string; label: string; what: string };
 }
@@ -58,6 +58,7 @@ export function validateHubConsole(table: unknown): { ok: boolean; errors: HubCo
 export function assertHubConsole<T>(table: T): T;
 export function screensOf(table: HubConsoleTable | unknown): HubScreen[];
 export function screenOf(table: HubConsoleTable | unknown, id: string): HubScreen | null;
+export function screenWords(table: HubConsoleTable | unknown): string[];
 export function actionOf(table: HubConsoleTable | unknown, screen: string, id: string): HubAction | null;
 export function homeScreen(table: HubConsoleTable | unknown): HubScreen | null;
 export function rowIdOk(screen: HubScreen | null | undefined, row: unknown): boolean;

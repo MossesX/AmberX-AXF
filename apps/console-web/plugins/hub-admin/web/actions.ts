@@ -4,7 +4,7 @@
  *
  *   hub.open[:<screen>[:<row>]]   open the Hub on a screen (and bring a row forward)          navigate
  *   hub.focus:<screen>[/<row>]    what `console_open hub --focus <screen>/<row>` runs (the screen's focus action)
- *   hub.<screen>                  one per screen of the route table ("open hub approvals" by voice)   navigate
+ *   hub.<screen>, hub.<alias>     one per screen of the route table and per alias ("open hub approvals", hub.approvalLog)   navigate
  *   hub.approvals.approve:<id>, hub.approvals.deny:<id>, hub.approvals.shelve:<id>
  *                                 Brett's own tap only (personOnly): the console catalog never lists them and a remote
  *                                 caller is refused; they exist so menus and buttons share one deciding path.
@@ -29,8 +29,11 @@ export function registerHubActions(rt: AxfRuntime, table: HubConsoleTable): void
   };
   on('hub.open', ([screen = '', row = '']) => open(screen || home, row || undefined), { label: 'Open the Hub (a screen, a row)', params: true, effect: 'navigate' });
   on('hub.focus', ([enc = '']) => { const [screen = '', row = '', action = ''] = decodeURIComponent(enc).split('/'); open(screen || home, row || undefined, action || undefined); }, { label: 'Open a hub screen, down to one row', params: true, effect: 'navigate' });
+  const camel = (w: string) => w.replace(/-([a-z0-9])/g, (_, c: string) => c.toUpperCase());
   for (const s of screensOf(table)) {
     on(`hub.${s.id}`, () => open(s.id), { label: `Open Hub → ${s.title}`, effect: 'navigate' });
+    // the screen's other words (table `aliases`): `hub.approvalLog` for the log
+    for (const alias of s.aliases ?? []) on(`hub.${camel(alias)}`, () => open(s.id), { label: `Open Hub → ${s.title}`, effect: 'navigate', searchable: false });
   }
 
   // Deciding (person only): the same path the row buttons take, through the approvals-banner relay.

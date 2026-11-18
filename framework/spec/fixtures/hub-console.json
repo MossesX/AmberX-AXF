@@ -250,12 +250,25 @@
         "deferred.0.id": "users"
       },
       "code": "deferred_screen"
+    },
+    {
+      "name": "an alias never collides with a screen id",
+      "set": {
+        "screens.2.aliases": [
+          "users"
+        ]
+      },
+      "code": "screen_dup"
     }
   ],
   "addresses": [
     {
       "screen": "approvals",
       "address": "view:hub/tab:hub.tabs=approvals"
+    },
+    {
+      "screen": "approval-log",
+      "address": "view:hub/tab:hub.tabs=log"
     },
     {
       "screen": "approvals",
@@ -401,6 +414,15 @@
     },
     {
       "screen": "log",
+      "rest": "GET /api/plugins/hub-admin/log",
+      "tool": "hub_approval_log",
+      "cli": "axf hub log",
+      "voice": "hub.log",
+      "deepLink": "view:hub/tab:hub.tabs=log",
+      "who": null
+    },
+    {
+      "screen": "approval-log",
       "rest": "GET /api/plugins/hub-admin/log",
       "tool": "hub_approval_log",
       "cli": "axf hub log",

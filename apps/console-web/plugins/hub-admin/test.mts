@@ -14,7 +14,8 @@ const t = (name: string, fn: () => void) => { try { fn(); n++; } catch (e) { con
 const ID = '0123abcd-0123-4abc-8def-0123456789ab';
 
 t('words: every screen and the table', () => {
-  assert.deepEqual(cli.cliWords, [...hc.screensOf(cli.table).map((s: { id: string }) => s.id), 'table']);
+  assert.deepEqual(cli.cliWords, [...hc.screenWords(cli.table), 'table']);
+  assert.ok(cli.cliWords.includes('approval-log'), 'the log screen answers to approval-log too');
 });
 t('reads', () => {
   assert.deepEqual(cli.plan(['approvals']), { method: 'GET', path: '/approvals', query: {}, json: false });
@@ -22,6 +23,8 @@ t('reads', () => {
   assert.deepEqual(cli.plan(['approvals', ID]), { method: 'GET', path: `/approvals/${ID}`, query: {}, json: false });
   assert.deepEqual(cli.plan(['connectors', 'vps']), { method: 'GET', path: '/connectors/vps', query: {}, json: false });
   assert.deepEqual(cli.plan(['table']), { method: 'GET', path: '/table', json: false });
+  assert.deepEqual(cli.plan(['approval-log', '--status', 'approved']), { method: 'GET', path: '/log', query: { status: 'approved' }, json: false });
+  assert.deepEqual(cli.plan(['approval-log', 'download']), { method: 'POST', path: '/log/download', body: {}, json: false, confirm: false });
 });
 t('commands and confirms become POST / DELETE with the flags as the body', () => {
   assert.deepEqual(cli.plan(['approvals', 'auto-stop']), { method: 'POST', path: '/approvals/auto-stop', body: {}, json: false, confirm: false });
@@ -60,11 +63,12 @@ t('the manifest declares every read with the table\'s tool and skips every perso
     assert.equal(items.find((i) => i.route === `GET /${s.id}`)?.tool, s.state.tool, `GET /${s.id}`);
     if (s.rows?.read) assert.equal(items.find((i) => i.route === `GET /${s.id}/{row}`)?.tool, s.rows.read.tool, `GET /${s.id}/{row}`);
   }
-  for (const a of hc.screensOf(cli.table).find((s) => s.id === 'approvals')!.actions) {
-    const it = items.find((i) => i.route === (a.row ? `POST /approvals/{row}/${a.id}` : `POST /approvals/${a.id}`));
-    assert.ok(it, `approvals/${a.id} declared`);
-    if (a.who === 'person') assert.ok(it!.skip && !it!.tool, `${a.id} is skipped (person)`);
-    else assert.equal(it!.tool, hc.toolOf(cli.table, 'approvals', a.id), `${a.id} tool`);
+  for (const sid of ['approvals', 'passes', 'log']) for (const a of hc.screensOf(cli.table).find((s) => s.id === sid)!.actions) {
+    const it = items.find((i) => i.route === (a.row ? `POST /${sid}/{row}/${a.id}` : `POST /${sid}/${a.id}`));
+    assert.ok(it, `${sid}/${a.id} declared`);
+    if (a.who === 'person') assert.ok(it!.skip && !it!.tool, `${sid}/${a.id} is skipped (person)`);
+    else assert.equal(it!.tool, hc.toolOf(cli.table, sid, a.id), `${sid}/${a.id} tool`);
+    if (a.who === 'confirm') assert.ok((it as { confirm?: boolean }).confirm === true, `${sid}/${a.id} declares confirm`);
   }
   assert.equal(manifest.cli.hub, 'hub.mjs');
 });

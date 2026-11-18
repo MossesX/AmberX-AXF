@@ -75,6 +75,10 @@ export function validateHubConsole(table) {
     else if (ids.has(s.id)) err('screen_dup', `${p}.id`, `screen ${s.id} is also ${ids.get(s.id)}`); else ids.set(s.id, p);
     if (!Number.isInteger(s.order) || s.order < 0) err('order_dup', `${p}.order`, 'order is an integer ≥ 0');
     else if (orders.has(s.order)) err('order_dup', `${p}.order`, `order ${s.order} is also ${orders.get(s.order)}`); else orders.set(s.order, p);
+    for (const al of Array.isArray(s.aliases) ? s.aliases : []) {
+      if (!ID_RE.test(str(al))) err('screen_id', `${p}.aliases`, 'an alias is a slug');
+      else if (ids.has(al)) err('screen_dup', `${p}.aliases`, `alias ${al} is also ${ids.get(al)}`); else ids.set(al, `${p}.aliases`);
+    }
     if (!GATES.includes(s.gate)) err('gate', `${p}.gate`, `gate is one of ${GATES.join(', ')}`);
     for (const r of Array.isArray(s.replaces) ? s.replaces : []) {
       if (!/^#\//.test(str(r))) err('replaces_dup', `${p}.replaces`, 'a replaced route starts with #/');
@@ -134,7 +138,10 @@ export function assertHubConsole(table) {
 /* ================================================================== lookups */
 
 export const screensOf = (table) => (Array.isArray(table?.screens) ? [...table.screens].sort((a, b) => a.order - b.order) : []);
-export const screenOf = (table, id) => screensOf(table).find((s) => s.id === id) ?? null;
+/** A screen by id, or by one of its `aliases` (the CLI's and voice's other words for it). */
+export const screenOf = (table, id) => screensOf(table).find((s) => s.id === id) ?? screensOf(table).find((s) => Array.isArray(s.aliases) && s.aliases.includes(id)) ?? null;
+/** Every word that names a screen: its id and its aliases. */
+export const screenWords = (table) => screensOf(table).flatMap((s) => [s.id, ...(Array.isArray(s.aliases) ? s.aliases : [])]);
 export const actionOf = (table, screen, id) => (screenOf(table, screen)?.actions ?? []).find((a) => a.id === id) ?? null;
 /** The screen an empty route opens: `home`, else the lowest order. */
 export const homeScreen = (table) => screenOf(table, table?.home) ?? screensOf(table)[0] ?? null;
@@ -148,12 +155,12 @@ export function rowIdOk(screen, row) {
 
 /* ================================================================== addresses (console-control@1) */
 
-export const screenAddress = (table, screen) => (screenOf(table, screen) ? `view:${table.view}/tab:${table.tabRow}=${screen}` : null);
+export const screenAddress = (table, screen) => { const s = screenOf(table, screen); return s ? `view:${table.view}/tab:${table.tabRow}=${s.id}` : null; };
 
 export function rowAddress(table, screen, row) {
   const s = screenOf(table, screen);
   if (!s || !rowIdOk(s, row)) return null;
-  return `${screenAddress(table, screen)}/grid:${s.rows.grid}/row:${row}`;
+  return `${screenAddress(table, s.id)}/grid:${s.rows.grid}/row:${row}`;
 }
 
 export function actionAddress(table, screen, action, row = null) {
@@ -172,9 +179,10 @@ export function settingAddress(table, key) {
 
 const restRoot = (table) => `${REST_ROOT}/${table.plugin}`;
 export const toolOf = (table, screen, action) => {
+  const s = screenOf(table, screen);
   const a = actionOf(table, screen, action);
-  if (!a || a.who === 'person') return null;
-  return str(a.tool) || `hub_${screen.replace(/-/g, '_')}_${action.replace(/-/g, '_')}`;
+  if (!s || !a || a.who === 'person') return null;
+  return str(a.tool) || `hub_${s.id.replace(/-/g, '_')}_${action.replace(/-/g, '_')}`;
 };
 
 /**
@@ -186,6 +194,7 @@ export const toolOf = (table, screen, action) => {
 export function reachesOf(table, screen, { row = null, action = null } = {}) {
   const s = screenOf(table, screen);
   if (!s) return null;
+  screen = s.id; // an alias is the screen's own word on the wire
   const root = restRoot(table);
   const hasRow = row !== null && row !== undefined && row !== '';
   if (hasRow && !rowIdOk(s, row)) return null;
