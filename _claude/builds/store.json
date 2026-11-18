@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8576,
- "updatedAt": "2026-11-18T00:33:51.404Z",
+ "rev": 8577,
+ "updatedAt": "2026-11-18T00:34:09.218Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266736,7 +266736,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-18T00:33:24.355Z",
+   "updatedAt": "2026-11-18T00:33:32.535Z",
    "builtAt": "",
    "notes": [
     {
@@ -267130,6 +267130,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 4 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T00:33:24.355Z"
+    },
+    {
+     "text": "Watchdog fixed Rebuild fresh on main: Phone Connect (small Android companion + console plugin,  (step s55): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T00:33:32.535Z"
     }
    ],
    "approvals": [
@@ -267240,6 +267244,20 @@
      "attempt": 0,
      "account": "",
      "notified": "2026-11-18T00:23:21.150Z",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-18T00:33:16.014Z",
+     "buildId": "rebuild-fresh-main-phone-connect-small",
+     "phase": "Phase 1",
+     "step": "s55",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "2026-11-18T00:33:38.264Z",
      "session": "",
      "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
     }
@@ -267947,7 +267965,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 131,
+   "rev": 133,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313310,7 +313328,7 @@
    "pr": "#827",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T00:32:51.354Z",
+   "updatedAt": "2026-11-18T00:33:55.014Z",
    "builtAt": "2026-11-18T00:12:42.641Z",
    "notes": [
     {
@@ -313352,6 +313370,10 @@
     {
      "text": "All 16 steps done; PR #827 is mergeable (clean). CI run 44206120478 is red only on the two jobs that are already red on main (watchdog.test.mjs vs the done-means-merged guard; the alerts/MCP engines step), not on anything this PR changes; every check this PR touches passes. Filed and queued fix-ci-red-main-watchdog-test-vs-done (P1) for main's red. Until #827 lands, writers still on the old merge keep re-adding repeated steps (seen on this build and Phone Connect); the new save guard heals them on every write.",
      "at": "2026-11-18T00:32:51.354Z"
+    },
+    {
+     "text": "Headless run axf-fix-launcher-crash-duplicate-steps-brief--earl: brief only · start 28.9K tokens ($0.11) · cost $22.70 · 214 turns · 6 tools, MCP none · started with 28851 tokens of context, over the 25000 warning level",
+     "at": "2026-11-18T00:33:55.014Z"
     }
    ],
    "approvals": [],
@@ -313766,7 +313788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
