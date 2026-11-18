@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `terminal-main-tab-streaming-console-s` s295 done, → complete, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `icon-picker-every-banner-settings-widget` s12 done, → complete, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:41 UTC · `vps-frees-stale-build-slots-every-2` note (all) · orchestrator
 - 2026-11-18 01:42 UTC · `vps-frees-stale-build-slots-every-2` note (all) · foreign-write
 - 2026-11-18 01:42 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · foreign-write
+- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
