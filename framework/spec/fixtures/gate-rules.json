@@ -156,13 +156,12 @@
      "severity": "block",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
        "changes",
-       "rejected",
-       "unknown"
+       "rejected"
       ]
      },
      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -413,13 +412,12 @@
      "severity": "warn",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
        "changes",
-       "rejected",
-       "unknown"
+       "rejected"
       ]
      },
      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -583,13 +581,12 @@
      "severity": "block",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
        "changes",
-       "rejected",
-       "unknown"
+       "rejected"
       ]
      },
      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -884,13 +881,12 @@
      "severity": "block",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
        "changes",
-       "rejected",
-       "unknown"
+       "rejected"
       ]
      },
      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -1067,13 +1063,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1268,13 +1263,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1470,13 +1464,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1670,13 +1663,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1858,13 +1850,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -2036,13 +2027,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -2211,13 +2201,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -2313,6 +2302,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2398,7 +2390,8 @@
      }
     ],
     "reasons": [],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "redCi": {
     "$axf": "gate-verdict@1",
@@ -2409,6 +2402,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2503,7 +2499,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "redCiSerial": {
     "$axf": "gate-verdict@1",
@@ -2514,6 +2511,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2607,7 +2607,8 @@
      "controls: check-controls fails: a raw control is used where a framework control exists.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "ciRunning": {
     "$axf": "gate-verdict@1",
@@ -2618,6 +2619,9 @@
     "held": true,
     "blockedBy": "ci-green",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2709,7 +2713,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "uiWaiting": {
     "$axf": "gate-verdict@1",
@@ -2720,6 +2725,9 @@
     "held": true,
     "blockedBy": "ui-review",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -2783,7 +2791,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "hold",
-      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself."
+      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -2807,7 +2816,8 @@
     "reasons": [
      "ui-review: its screenshots are waiting in UI Review. Approve them and it lands by itself."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "uiChanges": {
     "$axf": "gate-verdict@1",
@@ -2818,6 +2828,9 @@
     "held": false,
     "blockedBy": "ui-review",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -2881,7 +2894,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "fail",
-      "reason": "UI Review asked for changes."
+      "reason": "UI Review asked for changes.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -2905,7 +2919,8 @@
     "reasons": [
      "ui-review: UI Review asked for changes."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "clash": {
     "$axf": "gate-verdict@1",
@@ -2916,6 +2931,9 @@
     "held": false,
     "blockedBy": "clash",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3013,7 +3031,8 @@
      "toolbars: check-toolbars has not run on its head yet.",
      "clash: it conflicts with main in code (framework/ui/axf.css, apps/console-web/src/App.tsx). Needs a code fix; a fix is filed."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "dataClashOnly": {
     "$axf": "gate-verdict@1",
@@ -3024,6 +3043,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3109,7 +3131,8 @@
      }
     ],
     "reasons": [],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "draft": {
     "$axf": "gate-verdict@1",
@@ -3120,6 +3143,9 @@
     "held": false,
     "blockedBy": "merge-queue-only",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3212,7 +3238,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "heldByHand": {
     "$axf": "gate-verdict@1",
@@ -3223,6 +3250,9 @@
     "held": true,
     "blockedBy": "hand:held",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [
      {
       "kind": "held",
@@ -3315,7 +3345,8 @@
     "reasons": [
      "held by hand (waiting for the skins build). Release it to land it."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "kicked": {
     "$axf": "gate-verdict@1",
@@ -3326,6 +3357,9 @@
     "held": true,
     "blockedBy": "hand:kicked",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [
      {
       "kind": "kicked",
@@ -3418,7 +3452,8 @@
     "reasons": [
      "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "directMerge": {
     "$axf": "gate-verdict@1",
@@ -3429,6 +3464,9 @@
     "held": false,
     "blockedBy": "merge-queue-only",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3516,7 +3554,8 @@
     "reasons": [
      "merge-queue-only: only the lander merges: a direct merge is refused."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "namedChecks": {
     "$axf": "gate-verdict@1",
@@ -3527,6 +3566,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3617,7 +3659,8 @@
      "ci-green: CI is red (lint). Needs a code fix.",
      "toolbars: check-toolbars fails: a toolbar lacks role=\"toolbar\" or an aria-label, or a tab row is not the TabGroup."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    }
   },
   "evaluateSerial": {
@@ -3629,6 +3672,9 @@
    "held": false,
    "blockedBy": "ci-green",
    "agent": true,
+   "flagged": false,
+   "flags": [],
+   "reviewFlag": "",
    "holds": [],
    "results": [
     {
@@ -3722,7 +3768,8 @@
     "controls: check-controls fails: a raw control is used where a framework control exists.",
     "toolbars: check-toolbars has not run on its head yet."
    ],
-   "warnings": []
+   "warnings": [],
+   "notes": []
   },
   "evaluateBatch": {
    "$axf": "gate-verdict@1",
@@ -3733,6 +3780,9 @@
    "held": false,
    "blockedBy": "tests",
    "agent": true,
+   "flagged": false,
+   "flags": [],
+   "reviewFlag": "",
    "holds": [],
    "results": [
     {
@@ -3826,7 +3876,8 @@
     "controls: check-controls has not run on its head yet.",
     "toolbars: check-toolbars has not run on its head yet."
    ],
-   "warnings": []
+   "warnings": [],
+   "notes": []
   },
   "evaluateSoft": {
    "uiWaiting": {
@@ -3838,6 +3889,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -3901,7 +3955,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "hold",
-      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself."
+      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -3925,7 +3980,8 @@
     "reasons": [
      "ui-review: its screenshots are waiting in UI Review. Approve them and it lands by itself."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "uiChanges": {
     "$axf": "gate-verdict@1",
@@ -3936,6 +3992,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -3999,7 +4058,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "fail",
-      "reason": "UI Review asked for changes."
+      "reason": "UI Review asked for changes.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -4025,7 +4085,8 @@
     ],
     "warnings": [
      "ui-review: UI Review asked for changes."
-    ]
+    ],
+    "notes": []
    },
    "namedChecks": {
     "$axf": "gate-verdict@1",
@@ -4036,6 +4097,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -4124,7 +4188,8 @@
     "reasons": [
      "ci-green: CI is red (lint). Needs a code fix."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    }
   },
   "evaluateSplit": {
@@ -4137,6 +4202,9 @@
     "held": false,
     "blockedBy": "theme",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -4227,7 +4295,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "molly": {
     "$axf": "gate-verdict@1",
@@ -4238,6 +4307,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -4328,7 +4400,8 @@
      "ci-green: CI is red (android / check-theme, android / conformance tests). Needs a code fix.",
      "tests: The tests fail after regeneration. Needs a code fix."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    }
   },
   "landerState": {

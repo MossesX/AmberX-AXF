@@ -68,6 +68,29 @@
     "landing-line@1",
     "axf-molly"
   ],
+  "uiStates": [
+    "",
+    "waiting",
+    "changes",
+    "rejected",
+    "unknown",
+    "missing",
+    "unposted"
+  ],
+  "uiFlagged": [
+    "missing",
+    "unposted",
+    "unknown"
+  ],
+  "reviewFlags": [
+    "",
+    "missing",
+    "unposted",
+    "waiting"
+  ],
+  "verdictFlags": [
+    "ui-review-missing"
+  ],
   "idPattern": "^[a-z0-9][a-z0-9-]{0,40}$",
   "rulesMax": 60,
   "runsMax": 200,

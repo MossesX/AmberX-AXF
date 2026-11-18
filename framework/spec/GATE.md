@@ -29,8 +29,30 @@ confirm call on axHub (Brett's one tap, or his standing pass); `confirm` means t
 | `gate.rules_set` | write | `{ id, enabled?, severity?, settings?, owner?, by, reason }` (partial; `kind` and `id` never change) | `{ ok, rule: gate-rule@1, before: gate-rule@1, rev }` |
 | `gate.rules_toggle` | write | `{ id, enabled: boolean, by, reason }` | `{ ok, rule, rev }` (a shorthand for `rules_set` with only `enabled`) |
 | `gate.rules_reset` | confirm | `{ id?, by, reason, confirm? }` — one rule, or the whole set without `id` | first call `{ confirm: token, affects: [ids] }`; second `{ ok, rules: gate-rule-set@1, rev }` |
-| `gate.check_pr` | read | `{ pr }` or `{ snapshot: pr-snapshot@1 }` or `{ branch }` | `gate-verdict@1`: `pass`, `held`, `blockedBy`, `agent`, `holds`, `results[]` (`id`, `kind`, `severity`, `verdict`, `reason`), `reasons[]`, `warnings[]` |
+| `gate.check_pr` | read | `{ pr }` or `{ snapshot: pr-snapshot@1 }` or `{ branch }` | `gate-verdict@1`: `pass`, `held`, `blockedBy`, `agent`, `flagged`, `flags[]`, `reviewFlag`, `holds`, `results[]` (`id`, `kind`, `severity`, `verdict`, `reason`, `flag?`, `reviewFlag?`), `reasons[]`, `warnings[]`, `notes[]` |
 | `gate.history` | read | `{ kind?: rule \| lander, since?, pr?, rule?, limit? }` | `{ items: [gate-history@1] }`, newest first |
+
+### The UI Review verdict: a hold needs an item in the console (Nov 18 2026)
+
+Build `auto-lander-never-wait-missing-ui-review`. Brett: "If it recorded the test of the pipeline and didn't merge it on
+its own, then the test failed. It should have tested itself before it did the demo." PR #816 sat held on a UI Review
+whose item was never posted to the console. The contract now:
+
+| `pr-snapshot@1.ui` | Meaning | `ui-review` rule | Verdict |
+| --- | --- | --- | --- |
+| `''` | no review claimed | pass | land |
+| `waiting` | the item exists in the console and waits for Brett | **hold** (`reviewFlag: waiting`) | hold |
+| `changes` / `rejected` | the item exists and Brett asked for changes / rejected it | fail | needs the review |
+| `missing` | the build or the lander claims a review but the console has no item for the PR or branch | pass + flag `ui-review-missing` (`reviewFlag: missing`) | **land, review flagged** |
+| `unposted` | the item exists only in a worktree / local store, never posted (`review.mjs submit` without `--console`) | pass + flag `ui-review-missing` (`reviewFlag: unposted`) | **land, review flagged** |
+| `unknown` | the console could not be read | pass + flag `ui-review-missing` (`reviewFlag: missing`) | **land, review flagged** (a failed lookup is never a hold) |
+
+`gate-verdict@1` gains `flagged` (true when it passes with a flag), `flags` (`VERDICT_FLAGS`, today only
+`ui-review-missing`), `reviewFlag` (`REVIEW_FLAGS`: `''`, `missing`, `unposted`, `waiting`) and `notes[]` (the flagged
+rules' reasons in plain words). A result row carries `flag` and `reviewFlag` where they apply. The rule's `holdOn`
+setting lists only `waiting`, `changes`, `rejected`; `missing`, `unposted` and `unknown` never hold whatever a saved set
+says. The lander (s4–s6 of that build) looks the item up in the live console before it holds, records the flag on the
+`lander-state@1` record (`reviewFlag`) and files a UI Review notice so the flagged review is seen without blocking.
 
 `gate-history@1` (append-only JSONL in the plugin's `dataDir`): `{ at, by, kind: rule \| lander, action, id?, pr?,
 before?, after?, reason }`. `gate.check_pr` with a PR number builds the snapshot from what the lander knows (PR checks,

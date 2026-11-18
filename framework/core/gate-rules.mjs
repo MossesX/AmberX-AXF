@@ -43,6 +43,21 @@ export const RUN_RESULTS = Object.freeze(['landed', 'landing', 'idle', 'skipped'
 export const RUN_REASONS = Object.freeze(['switched-off', 'paused', 'queue-empty', 'ci-waiting', 'conflict', 'ui-review', 'token-missing', 'locked', 'error']);
 /** What a lander-state@1 record was built from. */
 export const STATE_SOURCES = Object.freeze(['merge-queue@1', 'landing-line@1', 'axf-molly']);
+/**
+ * The UI Review flag on a PR record (lander-state@1.waiting[].reviewFlag, gate-verdict@1.reviewFlag). Build
+ * auto-lander-never-wait-missing-ui-review (Nov 18 2026, Brett: "If it recorded the test of the pipeline and didn't merge it
+ * on its own, then the test failed."): a review hold applies only when the review item exists in the live console.
+ *   missing   the build or the lander says there is a review, but the console has no item for the PR (or the lookup failed)
+ *   unposted  the item exists only in a worktree / local store and was never posted to the console
+ *   waiting   the item exists in the console and waits for Brett (the one case that holds)
+ */
+export const REVIEW_FLAGS = Object.freeze(['', 'missing', 'unposted', 'waiting']);
+/** Flags a verdict carries while still passing ('land, review flagged'): an open list, one entry today. */
+export const VERDICT_FLAGS = Object.freeze(['ui-review-missing']);
+/** The UI Review state of a PR as the lander read it (pr-snapshot@1.ui). missing / unposted / unknown never hold. */
+export const UI_STATES = Object.freeze(['', 'waiting', 'changes', 'rejected', 'unknown', 'missing', 'unposted']);
+/** The UI states that land with the flag ui-review-missing instead of holding. */
+export const UI_FLAGGED = Object.freeze(['missing', 'unposted', 'unknown']);
 
 export const ID_PATTERN = '^[a-z0-9][a-z0-9-]{0,40}$';
 export const RULES_MAX = 60;
@@ -185,6 +200,7 @@ export const REGISTRY = Object.freeze({
   schema: SCHEMA, version: VERSION, rule: RULE_FRAME, set: SET_FRAME, state: STATE_FRAME, run: RUN_FRAME,
   kinds: KINDS, severities: SEVERITIES, owners: OWNERS, landerStatuses: LANDER_STATUSES, landerModes: LANDER_MODES,
   waitingStates: WAITING_STATES, runResults: RUN_RESULTS, runReasons: RUN_REASONS, stateSources: STATE_SOURCES,
+  uiStates: UI_STATES, uiFlagged: UI_FLAGGED, reviewFlags: REVIEW_FLAGS, verdictFlags: VERDICT_FLAGS,
   idPattern: ID_PATTERN, rulesMax: RULES_MAX, runsMax: RUNS_MAX, waitingMax: WAITING_MAX, textMax: TEXT_MAX,
 });
 
@@ -203,7 +219,7 @@ function settingsSchema() {
       noRunMin: { type: 'integer', minimum: 1, maximum: 120, description: 'ci: minutes with no run before the lander starts one' },
       commands: { type: 'array', items: { type: 'array', items: { type: 'string' } }, description: 'tests: the commands run after generated files were resolved' },
       check: { type: 'string', description: 'theme / controls / custom: the repo-relative check script' },
-      holdOn: { type: 'array', items: { enum: ['waiting', 'changes', 'rejected', 'unknown'] }, description: 'ui-review: the UI Review states that hold a PR' },
+      holdOn: { type: 'array', items: { enum: ['waiting', 'changes', 'rejected'] }, description: 'ui-review: the UI Review states that hold a PR. A review that is missing from the console, unposted or unreadable never holds: the PR lands and the verdict carries the flag ui-review-missing (Nov 18 2026)' },
       autoResolve: { type: 'array', items: { enum: ['builds', 'union', 'union-json', 'generated'] }, description: 'clash: conflict kinds the lander resolves itself' },
       fileFix: { type: 'boolean', description: 'clash: a code conflict files a fix (agent job) instead of waiting' },
       mode: { enum: LANDER_MODES, description: 'merge-queue-only: how PRs land' },
@@ -292,7 +308,9 @@ export const DEFAULT_RULES = Object.freeze([
   { id: 'theme', kind: 'theme', enabled: true, severity: 'block', owner: 'console', title: 'Theme tokens', description: 'Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).', settings: { check: 'framework/cli/check-theme.mjs' }, source: 'CI job check-theme' },
   { id: 'controls', kind: 'controls', enabled: true, severity: 'block', owner: 'console', title: 'Framework controls', description: 'UI uses framework controls, never raw ones (check-controls).', settings: { check: 'framework/cli/check-controls.mjs' }, source: 'CI job check-controls' },
   { id: 'toolbars', kind: 'controls', enabled: true, severity: 'block', owner: 'console', title: 'Toolbars', description: 'Every toolbar has role="toolbar" and an aria-label; tab rows are the framework TabGroup (check-toolbars).', settings: { check: 'framework/cli/check-toolbars.mjs' }, source: 'CI job check-toolbars' },
-  { id: 'ui-review', kind: 'ui-review', enabled: true, severity: 'block', owner: 'console', title: 'UI Review', description: "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.", settings: { holdOn: ['waiting', 'changes', 'rejected', 'unknown'] }, source: 'config.json landWaitUi; push-banner ui-hold (ui-review@1)' },
+  // Nov 18 2026 (Brett: "If it recorded the test of the pipeline and didn't merge it on its own, then the test failed."): the
+  // hold applies only when the review item exists in the live console. Missing, unposted or unreadable = land, review flagged.
+  { id: 'ui-review', kind: 'ui-review', enabled: true, severity: 'block', owner: 'console', title: 'UI Review', description: 'A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).', settings: { holdOn: ['waiting', 'changes', 'rejected'] }, source: 'config.json landWaitUi; push-banner ui-hold (ui-review@1)' },
   { id: 'clash', kind: 'clash', enabled: true, severity: 'block', owner: 'console', title: 'No code clash with main', description: 'Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.', settings: { autoResolve: ['builds', 'union', 'union-json', 'generated'], fileFix: true }, source: 'land-core.planConflicts / classifyPath' },
   // Brett (Nov 16 2026): "We need the auto lander to bang shit out on its own. It needs to automatically fix it. We need a server
   // rule to do that. Make the server do it automatically without the console." The policy the VPS runner obeys with or
@@ -365,7 +383,6 @@ export const VERDICT_FRAME = 'gate-verdict@1';
 /** pass = fine; fail = needs a fix (code, review changes); hold = waits for something that resolves by itself; skip = off or another side runs it. */
 export const VERDICTS = Object.freeze(['pass', 'fail', 'hold', 'skip']);
 export const CI_STATES = Object.freeze(['success', 'failure', 'running', 'none']);
-export const UI_STATES = Object.freeze(['', 'waiting', 'changes', 'rejected', 'unknown']);
 export const CHECK_RESULTS = Object.freeze(['pass', 'fail', 'none']);
 
 /**
@@ -423,11 +440,16 @@ export function evaluateRule(rule, snapshot) {
       return t === 'pass' ? V('pass', `${name} passes.`) : t === 'fail' ? V('fail', toolbars ? 'check-toolbars fails: a toolbar lacks role="toolbar" or an aria-label, or a tab row is not the TabGroup.' : 'check-controls fails: a raw control is used where a framework control exists.', { agent: true }) : V('hold', `${name} has not run on its head yet.`);
     }
     case 'ui-review': {
-      const holdOn = Array.isArray(st.holdOn) ? st.holdOn : ['waiting', 'changes', 'rejected', 'unknown'];
+      // a hold applies only when the review item exists in the console: missing, unposted or unreadable lands, flagged
+      if (UI_FLAGGED.includes(s.ui)) {
+        const reviewFlag = s.ui === 'unposted' ? 'unposted' : 'missing';
+        const words = { missing: 'its UI Review item is not in the console, so nothing holds it: it lands and the review is flagged.', unposted: 'its UI Review item was never posted to the console, so nothing holds it: it lands and the review is flagged.', unknown: "UI Review couldn't be read, so nothing holds it: it lands and the review is flagged." };
+        return V('pass', words[s.ui], { flag: 'ui-review-missing', reviewFlag });
+      }
+      const holdOn = (Array.isArray(st.holdOn) ? st.holdOn : ['waiting', 'changes', 'rejected']).filter((h) => !UI_FLAGGED.includes(h));
       if (!s.ui || !holdOn.includes(s.ui)) return V('pass', 'UI Review does not hold it.');
-      if (s.ui === 'waiting') return V('hold', 'its screenshots are waiting in UI Review. Approve them and it lands by itself.');
-      if (s.ui === 'unknown') return V('hold', "UI Review couldn't be read, so it waits.");
-      return V('fail', s.ui === 'changes' ? 'UI Review asked for changes.' : 'UI Review rejected it.');
+      if (s.ui === 'waiting') return V('hold', 'its screenshots are waiting in UI Review. Approve them and it lands by itself.', { reviewFlag: 'waiting' });
+      return V('fail', s.ui === 'changes' ? 'UI Review asked for changes.' : 'UI Review rejected it.', { reviewFlag: 'waiting' });
     }
     case 'clash': {
       if (s.conflicts.length) return V('fail', `it conflicts with main in code${names(s.conflicts)}. Needs a code fix${st.fileFix === false ? '' : '; a fix is filed'}.`, { agent: st.fileFix !== false, files: s.conflicts.slice(0, 20) });
@@ -472,11 +494,17 @@ export function evaluate(rules, snapshot, { owner = null, at = new Date().toISOS
   // the headline: a rule that needs a fix comes before one that only waits (a conflicting PR gets no CI run, so the clash is the reason, not the missing run)
   const first = blocking.find((x) => x.verdict === 'fail') || blocking[0] || null;
   const pass = !first && !holds.length;
+  // 'land, review flagged': the PR passes and the flag names what is wrong with the review (nothing holds it)
+  const flagged = results.filter((x) => x.verdict === 'pass' && VERDICT_FLAGS.includes(x.flag));
+  const flags = [...new Set(flagged.map((x) => x.flag))];
+  const reviewFlag = results.map((x) => x.reviewFlag).find((f) => f && REVIEW_FLAGS.includes(f)) || '';
   return {
     $axf: VERDICT_FRAME, at, pr: s.number, head: s.head, pass, held: !pass && (!first || first.verdict === 'hold') && !blocking.some((x) => x.verdict === 'fail'),
     blockedBy: first ? first.id : holds.length ? `hand:${holds[0].kind}` : '', agent: results.some((x) => x.agent === true && x.severity === 'block'),
+    flagged: pass && flags.length > 0, flags, reviewFlag,
     holds, results, reasons: [...holds.map((h) => h.reason), ...results.filter((x) => x.verdict === 'fail' || x.verdict === 'hold').map((x) => `${x.id}: ${x.reason}`)],
     warnings: results.filter((x) => x.severity === 'warn' && x.verdict === 'fail').map((x) => `${x.id}: ${x.reason}`),
+    notes: flagged.map((x) => `${x.id}: ${x.reason}`),
   };
 }
 
