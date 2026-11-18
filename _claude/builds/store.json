@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9131,
- "updatedAt": "2026-11-18T19:48:51.830Z",
+ "rev": 9149,
+ "updatedAt": "2026-11-18T21:29:26.567Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179448,10 +179448,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.124Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -180023,7 +180023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205978,10 +205978,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.124Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -206068,7 +206068,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208372,10 +208372,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.124Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -208572,7 +208572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210004,10 +210004,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.124Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -210094,7 +210094,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -220636,10 +220636,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.124Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -221229,7 +221229,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -238563,10 +238563,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -238653,7 +238653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -244428,7 +244428,7 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T19:21:25.823Z",
+   "updatedAt": "2026-11-18T19:54:25.323Z",
    "builtAt": "",
    "notes": [
     {
@@ -244666,6 +244666,14 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T19:21:25.823Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T19:51:27.816Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-18T19:54:25.323Z"
     }
    ],
    "approvals": [],
@@ -244729,7 +244737,7 @@
    },
    "failure": {
     "kind": "ci-red",
-    "at": "2026-11-18T19:21:25.823Z",
+    "at": "2026-11-18T19:54:25.323Z",
     "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
     "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
     "step": "",
@@ -245281,7 +245289,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -252767,10 +252775,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [
      "hulu0241"
@@ -253269,7 +253277,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -256611,10 +256619,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -257403,7 +257411,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -260396,10 +260404,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -260747,7 +260755,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -260866,10 +260874,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -261334,7 +261342,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261500,10 +261508,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -261942,7 +261950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262041,10 +262049,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -262431,7 +262439,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262548,10 +262556,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -262941,7 +262949,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264187,10 +264195,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -264513,7 +264521,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265238,10 +265246,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [
      "hulu0241"
@@ -265782,7 +265790,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265909,10 +265917,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -266305,7 +266313,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266422,10 +266430,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -266953,7 +266961,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267502,10 +267510,10 @@
     "dispatchedAt": "2026-11-18T00:34:47.468Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-18T00:34:47.468Z",
@@ -268216,7 +268224,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 150,
+   "rev": 151,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270247,10 +270255,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -271088,7 +271096,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271207,10 +271215,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -271736,7 +271744,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271838,10 +271846,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -272295,7 +272303,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272398,10 +272406,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -272882,7 +272890,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272990,10 +272998,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -273384,7 +273392,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273485,10 +273493,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -273532,7 +273540,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273623,10 +273631,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -273996,7 +274004,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274108,10 +274116,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -274634,7 +274642,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275404,8 +275412,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T19:20:41.814Z",
-   "builtAt": "2026-11-18T19:20:41.814Z",
+   "updatedAt": "2026-11-18T19:51:27.816Z",
+   "builtAt": "2026-11-18T19:51:27.816Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -275746,6 +275754,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T19:20:41.814Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T19:51:27.816Z"
     }
    ],
    "approvals": [
@@ -276544,7 +276556,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 125,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276654,10 +276666,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -276923,7 +276935,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277019,10 +277031,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -277109,7 +277121,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277272,10 +277284,10 @@
     "dispatchedAt": "2026-11-17T20:16:29.639Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:16:29.639Z",
@@ -277853,7 +277865,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278228,10 +278240,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -278843,7 +278855,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278949,10 +278961,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -279346,7 +279358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279442,10 +279454,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -279813,7 +279825,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284670,10 +284682,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -284889,7 +284901,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285021,10 +285033,10 @@
     "dispatchedAt": "2026-11-17T20:55:33.562Z",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:55:33.562Z",
@@ -285147,7 +285159,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285236,10 +285248,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -285361,7 +285373,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285451,10 +285463,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -285580,7 +285592,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285670,10 +285682,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -285799,7 +285811,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285889,10 +285901,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -286017,7 +286029,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286107,10 +286119,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -286236,7 +286248,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287764,10 +287776,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -288474,7 +288486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290109,10 +290121,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -290284,7 +290296,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290453,10 +290465,10 @@
     "dispatchedAt": "2026-11-17T22:28:58.757Z",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "2026-11-17T22:28:58.757Z",
@@ -290464,22 +290476,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-18T13:59:30.516Z",
-     "buildId": "settings-fix-part-2-blank-toolbars",
-     "phase": "",
-     "step": "s3",
-     "cause": "exit-clean",
-     "exit": 0,
-     "action": "requeue",
-     "attempt": 0,
-     "account": "hulu0241",
-     "notified": "",
-     "session": "",
-     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -290952,7 +290948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -292852,10 +292848,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -293159,7 +293155,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293271,10 +293267,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.419Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -293974,7 +293970,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -312307,10 +312303,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -312768,7 +312764,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -312875,10 +312871,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -313226,7 +313222,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313358,10 +313354,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -313775,7 +313771,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -313800,8 +313796,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T19:20:41.814Z",
-   "builtAt": "2026-11-18T19:20:41.814Z",
+   "updatedAt": "2026-11-18T19:51:27.816Z",
+   "builtAt": "2026-11-18T19:51:27.816Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -313914,6 +313910,10 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T19:20:41.814Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T19:51:27.816Z"
     }
    ],
    "approvals": [],
@@ -314339,7 +314339,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -314437,10 +314437,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -314789,7 +314789,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -314864,10 +314864,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -315149,7 +315149,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -315246,10 +315246,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -315531,7 +315531,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -315648,10 +315648,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -316065,7 +316065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -316146,10 +316146,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -316475,7 +316475,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -316545,10 +316545,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -316896,7 +316896,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -317000,10 +317000,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -317351,7 +317351,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -317957,10 +317957,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -318418,7 +318418,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -318986,10 +318986,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -319098,7 +319098,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319122,8 +319122,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T19:20:41.814Z",
-   "builtAt": "2026-11-18T19:20:41.814Z",
+   "updatedAt": "2026-11-18T19:51:27.816Z",
+   "builtAt": "2026-11-18T19:51:27.816Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319224,6 +319224,10 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-18T19:20:41.814Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T19:51:27.816Z"
     }
    ],
    "approvals": [],
@@ -319391,7 +319395,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -320051,10 +320055,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -320185,7 +320189,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320264,10 +320268,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:52:31.420Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -320486,7 +320490,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321474,10 +321478,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T12:56:23.525Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -321561,7 +321565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321741,14 +321745,14 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T19:48:31.816Z",
+   "updatedAt": "2026-11-18T21:00:01.858Z",
    "builtAt": "",
    "notes": [
     {
@@ -321758,38 +321762,76 @@
     {
      "text": "Launch failed on hulu0241: worktree for urgent-all-data-to-postgres-builds-store: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T19:48:31.816Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T19:49:46.715Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-urgent-all-data-to-postgres-builds-store--lenny.",
+     "at": "2026-11-18T19:51:35.914Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--lenny: brief only · start 13.8K tokens ($0.04) · cost $1.12 · 26 turns · 6 tools, MCP none",
+     "at": "2026-11-18T19:59:33.537Z"
+    },
+    {
+     "text": "s1 done: framework/spec/DATA-INVENTORY.md. Key facts for s2/s3: axf-data is in shadow mode since Nov 17 (1760 drift entries) - read the builds/* drift before cut-over. builds + build_steps tables already exist as a mirror (985/5951 rows); make them the source and lift notes/approvals/pipeline out of extra. 106 orphan store.json.tmp-* files sit next to the live store. s4 is ~2-3 h: split it into s4.1-s4.6 as listed in the inventory.",
+     "at": "2026-11-18T19:58:46.532Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T20:29:05.528Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 2): axf-urgent-all-data-to-postgres-builds-store--joey.",
+     "at": "2026-11-18T20:59:53.928Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--joey, shared account login)",
+     "at": "2026-11-18T21:00:01.858Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "urgent-all-data-to-postgres-builds-store",
+    "brief": "# Build: urgent-all-data-to-postgres-builds-store\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"URGENT — All data to Postgres: builds store first, then every JSON data file\" (urgent-all-data-to-postgres-builds-store) [data] — Phase 2, model Fable.\nThis phase upgrades Opus → Fable: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/urgent-all-data-to-postgres-builds-store\nSteps in this phase (1 left, ~30 min):\n[ ] s2 (~30 min) Builds: Postgres tables for builds, steps, notes, journal; builds-store.mjs and the console server read/write them with row-level locking; migrate store.json + journal, verify counts\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-all-data-to-postgres-builds-store \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-urgent-all-data-to-postgres-builds-store--joey",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 2",
+    "launchedAt": "2026-11-18T20:59:50.540Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: worktree for urgent-all-data-to-postgres-builds-store: fatal: not a git repository (or any of the parent directories): .git",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T20:59:50.540Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T14:46:58.838Z",
+     "at": "2026-11-18T20:58:46.207Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-18T20:59:50.540Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -321810,12 +321852,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T19:57:55.426Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-18T14:45:31.829Z"
+     "updatedAt": "2026-11-18T19:57:56.448Z"
     },
     {
      "id": "s2",
@@ -321914,7 +321956,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321961,10 +322003,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "hulu0241",
+     "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-18T16:07:02.938Z",
-     "why": "subscription account hulu0241"
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
     },
     "tried": [],
     "pickedAt": "",
@@ -322026,12 +322068,360 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-18T16:05:58.843Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "host-phone-connect-apk-axhub-browser",
+   "title": "Host the Phone Connect APK on axHub for browser download",
+   "category": "phone-connect",
+   "detail": "Brett's words: \"Why don't you put it on axHub so I can just download it from a browser like all the other ones?\"\n\nPublish apps/phone-connect's CI APK (phone-connect-debug.apk from the 'Android framework + console' workflow) to axHub the same way the other app APKs are hosted, with a stable direct download link that works from a phone browser. Update it automatically on every green main build. Then send Brett the link (console notify / Phone Connect once paired) and list it with the other downloads.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T20:03:01.845Z",
+   "updatedAt": "2026-11-18T20:03:01.845Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-18T21:00:44.125Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwmjtcmy045gvh",
+     "title": "",
+     "text": "Find how the other APKs are hosted on axHub and reuse that path and naming for phone-connect-debug.apk",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T20:03:01.846Z",
+     "updatedAt": "2026-11-18T20:03:01.846Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwmjtcmy05vaqs",
+     "title": "",
+     "text": "Pull the latest phone-connect-debug.apk from the newest green main run and publish it there; add it to the CI publish step so every green main build refreshes it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T20:03:01.846Z",
+     "updatedAt": "2026-11-18T20:03:01.846Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwmjtcmy06ntnw",
+     "title": "",
+     "text": "Verify the direct link downloads in a phone browser and post the link to Brett",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T20:03:01.846Z",
+     "updatedAt": "2026-11-18T20:03:01.846Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1010
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-18T20:03:01.846Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "console-app-text-way-too-big-system-font",
+   "title": "Console app: text way too big (system font scale, Samsung DeX)",
+   "category": "Apps > Console app",
+   "detail": "Brett (voice, Nov 18 2026): the console Android app (apps/console-droid, console-app-debug.apk) shows huge text, especially in Samsung DeX on a monitor; Ctrl+minus does nothing. He mainly needs the app for the overlay, but wants this fixed. Likely cause: the WebView follows the system font scale / density (textZoom). Fix: lock WebView text zoom to 100% (or a setting), size correctly for DeX desktop windows, keep the overlay unaffected. Full API control per the usual rule.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T21:26:24.655Z",
+   "updatedAt": "2026-11-18T21:27:59.161Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T21:27:59.161Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-18T21:27:59.161Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 6,
+     "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-18T21:28:24.452Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwmmukzd01t6zf",
+     "title": "",
+     "text": "Brett (voice, Nov 18 2026): the console Android app (apps/console-droid, console-app-debug.apk) shows huge text, especially in Samsung DeX on a monitor; Ctrl+minus does nothing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T21:27:59.161Z",
+     "updatedAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwmmukzd02riia",
+     "title": "",
+     "text": "He mainly needs the app for the overlay, but wants this fixed.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T21:27:59.161Z",
+     "updatedAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwmmukzd03yp01",
+     "title": "",
+     "text": "Likely cause: the WebView follows the system font scale / density (textZoom).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T21:27:59.161Z",
+     "updatedAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwmmukzd04vdba",
+     "title": "",
+     "text": "Fix: lock WebView text zoom to 100% (or a setting), size correctly for DeX desktop windows, keep the overlay unaffected.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T21:27:59.161Z",
+     "updatedAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwmmukzd05wvr7",
+     "title": "",
+     "text": "Full API control per the usual rule.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T21:27:59.161Z",
+     "updatedAt": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwmmukzd064mcr",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/console-app-text-way-too-big-system-font.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-app-text-way-too-big-system-font.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T21:27:59.161Z",
+     "updatedAt": "2026-11-18T21:27:59.161Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1011
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-18T21:27:59.161Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
