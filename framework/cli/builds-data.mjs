@@ -62,28 +62,34 @@ async function remoteEntries(store, part, { resolveLarge = true } = {}) {
 }
 const localLines = (part) => journalPartText(part).split('\n').filter((l) => l.trim());
 
-/** One part: compare the overlap, append what the remote lacks (apply), report. */
+/**
+ * One part: every local line must be on axf-data (as a set: a hub part is the merged union of several copies, so its
+ * line order can differ from the copy axf-data took earlier while the lines are the same; readers order by rev). Lines
+ * axf-data lacks are appended (apply); lines only axf-data has are counted and kept (a journal is never cut).
+ */
 async function syncPart(store, part, { apply, log }) {
   const lines = localLines(part);
   const remote = await remoteEntries(store, part);
-  const rep = { part, local: lines.length, remote: remote.length, compared: 0, mismatch: null, appended: 0, large: 0 };
-  const n = Math.min(lines.length, remote.length);
-  for (let i = 0; i < n; i += 1) {
-    let mine; try { mine = JSON.parse(lines[i]); } catch { rep.mismatch = `local line ${i + 1} is not JSON`; return rep; }
-    if (canonical(mine) !== canonical(remote[i])) { rep.mismatch = `line ${i + 1} differs (local rev ${mine.rev ?? '?'} ${mine.at ?? ''}, remote rev ${remote[i]?.rev ?? '?'} ${remote[i]?.at ?? ''})`; return rep; }
-    rep.compared += 1;
+  const rep = { part, local: lines.length, remote: remote.length, shared: 0, extraRemote: 0, mismatch: null, appended: 0, large: 0 };
+  const have = new Set(remote.map((e) => canonical(e)));
+  const mine = new Set();
+  const missing = [];
+  for (let i = 0; i < lines.length; i += 1) {
+    let e; try { e = JSON.parse(lines[i]); } catch { rep.mismatch = `local line ${i + 1} is not JSON`; return rep; }
+    const c = canonical(e); mine.add(c);
+    if (have.has(c)) rep.shared += 1; else missing.push(e);
   }
-  if (lines.length <= remote.length || !apply) { rep.pending = Math.max(0, lines.length - remote.length); return rep; }
-  // append the tail in batches under the append limit; an oversized entry goes as a journal-large record plus a pointer
+  rep.extraRemote = remote.filter((e) => !mine.has(canonical(e))).length;
+  if (!missing.length || !apply) { rep.pending = missing.length; return rep; }
+  // append what is missing in batches under the append limit; an oversized entry goes as a journal-large record plus a pointer
   let batch = []; let bytes = 0; let first = remote.length + 1;
   const flush = async () => {
     if (!batch.length) return;
     await store.append(partKey(part), batch, { idempotencyKey: `builds-data-${part}-${first}` });
     rep.appended += batch.length; first += batch.length; batch = []; bytes = 0;
-    log(`  ${part}: ${rep.appended}/${lines.length - remote.length} appended`);
+    log(`  ${part}: ${rep.appended}/${missing.length} appended`);
   };
-  for (let i = remote.length; i < lines.length; i += 1) {
-    let e = JSON.parse(lines[i]);
+  for (let e of missing) {
     const size = Buffer.byteLength(canonical(e));
     if (size > ENTRY_MAX) {
       const big = `${NS}/journal-large/${e.rev}-${String(e.at || '').replace(/[^0-9]/g, '')}.json`;
@@ -153,7 +159,7 @@ export async function cutover({ store = files.remoteStore(), apply = false, flip
       report.journal.push(r);
       if (r.mismatch) report.problems.push(`journal ${part}: ${r.mismatch}`);
       else if (r.pending) report.problems.push(`journal ${part}: ${r.pending} line(s) not on axf-data yet${apply ? '' : ' (--apply appends them)'}`);
-      else if (r.remote > r.local) log(`  ${part}: axf-data has ${r.remote - r.local} more line(s) than the hub (kept: a journal is never cut)`);
+      else if (r.extraRemote) log(`  ${part}: axf-data has ${r.extraRemote} line(s) the hub lacks (kept: a journal is never cut)`);
     }
     const remoteStore = rec ? core.normalizeStore(rec.data) : null;
     report.counts = { local: counts(localStore), remote: remoteStore ? counts(remoteStore) : null };
@@ -169,7 +175,7 @@ export async function cutover({ store = files.remoteStore(), apply = false, flip
     report.ok = !report.problems.length;
     if (!apply || !report.ok || !flip) return;
     let state = readState();
-    const verified = { at: nowIso(), how: 'builds-data cutover: store record equal, journal parts compared line by line, counts equal', counts: report.counts.local, journal: report.journal.map((j) => ({ part: j.part, lines: Math.max(j.local, j.remote) })), tables: report.tables };
+    const verified = { at: nowIso(), how: 'builds-data cutover: store record equal, every hub journal line on axf-data, counts equal', counts: report.counts.local, journal: report.journal.map((j) => ({ part: j.part, lines: j.remote + j.appended })), tables: report.tables };
     const changes = [];
     for (const k of KEYS) { if (MODE.modeOf(state, NS, k.endsWith('/') ? `${k}x` : k) === 'cutover') continue; const r = MODE.transitionKey(state, { ns: NS, path: k, to: 'cutover', at: nowIso(), by, verified }); state = r.state; changes.push(...r.changes); }
     writeState(state);
@@ -244,7 +250,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       for (const j of r.journal) console.log(`  journal ${j.part.padEnd(12)} local ${String(j.local).padStart(5)}  remote ${String(j.remote).padStart(5)}`);
     } else {
       console.log(`${r.ok ? (apply ? 'done' : 'ready') : 'NOT ok'}${r.store ? `; store ${r.store.same === false ? 'differs' : r.store.written ? 'written' : 'equal'}` : ''}`);
-      for (const j of r.journal) console.log(`  ${j.part.padEnd(12)} local ${String(j.local).padStart(5)} remote ${String(j.remote).padStart(5)}${j.compared !== undefined ? ` compared ${j.compared}` : ''}${j.appended ? ` appended ${j.appended}` : ''}${j.large ? ` (${j.large} large)` : ''}${j.pending ? ` pending ${j.pending}` : ''}${j.mismatch ? ` MISMATCH ${j.mismatch}` : ''}`);
+      for (const j of r.journal) console.log(`  ${j.part.padEnd(12)} local ${String(j.local).padStart(5)} remote ${String(j.remote).padStart(5)}${j.shared !== undefined ? ` shared ${j.shared}` : ''}${j.extraRemote ? ` remote-only ${j.extraRemote}` : ''}${j.appended ? ` appended ${j.appended}` : ''}${j.large ? ` (${j.large} large)` : ''}${j.pending ? ` pending ${j.pending}` : ''}${j.mismatch ? ` MISMATCH ${j.mismatch}` : ''}`);
       if (r.counts) console.log(`counts: local ${JSON.stringify(r.counts.local)}${r.counts.remote ? ` remote ${JSON.stringify(r.counts.remote)}` : ''}${r.tables ? ` rows ${JSON.stringify(r.tables)}` : ''}`);
       for (const p of r.problems) console.log(`✗ ${p}`);
       for (const f of r.flipped) console.log(`→ ${f}`);
