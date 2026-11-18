@@ -838,9 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:42 UTC · `vps-frees-stale-build-slots-every-2` added (15 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:47 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
 - 2026-11-18 01:47 UTC · `one-true-source-for-every-setting` s5 done, s6 done (all) · foreign-write
 - 2026-11-18 01:47 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` → landing, note (all) · pipeline
@@ -1238,6 +1235,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:53 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 - 2026-11-18 12:53 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 12:53 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 12:56 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 12:56 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 12:56 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
