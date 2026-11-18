@@ -832,11 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:34 UTC · `move-server-side-console-parts-onto-vps` note (all) · orchestrator
-- 2026-11-17 23:34 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
-- 2026-11-17 23:34 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-17 23:34 UTC · `move-everything-axhub-web-console` s5 done (all) · orchestrator
-- 2026-11-17 23:34 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
 - 2026-11-17 23:34 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
 - 2026-11-17 23:35 UTC · `move-everything-axhub-web-console` s5 done (all) · foreign-write
 - 2026-11-17 23:35 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
@@ -1232,6 +1227,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:31 UTC · `flagship-professional-skin-covering-2` s26 done (all) · orchestrator
 - 2026-11-18 00:31 UTC · `flagship-professional-skin-covering-2` s26 done (all) · foreign-write
 - 2026-11-18 00:32 UTC · `flagship-professional-skin-covering-2` s26 done (all) · foreign-write
+- 2026-11-18 00:32 UTC · `move-server-side-console-parts-onto-vps` s21 done, s22 done, s23 done, s24 done, s25 done (all) · foreign-write
+- 2026-11-18 00:32 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 00:32 UTC · `terminal-main-tab-streaming-console-s` s113 done, → complete, note (all) · foreign-write
+- 2026-11-18 00:32 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, note (all) · foreign-write
+- 2026-11-18 00:32 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 
 ## Token passes (log)
 
