@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:20:58.748Z",
+ "updatedAt": "2026-11-18T12:21:38.238Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192033,14 +192033,38 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:20:46.628Z",
+   "updatedAt": "2026-11-18T12:21:03.351Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:21:03.351Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
+  },
+  {
+   "id": "land-watchdogs-pr-832-fix-two-red-ci",
+   "title": "Land watchdogs PR #832: fix its two red CI checks",
+   "category": "",
+   "detail": "PR #832 (stale-row watchdog + recovery watchdog, auto-recovers stuck builds) is mergeable but fails Build engine sweep (Node) and Web Dev Console (React/TS) + Python API. Check out claude/watchdogs-combined-land, merge main, fix both failures (fix main too if it is red there; #830 may already carry fixes), push, and let the merge queue land it. Do not change the watchdog features themselves.",
+   "status": "pending",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T12:21:16.238Z",
+   "updatedAt": "2026-11-18T12:21:16.238Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],

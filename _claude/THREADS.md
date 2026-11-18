@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · console
-- 2026-11-18 01:38 UTC · `one-true-source-for-every-setting` s4 done (all) · foreign-write
 - 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:38 UTC · `rebuild-fresh-main-phone-connect-small` → pending (all) · builds-live
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 08:59 UTC · `one-landing-line-pull-main-merge-one` added (100 steps) (all) · foreign-write
 - 2026-11-18 09:14 UTC · `fix-launcher-crash-duplicate-steps-brief` merged, note (all) · reconciler
 - 2026-11-18 12:20 UTC · `plan-studio-2-open-button-working-deep` added (0 steps) (all) · Brett
+- 2026-11-18 12:21 UTC · `plan-studio-2-open-button-working-deep` → queued, note (all) · Brett
+- 2026-11-18 12:21 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (0 steps) (all) · Brett
 
 ## Token passes (log)
 

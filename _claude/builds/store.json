@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8910,
- "updatedAt": "2026-11-18T12:20:58.748Z",
+ "rev": 8911,
+ "updatedAt": "2026-11-18T12:21:38.238Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318040,14 +318040,80 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:20:46.628Z",
+   "updatedAt": "2026-11-18T12:21:03.351Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:21:03.351Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-18T12:20:53.743Z",
+    "queuedBy": "Brett",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 998
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "land-watchdogs-pr-832-fix-two-red-ci",
+   "title": "Land watchdogs PR #832: fix its two red CI checks",
+   "category": "",
+   "detail": "PR #832 (stale-row watchdog + recovery watchdog, auto-recovers stuck builds) is mergeable but fails Build engine sweep (Node) and Web Dev Console (React/TS) + Python API. Check out claude/watchdogs-combined-land, merge main, fix both failures (fix main too if it is red there; #830 may already carry fixes), push, and let the merge queue land it. Do not change the watchdog features themselves.",
+   "status": "pending",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T12:21:16.238Z",
+   "updatedAt": "2026-11-18T12:21:16.238Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -318057,7 +318123,7 @@
     "all"
    ],
    "order": {
-    "all": 998
+    "all": 999
    },
    "kind": "build",
    "planRef": "",
