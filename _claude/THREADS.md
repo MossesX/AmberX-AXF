@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `console-app-part-2-native-floating` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → complete, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `console-app-part-3-native-bridge-mic` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `console-app-part-4-console-side-safe` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `console-app-part-2-native-floating-2` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `land-project-duplicate-boilerplate` → landing, note (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:09 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · foreign-write
 - 2026-11-18 16:09 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
 - 2026-11-18 16:07 UTC · `attach-widgets-to-any-toolbar-banner` s14 done (all) · foreign-write
+- 2026-11-18 16:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-18 16:10 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
 
 ## Token passes (log)
 
