@@ -48,6 +48,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import * as tracking from '../../../../../framework/core/tracking-paths.mjs';
+import { waitFreeSync } from '../../../../../framework/cli/land-lock.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -366,6 +367,10 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
  * resolved, regenerated, pushError }.
  */
 export function mergeMain({ s, git, b, dry, log = () => {} }) {
+  // never merge main while another build is landing (land-lock@1): wait for the lock, then take main fresh
+  const free = waitFreeSync({ waitSec: Number(process.env.AXF_LAND_LOCK_WAIT || 600), onWait: (h) => log(`merge-main ${b.id}: ${h?.who ?? 'a build'} is landing; waiting for the landing lock`) });
+  if (!free.ok) return { merged: false, conflicts: [], pushError: `${free.holder?.who ?? 'another build'} is still landing (landing lock); main is merged in next round` };
+  git(['fetch', '-q', s.remote, s.base]);
   const dir = mkdtempSync(join(tmpdir(), 'axf-land-')); const wt = join(dir, 'wt');
   const g = (a, o = {}) => git(a, { ...o, cwd: wt });
   const live = join(s.repo, 'framework/cli/builds-live.mjs');

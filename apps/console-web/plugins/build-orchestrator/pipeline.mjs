@@ -8,6 +8,7 @@
  * dispatcher takes the next Queue build and starts a headless session on an account that runs its next phase's model.
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
+ *   … land-lock [--json]                     the VPS landing lock (land-lock@1): who lands now, who waits (also `landLock` in status)
  *   … attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all   done-means-merged@1: every attempt, what is
  *                                     stuck; Retry by hand (the ladder starts over; a strategy runs at once)
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
@@ -91,6 +92,7 @@ import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
+import * as landLock from '../../../../framework/cli/land-lock.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
@@ -164,6 +166,11 @@ export function projectScope() {
 /** Builds the dispatcher may run: not deleted, and in at least one project that is listed and not archived. */
 export const runnable = (store, scope = projectScope()) => live(store).filter((b) => !(b.profiles ?? []).length || (b.profiles ?? []).some((p) => !scope.archived.has(p) && (scope.known.has(p) || p === scope.profile)));
 const rulesOf = (store) => storeCore.projectOrchestrator(store, profile()).rules;
+
+/** The VPS landing lock (land-lock@1): who lands now and who waits; null when its store can't be read. */
+export function landLockNow() {
+  try { return landLock.status(); } catch { return null; }
+}
 
 /** Agent slots as agent-slots.mjs status shows them (finished sessions pruned), or a quiet default without a store. */
 export function slotsNow() {
@@ -259,7 +266,7 @@ export function status() {
   const st = loadState();
   const elsewhere = live(store).filter((b) => !inProfile(b, scope.profile) && ['running', 'waiting'].includes(b.status)).length;
   const project = { id: scope.active.id, name: scope.active.name, profile: scope.profile, runningElsewhere: elsewhere };
-  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), project, table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, plan, settings,
+  return { ok: true, $axf: 'pipeline-status@1', at: nowIso(), project, table: byTable, tabs, accounts, accountsFrom, health: loadHealth(), slots: { used: sl.used, cap: sl.cap, free: sl.free, queued: sl.queued ?? 0, unavailable: !!sl.unavailable, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, landLock: landLockNow(), plan, settings,
     state: { at: st.at, idle: st.idle, alerts: st.alerts, recent: st.recent.slice(-20), launchFails: st.launchFails, selfCheck: st.selfCheck ?? null, selfCheckRequested: readJson(files().checkRequest)?.at || '', authWaits: loadAuthWaits() } };
 }
 
@@ -1410,11 +1417,13 @@ async function main(argv) {
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const [cmd = 'status', ...rest] = args;
   const by = flag('by', process.env.AXF_ACTOR || 'cli');
+  if (cmd === 'land-lock') { const v = landLockNow(); return out({ ok: true, ...(v ?? { unavailable: true }) }, v ? landLock.sayLock(v) : 'landing lock store not readable here'); }
   if (cmd === 'status') {
     const s = status();
     const line = (r) => `  ${r.id.padEnd(40)} ${r.priority.padEnd(7)} ${String(r.steps.done).padStart(2)}/${r.steps.total} · next ${r.nextModel || '—'}${r.pipeline?.account ? ` · ${r.pipeline.account}` : ''}${r.needsSplit ? ' · needs split' : ''}${r.pipeline?.note ? ` · ${r.pipeline.note}` : ''}`;
     return out(s, [
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.hard ? ` · VPS hard limit ${s.slots.hard.live ?? '?'}/${s.slots.hard.max}` : ''}${s.slots.unavailable ? ' (no slots store here)' : ''}`,
+      s.landLock ? `Landing: ${landLock.sayLock(s.landLock)}` : 'Landing: lock store not readable here',
       `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
       `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),

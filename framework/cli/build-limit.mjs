@@ -71,7 +71,8 @@ const NCPU = Math.max(1, cpus().length || 1);
 const RAM_GB = Math.max(1, Math.round(totalmem() / GIB));
 
 export const DEFAULTS = Object.freeze({
-  maxBuilds: 8,
+  /** Gizmo, Nov 18 2026: "Max 4 builds running at once". */
+  maxBuilds: 4,
   /** axf-builds.slice: CPU for all builds together (100 = one core), memory ceiling and soft ceiling, process count. */
   cpuQuotaPct: Math.max(100, (NCPU - 2) * 100),
   memoryMaxGb: Math.max(2, Math.round(RAM_GB * 0.6)),
@@ -130,7 +131,8 @@ export function countLive(facts, limit, opts = {}) {
   const alive = facts.alive ?? ((pid) => byPid.has(pid));
   const only = opts.only ?? null;
   const ancestors = (pid) => { const out = []; let p = byPid.get(pid)?.ppid; for (let i = 0; p && p > 1 && i < 200; i++) { out.push(p); p = byPid.get(p)?.ppid; } return out; };
-  const headless = procs.filter(isHeadlessClaude);
+  // a claude whose working folder was deleted is a leftover (a test's fake claude, a removed worktree), not a build
+  const headless = procs.filter((p) => isHeadlessClaude(p) && !isGhost(p));
   const headSet = new Set(headless.map((p) => p.pid));
   const items = []; const counted = new Set(); const coveredPids = new Set();
   for (const c of headless) {
@@ -159,6 +161,9 @@ export function countLive(facts, limit, opts = {}) {
   }
   return { live: items.length, items, keep };
 }
+
+/** A process whose working folder is gone (/proc/<pid>/cwd reads "<path> (deleted)"): it holds no place. */
+export const isGhost = (p) => / \(deleted\)$/.test(String(p?.cwd ?? ''));
 
 /** The decision: may one more start? */
 export function decide(count, limit) {

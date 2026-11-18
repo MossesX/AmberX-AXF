@@ -25,8 +25,13 @@ console.log('zero tokens: the merge pipeline never calls a model');
 const LLM = [/@anthropic-ai\//, /\banthropic\b/i, /\bopenai\b/i, /claude-agent-sdk/, /\bclaude\s+-p\b/, /['"]claude['"]\s*,/, /claude-headless\.sh/, /axf\.llm@1/, /\bllm\b.*\bimport\b|\bimport\b.*\bllm\b/i, /chat[-_]engine/, /swarm-chat/, /\bgenerativeai\b|\bmistral\b|\bollama\b|\bcohere\b/i];
 const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && !/\.test\.mjs$/.test(f));
 // the generated-files manifest (generated-files@1) is data, not code; tracking-paths@1 is a pure list with no imports:
-// the only imports from outside this folder
-const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs', '../../../../../framework/spec/generated-files.json', '../../../../../framework/core/tracking-paths.mjs']);
+// the VPS landing lock (land-lock@1) is node built-ins only (checked below): the only imports from outside this folder
+const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs', '../../../../../framework/spec/generated-files.json', '../../../../../framework/core/tracking-paths.mjs', '../../../../../framework/cli/land-lock.mjs']);
+{
+  const lockText = readFileSync(join(HERE, '../../../../../framework/cli/land-lock.mjs'), 'utf8');
+  const lockImports = [...lockText.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]/gm)].map((m) => m[1]);
+  check(lockImports.every((i) => i.startsWith('node:')), `land-lock.mjs: imports only node built-ins (found ${lockImports.filter((i) => !i.startsWith('node:')).join(', ') || 'none'})`);
+}
 for (const f of landFiles) {
   const text = readFileSync(join(HERE, f), 'utf8');
   const imports = [...text.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)|require\(\s*['"]([^'"]+)['"]\s*\)/gm)].map((m) => m[1] || m[2] || m[3]);

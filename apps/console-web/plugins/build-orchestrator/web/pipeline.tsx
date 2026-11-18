@@ -38,11 +38,15 @@ type Account = { name: string; email: string; plan: string; role: string; kind?:
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
+  landLock?: LandLock | null;
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
   accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
   state: { at: string; idle: { reason: string; kind: string; since: string } | null; alerts: { key: string; at: string }[]; recent: { at: string; event: string; id: string; account?: string; model?: string; error?: string }[]; selfCheck?: SelfCheck | null; selfCheckRequested?: string };
 };
+type LockEntry = { who: string; kind: string; build?: string; pr?: number; since: string; forSec: number; position?: number };
+type LandLock = { free: boolean; holder: LockEntry | null; waiting: LockEntry[] };
+const lockName = (e: LockEntry) => `${e.who}${e.pr ? ` (#${e.pr})` : ''}`;
 type Finding = { name: string; kind: string; role: string; state: 'ready' | 'busy' | 'standby' | 'blocked'; running: number; parallel: number; note: string };
 type SelfCheck = { at: string; reason: string; by: string; line: string; fixes: string[]; problems: string[]; findings: Finding[]; notified: boolean };
 const CHECK_TONE: Record<Finding['state'], 'success' | 'accent' | undefined | 'danger'> = { ready: 'success', busy: 'accent', standby: undefined, blocked: 'danger' };
@@ -166,6 +170,13 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
       {error && <Note tone="warning">{error}</Note>}
       <div className="pl-strip">
         <span className="pl-stat" title="Agent slots on the VPS (agent-slots@1): sessions running / the cap"><Icon name="layers" size={14} /><b>{s.slots.used}/{s.slots.cap}</b> slots{s.slots.unavailable ? ' (no slots store)' : ''}</span>
+        {s.landLock && (
+          <span className="pl-stat" data-land-lock={s.landLock.free ? 'free' : 'held'} title={`One landing at a time on the VPS (land-lock@1). ${s.landLock.waiting.length ? `Waiting: ${s.landLock.waiting.map(lockName).join(', ')}` : 'Nobody waiting.'}`}>
+            <Icon name={s.landLock.free ? 'rocket' : 'lock'} size={14} />
+            {s.landLock.holder ? <>landing <b>{lockName(s.landLock.holder)}</b></> : 'landing free'}
+            {s.landLock.waiting.length > 0 && <> · <b>{s.landLock.waiting.length}</b> waiting</>}
+          </span>
+        )}
         <span className="pl-stat" title="Builds the dispatcher is running"><Icon name="play" size={14} /><b>{s.table.building.length}</b> building</span>
         <span className="pl-stat" title="Builds waiting in the Queue"><Icon name="list" size={14} /><b>{s.table.queued.length}</b> queued</span>
         <span className="pl-stat" title="Builds waiting in Pending for you"><Icon name="clock" size={14} /><b>{s.table.pending.length}</b> pending</span>

@@ -256,6 +256,14 @@
         "output": "{ table: { pending, queued, building } (rows carry requeue: { reason, phase, next, at } when back in the Queue after a finished phase, stuck: { phase, next, why } when parked in Pending by mistake), accounts, accountsFrom: { source, at, ageMin, why }, slots, plan: { launches, waits, idle }, state: { selfCheck, selfCheckRequested, … } }"
       },
       {
+        "id": "land-lock",
+        "route": "GET /pipeline/land-lock",
+        "title": "Landing lock",
+        "description": "Who is landing on main right now and who waits behind them. Landing is one at a time on the VPS: the merge queue, build_land and any push to main, console merges and sessions all take the one landing lock, and merging main into a build waits while someone lands. Say 'who is landing' or 'what's waiting to land'.",
+        "readOnly": true,
+        "output": "{ free, holder: { who, kind, build?, pr?, since, forSec } | null, waiting: [{ position, who, kind, build?, pr?, since, forSec }], recent: [{ who, at, end, heldSec, how }] }"
+      },
+      {
         "id": "pipeline-selfcheck",
         "route": "POST /pipeline/selfcheck",
         "title": "Dispatcher self-check",

@@ -26,7 +26,7 @@ const alive = { alive: () => true };
 
 // settings: defaults, limits, bad rules dropped
 reset();
-eq([S.loadSettings().maxAgents, S.loadSettings().maxHeavy, S.loadSettings().minFreeGb], [6, 3, 2], 'defaults 6 agents / 3 heavy / 2 GB');
+eq([S.loadSettings().maxAgents, S.loadSettings().maxHeavy, S.loadSettings().minFreeGb], [4, 3, 2], 'defaults 4 agents / 3 heavy / 2 GB');
 eq(S.normSettings({ maxAgents: 999, minFreeGb: -1 }).maxAgents, 64, 'cap clamps high');
 eq(S.normSettings({ minFreeGb: -1 }).minFreeGb, 0, 'floor clamps low');
 eq(S.normSettings({ priorityRules: [{ match: '(', level: 'boss' }, { match: 'x', level: 'nope' }, { match: '^vip', level: 'urgent' }] }).priorityRules, [{ match: '^vip', level: 'urgent' }], 'bad rules dropped');
@@ -84,9 +84,11 @@ eq(S.status({ alive: () => false, now }).used, 0, 'dead pid past the grace frees
 const y = S.enqueue({ name: 'y', pid: 999999 }, { alive: () => false, now });
 eq(S.status({ alive: () => false, now: now + 1000 }).used, 1, 'young slot counts before it is bound');
 process.env.AXF_SLOTS_HOST = 'elsewhere';
-eq(S.status({ alive: () => false, now: now + 600_000 }).used, 1, 'another host never drops it');
+eq(S.status({ alive: () => false, now: now + 600_000 }).used, 1, 'another host never drops it while its host is alive');
+// ...unless its host is gone: a host not heard from in HOST_STALE_MS (the console container recreated under a new name)
+eq(S.status({ alive: () => false, now: now + S.HOST_STALE_MS + 60_000 }).used, 0, 'a vanished host\'s entry is a ghost and frees its slot');
 delete process.env.AXF_SLOTS_HOST;
-S.release(y.id);
+ok(S.status().done.some((d) => d.id === y.id && /host .* is gone/.test(d.why ?? '')), 'and says why');
 
 // memory guard: holds starts under the floor, records a trip, starts when memory is back
 reset({ maxAgents: 4, minFreeGb: 2 });
