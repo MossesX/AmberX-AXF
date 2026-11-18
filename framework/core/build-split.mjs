@@ -30,7 +30,7 @@ export const MAIN_LOCK_STALE_MS = 6 * 60 * 60 * 1000;
 
 export const PART_STATUSES = Object.freeze(['waiting', 'building', 'testing', 'rebuilding', 'failed', 'done']);
 export const RUN_STATES = Object.freeze(['splitting', 'queued', 'building', 'combining', 'ci', 'merging', 'merged', 'live', 'finished', 'failed']);
-export const PART_EVENTS = Object.freeze(['launch', 'ticked', 'green', 'fail', 'crash', 'rebuild', 'abandon']);
+export const PART_EVENTS = Object.freeze(['launch', 'ticked', 'green', 'fail', 'crash', 'rebuild', 'abandon', 'conflict']);
 export const COMBINE_CI = Object.freeze(['', 'running', 'success', 'failure']);
 export const MODELS = Object.freeze(['', 'Fable', 'Opus']);
 export const PLANNERS = Object.freeze(['dispatcher', 'console', 'cli', 'mcp', 'voice', 'hand']);
@@ -343,4 +343,202 @@ export function validatePlan(plan, build, opts = {}) {
   if (norm.failure && norm.run !== 'failed') err(`failure recorded while the run is ${norm.run}`);
   if (norm.run === 'failed' && !norm.failure) err('a failed run says why (failure)');
   return { ok: !errors.length, errors };
+}
+
+// ------------------------------------------------------------------ part and run state machines
+
+/** Part transitions (BUILD-SPLIT.md → Part status): from → the states it may go to. */
+export const PART_TRANSITIONS = Object.freeze({
+  waiting: Object.freeze(['building', 'failed']),
+  building: Object.freeze(['testing', 'waiting', 'failed']),
+  testing: Object.freeze(['done', 'failed']),
+  failed: Object.freeze(['rebuilding']),
+  rebuilding: Object.freeze(['building', 'failed']),
+  done: Object.freeze(['rebuilding']), // a combine conflict (combining → building) sends a done part back for a rebuild
+});
+export const canPart = (from, to) => (PART_TRANSITIONS[from] ?? []).includes(to);
+/** Run transitions (BUILD-SPLIT.md → Run state). combining → building: a merge conflict sends a part back for a rebuild. */
+export const RUN_TRANSITIONS = Object.freeze({
+  splitting: Object.freeze(['queued', 'failed']),
+  queued: Object.freeze(['building', 'failed']),
+  building: Object.freeze(['combining', 'failed']),
+  combining: Object.freeze(['ci', 'building', 'failed']),
+  ci: Object.freeze(['merging', 'combining', 'failed']),
+  merging: Object.freeze(['merged', 'ci', 'failed']),
+  merged: Object.freeze(['live']),
+  live: Object.freeze(['finished']),
+  finished: Object.freeze([]),
+  failed: Object.freeze([]),
+});
+export const canRun = (from, to) => (RUN_TRANSITIONS[from] ?? []).includes(to);
+/** The run states in which the parts decide the state (rollUp applies); past them the combine, CI and landing events do. */
+export const PARTS_PHASE = Object.freeze(['splitting', 'queued', 'building']);
+export const RUN_TERMINAL = Object.freeze(['finished', 'failed']);
+/** `done`, or `failed` with no rebuild left. */
+export const isPartTerminal = (part, maxRebuilds = DEFAULT_MAX_REBUILDS) => part?.status === 'done' || (part?.status === 'failed' && int(part.rebuilds) >= int(maxRebuilds, DEFAULT_MAX_REBUILDS));
+
+const withHistory = (plan, entry) => ({ ...plan, history: [...(plan.history ?? []), entry].slice(-HISTORY_MAX) });
+const partIndex = (plan, partId) => (plan?.parts ?? []).findIndex((p) => p.id === partId);
+const replacePart = (plan, i, part) => ({ ...plan, parts: plan.parts.map((p, k) => (k === i ? part : p)) });
+const refuse = (plan, why) => ({ ok: false, plan, why, change: null });
+
+/** The part status an event asks for from a given status, or '' when the event does not apply there. */
+export function partTarget(status, event) {
+  switch (event) {
+    case 'launch': return status === 'waiting' || status === 'rebuilding' ? 'building' : '';
+    case 'ticked': return status === 'building' ? 'testing' : '';
+    case 'green': return status === 'testing' ? 'done' : '';
+    case 'fail': return status === 'building' || status === 'testing' ? 'failed' : '';
+    case 'crash': return status === 'building' ? 'waiting' : '';
+    case 'rebuild': return status === 'failed' ? 'rebuilding' : '';
+    case 'abandon': return status === 'waiting' || status === 'rebuilding' ? 'failed' : '';
+    case 'conflict': return status === 'done' ? 'rebuilding' : '';
+    default: return '';
+  }
+}
+
+/**
+ * Apply one event to one part (pure): → { ok, plan, why, change: { part, from, to } | null }.
+ *   launch   { slot, account, session, model }   waiting | rebuilding → building; startedAt = at
+ *   ticked                                       building → testing (every step of the part ticked; checks run)
+ *   green    { head }                            testing → done (head = the pushed branch tip, required)
+ *   fail     { why }                             building | testing → failed (lastError, endedAt); onPartFailed decides what next
+ *   crash    { why }                             building → waiting (died before its first tick): slot and session cleared
+ *   rebuild                                      failed → rebuilding while rebuilds < maxRebuilds (rebuilds + 1, head cleared)
+ *   abandon  { why }                             waiting | rebuilding → failed (the run failed elsewhere: it never runs)
+ *   conflict { why }                             done → rebuilding (its branch would not merge at combine) while rebuilds < maxRebuilds
+ * A refused event changes nothing and says why; the run state is not touched here (applyRollUp does that).
+ */
+export function partNext(plan, partId, event, args = {}) {
+  const i = partIndex(plan, partId); if (i < 0) return refuse(plan, `no part ${partId}`);
+  if (!PART_EVENTS.includes(event)) return refuse(plan, `unknown part event ${event}`);
+  if (RUN_TERMINAL.includes(plan.run)) return refuse(plan, `run is ${plan.run}: no part moves (the dispatcher stops what still runs)`);
+  const part = plan.parts[i];
+  const to = partTarget(part.status, event);
+  if (!to) return refuse(plan, `${partId} is ${part.status}: ${event} does not apply`);
+  if (!canPart(part.status, to)) return refuse(plan, `${partId}: ${part.status} → ${to} is not allowed`);
+  const at = iso(args.at) || new Date().toISOString();
+  let next = { ...part, status: to };
+  if (event === 'launch') next = { ...next, slot: str(args.slot, 60), account: accountName(args.account), session: str(args.session, 120), model: oneOf(MODELS, args.model, part.model), startedAt: at, endedAt: '', lastError: '' };
+  if (event === 'green') { if (!sha(args.head)) return refuse(plan, `${partId}: green needs the pushed head sha`); next = { ...next, head: sha(args.head), endedAt: at }; }
+  if (event === 'fail' || event === 'abandon') next = { ...next, lastError: str(args.why, 600) || (event === 'abandon' ? 'the run failed before this part ran' : 'failed'), endedAt: at, slot: '', session: '' };
+  if (event === 'crash') next = { ...next, slot: '', session: '', lastError: str(args.why, 600) || 'session died before its first tick', startedAt: '' };
+  if (event === 'rebuild' || event === 'conflict') {
+    if (int(part.rebuilds) >= int(plan.maxRebuilds, DEFAULT_MAX_REBUILDS)) return refuse(plan, `${partId}: no rebuild left (${part.rebuilds}/${plan.maxRebuilds})`);
+    if (event === 'conflict' && plan.run !== 'combining') return refuse(plan, `${partId}: a conflict is only found while combining (run is ${plan.run})`);
+    next = { ...next, rebuilds: int(part.rebuilds) + 1, head: '', slot: '', account: '', session: '', startedAt: '', endedAt: '', lastError: event === 'conflict' ? str(args.why, 600) || 'did not merge at combine' : part.lastError };
+  }
+  const why = str(args.why, 300);
+  return { ok: true, plan: withHistory(replacePart(plan, i, next), { at, from: part.status, to, part: partId, ...(why ? { why } : {}) }), why: '', change: { part: partId, from: part.status, to } };
+}
+
+/**
+ * The run state the parts imply (the parts phase only): no parts → splitting; a part failed with no rebuild left →
+ * failed; every part done → combining; every part waiting → queued; anything else (building, testing, rebuilding, a
+ * failed part that still has a rebuild) → building.
+ */
+export function rollUp(parts, maxRebuilds = DEFAULT_MAX_REBUILDS) {
+  const list = Array.isArray(parts) ? parts.filter(obj) : [];
+  if (!list.length) return 'splitting';
+  if (list.some((p) => p.status === 'failed' && isPartTerminal(p, maxRebuilds))) return 'failed';
+  if (list.every((p) => p.status === 'done')) return 'combining';
+  if (list.every((p) => p.status === 'waiting')) return 'queued';
+  return 'building';
+}
+/** The expandable queue row's badge: { state, done, total, label } ('Building 2/4', 'Combining', 'Queued', …). */
+export function rollUpBadge(plan) {
+  const parts = plan?.parts ?? []; const total = parts.length; const done = parts.filter((p) => p.status === 'done').length;
+  const state = PARTS_PHASE.includes(plan?.run) || !plan?.run ? rollUp(parts, plan?.maxRebuilds) : plan.run;
+  const word = state.charAt(0).toUpperCase() + state.slice(1);
+  const label = state === 'building' ? `Building ${done}/${total}` : state === 'ci' ? 'CI' : word;
+  return { state, done, total, label };
+}
+
+/** All-or-nothing: → { ok, why }. Every part done with a pushed head, every part on the plan's base, a base set. */
+export function combineReady(plan) {
+  const parts = plan?.parts ?? [];
+  if (!parts.length) return { ok: false, why: 'no parts' };
+  if (!sha(plan.base)) return { ok: false, why: 'no base: main was never locked for this run' };
+  const open = parts.filter((p) => p.status !== 'done');
+  if (open.length) return { ok: false, why: `${open.length} of ${parts.length} part${parts.length === 1 ? '' : 's'} not done: ${open.map((p) => `${p.id} ${p.status}`).join(', ')}` };
+  const noHead = parts.filter((p) => !sha(p.head)); if (noHead.length) return { ok: false, why: `${noHead.map((p) => p.id).join(', ')} done without a pushed head` };
+  const offBase = parts.filter((p) => p.base !== plan.base); if (offBase.length) return { ok: false, why: `${offBase.map((p) => p.id).join(', ')} not on the run's base` };
+  return { ok: true, why: '' };
+}
+
+/**
+ * Move the run (pure): → { ok, plan, why, change }. Combine events ride along in `args`: head, pr, ci, ciRun
+ * (combining → ci), mergedAt (→ merged), liveAt (→ live), finishedAt (→ finished); `why` goes to the history and to
+ * `failure` on → failed (with `part`). building → combining is refused until combineReady; failed is terminal.
+ */
+export function runNext(plan, to, args = {}) {
+  if (!RUN_STATES.includes(to)) return refuse(plan, `unknown run state ${to}`);
+  const from = plan.run;
+  if (!canRun(from, to)) return refuse(plan, `run: ${from} → ${to} is not allowed`);
+  if (to === 'combining' && from === 'building') { const r = combineReady(plan); if (!r.ok) return refuse(plan, `not ready to combine: ${r.why}`); }
+  const at = iso(args.at) || new Date().toISOString();
+  const why = str(args.why, 300);
+  let next = { ...plan, run: to };
+  const c = { ...plan.combine };
+  if (to === 'combining') { c.startedAt = c.startedAt || at; c.attempts = int(c.attempts) + 1; c.ci = ''; }
+  if (to === 'ci') { c.head = sha(args.head) || c.head; if (args.pr !== undefined) c.pr = normCombine({ pr: args.pr }).pr; c.ci = oneOf(COMBINE_CI, args.ci, 'running'); c.ciRun = str(args.ciRun, 300) || c.ciRun; }
+  if (to === 'merging') c.ci = 'success';
+  if (to === 'merged') c.mergedAt = iso(args.mergedAt) || at;
+  if (to === 'live') c.liveAt = iso(args.liveAt) || at;
+  if (to === 'finished') c.finishedAt = iso(args.finishedAt) || at;
+  if (from === 'ci' && to === 'combining') c.ci = 'failure';
+  if (to === 'failed') {
+    next.failure = { at, part: isPartId(args.part) ? args.part : '', why: why || 'failed' };
+    next.parts = next.parts.map((p) => (partTarget(p.status, 'abandon') ? { ...p, status: 'failed', lastError: p.lastError || 'the run failed before this part ran', endedAt: at, slot: '', session: '' } : p));
+  }
+  next.combine = c;
+  return { ok: true, plan: withHistory(next, { at, from, to, ...(isPartId(args.part) ? { part: args.part } : {}), ...(why ? { why } : {}) }), why: '', change: { from, to } };
+}
+
+/**
+ * After a part failed (pure): the part goes `failed`; while it has a rebuild left it goes straight on to `rebuilding`
+ * (its steps are to be un-ticked on the build: `resetSteps`) and the run keeps building; otherwise the run is failed,
+ * every waiting / rebuilding part is abandoned and `failure` says which part and why.
+ * → { ok, plan, action: 'rebuild' | 'run-failed' | '', resetSteps: [step id…], why }
+ */
+export function onPartFailed(plan, partId, why = '', at = new Date().toISOString()) {
+  const i = partIndex(plan, partId); if (i < 0) return { ok: false, plan, action: '', resetSteps: [], why: `no part ${partId}` };
+  let p = plan; const part = p.parts[i];
+  const left = int(part.rebuilds) < int(p.maxRebuilds, DEFAULT_MAX_REBUILDS);
+  if (part.status === 'done') {
+    // a done part that would not merge at combine: rebuilt on the same base, the run back to building; else the run fails
+    if (p.run !== 'combining') return { ok: false, plan, action: '', resetSteps: [], why: `${partId} is done and the run is ${p.run}: nothing failed` };
+    if (left) {
+      const c = partNext(p, partId, 'conflict', { at, why: str(why, 300) || 'did not merge at combine' });
+      if (!c.ok) return { ok: false, plan, action: '', resetSteps: [], why: c.why };
+      const run = runNext(c.plan, 'building', { at, part: partId, why: `rebuild ${int(part.rebuilds) + 1}/${p.maxRebuilds}: ${partId} did not merge` });
+      return { ok: true, plan: run.ok ? run.plan : c.plan, action: 'rebuild', resetSteps: [...part.steps], why: str(why, 300) };
+    }
+  } else {
+    if (part.status !== 'failed') { const f = partNext(p, partId, 'fail', { at, why }); if (!f.ok) return { ok: false, plan, action: '', resetSteps: [], why: f.why }; p = f.plan; }
+    const r = partNext(p, partId, 'rebuild', { at, why: `rebuild ${int(part.rebuilds) + 1}/${p.maxRebuilds}` });
+    if (r.ok) return { ok: true, plan: r.plan, action: 'rebuild', resetSteps: [...part.steps], why: r.plan.history.at(-1)?.why ?? '' };
+  }
+  const f = RUN_TERMINAL.includes(p.run) ? { ok: true, plan: p } : runNext(p, 'failed', { at, part: partId, why: `${partId} failed for good (${int(part.rebuilds)}/${p.maxRebuilds} rebuilds): ${str(why, 200) || 'no reason given'}` });
+  return { ok: true, plan: f.plan, action: 'run-failed', resetSteps: [], why: f.plan.failure?.why ?? '' };
+}
+
+/**
+ * The parts phase's run state from its parts (pure): queued → building once a part launched, building → combining
+ * once every part is done; a terminal failure fails the run (through runNext, so the parts are abandoned and the
+ * failure named). Outside the parts phase the plan is returned as is. → { plan, change: { from, to } | null }
+ */
+export function applyRollUp(plan, at = new Date().toISOString()) {
+  if (!PARTS_PHASE.includes(plan?.run)) return { plan, change: null };
+  const want = rollUp(plan.parts, plan.maxRebuilds);
+  if (want === plan.run || want === 'splitting') return { plan, change: null };
+  if (want === 'failed') { const bad = plan.parts.find((p) => p.status === 'failed' && isPartTerminal(p, plan.maxRebuilds)); const r = runNext(plan, 'failed', { at, part: bad?.id, why: `${bad?.id ?? 'a part'} failed for good` }); return { plan: r.plan, change: r.change }; }
+  // the parts phase is a line (splitting → queued → building → combining): walk it, never back (every part crashed
+  // back to waiting reads as building still: they relaunch)
+  const line = [...PARTS_PHASE, 'combining'];
+  const from = line.indexOf(plan.run); const to = line.indexOf(want);
+  if (to <= from) return { plan, change: null };
+  let cur = plan;
+  for (let k = from; k < to; k += 1) { const r = runNext(cur, line[k + 1], { at }); if (!r.ok) return { plan: cur, change: cur === plan ? null : { from: plan.run, to: cur.run } }; cur = r.plan; }
+  return { plan: cur, change: { from: plan.run, to: cur.run } };
 }

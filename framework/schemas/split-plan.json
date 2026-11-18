@@ -65,7 +65,8 @@
         "fail",
         "crash",
         "rebuild",
-        "abandon"
+        "abandon",
+        "conflict"
       ]
     },
     "ci": {

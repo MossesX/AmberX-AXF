@@ -99,10 +99,11 @@ checkpoint order; nothing is assumed independent without evidence).
 | failed | rebuilding | `rebuilds < maxRebuilds`: the part's steps are reset and it is rebuilt from the same `base` |
 | rebuilding | building | the rebuild's session launched (`rebuilds + 1`) |
 | waiting | failed | the run failed before the part started (another part failed for good): it never runs |
+| done | rebuilding | its branch would not merge at combine (conflict): rebuilt on the same base while `rebuilds < maxRebuilds`, the run back to `building`; no rebuild left = the run fails |
 
-`done` and a `failed` part with `rebuilds ≥ maxRebuilds` are terminal. `PART_TRANSITIONS` in the engine is the table;
+A `failed` part with `rebuilds ≥ maxRebuilds` is terminal; `done` only moves for a combine conflict. `PART_TRANSITIONS` in the engine is the table;
 `canPart(from, to)` answers it; `partNext(part, event, plan)` applies an event (`launch`, `ticked`, `green`, `fail`,
-`crash`, `rebuild`) and refuses an unknown step.
+`crash`, `rebuild`, `abandon`, `conflict`) and refuses an unknown step or any move on a `failed` / `finished` run.
 
 ## Run state (RunState)
 

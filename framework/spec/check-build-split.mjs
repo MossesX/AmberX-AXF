@@ -100,5 +100,49 @@ if (WRITE) fx.out.validate = validateCases;
 for (const [i, c] of validateCases.entries()) t(`validate fixture: ${c.name}`, () => assert.deepEqual(c, fx.out.validate[i]));
 t('validatePlan: the untouched plan is valid; no plan is not', () => { assert.deepEqual(S.validatePlan(vBase, vBuild), { ok: true, errors: [] }); assert.equal(S.validatePlan(null, vBuild).ok, false); assert.equal(S.validatePlan({ id: 'other.r1', parts: [] }, vBuild).ok, false); });
 
+// ---------------- state machines
+t('transition tables: every state named, terminal states go nowhere, every target is a known state', () => {
+  for (const s of S.PART_STATUSES) assert.ok(Array.isArray(S.PART_TRANSITIONS[s]), s); for (const s of S.RUN_STATES) assert.ok(Array.isArray(S.RUN_TRANSITIONS[s]), s);
+  assert.deepEqual(S.PART_TRANSITIONS.done, ['rebuilding'], 'a done part only moves for a combine conflict'); assert.deepEqual(S.RUN_TRANSITIONS.finished, []); assert.deepEqual(S.RUN_TRANSITIONS.failed, []);
+  for (const [from, tos] of Object.entries(S.PART_TRANSITIONS)) for (const to of tos) { assert.ok(S.PART_STATUSES.includes(to), `${from}→${to}`); assert.ok(S.canPart(from, to)); }
+  for (const [from, tos] of Object.entries(S.RUN_TRANSITIONS)) for (const to of tos) { assert.ok(S.RUN_STATES.includes(to), `${from}→${to}`); assert.ok(S.canRun(from, to)); }
+  assert.ok(!S.canPart('done', 'building')); assert.equal(S.partTarget('done', 'conflict'), 'rebuilding'); assert.equal(S.partTarget('building', 'conflict'), ''); assert.ok(!S.canPart('waiting', 'done')); assert.ok(!S.canRun('merged', 'failed'), 'merged is never failed'); assert.ok(!S.canRun('queued', 'combining'));
+  for (const s of S.RUN_STATES) if (!S.RUN_TERMINAL.includes(s) && !['merged', 'live'].includes(s)) assert.ok(S.canRun(s, 'failed'), `${s} can fail`);
+});
+t('rollUp: no parts splitting, all waiting queued, all done combining, a terminal failure failed, else building', () => {
+  const P = (...st) => st.map((status, i) => ({ id: `p${i + 1}`, status, rebuilds: 0 }));
+  assert.equal(S.rollUp([]), 'splitting'); assert.equal(S.rollUp(P('waiting', 'waiting')), 'queued'); assert.equal(S.rollUp(P('done', 'done')), 'combining');
+  assert.equal(S.rollUp(P('waiting', 'building')), 'building'); assert.equal(S.rollUp(P('done', 'testing')), 'building'); assert.equal(S.rollUp(P('done', 'rebuilding')), 'building');
+  assert.equal(S.rollUp(P('done', 'failed')), 'building', 'a failed part with a rebuild left is still building'); assert.equal(S.rollUp([{ id: 'p1', status: 'failed', rebuilds: 2 }, { id: 'p2', status: 'done' }]), 'failed');
+  assert.equal(S.rollUp(P('done', 'failed'), 0), 'failed', 'maxRebuilds 0: the first failure is terminal');
+  assert.deepEqual(S.rollUpBadge({ run: 'building', parts: P('done', 'building', 'waiting') }), { state: 'building', done: 1, total: 3, label: 'Building 1/3' });
+  assert.equal(S.rollUpBadge({ run: 'ci', parts: P('done') }).label, 'CI'); assert.equal(S.rollUpBadge({ run: 'merging', parts: P('done') }).label, 'Merging'); assert.equal(S.rollUpBadge(null).label, 'Splitting');
+});
+const mBuild = fx.in.validate.build;
+const tick = (k) => `2026-11-18T12:${String(k + 1).padStart(2, '0')}:00.000Z`;
+const brief = (plan) => ({ run: plan.run, parts: plan.parts.map((p) => ({ id: p.id, status: p.status, rebuilds: p.rebuilds, head: p.head, account: p.account })), combine: { head: plan.combine.head, pr: plan.combine.pr, ci: plan.combine.ci, attempts: plan.combine.attempts, mergedAt: plan.combine.mergedAt, finishedAt: plan.combine.finishedAt }, failure: plan.failure, history: plan.history.map((h) => `${h.at.slice(14, 16)} ${h.part ? `${h.part} ` : ''}${h.from}→${h.to}${h.why ? ` (${h.why})` : ''}`) });
+const machine = fx.in.machine.scripts.map((sc) => {
+  let plan = S.planParts(mBuild, 3, {}, { at: AT, base: SHA, maxRebuilds: sc.maxRebuilds }).plan;
+  const steps = sc.ops.map((op, k) => {
+    const at = tick(k);
+    if (op.op === 'part') { const r = S.partNext(plan, op.part, op.event, { ...(op.args ?? {}), at }); plan = r.plan; return { op: `${op.part} ${op.event}`, ok: r.ok, why: r.why, change: r.change }; }
+    if (op.op === 'failed') { const r = S.onPartFailed(plan, op.part, op.why, at); plan = r.plan; return { op: `${op.part} failed`, ok: r.ok, action: r.action, resetSteps: r.resetSteps, why: r.why }; }
+    if (op.op === 'run') { const r = S.runNext(plan, op.to, { ...(op.args ?? {}), at }); plan = r.plan; return { op: `run ${op.to}`, ok: r.ok, why: r.why, change: r.change }; }
+    if (op.op === 'rollup') { const r = S.applyRollUp(plan, at); plan = r.plan; return { op: 'rollup', change: r.change, run: plan.run }; }
+    if (op.op === 'ready') return { op: 'ready', ...S.combineReady(plan) };
+    throw new Error(`unknown op ${op.op}`);
+  });
+  assert.ok(same(plan, S.normSplit(plan, { build: mBuild.id })), `${sc.name}: the plan stays in shape`);
+  return { name: sc.name, steps, final: brief(plan), badge: S.rollUpBadge(plan), ready: S.combineReady(plan) };
+});
+if (WRITE) fx.out.machine = machine;
+for (const [i, m] of machine.entries()) t(`machine fixture: ${m.name}`, () => assert.deepEqual(m, fx.out.machine[i]));
+t('machine: the happy path ends finished with every part done and a merged combine', () => { const m = machine[0]; assert.equal(m.final.run, 'finished'); assert.ok(m.final.parts.every((p) => p.status === 'done')); assert.equal(m.final.combine.pr, 4242); assert.ok(m.final.combine.mergedAt); assert.ok(m.steps.every((s) => s.op === 'ready' || s.ok !== false), JSON.stringify(m.steps.filter((s) => s.ok === false))); const ready = m.steps.filter((s) => s.op === 'ready'); assert.equal(ready[0].ok, false, 'two of three done: not ready'); assert.equal(ready[1].ok, true, 'all three done: ready'); });
+t('machine: a failure with a rebuild left rebuilds that part only, resets its steps, the run keeps building', () => { const m = machine[1]; const f = m.steps.find((s) => s.op === 'p1 failed'); assert.equal(f.action, 'rebuild'); assert.deepEqual(f.resetSteps, ['s1', 's3']); assert.equal(m.final.parts[0].rebuilds, 1); assert.equal(m.final.parts[0].status, 'done'); assert.equal(m.final.parts[2].status, 'waiting', 'p3 was never launched'); assert.equal(m.final.run, 'building', 'the run keeps building while a part waits'); });
+t('machine: a failure past maxRebuilds fails the run, abandons the waiting part, refuses everything after', () => { const m = machine[2]; assert.equal(m.final.run, 'failed'); assert.equal(m.final.failure.part, 'p1'); assert.equal(m.final.parts[2].status, 'failed'); assert.equal(m.final.parts[1].status, 'building', 'a part mid-build is left for the dispatcher to stop'); for (const s of m.steps.slice(-3)) assert.equal(s.ok, false, s.op); });
+t('machine: all-or-nothing combine readiness', () => { const m = machine[5]; const ready = m.steps.filter((s) => s.op === 'ready'); assert.equal(ready[0].ok, false); assert.match(ready[0].why, /p3 waiting/); assert.equal(m.final.run, 'building'); });
+t('machine: a combine conflict rebuilds the part and combines again; red CI goes back to combining', () => { const m = machine[6]; assert.equal(m.final.run, 'merged'); assert.equal(m.final.combine.attempts, 3); assert.equal(m.final.parts[1].rebuilds, 1); assert.equal(m.final.parts[1].head, SHA2); });
+t('machine: maxRebuilds 0 fails the run on the first failure', () => { assert.equal(machine[7].final.run, 'failed'); assert.equal(machine[7].final.failure.part, 'p2'); });
+
 if (WRITE) { writeFileSync(FIXTURE, `${JSON.stringify(fx, null, 1)}\n`); console.log(`wrote ${FIXTURE}`); }
 console.log(`build-split: ${n} checks passed`);
