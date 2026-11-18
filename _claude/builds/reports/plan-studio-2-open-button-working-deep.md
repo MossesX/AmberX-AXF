@@ -1,0 +1,62 @@
+# Plan Studio 2: Open button, working deep links, Ctrl+K command palette
+
+Build `plan-studio-2-open-button-working-deep`, branch `claude/plan-studio-2-open-button-working-deep`.
+
+## Draft: trace (s1)
+
+### Naming
+
+The step list says `view:plan-studio` and `plans.mjs`; those belong to the original Plan Studio
+(`plugins/plan-studio`, untouched by rule). Plan Studio 2.0 is `plugins/plan-studio-2`: view id `plan-studio-2`,
+CLI `tree.mjs`, items in a plan-tree@1 (plans are top-level items). This build uses the real ids:
+`view:plan-studio-2`, `view:plan-studio-2/plan:<id>`, and `tree.mjs open <id>`.
+
+### Why Plan Studio 2.0 "opens only its settings"
+
+1. **The plugin's web part registers its view** (`web/index.tsx` → `views['plan-studio-2']`, `plugin.json`
+   `opens: "main"`, `tabable.view: plan-studio-2`), so the page exists. Nothing in the console points at it from the
+   places Brett lands on, though:
+   - Settings → Plugins → *Plan Studio 2.0* (where the gear, the plugin list and `plugin.settings.open` go) shows
+     the settings and the lifecycle panel only. There is no Open button on it.
+   - Its only Open button is a `builds.toolbar` slot (Build manager toolbar), and the nav entry sits in the Builds group.
+2. **The Plugin Manager only knows the view after the chunk loaded once.** `bundledPlugins[].library` is
+   `undefined` until the lazy loader has a shape for the folder (`src/plugins.ts` → `loader.library()`), and
+   `uiOf()` (`plugins/plugin-manager/web/model.ts`) then answers `views: []`, so the row has no Open, and
+   `openPlugin()` (`src/menuLibrary.tsx`) falls through to `settings.open:<tab>` or the Plugin Manager. On a fresh
+   browser, after a redeploy (hash change → stale shape) or with the plugin set to "load when opened", the plugin
+   opens its settings instead of its page.
+3. **No Open on the plans themselves.** Rows open the editor section on click, but there is no Open button that
+   brings one plan up as the page (`plan:<id>` sub-target), and no REST/CLI/voice "open" that names the same thing.
+
+### Why `#/…` and `?axf-target=view:…` land on the main page
+
+- Nothing parses `location.hash` or `?axf-target=` at all. The only load-time links are `?axf-open=<address|action>`
+  (`src/native/axfNative.ts` `runDeepLink`) and `?axf-cmd=search` (`src/control/SearchPalette.tsx`).
+- `runDeepLink` fires on a fixed 300 ms timer. A lazily loaded plugin view is usually not registered yet, so
+  `executeControl(open)` answers not-found (or the view is unknown to `rt.navigate`) and the console stays on Home
+  with a toast at best.
+- No `hashchange` / `popstate` handling, so a link followed while the console is open does nothing.
+
+### Ctrl+K today
+
+Two keydown handlers answer Ctrl+K: `menuLibrary.tsx` opens `console-search` (the older "Search everything" dialog,
+`src/consoleSearch.ts`), and `control/SearchPalette.tsx` opens `console-control.search` (the console-control search,
+`src/control/search.ts`). Which one wins depends on listener order. Decision recorded in s9.
+
+### Fix plan
+
+- s2 Plan Studio 2.0 main view root: `SkinScope` + `data-axf-target="view:plan-studio-2"`; an Open panel on its
+  settings sub-tab (Settings → Plugins → Plan Studio 2.0 → *Open Plan Studio 2.0*); the Plugin Manager falls back to
+  `plugin.json` `provides: view:*` when the chunk has not loaded, so Open is there from the first visit.
+- s3 Open button (framework `Button`, in a `role="toolbar"` row with an aria-label, tap-confirm on touch) on the
+  plan list and on each plan row → `plan-studio-2.open:<id>` → `view:plan-studio-2/plan:<id>`.
+- s4 one handler: REST `GET /api/plugins/plan-studio-2/plans/<id>` + `POST …/plans/<id>/open`, plugin command
+  `open` (MCP through plugin-commands), `tree.mjs open <id>`, voice "open <plan>".
+- s5–s7 a deep-link resolver (`src/control/deepLink.ts` + pure `deepLink-core.mjs`): parses `#/<view>[/<sub>]`,
+  `?axf-target=<address>` (and the existing `?axf-open=`) before first render, queues the target until the view is
+  registered (plugin views load lazily), then opens and highlights through the console-control executor; unknown
+  targets show a notice; `hashchange` / `popstate` run the same path. Test `scripts/deeplink.test.mjs`.
+- s8 parity: `console_show` / `console_open` accept the same addresses and URLs; REST
+  `/api/console-control/resolve`; `axf console open <target|url>`; voice "open …".
+- s9–s12 one palette: extend the console-control `SearchPalette` (dialog asset, plugin commands and plans in the
+  results, recent first, never approve/deny or owner-only), retire the second Ctrl+K handler.
