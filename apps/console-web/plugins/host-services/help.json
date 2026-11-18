@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "host-services-help",
+  "name": "host-services help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:host-services.",
+  "author": "AmberX AXF",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:host-services",
+    "entries": [
+      { "target": "view:host-services", "title": "Host services", "text": "The parts of the console that run on the VPS host instead of in the console's container, so they keep working when the console is down. Each row is one service: whether it is up, since when, where it runs (mode) and its last run. Open a row for its actions, logs and the mode control.", "kind": "view" },
+      { "target": "host:*/unit:restart", "title": "Restart", "text": "Restarts the service's systemd unit on the host. Asks first: whatever it is doing stops for a moment.", "kind": "button" },
+      { "target": "host:*/mode", "title": "Where it runs", "text": "Container: the console still does this part. Shadow: both run, the host only pretends and the results are compared. Host: the host does it and the console's copy steps aside. Move one step at a time; going back asks first.", "kind": "field" },
+      { "target": "host:*/rollback", "title": "Roll back", "text": "Gives the part back to the console: the host unit stops and the console's own loop runs again on its next pass.", "kind": "button" },
+      { "target": "host-gate:*", "title": "Host service down", "text": "This screen's work runs on the VPS host and that part is down (or the console cannot reach the host). Restart tries again; Host services shows why and since when.", "kind": "note" }
+    ]
+  }
+}

@@ -51,7 +51,7 @@ def _age_s(iso: str | None) -> float | None:
 
 def manifests(root: Path) -> list[dict[str, Any]]:
     out = []
-    for f in sorted((root / "deploy" / "host-services" / "services").glob("*.json")):
+    for f in sorted((root / "deploy/host-services/services").glob("*.json")):
         try:
             m = json.loads(f.read_text())
             if isinstance(m, dict) and m.get("id"):

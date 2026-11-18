@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "The console parts that run on the VPS host as systemd services (host-service@1, framework/spec/HOST-SERVICES.md).",
+  "description": "The console parts that run on the VPS host as systemd services (host-service@1, framework/spec/HOST-SERVICES.md): the builds-live publisher, the shipped-features watcher, axHub sync, the agent job runner, the systems check's host checks and Auto fixes, the maintenance actions, and the auto-lander, pipeline and watchdog units, behind one host API on /run/axf-host. Settings \u2192 Plugins \u2192 Host services shows one row per service (status with since, mode, heartbeat, last run) with Restart, Start, Stop, Run now, its own actions, logs, and the mode control (container \u2192 shadow \u2192 host) with Roll back; the same list is a panel in the Systems check. Moved plugins show a clear Host service down state (HostServiceGate). Every action is on REST /api/host-services, the MCP tools host_services_*, `axf host \u2026` and voice (host.status, host.restart, host.rollback). The units are installed by deploy/install-host-services.sh; this plugin is only the console's view.",
   "targets": [
     "axf-console"
   ],
@@ -265,5 +265,37 @@
         "description": "host-service-mode@1: where every service runs today, with shadow runs and drift counts."
       }
     ]
-  }
+  },
+  "hostServices": [
+    "host-api",
+    "builds-live",
+    "shipped-features",
+    "hub-sync",
+    "agent-swarm",
+    "systems-check",
+    "maintenance",
+    "auto-lander",
+    "pipeline",
+    "build-watchdog",
+    "stale-row-watchdog"
+  ],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/host-services",
+    "env": [
+      "AXF_HOST_API",
+      "AXF_HOST_API_FALLBACK",
+      "AXF_HOST_TOKEN",
+      "AXF_HOST_GID"
+    ],
+    "mentions": [
+      "_claude/memory/STATUS.md",
+      "_claude/THREADS.md"
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-18"
+  },
+  "help": "help.json"
 }
