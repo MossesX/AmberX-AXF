@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:31:12.081Z",
+ "updatedAt": "2026-11-18T00:31:29.216Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -184114,7 +184114,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184122,7 +184122,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-17T23:40:27.400Z",
+   "updatedAt": "2026-11-18T00:31:11.969Z",
    "builtAt": "",
    "notes": [
     {
@@ -184230,6 +184230,14 @@
      "at": "2026-11-17T23:10:51.658Z"
     },
     {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 3 of 3).",
+     "at": "2026-11-17T23:34:15.686Z"
+    },
+    {
+     "text": "Watchdog gave up on Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): retry 3 of 3 was the last one, giving up: back in Pending for Brett.",
+     "at": "2026-11-17T23:40:27.400Z"
+    },
+    {
      "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-17T23:22:17.726Z"
     },
@@ -184246,16 +184254,8 @@
      "at": "2026-11-17T23:32:39.608Z"
     },
     {
-     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): step s20 reset, slot released, back in the Queue (retry 3 of 3).",
-     "at": "2026-11-17T23:34:15.686Z"
-    },
-    {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-17T23:36:04.208Z"
-    },
-    {
-     "text": "Watchdog gave up on Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 failed (exit 129): retry 3 of 3 was the last one, giving up: back in Pending for Brett.",
-     "at": "2026-11-17T23:40:27.400Z"
     }
    ],
    "approvals": [
@@ -184859,8 +184859,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T00:31:11.969Z",
      "note": "",
      "uid": "st-mwl7mosm0qdm0j",
      "createdAt": "2026-11-17T21:34:10.438Z"
