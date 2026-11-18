@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:25 UTC · `flagship-professional-skin-covering-2` s24 done, s25 done (all) · foreign-write
 - 2026-11-17 23:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-17 23:25 UTC · `active-tab-stop-button-grid-alignment` added (0 steps) (all) · console
 - 2026-11-17 23:25 UTC · `move-server-side-console-parts-onto-vps` s5 done (all) · orchestrator
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:21 UTC · `move-server-side-console-parts-onto-vps` s24 done (all) · foreign-write
 - 2026-11-18 00:21 UTC · `move-server-side-console-parts-onto-vps` s24 done (all) · orchestrator
 - 2026-11-18 00:21 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-18 00:21 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 
 ## Token passes (log)
 
