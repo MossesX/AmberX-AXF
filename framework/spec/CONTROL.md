@@ -329,6 +329,54 @@ axHub refuses a publication whose signature fails or is older than five minutes.
 without the confirm token (`confirmSkipped: true` on the answer); an irreversible one still confirms unless the pass includes
 irreversible commands.
 
+### Coverage: `covers` (axHub decision #120, Nov 18 2026)
+
+Brett (Nov 18 2026): "Why do I keep getting approvals when I set a pass?" Build `approval-pass-covers-every-call`. The pass he set
+still prompted for `vps.run` (a shell on the veto countdown), `console_terminal_sessions_stop` (an explicit approval) and tools a
+downstream MCP server marks destructive, because the hub's narrow-pass exclusions and the console's own confirm layer each
+decided on their own. The contract of record is axHub `docs/veto-pass.md` §1a-2d; this section is the console's twin.
+
+**The field.** Every pass record (control-pass@1 here, pass@1 on the hub) carries `covers`:
+
+| `covers` | Meaning |
+|---|---|
+| `all` (**default**: a grant that names nothing) | every control@1 target, every axHub service and tool, every policy class: shells (`vps.run`), explicit-approval tools (`console_terminal_sessions_stop`), destructive and delete-named tools, the hub's own tools, anything registered later |
+| a list of 1-40 entries | only what the entries name: `<service>` (every tool of it; `*` any service), `<service>.<tool>` (split at the first dot; `*` matches any run of characters), `scope:<control@1 target pattern>` |
+
+An entry covers what it names whatever the tool's policy class. Engine: `PASS_COVERS_ALL`, `PASS_COVERS_ENTRY`, `passCoversEntry`,
+`passCoversErrors` (a grant's `input.covers` is checked by `passGrantErrors`), `passCoversOf` (`control-pass.mjs`). The public view
+and the publication carry `covers` (`all` or the list) beside the scope's compiled `targets` + `ops`; the publication says
+`coversDefault: "all"` and `skippedPolicies`.
+
+**What no pass covers, whatever `covers` says.** Three exclusions and only these: a `deny`; the pass target / owner-grant tools
+(`pass.scopes`, `pass_*`, `axhub.pass_grant`); an irreversible command unless `include_irreversible`. The hub's old narrow-pass
+exclusions (destructive, delete-named, explicit-approval tools, `ssh` services, hub namespaces) are withdrawn.
+
+**Deciding each policy class** (one table, both sides):
+
+| The call would get | Under a covering pass |
+|---|---|
+| `allow` | unchanged, not a pass use |
+| `veto` (countdown) | runs at once: no hold, no countdown, no veto notice or push |
+| `confirm` (straight approval, the console's confirm token included) | runs at once: no `confirmation_required`, no approval entry or push |
+| explicit approval (`explicitApproval`) | runs at once under `all`, or under an entry naming the tool, its service or its scope |
+| `deny` | refused |
+
+Held calls a new pass covers are released when it is granted. A downstream with its own confirm layer (this console's `/mcp`)
+receives the pass with the call (MCP `_meta["axhub/pass"]`, HTTP `X-AxHub-Pass` + `X-AxHub-Pass-Signature`, HMAC over
+`<t>.<pass id>.<call id>` with the pass secret, five minutes) and skips its own confirm for that one call; an unsigned or stale
+header is ignored.
+
+**What it logs: `ranUnder`.** Every record of a run under a pass carries `ranUnder: <pass id>` and `skippedPolicy`
+(`veto | confirm | explicit`; `passRanUnder(p, policy)`): the pass's change entries, the console audit rows (`action: change`,
+beside the existing `pass`), the THREADS line, the hub's approvals log entry (`ranUnder`, `passId`, `decidedBy: pass:<id>`), the
+job and the connector call. A covered run sends no veto or approval push.
+
+**Migration.** Records stored before the field have no `covers`; `passCoversOf` reads them: scope `all` → `all`; a token scope →
+`scope:<target>` per target of the scope (never wider). Every grant from now on stores `covers` (`input.covers`, else the scope's).
+The hub's twin (`passCoversOf` in `packages/core/src/passes.ts`): `all: true` or `*` / `["*"]` → `all`; a narrow pass → the
+list its old fields spell. No store rewrite on either side; the frame stays `control-pass@1`.
+
 **Stamp on every answer**: every control@1 write answer carries `passScope` (the narrowest scope a pass would need: the token scope
 for token set / reset, `all` for every other write, `null` for the pass target) and, when an active pass covered it,
 `pass {id, scope, expiresAt}`, so axHub and the logs see which pass a change ran under.
