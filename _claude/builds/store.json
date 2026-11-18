@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9011,
- "updatedAt": "2026-11-18T14:18:37.521Z",
+ "rev": 9012,
+ "updatedAt": "2026-11-18T14:19:23.414Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252547,7 +252547,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -252555,7 +252555,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T14:14:41.726Z",
+   "updatedAt": "2026-11-18T14:17:40.230Z",
    "builtAt": "",
    "notes": [
     {
@@ -252589,6 +252589,10 @@
     {
      "text": "Watchdog fixed Attach widgets to any toolbar, banner style (step s6): its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
      "at": "2026-11-18T14:14:41.726Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T14:17:40.230Z"
     }
    ],
    "approvals": [],
@@ -252610,22 +252614,13 @@
     "queuedBy": "console",
     "account": "",
     "session": "",
-    "slot": "",
+    "slot": "[object Object]",
     "model": "",
     "phase": "",
     "launchedAt": "",
     "runs": 0,
-    "crashes": 1,
-    "lastRun": {
-     "at": "2026-11-18T14:14:25.732Z",
-     "exit": null,
-     "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 14,
-     "account": "",
-     "session": "",
-     "phase": ""
-    },
+    "crashes": 0,
+    "lastRun": null,
     "split": {
      "at": "2026-11-16T22:49:23.111Z",
      "by": "orchestrator",
@@ -252634,7 +252629,7 @@
      "note": "Split by Claude into 19 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
+    "note": "launch failed: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -252644,28 +252639,14 @@
      "at": "2026-11-18T12:52:31.419Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
+    "tried": [
+     "hulu0241"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "recoveries": [
-    {
-     "at": "2026-11-18T14:14:25.732Z",
-     "buildId": "attach-widgets-to-any-toolbar-banner",
-     "phase": "",
-     "step": "s6",
-     "cause": "tmux-missing",
-     "exit": null,
-     "action": "retry",
-     "attempt": 1,
-     "account": "",
-     "notified": "",
-     "session": "",
-     "note": "its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3)."
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -253155,7 +253136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
