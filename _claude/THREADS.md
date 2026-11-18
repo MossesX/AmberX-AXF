@@ -840,10 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `console-app-part-4-console-side-safe` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `console-app-part-2-native-floating-2` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `land-project-duplicate-boilerplate` → landing, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `land-drive-live-console-first-resolve` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `land-rename-long-builds-resolve-clash` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `land-overlay-preview-ui-review-resolve` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `full-voice-control-merge-main-and-land` note (all) · foreign-write
@@ -1240,6 +1236,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:07 UTC · `attach-widgets-to-any-toolbar-banner` s14 done (all) · foreign-write
 - 2026-11-18 16:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 - 2026-11-18 16:10 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
+- 2026-11-18 16:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-18 16:07 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
+- 2026-11-18 16:09 UTC · `attach-widgets-to-any-toolbar-banner` s14 done (all) · foreign-write
+- 2026-11-18 16:11 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → landing (all) · orchestrator
 
 ## Token passes (log)
 
