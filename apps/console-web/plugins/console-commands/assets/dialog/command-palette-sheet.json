@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "command-palette-sheet",
+  "name": "command-palette: Bottom sheet",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "A bottom sheet, field at the bottom for the thumb (console.palette.look = command-palette-sheet).",
+  "tags": [
+    "ui-choice",
+    "choice-set:command-palette",
+    "choice-option:sheet"
+  ],
+  "data": {
+    "variant": "sheet",
+    "width": 720,
+    "backdrop": "blur",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

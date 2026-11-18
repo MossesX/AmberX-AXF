@@ -162,3 +162,15 @@ every control target, so nothing the old dialog found is lost.
 
 `apps/console-web/scripts/console-control-parity.mjs` fails with `fetch failed` on this VPS on this branch **and on
 origin/main** (checked in a clean worktree): an environment problem of the harness here, not a change from this build.
+
+### Screenshots (s14)
+
+- UI Review item `r-20261118-36485ece` "Command palette look (Ctrl+K)": three options (centred, bottom sheet, side
+  drawer), desktop + phone each; option assets in `plugins/console-commands/assets/dialog/command-palette-*.json`
+  (ui-choices@1). The pick sets `console.palette.look`.
+- UI Review → Screenshots (not for approval): `s-20261118-55141eea` / `s-20261118-18310aae` (a plan opened by
+  `?axf-target=view:plan-studio-2/plan:<id>`), `s-20261118-05e2c09a` / `s-20261118-76fa14e2` (`#/settings/plugins/plan-studio-2`
+  followed while the console is open). Script: `apps/console-web/scripts/plan-studio-2-shots.mjs`.
+- The first screenshot run caught a real bug the unit tests could not: the start-up link landed on Home because the
+  plugin's page registered after the 8 s wait. Fixed: the resolver asks the lazy loader for that plugin at once, waits up
+  to 30 s, and hands a waiting link to the next runtime install; `window.axfDeepLinkLog` shows what it did.
