@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:48:30.058Z",
+ "updatedAt": "2026-11-18T01:48:48.475Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115904,7 +115904,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -115912,8 +115912,8 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-18T01:46:55.397Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T01:48:11.116Z",
+   "builtAt": "2026-11-18T01:48:11.116Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -116094,6 +116094,10 @@
     {
      "text": "Session axf-always-fill-every-slot-when-slots-are--paulie on hulu0241 ended (exit 0); the build was already landing.",
      "at": "2026-11-18T01:46:50.600Z"
+    },
+    {
+     "text": "Session axf-always-fill-every-slot-when-slots-are--paulie on hulu0241 finished: every step done.",
+     "at": "2026-11-18T01:48:11.116Z"
     }
    ],
    "approvals": [
