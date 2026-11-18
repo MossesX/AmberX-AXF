@@ -86,3 +86,6 @@
 .axp-plan-studio-2__dpane.is-drop-bottom::after { top: 50%; }
 .axp-plan-studio-2__dpane.is-drop-header::after { bottom: auto; height: calc(var(--fx-font-size) * 2.4); }
 @container axp-ps2 (max-width: 600px) { .axp-plan-studio-2__dock { height: auto; flex-direction: column; } .axp-plan-studio-2__split { flex-direction: column; } .axp-plan-studio-2__splitter { display: none; } .axp-plan-studio-2__cell { flex-basis: auto; } }
+/* an opened plan (Open / view:plan-studio-2/plan:<id>): a back button and its title above its branch */
+.axp-plan-studio-2 .axp-plan-studio-2__opened { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-plan-studio-2 .axp-plan-studio-2__openedtitle { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--fx-type-scale-sm); }

@@ -9,7 +9,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { useRuntime, Button } from '@console/axf/react';
 import { appMenu } from './menu';
 import { BuildDialog, ItemDialog, LinkDialog, MoveDialog, PlanStudio2Page } from './ui';
-import { CTX_TARGET, DIALOGS, FOLDER, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
+import { CTX_TARGET, DIALOGS, FOLDER, openPlan, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
 import * as tc from './tree-core.mjs';
 import * as lc from './layout-core.mjs';
 import { readDock, setLayout, showSection, writeDock } from './layout';
@@ -50,7 +50,9 @@ export const plugin: AxfWebLibrary = {
     };
     const need = (args: string[], ctx?: { payload?: string }): string | null => { const id = target(args, ctx); if (!id) rt.toast('Say which item (right-click a row, or give its name).', 'warning', T); return id; };
 
-    rt.actions.register('plan-studio-2.open', () => rt.navigate(VIEW), { label: 'Open Plan Studio 2.0' });
+    // `plan-studio-2.open[:<plan id or words>]`: the page, or one plan on its own (deep link view:plan-studio-2/plan:<id>)
+    rt.actions.register('plan-studio-2.open', (args) => { rt.navigate(VIEW); const ref = decodeURIComponent(args.join(':')).trim(); if (ref) openPlan(ref); }, { label: 'Open Plan Studio 2.0 (or one plan in it)', params: true, effect: 'navigate' });
+    rt.actions.register('plan-studio-2.close-plan', () => { openPlan(null); rt.navigate(VIEW); }, { label: 'Plan Studio 2.0: show every plan', effect: 'navigate' });
     rt.actions.register('plan-studio-2.focus', (args) => { rt.navigate(VIEW); const ref = decodeURIComponent(args.join(':')); if (ref) requestFocus(ref); }, { label: 'Open Plan Studio 2.0 at one item (id or words)', params: true, effect: 'navigate' });
     rt.actions.register('plan-studio-2.new', (args) => { rt.navigate(VIEW); rt.openDialog(DIALOGS.item, { parent: null, kind: args[0] || 'plan' }); }, { label: 'New plan (Plan Studio 2.0)', params: true });
     rt.actions.register('plan-studio-2.new-inside', (args, ctx) => { const id = need(args, ctx); if (!id) return; const it = tc.byId(treeState()!, id); rt.openDialog(DIALOGS.item, { parent: id, kind: it ? tc.CHILD_KIND[it.kind] : 'step' }); }, { label: 'New item inside', searchable: false });

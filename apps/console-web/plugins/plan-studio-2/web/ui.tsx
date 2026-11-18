@@ -5,12 +5,12 @@
  * the tree on a narrow screen).
  */
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, SkinScope, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, ControlScope, Icon, IconButton, Note, SelectField, SkinScope, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
 import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, ID, KEYS, TREE_GRID, VIEW, rowAddress, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, ID, KEYS, TREE_GRID, VIEW, openPlan, rowAddress, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -26,7 +26,7 @@ const opt = (xs: readonly string[], none: string) => xs.map((x) => ({ value: x, 
 export function PlanStudio2Page() {
   const rt = useRuntime();
   useAxfState();
-  const { state, error, selected, focus, busy, store, onHub } = useTree();
+  const { state, error, selected, focus, opened, busy, store, onHub } = useTree();
   const [q, setQ] = useState('');
   const showDone = flag(rt, KEYS.showDone, true);
   const listRef = useRef<HTMLUListElement>(null);
@@ -61,8 +61,17 @@ export function PlanStudio2Page() {
   const rows = useMemo(() => {
     if (!state) return [];
     if (q.trim()) { const ids = new Set(tc.find(state, q, { limit: 500 }).map((h) => h.id)); return state.items.filter((i) => ids.has(i.id)).map((item) => ({ item, depth: 0, kids: tc.children(state, item.id).length, path: tc.pathOf(state, item.id) })); }
-    return tc.flatten(state).filter((r) => showDone || !(tc.CHECKABLE.has(r.item.kind) && r.item.done)).map((r) => ({ ...r, path: '' }));
-  }, [state, q, showDone]);
+    const root = opened ? tc.resolve(state, opened) : null;
+    const all = root ? [{ item: root, depth: 0, kids: tc.children(state, root.id).length }, ...(root.collapsed ? [] : tc.flatten(state, { parent: root.id, depth: 1 }))] : tc.flatten(state);
+    return all.filter((r) => showDone || !(tc.CHECKABLE.has(r.item.kind) && r.item.done)).map((r) => ({ ...r, path: '' }));
+  }, [state, q, showDone, opened]);
+  const openedItem = state && opened ? tc.resolve(state, opened) : null;
+  // an Open whose plan is gone (deleted, or words that match nothing): say so and show every plan
+  useEffect(() => {
+    if (!state || !opened || openedItem) return;
+    rt.toast(`No plan "${opened}" in Plan Studio 2.0: showing every plan.`, 'warning', 'Plan Studio 2.0');
+    openPlan(null);
+  }, [state, opened, openedItem, rt]);
   const total = state ? tc.progress(state, null) : { done: 0, total: 0, minutes: 0 };
   const current = state && selected ? tc.byId(state, selected) : null;
   const newPlan = () => rt.openDialog(DIALOGS.item, { parent: null, kind: 'plan' });
@@ -72,7 +81,14 @@ export function PlanStudio2Page() {
       <div className={`${B}__tools`} role="toolbar" aria-label="Tree tools">
         <TextField label="Find" value={q} onChange={setQ} type="search" placeholder="Find a plan, step or note…" className={`${B}__find`} />
         <Switch label="Show done" checked={showDone} onChange={(v) => rt.settings.set(KEYS.showDone, v)} />
+        <Button id="open-selected" icon="external" disabled={!current || openedItem?.id === current.id} onClick={() => current && rt.dispatch(`plan-studio-2.open:${current.id}`)} title="Open the selected plan on its own">Open</Button>
       </div>
+      {openedItem && (
+        <div className={`${B}__opened`} role="toolbar" aria-label="Opened plan">
+          <Button id="all-plans" size="sm" icon="chevron-left" onClick={() => rt.dispatch('plan-studio-2.close-plan')}>All plans</Button>
+          <span className={`${B}__openedtitle`}><Icon name={tc.KIND_ICON[openedItem.kind]} size={14} /> {openedItem.title}</span>
+        </div>
+      )}
       {!state ? <LoadingSkeleton rows={4} label="Loading the tree" /> : !state.items.length ? (
         <EmptyState icon="branch" action={{ label: 'New plan', icon: 'plus', onClick: newPlan }}>Nothing here yet. Plan Studio 2.0 starts empty and nothing is synced into it: start a plan, or say “new plan” followed by its name.</EmptyState>
       ) : !rows.length ? <EmptyState icon="search" compact>Nothing matches “{q}”.</EmptyState> : (
@@ -144,6 +160,13 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
         {prog && prog.total > 0 && <span className={`${B}__n`} title="Steps done">{prog.done}/{prog.total}</span>}
         {item.links.length > 0 && <span className={`${B}__n`} title={item.links.map((l) => `${LINK_LABEL[l.type]}: ${l.label || l.ref}`).join('\n')}><Icon name="external" size={12} /> {item.links.length}</span>}
       </span>
+      {(item.kind === 'plan' || kids > 0) && (
+        <ControlScope address={rowAddress(item.id)}>
+          <span className={`${B}__act`} role="toolbar" aria-label={`Open ${item.title}`}>
+            <Button id="open" size="sm" tone="ghost" icon="external" onClick={() => rt.dispatch(`plan-studio-2.open:${item.id}`)} title={`Open ${item.title} on its own`}>Open</Button>
+          </span>
+        </ControlScope>
+      )}
       <IconButton icon="plus" label={`New inside ${item.title}`} className={`${B}__act`} onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })} />
       <IconButton icon="more" label={`More for ${item.title}`} className={`${B}__act`} onClick={ctx} />
     </li>

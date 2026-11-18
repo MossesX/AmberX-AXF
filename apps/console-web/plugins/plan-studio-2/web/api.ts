@@ -31,8 +31,9 @@ interface StateWire { ok: boolean; error?: string; rev: number; items: Item[]; t
 
 /* ---------------------------------------------------------------- the store */
 
-interface Store { state: State | null; error: string; selected: string | null; focus: string | null; store: string; onHub: boolean; busy: boolean }
-let store: Store = { state: null, error: '', selected: null, focus: null, store: '', onHub: false, busy: false };
+/** `opened`: the plan (or any item) the page shows on its own (Open / `view:plan-studio-2/plan:<id>`), null = everything. */
+interface Store { state: State | null; error: string; selected: string | null; focus: string | null; opened: string | null; store: string; onHub: boolean; busy: boolean }
+let store: Store = { state: null, error: '', selected: null, focus: null, opened: null, store: '', onHub: false, busy: false };
 let loading: Promise<void> | null = null;
 const subs = new Set<() => void>();
 const tell = () => subs.forEach((f) => f());
@@ -60,6 +61,14 @@ export const select = (id: string | null) => set({ selected: id });
 /** A deep link (`plan-studio-2.focus:<id or words>`): the page selects it, opens its ancestors and scrolls to it. */
 export const requestFocus = (ref: string) => set({ focus: ref });
 export const tookFocus = () => set({ focus: null });
+/** Open one plan (id or words) as the page: only it and everything under it, selected. null = back to every plan. */
+export const openPlan = (ref: string | null) => {
+  const it = ref && store.state ? tc.resolve(store.state, ref) : null;
+  set({ opened: ref ? (it?.id ?? ref) : null, ...(it ? { selected: it.id } : {}) });
+};
+export const openedRef = () => store.opened;
+/** The deep-link address of an opened plan (the resolver maps `plan:<id>` to the `plan-studio-2.open:<id>` action). */
+export const planAddress = (id: string) => `view:${VIEW}/plan:${id}`;
 
 /* ---------------------------------------------------------------- writes */
 
