@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:18 UTC · `move-server-side-console-parts-onto-vps` s23 done (all) · foreign-write
 - 2026-11-18 00:19 UTC · `move-server-side-console-parts-onto-vps` s23 done (all) · foreign-write
 - 2026-11-18 00:19 UTC · `auto-lander-never-wait-missing-ui-review` → running, note (all) · pipeline
 - 2026-11-18 00:19 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · orchestrator
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:35 UTC · `one-true-source-for-every-setting` s3 done (all) · foreign-write
 - 2026-11-18 01:35 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete (all) · foreign-write
 - 2026-11-18 01:35 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
+- 2026-11-18 01:35 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → landing (all) · orchestrator
 
 ## Token passes (log)
 
