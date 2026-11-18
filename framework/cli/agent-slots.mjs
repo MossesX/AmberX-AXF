@@ -50,7 +50,8 @@ import { claudePids, readLock, sessionOf, tmuxSessions as buildTmux } from './bu
 
 export const LEVELS = ['boss', 'urgent', 'high', 'normal', 'low'];
 export const DEFAULTS = {
-  maxAgents: 6,
+  /** Gizmo, Nov 18 2026: "Max 4 builds running at once" (and the hard limit, build-limit.mjs, is 4 too). */
+  maxAgents: 4,
   maxHeavy: 3,
   minFreeGb: 2,
   closeFinishedAfterSec: 120,
@@ -67,6 +68,8 @@ export const DEFAULTS = {
 };
 const LIMITS = { maxAgents: [1, 64], maxHeavy: [1, 32], minFreeGb: [0, 64], closeFinishedAfterSec: [0, 86400], pollSec: [2, 300], guardWarnTrips: [1, 1000], swapWarnMb: [0, 65536], swapWarnMin: [1, 1440] };
 const GRACE_MS = 120_000;      // a slot just taken counts even before its session is bound
+/** An entry booked by a host that has not pruned (been alive) for this long is a ghost: its host is gone. */
+export const HOST_STALE_MS = 2 * 3600_000;
 const KEEP_DONE = 50;
 const GIB = 1024 ** 3;
 
@@ -101,6 +104,7 @@ export function normState(raw) {
   s.guard = { trips: Array.isArray(s.guard?.trips) ? s.guard.trips.filter(Number.isFinite).slice(-200) : [] };
   s.swap = { since: Number.isFinite(s.swap?.since) ? s.swap.since : null, mb: Number(s.swap?.mb) || 0 };
   s.seq = Number.isFinite(s.seq) ? s.seq : 0;
+  s.hosts = s.hosts && typeof s.hosts === 'object' && !Array.isArray(s.hosts) ? Object.fromEntries(Object.entries(s.hosts).filter(([, t]) => Number.isFinite(t))) : {};
   return s;
 }
 
@@ -288,18 +292,25 @@ export function prune(st, settings, facts = {}) {
   const tm = facts.tmux !== undefined ? facts.tmux : tmuxSessions();
   const alive = facts.alive ?? ((e) => (e.session && tm ? tm.has(e.session) : pidAlive(e.pid)));
   const mine = (e) => (e.host ?? host) === host;
+  // every host that prunes says it is alive; an entry from a host not heard from in HOST_STALE_MS is a ghost (the console
+  // container was recreated under a new hostname, so nobody would ever judge its old entries: rhonda-ci-fix held a slot 82 h)
+  st.hosts = { ...(st.hosts ?? {}), [host]: now };
+  const lastSeen = (h) => st.hosts[h] ?? Math.max(0, ...[...st.running, ...st.queue, ...st.heavy].filter((e) => e.host === h).map((e) => Date.parse(e.startedAt || e.enqueuedAt || 0) || 0));
+  const ghost = (e) => !mine(e) && now - lastSeen(e.host) > HOST_STALE_MS;
+  for (const h of Object.keys(st.hosts)) if (now - st.hosts[h] > 7 * 24 * 3600_000) delete st.hosts[h];
   const young = (e) => now - Date.parse(e.startedAt || e.enqueuedAt || 0) < GRACE_MS;
   // an adopted (legacy) entry exists only because tmux listed its session: once tmux no longer has it, it's gone at once,
   // young or not (a quick run adopted by a sweep before it bound its slot would otherwise hold the cap for the grace time)
   const vanished = (e) => e.kind === 'legacy' && e.session && tm && !tm.has(e.session);
   const gone = [];
   st.running = st.running.filter((e) => {
+    if (ghost(e)) { gone.push({ ...e, state: 'gone', why: `its host ${e.host} is gone`, closedAt: new Date(now).toISOString() }); return false; }
     if (!mine(e) || ((young(e) && !vanished(e)) || alive(e))) return true;
     gone.push({ ...e, state: e.state === 'finished' ? 'closed' : 'gone', closedAt: new Date(now).toISOString() });
     return false;
   });
-  st.queue = st.queue.filter((q) => q.state === 'waiting' && (!mine(q) || young(q) || alive(q)));
-  st.heavy = st.heavy.filter((h) => !mine(h) || young(h) || alive(h));
+  st.queue = st.queue.filter((q) => q.state === 'waiting' && !ghost(q) && (!mine(q) || young(q) || alive(q)));
+  st.heavy = st.heavy.filter((h) => !ghost(h) && (!mine(h) || young(h) || alive(h)));
   st.done = [...st.done, ...gone].slice(-KEEP_DONE);
   const mem = facts.mem ?? memInfo();
   if (mem.swapMb != null) {

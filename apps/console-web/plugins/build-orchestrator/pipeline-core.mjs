@@ -586,11 +586,11 @@ const KIND_WORDS = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI i
 
 const STRATEGY_TEXT = Object.freeze({
   retry: 'Run the same approach again: the failure looked transient. Pick up at the first open step.',
-  'merge-main': 'Merge origin/main into your branch first and resolve every conflict (keep both sides\' intent; regenerate generated files and fixtures rather than hand-merging them), push, then carry on.',
+  'merge-main': 'Merge main into your branch first with `node framework/cli/land-lock.mjs merge-main` (it waits while another build is landing, then merges fresh main) and resolve every conflict (keep both sides\' intent; regenerate generated files and fixtures rather than hand-merging them), push, then carry on.',
   fix: {
     targeted: 'Fix the failing checks first: reproduce each one locally, fix the cause (not the check), commit, push, and confirm it passes before anything else.',
     regenerate: 'Regenerate what is generated before anything else: fixtures (`--write` on the spec checks), baked framework copies, catalogs and exports; commit, push, re-run the failing checks.',
-    'redo-step': 'Merge origin/main in, then redo the failing step from its text rather than patching the last attempt; commit, push, re-run its checks.',
+    'redo-step': 'Merge main in (`node framework/cli/land-lock.mjs merge-main`: waits while another build lands), then redo the failing step from its text rather than patching the last attempt; commit, push, re-run its checks.',
   },
   'fresh-session': 'This is a fresh session after the earlier one failed: start by reading `git status`, `git log origin/main..HEAD` and the tail of the previous run log, then continue at the first open step. Do not repeat what the earlier attempt tried.',
   'switch-model': 'The earlier attempts ran on another model and failed; take a different approach from theirs.',

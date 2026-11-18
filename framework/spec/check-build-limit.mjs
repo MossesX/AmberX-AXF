@@ -30,15 +30,15 @@ const eq = (a, b, what) => ok(JSON.stringify(a) === JSON.stringify(b), `${what}:
 const throws = (fn, re, what) => { try { fn(); ok(false, `${what}: did not throw`); } catch (e) { ok(re.test(e.message), `${what}: ${e.message}`); } };
 
 // config: defaults, clamps, Brett only
-eq(L.normLimit({}).maxBuilds, 8, 'default limit 8');
+eq(L.normLimit({}).maxBuilds, 4, 'default limit 4 (Gizmo, Nov 18 2026)');
 eq(L.normLimit({ maxBuilds: 999 }).maxBuilds, 64, 'clamps high');
 eq(L.normLimit({ maxBuilds: 0 }).maxBuilds, 1, 'clamps low');
 eq(L.normLimit({ memoryMaxGb: 4, memoryHighGb: 9 }).memoryHighGb, 4, 'MemoryHigh never above MemoryMax');
 eq(L.normLimit({ dockerImages: '(' }).dockerImages, L.DEFAULTS.dockerImages, 'bad image pattern dropped');
 throws(() => L.saveLimit({ maxBuilds: 12 }, { by: 'claude' }), /only Brett/, 'a session (no owner) cannot set it');
-eq(L.loadLimit().maxBuilds, 8, 'unchanged after the refused set');
+eq(L.loadLimit().maxBuilds, 4, 'unchanged after the refused set');
 eq(L.saveLimit({ maxBuilds: 3, bogus: 1 }, { by: 'brett', owner: true }).maxBuilds, 3, 'Brett sets it');
-ok(readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.log.jsonl'), 'utf8').includes('"maxBuilds":[8,3]'), 'the change is journalled');
+ok(readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.log.jsonl'), 'utf8').includes('"maxBuilds":[4,3]'), 'the change is journalled');
 const cliSet = spawnSync(process.execPath, [join(ROOT, 'framework/cli/build-limit.mjs'), 'set', 'maxBuilds=20'], { env: process.env, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
 eq(cliSet.status, 3, 'the CLI without a terminal (a headless session) is refused');
 eq(L.loadLimit().maxBuilds, 3, 'and the limit stays');
@@ -58,6 +58,10 @@ const procs = [sh(100, 1), sh(101, 100), claude(102, 101), claude(103, 102) /* n
 const base = { procs, tmux: tm, finished: (nm) => nm === 'axf-limittest-c', now, alive: (p) => procs.some((x) => x.pid === p) };
 let c = L.countLive(base, lim, {});
 eq(c.items.map((i) => `${i.kind}:${i.name}`), ['session:axf-limittest-a', 'claude:pid 400 in /tmp/x'], 'run mode: one session (nested claude once) and one loose claude');
+// a claude whose working folder was deleted (a test's leaked fake claude, a removed worktree) is a ghost: no place
+const ghostProc = { pid: 900, ppid: 1, argv: ['/bin/sh', '/tmp/gone/bin/claude', '-p'], cwd: '/tmp/axf-limit-x/b (deleted)' };
+eq(L.countLive({ ...base, procs: [...procs, ghostProc] }, lim, { mode: 'run' }).live, c.live, 'a claude in a deleted folder does not count');
+ok(L.isGhost(ghostProc) && !L.isGhost({ cwd: '/root/axf-builds/x' }), 'isGhost: only a deleted working folder');
 c = L.countLive(base, lim, { mode: 'launch' });
 eq(c.items.map((i) => i.kind), ['session', 'claude', 'setup'], 'launch mode adds the young unfinished session (b); the finished one (c) is not counted');
 c = L.countLive(base, lim, { mode: 'launch', self: 'axf-limittest-a' });
@@ -130,7 +134,7 @@ if (hasTmux) {
   L.saveLimit({ maxBuilds: 2 }, { by: 'test', owner: true });
   delete process.env.AXF_SLOTS_TMUX;
   const bin = join(tmp, 'bin'); mkdirSync(bin);
-  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
+  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ] && [ -d "$PWD" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
   chmodSync(join(bin, 'claude'), 0o755);
   const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_SLOTS: 'off', AXF_WATCH_LIVE: 'off', AXF_AGENT_BOOK: 'off', AXF_OWN_LOGIN: 'off', AXF_WORKERS: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_BUILD_SLICE: 'off', AXF_LOGIN_NOTE: 'off', AXF_BUILD_LIMIT_POLL: '1', AXF_BUILD_ID: '', AXF_AGENT: '', AXF_AGENT_NAME: '', HOME: join(tmp, 'home') }; // HOME: the launcher puts ~/.local/bin (the real claude) first on PATH
   mkdirSync(join(tmp, 'home'), { recursive: true });
@@ -164,6 +168,8 @@ if (hasTmux) {
   }
 } else console.log('(tmux or ps missing: skipped the claude-headless.sh end-to-end checks)');
 
+// no fake claude may outlive the test (two leaked ones held hard-limit places for hours, Nov 18 2026)
+spawnSync('pkill', ['-f', join(tmp, 'bin', 'claude')]);
 rmSync(tmp, { recursive: true, force: true });
 console.log(`build-limit: ${n - failed}/${n} checks passed`);
 if (failed) process.exit(1);

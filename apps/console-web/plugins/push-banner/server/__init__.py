@@ -870,7 +870,13 @@ class Pushes:
                 raise HTTPException(409, "its CI failed" + self._hand({**task, "failure": "CI failed on its head commit"}))
             if ci != "success":
                 raise HTTPException(409, {"running": "its CI is still running", "none": "it has no CI result yet"}.get(ci, "its CI isn't green"))
-            r = gh.json("PUT", github.repo_path(repo, "pulls", number, "merge"), {"merge_method": "merge", "sha": sha})
+            # one landing at a time on the VPS (land-lock@1): the merge waits while the merge queue, build_land or a
+            # session lands, and holds the lock while GitHub merges
+            lock = land_lock_acquire(f"console merge {repo}#{number}", number)
+            try:
+                r = gh.json("PUT", github.repo_path(repo, "pulls", number, "merge"), {"merge_method": "merge", "sha": sha})
+            finally:
+                land_lock_release(lock)
         except github.GitHubError as e:
             hand = self._hand({**task, "failure": f"GitHub refused the merge: {_text(str(e), 160)}"}) if "task" in locals() and getattr(e, "status", 0) in (405, 409, 422) else ""
             raise HTTPException(502, _text(str(e)) + hand) from None
@@ -1467,6 +1473,37 @@ def _tracked(kind: str, verb: str, body: Any, fn: Callable[[Any], dict[str, Any]
 @router.post("/pr")
 def open_pr(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("push", "Open pull request", body, PUSHES.open_pr)
+
+
+LAND_LOCK_CLI = cx.ROOT / "framework" / "cli" / "land-lock.mjs"
+LAND_LOCK_WAIT_SEC = 120
+
+
+def land_lock_acquire(who: str, pr: int) -> str:
+    """Take the VPS landing lock (framework/cli/land-lock.mjs, land-lock@1) for a merge; 409 when another landing still
+    holds it after LAND_LOCK_WAIT_SEC. Returns the lock id ("" when the lock tool isn't here: the merge goes on)."""
+    if not LAND_LOCK_CLI.is_file():
+        return ""
+    try:
+        proc = subprocess.run(["node", str(LAND_LOCK_CLI), "acquire", "--who", who[:100], "--kind", "console", "--pr", str(pr),
+                               "--pid", str(os.getpid()), "--ttl", "300", "--wait", str(LAND_LOCK_WAIT_SEC), "--json"],
+                              capture_output=True, text=True, timeout=LAND_LOCK_WAIT_SEC + 30)
+        res = json.loads((proc.stdout.strip().splitlines() or ["{}"])[-1])
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return ""
+    if not res.get("ok"):
+        holder = (res.get("holder") or {}).get("who") or "another landing"
+        raise HTTPException(409, f"{holder} is landing (one landing at a time): try again in a moment")
+    return str(res.get("id") or "")
+
+
+def land_lock_release(lock_id: str) -> None:
+    if not lock_id:
+        return
+    try:
+        subprocess.run(["node", str(LAND_LOCK_CLI), "release", lock_id], capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        pass  # the lock's ttl (300 s) lets it go
 
 
 @router.post("/merge")

@@ -44,6 +44,14 @@ check(r["status"] == "error" and "0 builds while 1 build(s) run" in r["summary"]
 check(srv.sees_probe({"total": 0}, [])["status"] == "ok", "nothing running and nothing seen = fine")
 r = srv.sees_probe({"total": 276, "running": [{"id": "x"}]}, ["auto-land"])
 check(r["status"] == "ok" and "276 build(s)" in r["summary"], "builds seen = green")
+# land-lock@1 systems-check item: red without the push-to-main hook, amber on a long holder, green otherwise
+mark = srv.LAND_LOCK_HOOK_MARK
+r = srv.land_lock_probe("#!/bin/sh\ninput=$(cat)\n", {"free": True, "holder": None, "waiting": []})
+check(r["status"] == "error" and "install-land-lock.sh" in " ".join(r["details"]), "land-lock: red until the hook is installed, with the install command")
+r = srv.land_lock_probe(mark, {"holder": {"who": "merge queue #9", "forSec": 3600}, "waiting": [{"who": "git push to main"}]})
+check(r["status"] == "warn" and "merge queue #9" in r["summary"], "land-lock: amber when one holder sits on it")
+r = srv.land_lock_probe(mark, {"holder": {"who": "merge queue #9", "forSec": 60}, "waiting": [{"who": "console merge #4"}]})
+check(r["status"] == "ok" and "console merge #4" in r["summary"], "land-lock: green, says who lands and who waits")
 r = srv.sees_probe(None, [])
 check(r["status"] == "ok" and "build(s)" in r["summary"], "the real read (framework/cli/build-queue.mjs buildsSummary) answers")
 # the CLIs this server runs exist (ROOT once pointed at apps/, so the origin and live ones were never found)

@@ -34,6 +34,10 @@ import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
 import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { withLandLock, withLandLockSync } from '../../../../../framework/cli/land-lock.mjs';
+
+/** How long a round waits for the landing lock (land-lock@1) before it leaves the landing to the next round. */
+const LAND_LOCK_WAIT_SEC = Number(process.env.AXF_LAND_LOCK_WAIT || 600);
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -219,7 +223,9 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     const e = stack.find((x) => x.pr === n);
     const p = prs.find((x) => x.number === n);
     if (dry) { e.state = 'merging'; continue; }
-    const r = await mergeTested({ s, git, gh, e, p, log });
+    // one landing at a time on the VPS (land-lock@1): this merge waits while build_land, a session or the console lands
+    const held = await withLandLock({ who: `merge queue #${n}`, kind: 'merge-queue', pr: n, waitSec: LAND_LOCK_WAIT_SEC, ttlSec: 1800 }, () => mergeTested({ s, git, gh, e, p, log }));
+    const r = held.ok ? held.value : { merged: false, why: `another landing holds the landing lock (${held.holder?.who ?? 'the line'}); tried again next round` };
     if (!r.merged) { e.state = 'passed'; e.why = r.why; log(`queue: #${n} passed but didn't merge: ${r.why}`); break; }
     merged.push({ pr: n, title: p?.title || '', sha: r.sha, queueSha: e.sha, at, retested: false, branch: q.queueBranch(n), agent: p?.agent || '' });
     newExpect = r.sha;
@@ -389,7 +395,8 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
     const d = q.decideBatch(batch, batch.ci, { split });
     const prOf = (n) => prs.find((x) => x.number === n) || {};
     if (d.land.length) {
-      const r = dry ? { landed: false, why: 'dry run' } : landBatch({ s, git, batch });
+      const held = dry ? null : withLandLockSync({ who: `merge queue batch ${d.land.map((n) => `#${n}`).join(' ')}`, kind: 'merge-queue', pr: d.land[0], waitSec: LAND_LOCK_WAIT_SEC, ttlSec: 1800 }, () => landBatch({ s, git, batch }));
+      const r = dry ? { landed: false, why: 'dry run' } : held.ok ? held.value : { landed: false, why: `another landing holds the landing lock (${held.holder?.who ?? 'the line'}); tried again next round` };
       if (r.landed) {
         for (const n of d.land) { const p = prOf(n); merged.push({ pr: n, title: p.title || '', sha: r.sha, queueSha: batch.sha, at, retested: false, branch: q.BATCH_BRANCH, agent: p.agent || '', batch: d.land }); landedNow.add(n); }
         lastLanded = [...lastLanded, ...d.land.map((n) => prOf(n).branch).filter(Boolean)];

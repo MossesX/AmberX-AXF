@@ -314,6 +314,40 @@ def health_probe(live: dict[str, Any] | None = None, report: dict[str, Any] | No
     return {"status": "ok", "summary": f"Builds are live on main; every open PR belongs to a build ({queued} change(s) queued).", "details": details}
 
 
+LAND_LOCK_ID = "land-lock"
+LAND_LOCK_CLI = ROOT / "framework" / "cli" / "land-lock.mjs"
+LAND_LOCK_HOOK_MARK = "# axf land lock (framework/cli/land-lock.mjs install-hook)"  # land-lock.mjs HOOK_MARK
+LAND_LOCK_LONG_MIN = 30
+
+
+def land_lock_probe(hook_text: str | None = None, lock: dict[str, Any] | None = None) -> dict[str, Any]:
+    """One landing at a time (land-lock@1). Red: the shared pre-push hook doesn't take the landing lock, so a push to main
+    (build_land, a session) can land beside the merge queue. Amber: one holder has had it over LAND_LOCK_LONG_MIN."""
+    if hook_text is None:
+        try:
+            hook_text = (ROOT / ".git" / "hooks" / "pre-push").read_text()
+        except OSError:
+            hook_text = ""
+    if lock is None:
+        try:
+            p = subprocess.run(["node", str(LAND_LOCK_CLI), "status", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=20)
+            lock = json.loads(p.stdout.strip().splitlines()[-1]) if p.stdout.strip() else {}
+        except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError, IndexError):
+            lock = {}
+    holder = lock.get("holder") or None
+    waiting = lock.get("waiting") or []
+    line = (f"Landing now: {holder.get('who')} ({int(holder.get('forSec') or 0) // 60} min)" if holder else "Nobody is landing") + \
+        (f"; waiting: {', '.join(str(w.get('who')) for w in waiting[:6])}" if waiting else "")
+    if LAND_LOCK_HOOK_MARK not in hook_text:
+        return {"status": "error", "summary": "Pushes to main don't take the landing lock yet: build_land or a session can land beside the merge queue.",
+                "details": [line, "On the VPS as root: `sudo bash /opt/axf/deploy/install-land-lock.sh` (adds the land-lock line to /opt/axf/.git/hooks/pre-push; idempotent).",
+                            "Check: `node /opt/axf/framework/cli/land-lock.mjs status`."]}
+    if holder and int(holder.get("forSec") or 0) > LAND_LOCK_LONG_MIN * 60:
+        return {"status": "warn", "summary": f"{holder.get('who')} has held the landing lock for {int(holder.get('forSec') or 0) // 60} min; {len(waiting)} waiting.",
+                "details": [line, "If it is stuck: `node /opt/axf/framework/cli/land-lock.mjs clear --by brett` (a dead holder goes by itself)."]}
+    return {"status": "ok", "summary": f"One landing at a time. {line}.", "details": []}
+
+
 SEES_ID = "console-sees-builds"
 LIVE_FRESH_MIN = 20  # a Build manager entry whose heartbeat is newer than this is a build running right now
 
@@ -413,6 +447,12 @@ def ensure_health() -> bool:
                       "breaks": "The Build orchestrator, banners and THREADS on main show stale build status; finished work shows as pending.",
                       "instructions": ["`node framework/cli/builds-live.mjs status` / `flush` on the VPS.",
                                        "`node framework/cli/builds-reconcile.mjs` lists what it would link; `--apply` writes it (live)."]}, FOLDER)
+        reg.register({"id": LAND_LOCK_ID, "label": "One landing at a time", "service": "github", "order": 57, "severity": "error",
+                      "run": lambda: land_lock_probe(), "interval": 300,
+                      "breaks": "Two landings can run at once, or a build merges main while another lands: main moves under it and lands break.",
+                      "instructions": ["`sudo bash /opt/axf/deploy/install-land-lock.sh` on the VPS installs the push-to-main hook.",
+                                       "`node framework/cli/land-lock.mjs status` shows who lands and who waits."],
+                      "links": [{"label": "Open the Build orchestrator", "href": "view:build-orchestrator"}]}, FOLDER)
         reg.register({"id": SEES_ID, "label": "Console sees the builds", "service": "console", "order": 56, "severity": "error",
                       "run": lambda: sees_probe(), "interval": 300,
                       "breaks": "Overview, Build queue and Plan (console and MCP) show 0 builds, so nobody sees what is running.",
@@ -564,6 +604,14 @@ def pipeline_status() -> dict[str, Any]:
     the agent slots, what the dispatcher's next tick would start and why the rest waits, and the last tick's state."""
     ensure_health()
     return _pipeline("status")
+
+
+@router.get("/pipeline/land-lock")
+def pipeline_land_lock() -> dict[str, Any]:
+    """The VPS landing lock (land-lock@1, framework/cli/land-lock.mjs): who is landing now, for how long, and the line
+    waiting behind it (merge queue, build_land / git push to main, console merges, sessions). Also `landLock` in GET
+    /pipeline. One landing at a time; merge-main waits while someone lands."""
+    return _pipeline("land-lock")
 
 
 SELFCHECK_REASONS = {"console-load", "on demand", "voice"}

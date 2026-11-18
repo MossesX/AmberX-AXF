@@ -2275,7 +2275,13 @@
     "status": "built",
     "wave": 1,
     "module": "app-console",
-    "notes": "framework/cli/build-limit.mjs: launch gate (exit 3 at the limit, default 8, one config file) in claude-headless.sh, inner run gate before claude -p, swarm runner; axf-builds.slice + 30 s enforcer timer (adopt strays, docker test-run limits); only Queued builds take slots; console/REST/MCP/CLI/voice read, Brett-only set. Host-only: no Kotlin twin."
+    "notes": "framework/cli/build-limit.mjs: launch gate (exit 3 at the limit, default 4 since Nov 18 2026, one config file; a claude in a deleted folder is a ghost and holds no place) in claude-headless.sh, inner run gate before claude -p, swarm runner; axf-builds.slice + 30 s enforcer timer (adopt strays, docker test-run limits); only Queued builds take slots; console/REST/MCP/CLI/voice read, Brett-only set. Host-only: no Kotlin twin."
+  },
+  "cx.buildengine.landlock": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/cli/land-lock.mjs (land-lock@1): one landing at a time on the VPS. FIFO lock in the shared agent-slots store, re-entrant by token, stale holders (process gone, ttl) and silent waiters drop out. Taken by the merge queue (batch push, stack merge), the console's PR merge and every git push to main (shared pre-push hook, deploy/install-land-lock.sh); merge-main (land.mjs mergeMain, auto-lander, `land-lock.mjs merge-main`) waits while someone lands, then merges fresh main. Holder and waiting line in pipeline status (REST GET /pipeline and /pipeline/land-lock, MCP/voice command land-lock, CLI pipeline.mjs land-lock, Pipeline strip) and a systems-check item. Host-only: no Kotlin twin."
   },
   "cx.buildengine.sectionowners": {
     "status": "built",
