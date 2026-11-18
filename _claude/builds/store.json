@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9005,
- "updatedAt": "2026-11-18T14:07:41.423Z",
+ "rev": 9006,
+ "updatedAt": "2026-11-18T14:08:21.114Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -290244,14 +290244,14 @@
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-18T14:05:55.132Z",
+     "at": "2026-11-17T23:48:10.295Z",
      "exit": 0,
      "outcome": "returned",
-     "reason": "stopped",
+     "reason": "",
      "stepsLeft": 19,
      "account": "hulu0241",
-     "session": "",
-     "phase": "Phase 1"
+     "session": "axf-settings-fix-part-2-blank-toolbars--gina",
+     "phase": ""
     },
     "split": {
      "at": "2026-11-17T22:28:13.190Z",
@@ -290277,6 +290277,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T13:59:30.516Z",
+     "buildId": "settings-fix-part-2-blank-toolbars",
+     "phase": "",
+     "step": "s3",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "",
+     "note": "session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -290749,7 +290765,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
