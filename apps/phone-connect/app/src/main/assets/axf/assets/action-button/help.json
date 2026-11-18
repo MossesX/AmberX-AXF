@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "help",
+  "name": "Help",
+  "version": "1.0.0",
+  "description": "Opens the documentation.",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button"
+  ],
+  "data": {
+    "icon": "help",
+    "label": "Help",
+    "action": "help.docs",
+    "show": "icon"
+  }
+}

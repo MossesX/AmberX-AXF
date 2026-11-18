@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "gradient-pop",
+  "name": "Gradient Pop slider",
+  "version": "1.0.0",
+  "description": "Gradient Pop: circle thumb on a 6 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "vivid",
+    "vivid"
+  ],
+  "data": {
+    "track": 6,
+    "thumb": "circle",
+    "thumbSize": 20,
+    "fill": "gradient",
+    "showValue": "always",
+    "ticks": false
+  }
+}

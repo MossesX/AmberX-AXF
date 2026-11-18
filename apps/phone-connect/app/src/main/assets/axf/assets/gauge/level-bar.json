@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "gauge",
+  "id": "level-bar",
+  "name": "Level Bar",
+  "version": "1.0.0",
+  "description": "A straight level bar with the value above it.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "bar",
+    "thickness": 10,
+    "needle": false,
+    "ticks": 4,
+    "cap": "round",
+    "readout": "big"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "job-type",
+  "id": "land-build",
+  "name": "Land a finished build",
+  "version": "1.0.0",
+  "description": "Land a finished build the way vps build_land does: merge main into its branch, rerun its checks, push to main, settle bookkeeping clashes (THREADS, STATUS, builds store, trackers) and report code clashes without guessing.",
+  "author": "AmberX AXF",
+  "tags": [
+    "agent-job",
+    "git"
+  ],
+  "data": {
+    "specialty": "landing",
+    "model": "opus",
+    "budget": {
+      "tokens": 400000,
+      "maxTurns": 50,
+      "usd": 6
+    },
+    "trigger": {
+      "kind": "event",
+      "event": "build.finished"
+    },
+    "inputs": [
+      {
+        "id": "branch",
+        "label": "Branch",
+        "required": true
+      },
+      {
+        "id": "build",
+        "label": "Build id",
+        "default": ""
+      },
+      {
+        "id": "checks",
+        "label": "Checks to rerun",
+        "default": "the build's own tests + node framework/cli/tracker.mjs --check"
+      }
+    ],
+    "brief": "Land branch {{branch}} (build {{build}}).\n1. git fetch origin; merge origin/main into {{branch}} (never rebase, never force).\n2. Bookkeeping clashes (_claude/THREADS.md, _claude/memory/STATUS.md, _claude/builds/, tracker.json, catalogs): keep both sides' lines, then regenerate generated files (tracker.mjs).\n3. Code clashes: do NOT resolve by guessing. Abort, list the files and both sides' intent in the report, status blocked.\n4. Rerun {{checks}}. All green: git push origin HEAD:main. Red: report, do not push.\nReport what landed (commit), what clashed and what still needs a person.",
+    "outputs": {
+      "report": "_claude/builds/reports/jobs/land-build/{{stamp}}.md"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "avatar",
+  "id": "agent-avatar",
+  "name": "Agent avatar",
+  "version": "1.0.0",
+  "description": "How an agent's face shows next to their work everywhere (AgentAvatar: builds grids, steps, runs, reviews, chat, the Crew): size and shape. The face itself comes from the agent's card (agent@1 avatar), else their initials.",
+  "author": "AmberX AXF",
+  "tags": [
+    "avatar",
+    "agent"
+  ],
+  "data": {
+    "source": "text",
+    "size": "regular",
+    "shape": "circle",
+    "text": "Agent",
+    "tooltip": "The agent's name and role"
+  }
+}

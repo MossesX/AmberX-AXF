@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "boardroom",
+  "name": "Boardroom dialog",
+  "version": "1.0.0",
+  "description": "Boardroom: modal, dim backdrop, fade in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "formal",
+    "enterprise",
+    "formal"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 640,
+    "backdrop": "dim",
+    "animation": "fade",
+    "header": "filled",
+    "closeOnBackdrop": true
+  }
+}

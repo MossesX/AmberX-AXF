@@ -1,0 +1,39 @@
+{
+  "$axf": "asset@1",
+  "type": "density",
+  "id": "compact",
+  "name": "Compact",
+  "version": "1.1.0",
+  "description": "The framework's own spacing (Oct 31 2026, tighter): 0.1–2.4-space gap steps, 1.1-space card padding, 2.3-line list rows that stay tappable. Every value is the default.",
+  "author": "AmberX AXF",
+  "tags": [
+    "compact",
+    "default"
+  ],
+  "data": {
+    "gap": {
+      "2xs": 0.1,
+      "xs": 0.2,
+      "sm": 0.3,
+      "md": 0.4,
+      "lg": 0.6,
+      "xl": 0.8,
+      "2xl": 1.2,
+      "3xl": 1.6,
+      "4xl": 2.4
+    },
+    "pad": {
+      "control": 0.45,
+      "card": 1.1,
+      "page": 1.25,
+      "row": 0.55,
+      "cell": 0.5
+    },
+    "row": {
+      "list": 2.3,
+      "table": 2.1,
+      "menu": 2,
+      "control": 2.1
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "$axf": "asset@1",
+  "type": "clock",
+  "id": "digital-24h",
+  "name": "Digital, 24-hour with date",
+  "version": "1.0.0",
+  "description": "Sun Oct 18 18:20, monospace digits.",
+  "author": "AmberX AXF",
+  "tags": ["clock"],
+  "data": { "format": "24h", "seconds": false, "date": "weekday", "mono": true }
+}

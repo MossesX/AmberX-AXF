@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "animated-logo",
+  "id": "gizmox-spin",
+  "name": "GizmoX turn",
+  "version": "1.0.0",
+  "description": "The GizmoX cog turning once on load, then on hover.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox"
+  ],
+  "data": {
+    "mark": "gizmox",
+    "preset": "spin",
+    "durationMs": 1800,
+    "loop": "hover",
+    "intensity": 0.6
+  }
+}

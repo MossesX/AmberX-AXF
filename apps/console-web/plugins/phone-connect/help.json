@@ -1,0 +1,77 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "phone-connect-help",
+  "name": "Phone Connect help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Phone Connect plugin.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:phone-connect",
+    "entries": [
+      {
+        "target": "phone-connect",
+        "title": "Phone Connect settings",
+        "text": "Pair the Phone Connect app, see and revoke paired phones, and switch each phone feature on or off."
+      },
+      {
+        "target": "new-code",
+        "title": "New code",
+        "text": "Makes a new one-time pairing code (10 minutes, single use) and cancels the old one. Type it in the Phone Connect app; your own axHub sign-in there claims it.",
+        "kind": "button"
+      },
+      {
+        "target": "cancel-code",
+        "title": "Cancel code",
+        "text": "Cancels the pending pairing code so nobody can claim it.",
+        "kind": "button"
+      },
+      {
+        "target": "copy-code",
+        "title": "Copy code",
+        "text": "Copies the pairing code so you can paste it into the Phone Connect app.",
+        "kind": "button"
+      },
+      {
+        "target": "watch-keep-the-link-open",
+        "title": "Watch (keep the link open)",
+        "text": "Keeps the phone's background link to the console open (a foreground service), so pushes, approvals and pages arrive at once.",
+        "kind": "toggle"
+      },
+      {
+        "target": "ring-on-new-approvals",
+        "title": "Ring on new approvals",
+        "text": "Rings the phone when a new approval or veto countdown arrives.",
+        "kind": "toggle"
+      },
+      {
+        "target": "pages-it-may-open",
+        "title": "Pages it may open",
+        "text": "Which pages the console and agents may open on this phone: only the console, the console plus listed sites, or any https site.",
+        "kind": "field"
+      },
+      {
+        "target": "sites-comma-separated",
+        "title": "Sites (comma separated)",
+        "text": "The extra sites this phone may open when the policy is \"The console + these sites\": host names like github.com.",
+        "kind": "field"
+      },
+      {
+        "target": "save-sites",
+        "title": "Save sites",
+        "text": "Saves the site list for this phone's url policy.",
+        "kind": "button"
+      },
+      {
+        "target": "layout-of-this-tab",
+        "title": "Layout of this tab",
+        "text": "How this tab is laid out: four tabs, one page with every section, or the paired phone on top with Features and Activity as tabs below.",
+        "kind": "field"
+      }
+    ],
+    "intros": []
+  }
+}

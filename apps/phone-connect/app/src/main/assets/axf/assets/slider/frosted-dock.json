@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "frosted-dock",
+  "name": "Frosted Dock slider",
+  "version": "1.0.0",
+  "description": "Frosted Dock: circle thumb on a 5 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "frosted",
+    "glass"
+  ],
+  "data": {
+    "track": 5,
+    "thumb": "circle",
+    "thumbSize": 18,
+    "fill": "gradient",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

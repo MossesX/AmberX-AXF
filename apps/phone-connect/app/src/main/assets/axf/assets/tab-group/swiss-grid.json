@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "swiss-grid",
+  "name": "Swiss Grid tabs",
+  "version": "1.0.0",
+  "description": "Swiss Grid: plain tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "editorial",
+    "editorial",
+    "flat"
+  ],
+  "data": {
+    "style": "plain",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": false,
+    "divider": true
+  }
+}

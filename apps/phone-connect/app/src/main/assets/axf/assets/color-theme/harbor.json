@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "harbor",
+  "name": "Harbor",
+  "version": "1.0.0",
+  "description": "Navy-on-fog harbour palette; formal, high-trust, finance-ready.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "cool",
+    "enterprise"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f4f6f8",
+      "surface": "#fdfefe",
+      "surface2": "#f9fafb",
+      "surface3": "#e8ecf0",
+      "text": "#16212d",
+      "muted": "#5c7084",
+      "border": "#d7dee4",
+      "accent": "#2670c5",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(38,112,197,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#2670c5",
+      "shadow": "rgba(21,36,50,0.12)"
+    }
+  }
+}

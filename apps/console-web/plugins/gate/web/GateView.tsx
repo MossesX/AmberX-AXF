@@ -2,14 +2,14 @@
  * Builds → Gate & rules (`view:gate`): the gate a PR must pass before it lands, the build rules and the auto-lander, in four tabs
  * (framework TabGroup, settings id `gate.tabs`, so the row is the tab-group asset and remembers the last tab).
  * console-control@1: the view is `view:gate`, the row `tab:gate.tabs`, each tab `tab:gate.tabs=rules | build-rules |
- * auto-lander | history`; deep links `console_show view:gate/tab:gate.tabs=history`, `console_open gate`, action `gate.open:<tab>`.
+ * auto-lander | history` (Auto-lander holds its own row `tab:gate.auto-lander.tabs=server | line`, AutoLanderTab); deep links `console_show view:gate/tab:gate.tabs=history`, `console_open gate`, action `gate.open:<tab>`.
  */
 import { useEffect, useState } from 'react';
-import { SkinScope, TabGroup } from '@console/axf/react';
+import { PageToolbar, SkinScope, TabGroup, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import { gateCall, isTab, onShowTab, takeWantedTab, type GateSettings, type GateTab } from './api';
+import { AutoLanderTab } from './AutoLanderTab';
 import { BuildRulesTab } from './BuildRulesTab';
 import { HistoryTab } from './HistoryTab';
-import { LanderTab } from './LanderTab';
 import { RulesTab } from './RulesTab';
 import './gate.css';
 
@@ -31,15 +31,22 @@ export function GateView() {
     }, () => { /* defaults stand */ });
     return () => { live = false; };
   }, []);
+  // the Gate toolbar (page-toolbar@1, assets/toolbar/gate.json)
+  usePublishPageState('gate', { tab, onBuildRules: tab === 'build-rules', onHistory: tab === 'history' });
+  useToolbarHandlers('gate', {
+    'gate.show-build-rules': () => { setTab('build-rules'); return { tab: 'build-rules' }; },
+    'gate.show-history': () => { setTab('history'); return { tab: 'history' }; },
+  });
   return (
     <SkinScope kind="plugin" id={PLUGIN_ID} className="axp-gate">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Gate &amp; rules</h1><p className="fx-muted">The checks a build must pass before it lands, the build rules, the auto-lander and what it did.</p></div></header>
+      <PageToolbar view="gate" />
       <TabGroup<GateTab> id="gate.tabs" label="Gate & rules" value={tab} onChange={setTab}
         tabs={[{ value: 'rules', label: 'Rules', icon: 'shield' }, { value: 'build-rules', label: 'Build rules', icon: 'list' }, { value: 'auto-lander', label: 'Auto-lander', icon: 'branch' }, { value: 'history', label: 'History', icon: 'clock' }]}>
         <div className="axp-gate__panel">
           {tab === 'rules' && <RulesTab refreshSec={settings.refreshSec} />}
           {tab === 'build-rules' && <BuildRulesTab refreshSec={settings.refreshSec} />}
-          {tab === 'auto-lander' && <LanderTab refreshSec={settings.refreshSec} />}
+          {tab === 'auto-lander' && <AutoLanderTab refreshSec={settings.refreshSec} />}
           {tab === 'history' && <HistoryTab refreshSec={settings.refreshSec} />}
         </div>
       </TabGroup>

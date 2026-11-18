@@ -10,6 +10,14 @@
  *   axf console focus <address> [--select] [--expand]
  *   axf console scroll up|down|page-up|page-down|top|bottom [--amount 0.5] [--address <pane>] · scroll to <address>
  *   axf console plugin enable|disable <plugin> [--force]
+ *   axf console plugin-settings <plugin> [--get|--open|--set key=value|--enable|--disable]
+ *                                                       one plugin's Settings → Plugins sub-tab: read it (default), open it
+ *                                                       in the console (= its screen's settings gear), set one setting, on/off
+ *   axf console chrome get|set|reset|open <type> <id> [key] [value]
+ *                                                       one tab group / toolbar / banner / nav / menu's own settings (the
+ *                                                       keys its Settings → Interface tab writes, axf.chrome.<type>.<id>):
+ *                                                       get [key] · set <key> <value> (asset = the asset it uses; reset or
+ *                                                       '' drops it) · reset [key] (all of them: --confirm) · open [tab]
  *   axf console voice "<phrase>"                       what AmberX does with a spoken phrase ("scroll down", "disable plugin skins")
  *   axf console do <verb> [address] [--value v] [--confirm] [--reason "…"] [--to recent|all|<client>]
  *   --json  the answer as JSON · --remote <url>  another console
@@ -18,10 +26,14 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome']);
+/** The chrome kinds with a settings dialog (chrome-settings@1 CHROME_TYPES). */
+const CHROME_KINDS = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu'];
+/** One chrome instance setting's address: the same key its Settings → Interface tab writes. */
+export const chromeSettingAddress = (type, id, key) => `setting:chrome.${type}.${id}.${key}`;
 const VERBS = ['open', 'state', 'press', 'set', 'scroll', 'focus', 'search', 'list', 'plugin.enable', 'plugin.disable'];
 const SCROLL_DIRS = ['up', 'down', 'page-up', 'page-down', 'top', 'bottom', 'to'];
-const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by']);
+const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by', 'set']);
 
 /** argv → { words, flags }. */
 export function parseArgs(argv) {
@@ -83,6 +95,41 @@ export function toRequest(argv) {
       if (!['enable', 'disable'].includes(op) || !id) throw new Error('usage: axf console plugin enable|disable <plugin> [--force]');
       return { method: 'POST', path: `/plugins/${encodeURIComponent(id)}/${op}`, body: { ...(flags.force ? { force: true } : {}), ...extra } };
     }
+    case 'plugin-settings': {
+      const id = args[0];
+      if (!id) throw new Error('usage: axf console plugin-settings <plugin> [--get|--open|--set key=value|--enable|--disable]');
+      const at = `/plugins/${encodeURIComponent(id)}`;
+      if (flags.enable || flags.disable) return { method: 'POST', path: `${at}/${flags.enable ? 'enable' : 'disable'}`, body: { ...(flags.force ? { force: true } : {}), ...extra } };
+      if (typeof flags.set === 'string') {
+        const [key, v] = flags.set.split(/=(.*)/s, 2);
+        if (!key || v === undefined) throw new Error('usage: axf console plugin-settings <plugin> --set key=value');
+        return { method: 'POST', path: `${at}/settings/set`, body: { key, value: value(v), ...extra } };
+      }
+      if (flags.open) return { method: 'POST', path: `${at}/settings/open`, body: { ...extra } };
+      return { method: 'GET', path: `${at}/settings` };
+    }
+    case 'chrome': {
+      const [op, type, id, key, ...rest] = args;
+      const usage = `usage: axf console chrome get|set|reset|open <${CHROME_KINDS.join('|')}> <id> [key] [value]`;
+      if (!['get', 'set', 'reset', 'open'].includes(op) || !CHROME_KINDS.includes(type) || !id) throw new Error(usage);
+      if (op === 'get') return key ? { method: 'GET', path: `/state?address=${encodeURIComponent(chromeSettingAddress(type, id, key))}` } : { method: 'POST', path: '/search', body: { query: { q: `chrome.${type}.${id}`, kinds: ['setting'], limit: 60 }, ...extra } };
+      if (op === 'set') {
+        if (!key || (!rest.length && flags.value === undefined)) throw new Error(`usage: axf console chrome set ${type} ${id} <key> <value>`);
+        return { method: 'POST', path: '/do', body: { verb: 'set', address: chromeSettingAddress(type, id, key), value: value(flags.value !== undefined ? flags.value : rest.join(' ')), ...extra } };
+      }
+      if (op === 'reset') return key
+        ? { method: 'POST', path: '/do', body: { verb: 'set', address: chromeSettingAddress(type, id, key), value: 'reset', ...extra } }
+        : { method: 'POST', path: '/do', body: { verb: 'press', address: 'function:chrome.reset', value: `${type}:${id}`, ...(flags.confirm ? { confirm: true } : {}), ...extra } };
+      return { method: 'POST', path: '/do', body: { verb: 'press', address: 'function:chrome.settings', value: `${type}:${id}:${key || 'interface'}`, ...extra } };
+    }
+    case 'toolbar': {
+      // page toolbars (page-toolbar@1): list the toolbars on screen, read one, press one of its buttons
+      const [op, id, button] = args;
+      if (op === 'list') return { method: 'GET', path: `/toolbars${flags.view ? `?view=${encodeURIComponent(String(flags.view))}` : ''}` };
+      if (op === 'get' && id) return { method: 'GET', path: `/toolbars/${encodeURIComponent(id)}` };
+      if (op === 'press' && id && button) return { method: 'POST', path: `/toolbars/${encodeURIComponent(id)}/press`, body: { button, ...(flags.value !== undefined ? { value: flags.value } : {}), ...(flags.confirm ? { confirm: true } : {}) } };
+      throw new Error('usage: axf console toolbar list [--view <view>] | get <toolbar id> | press <toolbar id> <button> [--value v] [--confirm]');
+    }
     case 'voice': {
       const text = args.join(' ').trim();
       if (!text) throw new Error('usage: axf console voice "<phrase>"');
@@ -123,6 +170,10 @@ export function describe(r) {
   else out.push(`✓ ${r.verb ?? 'ok'}${r.address ? ` ${r.address}` : ''}${r.value !== undefined ? ` = ${JSON.stringify(r.value)}` : ''}${r.enabled !== undefined ? ` (${r.enabled ? 'on' : 'off'})` : ''}`);
   const st = r.state && typeof r.state === 'object' && 'screen' in r.state ? r.state : null;
   if (st) out.push(`  screen ${st.screenLabel ?? st.screen}${st.focused ? ` · focused ${st.focused}` : ''}${st.scroll ? ` · scroll ${Math.round(st.scroll.fraction * 100)}%` : ''}`);
+  if (r.tab !== undefined && r.folder) {
+    out.push(`  ${r.label}: ${r.enabled ? 'on' : 'off'} · sub-tab ${r.tab?.address ?? '(none)'}${r.gear ? ` · gear ${r.gear}` : ''}`);
+    for (const x of r.settings ?? []) out.push(`  ${x.key} = ${x.value === undefined ? '(read live: axf console state ' + x.address + ')' : JSON.stringify(x.value)}  · ${x.label}`);
+  }
   if (r.effects?.stopsWorking?.length) out.push(`  stops working: ${r.effects.stopsWorking.map((d) => d.name).join(', ')}`);
   if (r.say) out.unshift(`🗣 ${r.say}`);
   if (r.source && !Array.isArray(r.targets)) out.push(`  (${r.source}${r.console === false ? ', no console open' : ''})`);

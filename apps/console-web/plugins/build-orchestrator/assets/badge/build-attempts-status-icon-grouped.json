@@ -1,0 +1,52 @@
+{
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "build-attempts-status-icon-grouped",
+ "name": "build-attempts-status: Icon chips, attempts grouped by failure",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Status chip with an icon per status; attempts grouped under each failure (CI red, crashed …), with the ladder still to try under them. Shows best what was tried for which problem.",
+ "tags": [
+  "ui-choice",
+  "choice-set:build-attempts-status",
+  "choice-option:icon-grouped"
+ ],
+ "data": {
+  "icon": "refresh",
+  "label": "fixing",
+  "tone": "warning",
+  "shape": "pill",
+  "icons": true,
+  "statuses": {
+   "running": [
+    "building",
+    "accent"
+   ],
+   "fixing": [
+    "fixing",
+    "warning"
+   ],
+   "landing": [
+    "landing",
+    "accent"
+   ],
+   "landed": [
+    "landed",
+    "success"
+   ],
+   "complete": [
+    "complete",
+    "success"
+   ],
+   "escalated": [
+    "escalated",
+    "danger"
+   ]
+  },
+  "attempts": {
+   "layout": "grouped",
+   "order": "newest-first",
+   "showLadder": true
+  }
+ }
+}

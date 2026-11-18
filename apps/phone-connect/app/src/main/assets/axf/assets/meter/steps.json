@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "meter",
+  "id": "steps",
+  "name": "Steps",
+  "version": "1.0.0",
+  "description": "Chunky square steps, like a retro installer.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "steps",
+    "height": 16,
+    "radius": "square",
+    "stripes": false,
+    "animated": false,
+    "fill": "solid",
+    "segments": 12
+  }
+}

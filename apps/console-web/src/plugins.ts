@@ -33,6 +33,12 @@ export interface PluginManifest {
   opens?: 'main' | 'window' | 'dialog' | 'tab' | false;
   /** which UI moves (view:<id> / dialog:<id>) */
   opensUi?: string;
+  /** the console's generic settings sub-tab (PluginDefaultSettingsTab) under Settings → Plugins; parent is always 'plugins' */
+  settingsTab?: { default: true; label?: string; icon?: string; order?: number };
+  /** false = no host settings gear on its screens (needs settingsGearReason); default true */
+  settingsGear?: boolean;
+  /** why a plugin's screens carry no settings gear (required with settingsGear: false) */
+  settingsGearReason?: string;
 }
 
 export interface BundledPlugin {

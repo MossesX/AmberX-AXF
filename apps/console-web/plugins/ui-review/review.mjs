@@ -132,6 +132,24 @@ export function decideLocal(ids, decision, { comment = '', by = 'brett' } = {}) 
   return { changed: r.changed, missing: r.missing.filter((x) => !r.changed.includes(x)) };
 }
 
+/**
+ * Close review items whose PR is gone (stale-row watchdog, stale-row@1): `landed` = { at, how: 'landed' | 'removed',
+ * pr, by, why } on each item. The status is kept as Brett left it (never approved); a closed item no longer holds a
+ * merge and leaves the open list. Items already closed or not found are returned in `skipped`.
+ */
+export function closeLanded(ids, { how = 'landed', pr = 0, by = 'watchdog', why = '' } = {}) {
+  const want = new Set(ids.map(String)); const at = new Date().toISOString();
+  const doc = loadDoc(); const changed = []; const skipped = [];
+  for (const it of doc.items) {
+    if (!want.has(String(it.id))) continue;
+    if (it.landed) { skipped.push(it.id); continue; }
+    it.landed = { at, how: how === 'removed' ? 'removed' : 'landed', pr: Number(pr) || Number(it.pr) || 0, by: String(by).slice(0, 80), why: String(why).slice(0, 300) };
+    changed.push(it.id);
+  }
+  if (changed.length) saveDoc(doc);
+  return { changed, skipped: [...skipped, ...[...want].filter((x) => !changed.includes(x) && !skipped.includes(x))] };
+}
+
 /** A linked git worktree has a .git file (not a folder) at its root. */
 const isWorktree = () => { try { return statSync(join(ROOT, '.git')).isFile(); } catch { return false; } };
 

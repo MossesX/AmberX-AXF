@@ -81,6 +81,10 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
                     "message": "AmberX collapsed the overlay to its toolbar" if ok else "the overlay isn't on screen on the phone"}
         return {"ok": True, "opened": opened, "notified": False,
                 "message": "AmberX opened it full screen in its overlay" if opened else "AmberX's overlay couldn't open it"}
+    if a.get("where") == "app":
+        # The console app (apps/console-droid) with its overlay off: the app itself came to the front on the page.
+        return {"ok": True, "opened": opened, "notified": False,
+                "message": "The console app opened it full screen" if opened else "The console app couldn't open it"}
     if a.get("overlay") is False and not opened:
         message = "AmberX can't open pages on its own (Display over other apps is off): tap its notification"
     elif opened:
@@ -94,6 +98,16 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
 
 def open_url(target: str, browser: str = "chrome") -> dict[str, Any]:
     """→ {ok, opened, notified, message}. Never raises for a hub or phone failure: the command stays queued and the answer says why."""
+    # Phone Connect first (axf.phone@1): a paired, online phone opens it itself; AmberX through axHub otherwise
+    try:
+        import plugin_services
+        phone = plugin_services.get("axf.phone@1")
+        local = phone.hub_tool(TOOL, {"url": target, "browser": browser}) if phone is not None and hasattr(phone, "hub_tool") else None
+    except Exception:  # noqa: BLE001 — the hub path below still works
+        local = None
+    if local is not None:
+        done = bool(local.get("ok")) and (local.get("command") or {}).get("status") == "done"
+        return {"ok": bool(local.get("ok")), "opened": done, "notified": bool(local.get("ok")) and not done, "message": str(local.get("output") or ""), "via": "phone"}
     url = (os.environ.get("AXHUB_URL") or "https://axhub.amberxai.com").rstrip("/")
     tok = os.environ.get("AXHUB_TOKEN", "")
     if not tok:

@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "gauge",
+  "id": "ring",
+  "name": "Ring",
+  "version": "1.0.0",
+  "description": "A full ring that fills clockwise, value in the middle.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "ring",
+    "thickness": 10,
+    "needle": false,
+    "ticks": 0,
+    "cap": "round",
+    "readout": "big"
+  }
+}

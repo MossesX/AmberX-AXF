@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "gizmox",
+  "name": "GizmoX",
+  "version": "1.0.0",
+  "description": "The GizmoX development console brand: indigo cog, turns on load, outline icons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "gizmox"
+  ],
+  "data": {
+    "brand": {
+      "name": "GizmoX",
+      "tagline": "The AmberX development console."
+    },
+    "marks": {
+      "mark": "gizmox",
+      "wordmark": "gizmox-lockup",
+      "lockup": "gizmox-lockup",
+      "animated": "gizmox-spin"
+    },
+    "iconPack": "amberx-outline",
+    "palette": {
+      "brand1": "#4f46e5",
+      "brand2": "#312e81",
+      "brand3": "#c7d2fe"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "lockup",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "mark",
+      "container": "none",
+      "tab-group": "none",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

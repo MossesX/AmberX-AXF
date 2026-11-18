@@ -8,6 +8,8 @@
  * dispatcher takes the next Queue build and starts a headless session on an account that runs its next phase's model.
  *
  *   node apps/console-web/plugins/build-orchestrator/pipeline.mjs status [--json]    the table (Pending / Queue / Building), accounts, slots, what the next tick would do
+ *   … attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all   done-means-merged@1: every attempt, what is
+ *                                     stuck; Retry by hand (the ladder starts over; a strategy runs at once)
  *   … queue <id> [--by who]        Pending → Queue (Brett's move; the console calls it with his name)
  *   … unqueue <id…>                Queue → Pending
  *   … hold <id…> [--why w] | release <id…>   On hold: stays in the Queue, the dispatcher skips it until released
@@ -77,6 +79,8 @@ import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
+import * as RL from '../../../../framework/core/retry-ladder.mjs';
+import * as V from './verify.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
 import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../framework/core/build-id.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -195,7 +199,7 @@ export function workerRows(env = process.env) {
 export function accountsRead(store, settings = loadSettings(), env = process.env) {
   const w = workerRows(env);
   const rows = w.rows.map((r) => ({ ...r }));
-  const running = live(store).filter((b) => (b.status === 'running' || b.status === 'waiting') && b.pipeline?.account);
+  const running = live(store).filter((b) => (b.status === 'running' || b.status === 'waiting' || (b.status === 'fixing' && b.pipeline?.session)) && b.pipeline?.account);
   for (const r of rows) {
     const mine = running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`);
     r.running = [...new Set([...(r.running ?? []), ...mine])];
@@ -220,8 +224,16 @@ const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, alias: b.alias ?? '', title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', requeue: requeueOf(b), stuck: P.stuckAfterPhase(b), stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', demo: b.demo === true, requeue: requeueOf(b), stuck: P.stuckAfterPhase(b), stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })),
+    ...attemptsView(b) };
 };
+/** done-means-merged@1 on a row: every attempt, the open failure, the merge + verify evidence, the escalation, what the ladder tries next. */
+export function attemptsView(b) {
+  const failure = BP.normFailure(b.failure);
+  const attempts = BP.normAttempts(b.attempts);
+  const next = failure && b.status === 'fixing' ? RL.nextStrategy(attempts, failure, retryPolicy(), { pinnedModel: BP.nextModel(b) || b.pipeline?.model || 'Opus', model: b.pipeline?.model || '', account: b.pipeline?.account || '' }) : null;
+  return { attempts, failure, landed: BP.normLanded(b.landed), escalation: BP.normEscalation(b.escalation), ladder: failure ? RL.ladderFor(failure.kind, retryPolicy()) : [], next: next ? { strategy: next.strategy, fixStrategy: next.fixStrategy, model: next.model, account: next.account, notBefore: next.notBefore, inFlight: next.inFlight, reason: next.reason } : null };
+}
 
 /** The whole picture for the console and the CLI. */
 export function status() {
@@ -253,8 +265,11 @@ export function status() {
 
 // ------------------------------------------------------------------ store writes
 
-/** One change to a build's pipeline record (and status / note) under the store lock. */
-export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline', action = 'pipeline' } = {}) {
+/**
+ * One change to a build's pipeline record (and status / note) under the store lock. `mutate(b, now)` (optional) changes
+ * the same record in the same write (the watchdog appends its recovery and resets the step this way).
+ */
+export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline', action = 'pipeline', mutate = null } = {}) {
   let out = null;
   withStore((s) => {
     const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
@@ -263,6 +278,7 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
     if (!b.pipeline) delete b.pipeline;
     if (status) { if (!storeCore.STATUSES.includes(status)) throw new Error(`unknown status ${status}`); b.status = status; b.builtAt = storeCore.FINISHED.includes(status) ? (b.builtAt || now) : ''; }
     if (note) b.notes.push({ text: str(note, 2000), at: now });
+    if (typeof mutate === 'function') mutate(b, now);
     b.updatedAt = now; out = b;
     return s;
   }, { by, action, note: id });
@@ -399,7 +415,7 @@ export function askSplitter(prompt, settings, env = process.env) {
 export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
-  if (['built', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
+  if (['built', 'landing', 'landed', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
   let steps = []; let used = 'rules'; let note = ''; let error = '';
   if (provider !== 'rules') {
     const a = askSplitter(P.splitPrompt(b, rules), settings);
@@ -566,7 +582,7 @@ export function runBuildRules(id, phase, { env = process.env, by = 'dispatcher' 
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief, then the rules. */
-export function briefFor(b, rules, { account, model, kind = '' }, { blocks = storeBlocks(b) } = {}) {
+export function briefFor(b, rules, { account, model, kind = '', retry = '' }, { blocks = storeBlocks(b) } = {}) {
   const o = b.origin ?? {};
   const addenda = (o.addenda ?? []).map((a, i) => addendumBlock(i + 1, a));
   return [
@@ -577,11 +593,13 @@ export function briefFor(b, rules, { account, model, kind = '' }, { blocks = sto
     `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
     // the session's rules from the Build rules tab; with this block the launcher appends no second one
     ...(blocks?.blocks?.rules ? ['', blocks.blocks.rules] : []),
+    // done-means-merged@1: a relaunch by the retry runner says what failed, what was tried and what to do differently
+    ...(retry ? ['', retry] : []),
   ].join('\n');
 }
 
 /** Start one headless session for a queued build on an account. */
-export function launch(b, { account, model, kind = '', phase = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+export function launch(b, { account, model, kind = '', phase = '', retry = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
   // the dispatch gate (build-lock@1): never a second session on a build or its worktree. Throws code 'live' (not a
   // launch failure) while a tmux session, a claude pid or a fresh lock says the build is still running.
@@ -589,7 +607,7 @@ export function launch(b, { account, model, kind = '', phase = '' }, { rules, en
   // the VPS's own 'before' rules (Build rules tab): run beside the launch, results in History
   runBuildRules(b.id, 'before', { env });
   const briefFile = join(dir, '.axf-brief.md');
-  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
+  writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind, retry })}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
   const token = issueDispatch(b.id, { account, model, env });
   const key = modelKey(model) || 'opus';
@@ -611,6 +629,8 @@ export function launch(b, { account, model, kind = '', phase = '' }, { rules, en
 
 // ------------------------------------------------------------------ session ends
 
+/** Statuses a build already holds when its last step was ticked before the session ended (done-means-merged@1: landing / landed; built / complete legacy). */
+const SETTLED = ['built', 'landing', 'landed', 'complete'];
 const headlessDir = (env = process.env) => env.AXF_HEADLESS_DIR || '/var/tmp/axf-headless';
 function readEvents(env = process.env) {
   let t = ''; try { t = readFileSync(join(headlessDir(env), 'events.jsonl'), 'utf8'); } catch { return []; }
@@ -632,7 +652,7 @@ function tmuxHas(name) {
  * Returns { id, outcome, status, reason, exit, phase, next, auth? }.
  */
 export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = false, alert = () => {}, settings = loadSettings(), env = process.env } = {}) {
-  const settled = b.status === 'built' || b.status === 'complete';
+  const settled = SETTLED.includes(b.status);
   // the wrapper's kind wins over the bare code: a crash is never a clean end; phase-done / stopped are clean ends whose
   // phase the store still has to confirm (a phase-done claim with its phase's steps open lands as 'stopped' in Pending)
   const code = kind === 'crash' ? (exit || 1) : kind === 'phase-done' || kind === 'stopped' ? 0 : exit;
@@ -650,6 +670,9 @@ export function endRun(b, { exit, kind = '', phase = '', log = '', vanished = fa
   // a run cut off by the login is not the build's fault: it does not count towards maxRuns
   setPipeline(b.id, { ...r.patch, lastRun: r.run, note: r.outcome === 'finished' ? '' : r.note, ...(auth ? { runs: Math.max(0, (b.pipeline.runs || 1) - 1) } : {}) }, { status: r.status, note: journal, action: r.reason === 'phase-done' && !auth ? 'pipeline:requeue' : 'pipeline:end' });
   lock.release(b.id, { dir: worktreeOf(b.id, env) });
+  // done-means-merged@1: a retry run that got its phase (or the whole build) done closes its attempt ok and the failure;
+  // a run that failed again is closed as failed by the detector in the same tick (recordFailure)
+  if (!auth && (r.reason === 'phase-done' || r.reason === 'all-done') && (b.attempts ?? []).some((a) => a.result === 'started')) closeAttempt(b.id, 'ok', r.note);
   // the build's end hook: the VPS's 'after' rules (home card, help stub, PR + link, THREADS, …) once a run ends
   if (!auth) runBuildRules(b.id, 'after', { env });
   if (auth) {
@@ -680,11 +703,14 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
   const events = readEvents(env);
   const out = [];
   for (const b of live(store)) {
-    // a build whose last step was ticked is already built / complete when its session ends: close the run record, keep the status
-    const settled = b.status === 'built' || b.status === 'complete';
-    if (!b.pipeline?.session || !(b.status === 'running' || b.status === 'waiting' || settled)) continue;
+    // a build whose last step was ticked is already landing / landed when its session ends: close the run record, keep the status
+    const settled = SETTLED.includes(b.status);
+    if (!b.pipeline?.session || !(b.status === 'running' || b.status === 'waiting' || b.status === 'fixing' || settled)) continue;
     const since = Date.parse(b.pipeline.launchedAt || 0) - 5000;
-    const end = events.filter((e) => e.event === 'session-end' && e.session === b.pipeline.session && Date.parse(e.at || 0) >= since).pop();
+    // an end already handled never ends the next run: session names repeat (axf-<build>--<agent>) and a retry may
+    // relaunch within seconds of the last end (done-means-merged@1)
+    const handled = Date.parse(b.pipeline.lastRun?.at || 0) || 0;
+    const end = events.filter((e) => e.event === 'session-end' && e.session === b.pipeline.session && Date.parse(e.at || 0) >= since && Date.parse(e.at || 0) > handled).pop();
     let exit = null;
     if (end) exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0;
     else {
@@ -700,6 +726,210 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
       exit = 1;
     }
     out.push(endRun(b, { exit, kind: end?.kind || '', phase: end?.phase || '', log: end?.log || '', vanished: !end, alert, settings, env }));
+  }
+  return out;
+}
+
+// ------------------------------------------------------------------ failure detector (done-means-merged@1, s7)
+
+/** The retry policy: the done-means-merged build rule's settings when it has them, else the defaults (retry-policy@1). */
+export function retryPolicy() {
+  try { const r = BR.load().store.rules.find((x) => x.id === 'done-means-merged'); return RL.normPolicy(r?.settings ?? {}); } catch { return RL.normPolicy({}); }
+}
+/** The auto-lander's land.json items by build id (the merge-queue provider's data; found by capability, never by folder). */
+export function landItems(env = process.env) {
+  let dir = env.AXF_PUSH_BANNER_DIR || '';
+  if (!dir) {
+    const plugins = join(REPO_ROOT, 'apps/console-web/plugins');
+    try {
+      for (const d of readdirSync(plugins).sort()) {
+        const m = readJson(join(plugins, d, 'plugin.json'));
+        if (m && Array.isArray(m.provides) && m.provides.includes('service:axf.merge-queue@1') && m.lifecycle?.dataDir) { dir = join(env.AXF_CONSOLE_ROOT || REPO_ROOT, m.lifecycle.dataDir); break; }
+      }
+    } catch { /* no plugins folder: no lander */ }
+  }
+  const items = dir ? readJson(join(dir, 'land.json'), {})?.items : [];
+  return new Map((Array.isArray(items) ? items : []).filter((x) => x?.id).map((x) => [x.id, x]));
+}
+/**
+ * The newest sign of life of a build's run: a store write, its launch, its run log / stream file. Not the build lock's
+ * heartbeat: checkEnds beats it whenever the tmux session exists, so a hung session would look alive for ever.
+ */
+export function beatOf(b, env = process.env) {
+  const ts = [b.updatedAt, b.pipeline?.launchedAt];
+  const wt = worktreeOf(b.id, env);
+  for (const f of [join(wt, `${b.id}.log`), join(wt, `${b.id}.jsonl`)]) { try { ts.push(statSync(f).mtime.toISOString()); } catch { /* none */ } }
+  return ts.filter((t) => t && Number.isFinite(Date.parse(t))).sort().pop() || '';
+}
+
+/**
+ * Classify every build the server still owes work on (pipeline-core classifyFailure): a crash, red CI, a clash, a push
+ * that failed, a stalled run, a build that fell back to Pending. Each one found is written on the build in one journalled
+ * store write (failure, status fixing, the open attempt closed, a note) and logged. → [{ id, failure }]
+ */
+export function detectFailures({ ended = [], env = process.env, now = Date.now(), policy = retryPolicy(), land = landItems(env) } = {}) {
+  const store = loadStore();
+  const endedBy = new Map(ended.map((e) => [e.id, e]));
+  const found = [];
+  for (const b of store.builds) {
+    if (b.deleted) continue;
+    const f = P.classifyFailure(b, { ended: endedBy.get(b.id) ?? null, land: land.get(b.id) ?? null, beatAt: beatOf(b, env), now, stalledAfterMin: policy.stalledAfterMin });
+    if (f) found.push({ id: b.id, failure: f });
+  }
+  if (!found.length) return [];
+  const at = new Date(now).toISOString();
+  withStore((s) => {
+    for (const { id, failure } of found) { const b = storeCore.findBuild(s, id); if (b) { P.recordFailure(b, failure, { at }); b.updatedAt = at; } }
+    return s;
+  }, { by: 'pipeline', action: 'pipeline:failure', note: found.map((x) => `${x.id}:${x.failure.kind}`).join(' ') });
+  for (const { id, failure } of found) {
+    logLine({ event: 'failure', build: id, kind: failure.kind, why: failure.why, step: failure.step, head: failure.head });
+    crewSay('dispatcher', 'blocked', `${id}: ${failure.kind} (${str(failure.why, 160)}). Fixing it.`, { ref: id });
+  }
+  return found;
+}
+
+// ------------------------------------------------------------------ retry runner (done-means-merged@1, s8)
+
+/**
+ * Answer every fixing build with the retry ladder (framework/core/retry-ladder.mjs): the next strategy, then a relaunch
+ * through deploy/claude-headless.sh with the strategy in the brief (retry, a fix addendum, a fresh session, another
+ * model at or under the step's pin, another account). Each relaunch opens an attempt@1 (result started) on the build;
+ * the run's end closes it (endRun: ok; the detector: failed). A PR-side failure the auto-lander still owns, an attempt
+ * in flight and a backoff are waits; a ladder that ran out escalates (status escalated + the escalation record).
+ * → [{ id, action: launched | wait | lander | escalated | failed, strategy?, account?, model?, why? }]
+ */
+export function retryFixing({ env = process.env, accounts = [], settings = loadSettings(), rules = rulesOf(loadStore()), policy = retryPolicy(), land = landItems(env), now = Date.now(), alert = () => {}, only = '', force = '' } = {}) {
+  const store = loadStore(); const at = new Date(now).toISOString();
+  const out = [];
+  for (const b of store.builds) {
+    if (b.deleted || b.status !== 'fixing' || (only && b.id !== only)) continue;
+    const f = BP.normFailure(b.failure);
+    if (!f) continue;
+    if (!force && P.landerOwns(b, f, land.get(b.id), { now, attemptTimeoutMin: policy.attemptTimeoutMin })) { out.push({ id: b.id, action: 'lander', why: 'the auto-lander is fixing it on the PR' }); continue; }
+    const pinned = BP.nextModel(b) || b.pipeline?.model || 'Opus';
+    const usable = accounts.filter((a) => a.usable !== false).map((a) => a.name);
+    let d = RL.nextStrategy(b.attempts, f, policy, { at, pinnedModel: pinned, model: b.pipeline?.model || pinned, account: b.pipeline?.account || '', accounts: usable });
+    if (force) {
+      // a rung picked by hand (retryBuild): runs now, never above the step's pin
+      const [st, fx = ''] = force.split(':');
+      d = { ...d, strategy: st, fixStrategy: st === 'fix' ? fx || 'targeted' : '', rung: force, inFlight: false, escalate: false, notBefore: '', model: st === 'switch-model' ? (d.model && d.strategy === 'switch-model' ? d.model : pinned) : (b.pipeline?.model && RL.REGISTRY.modelRank[b.pipeline.model] <= RL.REGISTRY.modelRank[pinned] ? b.pipeline.model : pinned), account: st === 'switch-account' ? usable.find((a) => a !== b.pipeline?.account) || '' : '', reason: `Picked by hand: ${force}.` };
+    }
+    if (d.inFlight) { out.push({ id: b.id, action: 'wait', why: d.reason }); continue; }
+    if (d.escalate) { out.push({ id: b.id, action: 'escalated', why: d.reason, ...escalateBuild(b.id, f, { at, policy, alert }) }); continue; }
+    if (d.notBefore && Date.parse(d.notBefore) > now) { out.push({ id: b.id, action: 'wait', why: `backoff until ${d.notBefore}` }); continue; }
+    const model = d.model || pinned;
+    const options = d.strategy === 'switch-account' && d.account
+      ? [{ account: d.account, kind: 'subscription' }]
+      : [...(d.account ? [{ account: d.account, kind: 'subscription' }] : []), ...P.routeOptions(b, accounts, model, settings)].filter((o, i, arr) => arr.findIndex((x) => x.account === o.account) === i);
+    if (!options.length) { out.push({ id: b.id, action: 'wait', why: `no account can take ${model} now` }); continue; }
+    const retry = P.retryAddendum(d, f, b.attempts);
+    let r = null; let used = null; let lastErr = null;
+    for (const o of options.slice(0, MAX_PICK_TRIES)) {
+      try { r = launch(b, { account: o.account, model, kind: o.kind, phase: b.pipeline?.phase || '', retry }, { rules, env }); used = o; break; }
+      catch (e) { lastErr = e; if (e.code === 'live') break; }
+    }
+    if (!r) {
+      out.push({ id: b.id, action: lastErr?.code === 'live' ? 'wait' : 'failed', why: str(lastErr?.message || 'no account accepted the relaunch', 300) });
+      logLine({ event: 'retry-launch-failed', build: b.id, strategy: d.strategy, error: str(lastErr?.message, 300) });
+      continue;
+    }
+    const attempt = P.attemptOf(d, f, { at, account: used.account, model, session: r.session, pr: Number(String(b.pr || '').replace(/\D/g, '')) || 0 });
+    withStore((s) => {
+      const rec = storeCore.findBuild(s, b.id); if (!rec) return s;
+      rec.attempts = BP.normAttempts([...(rec.attempts ?? []), attempt]);
+      const n = rec.attempts.length;
+      rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), account: used.account, session: r.session, slot: r.slot, model, launchedAt: at, dispatchedAt: at, runs: (rec.pipeline?.runs ?? 0) + 1, note: `attempt ${n}: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''}` }) ?? rec.pipeline;
+      rec.notes.push({ text: `Attempt ${n}: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''} on ${used.account} (${model}): ${r.session || 'queued in agent slots'}. ${d.reason}`, at });
+      rec.updatedAt = at;
+      return s;
+    }, { by: 'pipeline', action: 'pipeline:retry', note: `${b.id} ${d.strategy}` });
+    logLine({ event: 'retry', build: b.id, kind: f.kind, strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, session: r.session, n: d.n });
+    crewSay('dispatcher', 'start', `${b.id}: attempt ${d.n} (${d.strategy}${d.fixStrategy ? `: ${d.fixStrategy}` : ''}) on ${used.account}, ${model}.`, { ref: b.id });
+    out.push({ id: b.id, action: 'launched', strategy: d.strategy, fixStrategy: d.fixStrategy, account: used.account, model, session: r.session });
+  }
+  return out;
+}
+
+/** Close a build's open attempt (result ok clears the open failure too). */
+export function closeAttempt(id, result, note = '', { at = nowIso(), by = 'pipeline' } = {}) {
+  withStore((s) => {
+    const b = storeCore.findBuild(s, id); if (!b) return s;
+    const list = BP.normAttempts(b.attempts); const a = list.find((x) => x.result === 'started');
+    if (!a) return s;
+    a.result = result; a.endedAt = at; a.note = str(`${a.note ? `${a.note} ` : ''}${result === 'ok' ? 'Ok' : 'Ended'}: ${note}`, 600);
+    b.attempts = list;
+    if (result === 'ok') { b.failure = null; b.notes.push({ text: `Attempt ${a.n} (${a.strategy}) worked: ${str(note, 300)}`, at }); }
+    b.updatedAt = at;
+    return s;
+  }, { by, action: 'pipeline:attempt', note: `${id} ${result}` });
+}
+
+/** The systems check item escalated builds show on (health@1, registered by the plugin's server). */
+export const ESCALATION_BANNER = 'builds-escalated';
+
+/**
+ * The ladder ran out: status escalated with the escalation record, the systems check item (health@1 `builds-escalated`,
+ * red while any build is escalated, with Retry) and ONE phone push for this escalation (alert pipeline:escalated:<id>:<at>,
+ * notify type pipeline.escalated). pushedAt on the record means it went: the same escalation is never pushed again.
+ */
+export function escalateBuild(id, f, { at = nowIso(), policy = retryPolicy(), by = 'pipeline', alert = () => {} } = {}) {
+  let esc = null; let fresh = false; let title = id; let since = '';
+  withStore((s) => {
+    const b = storeCore.findBuild(s, id); if (!b) return s;
+    title = b.title || id;
+    if (b.status === 'escalated' && b.escalation) { esc = b.escalation; return s; }
+    esc = { ...RL.escalationOf(b.attempts, f, { at, policy, head: f.head }), bannerId: ESCALATION_BANNER };
+    since = BP.normAttempts(b.attempts).find((a) => a.kind === esc.kind && a.result !== 'skipped')?.startedAt || BP.normFailure(b.failure)?.at || at;
+    b.escalation = esc; b.status = 'escalated'; b.updatedAt = at; fresh = true;
+    b.notes.push({ text: `Escalated: ${esc.why} It is on the systems check banner with Retry; one push went to the phone.`, at });
+    return s;
+  }, { by, action: 'pipeline:escalate', note: id });
+  if (fresh && esc && !esc.pushedAt) {
+    // exactly one push per escalation: the first escalated build turns the systems check item red, and that red episode
+    // is the push (health@1 pushes once per episode); while it is already red, a new escalation pushes on its own
+    const others = escalated().filter((x) => x.id !== id);
+    if (others.length) alert('escalated', { id, title, at: esc.at, why: esc.why, tried: esc.tried, since });
+    withStore((s) => { const b = storeCore.findBuild(s, id); if (b?.escalation && b.escalation.at === esc.at) { b.escalation = { ...b.escalation, pushedAt: nowIso() }; } return s; }, { by, action: 'pipeline:escalate-pushed', note: id });
+    crewSay('dispatcher', 'failed', `${id} is stuck after ${esc.attempts} tries (${esc.tried.join(', ')}). Brett, it's on the systems check banner with Retry.`, { ref: id });
+  }
+  logLine({ event: 'escalated', build: id, kind: esc?.kind, attempts: esc?.attempts, tried: esc?.tried, pushed: fresh ? 'once' : 'already' });
+  return { escalation: esc };
+}
+
+/** Every escalated build, for the systems check item and the API: [{ id, title, kind, why, tried, attempts, since, pushedAt }]. */
+export function escalated(store = loadStore()) {
+  return store.builds.filter((b) => !b.deleted && b.status === 'escalated').map((b) => ({ id: b.id, title: b.title, kind: b.escalation?.kind || b.failure?.kind || '', why: b.escalation?.why || '', tried: b.escalation?.tried ?? [], attempts: BP.normAttempts(b.attempts).length, since: b.escalation?.at || b.updatedAt, pushedAt: b.escalation?.pushedAt || '' }));
+}
+
+/**
+ * Retry a build by hand (the banner's Retry, the Attempts tab, REST / MCP / CLI / voice): the open kind's counted
+ * attempts are marked skipped (the ladder starts over, as auto-lander resetEscalation does), the escalation is cleared and
+ * the build is fixing again, so the next tick relaunches it. `strategy` (optional) forces the first rung of the new try.
+ * A build with no open failure is queued again instead. → { id, status, strategy }
+ */
+export function retryBuild(id, { strategy = '', by = process.env.AXF_ACTOR || 'console', why = '', noLaunch = false } = {}) {
+  if (strategy && !(RL.isRung(strategy) && strategy !== 'escalate')) throw Object.assign(new Error(`strategy is one of ${[...BP.STRATEGIES.filter((x) => x !== 'escalate' && x !== 'fix'), ...BP.FIX_STRATEGIES.map((x) => `fix:${x}`)].join(', ')}`), { code: 2 });
+  let out = null;
+  withStore((s) => {
+    const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+    if (BP.isLive(b) && b.pipeline?.session) throw Object.assign(new Error(`${b.id} has a session running (${b.pipeline.session}): it is already being worked on`), { code: 2 });
+    const at = nowIso();
+    const f = BP.normFailure(b.failure) ?? (b.escalation ? BP.normFailure({ kind: b.escalation.kind, at, why: b.escalation.why, head: b.escalation.head }) : null);
+    const list = BP.normAttempts(b.attempts);
+    if (f) for (const a of list) if (a.kind === f.kind && a.result !== 'started') a.result = 'skipped';
+    b.attempts = list; b.escalation = null;
+    b.status = f ? 'fixing' : 'queued'; b.failure = f; b.builtAt = ''; b.updatedAt = at;
+    if (!f && b.pipeline) b.pipeline = BP.normPipeline({ ...b.pipeline, queuedAt: b.pipeline.queuedAt || at, queuedBy: by }) ?? b.pipeline;
+    b.notes.push({ text: `Retry by ${by}${strategy ? ` (${strategy})` : ''}${why ? `: ${why}` : ''}. The ladder starts over${f ? ` for ${f.kind}` : ''}.`, at });
+    out = { id: b.id, status: b.status, strategy };
+    return s;
+  }, { by, action: 'pipeline:retry-hand', note: id });
+  logLine({ event: 'retry-hand', build: id, by, strategy });
+  // a strategy picked by hand runs now (not on the ladder's first rung at the next tick)
+  if (strategy && out.status === 'fixing' && !noLaunch) {
+    const store = loadStore(); const settings = loadSettings();
+    out.launch = retryFixing({ only: id, force: strategy, accounts: accountsNow(store, settings), settings, rules: rulesOf(store) })[0] ?? null;
   }
   return out;
 }
@@ -721,7 +951,7 @@ export function onExit(id, { session = '', exit = 0, kind = '', phase = '', env 
   const b = storeCore.findBuild(loadStore(), id);
   if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   const p = b.pipeline ?? {};
-  const open = p.session && (b.status === 'running' || b.status === 'waiting' || b.status === 'built' || b.status === 'complete');
+  const open = p.session && (b.status === 'running' || b.status === 'waiting' || b.status === 'fixing' || SETTLED.includes(b.status));
   if (!open || (session && p.session !== session)) return { ok: true, id, ended: null, tick: null, why: 'this run was already ended (or another session holds the build)' };
   const ended = endRun(b, { exit: Number.isInteger(exit) ? exit : Number(exit) || 0, kind, phase, settings: loadSettings(env), env });
   let t = null;
@@ -885,12 +1115,18 @@ export function tick({ env = process.env } = {}) {
   const inta = intake({ alert });
   try { assignAliases({ by: 'pipeline' }); } catch (e) { logLine({ event: 'alias-failed', error: str(e.message, 300) }); }
   const ended = checkEnds({ alert, env });
+  // done-means-merged@1: every failure is classified and recorded (status fixing); the retry runner answers it below
+  let failures = [];
+  try { failures = detectFailures({ ended, env }); } catch (e) { logLine({ event: 'detect-failed', error: str(e.message, 300) }); }
   let authRequeued = [];
   try { authRequeued = authWaitsTick({ alert }); } catch (e) { logLine({ event: 'auth-waits-failed', error: str(e.message, 300) }); }
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
+  // done-means-merged@1: every fixing build gets the ladder's next strategy (a relaunch, a wait, or escalation)
+  let retries = [];
+  try { retries = retryFixing({ env, accounts, settings, rules, alert }); } catch (e) { logLine({ event: 'retry-failed', error: str(e.message, 300) }); }
   const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
@@ -970,13 +1206,16 @@ export function tick({ env = process.env } = {}) {
     try { check = selfCheck({ reason: asked ? asked.reason || 'on demand' : 'queued builds wait, nothing launched', by: asked?.by || 'dispatcher', env, alert: (kind, d) => consoleApi('POST', '/api/alerts', P.alertFor(kind, d)) }); }
     catch (e) { logLine({ event: 'self-check-failed', error: str(e.message, 300) }); }
   }
+  // done-means-merged@1: a landed build's feature verify runs in the background (one at a time): pass = complete, fail = fixing
+  let verify = null;
+  try { verify = kickVerify({ env }); } catch (e) { logLine({ event: 'verify-kick-failed', error: str(e.message, 300) }); }
   // account health: every healthEveryMin minutes, in the background, so the tick never waits on it
   let health = null;
   try { health = kickHealth({ env, settings }); } catch (e) { logLine({ event: 'health-kick-failed', error: str(e.message, 300) }); }
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify };
 }
 
 const MAX_PICK_TRIES = 4;
@@ -1118,6 +1357,18 @@ export function kickHealth({ env = process.env, settings = loadSettings(env), no
   return { started: true, pid: child.pid };
 }
 
+/** Start verify.mjs run in the background when a landed build waits for its verify and none runs (AXF_PIPELINE_VERIFY=off skips). */
+export function kickVerify({ env = process.env } = {}) {
+  if (env.AXF_PIPELINE_VERIFY === 'off' || (env.AXF_PIPELINE_LAUNCHER && env.AXF_PIPELINE_VERIFY !== 'on')) return null;
+  const waiting = V.waiting(loadStore().builds);
+  if (!waiting.length) return null;
+  if (V.locked(env)) return { started: false, why: 'a verify is running', waiting: waiting.map((b) => b.id) };
+  const child = spawn(process.execPath, [join(HERE, 'verify.mjs'), 'run'], { cwd: REPO_ROOT, env, detached: true, stdio: 'ignore' });
+  child.unref();
+  logLine({ event: 'verify-started', builds: waiting.map((b) => b.id), pid: child.pid });
+  return { started: true, pid: child.pid, waiting: waiting.map((b) => b.id) };
+}
+
 /**
  * The sweep: every saved account, one by one, one tiny call each (callAccount). Each answer is kept on the account
  * (accounts.json: health { at, signedIn, credits, fable, error }) and the sweep in health.json; accountView() reads them.
@@ -1198,6 +1449,23 @@ async function main(argv) {
   }
   if (cmd === 'aliases') { const r = assignAliases({ apply: has('apply'), all: has('all'), by }); return out({ ok: true, applied: has('apply'), aliases: r }, r.map((x) => `${x.id} → ${x.alias}`).join('\n') || 'every build id is a valid build name'); }
   if (cmd === 'land-alias') { const r = landAlias(rest[0], { by }); return out({ ok: true, ...r }, `${r.id} → ${r.alias}${r.dir ? `\nfolder ${r.dir}` : ''}${r.branch ? `\nbranch ${r.branch}` : ''}\n${r.note}`); }
+  // done-means-merged@1: what is stuck, and the hand's Retry (the banner, the Attempts tab, REST / MCP / voice reach the same)
+  if (cmd === 'attempts') {
+    const b = storeCore.findBuild(loadStore(), rest[0] || ''); if (!b) throw Object.assign(new Error(`no build "${rest[0] || ''}"`), { code: 2 });
+    const v = attemptsView(b);
+    return out({ ok: true, id: b.id, status: b.status, ...v }, [`${b.id}: ${b.status}${v.failure ? ` · fixing ${v.failure.kind}${v.failure.step ? ` on ${v.failure.step}` : ''}: ${v.failure.why}` : ''}${v.escalation ? ` · escalated: ${v.escalation.why}` : ''}`,
+      ...v.attempts.map((a) => `  ${String(a.n).padStart(2)} ${a.kind.padEnd(15)} ${(a.strategy + (a.fixStrategy ? `:${a.fixStrategy}` : '')).padEnd(18)} ${(a.model || '-').padEnd(5)} ${(a.account || a.source).padEnd(12)} ${a.result.padEnd(8)} ${a.startedAt} ${a.note.slice(0, 80)}`),
+      v.next ? `  next: ${v.next.strategy}${v.next.fixStrategy ? `:${v.next.fixStrategy}` : ''}${v.next.model ? ` on ${v.next.model}` : ''}${v.next.notBefore ? ` not before ${v.next.notBefore}` : ''}` : '',
+      v.landed ? `  landed: merged ${v.landed.mergedAt || '-'} sha ${v.landed.sha || '-'} CI ${v.landed.ci} verify ${v.landed.verifiedAt ? `${v.landed.verifyHow} ${v.landed.verifiedAt}` : 'not yet'}` : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'escalated') { const e = escalated(); return out({ ok: true, escalated: e }, e.map((x) => `${x.id}: ${x.kind} since ${x.since} after ${x.attempts} attempt(s): ${x.why}`).join('\n') || 'nothing escalated'); }
+  if (cmd === 'retry') {
+    if (!rest[0] || rest[0].startsWith('--')) throw Object.assign(new Error('retry <build> [strategy] [--why "…"]'), { code: 2 });
+    const st = rest[1] && !rest[1].startsWith('--') ? rest[1] : flag('strategy');
+    const r = retryBuild(rest[0], { strategy: st, by, why: flag('why') });
+    return out({ ok: true, ...r }, `${r.id}: ${r.status}${r.strategy ? ` (${r.strategy})` : ''}${r.launch ? ` · ${r.launch.action}${r.launch.account ? ` on ${r.launch.account}` : ''}${r.launch.why ? `: ${r.launch.why}` : ''}` : ' · the next tick relaunches it'}`);
+  }
+  if (cmd === 'retry-all') { const done = escalated().map((x) => retryBuild(x.id, { by, why: flag('why') || 'Retry from the systems check' })); return out({ ok: true, retried: done }, done.map((x) => `${x.id}: ${x.status}`).join('\n') || 'nothing escalated'); }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
@@ -1255,7 +1523,7 @@ async function main(argv) {
     const patch = {}; for (const a of rest) { const i = a.indexOf('='); if (i < 1) throw Object.assign(new Error('usage: set key=value …'), { code: 2 }); const v = a.slice(i + 1); patch[a.slice(0, i)] = v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v.includes(',') ? v.split(',') : v; }
     const s = saveSettings(patch); return out({ ok: true, settings: s }, 'saved');
   }
-  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto [--json]'), { code: 2 });
+  throw Object.assign(new Error('usage: pipeline.mjs status | queue <id> [--by who] | unqueue|hold|release|archive|unarchive|delete|restore <id…> [--why w] | split <id> [--request] [--provider claude|rules] | intake | tick | requeue-stuck [--apply] | exit <id> [--session s] [--exit n] [--kind phase-done|crash|stopped] [--phase p] | accounts | account <name> [--fable on|off|auto] [--parallel n] [--use on|off] | probe <name> | health [--request] | tab <name> | selfcheck [--request] [--reason r] | settings | set k=v… | request --title T [--detail D] [--queue] [--route api|subscription] | route <id> api|subscription|auto | attempts <id> | escalated | retry <id> [strategy] [--why w] | retry-all [--json]'), { code: 2 });
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

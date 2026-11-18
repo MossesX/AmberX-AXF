@@ -1096,8 +1096,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
-                         "console_control_scroll", "console_control_plugin", "console_control_voice")
-ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):")
+                         "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar")
+ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):")
 
 
 def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
@@ -1215,6 +1215,51 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         """Turn a console plugin on or off (id, folder or name). Core plugins refuse; a plugin another enabled one needs
         refuses unless force. The answer names the effects: who stops working, what it needs that is off."""
         return await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason, **({"options": {"force": True}} if force else {})})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_toolbar(toolbar: str = "", button: str = "", value: Any = None, confirm: bool = False, open: bool = False, view: str = "", reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """Page toolbars (page-toolbar@1). No toolbar: list every toolbar the open console shows (view= one page), each with
+        its buttons. toolbar=<settings id> (gate.auto-lander): its state (look, buttons with enabled / visible / pressed /
+        badge / action / inMore). With button=<id>: press that button (value = its argument); a destructive button answers
+        confirmation_required until confirm=true. open=true brings the toolbar onto the screen. Same as
+        GET /api/console-control/toolbars[/<id>], POST …/toolbars/<id>/press and `axf console toolbar list|get|press`."""
+        import console_control as cc  # noqa: PLC0415 — the same module REST uses
+        if not toolbar:
+            return await go({"verb": "targets", "under": f"view:{view}" if view else "", "kinds": cc.TOOLBAR_KIND, "source": "console"})
+        try:
+            address = cc.toolbar_button_address(toolbar, button) if button else cc.toolbar_address(toolbar)
+        except cc.ControlError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+        if button:
+            return await go({"verb": "press", "address": address, **({"value": value} if value is not None else {}), **({"confirm": True} if confirm else {}), "reason": reason, "to": to})
+        if open:
+            return await go({"verb": "open", "address": address, "reason": reason, "to": to})
+        return await go({"verb": "state", "address": address, "to": to})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_plugin_settings(plugin: str, open: bool = False, set: dict[str, Any] | None = None, enabled: bool | None = None, reason: str = "", to: str = "recent") -> dict[str, Any]:
+        """One console plugin's settings (id, folder or name): with no other argument, its Settings → Plugins sub-tab,
+        the gear on its screen, on/off and every setting in the tab. open=true opens that sub-tab in the open console
+        (the same as pressing the plugin's settings gear); set={key: value} changes settings in it; enabled turns the
+        plugin on or off. Same as GET /api/console-control/plugins/<id>/settings and `axf console plugin-settings`."""
+        import console_control as cc  # noqa: PLC0415 — the same module REST uses (reads the static inventory)
+        try:
+            st = cc.plugin_settings_state(plugin)
+        except cc.ControlError as e:
+            raise ToolError(f"{e.code}: {e.message}") from e
+        done: list[dict[str, Any]] = []
+        if enabled is not None:
+            done.append(await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason}))
+        for key, value in (set or {}).items():
+            spec = next((x for x in st.get("settings") or [] if x.get("key") == key or x.get("address") == key), None)
+            if spec is None:
+                raise ToolError(f"not_found: {st.get('label')} has no setting {key}")
+            done.append(await go({"verb": "set", "address": spec["address"], "value": value, "reason": reason, "to": to}))
+        if open:
+            if not st.get("tab"):
+                raise ToolError(f"not_found: {st.get('label')} has no settings sub-tab")
+            done.append(await go({"verb": "open", "address": st["tab"]["address"], "to": to}))
+        return {**st, **({"done": done} if done else {})}
 
     @mcp.tool(annotations=WRITE)
     async def console_control_voice(text: str, to: str = "recent") -> dict[str, Any]:

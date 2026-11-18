@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "industrial",
+  "name": "Industrial",
+  "version": "1.0.0",
+  "description": "Condensed Barlow headings, 2 px borders and square corners built for control rooms and field tablets.",
+  "author": "AmberX AXF",
+  "tags": [
+    "ops",
+    "rugged"
+  ],
+  "data": {
+    "fontFamily": "'Barlow', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Barlow Semi Condensed', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'Roboto Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 15,
+    "radius": {
+      "sm": 2,
+      "md": 3,
+      "lg": 4
+    },
+    "space": 8,
+    "borderWidth": 2,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 4px 12px var(--fx-shadow)",
+      "lg": "0 12px 32px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 120,
+    "blur": 0,
+    "headingWeight": 700,
+    "tracking": 0.01,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.9,
+    "wrapGroups": false
+  }
+}

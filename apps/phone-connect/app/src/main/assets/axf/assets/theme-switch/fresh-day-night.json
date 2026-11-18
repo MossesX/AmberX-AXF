@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "theme-switch",
+  "id": "fresh-day-night",
+  "name": "Fresh day / night",
+  "version": "1.0.0",
+  "description": "Switches between the Fresh Light and Fresh Dark color themes.",
+  "author": "AmberX AXF",
+  "tags": [
+    "theme-switch"
+  ],
+  "data": {
+    "light": "fresh-light",
+    "dark": "fresh-dark",
+    "show": "icon",
+    "lightLabel": "Light",
+    "darkLabel": "Dark"
+  }
+}

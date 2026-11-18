@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "executive-soft",
+  "name": "Executive Soft tabs",
+  "version": "1.0.0",
+  "description": "Executive Soft: pills tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "soft",
+    "enterprise",
+    "spacious"
+  ],
+  "data": {
+    "style": "pills",
+    "align": "start",
+    "position": "top",
+    "density": "roomy",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

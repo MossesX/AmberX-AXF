@@ -26,7 +26,15 @@ node framework/cli/builds-store.mjs                     # rev, builds and % per 
 node framework/cli/builds-store.mjs verify              # every build, step, note and status of the old files is in the store
 node framework/cli/builds-store.mjs history <id>        # every journal revision of a build
 node framework/cli/builds-store.mjs restore <id> <rev>  # put it back as it was (itself versioned)
+node framework/cli/builds-store.mjs demo <id>           # demo-build@1: is it a demo (throwaway) build? exit 1 if not
 ```
+
+**Demo builds (demo-build@1, since Nov 17 2026, build `guided-live-demo-test-watch-orchestrator`):** the guided live
+demo plays on throwaway builds whose id starts with `demo-`; the store tags them `demo: true` on read (no migration:
+older records load unchanged, a `demo-` id gets the tag, nothing else ever does). Every projection, the dispatcher, the
+auto-lander, alerts, builds-live commit lines and the console rows mark them demo-only, and a demo action (a write with
+`demo: true` in its meta, `set-status … --demo`) on any build without the tag is refused whole. Spec:
+`framework/spec/BUILDS.md` → Demo builds; core `framework/core/demo-build.mjs`.
 
 The Builds page (console and AmberX: Builds → Builds) shows it: Builds and Steps views, rename, drag to reorder,
 divide, harvest / split into N, Restore default, a draft until Apply, live progress bars. <!-- axf-plugin:builds-page -->
@@ -166,6 +174,29 @@ pending to queue … If he has slots open, he grabs the next build in the queue 
   MCP / voice `pipeline-requeue-stuck`). Nothing running while the Queue has work = one phone alert (`pipeline.idle`).
 - Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
   `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
+
+## When a build gets stuck: the watchdog recovers it (since Nov 17 2026)
+
+Brett, Nov 13 2026: "if anything stops working, the server/orchestrator fixes it automatically with no one asking …
+Never wait for Brett to notice."
+
+- Every run's end is evidence: `claude-headless.sh` writes exit code, signal, exit kind, a usage / login stop, account
+  and time onto the build (`pipeline.runEnd`, `builds-live.mjs run-end`, live) and into `<slots dir>/runs/<build>.json`
+  the moment claude exits, even when it was killed.
+- The **watchdog** (`apps/console-web/plugins/build-orchestrator/watchdog.mjs`, cron `axf-watchdog` every minute) probes
+  every build marked running (`agent-slots.mjs alive <build>`: claude pid, tmux, heartbeat) and decides by build-watchdog@1
+  (`framework/core/build-watchdog.mjs`). Killed 143, OOM 137, failed 1, tmux or claude gone, a stale heartbeat (hung:
+  killed first) = **retry**: the step reset, the slot, worker claim and build lock freed, back in the Queue at its place.
+  A usage limit or dead login = retry on the **next worker account**. A missed clean end = the normal exit transition.
+- **At most Max retries (3)** since the build last ticked a step; then **Pending**, Errors tab, a systems check banner item
+  with **Requeue**, and an alert. Brett's requeue starts the count again. A live or just-started build is never touched.
+- Every fix is a `recoveries[]` record on the build (watchdog-recovery@1: when, step, cause, exit, action, attempt,
+  account, notified; journal action `watchdog-recover`) and a phone FYI (`watchdog.fix`, batched per pass), then the
+  dispatcher ticks while slots are free and the Queue has work (idle slots with Queue work = an `idle-slots` fix).
+- See it: Build orchestrator → **Watchdog** (and each build's Recoveries); settings in Settings → Plugins → Build
+  orchestrator → Watchdog; `axf watchdog status|scan|run`, REST `watchdog/*`, MCP `watchdog-*`, voice `watchdog.run`.
+  The systems check's **Build watchdog** item goes red when no pass ran for 3 minutes (Auto fix reinstalls the cron).
+- A session never recovers builds by hand: the watchdog does it, under its locks, with the record.
 
 ## Own Claude login per build (since Nov 5 2026)
 
