@@ -34,6 +34,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 
 | Thread | State | Branch | PR | Queued / next | Updated |
 | Fix launcher crash: duplicate steps + brief too big (`fix-launcher-crash-duplicate-steps-brief`): steps merged by text + dedupe guard on every write (16 steps had grown to 2,682); live store cleaned (29 builds, 8,139 → 340 steps); launcher feeds the brief on stdin (no E2BIG); brief cap `builds.briefMaxBytes`; launch-crash auto-retry with backoff + systems check item; land-clash bounce (Phone Connect #787 requeued with a merge-main step); report `_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md` | review | `claude/fix-launcher-crash-duplicate-steps-brief` | #827 | landing: CI on the PR, then merge; until it lands, writers on the old merge can re-add repeats (the guard here heals them) | 2026-11-18 |
+| Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control (`fable-rebuild-plan-studio-cleared-out`): new plugin Plan Studio 2.0 (`plan-studio-2`) beside the untouched original, starts empty; layouts nav menu / tabs / IDE dockable panes (dock-layout@1); every action via REST, MCP, CLI, voice | in-pr | `claude/fable-rebuild-plan-studio-cleared-out` | (VPS opens it) | Live shots of each layout to UI Review → Screenshots; Brett decides whether the original Plan Studio retires. Report `_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md` | 2026-11-16 |
 | Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX) (`rebuild-fresh-main-phone-connect-small`) | in-pr | `claude/rebuild-fresh-main-phone-connect-small` |  |  | 2026-11-17 |
 | Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause (`guided-live-demo-test-watch-orchestrator`): plugin Orchestrator demo, 21 acts on throwaway demo-* builds, ≥30 s gaps, Next/Pause, stop cleanup; dry run 21/21 in both modes; report `_claude/builds/reports/guided-live-demo-test-watch-orchestrator.md` | review | `claude/guided-live-demo-test-watch-orchestrator` | #816 | UI Review hold (item saved in the worktree: post with --console); Start refuses until `live-build-status-real-time-grids-15` lands; Fable follow-up: demo-build@1 should require the tag, not the demo- prefix | 2026-11-17 |
 | Rebuild every toolbar with page-specific buttons (Fable) (`rebuild-every-toolbar-page-specific`) | in-progress | `claude/rebuild-every-toolbar-page-specific` |  | s27: option pictures + UI Review submit (headless capture needs an axHub session), then s28 PR | 2026-11-17 |
@@ -834,9 +835,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `icon-picker-every-banner-settings-widget` s9 done, s10 done, s11 done, s12 done, → complete, note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `flagship-professional-skin-covering-2` s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
@@ -1234,6 +1232,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 02:09 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 02:10 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
 - 2026-11-18 02:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 02:21 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
+- 2026-11-18 02:34 UTC · `move-everything-axhub-web-console` → pending, note (all) · reconciler
+- 2026-11-18 02:34 UTC · `one-true-source-for-every-setting` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
