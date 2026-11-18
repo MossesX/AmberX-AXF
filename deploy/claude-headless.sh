@@ -88,6 +88,9 @@
 # re-execs itself into axf-builds.slice (CPUQuota, MemoryMax: systemd-run --scope) and puts a docker shim first on PATH
 # (deploy/build-limit/docker: --cpus / --memory / --cgroup-parent on node:* and Playwright test containers).
 # AXF_BUILD_LIMIT=off skips the gates (tests only); AXF_BUILD_SLICE=off skips the slice.
+# Split parts (split-plan@1): a part session (AXF_SPLIT_ID + AXF_PART_ID from the dispatcher) reports through
+# builds-live.mjs: `part … building` before claude starts, `part-end` as it exits (done with the pushed head, failed with
+# why, back to waiting on a crash before its first tick); the session itself reports testing / done as it goes.
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ORIG_ARGS=("$@")
@@ -413,6 +416,10 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # 128 KB (MAX_ARG_STRLEN) with E2BIG, and a big brief crashed the launch before claude started (Nov 17 2026).
   prompt_file="$(mktemp "${TMPDIR:-/tmp}/axf-brief.XXXXXX")"
   trap 'rm -f "$prompt_file"' EXIT
+  # split-plan@1 part runner: say building (a heartbeat when the dispatcher already moved it) before claude starts
+  if [[ -n "$gate_ok" && -n "${AXF_SPLIT_ID:-}" && -n "${AXF_PART_ID:-}" && -f "$LIVE_JS" ]] && command -v node >/dev/null; then
+    node "$LIVE_JS" part "$AXF_SPLIT_ID/$AXF_PART_ID" building --dir "$(pwd)" --quiet >/dev/null 2>&1 || true
+  fi
   while [[ -n "$gate_ok" ]]; do
     printf '%s' "$prompt" > "$prompt_file"   # again each round: an account switch adds a line
     if command -v node >/dev/null; then
@@ -464,6 +471,12 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     switches=$((switches + 1))
   done
   [[ -n "$gate_ok" ]] && record_run_end "$st"   # first, before anything that could be cut short
+  # split-plan@1 part runner: the part's last word (done with the pushed head, failed with why, or back to waiting)
+  if [[ -n "$gate_ok" && -n "${AXF_SPLIT_ID:-}" && -n "${AXF_PART_ID:-}" && -f "$LIVE_JS" ]] && command -v node >/dev/null; then
+    p_head="$(git rev-parse HEAD 2>/dev/null)"; p_branch="$(git rev-parse --abbrev-ref HEAD 2>/dev/null)"
+    p_pushed="$(git ls-remote origin "refs/heads/$p_branch" 2>/dev/null | cut -f1 | head -1)"
+    node "$LIVE_JS" part-end "$AXF_SPLIT_ID/$AXF_PART_ID" --exit "$st" --head "${p_head:-none}" --pushed "${p_pushed:-none}" --dir "$(pwd)" --quiet >/dev/null 2>&1 || true
+  fi
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   [[ -n "${ctx_dir:-}" && -d "$ctx_dir" ]] && rm -rf "$ctx_dir"
   # per-build start tokens and cost: one note on the build (every build view shows its notes)

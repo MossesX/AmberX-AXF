@@ -31,6 +31,9 @@
  *   … run-end <build> --exit n [--signal TERM] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]
  *                                                             record how a session ended on the build (pipeline.runEnd, live):
  *                                                             the headless wrapper calls it as claude exits (watchdog evidence)
+ *   … part [<splitId>/<pN>] <status> [--head sha] [--why w]   split-plan@1: a part reports waiting|building|testing|rebuilding|
+ *                                                             failed|done (ref from AXF_SPLIT_ID + AXF_PART_ID); beats its lock
+ *   … part-end [<splitId>/<pN>] --exit n --head sha --pushed sha  the part runner's last word as its session ends
  *   … install                                                 git merge driver for the builds files (this clone)
  *   … merge-driver <base> <ours> <theirs> <path>              (git calls it) newer-wins merge of a builds file
  *   … heal <branch>                                           merge main into a branch whose PR conflicts only in builds files
@@ -52,6 +55,7 @@ import { adoptStore, adoptedChanges, journalDir, journalMax, journalMode, mergeO
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
 import { normRunEnd } from '../core/build-pipeline.mjs';
+import * as split from '../core/build-split.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const STORE_REL = '_claude/builds/store.json'; // = builds-store STORE_REL (not imported: the two modules import each other)
@@ -457,6 +461,66 @@ export function recordRunEnd(id, end = {}, by = 'claude-headless') {
   }, { by, action: 'run-end', note: `${id}: exit ${rec.exit ?? '?'}${rec.signal ? ` (SIG${rec.signal})` : ''}${rec.kind ? ` ${rec.kind}` : ''}${rec.limit ? ` ${rec.limit}` : ''}${rec.account ? ` on ${rec.account}` : ''}` });
   return { build: r.store.builds.find((b) => b.id === found.id), runEnd: rec, changes: r.changes };
 }
+/**
+ * One part of a split run reports its status (split-plan@1, BUILD-SPLIT.md → Part status): `ref` is `<splitId>/<pN>`
+ * (default from AXF_SPLIT_ID + AXF_PART_ID), `status` one of waiting, building, testing, rebuilding, failed, done. The
+ * status is reached through the part state machine (building → testing → done walks both events; done needs the pushed
+ * head); failed goes through onPartFailed (a rebuild while one is left, its steps un-ticked; else the run fails and
+ * every waiting part is abandoned); the run rolls up. Reporting the status a part already has is a heartbeat only.
+ * Every report also beats the part's build lock in `dir` (the slot heartbeat the watchdog reads). Live like every write.
+ * → { build, splitId, part, from, to, run, heartbeat, changed }
+ */
+export function recordPart(ref, status, { head = '', why = '', dir = '', by = 'part-runner', at = new Date().toISOString(), env: e = process.env } = {}) {
+  const r0 = split.parsePartRef(ref || (e.AXF_SPLIT_ID && e.AXF_PART_ID ? `${e.AXF_SPLIT_ID}/${e.AXF_PART_ID}` : ''));
+  if (!r0) throw new Error(`not a part ref: "${ref}" (want <build>.r<n>/p<k>, or AXF_SPLIT_ID + AXF_PART_ID)`);
+  if (!split.PART_STATUSES.includes(status)) throw new Error(`unknown part status "${status}" (${split.PART_STATUSES.join(', ')})`);
+  const splitId = split.splitIdOf(r0.build, r0.run);
+  let res = null;
+  withStore((s) => {
+    const b = core.findBuild(s, r0.build); if (!b) throw new Error(`no build "${r0.build}"`);
+    if (!b.split || b.split.id !== splitId) throw new Error(`${r0.build} has no split ${splitId} (its split is ${b.split?.id || 'none'})`);
+    let plan = b.split; const part = plan.parts.find((p) => p.id === r0.part); if (!part) throw new Error(`${splitId} has no part ${r0.part}`);
+    const from = part.status; let resetSteps = [];
+    if (from !== status) {
+      const walk = PART_WALK[`${from}>${status}`];
+      if (status === 'failed') { const f = split.onPartFailed(plan, part.id, why || 'reported failed', at); if (!f.ok) throw new Error(f.why); plan = f.plan; resetSteps = f.resetSteps; }
+      else if (!walk) throw new Error(`${r0.part}: ${from} → ${status} is not a part move (BUILD-SPLIT.md → Part status)`);
+      else for (const ev of walk) { const n = split.partNext(plan, part.id, ev, { at, head, why }); if (!n.ok) throw new Error(n.why); plan = n.plan; }
+      plan = split.applyRollUp(plan, at).plan;
+      if (resetSteps.length) for (const st of b.steps) if (resetSteps.includes(st.id)) { st.done = false; st.doneAt = ''; }
+      b.split = split.normSplit(plan, { build: b.id }); b.updatedAt = at;
+    }
+    res = { build: b.id, splitId, part: part.id, from, to: b.split.parts.find((p) => p.id === part.id).status, run: b.split.run, changed: from !== status, resetSteps };
+    return s;
+  }, { by, action: 'part-status', note: `${splitId}/${r0.part} → ${status}${why ? ` (${String(why).slice(0, 120)})` : ''}` });
+  res.heartbeat = beatPart(splitId, r0.part, dir || process.cwd(), at);
+  return res;
+}
+/** The event walk from one part status to another the runner may report (failed is onPartFailed's). */
+const PART_WALK = Object.freeze({ 'waiting>building': ['launch'], 'rebuilding>building': ['launch'], 'building>testing': ['ticked'], 'building>done': ['ticked', 'green'], 'testing>done': ['green'], 'building>waiting': ['crash'], 'failed>rebuilding': ['rebuild'] });
+/** The slot heartbeat: the part's build lock (build-lock@1) in its worktree gets a fresh beat. */
+function beatPart(splitId, partId, dir, at) {
+  const f = join(dir, '.axf-build.lock');
+  try { if (!existsSync(f)) return ''; const l = JSON.parse(readFileSync(f, 'utf8')); const name = split.partBranch(splitId, partId).replace(/^claude\//, ''); if (l.build && l.build !== name) return ''; l.beat = at; writeFileSync(f, `${JSON.stringify(l, null, 1)}\n`); return at; } catch { return ''; }
+}
+/**
+ * The part runner's last word as its session ends (claude-headless.sh): a clean exit with every step of the part
+ * ticked and the branch pushed at `head` is done; a clean exit with steps left or nothing pushed is failed (it says
+ * which); a crash before the first tick goes back to waiting (the dispatcher relaunches it), any other crash is failed.
+ */
+export function partRunEnd(ref, { exit = 0, head = '', pushed = '', dir = '', by = 'part-runner', env: e = process.env } = {}) {
+  const r0 = split.parsePartRef(ref || `${e.AXF_SPLIT_ID || ''}/${e.AXF_PART_ID || ''}`); if (!r0) throw new Error(`not a part ref: "${ref}"`);
+  const s = readStoreNow(); const b = core.findBuild(s, r0.build); const part = b?.split?.parts?.find((p) => p.id === r0.part);
+  if (!part) throw new Error(`no part ${ref}`);
+  if (['done', 'failed'].includes(part.status)) return { build: b.id, part: part.id, from: part.status, to: part.status, changed: false, why: 'already reported' };
+  const left = part.steps.filter((id) => !b.steps.find((st) => st.id === id)?.done);
+  const code = Number(exit) || 0;
+  const ok = code === 0 && !left.length && /^[0-9a-f]{40}$/.test(head) && head === pushed;
+  if (ok) return recordPart(ref, 'done', { head, dir, by });
+  if (code !== 0 && part.status === 'building' && left.length === part.steps.length) return recordPart(ref, 'waiting', { why: `session crashed (exit ${code}) before its first tick`, dir, by });
+  const why = code !== 0 ? `session crashed (exit ${code})${left.length ? `, ${left.join(', ')} not ticked` : ''}` : left.length ? `session ended with ${left.join(', ')} not ticked` : head !== pushed ? `branch not pushed (local ${head.slice(0, 12) || 'none'}, remote ${pushed.slice(0, 12) || 'none'})` : 'no head';
+  return recordPart(ref, 'failed', { why, dir, by });
+}
 /** "#245", "245" and a PR URL all become "#245" (the form the orchestrator shows); other text is kept. */
 export function normPr(pr) {
   const t = String(pr).trim();
@@ -541,6 +605,21 @@ async function main(argv) {
     const s = (n) => (typeof opt(n) === 'string' ? opt(n) : '');
     const r = recordRunEnd(id, { exit: s('exit'), signal: s('signal'), kind: s('kind'), limit: s('limit'), account: s('account'), session: s('session'), phase: s('phase') });
     return out({ ok: true, build: r.build.id, runEnd: r.runEnd }, `${r.build.id}: run ended exit ${r.runEnd.exit ?? '?'}${r.runEnd.signal ? ` (SIG${r.runEnd.signal})` : ''}${r.runEnd.kind ? ` · ${r.runEnd.kind}` : ''}${r.runEnd.limit ? ` · ${r.runEnd.limit}` : ''}`);
+  }
+  if (cmd === 'part') {
+    // part <splitId>/<pN> <status> [--head sha] [--why w] [--dir d]   (ref and status from AXF_SPLIT_ID / AXF_PART_ID when left out)
+    const sv = (k) => (typeof opt(k) === 'string' ? opt(k) : '');
+    const [a, b] = rest.filter((x, i) => !x.startsWith('--') && !(i > 0 && rest[i - 1].startsWith('--')));
+    const ref = split.parsePartRef(a) ? a : ''; const status = ref ? b : a;
+    const r = recordPart(ref, status, { head: sv('head'), why: sv('why'), dir: sv('dir') });
+    return out({ ok: true, ...r }, `${r.splitId}/${r.part}: ${r.from}${r.changed ? ` → ${r.to}` : ' (heartbeat)'} · run ${r.run}${r.resetSteps?.length ? ` · rebuild: ${r.resetSteps.join(', ')} un-ticked` : ''}`);
+  }
+  if (cmd === 'part-end') {
+    // part-end [<splitId>/<pN>] --exit n --head <local sha> --pushed <remote sha> [--dir d]   (the part runner, as its session ends)
+    const sv = (k) => (typeof opt(k) === 'string' ? opt(k) : '');
+    const ref = rest[0] && !rest[0].startsWith('--') ? rest[0] : '';
+    const r = partRunEnd(ref, { exit: sv('exit') || 0, head: sv('head'), pushed: sv('pushed'), dir: sv('dir') });
+    return out({ ok: true, ...r }, `${r.splitId ?? ref}/${r.part}: ${r.from} → ${r.to}${r.why ? ` (${r.why})` : ''}`);
   }
   if (cmd === 'install') { const r = install(); return out(r, r.ok ? `merge driver ${DRIVER} registered` : 'git config failed'); }
   if (cmd === 'merge-driver') {
