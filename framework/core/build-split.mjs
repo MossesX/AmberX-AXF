@@ -590,7 +590,9 @@ export function unlockMain(meta, { build = '', force = false } = {}) {
  * complete, failed, escalated, blocked, archived, deleted, gone) means the run ended: the lock is released.
  */
 export const HOLDS_MAIN = Object.freeze([...ACTIVE_RUN_STATUSES, 'fixing', 'queued', 'landing']);
-export const holdsMain = (b) => !!b && !b.deleted && HOLDS_MAIN.includes(b.status);
+/** Split run states past the parts that still hold main: the landing line has the combine until the run is finished. */
+export const LANDING_HOLDS = Object.freeze(['combining', 'ci', 'merging', 'merged', 'live']);
+export const holdsMain = (b) => !!b && !b.deleted && (HOLDS_MAIN.includes(b.status) || (!!obj(b.split) && LANDING_HOLDS.includes(b.split.run) && !['failed', 'escalated', 'archived', 'pending'].includes(b.status)));
 /**
  * Is main locked right now? → { locked, lock, stale, why }. Held while the holder has an active run or is between
  * phases / landing (holdsMain); free at once when the holder's run ended (released: not stale); stale when the holder

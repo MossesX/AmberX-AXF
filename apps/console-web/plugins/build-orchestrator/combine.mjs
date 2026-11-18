@@ -79,7 +79,7 @@ export function failRun(id, why, { part = '', by = 'combine', env = process.env,
     if (!S.RUN_TERMINAL.includes(plan.run)) { const r = S.runNext(plan, 'failed', { at, part, why: out.why }); if (r.ok) plan = r.plan; }
     for (const p of plan.parts) if (['building', 'testing'].includes(p.status) && p.session) { if (stopSession(p.session, env)) out.stopped.push(p.session); }
     b.split = S.normSplit(plan, { build: b.id });
-    b.status = S.buildStatusOf('failed') || 'fixing';
+    if (b.status !== 'escalated') b.status = S.buildStatusOf('failed') || 'fixing'; // an escalated build stays escalated (its banner is up)
     b.notes.push({ text: `Split run ${plan.id} failed: ${out.why}. Nothing landed; main is unlocked.`, at });
     if (b.pipeline) b.pipeline = { ...b.pipeline, session: '', note: `split run failed: ${out.why}` };
     b.updatedAt = at;
@@ -116,6 +116,69 @@ export function combineRun(id, { env = process.env, by = 'combine' } = {}) {
     return s;
   }, { by, action: 'split:combined', note: `${id} @ ${r.head.slice(0, 12)}` });
   return { id, ok: true, head: r.head, why: '', clash: null, merged: r.merged };
+}
+
+// ------------------------------------------------------------------ landing hand-off (one PR, one CI run)
+
+/** The landing walk of a split run after the combine (BUILD-SPLIT.md → Landing). */
+export const LANDING_WALK = Object.freeze(['combining', 'ci', 'merging', 'merged', 'live', 'finished']);
+
+/**
+ * Where the landing has got to, from the build record (pure): the combine branch is the build's one PR in the landing
+ * line (the VPS opens and links it; the merge queue runs its one CI and merges it). `item` = the lander's entry for the
+ * build (land.json / landing-line@1) when there is one.
+ *   no combine head → combining · a PR → ci · the lander landing it (or CI green on the PR) → merging · merged → merged
+ *   · CI green on the merge commit (the deploy ran) → live · complete (the feature verify passed) → finished
+ * → { to, args } (args for runNext: pr, head, ci, mergedAt, liveAt, finishedAt)
+ */
+export function landingState(b, item = null) {
+  const sp = b?.split; const L = b?.landed ?? {};
+  const pr = Number(String(b?.pr ?? '').replace(/^#/, '')) || L.pr || 0;
+  const mergedAt = b?.mergedAt || L.mergedAt || '';
+  const st = String(item?.state ?? '');
+  if (!sp || !S.SHA_RE.test(sp.combine?.head ?? '')) return { to: 'combining', args: {} };
+  if (b.status === 'complete') return { to: 'finished', args: { pr, mergedAt, liveAt: L.ciAt || mergedAt, finishedAt: L.verifiedAt || '' } };
+  if (mergedAt && (L.ci === 'success' || L.verifyHow === 'deploy')) return { to: 'live', args: { pr, mergedAt, liveAt: L.ciAt || '' } };
+  if (mergedAt) return { to: 'merged', args: { pr, mergedAt } };
+  if (pr && (['landing', 'landed'].includes(st) || sp.combine.ci === 'success')) return { to: 'merging', args: { pr } };
+  if (pr) return { to: 'ci', args: { pr, head: sp.combine.head, ci: 'running', ciRun: str(item?.runUrl ?? '', 300) } };
+  return { to: 'combining', args: {} };
+}
+
+/**
+ * Walk a split run forward to where its landing is (pure; never back, never past a refused step). → { plan, change }
+ */
+export function followLanding(plan, b, { item = null, at = nowIso() } = {}) {
+  if (!plan || !LANDING_WALK.includes(plan.run)) return { plan, change: null };
+  const { to, args } = landingState({ ...b, split: plan }, item);
+  const from = LANDING_WALK.indexOf(plan.run); const want = LANDING_WALK.indexOf(to);
+  if (want <= from) return { plan, change: null };
+  let cur = plan;
+  for (let k = from; k < want; k += 1) { const r = S.runNext(cur, LANDING_WALK[k + 1], { ...args, at }); if (!r.ok) break; cur = r.plan; }
+  return { plan: cur, change: cur === plan ? null : { from: plan.run, to: cur.run } };
+}
+
+/**
+ * Every split run on its way to main: its run state follows the record (ci, merging, merged, live, finished); a build
+ * the landing gave up on (escalated, back to pending) fails the run. main unlocks at finished or failed.
+ * → { moved: [{ id, from, to }], unlocked: [id…] }
+ */
+export function landingTick({ items = new Map(), env = process.env, by = 'dispatcher', at = nowIso() } = {}) {
+  const out = { moved: [], unlocked: [] };
+  const want = loadStore().builds.filter((b) => !b.deleted && b.split && LANDING_WALK.includes(b.split.run) && S.SHA_RE.test(b.split.combine.head));
+  for (const b0 of want) {
+    if (['escalated', 'pending'].includes(b0.status)) { failRun(b0.id, `the landing stopped (${b0.status})`, { by, env, at }); out.unlocked.push(b0.id); continue; }
+    withStore((s) => {
+      const b = storeCore.findBuild(s, b0.id);
+      const r = followLanding(b.split, b, { item: items.get?.(b.id) ?? null, at });
+      if (!r.change) return s;
+      b.split = S.normSplit(r.plan, { build: b.id }); b.updatedAt = at;
+      out.moved.push({ id: b.id, ...r.change });
+      if (b.split.run === 'finished') { const held = s.meta?.mainLock?.build === b.id; const u = S.unlockMain(s.meta, { build: b.id }); if (u.ok) { s.meta = u.meta; if (held) out.unlocked.push(b.id); } b.notes.push({ text: `Split run ${b.split.id} finished: landed, live and verified. Main is unlocked.`, at }); }
+      return s;
+    }, { by, action: 'split:landing', note: b0.id });
+  }
+  return out;
 }
 
 /**

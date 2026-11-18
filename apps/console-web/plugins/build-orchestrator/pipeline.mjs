@@ -107,7 +107,7 @@ import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { reapFirstSync } from '../../../../framework/cli/reaper.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
-import { combineTick } from './combine.mjs';
+import { combineTick, landingTick } from './combine.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
@@ -1604,6 +1604,8 @@ export function tick({ env = process.env } = {}) {
   // split-plan@1: a run whose parts are all done is combined into one branch; a failed run lands nothing, main unlocks
   let combined = { combined: [], failed: [] };
   try { combined = combineTick({ env }); for (const f of combined.failed) logLine({ event: 'split-run-failed', build: f.id, why: f.why }); } catch (e) { logLine({ event: 'combine-failed', error: str(e.message, 300) }); }
+  // the combine branch is the build's one PR in the landing line: its run follows ci → merging → merged → live → finished
+  try { combined.landing = landingTick({ items: landItems(env), env }); for (const m of combined.landing.moved) logLine({ event: 'split-run', build: m.id, from: m.from, to: m.to }); } catch (e) { logLine({ event: 'split-landing-failed', error: str(e.message, 300) }); }
   // main-lock@1 (split-plan@1): the launched run holds main from the sha its worktree started on; a lock whose build has
   // no active run any more is released, so the next Queue build may start
   try { syncMainLock({ launched, env }); } catch (e) { logLine({ event: 'main-lock-failed', error: str(e.message, 300) }); }

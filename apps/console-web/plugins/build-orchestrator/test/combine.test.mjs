@@ -56,4 +56,26 @@ t('a part not done: combineTick fails the run whole (all or nothing)', () => {
   const r = C.combineTick(); assert.deepEqual(r.failed.map((f) => f.id), ['half']);
   const s = loadStore(); assert.equal(s.builds[0].status, 'fixing'); assert.ok(!s.meta.mainLock);
 });
+t('landing hand-off: the combine PR walks ci → merging → merged → live → finished; main unlocks at finished only', () => {
+  const h1 = branchWith('claude/land--r1-p1', 'a.txt', 'a\n'); const h2 = branchWith('claude/land--r1-p2', 'b.txt', 'b\n');
+  mkStore('land', [h1, h2]); assert.equal(C.combineRun('land').ok, true);
+  const edit = (fn) => { const st = loadStore(); fn(st.builds[0]); writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify(st)); };
+  const run = () => loadStore().builds[0].split.run;
+  assert.equal(C.landingTick().moved.length, 0, 'no PR yet: still combining'); assert.equal(run(), 'combining');
+  edit((b) => { b.pr = '#77'; }); C.landingTick(); assert.equal(run(), 'ci'); assert.equal(loadStore().builds[0].split.combine.pr, 77);
+  C.landingTick({ items: new Map([['land', { id: 'land', state: 'landing' }]]) }); assert.equal(run(), 'merging');
+  const at = new Date().toISOString();
+  edit((b) => { b.mergedAt = at; }); C.landingTick(); assert.equal(run(), 'merged'); assert.ok(loadStore().meta.mainLock, 'merged: main still locked');
+  edit((b) => { b.status = 'landed'; b.landed = { pr: 77, sha: 'c'.repeat(40), mergedAt: at, ci: 'success', ciAt: at }; }); C.landingTick(); assert.equal(run(), 'live');
+  assert.equal(S.mainLocked(loadStore().meta, { builds: loadStore().builds }).locked, true, 'live (landed): the split run still holds main');
+  edit((b) => { b.status = 'complete'; b.landed = { ...b.landed, verifiedAt: at, verifyHow: 'check' }; });
+  const r = C.landingTick(); assert.equal(run(), 'finished'); assert.deepEqual(r.unlocked, ['land']); assert.ok(!loadStore().meta.mainLock, 'finished: main unlocked');
+  assert.deepEqual(loadStore().builds[0].split.history.slice(-5).map((h) => h.to), ['ci', 'merging', 'merged', 'live', 'finished']);
+});
+t('landing stopped (escalated): the run fails and main unlocks', () => {
+  const h1 = branchWith('claude/esc--r1-p1', 'a.txt', 'a\n'); const h2 = branchWith('claude/esc--r1-p2', 'b.txt', 'b\n');
+  mkStore('esc', [h1, h2]); C.combineRun('esc');
+  const st = loadStore(); st.builds[0].status = 'escalated'; writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify(st));
+  assert.deepEqual(C.landingTick().unlocked, ['esc']); assert.equal(loadStore().builds[0].split.run, 'failed'); assert.ok(!loadStore().meta.mainLock);
+});
 console.log(`combine: ${n} checks passed`);
