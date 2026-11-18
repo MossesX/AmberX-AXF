@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "demonstration",
+  "id": "what-is-an-asset",
+  "name": "What is an asset?",
+  "version": "1.0.0",
+  "description": "The starter demonstration: what an asset@1 is and where to swap one, told in four steps on the console's Settings → Appearance. Generate your own from any glossary entry.",
+  "author": "AmberX AXF",
+  "tags": [
+    "demo",
+    "starter",
+    "asset"
+  ],
+  "data": {
+    "about": "concept:asset",
+    "entries": [
+      "concept:asset",
+      "concept:hot-swap"
+    ],
+    "app": "console",
+    "surface": "live",
+    "steps": [
+      { "title": "Asset", "say": "Everything you see in an AmberX app is an asset: a theme, a layout, a menu, a toolbar, a button, a slider, a dialog. Each one is a small JSON file in one shared format, asset@1.", "do": "", "target": "" },
+      { "title": "Appearance", "say": "Settings, then Appearance, is where the active asset of every type is picked. Each row is one slot, like Color theme or Toolbar.", "do": "settings.open:appearance", "target": "appearance", "highlight": "Appearance", "wait": 600 },
+      { "title": "Hot swap", "say": "Pick another asset in any slot and the app restyles itself at once, with no reload. That is a hot swap: the engines compile the asset into tokens and the UI only reads tokens.", "do": "", "target": "" },
+      { "title": "Everywhere", "say": "Because the look comes from axHub, the same swap reaches every app on the framework. One change, every app.", "do": "", "target": "" }
+    ],
+    "voice": { "narrator": "", "speed": 1 },
+    "chain": [],
+    "keywords": [ "asset", "asset@1", "hot-swap", "appearance", "theme", "token", "swap", "settings", "demonstration", "starter" ],
+    "generated": { "from": "manual", "at": "2026-11-07T00:00:00Z", "build": "glossary-index-demos" },
+    "editable": true
+  }
+}

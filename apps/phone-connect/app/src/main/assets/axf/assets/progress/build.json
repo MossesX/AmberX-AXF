@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "progress",
+  "id": "build",
+  "name": "Build",
+  "version": "1.0.0",
+  "description": "A build's progress (counter `build.progress`, 0 to 100).",
+  "author": "AmberX AXF",
+  "tags": [
+    "progress"
+  ],
+  "data": {
+    "counter": "build.progress",
+    "max": 100,
+    "width": "regular",
+    "label": "Build",
+    "tone": "accent",
+    "showValue": true
+  }
+}

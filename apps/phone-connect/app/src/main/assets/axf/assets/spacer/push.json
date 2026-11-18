@@ -1,0 +1,15 @@
+{
+  "$axf": "asset@1",
+  "type": "spacer",
+  "id": "push",
+  "name": "Push",
+  "version": "1.0.0",
+  "description": "A flexible gap: pushes what follows to the other end.",
+  "author": "AmberX AXF",
+  "tags": [
+    "spacer"
+  ],
+  "data": {
+    "size": "flex"
+  }
+}

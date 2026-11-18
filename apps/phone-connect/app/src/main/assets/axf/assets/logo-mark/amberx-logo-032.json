@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-032",
+  "name": "AmberX mark · shield leaf",
+  "version": "1.0.0",
+  "description": "Generated mark: a shield leaf motif in a seeded rich palette (seed 33).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "mark",
+    "shield",
+    "leaf",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "mark",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#942d9f",
+      "brand2": "#4a1242",
+      "brand3": "#dcbcdc"
+    },
+    "paths": [
+      {
+        "d": "M12 2l8 3v6c0 5-3.4 8.6-8 11-4.6-2.4-8-6-8-11V5Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M17 7c-6 0-10 4-10 10 6 0 10-4 10-10zM7 17l6-6",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 1.8,
+        "round": true
+      }
+    ],
+    "safeArea": 0.25,
+    "minSize": 16
+  }
+}

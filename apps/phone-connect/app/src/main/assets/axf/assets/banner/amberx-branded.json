@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "banner",
+  "id": "amberx-branded",
+  "name": "AmberX branded",
+  "version": "1.0.0",
+  "description": "The AmberX banner on the enterprise design language: one 32 px line with the branding package's lockup on the left, the live search in the middle and the day/night switch and clock on the right. Plugins attach their badges to it; everything snaps, nothing overlaps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "banner",
+    "branded",
+    "amberx",
+    "enterprise"
+  ],
+  "data": {
+    "height": 32,
+    "surface": "raised",
+    "logo": {
+      "show": true,
+      "text": "AmberX"
+    },
+    "attach": [
+      {
+        "type": "search-bar",
+        "id": "everything",
+        "at": "center"
+      },
+      {
+        "type": "theme-switch",
+        "id": "amberx-day-night",
+        "at": "right",
+        "order": 40
+      },
+      {
+        "type": "clock",
+        "id": "digital-12h",
+        "at": "right",
+        "order": 50
+      }
+    ],
+    "divider": true
+  }
+}

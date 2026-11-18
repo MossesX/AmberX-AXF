@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "compact-admin",
+  "name": "Compact Admin container",
+  "version": "1.0.0",
+  "description": "Compact Admin: panel with a divided header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "compact",
+    "compact"
+  ],
+  "data": {
+    "variant": "panel",
+    "header": "divided",
+    "padding": "sm",
+    "elevation": 1,
+    "collapsible": false
+  }
+}

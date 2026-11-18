@@ -52,6 +52,7 @@ plugin namespaces are open under one prefix so a new plugin needs no registry ch
 | `changes` | the codebase changes log `/projects/amberx-axf/_data/changes/<yyyy>/<mm>/<id>.json` → `changes/<yyyy>/<mm>/<id>.json` | record |
 | `sessions` | session@1 archives `/projects/amberx-axf/_data/sessions/**` and the claude.ai drop folder → `sessions/<same path>` | record, blob, journal |
 | `console` | the rest of the console's own hub data: `home-cards`, `agents`, `agent-slots`, `agent-swarm`, `listeners`, `token-log`, `tracker.json`, `companion`, `walkthrough`, `amberx-notes` tables → `console/<folder>/<same path>`; `_shared/_data/{handoff,notifications,dns}` → `console/shared/…`; `state.json` and the deploy log from the console's own volume | record, journal, blob |
+| `phone` | phone-connect@1 (PHONE-CONNECT.md): the plugin folder `phone-connect` is this namespace, like `ui-review`: `devices/<deviceId>.json` (phone-device@1), `pairings/<code>.json` (phone-pairing@1), `commands/<id>.json` (phone-command@1 + its results) → `phone/<same path>`; `log.jsonl` → journal `phone/log`. Nothing to migrate: the namespace is new with the plugin. | record, journal |
 | `_meta` | the store's own state: `_meta/mode` (data-store-mode@1 per namespace), `_meta/manifests/<id>`, `_meta/tokens` (issued token ids, never the tokens) | record |
 
 A namespace's `kinds` says which kinds a key may be; a journal key cannot later become a record. `plugins/<folder>`

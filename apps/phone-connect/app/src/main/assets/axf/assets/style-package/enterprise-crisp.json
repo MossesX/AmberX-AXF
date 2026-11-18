@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "enterprise-crisp",
+  "name": "Enterprise Crisp",
+  "version": "1.0.0",
+  "description": "Solid rounded buttons, quiet cards, centred modals and an underline tab row: the dependable business set.",
+  "author": "AmberX AXF",
+  "tags": [
+    "crisp",
+    "enterprise"
+  ],
+  "data": {
+    "slots": {
+      "button": "enterprise-crisp",
+      "container": "enterprise-crisp",
+      "slider": "enterprise-crisp",
+      "dialog": "enterprise-crisp",
+      "popup": "enterprise-crisp",
+      "tab-group": "enterprise-crisp",
+      "gauge": "classic-arc",
+      "meter": "hairline"
+    },
+    "tone": "crisp"
+  }
+}

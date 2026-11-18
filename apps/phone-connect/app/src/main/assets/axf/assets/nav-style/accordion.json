@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-style",
+  "id": "accordion",
+  "name": "Accordion",
+  "version": "0.1.0",
+  "description": "Sub menus unfold like an accordion and stay open side by side until you close them.",
+  "author": "AmberX AXF",
+  "tags": [
+    "navigation",
+    "multi"
+  ],
+  "data": {
+    "colors": {
+      "submenu": "surface2"
+    },
+    "layout": {
+      "density": "regular",
+      "indent": 2
+    },
+    "animation": {
+      "kind": "accordion",
+      "durationMs": 260,
+      "easing": "standard",
+      "staggerMs": 0,
+      "chevron": "flip",
+      "reduced": "system"
+    },
+    "behavior": {
+      "single": false,
+      "openOn": "tap",
+      "autoCollapse": false,
+      "remember": true,
+      "followActive": true,
+      "swipe": true
+    }
+  }
+}

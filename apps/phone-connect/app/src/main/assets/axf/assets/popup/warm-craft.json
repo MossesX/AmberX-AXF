@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "warm-craft",
+  "name": "Warm Craft pop-ups",
+  "version": "1.0.0",
+  "description": "Warm Craft: solid pop-ups at the bottom-center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "warm",
+    "warm"
+  ],
+  "data": {
+    "position": "bottom-center",
+    "variant": "solid",
+    "duration": 4000,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

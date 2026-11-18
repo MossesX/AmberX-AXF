@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "enterprise-crisp",
+  "name": "Enterprise Crisp container",
+  "version": "1.0.0",
+  "description": "Enterprise Crisp: card with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "crisp",
+    "enterprise"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "plain",
+    "padding": "md",
+    "elevation": 1,
+    "collapsible": false
+  }
+}

@@ -126,6 +126,7 @@ jobs:
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
       - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
+      - run: node framework/spec/check-phone-connect.mjs             # phone-connect@1: engine vs fixture (records, commands, wire, dispatch order, personOnly, pairing flow, migration), wire error codes frozen, schema snapshots + JSON Schemas current and agreeing with the engine
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-stale-rows.mjs               # stale-row@1: the VPS watchdog's classifier (landed via merge queue / direct merge commit / build complete → complete; closed PR / dead build → remove; live session / missing facts → keep), cleanup log record + schema; fixtures/stale-rows.json
@@ -329,6 +330,7 @@ jobs:
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
             node framework/spec/check-skin-modes.mjs                    # skin-modes@1: every skin ships a light and a dark colour theme (shipped, right scheme, own theme is one of them)
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
+            node framework/spec/check-settings-iface.mjs                # settings-iface@1: every asset type + plugin ships its locked default-<name>, every settings asset has a valid builtFor, picker lists only its owner's
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
             node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
@@ -592,6 +594,9 @@ jobs:
       - name: Build Voice Vault (apps/voicevault) + its unit tests (voice notes rules)
         working-directory: apps/voicevault
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}
+      - name: Build Phone Connect (apps/phone-connect) + its unit tests (link rules)
+        working-directory: apps/phone-connect
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-phone-connect.log; exit ${PIPESTATUS[0]}
       - name: Build AXHub (apps/axhub-android) + its unit tests
         working-directory: apps/axhub-android
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-axhub.log; exit ${PIPESTATUS[0]}
@@ -616,7 +621,7 @@ jobs:
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/build-console-droid.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/build-console-droid.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-phone-connect.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
@@ -632,6 +637,11 @@ jobs:
         with:
           name: voicevault-debug.apk
           path: apps/voicevault/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: phone-connect-debug.apk   # Phone Connect, the small companion that replaces the AmberX app (phone-connect@1)
+          path: apps/phone-connect/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: axhub-debug.apk

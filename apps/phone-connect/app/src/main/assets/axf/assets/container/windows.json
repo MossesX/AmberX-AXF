@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "windows",
+  "name": "Windows",
+  "version": "1.0.0",
+  "description": "A flat card with a hairline border, like a Settings page group.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "plain",
+    "padding": "md",
+    "elevation": 0,
+    "collapsible": false
+  }
+}

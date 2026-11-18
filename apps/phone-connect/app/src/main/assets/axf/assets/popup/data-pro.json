@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "data-pro",
+  "name": "Data Pro pop-ups",
+  "version": "1.0.0",
+  "description": "Data Pro: outline pop-ups at the bottom-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "analytical",
+    "data"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "outline",
+    "duration": 3000,
+    "showIcon": true,
+    "maxVisible": 5
+  }
+}

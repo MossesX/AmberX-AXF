@@ -2420,5 +2420,17 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Build gate-rules-plugin-in-the-console (Nov 15 2026; Brett: \"Where is the gate and rules plugin, open it on my screen.\"): Builds → Gate & rules (view:gate, tabs gate.tabs=rules|auto-lander|history), Settings → Plugins → Gate. REST /api/plugins/gate, MCP gate_* / lander_*, CLI axf gate …, voice gate.open, gate.rule, lander.land-now, lander.pause, lander.resume, gate.setting. Merge queue switch off by default (one at a time). Self-tests: the plugin's test.mjs and server/test_routes.py. Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.phone": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build rebuild-fresh-main-phone-connect-small (Nov 17 2026; Brett: \"What's up with the new phone connection? You gonna build it or what?\"): console plugin phone-connect (Settings → Plugins → Phone Connect; REST /api/plugins/phone-connect, MCP phone_connect_*, CLI axf phone …, voice phone.*), companion app apps/phone-connect (phone-connect-debug.apk in CI). Self-tests: plugin test.py (engine fixture replay + routes), test.mts, app LinkRulesTest. Kotlin engine twin deferred (PORTING.md)."
+  },
+  "cx.settings.ifacedefault": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings",
+    "notes": "settings-iface@1 (core/engines/settings-iface-rules.mjs; build settings-iface-default-all, Brett Nov 18 2026): every settings asset requires data.builtFor (app | asset:<type> | plugin:<name> | chrome:<type>, backfilled); every asset type and console plugin ships a locked default-<name>; Settings shows it greyed with a checkbox on every plugin tab and in Appearance → Asset types; ticking opens a dialog listing only interfaces built for that owner, unticking returns to the default. Actions settings.iface / settings.iface.choose (REST, MCP, CLI, voice). CI framework/spec/check-settings-iface.mjs. Kotlin twin deferred."
   }
 }

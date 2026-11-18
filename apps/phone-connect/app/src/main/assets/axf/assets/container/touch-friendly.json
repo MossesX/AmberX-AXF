@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "touch-friendly",
+  "name": "Touch Friendly container",
+  "version": "1.0.0",
+  "description": "Touch Friendly: card with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "friendly",
+    "touch"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "plain",
+    "padding": "lg",
+    "elevation": 1,
+    "collapsible": false
+  }
+}

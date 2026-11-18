@@ -299,3 +299,57 @@ def ensure_health() -> bool:
         return False
     _health_done = True
     return True
+
+
+# ---- approvals-relay@1: a decision Brett tapped on a paired phone (Phone Connect)
+#
+# The phone's tap reaches the console over its device token (phone-connect@1, personOnly: a result with by.kind
+# "person" and a tap uuid, checked by the engine's decisionErrors before this is called). It is relayed with the
+# console's owner sign-in, like a console tap without a browser cookie. No route, MCP tool, CLI command or voice phrase
+# reaches this: it is a server-side capability, and it refuses anything that isn't a verified phone tap.
+
+UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+PHONE_ACTIONS = {"approval": {"approve": "approve", "deny": "decline"}, "veto": {"approve": "approve-now", "deny": "deny", "shelve": "shelve"}}
+
+
+def phone_tap_errors(tap: Any) -> str:
+    """'' when `tap` is a verified phone tap: {kind: "phone-tap", auth: "device", by: {kind: "person", tap: <uuid>}, deviceId, owner, approvalId, prompt, decision}."""
+    if not isinstance(tap, dict) or tap.get("kind") != "phone-tap" or tap.get("auth") != "device":
+        return "only a tap on the paired phone, over its device token, is relayed"
+    by = tap.get("by") if isinstance(tap.get("by"), dict) else {}
+    if by.get("kind") != "person" or not UUID_RE.match(str(by.get("tap") or "")):
+        return "an approval is decided only by Brett's own tap"
+    if not ID_RE.match(str(tap.get("approvalId") or "")):
+        return "not a request id"
+    if tap.get("decision") not in PHONE_ACTIONS.get(str(tap.get("prompt")), {}):
+        return f"{tap.get('decision')!r} is not an action of a {tap.get('prompt')!r} prompt"
+    return ""
+
+
+class PhoneTapRelay:
+    version = "approvals-relay@1"
+
+    def decide_from_phone_tap(self, tap: dict[str, Any], client: httpx.Client | None = None) -> dict[str, Any]:
+        why = phone_tap_errors(tap)
+        if why:
+            _log({"by": "phone", "id": str((tap or {}).get("approvalId", ""))[:40], "action": str((tap or {}).get("decision", ""))[:20], "ok": False, "via": "phone", "code": "denied"})
+            return {"ok": False, "code": "denied", "message": why}
+        owner = str(tap.get("owner") or "")[:80]
+        action = PHONE_ACTIONS[tap["prompt"]][tap["decision"]]
+        hub, cred = hub_base(), owner_credential()
+        if not hub or not cred or not owner_may(wall.Caller(owner, "admin", frozenset(), "session")):
+            r = {"ok": False, "code": "no_credential", "message": "Nothing was decided: the console has no axHub owner sign-in for this phone's owner. Open the approval on axHub instead."}
+        else:
+            try:
+                if client is not None:
+                    r = owner_decision(hub, cred, tap["approvalId"], action, tap.get("rev"), client)
+                else:
+                    with httpx.Client(timeout=TIMEOUT_S, follow_redirects=False) as c:
+                        r = owner_decision(hub, cred, tap["approvalId"], action, tap.get("rev"), c)
+            except httpx.HTTPError as e:
+                r = {"ok": False, "code": "unreachable", "message": f"Couldn't reach axHub ({type(e).__name__}). Nothing was decided."}
+        _log({"by": owner or "phone", "id": tap["approvalId"], "action": action, "ok": r["ok"], "via": "phone", "device": str(tap.get("deviceId", ""))[:64], "status": r.get("status"), "code": r.get("code", "")})
+        return {**r, "via": "phone", "action": action}
+
+
+plugin_services.provide("approvals-relay@1", PhoneTapRelay(), folder=FOLDER)

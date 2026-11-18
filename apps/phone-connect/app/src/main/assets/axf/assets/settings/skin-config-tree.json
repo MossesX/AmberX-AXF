@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "skin-config-tree",
+  "name": "Skin config: tree with switches",
+  "version": "1.0.0",
+  "description": "Every category is a collapsible container with its allow / lock switch; open one to switch its groups and options one by one. The limits (menu depth, toolbar groups) sit at the top of their category.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin-config",
+    "ui-choices:skin-config"
+  ],
+  "data": {
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "view": "tree"
+  }
+}

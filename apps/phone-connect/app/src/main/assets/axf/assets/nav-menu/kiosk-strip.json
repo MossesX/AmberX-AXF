@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "kiosk-strip",
+  "name": "Kiosk Strip",
+  "version": "1.0.0",
+  "description": "Kiosk Strip: kiosks and shared screens. Lists the pages it can; each app shows the ones it has. Pairs with the Kiosk behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:kiosk"
+  ],
+  "data": {
+    "style": "pills",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "apps",
+            "label": "Apps",
+            "icon": "download",
+            "view": "apps"
+          }
+        ]
+      }
+    ],
+    "density": "roomy",
+    "indicator": "fill"
+  }
+}

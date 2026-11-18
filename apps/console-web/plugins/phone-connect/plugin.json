@@ -1,0 +1,233 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.phone-connect",
+  "name": "Phone Connect",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Pairs the Phone Connect companion app (phone-connect@1) with this console and sends it work: open a page, show a notification, show an approval prompt, start / stop / ask the audio-output recorder, say a line or listen once. Pairing is a one-time code from Settings → Plugins → Phone Connect claimed on the phone with your own hub sign-in; the phone then holds a device token you can revoke at any time. Approvals shown on the phone are decided only by your own tap there (personOnly): no session, agent, MCP tool, CLI or voice phrase can approve or deny. Every action is reachable four ways: REST /api/plugins/phone-connect/…, MCP phone_connect_*, `axf phone …` and voice (phone.*). Replaces the AmberX app for push, open-url and the recorder.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "settings-tab:phone-connect",
+    "service:axf.phone@1",
+    "action:phone.open",
+    "action:phone.status",
+    "action:phone.pair",
+    "action:phone.devices",
+    "action:phone.url",
+    "action:phone.notify",
+    "action:phone.recorder",
+    "action:phone.say",
+    "action:phone.tab",
+    "action:phone.device",
+    "action:phone.voice"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "service:axf.notify@1",
+    "service:axf.health@1",
+    "service:approvals-relay@1"
+  ],
+  "banner": false,
+  "tabable": false,
+  "uiEditor": [],
+  "deviceRoutes": true,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/phone-connect",
+    "env": [
+      "AXF_PHONE_CONNECT_ORIGIN"
+    ],
+    "mentions": [
+      "CLAUDE.md",
+      "_claude/memory/STATUS.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PHONE-CONNECT.md",
+      "_claude/memory/docs/phone-connect.md",
+      "_claude/builds/reports/rebuild-fresh-main-phone-connect-small.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /status",
+        "id": "status",
+        "title": "Phone Connect status: the paired phone's presence, the pending pairing code, feature switches and the recorder",
+        "readOnly": true
+      },
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "Everything Settings → Plugins → Phone Connect shows, in one read, with the console-control addresses that open each part",
+        "readOnly": true
+      },
+      {
+        "route": "GET /devices",
+        "id": "devices",
+        "title": "Every paired, pending or revoked phone with its presence (never its token)",
+        "readOnly": true
+      },
+      {
+        "route": "GET /devices/{device_id}",
+        "id": "device",
+        "title": "One phone by its device id",
+        "readOnly": true
+      },
+      {
+        "route": "GET /pair",
+        "id": "pairing",
+        "title": "The pending pairing code, if any",
+        "readOnly": true
+      },
+      {
+        "route": "POST /pair/start",
+        "id": "pair",
+        "title": "Issue a pairing code for the Phone Connect app (cancels the pending one); Brett claims it on the phone with his hub sign-in"
+      },
+      {
+        "route": "POST /pair/cancel",
+        "id": "pair-cancel",
+        "title": "Cancel the pending pairing code"
+      },
+      {
+        "route": "POST /open",
+        "id": "open-url",
+        "title": "Open a page on the phone (https, inside the phone's url policy)"
+      },
+      {
+        "route": "POST /notify",
+        "id": "notify",
+        "title": "Show a notification on the phone (kind fyi|fix|alert, title, body, url); it asks the Notifications panel first"
+      },
+      {
+        "route": "POST /recorder/start",
+        "id": "recorder-start",
+        "title": "Start the phone's audio-output recorder (needs approvalId: Brett's confirm; the phone asks Android's consent)"
+      },
+      {
+        "route": "POST /recorder/stop",
+        "id": "recorder-stop",
+        "title": "Stop the phone's audio-output recorder"
+      },
+      {
+        "route": "GET /recorder/status",
+        "id": "recorder-status",
+        "title": "The recorder state the phone last reported (ask=1 asks it again)",
+        "readOnly": true
+      },
+      {
+        "route": "POST /voice",
+        "id": "voice",
+        "title": "Say a line on the phone (mode say, text) or listen once (mode listen, timeoutSeconds)"
+      },
+      {
+        "route": "POST /command",
+        "id": "command",
+        "title": "Queue any phone-connect@1 command (open_url, notify, approval, recorder.*, voice); approval only shows a prompt, it never decides"
+      },
+      {
+        "route": "GET /commands",
+        "id": "commands",
+        "title": "Recent commands sent to the phone with their ack and result",
+        "readOnly": true
+      },
+      {
+        "route": "GET /commands/{cid}",
+        "id": "command-result",
+        "title": "One command with its ack and result (wait=<s> holds until it is done)",
+        "readOnly": true
+      },
+      {
+        "route": "GET /settings",
+        "id": "settings",
+        "title": "The per-feature switches (open_url, notify, approval, recorder, voice)",
+        "readOnly": true
+      },
+      {
+        "route": "POST /settings",
+        "id": "set-features",
+        "title": "Switch phone features on or off: {features: {open_url|notify|approval|recorder|voice: bool}}"
+      },
+      {
+        "route": "POST /pair/confirm",
+        "skip": "the claim is personOnly: Brett's own hub sign-in on the phone, never a session or token"
+      },
+      {
+        "route": "DELETE /devices/{device_id}",
+        "skip": "revoking a phone is the owner's own confirm in the console; a session can't"
+      },
+      {
+        "route": "POST /devices/{device_id}/revoke",
+        "skip": "revoking a phone is the owner's own confirm in the console; a session can't"
+      },
+      {
+        "route": "POST /devices/{device_id}/forget",
+        "skip": "forgetting a phone is the owner's own confirm in the console; a session can't"
+      },
+      {
+        "route": "POST /devices/{device_id}/settings",
+        "skip": "a phone's watch and url policy are the owner's settings (a person's tap only)"
+      },
+      {
+        "route": "POST /hello",
+        "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
+      },
+      {
+        "route": "GET /next",
+        "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
+      },
+      {
+        "route": "POST /ack",
+        "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
+      },
+      {
+        "route": "POST /answer",
+        "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
+      },
+      {
+        "route": "POST /rotate",
+        "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
+      },
+      {
+        "route": "POST /voice-in",
+        "skip": "the phone's own link (device_router, /device/…): it carries the device token, never the console token"
+      }
+    ]
+  },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-sm",
+      "--fx-font-mono",
+      "--fx-muted",
+      "--fx-radius-md",
+      "--fx-surface2",
+      "--fx-type-eyebrow-tracking",
+      "--fx-type-scale-2xl",
+      "--fx-type-scale-sm"
+    ],
+    "defines": []
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-17"
+  },
+  "help": "help.json",
+  "opens": false,
+  "cli": {
+    "phone-connect": "phone-connect.mjs",
+    "phone": "phone-connect.mjs"
+  }
+}

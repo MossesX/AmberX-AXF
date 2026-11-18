@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "data-pro",
+  "name": "Data Pro container",
+  "version": "1.0.0",
+  "description": "Data Pro: panel with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "analytical",
+    "data"
+  ],
+  "data": {
+    "variant": "panel",
+    "header": "plain",
+    "padding": "sm",
+    "elevation": 0,
+    "collapsible": false
+  }
+}

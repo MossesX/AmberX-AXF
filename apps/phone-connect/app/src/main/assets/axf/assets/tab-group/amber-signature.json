@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "amber-signature",
+  "name": "Amber Signature tabs",
+  "version": "1.0.0",
+  "description": "Amber Signature: pills tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "signature",
+    "brand",
+    "amber"
+  ],
+  "data": {
+    "style": "pills",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

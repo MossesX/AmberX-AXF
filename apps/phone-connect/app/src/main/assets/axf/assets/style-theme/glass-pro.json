@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "glass-pro",
+  "name": "Glass Pro",
+  "version": "1.0.0",
+  "description": "Frosted glass panels with 22 px blur, deep floating shadows and Sora headings for a premium modern feel.",
+  "author": "AmberX AXF",
+  "tags": [
+    "glass",
+    "modern"
+  ],
+  "data": {
+    "fontFamily": "'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 8,
+      "md": 14,
+      "lg": 20
+    },
+    "space": 9,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 2px 6px var(--fx-shadow)",
+      "md": "0 14px 36px var(--fx-shadow)",
+      "lg": "0 32px 88px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 220,
+    "blur": 22,
+    "headingWeight": 700,
+    "tracking": -0.025,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.58,
+    "wrapGroups": false
+  }
+}

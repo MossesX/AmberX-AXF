@@ -6,11 +6,14 @@
   "version": "1.0.0",
   "description": "Tabs across the top, full header, descriptions on: the settings page as every app had it before the settings asset type.",
   "author": "AmberX AXF",
-  "tags": ["default"],
+  "tags": [
+    "default"
+  ],
   "data": {
     "layout": "tabs-top",
     "header": "full",
     "search": false,
-    "descriptions": true
+    "descriptions": true,
+    "builtFor": "app"
   }
 }

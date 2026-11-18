@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "data-pro",
+  "name": "Data Pro dialog",
+  "version": "1.0.0",
+  "description": "Data Pro: drawer, none backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "analytical",
+    "data"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 520,
+    "backdrop": "none",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

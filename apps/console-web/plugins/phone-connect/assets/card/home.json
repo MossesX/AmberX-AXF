@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "phone-connect-home",
+  "name": "Phone Connect",
+  "version": "1.0.0",
+  "description": "Phone Connect on Home: Phone Connect status: the paired phone's presence, the pending pairing code, feature switches and the recorder.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Phone Connect",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "phone-connect",
+      "command": "status"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

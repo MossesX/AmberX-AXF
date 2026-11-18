@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "lounge",
+  "name": "Lounge",
+  "version": "1.0.0",
+  "description": "Relaxed glass cards, soft pills and slow fades for media and lifestyle apps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "relaxed",
+    "relaxed"
+  ],
+  "data": {
+    "slots": {
+      "button": "lounge",
+      "container": "lounge",
+      "slider": "lounge",
+      "dialog": "lounge",
+      "popup": "lounge",
+      "tab-group": "lounge",
+      "gauge": "ring",
+      "meter": "gradient-soft"
+    },
+    "tone": "relaxed"
+  }
+}

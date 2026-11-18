@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "slate-steel",
+  "name": "Slate Steel",
+  "version": "1.0.0",
+  "description": "Brushed steel greys with a restrained steel-blue accent for dense dashboards.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "neutral",
+    "enterprise"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0f1012",
+      "surface": "#16181b",
+      "surface2": "#1d1f23",
+      "surface3": "#26292e",
+      "text": "#e6e8ea",
+      "muted": "#949ca8",
+      "border": "#2d3137",
+      "accent": "#6aa1c8",
+      "accentText": "#0c1922",
+      "accentSoft": "rgba(106,161,200,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#6aa1c8",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

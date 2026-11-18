@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "command-deck",
+  "name": "Command Deck button",
+  "version": "1.0.0",
+  "description": "Command Deck: square solid buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "command",
+    "ops"
+  ],
+  "data": {
+    "shape": "square",
+    "fill": "solid",
+    "weight": 700,
+    "uppercase": true,
+    "size": "sm",
+    "elevation": false
+  }
+}

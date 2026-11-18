@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "side-dock",
+  "name": "Side dock",
+  "version": "1.0.0",
+  "description": "Text tabs stacked down the right of the panel, roomy and reorderable: a settings-style side list.",
+  "author": "AmberX AXF",
+  "tags": ["right", "vertical", "text", "roomy"],
+  "data": {
+    "style": "plain",
+    "align": "start",
+    "position": "right",
+    "density": "roomy",
+    "overflow": "scroll",
+    "display": "text",
+    "divider": true,
+    "reorderable": true,
+    "rememberLast": true
+  }
+}

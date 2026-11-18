@@ -1323,6 +1323,12 @@ def load_plugins() -> None:
                     raise ImportError("server/__init__.py must export `router` (fastapi.APIRouter)")
                 app.include_router(router, prefix=f"/api/plugins/{folder.name}",
                                    dependencies=[Depends(_plugin_auth(m.get("wallUsers") is True, folder.name)), Depends(_plugin_guard(folder.name))])
+                # A plugin that owns a paired device (manifest "deviceRoutes": true) may export `device_router`: mounted
+                # at /api/plugins/<folder>/device/ without the console token (the device has none). Only the enabled
+                # check applies; every route there authenticates its caller itself (Phone Connect: the device token).
+                device_router = getattr(module, "device_router", None)
+                if device_router is not None and m.get("deviceRoutes") is True:
+                    app.include_router(device_router, prefix=f"/api/plugins/{folder.name}/device", dependencies=[Depends(_plugin_guard(folder.name))])
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console

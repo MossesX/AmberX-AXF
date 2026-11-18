@@ -1,0 +1,167 @@
+{
+  "$axf": "asset@1",
+  "type": "app-menu",
+  "id": "minimal-picker",
+  "name": "Minimal Picker",
+  "version": "1.0.0",
+  "description": "Two compact menus with direct theme, style and layout pickers.",
+  "author": "AmberX AXF",
+  "tags": [
+    "minimal"
+  ],
+  "data": {
+    "menus": [
+      {
+        "id": "app",
+        "label": "App",
+        "items": [
+          {
+            "id": "go-home",
+            "label": "Home",
+            "icon": "home",
+            "action": "nav:home"
+          },
+          {
+            "id": "go-components",
+            "label": "Components",
+            "icon": "grid",
+            "action": "nav:components"
+          },
+          {
+            "id": "go-assets",
+            "label": "Assets",
+            "icon": "layers",
+            "action": "nav:assets"
+          },
+          {
+            "id": "go-account",
+            "label": "Account",
+            "icon": "user",
+            "action": "nav:account"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "action": "app.settings"
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "shortcuts",
+            "label": "Shortcuts",
+            "icon": "keyboard",
+            "action": "view.shortcuts",
+            "shortcut": "Alt+K"
+          },
+          {
+            "id": "about",
+            "label": "About",
+            "icon": "info",
+            "action": "help.about"
+          }
+        ]
+      },
+      {
+        "id": "look",
+        "label": "Look",
+        "items": [
+          {
+            "id": "colors",
+            "label": "Color theme",
+            "icon": "palette",
+            "items": [
+              {
+                "id": "color-theme-amber-ember",
+                "label": "Amber Ember",
+                "icon": "palette",
+                "action": "swap:color-theme:amber-ember"
+              },
+              {
+                "id": "color-theme-arctic-daylight",
+                "label": "Arctic Daylight",
+                "icon": "palette",
+                "action": "swap:color-theme:arctic-daylight"
+              },
+              {
+                "id": "color-theme-neon-tide",
+                "label": "Neon Tide",
+                "icon": "palette",
+                "action": "swap:color-theme:neon-tide"
+              }
+            ]
+          },
+          {
+            "id": "styles",
+            "label": "Style theme",
+            "icon": "type",
+            "items": [
+              {
+                "id": "style-theme-soft-studio",
+                "label": "Soft Studio",
+                "icon": "type",
+                "action": "swap:style-theme:soft-studio"
+              },
+              {
+                "id": "style-theme-sharp-terminal",
+                "label": "Sharp Terminal",
+                "icon": "type",
+                "action": "swap:style-theme:sharp-terminal"
+              },
+              {
+                "id": "style-theme-glass-orbit",
+                "label": "Glass Orbit",
+                "icon": "type",
+                "action": "swap:style-theme:glass-orbit"
+              }
+            ]
+          },
+          {
+            "id": "layouts",
+            "label": "Layout",
+            "icon": "layout",
+            "items": [
+              {
+                "id": "layout-classic-ide",
+                "label": "Classic IDE",
+                "icon": "layout",
+                "action": "swap:layout:classic-ide"
+              },
+              {
+                "id": "layout-focus-top",
+                "label": "Focus Top",
+                "icon": "layout",
+                "action": "swap:layout:focus-top"
+              },
+              {
+                "id": "layout-studio-dock",
+                "label": "Studio Dock",
+                "icon": "layout",
+                "action": "swap:layout:studio-dock"
+              }
+            ]
+          },
+          {
+            "id": "s1",
+            "separator": true
+          },
+          {
+            "id": "random",
+            "label": "Surprise me",
+            "icon": "shuffle",
+            "action": "assets.random",
+            "shortcut": "Alt+R"
+          },
+          {
+            "id": "reset",
+            "label": "Reset",
+            "icon": "refresh",
+            "action": "assets.reset"
+          }
+        ]
+      }
+    ]
+  }
+}

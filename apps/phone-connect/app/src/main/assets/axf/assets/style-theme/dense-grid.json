@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "dense-grid",
+  "name": "Dense Grid",
+  "version": "1.0.0",
+  "description": "13 px type on a 6 px rhythm with square corners: the most rows on screen for data-heavy tools.",
+  "author": "AmberX AXF",
+  "tags": [
+    "compact",
+    "data"
+  ],
+  "data": {
+    "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 13,
+    "radius": {
+      "sm": 2,
+      "md": 3,
+      "lg": 4
+    },
+    "space": 6,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "none",
+      "md": "0 0 0 1px var(--fx-border)",
+      "lg": "0 0 0 1px var(--fx-border)"
+    },
+    "density": "compact",
+    "motion": 100,
+    "blur": 0,
+    "headingWeight": 600,
+    "tracking": 0,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.9,
+    "wrapGroups": false
+  }
+}

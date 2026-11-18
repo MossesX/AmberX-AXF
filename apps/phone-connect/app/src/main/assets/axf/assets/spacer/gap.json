@@ -1,0 +1,15 @@
+{
+  "$axf": "asset@1",
+  "type": "spacer",
+  "id": "gap",
+  "name": "Gap",
+  "version": "1.0.0",
+  "description": "A regular gap between widgets.",
+  "author": "AmberX AXF",
+  "tags": [
+    "spacer"
+  ],
+  "data": {
+    "size": "regular"
+  }
+}

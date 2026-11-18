@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "gizmo-console",
+  "name": "GizmoX Console slider",
+  "version": "1.0.0",
+  "description": "GizmoX Console: circle thumb on a 4 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "developer",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "track": 4,
+    "thumb": "circle",
+    "thumbSize": 16,
+    "fill": "solid",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "command-deck",
+  "name": "Command Deck tabs",
+  "version": "1.0.0",
+  "description": "Command Deck: boxed tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "command",
+    "ops"
+  ],
+  "data": {
+    "style": "boxed",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "scroll",
+    "showIcons": false,
+    "divider": true
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "side-tabs",
+  "name": "Side tabs with search",
+  "version": "1.0.0",
+  "description": "Tabs down the side, a compact header and a search field over every setting. Falls back to tabs on top on a phone.",
+  "author": "AmberX AXF",
+  "tags": ["desktop", "search"],
+  "data": {
+    "layout": "tabs-side",
+    "header": "compact",
+    "search": true,
+    "descriptions": true
+  }
+}

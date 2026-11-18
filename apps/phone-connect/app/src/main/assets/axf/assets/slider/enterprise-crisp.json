@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "enterprise-crisp",
+  "name": "Enterprise Crisp slider",
+  "version": "1.0.0",
+  "description": "Enterprise Crisp: circle thumb on a 4 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "crisp",
+    "enterprise"
+  ],
+  "data": {
+    "track": 4,
+    "thumb": "circle",
+    "thumbSize": 16,
+    "fill": "solid",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

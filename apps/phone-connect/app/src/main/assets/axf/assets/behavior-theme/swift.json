@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "swift",
+  "name": "Swift",
+  "version": "1.0.0",
+  "description": "Swift and direct: no page entrance, quick scale-in dialogs without a backdrop, shrink on press.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:developer-rail"
+  ],
+  "data": {
+    "motion": {
+      "speed": "fast",
+      "easing": "emphasized",
+      "reduced": "system",
+      "entrance": "none"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 450,
+      "doubleTapMs": 250,
+      "dragThreshold": 6
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "none",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": true,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top-right",
+      "toastMs": 3000,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

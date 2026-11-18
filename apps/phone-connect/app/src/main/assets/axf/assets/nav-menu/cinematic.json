@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "cinematic",
+  "name": "Cinematic",
+  "version": "1.0.0",
+  "description": "Cinematic: showcases and demos. Lists the pages it can; each app shows the ones it has. Pairs with the Cinematic behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:cinematic"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "demos",
+            "label": "Demos",
+            "icon": "play",
+            "view": "demos"
+          },
+          {
+            "id": "assets",
+            "label": "Assets",
+            "icon": "layers",
+            "view": "assets"
+          },
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          }
+        ]
+      }
+    ],
+    "density": "roomy",
+    "indicator": "none"
+  }
+}

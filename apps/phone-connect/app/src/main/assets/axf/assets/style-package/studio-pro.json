@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "studio-pro",
+  "name": "Studio Pro",
+  "version": "1.0.0",
+  "description": "Accent-headed panels, inspector drawers and compact tabs for design and studio tools.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pro",
+    "creative"
+  ],
+  "data": {
+    "slots": {
+      "button": "studio-pro",
+      "container": "studio-pro",
+      "slider": "studio-pro",
+      "dialog": "studio-pro",
+      "popup": "studio-pro",
+      "tab-group": "studio-pro",
+      "gauge": "tick-arc",
+      "meter": "hairline"
+    },
+    "tone": "pro"
+  }
+}

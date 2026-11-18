@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "swiss-grid",
+  "name": "Swiss Grid pop-ups",
+  "version": "1.0.0",
+  "description": "Swiss Grid: outline pop-ups at the top-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "editorial",
+    "editorial",
+    "flat"
+  ],
+  "data": {
+    "position": "top-right",
+    "variant": "outline",
+    "duration": 4000,
+    "showIcon": true,
+    "maxVisible": 4
+  }
+}

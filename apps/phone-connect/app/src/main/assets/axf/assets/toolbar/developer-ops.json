@@ -1,0 +1,68 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "developer-ops",
+  "name": "Developer Ops",
+  "version": "1.0.0",
+  "description": "Build, deploy and the dev console with a build progress bar, AI status and a 24 h clock (alerts stay on the banner).",
+  "author": "AmberX AXF",
+  "tags": [
+    "developer"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "run",
+        "items": [
+          {
+            "id": "build",
+            "icon": "hammer",
+            "label": "Build",
+            "action": "run.build"
+          },
+          {
+            "id": "deploy",
+            "icon": "rocket",
+            "label": "Deploy",
+            "action": "run.deploy"
+          }
+        ]
+      },
+      {
+        "id": "tools",
+        "items": [
+          {
+            "id": "console",
+            "icon": "terminal",
+            "label": "Dev console",
+            "action": "dev.console"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "progress",
+        "id": "build",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "status",
+        "id": "ai",
+        "at": "end",
+        "order": 20
+      },
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "end",
+        "order": 30
+      }
+    ],
+    "density": "compact"
+  }
+}

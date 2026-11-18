@@ -1,0 +1,42 @@
+{
+  "$axf": "asset@1",
+  "type": "uac-policy",
+  "id": "open-dev",
+  "name": "Open Dev",
+  "version": "1.0.0",
+  "description": "Developer mode: everything unlocked, with a tester role for QA.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "defaultRole": "developer",
+    "gating": "disable",
+    "permissions": {
+      "assets.swap": "Hot-swap UI assets",
+      "assets.import": "Import new assets",
+      "uac.manage": "Change the account control policy",
+      "files.write": "Save, export and delete files",
+      "dev.tools": "Build and open the developer console",
+      "dev.deploy": "Deploy the application"
+    },
+    "roles": [
+      {
+        "id": "developer",
+        "label": "Developer",
+        "description": "All permissions.",
+        "permissions": [
+          "*"
+        ]
+      },
+      {
+        "id": "tester",
+        "label": "Tester",
+        "description": "All assets and tools, but no deploys or policy edits.",
+        "permissions": [
+          "assets.*",
+          "files.write",
+          "dev.tools"
+        ]
+      }
+    ]
+  }
+}

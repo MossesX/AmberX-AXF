@@ -776,6 +776,14 @@
        "manifest": "",
        "drift": 0,
        "lastDriftAt": ""
+      },
+      "phone": {
+       "mode": "shadow",
+       "since": "2026-11-15T06:00:00.000Z",
+       "cursor": 0,
+       "manifest": "",
+       "drift": 0,
+       "lastDriftAt": ""
       }
      }
     },
@@ -843,6 +851,14 @@
       "event": "start-shadow",
       "at": "2026-11-15T06:00:00.000Z",
       "by": "svc:cli"
+     },
+     {
+      "ns": "phone",
+      "from": "local",
+      "to": "shadow",
+      "event": "start-shadow",
+      "at": "2026-11-15T06:00:00.000Z",
+      "by": "svc:cli"
      }
     ]
    }
@@ -857,7 +873,8 @@
     "ui-review: shadow since 2026-11-15T06:00:00.000Z",
     "changes: shadow since 2026-11-15T06:00:00.000Z",
     "sessions: shadow since 2026-11-15T06:00:00.000Z",
-    "console: shadow since 2026-11-15T06:00:00.000Z"
+    "console: shadow since 2026-11-15T06:00:00.000Z",
+    "phone: shadow since 2026-11-15T06:00:00.000Z"
    ]
   },
   {
@@ -898,7 +915,8 @@
     "ui-review: local (store default)",
     "changes: local (store default)",
     "sessions: local (store default)",
-    "console: local (store default)"
+    "console: local (store default)",
+    "phone: local (store default)"
    ]
   }
  ]

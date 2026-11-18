@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "win-minimize",
+  "name": "Minimize",
+  "version": "1.0.0",
+  "description": "Minimizes the front window.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "icon": "minus",
+    "label": "Minimize",
+    "action": "skin.window.minimize",
+    "show": "icon"
+  }
+}

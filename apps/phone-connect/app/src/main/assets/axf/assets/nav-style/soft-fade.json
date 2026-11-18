@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-style",
+  "id": "soft-fade",
+  "name": "Soft fade",
+  "version": "0.1.0",
+  "description": "Items fade in one after another in the display font; opens on hover on a desktop.",
+  "author": "AmberX AXF",
+  "tags": [
+    "navigation",
+    "hover"
+  ],
+  "data": {
+    "font": {
+      "family": "display",
+      "size": "sm"
+    },
+    "colors": {
+      "hover": "surface2"
+    },
+    "animation": {
+      "kind": "fade",
+      "durationMs": 240,
+      "easing": "linear",
+      "staggerMs": 40,
+      "chevron": "rotate",
+      "reduced": "system"
+    },
+    "behavior": {
+      "single": true,
+      "openOn": "hover",
+      "autoCollapse": true,
+      "remember": true,
+      "followActive": true,
+      "swipe": true
+    }
+  }
+}

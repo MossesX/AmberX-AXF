@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "warm-craft",
+  "name": "Warm Craft tabs",
+  "version": "1.0.0",
+  "description": "Warm Craft: pills tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "warm",
+    "warm"
+  ],
+  "data": {
+    "style": "pills",
+    "align": "start",
+    "position": "top",
+    "density": "roomy",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "uac-policy",
+  "id": "hub-accounts",
+  "name": "Hub accounts",
+  "version": "1.0.0",
+  "description": "For apps behind axHub's sign-in wall: the role comes from the signed-in hub account, not a picker. Hub admins get admin; a hub user an admin granted the app's themes permission (<app>.themes, e.g. console.themes) gets themes; every other hub user gets user. The server enforces the same split.",
+  "author": "AmberX AXF",
+  "tags": ["accounts", "axhub"],
+  "roll": false,
+  "data": {
+    "defaultRole": "user",
+    "gating": "disable",
+    "permissions": {
+      "assets.swap": "Change themes, colours, layouts and style",
+      "assets.import": "Import new assets",
+      "uac.manage": "Change the account control policy",
+      "files.write": "Save, export and delete files",
+      "dev.tools": "Build and open the developer console",
+      "dev.deploy": "Deploy the application"
+    },
+    "roles": [
+      { "id": "admin", "label": "Admin", "description": "Hub admin: everything, plus account management on the hub.", "permissions": ["*"] },
+      { "id": "themes", "label": "User (themes allowed)", "description": "Hub user granted <app>.themes: may change themes, colours, layouts and style.", "permissions": ["assets.swap", "assets.import"] },
+      { "id": "user", "label": "User", "description": "Hub user: looks around; more only when an admin grants it on the hub.", "permissions": [] }
+    ]
+  }
+}

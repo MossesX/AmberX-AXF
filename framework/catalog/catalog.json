@@ -2675,6 +2675,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.phone",
+              "title": "Phone Connect: pair the phone with a one-time code (personOnly claim), device token, command queue (open a page, notify, approval prompt, recorder, voice), approvals decided only on the hub page; REST, MCP, CLI and voice",
+              "note": "apps/console-web/plugins/phone-connect + apps/phone-connect (phone-connect@1, framework/spec/PHONE-CONNECT.md): Settings \u2192 Plugins \u2192 Phone Connect, capability axf.phone@1, alert hub \u2192 phone push, systems check item, axHub amberx.* tools answered by the paired phone; replaces the AmberX app (code removal staged: remove-amberx-app-code-once-phone); Kotlin engine twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

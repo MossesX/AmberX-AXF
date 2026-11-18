@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "settings",
+  "name": "Settings",
+  "version": "1.0.0",
+  "description": "Opens the app's settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button"
+  ],
+  "data": {
+    "icon": "settings",
+    "label": "Settings",
+    "action": "app.settings",
+    "show": "icon",
+    "tooltip": "Settings"
+  }
+}
