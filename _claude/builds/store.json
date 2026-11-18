@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9147,
- "updatedAt": "2026-11-18T21:01:36.209Z",
+ "rev": 9148,
+ "updatedAt": "2026-11-18T21:26:37.278Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322208,6 +322208,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-18T20:03:01.846Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "console-app-text-way-too-big-system-font",
+   "title": "Console app: text way too big (system font scale, Samsung DeX)",
+   "category": "Apps > Console app",
+   "detail": "Brett (voice, Nov 18 2026): the console Android app (apps/console-droid, console-app-debug.apk) shows huge text, especially in Samsung DeX on a monitor; Ctrl+minus does nothing. He mainly needs the app for the overlay, but wants this fixed. Likely cause: the WebView follows the system font scale / density (textZoom). Fix: lock WebView text zoom to 100% (or a setting), size correctly for DeX desktop windows, keep the overlay unaffected. Full API control per the usual rule.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T21:26:24.655Z",
+   "updatedAt": "2026-11-18T21:26:24.655Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1011
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
