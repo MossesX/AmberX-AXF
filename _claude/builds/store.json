@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8680,
- "updatedAt": "2026-11-18T01:17:14.587Z",
+ "rev": 8681,
+ "updatedAt": "2026-11-18T01:17:24.044Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -292984,7 +292984,7 @@
    "branch": "claude/move-everything-axhub-web-console",
    "pr": "",
    "createdAt": "2026-11-17T22:28:32.914Z",
-   "updatedAt": "2026-11-18T01:16:02.711Z",
+   "updatedAt": "2026-11-18T01:16:52.450Z",
    "builtAt": "",
    "notes": [
     {
@@ -293424,12 +293424,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:16:31.005Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-17T22:42:05.842Z"
+     "updatedAt": "2026-11-18T01:16:31.780Z"
     },
     {
      "id": "s18",
@@ -293446,12 +293446,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:16:44.307Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-17T22:42:05.842Z"
+     "updatedAt": "2026-11-18T01:16:45.142Z"
     },
     {
      "id": "s19",
@@ -293468,12 +293468,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:16:52.450Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-17T22:42:05.842Z"
+     "updatedAt": "2026-11-18T01:16:53.161Z"
     },
     {
      "id": "s20",
@@ -293748,7 +293748,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {

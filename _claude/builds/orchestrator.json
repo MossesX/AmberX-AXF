@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:17:14.587Z",
+ "updatedAt": "2026-11-18T01:17:24.044Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -186387,7 +186387,7 @@
    "branch": "claude/move-everything-axhub-web-console",
    "pr": "",
    "createdAt": "2026-11-17T22:28:32.914Z",
-   "updatedAt": "2026-11-18T01:16:02.711Z",
+   "updatedAt": "2026-11-18T01:16:52.450Z",
    "builtAt": "",
    "notes": [
     {
@@ -186747,8 +186747,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:16:31.005Z",
      "note": "",
      "uid": "st-mwl9wsjp4jqesm",
      "createdAt": "2026-11-17T22:33:53.520Z"
@@ -186766,8 +186766,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:16:44.307Z",
      "note": "",
      "uid": "st-mwl9wsjp4k4zif",
      "createdAt": "2026-11-17T22:33:53.520Z"
@@ -186785,8 +186785,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T01:16:52.450Z",
      "note": "",
      "uid": "st-mwl9wsjp4ljgf0",
      "createdAt": "2026-11-17T22:33:53.520Z"
