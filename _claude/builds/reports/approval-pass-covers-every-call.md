@@ -45,8 +45,10 @@ the tool's policy class. Only three things still ask under a pass: a `deny`, gra
 | a destructive console tool under a pass naming the console | approval | runs at once |
 | an irreversible call (`docker volume rm`, delete a repo) | asks | still asks unless `include_irreversible` |
 
-Shots (UI Review, group "Approval pass covers every call, including VPS commands and stops"): active cards, grant with
-All tools, grant with the picker; desktop and phone.
+Shots (desktop and phone, in `approval-pass-covers-every-call/`): active cards (`passes-active-*`), grant with All tools
+(`passes-grant-all-*`), grant with the picker (`passes-grant-pick-*`). The UI Review upload (`review.mjs submit --console`,
+`shot.mjs --console`) hung from this VPS session both through console.amberxai.com and the container address, so they ship
+here; submit them with the command in the build note once the upload works.
 
 ## How each part is reached
 
