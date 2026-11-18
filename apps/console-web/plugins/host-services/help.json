@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "host-services-help",
+  "name": "host-services help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:host-services.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:host-services",
+    "entries": [
+      {
+        "target": "host-services",
+        "title": "Host services",
+        "text": "The parts of the console that run on the VPS host instead of in the console's container, so they keep working when the console is down. Each row is one service: whether it is up, since when, where it runs and its last run. Open a row for its actions, logs and where it runs. From a 'Host service down' note this button opens that list.",
+        "kind": "button"
+      },
+      {
+        "target": "where-it-runs",
+        "title": "Where it runs",
+        "text": "Container: the console still does this part. Shadow: both run, the host only pretends and the results are compared. Host: the host does it and the console's copy steps aside. Move one step at a time with Move; going back asks first. Roll back gives it straight back to the console.",
+        "kind": "field"
+      },
+      {
+        "target": "logs",
+        "title": "Logs",
+        "text": "The last lines this service wrote to the host's journal (journalctl -u its unit), newest last.",
+        "kind": "button"
+      },
+      {
+        "target": "roll-back",
+        "title": "Roll back",
+        "text": "Gives the part back to the console: the host unit stops, any cron line comes back and the console's own loop runs again on its next pass. Asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "move",
+        "title": "Move",
+        "text": "Moves this service to the place picked in Where it runs. Moving towards the host is refused until shadow has been quiet long enough with enough clean runs.",
+        "kind": "button"
+      }
+    ]
+  }
+}

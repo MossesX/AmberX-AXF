@@ -1,0 +1,23 @@
+{
+  "$axf": "host-service@1",
+  "id": "pipeline",
+  "title": "Build pipeline tick",
+  "description": "The orchestrator's dispatcher (pipeline.mjs tick): splits new builds, watches the Queue, accounts and agent slots, starts the next headless session. Adopted from the axf-pipeline cron as deploy/systemd/axf-pipeline.*.",
+  "kind": "tick",
+  "unit": "axf-pipeline.service",
+  "timer": "axf-pipeline.timer",
+  "plugin": "build-orchestrator",
+  "runner": "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+  "health": {
+    "intervalSec": 60,
+    "timeoutMs": 60000,
+    "staleSec": 600
+  },
+  "replaces": [
+    {
+      "kind": "cron",
+      "name": "axf-pipeline",
+      "where": "deploy/install-console.sh"
+    }
+  ]
+}

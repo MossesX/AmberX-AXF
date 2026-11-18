@@ -1,0 +1,23 @@
+{
+  "$axf": "host-service@1",
+  "id": "auto-lander",
+  "title": "Auto-lander",
+  "description": "The server auto-lander (auto-lander@1): merges main into clashing builds, starts fix sessions for red CI, hands green PRs to the merge queue. Its own unit and timer (deploy/systemd/axf-auto-lander.*), adopted here so one list, health check and UI cover it.",
+  "kind": "tick",
+  "unit": "axf-auto-lander.service",
+  "timer": "axf-auto-lander.timer",
+  "plugin": "gate",
+  "runner": "deploy/auto-lander/auto-lander.mjs",
+  "health": {
+    "intervalSec": 60,
+    "timeoutMs": 60000,
+    "staleSec": 600
+  },
+  "replaces": [
+    {
+      "kind": "cron",
+      "name": "axf-auto-land",
+      "where": "deploy/install-console.sh (push-banner land.mjs every 3 minutes)"
+    }
+  ]
+}

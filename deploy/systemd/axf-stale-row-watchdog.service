@@ -1,0 +1,18 @@
+# axf-stale-row-watchdog.service — stale-row watchdog (builds-list rows that should have gone)
+# Adopted as a host service (host-service@1, deploy/host-services/services/stale-row-watchdog.json): the same command the cron line in
+# deploy/install-console.sh runs, as a oneshot started by axf-stale-row-watchdog.timer. Installed (not enabled) by
+# deploy/install-host-services.sh; the migration enables the timer and removes the cron file when stale-row-watchdog moves to host mode
+# (deploy/host-services/migrate.mjs), and puts the cron back on rollback. @DIR@ is the checkout (/opt/axf).
+[Unit]
+Description=AXF stale-row watchdog (builds-list rows that should have gone)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@DIR@
+Environment=AXF_CONSOLE_ROOT=@DIR@
+ExecStart=/usr/bin/flock -n /tmp/axf-stale-watchdog.lock /usr/bin/timeout 600 /usr/bin/env node @DIR@/apps/console-web/plugins/build-orchestrator/watchdog.mjs run --cron --by watchdog
+StandardOutput=append:/var/log/axf-stale-row-watchdog.log
+StandardError=append:/var/log/axf-stale-row-watchdog.log
+Nice=5

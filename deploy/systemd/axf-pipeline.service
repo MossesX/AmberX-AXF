@@ -1,0 +1,18 @@
+# axf-pipeline.service — build pipeline dispatcher tick (orchestrator)
+# Adopted as a host service (host-service@1, deploy/host-services/services/pipeline.json): the same command the cron line in
+# deploy/install-console.sh runs, as a oneshot started by axf-pipeline.timer. Installed (not enabled) by
+# deploy/install-host-services.sh; the migration enables the timer and removes the cron file when pipeline moves to host mode
+# (deploy/host-services/migrate.mjs), and puts the cron back on rollback. @DIR@ is the checkout (/opt/axf).
+[Unit]
+Description=AXF build pipeline dispatcher tick (orchestrator)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=@DIR@
+Environment=AXF_CONSOLE_ROOT=@DIR@
+ExecStart=/usr/bin/flock -n /run/axf-pipeline.lock /usr/bin/timeout 600 /usr/bin/env node @DIR@/apps/console-web/plugins/build-orchestrator/pipeline.mjs tick
+StandardOutput=append:/var/log/axf-pipeline.log
+StandardError=append:/var/log/axf-pipeline.log
+Nice=5

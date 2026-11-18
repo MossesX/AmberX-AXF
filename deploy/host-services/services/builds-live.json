@@ -1,0 +1,30 @@
+{
+  "$axf": "host-service@1",
+  "id": "builds-live",
+  "title": "Builds live publisher",
+  "description": "Publishes the builds store outbox to main (one status-only commit per round) and pulls main's newer builds back, so step ticks reach every banner even while the console is down. Wraps framework/cli/builds-live.mjs.",
+  "kind": "daemon",
+  "unit": "axf-builds-live.service",
+  "plugin": "build-orchestrator",
+  "runner": "deploy/host-services/workers/builds-live.mjs",
+  "sudo": [
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task builds-live-flush", "why": "publish the outbox to main: git in /opt/axf (root-owned checkout)" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task builds-live-pull", "why": "take main's newer builds into /opt/axf" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task builds-live-sync", "why": "flush, send, pull in one go (the Sync action)" }
+  ],
+  "health": { "intervalSec": 20, "timeoutMs": 5000, "staleSec": 900 },
+  "actions": [
+    { "id": "flush", "title": "Publish now", "description": "Publish the outbox to main now.", "timeoutMs": 300000 },
+    { "id": "pull", "title": "Pull main", "description": "Take main's newer builds into the checkout.", "timeoutMs": 120000 },
+    { "id": "sync", "title": "Sync", "description": "Flush, send builds newer here than on main, then pull.", "timeoutMs": 300000 },
+    { "id": "status", "title": "Status", "description": "Outbox size, last publish, last error.", "modes": ["container", "shadow", "host"] }
+  ],
+  "settings": {
+    "intervalSec": { "type": "integer", "default": 20, "min": 5, "max": 600, "title": "Publish every (s)" },
+    "pullEvery": { "type": "integer", "default": 15, "min": 1, "max": 1000, "title": "Pull main every N passes" }
+  },
+  "replaces": [
+    { "kind": "loop", "name": "flushLiveSoon", "where": "framework/cli/builds-live.mjs (the background flush the console's store writes start)" }
+  ],
+  "after": []
+}

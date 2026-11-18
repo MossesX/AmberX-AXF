@@ -16,6 +16,8 @@ import threading
 import time
 from typing import Any, Callable
 
+import host_mode
+
 
 # Each fix ends by refreshing the host report, so the console sees the result at once (not after the 15-minute cron).
 _REPORT = "bash /opt/axf/deploy/console-doctor.sh --report"
@@ -52,6 +54,10 @@ def moshi_command() -> str | None:
     return ("install -d -m 700 /root/.ssh && touch /root/.ssh/authorized_keys && chmod 600 /root/.ssh/authorized_keys && "
             f"(grep -qsF {_sq(m.group(2))} /root/.ssh/authorized_keys || printf '%s\\n' {_sq(line)} >> /root/.ssh/authorized_keys)")
 WAIT_S = 30 * 60  # hub approvals expire after 30 minutes
+# Fixes the systems-check host service runs itself (deploy/host-services/services/systems-check.json → fix): in host
+# mode these go to the host over the socket instead of through Mosses and vps.run. apt installs, the Claude installer
+# and key lines stay on the approved vps.run path.
+HOST_FIXES = ("host-report", "host-docker", "host-update-cron", "host-anthropic-keyfile", "host-claude-pick")
 
 
 def command(cid: str) -> str | None:
@@ -104,6 +110,8 @@ class Jobs:
             return [dict(j) for j in self.jobs.values()]
 
     def start(self, cid: str) -> dict[str, Any]:
+        if cid in HOST_FIXES and not host_mode.container_runs("systems-check"):
+            return self._start_host(cid)
         cmd = command(cid)
         if not cmd:
             raise HubError("This one needs you at the machine: follow its steps.")
@@ -116,6 +124,35 @@ class Jobs:
                 return dict(cur)
             self.jobs[cid] = {"id": cid, "state": "asking", "message": "Handing it to Mosses for axHub…", "confirmationId": None, "output": "", "startedAt": time.time(), "command": cmd}
         threading.Thread(target=self._run, args=(cid, cmd), daemon=True).start()
+        return self.get(cid) or {}
+
+    def _start_host(self, cid: str) -> dict[str, Any]:
+        """host-service systems-check (HOST-SERVICES.md): the host runs the fix from its whitelist; no hub approval round."""
+        with self.lock:
+            cur = self.jobs.get(cid)
+            if cur and cur["state"] in ("asking", "waiting", "running"):
+                return dict(cur)
+            self.jobs[cid] = {"id": cid, "state": "running", "message": "Running on the host (systems-check service)…", "confirmationId": None, "output": "", "startedAt": time.time(), "command": f"host:systems-check/action:fix check={cid}"}
+
+        def go() -> None:
+            try:
+                import host_services  # noqa: PLC0415 — the console's host client
+                r = host_services.client().action("systems-check", "fix", {"check": cid}, by="systems-check", confirm=True,
+                                                  reason={"title": f"Auto fix {cid}", "description": "Systems check Auto fix, run by the host service from its sudo whitelist."})
+                res = r.get("result") or {}
+                ok = bool(res.get("ok"))
+                try:
+                    self.recheck(cid)
+                except Exception:  # noqa: BLE001
+                    pass
+                self._set(cid, state="done" if ok else "failed", output=str(res.get("output", ""))[-4000:], message="Fixed." if ok else "The fix failed on the host: see the output.")
+                if not ok:
+                    self._failed(cid, "the host fix failed: " + str(res.get("output", ""))[-240:])
+            except Exception as e:  # noqa: BLE001 — host_service_down and the rest land on the job
+                self._set(cid, state="failed", message=str(getattr(e, "detail", "") or e)[:300])
+                self._failed(cid, str(getattr(e, "detail", "") or e)[:240])
+
+        threading.Thread(target=go, daemon=True).start()
         return self.get(cid) or {}
 
     def _set(self, cid: str, **kw: Any) -> None:

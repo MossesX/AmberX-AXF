@@ -52,7 +52,7 @@ import plugin_services
 import readcache
 from credentials import CREDENTIALS
 
-from . import claudefix, derive, githubsvc, health, healthchecks, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
+from . import claudefix, derive, githubsvc, health, healthchecks, host_health, hostfix, mosses, probes, routine, store, whatsnew  # noqa: F401 — mosses: every Auto fix goes through him
 from .checks import HOST_SCRIPT, SERVICES, SysCheck, _http, github_token_page
 
 router = APIRouter()
@@ -212,6 +212,7 @@ SVC = Service()
 GITHUB = githubsvc.GitHubService(log=cx.log)
 healthchecks.register_builtins(REGISTRY, root=cx.ROOT, repo=cx.GITHUB_REPO, hub_jobs=lambda: [*HOSTFIX.all(), *TASKS.all()],
                                github_svc=GITHUB, vps_call=_vps_call)
+host_health.register(REGISTRY, root=cx.ROOT)  # host-service@1: host-api + one check per host service (HOST-SERVICES.md)
 plugin_services.provide("axf.syscheck@1", SVC, FOLDER)
 plugin_services.provide(health.CAPABILITY, REGISTRY, FOLDER)
 plugin_services.provide(githubsvc.github_hub.CAPABILITY, GITHUB, FOLDER)
