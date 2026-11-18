@@ -168,6 +168,8 @@ await t('settings are clamped; the summary names what was done and why', () => {
   assert.equal(sum.title, 'VPS reaper: 1 ghost cleared, 1 temp item removed');
   assert.match(sum.body, /• claude -p for foo: done/); assert.match(sum.body, /handed to the lander: foo/);
   assert.equal(sum.count, 1);
+  const many = R.summarize(Array.from({ length: 40 }, (_, i) => ({ type: 'rm', what: `/tmp/axf-limit-${i}`, why: 'old' })));
+  assert.equal(many.body.split('\n').length, 1); assert.match(many.body, /40 temp items removed, e\.g\. \/tmp\/axf-limit-0/);
 });
 
 await t('hooks stay off under tests and off the host', async () => {

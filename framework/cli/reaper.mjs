@@ -261,7 +261,11 @@ export function summarize(actions, { at = new Date().toISOString(), by = 'cron' 
   const kills = actions.filter(isKill);
   const files = actions.filter((a) => a.type === 'rm');
   const head = [kills.length ? `${kills.length} ghost${kills.length === 1 ? '' : 's'} cleared` : '', files.length ? `${files.length} temp ${files.length === 1 ? 'item' : 'items'} removed` : ''].filter(Boolean).join(', ');
-  const lines = actions.filter((a) => a.type !== 'end-event').map((a) => `• ${a.what}: ${a.why}${a.error ? ` (failed: ${a.error})` : ''}`);
+  const line = (a) => `• ${a.what}: ${a.why}${a.error ? ` (failed: ${a.error})` : ''}`;
+  const lines = kills.map(line);
+  // temp files are many and alike: one line with a few examples, so the note stays readable on a phone
+  if (files.length <= 5) lines.push(...files.map(line));
+  else lines.push(`• ${files.length} temp items removed, e.g. ${files.slice(0, 3).map((a) => a.what).join(', ')} (all in reaper.jsonl)`);
   const ends = actions.filter((a) => a.type === 'end-event');
   if (ends.length) lines.push(`• handed to the lander: ${ends.map((e) => e.build).join(', ')} (run closed as finished)`);
   return { title: `VPS reaper: ${head || 'nothing to clean'}`, body: lines.join('\n'), at, by, count: kills.length };
