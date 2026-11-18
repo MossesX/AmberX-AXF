@@ -264,6 +264,8 @@ jobs:
           cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
           # a plugin made from the template records the model that built it (build-defaults@1 plugin.builtWith.*)
           sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
+          # and ships its locked settings default like every plugin (settings-iface@1: default-<folder>.json)
+          (cd ../.. && node framework/cli/settings-iface.mjs defaults --write)
           npm ci && npm run build
       - name: axhub-web — re-bake the framework into it and build it
         if: ${{ needs.scope.outputs.axhubweb == 'true' }}
