@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8523,
- "updatedAt": "2026-11-18T00:10:35.651Z",
+ "rev": 8524,
+ "updatedAt": "2026-11-18T00:10:49.745Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266720,7 +266720,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -266728,7 +266728,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-18T00:05:55.019Z",
+   "updatedAt": "2026-11-18T00:10:31.831Z",
    "builtAt": "",
    "notes": [
     {
@@ -267094,6 +267094,10 @@
     {
      "text": "Self-check: rebuild-fresh-main-phone-connect-small was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-18T00:05:55.019Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 2 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T00:10:31.831Z"
     }
    ],
    "approvals": [
@@ -267131,13 +267135,13 @@
     "runs": 0,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-17T22:31:46.088Z",
+     "at": "2026-11-18T00:10:19.577Z",
      "exit": 0,
      "outcome": "requeued",
      "reason": "phase-done",
-     "stepsLeft": 1,
-     "account": "hulu0241",
-     "session": "axf-rebuild-fresh-main-phone-connect-small--earl",
+     "stepsLeft": 2,
+     "account": "",
+     "session": "",
      "phase": "Phase 1"
     },
     "split": {
@@ -267148,7 +267152,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session finished phase Phase 1 with 2 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -267889,7 +267893,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 121,
+   "rev": 122,
    "deleted": false,
    "deletedAt": "",
    "pending": {
