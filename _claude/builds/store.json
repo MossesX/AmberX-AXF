@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8895,
- "updatedAt": "2026-11-18T07:24:46.941Z",
+ "rev": 8896,
+ "updatedAt": "2026-11-18T07:26:55.229Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -316982,7 +316982,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T07:23:30.721Z",
+   "updatedAt": "2026-11-18T07:24:37.332Z",
    "builtAt": "",
    "notes": [
     {
@@ -317082,6 +317082,10 @@
      "at": "2026-11-18T07:23:30.721Z"
     },
     {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s12): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T07:24:37.332Z"
+    },
+    {
      "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-18T07:13:29.315Z"
     }
@@ -317157,6 +317161,22 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T07:22:30.325Z",
+     "buildId": "approval-pass-covers-every-call",
+     "phase": "",
+     "step": "s12",
+     "cause": "exit-clean",
+     "exit": 0,
+     "action": "requeue",
+     "attempt": 0,
+     "account": "",
+     "notified": "",
+     "session": "",
+     "note": "session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -317431,7 +317451,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
