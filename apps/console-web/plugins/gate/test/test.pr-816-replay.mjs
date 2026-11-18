@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /**
- * Regression: PR #816 replayed (Nov 18 2026, build auto-lander-never-wait-missing-ui-review). Brett: "If it recorded the
+ * Regression: PR PR 816 replayed (Nov 18 2026, build auto-lander-never-wait-missing-ui-review). Brett: "If it recorded the
  * test of the pipeline and didn't merge it on its own, then the test failed."
  *
- *   1. #816: CI green, the build claimed a UI Review, the console has no item → every part of the lander lands it:
+ *   1. PR 816: CI green, the build claimed a UI Review, the console has no item → every part of the lander lands it:
  *      the gate verdict (gate-rules@1 through the gate plugin's check_pr) passes flagged ui-review-missing, the landing
  *      line's lookup (land.mjs lookupReview against a console answering state none) is no hold (blockReason null), the
  *      merge queue takes it (notReady empty), the server auto-lander decides `land` with reviewFlag missing. A console
- *      that does not answer (the failed lookup that held #816) lands it too.
+ *      that does not answer (the failed lookup that held PR 816) lands it too.
  *   2. Held past the limit: a PR the lander truly holds longer than heldAlertMin → held-prs lists it over, and the systems
  *      check item (held_prs_health.py) is red with a Land now row for it; Land now puts it at the front of the queue with
  *      an override note (never a direct merge).
@@ -46,7 +46,7 @@ writeFileSync(FAKE, "import { appendFileSync } from 'node:fs'; appendFileSync(pr
 const CALLS = join(TMP, 'calls.jsonl'); process.env.CALLS = CALLS;
 json(join(LAND, 'config.json'), { $axf: 'push-banner-config@1', repos: ['MossesX/AmberX-AXF'], autoLand: false, autoMerge: false, landWaitUi: true, mergeQueue: true, queueMode: 'batch' });
 json(join(LAND, 'merge-queue.json'), { $axf: 'merge-queue@1', at: NOW, items: [], waiting: [
-  // #816 as the queue had it before this build: held on a UI Review whose item was never in the console, for 6 hours
+  // PR 816 as the queue had it before this build: held on a UI Review whose item was never in the console, for 6 hours
   { pr: 816, title: 'Orchestrator: live demo', build: 'orchestrator-live-demo', branch: 'claude/orchestrator-live-demo', head: 'a816a816a816a816a816a816a816a816a816a816', state: 'held', why: 'its screenshots wait for Brett in UI Review', since: '2026-11-18T04:00:00.000Z', prCi: 'success' },
 ], merged: [] });
 json(join(LAND, 'land.json'), { $axf: 'auto-land@1', items: [{ id: 'orchestrator-live-demo', pr: 816, title: 'Orchestrator: live demo', branch: 'claude/orchestrator-live-demo', head: 'a816a816a816a816a816a816a816a816a816a816', state: 'blocked', ci: 'success', reason: { kind: 'ui', text: 'orchestrator-live-demo: its screenshots are waiting in UI Review. Approve them and it merges by itself.' }, since: '2026-11-18T04:00:00.000Z', reviewFlag: 'missing' }] });
@@ -58,15 +58,15 @@ const consoleNoItem = async (method, path) => (path.startsWith('/api/plugins/ui-
 const consoleDown = async () => null;
 
 try {
-  // ---------------------------------------------------------------- 1. #816 lands
-  await t('#816: the live gate rules pass a green PR whose review item is missing, flagged ui-review-missing', () => {
+  // ---------------------------------------------------------------- 1. PR 816 lands
+  await t('PR 816: the live gate rules pass a green PR whose review item is missing, flagged ui-review-missing', () => {
     const v = g.run('check_pr', { snapshot: { ...SNAP, ui: 'missing' } });
     assert.equal(v.ok, true); assert.equal(v.pass, true); assert.equal(v.held, false); assert.equal(v.blockedBy, ''); assert.equal(v.flagged, true); assert.deepEqual(v.flags, ['ui-review-missing']); assert.equal(v.reviewFlag, 'missing');
     assert.match(v.notes[0], /not in the console.*lands.*flagged/);
     const unk = g.run('check_pr', { snapshot: { ...SNAP, ui: 'unknown' } }); assert.equal(unk.pass, true); assert.equal(unk.reviewFlag, 'missing');
     const wait = g.run('check_pr', { snapshot: { ...SNAP, ui: 'waiting' } }); assert.equal(wait.pass, false); assert.equal(wait.held, true); assert.equal(wait.blockedBy, 'ui-review');
   });
-  await t('#816: the landing line looks the item up in the console, finds none, and nothing holds it (the lookup that fails is no hold either)', async () => {
+  await t('PR 816: the landing line looks the item up in the console, finds none, and nothing holds it (the lookup that fails is no hold either)', async () => {
     const rv = await lookupReview({ api: consoleNoItem, branch: SNAP.branch, pr: 816, claimed: true });
     assert.equal(rv.ui, 'missing'); assert.equal(rv.reviewFlag, 'missing'); assert.deepEqual(rv.items, []);
     assert.equal(core.blockReason(SNAP.build, { ci: 'success', ui: rv.ui, waitUi: true }), null);
@@ -76,7 +76,7 @@ try {
     // what held it before this build: the same facts, under the old reading, held (kept here as the fixed point)
     assert.equal(core.UI_HOLDS.includes('unknown'), false); assert.ok(core.UI_FLAGGED.includes('unknown'));
   });
-  await t('#816: the merge queue takes it (notReady is empty) and the record carries the flag, not a hold', () => {
+  await t('PR 816: the merge queue takes it (notReady is empty) and the record carries the flag, not a hold', () => {
     const fact = { number: 816, head: SNAP.head, draft: false, fork: false, ci: 'success', ui: 'missing' };
     assert.equal(q.notReady(fact, {}, { waitUi: true, redJoins: true }), '');
     assert.equal(q.notReady({ ...fact, ui: 'unknown' }, {}, { waitUi: true, redJoins: true }), '');
@@ -85,7 +85,7 @@ try {
     const flagged = q.flaggedLandings([], [{ ...fact, build: SNAP.build, branch: SNAP.branch, title: SNAP.title }], new Set([816]), NOW);
     assert.deepEqual(flagged.map((f) => [f.pr, f.reviewFlag, f.build]), [[816, 'missing', 'orchestrator-live-demo']]);
   });
-  await t('#816: the server auto-lander decides land (reviewFlag missing), never wait', () => {
+  await t('PR 816: the server auto-lander decides land (reviewFlag missing), never wait', () => {
     const b = { build: SNAP.build, pr: 816, branch: SNAP.branch, head: SNAP.head, state: 'waiting', since: NOW, attempts: [] };
     const d = AL.decide(b, { ...SNAP, ui: 'missing' }, [], AL.normPolicy({}), { at: NOW });
     assert.equal(d.action, 'land'); assert.equal(d.reviewFlag, 'missing'); assert.match(d.reason, /missing from the console.*flagged/);
@@ -94,7 +94,7 @@ try {
   });
 
   // ---------------------------------------------------------------- 2. held past the limit → red with Land now
-  await t('held past the limit: held-prs lists #816 over the 60 min limit with since when and why, and the systems check item is red with a Land now row', () => {
+  await t('held past the limit: held-prs lists PR 816 over the 60 min limit with since when and why, and the systems check item is red with a Land now row', () => {
     const hp = g.run('held_prs');
     assert.equal(hp.ok, true); assert.deepEqual(hp.over, [816]);
     const row = hp.items.find((x) => x.pr === 816);
@@ -105,7 +105,7 @@ spec = importlib.util.spec_from_file_location("hp", ${JSON.stringify(join(HERE, 
 print(json.dumps(m.check(json.loads(sys.stdin.read()))))`], { input: JSON.stringify(hp), encoding: 'utf8' });
     assert.equal(py.status, 0, py.stderr);
     const item = JSON.parse(py.stdout.trim());
-    assert.equal(item.status, 'error'); assert.match(item.summary, /#816 \(orchestrator-live-demo\) has been held 6 h 00, longer than the 60 min limit/); assert.match(item.summary, /Land now/);
+    assert.equal(item.status, 'error'); assert.match(item.summary, /PR 816 \(orchestrator-live-demo\) has been held 6 h 00, longer than the 60 min limit/); assert.match(item.summary, /Land now/);
     assert.equal(item.fix.type, 'prs'); assert.equal(item.fix.label, 'Land now'); assert.equal(item.fix.items[0].pr, 816); assert.equal(item.fix.items[0].action, 'gate.land-now:816'); assert.equal(item.fix.items[0].target, 'grid:held-prs/row:816'); assert.equal(item.fix.items[0].route, 'POST /api/plugins/gate/land-now');
     assert.equal(g.run('held_prs', { limitMin: 600 }).over.length, 0, 'under a higher limit nothing is over');
   });

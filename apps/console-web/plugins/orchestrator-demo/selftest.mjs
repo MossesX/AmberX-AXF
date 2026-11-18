@@ -3,7 +3,7 @@
  * Brett: "If it recorded the test of the pipeline and didn't merge it on its own, then the test failed. It should have
  * tested itself before it did the demo."
  *
- * Before the demo runs its landing act it runs the REAL lander path on a throwaway PR state (#999001 on demo/selftest):
+ * Before the demo runs its landing act it runs the REAL lander path on a throwaway PR state (PR 999001 on demo/selftest):
  *   gate-verdict    the live gate rule set (gate-rules@1) evaluated through the gate plugin's own `check_pr`: a green PR
  *                   whose UI Review item is missing lands flagged (ui-review-missing), one whose item waits holds, a
  *                   failed lookup (unknown) never holds

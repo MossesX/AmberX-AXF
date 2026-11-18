@@ -217,7 +217,7 @@ test('self-test: the real lander path on a throwaway PR passes when the gate fla
   const r = await ST.selfTest({ deps: fakeDeps(), at: T0 });
   assert.equal(r.$axf, 'demo-selftest@1'); assert.equal(r.ok, true); assert.equal(r.pr, 999001); assert.equal(r.branch, 'demo/selftest');
   assert.deepEqual(r.checks.map((c) => [c.id, c.ok]), [['gate-verdict', true], ['review-lookup', true], ['queue-add', true], ['held-prs', true]]);
-  assert.match(r.checks[0].detail, /missing → land, flagged ui-review-missing; waiting → hold/); assert.match(r.checks[1].detail, /no item for #999001/); assert.match(r.checks[2].detail, /ready/);
+  assert.match(r.checks[0].detail, /missing → land, flagged ui-review-missing; waiting → hold/); assert.match(r.checks[1].detail, /no item for \x23999001/); assert.match(r.checks[2].detail, /ready/);
   // a console that does not answer is 'unknown': flagged, never a hold, so the test still passes and says so
   const down = await ST.selfTest({ deps: fakeDeps('console-down'), at: T0 });
   assert.equal(down.ok, true); assert.match(down.checks[1].detail, /did not answer: unknown = flagged, not a hold/); assert.equal(down.checks[1].data.answered, false);
@@ -288,7 +288,7 @@ test('the landing act runs for real: the demo PR is created, queued and passes o
   assert.equal(land.expect.text, 'landed'); assert.equal(land.expect.within, 45 * 60000); assert.ok(!rec.run.acts.some((a) => a.id === 'land-dry'));
   const base = { now: () => at(3000), log: () => {}, store: m.store, data: m.data, suffix: 'tst005', runId: rec.run.id, lander: dryLander({ data: m.data }), alerts: { raise: async () => {} } };
   const r = await P3.handlers['demo.land']({ ...base, realLanding: real }, land);
-  assert.equal(r.error, undefined); assert.match(r.observed, /PR #9001 from demo\/demo-ci-tst005 is in the merge queue/);
+  assert.equal(r.error, undefined); assert.match(r.observed, /PR \x239001 from demo\/demo-ci-tst005 is in the merge queue/);
   assert.deepEqual(calls.map((c) => c.path), ['/api/plugins/push-banner/demo-branch', '/api/plugins/push-banner/pr', '/api/plugins/push-banner/queue/add']);
   assert.equal(calls[0].body.branch, `demo/${ids.ci}`); assert.equal(calls[0].body.path, '_claude/builds/demo/landings.md'); assert.match(calls[0].body.line, /landed by the orchestrator demo/);
   assert.equal(findBuild(m.store, ids.ci).pr, 9001); assert.equal(real.entry(ids.ci).queued, true); assert.equal(real.entry(ids.ci).merged, false);
@@ -296,12 +296,12 @@ test('the landing act runs for real: the demo PR is created, queued and passes o
   assert.equal(await P3.expects.landed({ ...base, realLanding: real }, land), false);
   merged = true;
   assert.equal(await P3.expects.landed({ ...base, realLanding: real }, land), true);
-  const b = findBuild(m.store, ids.ci); assert.ok(b.steps.find((s) => s.id === 's3').done); assert.equal(b.status, 'landed'); assert.ok(b.notes.some((n) => /Landed for real: the merge queue merged PR #9001/.test(n.text)));
+  const b = findBuild(m.store, ids.ci); assert.ok(b.steps.find((s) => s.id === 's3').done); assert.equal(b.status, 'landed'); assert.ok(b.notes.some((n) => /Landed for real: the merge queue merged PR \x239001/.test(n.text)));
   assert.equal(real.entry(ids.ci).merged, true);
   // the queue refusing the PR is a failed act with the reason
   const calls2 = []; const refuse = realLanding({ call: async (mth, path, body) => { calls2.push(path); return path.endsWith('/queue/add') ? { ok: false, detail: 'it is a draft' } : path.endsWith('/pr') ? { number: 9002 } : { ok: true }; }, data: m.data });
   const r2 = await P3.handlers['demo.land']({ ...base, realLanding: refuse }, land);
-  assert.match(r2.error, /did not reach the merge queue: the merge queue did not take #9002: it is a draft/);
+  assert.match(r2.error, /did not reach the merge queue: the merge queue did not take \x239002: it is a draft/);
   // no real landing wired: the dry run is recorded, and that is a failed landing act (Brett: a dry run is not a landing)
   const r3 = await P3.handlers['demo.land']({ ...base, realLanding: null }, land);
   assert.match(r3.error, /did not merge: the real landing is not available/); assert.equal(await P3.expects.landed({ ...base, realLanding: null }, land), false);
