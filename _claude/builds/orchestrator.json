@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:03:26.703Z",
+ "updatedAt": "2026-11-18T01:03:57.758Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -184135,7 +184135,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:03:18.516Z",
+   "updatedAt": "2026-11-18T01:03:28.390Z",
    "builtAt": "",
    "notes": [
     {
@@ -184301,6 +184301,10 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session on hulu0241 finished phase Phase 1 with 1 step left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T01:03:18.516Z"
+    },
+    {
+     "text": "Watchdog fixed Flagship professional skin covering everything (Fable Ultra Code) (step s20): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T01:03:28.390Z"
     }
    ],
    "approvals": [
