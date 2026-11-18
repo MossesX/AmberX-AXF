@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T05:28:30.028Z",
+ "updatedAt": "2026-11-18T05:30:28.228Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -191203,7 +191203,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -191211,7 +191211,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:23:43.836Z",
+   "updatedAt": "2026-11-18T05:28:58.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -191257,6 +191257,14 @@
     {
      "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
      "at": "2026-11-18T05:21:43.849Z"
+    },
+    {
+     "text": "phase Phase 1 done, requeued for Opus: Session finished phase Phase 1 with 11 steps left: back in the Queue at its place, the next phase (Opus) starts by itself.",
+     "at": "2026-11-18T05:27:18.149Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s2): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T05:28:58.541Z"
     }
    ],
    "approvals": [],
