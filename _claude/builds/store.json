@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8594,
- "updatedAt": "2026-11-18T00:41:31.292Z",
+ "rev": 8595,
+ "updatedAt": "2026-11-18T00:43:10.557Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -296974,7 +296974,7 @@
    "branch": "claude/auto-lander-never-wait-missing-ui-review",
    "pr": "",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-18T00:39:29.346Z",
+   "updatedAt": "2026-11-18T00:42:59.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -297210,12 +297210,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T00:42:59.486Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T00:31:07.104Z"
+     "updatedAt": "2026-11-18T00:43:06.222Z"
     },
     {
      "id": "s7",
@@ -297468,7 +297468,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
