@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9028,
- "updatedAt": "2026-11-18T14:40:21.618Z",
+ "rev": 9029,
+ "updatedAt": "2026-11-18T14:41:36.717Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319130,14 +319130,14 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/every-app-gets-own-locked-default",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T14:40:03.931Z",
+   "updatedAt": "2026-11-18T14:41:01.745Z",
    "builtAt": "",
    "notes": [
     {
@@ -319183,6 +319183,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T13:46:28.536Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Opus, Phase 1): axf-every-app-gets-own-locked-default--lenny.",
+     "at": "2026-11-18T14:41:01.745Z"
     }
    ],
    "approvals": [],
@@ -319202,13 +319206,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:27:47.559Z",
     "queuedBy": "Brett",
-    "account": "mossesx-max-",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-every-app-gets-own-locked-default--lenny",
     "slot": "",
     "model": "Opus",
-    "phase": "",
-    "launchedAt": "2026-11-18T12:39:46.830Z",
-    "runs": 1,
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-18T14:40:41.917Z",
+    "runs": 2,
     "crashes": 0,
     "lastRun": {
      "at": "2026-11-18T12:45:04.157Z",
@@ -319228,9 +319232,9 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-18T12:39:46.830Z",
+    "dispatchedAt": "2026-11-18T14:40:41.917Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -319238,10 +319242,8 @@
      "at": "2026-11-18T12:52:31.420Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
-    "pickedAt": "2026-11-18T12:39:46.830Z",
+    "tried": [],
+    "pickedAt": "2026-11-18T14:40:41.917Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -319391,7 +319393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
