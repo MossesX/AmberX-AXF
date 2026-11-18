@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:42:00.452Z",
+ "updatedAt": "2026-11-18T01:42:13.431Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -198175,7 +198175,7 @@
    "status": "pending",
    "hidden": false,
    "source": "console",
-   "pendingId": "vps-frees-stale-build-slots-every-2",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T01:37:23.899Z",
@@ -198210,7 +198210,10 @@
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [],
+     "files": [
+      "framework/cli/agent-slots.mjs",
+      "_claude/memory/docs/agent-slots-reaper.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198218,7 +198221,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90f3cht",
+     "uid": "st-mwlgh3i30f8plp",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198229,7 +198232,10 @@
      "phase": "",
      "group": "",
      "estimate": "9 min",
-     "files": [],
+     "files": [
+      "framework/cli/agent-slots.mjs",
+      "deploy/claude-headless.sh"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198237,7 +198243,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90gct1v",
+     "uid": "st-mwlgh3i30g057b",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198248,7 +198254,9 @@
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "framework/cli/slot-reaper-core.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198256,7 +198264,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90hfogr",
+     "uid": "st-mwlgh3i30h7brh",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198267,7 +198275,9 @@
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "framework/spec/check-slot-reaper.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198275,7 +198285,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90i3tj0",
+     "uid": "st-mwlgh3i30ib55e",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198286,7 +198296,9 @@
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "framework/cli/agent-slots.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198294,7 +198306,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90j2m3e",
+     "uid": "st-mwlgh3i30juszt",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198305,7 +198317,10 @@
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [],
+     "files": [
+      "framework/cli/agent-slots.mjs",
+      "framework/schemas/data-store-paths.json"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198313,7 +198328,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90kwbiy",
+     "uid": "st-mwlgh3i30k97n0",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198324,7 +198339,10 @@
      "phase": "",
      "group": "",
      "estimate": "7 min",
-     "files": [],
+     "files": [
+      "framework/cli/agent-slots.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198332,7 +198350,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90leq9l",
+     "uid": "st-mwlgh3i30l9yi2",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198343,7 +198361,13 @@
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "deploy/axf-slot-reaper.service",
+      "deploy/axf-slot-reaper.timer",
+      "framework/deploy/axf-deploy.sh",
+      "apps/console-web/plugins/agent-slots/install.mjs",
+      "apps/console-web/plugins/agent-slots/uninstall.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198351,7 +198375,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90mukiw",
+     "uid": "st-mwlgh3i30m2bi5",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198362,7 +198386,10 @@
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/agent-slots/server/",
+      "apps/console-web/plugins/systems-check/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198370,7 +198397,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90nkneg",
+     "uid": "st-mwlgh3i30nf1x1",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198381,7 +198408,10 @@
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/agent-slots/web/",
+      "apps/console-web/plugins/agent-slots/plugin.json"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198389,7 +198419,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90oxu6i",
+     "uid": "st-mwlgh3i30oy17u",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198400,7 +198430,11 @@
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/agent-slots/server/",
+      "apps/console-web/plugins/agent-slots/commands.json",
+      "framework/cli/axf.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198408,7 +198442,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90pp01h",
+     "uid": "st-mwlgh3i30pd3di",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198419,7 +198453,10 @@
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [],
+     "files": [
+      ".github/workflows/android.yml",
+      "framework/spec/check-slot-reaper.mjs"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198427,7 +198464,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90qd6lo",
+     "uid": "st-mwlgh3i30q6vhs",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198438,7 +198475,9 @@
      "phase": "",
      "group": "",
      "estimate": "6 min",
-     "files": [],
+     "files": [
+      "_claude/builds/reports/vps-frees-stale-build-slots-every-2.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198446,7 +198485,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90r490o",
+     "uid": "st-mwlgh3i30r0nx9",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198457,7 +198496,9 @@
      "phase": "",
      "group": "",
      "estimate": "9 min",
-     "files": [],
+     "files": [
+      "apps/console-web/plugins/agent-slots/assets/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198465,7 +198506,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90sb9w0",
+     "uid": "st-mwlgh3i30s5vfx",
      "createdAt": "2026-11-18T01:41:46.107Z"
     },
     {
@@ -198476,7 +198517,10 @@
      "phase": "",
      "group": "",
      "estimate": "8 min",
-     "files": [],
+     "files": [
+      "_claude/builds/reports/vps-frees-stale-build-slots-every-2.md",
+      "_claude/THREADS.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -198484,7 +198528,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwlgh5s90tzskf",
+     "uid": "st-mwlgh3i30tkb3c",
      "createdAt": "2026-11-18T01:41:46.107Z"
     }
    ]
@@ -198530,10 +198574,10 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
-   "pendingId": "approval-pass-covers-every-call",
+   "pendingId": "",
    "branch": "",
    "pr": "",
    "priority": "P0",
