@@ -840,12 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `rebuild-fresh-main-collapsible-sections` added (17 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `nothing-saved-browser-all-console` added (18 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `merge-queue-view-every-build-s-fully` added (15 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `grid-filter-plugin-one-filter-search` added (1 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `ci-run-only-what-changed-no-second-run` added (14 steps) (all) · foreign-write
-- 2026-11-18 08:59 UTC · `pending-optimizer-ai-finds-pending` added (20 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `separate-settings-per-plugin-reset` added (18 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `rebuild-every-toolbar-page-specific` added (28 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `notify-phone-when-queue-starts-building` added (10 steps) (all) · foreign-write
@@ -1240,6 +1234,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 17:27 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
 - 2026-11-18 17:27 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
 - 2026-11-18 17:27 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-18 17:28 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
+- 2026-11-18 17:28 UTC · `one-build-time-always-split-to-fill` s20 done (all) · foreign-write
+- 2026-11-18 17:30 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 17:30 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 17:30 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 17:30 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 

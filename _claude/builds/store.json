@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9103,
- "updatedAt": "2026-11-18T17:27:49.808Z",
+ "rev": 9104,
+ "updatedAt": "2026-11-18T17:30:48.439Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244419,7 +244419,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244428,8 +244428,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T17:21:07.417Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T17:30:39.719Z",
+   "builtAt": "2026-11-18T17:30:39.719Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -244634,6 +244634,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T17:21:07.417Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T17:30:39.719Z"
     }
    ],
    "approvals": [],
@@ -244694,14 +244698,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "failure": {
-    "kind": "ci-red",
-    "at": "2026-11-18T17:21:07.417Z",
-    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
-    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
-    "step": "",
-    "exit": null
    },
    "landed": {
     "pr": 767,
@@ -245249,7 +245245,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275356,8 +275352,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T17:20:27.127Z",
-   "builtAt": "2026-11-18T17:20:27.127Z",
+   "updatedAt": "2026-11-18T17:30:39.719Z",
+   "builtAt": "2026-11-18T17:30:39.719Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -275678,6 +275674,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T17:20:27.127Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T17:30:39.719Z"
     }
    ],
    "approvals": [
@@ -276476,7 +276476,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 122,
+   "rev": 123,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313732,8 +313732,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T17:20:27.127Z",
-   "builtAt": "2026-11-18T17:20:27.127Z",
+   "updatedAt": "2026-11-18T17:30:39.719Z",
+   "builtAt": "2026-11-18T17:30:39.719Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -313826,6 +313826,10 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T17:20:27.127Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T17:30:39.719Z"
     }
    ],
    "approvals": [],
@@ -314251,7 +314255,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -319034,8 +319038,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T17:20:27.127Z",
-   "builtAt": "2026-11-18T17:20:27.127Z",
+   "updatedAt": "2026-11-18T17:30:39.719Z",
+   "builtAt": "2026-11-18T17:30:39.719Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319116,6 +319120,10 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-18T17:20:27.127Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T17:30:39.719Z"
     }
    ],
    "approvals": [],
@@ -319283,7 +319291,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -320402,7 +320410,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T17:27:40.718Z",
+   "updatedAt": "2026-11-18T17:28:25.239Z",
    "builtAt": "",
    "notes": [
     {
@@ -320544,7 +320552,7 @@
     "session": "axf-one-build-time-always-split-to-fill--gina",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 2",
+    "phase": "",
     "launchedAt": "2026-11-18T17:27:21.139Z",
     "runs": 2,
     "crashes": 0,
@@ -321072,12 +321080,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T17:28:25.239Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T17:28:59.166Z"
     },
     {
      "id": "s21",
@@ -321263,7 +321271,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -321451,14 +321459,14 @@
    "title": "Stop the push storm: builds-live pushes at build end only, Expenses rebuilds only on its own changes",
    "category": "orchestrator",
    "detail": "Brett's words: \"We don't need it to do a update main on every fucking little thing. It needs to do it just at the end of the build.\" (about builds-live) and, about Expenses: \"Why is that shit even running? ... I just want to do what it needs to do to fucking update.\"\n\nFound on the VPS (load average 60): framework/cli/builds-live.mjs pushes a status-only [skip ci] commit to main for every store write (step, note, status), rewriting _claude/builds/store.json (over 2 MB), the orchestrator export and a THREADS.md live-log line, roughly every 30 s. apps/expenses/deploy/install.sh then builds a new expenses-axf image tagged with every new main commit (the live container is tagged with a status-only commit), so every status push also triggers a Docker build.\n\nReplaces the Nov 3 2026 'Builds go live to main' rule: store writes stay local/in the build's branch while it runs; one push to main when the build finishes (built/landed/failed). Update CLAUDE.md and _claude/builds/README.md to match.",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-18T16:13:44.842Z",
+   "updatedAt": "2026-11-18T17:27:53.468Z",
    "builtAt": "2026-11-18T16:11:28.234Z",
    "notes": [
     {
@@ -321480,6 +321488,10 @@
     {
      "text": "Headless run axf-stop-push-storm-builds-live-pushes-build--rhonda: brief only · start 12.9K tokens ($0.03) · cost $1.66 · 34 turns · 6 tools, MCP none",
      "at": "2026-11-18T16:13:44.842Z"
+    },
+    {
+     "text": "Reconciler: branch claude/stop-push-storm-builds-live-pushes-build (no PR yet)",
+     "at": "2026-11-18T17:27:53.468Z"
     }
    ],
    "approvals": [],
@@ -321582,7 +321594,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
