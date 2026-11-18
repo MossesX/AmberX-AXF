@@ -102,7 +102,7 @@ export function ToolbarWidgetSlot({ instance, side, label, overflow = [], resolv
   const more = side === 'end' ? Object.values(r.sides).flat().filter((w) => overflow.includes(w.key)) : [];
   if (!list.length && !more.length) return null;
   return (
-    <div className={`fx-toolbar__widgets fx-toolbar__widgets--${side}`} role="group" aria-label={`${label ?? 'Toolbar'} widgets (${side})`} data-axf-toolbar-widgets={`${instance}:${side}`}>
+    <div className={`fx-toolbar__widgets is-${side}`} role="group" aria-label={`${label ?? 'Toolbar'} widgets (${side})`} data-axf-toolbar-widgets={`${instance}:${side}`}>
       {list.map((w) => <ToolbarWidgetItem key={w.key} instance={instance} w={w} />)}
       {more.length > 0 && (
         <span className="fx-toolbar__widgets-more">

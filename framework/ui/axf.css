@@ -336,6 +336,24 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar__widget { display: inline-flex; align-items: center; min-width: 0; flex: none; }
 .fx-toolbar__widgets { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0; flex: none; }
 .fx-toolbar.is-arranging .fx-toolbar__widgets { min-width: calc(var(--fx-space) * 6); min-height: calc(var(--fx-space) * 3); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: 0 var(--fx-dens-gap-md); }
+/* Widgets on any toolbar, banner style (toolbar-widgets@1, react/components/ToolbarWidgetSlot.tsx). Snap, never overlap
+   (Brett, Oct 28 2026), in the fitToolbar order: a side sizes to its content and never shrinks, the search bar is the one
+   widget that gives way (down to its minimum), widgets that still don't fit go into the side's ⋯ menu by priority, and a
+   bar that is still too wide scrolls sideways with every widget a snap point. Nothing is clipped or drawn over a neighbour. */
+.fx-toolbar__widgets > .fx-banner__item { flex: none; scroll-snap-align: start; }
+.fx-toolbar__widgets > .fx-banner__item:has(> .fx-widget-search) { flex: 0 1 auto; min-width: 0; }
+.fx-toolbar__widgets:has(> .fx-banner__item > .fx-widget-search) { flex: 0 1 auto; }
+.fx-toolbar .fx-widget-search { min-width: calc(var(--fx-space) * 12); }
+.fx-toolbar__widgets > [data-fx-wsize] { overflow: hidden; }
+.fx-toolbar__widgets-more { position: relative; flex: none; display: inline-flex; align-items: center; scroll-snap-align: end; }
+.fx-toolbar__widgets-more > .fx-banner__more-btn { display: inline-flex; }
+/* a shaped widget (shape@1 ref resolved by the engine): the banner chip frame, cut by the theme's radii */
+.fx-toolbar__widget.fx-shaped { padding: 0 var(--fx-dens-gap-md); min-height: calc(var(--fx-space) * 3); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-tint) * 100%), transparent); border: var(--fx-border-w) solid color-mix(in srgb, var(--fx-border) calc(var(--fx-opacity-muted) * 100%), transparent); }
+.fx-toolbar__widget[data-fx-shape='pill'], .fx-toolbar__widget[data-fx-shape='circle'] { border-radius: 999px; }
+.fx-toolbar__widget[data-fx-shape='circle'] { min-width: calc(var(--fx-space) * 3); justify-content: center; padding: 0; }
+.fx-toolbar__widget[data-fx-shape='rounded'], .fx-toolbar__widget[data-fx-shape='squircle'] { border-radius: var(--fx-radius-md); }
+.fx-toolbar__widget[data-fx-shape='square'] { border-radius: var(--fx-radius-sm); }
+.fx-toolbar__widget.fx-shaped:hover { background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-hover) * 100%), transparent); }
 
 /* ---------------- arrange mode: drag widgets on a host, they snap between the others (react/components/Arrange.tsx) ---------------- */
 .fx-banner.is-arranging .fx-banner__side { overflow: visible; outline: var(--fx-border-w) dashed var(--fx-border); outline-offset: -2px; border-radius: var(--fx-radius-sm); min-height: 70%; }
