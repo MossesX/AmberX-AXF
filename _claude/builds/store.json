@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9059,
- "updatedAt": "2026-11-18T15:19:49.832Z",
+ "rev": 9060,
+ "updatedAt": "2026-11-18T15:20:36.720Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -320283,7 +320283,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T15:16:49.512Z",
+   "updatedAt": "2026-11-18T15:20:18.826Z",
    "builtAt": "",
    "notes": [
     {
@@ -320367,7 +320367,16 @@
      "at": "2026-11-18T15:16:49.512Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-18T15:20:18.826Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -320569,12 +320578,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:20:18.826Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T12:46:17.539Z"
+     "updatedAt": "2026-11-18T15:20:20.627Z"
     },
     {
      "id": "s7",
