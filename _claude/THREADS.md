@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:25 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-18 00:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 00:25 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, → running (all) · orchestrator
 - 2026-11-18 00:25 UTC · `auto-lander-never-wait-missing-ui-review` s1 done (all) · foreign-write
 - 2026-11-18 00:26 UTC · `auto-lander-never-wait-missing-ui-review` s1 done (all) · foreign-write
 - 2026-11-18 00:27 UTC · `move-server-side-console-parts-onto-vps` s25 done (all) · orchestrator
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · orchestrator
 - 2026-11-18 01:36 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · pipeline
 - 2026-11-18 01:36 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · console
+- 2026-11-18 01:37 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
+- 2026-11-18 01:37 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:37 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
 
 ## Token passes (log)
 
