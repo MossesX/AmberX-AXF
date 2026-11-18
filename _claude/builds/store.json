@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8974,
- "updatedAt": "2026-11-18T13:28:13.113Z",
+ "rev": 8975,
+ "updatedAt": "2026-11-18T13:29:27.120Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319284,7 +319284,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T13:18:16.517Z",
+   "updatedAt": "2026-11-18T13:28:14.734Z",
    "builtAt": "",
    "notes": [
     {
@@ -319333,13 +319333,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:30:30.645Z",
     "queuedBy": "Brett",
-    "account": "hulu0241",
-    "session": "axf-every-plugin-gets-own-default-toolbar--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-18T13:17:14.831Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -319350,9 +319350,9 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
+    "note": "launch failed: worktree for every-plugin-gets-own-default-toolbar: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
-    "dispatchedAt": "2026-11-18T13:17:14.831Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -319360,8 +319360,10 @@
      "at": "2026-11-18T12:52:31.420Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-18T13:17:14.831Z",
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -319382,12 +319384,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:28:14.734Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:32:10.647Z",
-     "updatedAt": "2026-11-18T12:32:10.647Z"
+     "updatedAt": "2026-11-18T13:28:16.814Z"
     },
     {
      "id": "s2",
@@ -319536,7 +319538,25 @@
    "rev": 14,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "Brett",
+    "planId": "",
+    "createdAt": "2026-11-18T12:30:23.226Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwm3pj1301peo9": "2026-11-18T12:32:10.647Z",
+     "st-mwm3pj1302oacx": "2026-11-18T12:32:10.647Z",
+     "st-mwm3pj1303lpdb": "2026-11-18T12:32:10.647Z",
+     "st-mwm3pj1304ugvu": "2026-11-18T12:32:10.647Z",
+     "st-mwm3pj13059594": "2026-11-18T12:32:10.647Z",
+     "st-mwm3pj13063r4n": "2026-11-18T12:32:10.647Z",
+     "st-mwm3pj1307e7l8": "2026-11-18T12:32:10.647Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T12:32:10.647Z",
    "rearranged": false,
