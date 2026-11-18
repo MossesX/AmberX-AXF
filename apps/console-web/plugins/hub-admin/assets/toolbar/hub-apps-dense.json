@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "apps"
+  ],
+  "id": "hub-apps-dense",
+  "name": "Hub · Apps (dense)",
+  "description": "The Apps toolbar as icons only, compact: the phone's row. Labels are the tooltips.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "apps",
+    "showSearch": false,
+    "variant": "icons",
+    "align": "start",
+    "density": "compact",
+    "overflow": {
+      "when": "auto",
+      "keep": 3,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Apps",
+        "items": []
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-overview",
+            "icon": "shield",
+            "label": "Hub",
+            "action": "hub.open:overview",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

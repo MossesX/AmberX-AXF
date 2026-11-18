@@ -6,22 +6,387 @@
   "version": "0.1.0",
   "description": "Help mode entries (help@1) for the Hub plugin: the view, each tab of the hub.tabs row and the settings sub-tab.",
   "author": "Brett",
-  "tags": ["help", "hub"],
+  "tags": [
+    "help",
+    "hub"
+  ],
   "data": {
     "scope": "plugin:hub-admin",
     "entries": [
-      { "target": "view:hub", "title": "Hub", "text": "Every axHub page in the console: approvals, the log, passes and veto, users, your account, connectors and services, handoff, auth admin and app downloads. Pick a tab; each screen is also a deep link, a REST read, an MCP tool, a CLI line and a voice action.", "kind": "screen" },
-      { "target": "tab:hub.tabs=overview", "title": "Hub", "text": "Whether this browser is signed in to axHub, how many calls wait, and one tap to sign in or out.", "kind": "screen" },
-      { "target": "tab:hub.tabs=approvals", "title": "Approvals", "text": "Every call axHub is holding or asking about, with its countdown. Approve, Deny and Shelve are your own tap; no session can press them.", "kind": "screen" },
-      { "target": "tab:hub.tabs=log", "title": "Approval log", "text": "Every request the hub asked about, how it was decided and what happened after, with filters for service, tool, who and outcome.", "kind": "screen" },
-      { "target": "tab:hub.tabs=passes", "title": "Passes and veto", "text": "Timed passes that let calls run without the veto wait, the go pass for sessions that cannot reach axHub, and the veto countdown. Granting is your own tap.", "kind": "screen" },
-      { "target": "tab:hub.tabs=users", "title": "Users", "text": "Who can sign in to the hub and what each account may open. Role changes, disabling and deleting ask you to confirm.", "kind": "screen" },
-      { "target": "tab:hub.tabs=account", "title": "Account", "text": "Your hub account: name and email, password, signed-in browsers, the linked phone and notification preferences.", "kind": "screen" },
-      { "target": "tab:hub.tabs=connectors", "title": "Apps and connectors", "text": "Every connected service with its status, its tools and their policies (allow, veto, confirm), and the health of its keys. Open a row for the service detail.", "kind": "screen" },
-      { "target": "tab:hub.tabs=handoff", "title": "Handoff", "text": "Claude account handoff kits the hub built: open one, send it to a session and mark it sent.", "kind": "screen" },
-      { "target": "tab:hub.tabs=auth", "title": "Auth admin", "text": "OAuth clients, API tokens and sign-in methods. A token is shown once when created and never stored in the console.", "kind": "screen" },
-      { "target": "tab:hub.tabs=apps", "title": "Apps", "text": "Every app the framework's CI built, with a download each.", "kind": "screen" },
-      { "target": "hub", "title": "Hub settings", "text": "Settings → Plugins → Hub: every setting the axHub web app used to keep, now in the console (how often the hub is read, grid columns, log filters, grant-pass defaults, the veto countdown). No wait stays in Claude settings and shows here read-only." }
+      {
+        "target": "view:hub",
+        "title": "Hub",
+        "text": "Every axHub page in the console: approvals, the log, passes and veto, users, your account, connectors and services, handoff, auth admin and app downloads. Pick a tab; each screen is also a deep link, a REST read, an MCP tool, a CLI line and a voice action.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.hub-status",
+        "title": "Hub",
+        "text": "Whether this browser is signed in to axHub, how many calls wait, and one tap to sign in or out.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.approvals",
+        "title": "Approvals",
+        "text": "Every call axHub is holding or asking about, with its countdown. Approve, Deny and Shelve are your own tap; no session can press them.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.approval-log",
+        "title": "Approval log",
+        "text": "Every request the hub asked about, how it was decided and what happened after, with filters for service, tool, who and outcome.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.passes-and-veto",
+        "title": "Passes and veto",
+        "text": "Timed passes that let calls run without the veto wait, the go pass for sessions that cannot reach axHub, and the veto countdown. Granting is your own tap.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.users",
+        "title": "Users",
+        "text": "Who can sign in to the hub and what each account may open. Role changes, disabling and deleting ask you to confirm.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.account",
+        "title": "Account",
+        "text": "Your hub account: name and email, password, signed-in browsers, the linked phone and notification preferences.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.apps-and-connectors",
+        "title": "Apps and connectors",
+        "text": "Every connected service with its status, its tools and their policies (allow, veto, confirm), and the health of its keys. Open a row for the service detail.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.handoff",
+        "title": "Handoff",
+        "text": "Claude account handoff kits the hub built: open one, send it to a session and mark it sent.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.auth-admin",
+        "title": "Auth admin",
+        "text": "OAuth clients, API tokens and sign-in methods. A token is shown once when created and never stored in the console.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub.tab.apps",
+        "title": "Apps",
+        "text": "Every app the framework's CI built, with a download each.",
+        "kind": "screen"
+      },
+      {
+        "target": "hub",
+        "title": "Hub settings",
+        "text": "Settings → Plugins → Hub: every setting the axHub web app used to keep, now in the console (how often the hub is read, grid columns, log filters, grant-pass defaults, the veto countdown). No wait stays in Claude settings and shows here read-only."
+      },
+      {
+        "target": "approve",
+        "title": "Approve",
+        "text": "Lets the call run (a held call runs at once). Your own tap in your signed-in browser; no session, tool or voice command can press it."
+      },
+      {
+        "target": "deny",
+        "title": "Deny",
+        "text": "Stops the call. Your own tap; a denied call never runs."
+      },
+      {
+        "target": "shelve",
+        "title": "Shelve",
+        "text": "Pauses a held call's countdown until you decide. Your own tap."
+      },
+      {
+        "target": "check",
+        "title": "Check now",
+        "text": "Reads axHub again at once. Every screen re-reads on its own while open."
+      },
+      {
+        "target": "grant",
+        "title": "Grant a pass",
+        "text": "Switches a timed pass on: calls it covers run without the veto wait until it ends. Your own tap; a session can only ask (it shows here with Grant)."
+      },
+      {
+        "target": "revoke",
+        "title": "Revoke",
+        "text": "Ends a pass now. Tap twice: the second tap carries the server's confirm token."
+      },
+      {
+        "target": "veto-countdown",
+        "title": "Veto countdown",
+        "text": "How long a held call counts down before it runs. Changing it writes the new hold onto every tool axHub holds for a veto (a confirm through your hub session)."
+      },
+      {
+        "target": "hub-notices-on-the-phone",
+        "title": "Hub notices on the phone",
+        "text": "When on, a new call waiting on axHub is sent once to your phone through Phone Connect; the notice opens this console's Approvals screen on that request."
+      },
+      {
+        "target": "approvals-toolbar",
+        "title": "Approvals toolbar",
+        "text": "The screen's commands (check the hub now, stop auto-approve, tell the phone) and jumps to the log and passes. Three looks to pick from: standard, dense, grouped. Deciding stays on the rows."
+      },
+      {
+        "target": "phone-connect",
+        "title": "Phone Connect",
+        "text": "Opens Phone Connect's settings, where your phone is paired. Hub notices open this console's Approvals screen on it.",
+        "kind": "button"
+      },
+      {
+        "target": "notification-settings",
+        "title": "Notification settings",
+        "text": "Opens Claude settings → Notifications: what reaches your phone and when. The hub reads the same values.",
+        "kind": "button"
+      },
+      {
+        "target": "current-password",
+        "title": "Current password",
+        "text": "Your hub password as it is now; the hub checks it before changing anything.",
+        "kind": "field"
+      },
+      {
+        "target": "new-password",
+        "title": "New password",
+        "text": "The new hub password (at least the hub's minimum length). Your own tap sends it; the console never stores it.",
+        "kind": "field"
+      },
+      {
+        "target": "new-password-again",
+        "title": "New password again",
+        "text": "The new password once more, so a typo does not lock you out.",
+        "kind": "field"
+      },
+      {
+        "target": "change-password",
+        "title": "Change password",
+        "text": "Changes your hub password. Your own tap in your signed-in browser; it goes to axHub through your session.",
+        "kind": "button"
+      },
+      {
+        "target": "newer",
+        "title": "Newer",
+        "text": "The newer page of requests.",
+        "kind": "button"
+      },
+      {
+        "target": "older",
+        "title": "Older",
+        "text": "The older page of requests.",
+        "kind": "button"
+      },
+      {
+        "target": "users",
+        "title": "Users",
+        "text": "Jumps to the Users screen: accounts, roles and permissions.",
+        "kind": "button"
+      },
+      {
+        "target": "i-have-copied-it",
+        "title": "I have copied it",
+        "text": "Hides the token just created. It is shown once; the console does not keep it.",
+        "kind": "button"
+      },
+      {
+        "target": "scopes-comma-separated",
+        "title": "Scopes (comma-separated)",
+        "text": "What the token may do on the hub, comma-separated. Empty = the hub's default.",
+        "kind": "field"
+      },
+      {
+        "target": "expires-in-days",
+        "title": "Expires in (days)",
+        "text": "How many days until the token stops working.",
+        "kind": "field"
+      },
+      {
+        "target": "create-a-token",
+        "title": "Create a token",
+        "text": "Creates an API token on the hub and shows its secret once. Your own tap. Today's hub has no token admin route yet: it says so.",
+        "kind": "button"
+      },
+      {
+        "target": "client-name",
+        "title": "Client name",
+        "text": "The OAuth client's name as sign-in screens will show it.",
+        "kind": "field"
+      },
+      {
+        "target": "redirect-uris-comma-separated",
+        "title": "Redirect URIs (comma-separated)",
+        "text": "Where the hub may send a browser back after an OAuth sign-in, comma-separated.",
+        "kind": "field"
+      },
+      {
+        "target": "add-a-connector",
+        "title": "Add a connector",
+        "text": "Asks the hub to add a connector. axHub configures services in its own command line today, so this says what to run there.",
+        "kind": "button"
+      },
+      {
+        "target": "its-calls-in-the-log",
+        "title": "Its calls in the log",
+        "text": "Opens the approval log on this service's calls.",
+        "kind": "button"
+      },
+      {
+        "target": "policy",
+        "title": "Policy",
+        "text": "What a tool may do: allow (runs at once), veto (runs after a countdown unless you deny it), confirm (waits for your approval), deny; or follow the service.",
+        "kind": "field"
+      },
+      {
+        "target": "send-copy-the-prompt-and-mark-sent",
+        "title": "Send: copy the prompt and mark sent",
+        "text": "Copies the handoff prompt for the new account's session and marks the run sent on the hub.",
+        "kind": "button"
+      },
+      {
+        "target": "accept-on-this-device",
+        "title": "Accept on this device",
+        "text": "Accepts the handoff on this device. Waits on the hub protocol; today the hub says it has no route for it.",
+        "kind": "button"
+      },
+      {
+        "target": "requests",
+        "title": "Requests",
+        "text": "Back to the Approvals screen (every request).",
+        "kind": "button"
+      },
+      {
+        "target": "download-json",
+        "title": "Download JSON",
+        "text": "Downloads the whole approval log as JSON from the hub, under your hub sign-in.",
+        "kind": "button"
+      },
+      {
+        "target": "service",
+        "title": "Service",
+        "text": "Narrows the log to one service (a tool's namespace, such as vps or github).",
+        "kind": "field"
+      },
+      {
+        "target": "tool",
+        "title": "Tool",
+        "text": "Narrows the log to one tool.",
+        "kind": "field"
+      },
+      {
+        "target": "outcome",
+        "title": "Outcome",
+        "text": "Narrows the log to one outcome (approved, declined, expired, ran …).",
+        "kind": "field"
+      },
+      {
+        "target": "decided",
+        "title": "Decided",
+        "text": "Narrows the log by how a request was decided: not decided, on the web, in the terminal, automatically, other.",
+        "kind": "field"
+      },
+      {
+        "target": "pass",
+        "title": "Pass",
+        "text": "Narrows the log to calls that ran under a timed pass, or one pass.",
+        "kind": "field"
+      },
+      {
+        "target": "the-request",
+        "title": "The request",
+        "text": "Opens that request on the Approvals screen.",
+        "kind": "button"
+      },
+      {
+        "target": "ran-under-a-pass",
+        "title": "Ran under a pass",
+        "text": "Opens the approval log on the calls that ran under a pass.",
+        "kind": "button"
+      },
+      {
+        "target": "min-from-now",
+        "title": "min from now",
+        "text": "Extends the pass so it ends that many minutes from now.",
+        "kind": "button"
+      },
+      {
+        "target": "its-calls",
+        "title": "Its calls",
+        "text": "Opens the approval log on the calls that ran under this pass.",
+        "kind": "button"
+      },
+      {
+        "target": "grant-min",
+        "title": "Grant min",
+        "text": "Grants the pass a session asked for, as asked. Your own tap; the session could only ask.",
+        "kind": "button"
+      },
+      {
+        "target": "scope-control-target-matches-anything",
+        "title": "Scope (control@1 target; * matches anything)",
+        "text": "Which control@1 targets the pass covers (tokens.theme, tokens.*; * matches anything).",
+        "kind": "field"
+      },
+      {
+        "target": "tools-empty-every-tool-in-the-scope",
+        "title": "Tools (empty = every tool in the scope)",
+        "text": "Which tools the pass covers; empty = every tool in the scope. Destructive tools never run under a pass.",
+        "kind": "field"
+      },
+      {
+        "target": "note-optional-shown-in-the-pass",
+        "title": "Note (optional, shown in the pass)",
+        "text": "A line shown in the go pass, for the sessions that read it.",
+        "kind": "field"
+      },
+      {
+        "target": "go-for-h",
+        "title": "Go for h",
+        "text": "Gives the go pass for that many hours: sessions that cannot reach axHub may work. Your own tap.",
+        "kind": "button"
+      },
+      {
+        "target": "reset-every-remembered-value",
+        "title": "Reset every remembered value",
+        "text": "Puts every value the Hub screens remember (grid columns, log filters, grant defaults, poll) back to the route table's default.",
+        "kind": "button"
+      },
+      {
+        "target": "username",
+        "title": "Username",
+        "text": "The new account's sign-in name on the hub.",
+        "kind": "field"
+      },
+      {
+        "target": "temporary-password",
+        "title": "Temporary password",
+        "text": "A first password they replace at their first sign-in; it stops working after three days.",
+        "kind": "field"
+      },
+      {
+        "target": "save-name-and-email",
+        "title": "Save name and email",
+        "text": "Saves the account's name and email on the hub.",
+        "kind": "button"
+      },
+      {
+        "target": "another-permission",
+        "title": "Another permission",
+        "text": "A permission id not in the list (console.plugin.<folder> …); Add puts it in the set, Save permissions writes it.",
+        "kind": "field"
+      },
+      {
+        "target": "set-a-temporary-password",
+        "title": "Set a temporary password",
+        "text": "A temporary password for this account; they pick their own at next sign-in. Your own tap; never stored here.",
+        "kind": "field"
+      },
+      {
+        "target": "set-password",
+        "title": "Set password",
+        "text": "Sends the temporary password to the hub. Your own tap.",
+        "kind": "button"
+      }
     ]
   }
 }

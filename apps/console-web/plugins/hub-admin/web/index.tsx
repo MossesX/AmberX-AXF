@@ -7,7 +7,7 @@
  * Decisions (approve, deny, shelve, grant, delete, create a token) are Brett's own tap through the approvals-banner
  * relay and are registered personOnly: no session, tool, CLI line or voice action runs them (HUB-CONSOLE.md → who).
  */
-import { Chip, Container, Note, TabGroup } from '@console/axf/react';
+import { Chip, Container, Note, PageToolbar, TabGroup } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import table from '@console/axf/schemas/hub-console.json';
@@ -93,6 +93,8 @@ export function HubPage() {
   return (
     <div className="fx-stack fx-stack--lg" data-axf-view={VIEW}>
       <TabGroup id="hub.tabs" label="Hub screens" value={screen.id} onChange={setActiveScreen} tabs={SCREENS.map((s) => ({ value: s.id, label: s.title, icon: s.icon, title: s.title }))}>
+        {/* the screen's page toolbar (page-toolbar@1): one of three looks per screen, assets/toolbar/hub-<screen>*.json; nothing when none is picked and no asset matches */}
+        <PageToolbar view={VIEW} slot={screen.id} label={`${screen.title} toolbar`} />
         {render ? render(screen) : <ScreenPlaceholder screen={screen} />}
       </TabGroup>
     </div>

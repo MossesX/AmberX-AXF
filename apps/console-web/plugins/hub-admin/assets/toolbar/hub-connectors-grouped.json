@@ -1,0 +1,64 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "connectors"
+  ],
+  "id": "hub-connectors-grouped",
+  "name": "Hub · Apps and connectors (grouped)",
+  "description": "The Apps and connectors toolbar with labels only, its commands grouped by what they do and a More menu as soon as the row is tight.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "connectors",
+    "showSearch": false,
+    "variant": "labels",
+    "align": "start",
+    "density": "regular",
+    "divider": true,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Do",
+        "items": [
+          {
+            "id": "add",
+            "icon": "plus",
+            "label": "Add a connector",
+            "action": "command:hub-admin/connector-add",
+            "priority": 200,
+            "confirm": "Add a connector?"
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-log",
+            "icon": "list",
+            "label": "Approval log",
+            "action": "hub.open:log",
+            "priority": 100
+          },
+          {
+            "id": "go-passes",
+            "icon": "clock",
+            "label": "Passes and veto",
+            "action": "hub.open:passes",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

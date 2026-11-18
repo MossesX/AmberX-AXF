@@ -1,0 +1,66 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "auth"
+  ],
+  "id": "hub-auth-grouped",
+  "name": "Hub · Auth admin (grouped)",
+  "description": "The Auth admin toolbar with labels only, its commands grouped by what they do and a More menu as soon as the row is tight.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "auth",
+    "showSearch": false,
+    "variant": "labels",
+    "align": "start",
+    "density": "regular",
+    "divider": true,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Do",
+        "items": [
+          {
+            "id": "client-add",
+            "icon": "plus",
+            "label": "Add an OAuth client",
+            "action": "command:hub-admin/auth-client-add",
+            "priority": 200,
+            "confirm": "Add an OAuth client?"
+          },
+          {
+            "id": "client-remove",
+            "icon": "trash",
+            "label": "Remove an OAuth client",
+            "action": "command:hub-admin/auth-client-remove",
+            "priority": 200,
+            "confirm": "Remove an OAuth client?",
+            "tone": "danger"
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-users",
+            "icon": "user",
+            "label": "Users",
+            "action": "hub.open:users",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

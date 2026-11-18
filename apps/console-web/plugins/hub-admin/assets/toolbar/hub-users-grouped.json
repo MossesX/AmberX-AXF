@@ -1,0 +1,64 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "users"
+  ],
+  "id": "hub-users-grouped",
+  "name": "Hub · Users (grouped)",
+  "description": "The Users toolbar with labels only, its commands grouped by what they do and a More menu as soon as the row is tight.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "users",
+    "showSearch": false,
+    "variant": "labels",
+    "align": "start",
+    "density": "regular",
+    "divider": true,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Do",
+        "items": [
+          {
+            "id": "invite",
+            "icon": "plus",
+            "label": "Add an account",
+            "action": "command:hub-admin/users-invite",
+            "priority": 200,
+            "confirm": "Add an account?"
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-auth",
+            "icon": "lock",
+            "label": "Auth admin",
+            "action": "hub.open:auth",
+            "priority": 100
+          },
+          {
+            "id": "go-account",
+            "icon": "key",
+            "label": "Account",
+            "action": "hub.open:account",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "log"
+  ],
+  "id": "hub-log-dense",
+  "name": "Hub · Approval log (dense)",
+  "description": "The Approval log toolbar as icons only, compact: the phone's row. Labels are the tooltips.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "log",
+    "showSearch": false,
+    "variant": "icons",
+    "align": "start",
+    "density": "compact",
+    "overflow": {
+      "when": "auto",
+      "keep": 3,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Approval log",
+        "items": [
+          {
+            "id": "download",
+            "icon": "download",
+            "label": "Download JSON",
+            "action": "command:hub-admin/log-download",
+            "priority": 250
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-approvals",
+            "icon": "shield",
+            "label": "Approvals",
+            "action": "hub.open:approvals",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

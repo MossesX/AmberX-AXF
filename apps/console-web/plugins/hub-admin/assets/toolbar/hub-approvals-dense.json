@@ -1,0 +1,76 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "approvals"
+  ],
+  "id": "hub-approvals-dense",
+  "name": "Hub · Approvals (dense)",
+  "description": "The Approvals toolbar as icons only, compact: the phone's row. Labels are the tooltips.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "approvals",
+    "showSearch": false,
+    "variant": "icons",
+    "align": "start",
+    "density": "compact",
+    "overflow": {
+      "when": "auto",
+      "keep": 3,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Approvals",
+        "items": [
+          {
+            "id": "auto-stop",
+            "icon": "x-circle",
+            "label": "Stop approving automatically",
+            "action": "command:hub-admin/approvals-auto-stop",
+            "priority": 250
+          },
+          {
+            "id": "check",
+            "icon": "refresh",
+            "label": "Check now",
+            "action": "command:hub-admin/approvals-check",
+            "priority": 300
+          },
+          {
+            "id": "notify-phone",
+            "icon": "smartphone",
+            "label": "Tell the phone about the waiting calls now",
+            "action": "command:hub-admin/approvals-notify-phone",
+            "priority": 250
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-log",
+            "icon": "list",
+            "label": "Approval log",
+            "action": "hub.open:log",
+            "priority": 100
+          },
+          {
+            "id": "go-passes",
+            "icon": "clock",
+            "label": "Passes and veto",
+            "action": "hub.open:passes",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

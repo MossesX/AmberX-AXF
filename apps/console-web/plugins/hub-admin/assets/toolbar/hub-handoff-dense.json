@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "handoff"
+  ],
+  "id": "hub-handoff-dense",
+  "name": "Hub · Handoff (dense)",
+  "description": "The Handoff toolbar as icons only, compact: the phone's row. Labels are the tooltips.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "handoff",
+    "showSearch": false,
+    "variant": "icons",
+    "align": "start",
+    "density": "compact",
+    "overflow": {
+      "when": "auto",
+      "keep": 3,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Handoff",
+        "items": []
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-account",
+            "icon": "key",
+            "label": "Account",
+            "action": "hub.open:account",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

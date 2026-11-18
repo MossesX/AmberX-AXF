@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "connectors"
+  ],
+  "id": "hub-connectors-dense",
+  "name": "Hub · Apps and connectors (dense)",
+  "description": "The Apps and connectors toolbar as icons only, compact: the phone's row. Labels are the tooltips.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "connectors",
+    "showSearch": false,
+    "variant": "icons",
+    "align": "start",
+    "density": "compact",
+    "overflow": {
+      "when": "auto",
+      "keep": 3,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Apps and connectors",
+        "items": [
+          {
+            "id": "add",
+            "icon": "plus",
+            "label": "Add a connector",
+            "action": "command:hub-admin/connector-add",
+            "priority": 200,
+            "confirm": "Add a connector?"
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-log",
+            "icon": "list",
+            "label": "Approval log",
+            "action": "hub.open:log",
+            "priority": 100
+          },
+          {
+            "id": "go-passes",
+            "icon": "clock",
+            "label": "Passes and veto",
+            "action": "hub.open:passes",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

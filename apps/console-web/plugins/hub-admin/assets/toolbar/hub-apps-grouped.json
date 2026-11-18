@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "apps"
+  ],
+  "id": "hub-apps-grouped",
+  "name": "Hub · Apps (grouped)",
+  "description": "The Apps toolbar with labels only, its commands grouped by what they do and a More menu as soon as the row is tight.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "apps",
+    "showSearch": false,
+    "variant": "labels",
+    "align": "start",
+    "density": "regular",
+    "divider": true,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-overview",
+            "icon": "shield",
+            "label": "Hub",
+            "action": "hub.open:overview",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

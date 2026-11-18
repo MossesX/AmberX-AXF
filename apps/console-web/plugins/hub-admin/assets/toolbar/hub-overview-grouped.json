@@ -1,0 +1,76 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "overview"
+  ],
+  "id": "hub-overview-grouped",
+  "name": "Hub · Hub (grouped)",
+  "description": "The Hub toolbar with labels only, its commands grouped by what they do and a More menu as soon as the row is tight.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "overview",
+    "showSearch": false,
+    "variant": "labels",
+    "align": "start",
+    "density": "regular",
+    "divider": true,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "read",
+        "label": "Read",
+        "items": [
+          {
+            "id": "check",
+            "icon": "refresh",
+            "label": "Check the hub now",
+            "action": "command:hub-admin/overview-check",
+            "priority": 300
+          }
+        ]
+      },
+      {
+        "id": "do",
+        "label": "Do",
+        "items": [
+          {
+            "id": "sign-in",
+            "icon": "shield",
+            "label": "Sign in to axHub",
+            "action": "command:hub-admin/overview-sign-in",
+            "priority": 250
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-approvals",
+            "icon": "shield",
+            "label": "Approvals",
+            "action": "hub.open:approvals",
+            "priority": 100
+          },
+          {
+            "id": "go-connectors",
+            "icon": "layers",
+            "label": "Apps and connectors",
+            "action": "hub.open:connectors",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -73,4 +73,14 @@ t('the manifest declares every read with the table\'s tool and skips every perso
   assert.equal(manifest.cli.hub, 'hub.mjs');
 });
 
+t('the three page-toolbar looks per screen are written from the table and current on disk', () => {
+  const tb = cli.table;
+  for (const s of hc.screensOf(tb)) for (const suf of ['', '-dense', '-grouped']) {
+    const f = new URL(`./assets/toolbar/hub-${s.id}${suf}.json`, import.meta.url);
+    const a = JSON.parse(readFileSync(f, 'utf8'));
+    assert.equal(a.type, 'toolbar'); assert.equal(a.data.scope, `view:${tb.view}`); assert.equal(a.data.slot, s.id, `${a.id} slot`);
+    for (const g of a.data.groups) for (const it of g.items) assert.ok(/^(command:hub-admin\/|hub\.open:)/.test(it.action), `${a.id}/${it.id} runs a hub-admin command or a hub jump (${it.action})`);
+  }
+});
+
 console.log(`hub-admin pure parts ok (${n} checks)`);

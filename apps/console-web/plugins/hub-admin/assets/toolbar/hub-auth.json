@@ -1,0 +1,65 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "auth"
+  ],
+  "id": "hub-auth",
+  "name": "Hub · Auth admin",
+  "description": "The Auth admin toolbar: its commands with icons and labels in one row, then the jumps to the hub screens it works with. Deciding (approve, deny, grant) stays on the rows and forms: Brett's own tap.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "auth",
+    "showSearch": false,
+    "variant": "icons-labels",
+    "align": "start",
+    "density": "regular",
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Auth admin",
+        "items": [
+          {
+            "id": "client-add",
+            "icon": "plus",
+            "label": "Add an OAuth client",
+            "action": "command:hub-admin/auth-client-add",
+            "priority": 200,
+            "confirm": "Add an OAuth client?"
+          },
+          {
+            "id": "client-remove",
+            "icon": "trash",
+            "label": "Remove an OAuth client",
+            "action": "command:hub-admin/auth-client-remove",
+            "priority": 200,
+            "confirm": "Remove an OAuth client?",
+            "tone": "danger"
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-users",
+            "icon": "user",
+            "label": "Users",
+            "action": "hub.open:users",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

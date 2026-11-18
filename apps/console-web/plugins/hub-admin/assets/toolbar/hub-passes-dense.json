@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "passes"
+  ],
+  "id": "hub-passes-dense",
+  "name": "Hub · Passes and veto (dense)",
+  "description": "The Passes and veto toolbar as icons only, compact: the phone's row. Labels are the tooltips.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "passes",
+    "showSearch": false,
+    "variant": "icons",
+    "align": "start",
+    "density": "compact",
+    "overflow": {
+      "when": "auto",
+      "keep": 3,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Passes and veto",
+        "items": [
+          {
+            "id": "request",
+            "icon": "bell",
+            "label": "Ask Brett for a pass",
+            "action": "command:hub-admin/pass-request",
+            "priority": 250
+          },
+          {
+            "id": "go-end",
+            "icon": "pause",
+            "label": "End the go pass",
+            "action": "command:hub-admin/go-pass-end",
+            "priority": 250
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-log",
+            "icon": "list",
+            "label": "Approval log",
+            "action": "hub.open:log",
+            "priority": 100
+          },
+          {
+            "id": "go-approvals",
+            "icon": "shield",
+            "label": "Approvals",
+            "action": "hub.open:approvals",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

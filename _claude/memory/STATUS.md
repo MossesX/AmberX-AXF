@@ -261,3 +261,7 @@ Nov 7 2026 (build `skins-asset-types`, Fable, PR on `claude/skins-asset-types`; 
 ## Build pipeline (Nov 8 2026)
 
 - Pending → Queue → Building: `queued` status, build-pipeline@1 record, the orchestrator's own split (`pipeline.mjs intake`), Brett's Queue move, the dispatcher cron `axf-pipeline` (`pipeline.mjs tick`) launching `deploy/claude-headless.sh --account` on Fable / Opus accounts when a slot is free, session-end outcomes, idle alert, Pipeline tab on the Build orchestrator page. Build `urgent-rebuild-pipeline-orchestrator-ids-splits-`, report `_claude/builds/reports/pipeline-rebuild.md`.
+
+## Hub screens in the console (Nov 18 2026)
+
+- **Build `move-everything-axhub-web-console` (Fable):** hub-console@1 route table + engine (`framework/core/hub-console.mjs`, fixture, spec check), the Hub plugin `apps/console-web/plugins/hub-admin` (Hub, Approvals, Approval log, Passes and veto, Users, Account, Apps and connectors with service detail, Handoff, Auth admin, Apps; Settings → Plugins → Hub), server proxy through `axf.hub-relay@1` / the hub token with retries and plain unavailable states, 48 MCP tools (`hub_*`), CLI `axf hub …`, voice `hub.<screen>`, parity check in CI, Phone Connect notices with console deep links, settings migration `framework/cli/hub-settings-migrate.mjs`, axHub web retired behind a redirect page. Report `_claude/builds/reports/move-everything-axhub-web-console.md`.

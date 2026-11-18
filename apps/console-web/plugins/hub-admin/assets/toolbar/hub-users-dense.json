@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "users"
+  ],
+  "id": "hub-users-dense",
+  "name": "Hub · Users (dense)",
+  "description": "The Users toolbar as icons only, compact: the phone's row. Labels are the tooltips.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "users",
+    "showSearch": false,
+    "variant": "icons",
+    "align": "start",
+    "density": "compact",
+    "overflow": {
+      "when": "auto",
+      "keep": 3,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Users",
+        "items": [
+          {
+            "id": "invite",
+            "icon": "plus",
+            "label": "Add an account",
+            "action": "command:hub-admin/users-invite",
+            "priority": 200,
+            "confirm": "Add an account?"
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-auth",
+            "icon": "lock",
+            "label": "Auth admin",
+            "action": "hub.open:auth",
+            "priority": 100
+          },
+          {
+            "id": "go-account",
+            "icon": "key",
+            "label": "Account",
+            "action": "hub.open:account",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}

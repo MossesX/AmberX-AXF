@@ -1,0 +1,78 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "version": "1.0.0",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "hub",
+    "account"
+  ],
+  "id": "hub-account-grouped",
+  "name": "Hub · Account (grouped)",
+  "description": "The Account toolbar with labels only, its commands grouped by what they do and a More menu as soon as the row is tight.",
+  "data": {
+    "scope": "view:hub",
+    "slot": "account",
+    "showSearch": false,
+    "variant": "labels",
+    "align": "start",
+    "density": "regular",
+    "divider": true,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "do",
+        "label": "Do",
+        "items": [
+          {
+            "id": "profile",
+            "icon": "play",
+            "label": "Save name and email",
+            "action": "command:hub-admin/account-profile",
+            "priority": 250
+          },
+          {
+            "id": "signout-others",
+            "icon": "play",
+            "label": "Sign out the other browsers",
+            "action": "command:hub-admin/account-signout-others",
+            "priority": 200,
+            "confirm": "Sign out the other browsers?"
+          },
+          {
+            "id": "phone",
+            "icon": "external",
+            "label": "Linked phone",
+            "action": "command:hub-admin/account-phone",
+            "priority": 250
+          },
+          {
+            "id": "notifications",
+            "icon": "external",
+            "label": "Notification preferences",
+            "action": "command:hub-admin/account-notifications",
+            "priority": 250
+          }
+        ]
+      },
+      {
+        "id": "go",
+        "label": "Go to",
+        "items": [
+          {
+            "id": "go-users",
+            "icon": "user",
+            "label": "Users",
+            "action": "hub.open:users",
+            "priority": 100
+          }
+        ]
+      }
+    ]
+  }
+}
