@@ -21,6 +21,7 @@ import { DemoView } from './DemoView';
 import { SettingsPanel } from './Settings';
 import { StartOverlay } from './StartOverlay';
 import { SummaryDialog } from './SummaryDialog';
+import { appMenu } from './menu';
 
 const ID = 'ai.amberx.axf.console.orchestrator-demo';
 export const DEEP_LINK = 'axf-open';
@@ -106,6 +107,8 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-17' },
   opens: 'dialog',
   opensUi: `dialog:${DIALOG_START}`,
+  appMenu,
+  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Orchestrator demo', icon: 'play', view: VIEW }] },
   register(rt) {
     rt.actions.register('orchestrator-demo.open', () => rt.openDialog(DIALOG_START), { label: 'Orchestrator demo: open the start overlay' });
     rt.actions.register('orchestrator-demo.summary', () => rt.openDialog(DIALOG_SUMMARY), { label: 'Orchestrator demo: summary' });
