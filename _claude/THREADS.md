@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `molly-ri-court-records` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `new-app-wizard` note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 15:07 UTC · `every-app-gets-own-locked-default` → pending, note (all) · pipeline
 - 2026-11-18 15:08 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · pipeline
 - 2026-11-18 15:08 UTC · `every-app-gets-own-locked-default` PR #845 (all) · builds-live
+- 2026-11-18 15:08 UTC · `one-build-time-always-split-to-fill` PR #846 (all) · builds-live
 
 ## Token passes (log)
 
