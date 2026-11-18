@@ -10485,6 +10485,18 @@
    "from": "",
    "addenda": []
   },
+  "vps-frees-stale-build-slots-every-minute": {
+   "said": "The VPS is supposed to check that shit every minute.",
+   "at": "2026-11-18T01:36:53.146Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "vps-orchestrator-only-rule-vps-settings-console": {
    "said": "I need a rule on the VPS that refuses any job that doesn't come from the orchestrator. ... Now how would I manage that setting? I need a console plugin to manage the VPS settings. ... Put it in the same build.",
    "at": "2026-11-09T19:10:08.745Z",

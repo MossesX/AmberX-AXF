@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8755,
- "updatedAt": "2026-11-18T01:36:41.557Z",
+ "rev": 8756,
+ "updatedAt": "2026-11-18T01:37:00.124Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321910,6 +321910,56 @@
    },
    "queue": null,
    "defaultAt": "2026-11-18T01:35:20.283Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "vps-frees-stale-build-slots-every-minute",
+   "title": "VPS frees stale build slots every minute",
+   "category": "",
+   "detail": "agent-slots counts dead entries as running: a 3-day-old rhonda-ci-fix job, finished tmux sessions waiting to close, and builds-store verify heavy processes. Add a VPS timer every minute that checks each slot entry against a live claude process and tmux session, frees dead or finished ones, kills hung heavy steps, closes finished sessions, then launches the next queued build. Log every freed slot. CI check.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-18T01:36:53.146Z",
+   "updatedAt": "2026-11-18T01:36:55.937Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "The VPS is supposed to check that shit every minute.",
+    "at": "2026-11-18T01:36:53.146Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 993
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
