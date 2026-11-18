@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 06:53 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-18 06:53 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
 - 2026-11-18 06:58 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
 - 2026-11-18 06:58 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:33 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
 - 2026-11-18 14:34 UTC · `plan-studio-2-open-button-working-deep` note (all) · reconciler
 - 2026-11-18 14:36 UTC · `plan-studio-2-open-button-working-deep` note (all) · pipeline
+- 2026-11-18 14:36 UTC · `one-build-time-always-split-to-fill` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
