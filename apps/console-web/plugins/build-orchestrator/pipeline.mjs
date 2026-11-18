@@ -86,7 +86,7 @@ import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
-import { isActiveRun, isSplitId, lockMain, mainLocked, nextRunOf, normSplit, planParts, splitIdOf, unlockMain } from '../../../../framework/core/build-split.mjs';
+import { applyRollUp, isActiveRun, isSplitId, lockMain, mainLocked, nextRunOf, normSplit, partBranch, partNext, partRef, planParts, splitIdOf, unlockMain } from '../../../../framework/core/build-split.mjs';
 import * as BR from '../../../../framework/core/build-rules.mjs';
 import * as RL from '../../../../framework/core/retry-ladder.mjs';
 import * as V from './verify.mjs';
@@ -566,12 +566,148 @@ export function ensureWorktree(id, env = process.env) {
   let r = git(REPO_ROOT, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
   if (r.status !== 0 && /already checked out|already exists/.test(r.stderr)) r = git(REPO_ROOT, 'worktree', 'add', '--detach', dir, base);
   if (r.status !== 0) throw new Error(`worktree for ${id}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
-  // installed packages come from the main checkout: no install per build
+  linkModules(dir);
+  return { dir, made: true };
+}
+/** Installed packages come from the main checkout: no install per build (or per part). */
+function linkModules(dir) {
   for (const rel of ['node_modules', 'apps/console-web/node_modules', 'apps/demo/node_modules', 'apps/expenses/node_modules', 'apps/axhub-web/node_modules', 'apps/molly/node_modules']) {
     const src = join(REPO_ROOT, rel); const dst = join(dir, rel);
     if (existsSync(src) && !existsSync(dst)) { try { mkdirSync(dirname(dst), { recursive: true }); symlinkSync(src, dst); } catch { /* optional */ } }
   }
+}
+
+// ------------------------------------------------------------------ split runs: one session per part (split-plan@1)
+
+/** A part's session / worktree / log name: its branch without `claude/` (`<build>--r<n>-p<k>`). */
+export const partName = (splitId, partId) => partBranch(splitId, partId).replace(/^claude\//, '');
+export const partWorktree = (splitId, partId, env = process.env) => join(worktreesRoot(env), partName(splitId, partId));
+/** The dispatch-token key of a part (dispatch-gate.mjs): `<splitId>-<part>`. */
+export const partTokenKey = (splitId, partId) => `${splitId}-${partId}`;
+
+/** A part's worktree on its own branch from the locked main sha (made when missing). */
+export function ensurePartWorktree(splitId, part, base, env = process.env) {
+  const dir = partWorktree(splitId, part.id, env);
+  if (existsSync(dir)) return { dir, made: false };
+  if ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir') { mkdirSync(dir, { recursive: true }); return { dir, made: true }; }
+  mkdirSync(worktreesRoot(env), { recursive: true });
+  if (git(REPO_ROOT, 'cat-file', '-e', `${base}^{commit}`).status !== 0) git(REPO_ROOT, 'fetch', '-q', 'origin', 'main');
+  const r = git(REPO_ROOT, 'worktree', 'add', '-B', part.branch, dir, base);
+  if (r.status !== 0) throw new Error(`worktree for ${partName(splitId, part.id)}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
+  linkModules(dir);
   return { dir, made: true };
+}
+
+/** The build as a part's session sees it: only the part's steps open, every other open step skipped. */
+export function partView(b, part) {
+  const mine = new Set(part.steps);
+  return { ...b, steps: (b.steps ?? []).map((s) => (s.done || mine.has(s.id) ? s : { ...s, skip: true })) };
+}
+
+/** The brief block every part session gets: what it owns, where it starts, how it reports. */
+export function partBlock(plan, part) {
+  const ref = partRef(plan.id, part.id);
+  return ['## Split part (split-plan@1)',
+    `This session is part ${part.id} of ${plan.parts.length} of split ${plan.id}. Work only on steps ${part.steps.join(', ')}${part.files.length ? ` and only in these files: ${part.files.slice(0, 40).join(', ')}${part.files.length > 40 ? ' …' : ''}` : ''}; the other parts run at the same time in their own slots.`,
+    `Branch ${part.branch}, started from main @ ${plan.base.slice(0, 12)}. Main is locked for this run: never merge or pull main, never open a PR. Commit and push your branch, tick each step as usual.`,
+    `Report as you go: \`node framework/cli/builds-live.mjs part ${ref} testing\` when your steps are ticked and the checks run, \`node framework/cli/builds-live.mjs part ${ref} done --head <pushed sha>\` when they pass, \`… part ${ref} failed --why "…"\` when you cannot finish. The dispatcher combines every part into one branch, one CI run and one PR.`].join('\n');
+}
+
+/** Start one part's headless session (its own worktree, slot, token and account). → { session, slot, dir, queuedInSlots }. */
+export function launchPart(b, plan, part, { account, model, kind = '', phase = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+  const { dir } = ensurePartWorktree(plan.id, part, plan.base, env);
+  const name = partName(plan.id, part.id);
+  lock.acquire(name, { dir, account, by: 'dispatcher', env: lockEnv(env) });
+  const fit = fitBriefFor(partView(b, part), rules, { account, model, kind, maxBytes: loadSettings(env).briefMaxBytes });
+  writeFileSync(join(dir, '.axf-brief.md'), `${fit.text}\n\n${partBlock(plan, part)}\n`);
+  const token = issueDispatch(partTokenKey(plan.id, part.id), { account, model, env });
+  const key = modelKey(model) || 'opus';
+  const args = ['--name', name, '--account', account, '--brief', '.axf-brief.md', '--log', `${name}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
+  const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_SPLIT_ID: plan.id, AXF_PART_ID: part.id, AXF_BUILD_PHASE: str(phase, 80), AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: 'normal' };
+  let r;
+  try { r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e }); }
+  catch (err) { lock.release(name, { dir }); throw err; }
+  const text = `${r.stdout || ''}\n${r.stderr || ''}`;
+  const session = /started (axf-\S+) in/.exec(text)?.[1] ?? /queued at position \d+ \((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
+  const slot = /\((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
+  if (r.status !== 0 || (!session && !/queued at position|queued for look approval/.test(text))) {
+    lock.release(name, { dir });
+    throw new Error(`launcher exit ${r.status}: ${str(text.trim().split('\n').filter(Boolean).pop() || 'no output', 300)}`);
+  }
+  lock.beat(name, { dir, session });
+  return { dir, session, slot, queuedInSlots: /queued at position/.test(text) };
+}
+
+/** A plan with more than one part waiting to run: the dispatcher starts it part by part (launchSplit). */
+export const isMultiPart = (b) => (b?.split?.parts?.length ?? 0) > 1 && ['queued', 'building'].includes(b.split.run);
+
+/** The sha main is locked on for a run: origin/main now ('' when git can't say; a mkdir test worktree gets a fixed one). */
+const lockBase = (env) => mainHead(env) || ((env.AXF_PIPELINE_WORKTREE_MODE || 'git') === 'mkdir' ? '0'.repeat(40) : '');
+
+/** Write a build's split plan (normalised; rolled up) and return the fresh record. */
+export function saveSplit(id, fn, { by = 'pipeline', action = 'pipeline:split-run', note = '' } = {}) {
+  let out = null;
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, id); if (!rec?.split) throw Object.assign(new Error(`${id} has no split plan`), { code: 2 });
+    const next = fn(rec.split, rec, s);
+    if (next) { rec.split = normSplit(next, { build: rec.id }); rec.splitId = rec.split.id; rec.updatedAt = nowIso(); }
+    out = rec; return s;
+  }, { by, action, note: note || id });
+  return out;
+}
+
+/**
+ * Start a split build's run (the dispatcher's launch for a build with a plan): lock main on origin/main's sha, stamp
+ * the base on the plan, then start every waiting part, one per free agent slot, each on an account picked for it
+ * (--account routing; the plan's account first). Parts with no slot stay waiting: fillParts starts them as slots free.
+ * → { session, slot, parts: [{ id, session, slot, account }], waiting, queuedInSlots }
+ */
+export function launchSplit(b, first, { rules, env = process.env, accounts = [], settings = loadSettings(env), sl = slotsNow() } = {}) {
+  const base = lockBase(env);
+  if (!base) throw new Error('main has no sha to lock (git cannot read origin/main): the run waits');
+  withStore((s) => {
+    const live = s.builds.filter((x) => !x.deleted);
+    const r = lockMain(s.meta, { build: b.id, splitId: b.split.id, base, by: 'dispatcher', builds: live, note: `split run ${b.split.id}` });
+    if (!r.ok) throw Object.assign(new Error(r.why), { code: 'locked' });
+    s.meta = r.meta;
+    const rec = storeCore.findBuild(s, b.id);
+    if (rec?.split && !rec.split.base) rec.split = normSplit({ ...rec.split, base, parts: rec.split.parts.map((p) => ({ ...p, base })) }, { build: rec.id });
+    return s;
+  }, { by: 'dispatcher', action: 'main-lock', note: `lock ${b.id} (${b.split.id}) on ${base.slice(0, 12)}` });
+  logLine({ event: 'main-lock', locked: [b.id], splitId: b.split.id, base });
+  const fresh = storeCore.findBuild(loadStore(), b.id);
+  const r = fillParts(fresh, { rules, env, accounts, settings, sl, first });
+  if (!r.parts.length) throw new Error(r.errors[0]?.error || 'no part could start');
+  return { session: r.parts[0].session, slot: r.parts[0].slot, parts: r.parts, waiting: r.waiting, queuedInSlots: r.parts.some((p) => p.queuedInSlots), errors: r.errors };
+}
+
+/**
+ * Start the waiting (or rebuilding) parts of a running split build while agent slots are free; the main lock holds,
+ * so no other build competes. Each part gets the first account that can take it. → { parts, waiting, errors }
+ */
+export function fillParts(b, { rules, env = process.env, accounts = [], settings = loadSettings(env), sl = slotsNow(), first = null } = {}) {
+  const out = { parts: [], waiting: [], errors: [] };
+  const plan = b?.split; if (!plan || !['queued', 'building'].includes(plan.run) || !plan.base) return out;
+  let free = Math.max(0, Number(sl?.free) || 0); if (first && free < 1) free = 1; // the dispatcher's launch always starts one
+  const acc = (accounts ?? []).map((a) => ({ ...a }));
+  for (const part of plan.parts.filter((p) => ['waiting', 'rebuilding'].includes(p.status))) {
+    if (free <= 0) { out.waiting.push(part.id); continue; }
+    const model = part.model || first?.model || BP.nextModel(b) || 'Opus';
+    const pick = [...(first ? [first] : []), ...P.routeOptions(b, acc, model, settings)].find((o) => { const a = acc.find((x) => x.name === o.account); return o.account && (!a || a.free > 0); });
+    if (!pick) { out.waiting.push(part.id); out.errors.push({ part: part.id, error: `no Claude account can take ${part.id} (${model})` }); continue; }
+    try {
+      const cur = storeCore.findBuild(loadStore(), b.id).split;
+      const r = launchPart(b, cur, cur.parts.find((p) => p.id === part.id), { account: pick.account, model, kind: pick.kind, phase: first?.phase ?? '' }, { rules, env });
+      saveSplit(b.id, (sp) => { const n = partNext(sp, part.id, 'launch', { slot: r.slot, account: pick.account, session: r.session, model }); return n.ok ? applyRollUp(n.plan).plan : null; }, { action: 'pipeline:part-launch', note: `${b.id} ${part.id} on ${pick.account}` });
+      const a = acc.find((x) => x.name === pick.account); if (a) { a.free -= 1; a.running += 1; }
+      free -= 1; out.parts.push({ id: part.id, session: r.session, slot: r.slot, account: pick.account, model, queuedInSlots: r.queuedInSlots });
+      logLine({ event: 'part-launch', build: b.id, splitId: plan.id, part: part.id, account: pick.account, session: r.session });
+    } catch (e) {
+      out.errors.push({ part: part.id, error: str(e.message, 300) }); out.waiting.push(part.id);
+      logLine({ event: 'part-launch-failed', build: b.id, splitId: plan.id, part: part.id, error: str(e.message, 300) });
+    }
+  }
+  return out;
 }
 
 // ------------------------------------------------------------------ build names (build-id@1)
@@ -1415,7 +1551,9 @@ export function tick({ env = process.env } = {}) {
     let l = first; let r = null; let lastErr = null;
     for (const o of options) {
       l = o;
-      try { r = launch(b, l, { rules, env }); break; }
+      // split-plan@1: a plan with several parts starts as one session per part (main locked first); a one-part plan is
+      // the whole build, so it runs as the build's own session on claude/<id> (no combine needed)
+      try { r = isMultiPart(b) ? launchSplit(b, l, { rules, env, accounts, settings, sl }) : launch(b, l, { rules, env }); break; }
       catch (e) {
         if (e.code === 'live') { lastErr = e; break; } // the build itself is busy: no other account may take it either
         lastErr = e; tried.push(l.account); reasons.push({ account: l.account, error: str(e.message, 300) }); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) });
@@ -1437,7 +1575,11 @@ export function tick({ env = process.env } = {}) {
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
-      launched.push({ ...l, session: r.session, dir: r.dir });
+      launched.push({ ...l, session: r.session, dir: r.dir, ...(r.parts ? { parts: r.parts.map((p) => p.id), waitingParts: r.waiting } : {}) });
+      if (!r.parts && b.split?.parts?.length === 1 && ['queued', 'building'].includes(b.split.run)) {
+        try { saveSplit(b.id, (sp) => { const n = partNext(sp, 'p1', 'launch', { slot: r.slot, account: l.account, session: r.session, model: l.model }); return n.ok ? applyRollUp(n.plan).plan : null; }, { action: 'pipeline:part-launch', note: `${b.id} p1 on ${l.account}` }); } catch (e) { logLine({ event: 'part-launch-record-failed', build: b.id, error: str(e.message, 300) }); }
+      }
+      if (r.parts) setPipeline(b.id, {}, { note: `Split run ${b.split.id}: started ${r.parts.map((p) => `${p.id} on ${p.account}`).join(', ')}${r.waiting.length ? `; ${r.waiting.join(', ')} wait for a slot` : ''}.`, action: 'pipeline:split-launch' });
       logLine({ event: 'launched', build: b.id, account: l.account, kind: l.kind || 'subscription', rule: l.rule || '', model: l.model, session: r.session });
       crewSay('dispatcher', 'start', `Started ${b.id} on ${l.account}${moved}${l.kind === 'api' ? ' (API key)' : ''}, ${l.model}${l.phase ? ` ${l.phase}` : ''}${r.queuedInSlots ? ', waiting for a free slot' : ''}.`, { ref: b.id });
       delete state.launchFails[l.id];
@@ -1451,6 +1593,12 @@ export function tick({ env = process.env } = {}) {
       alert('launch-failed', { id: l.id, title: b.title, account: l.account, error: e.message, reasons: reasons.length ? reasons : [{ account: l.account, error: str(e.message, 300) }],
         tries: state.launchFails[l.id].filter((t) => Date.parse(t) > hourAgo).length, maxTries: LAUNCH_FAILS_PER_HOUR });
     }
+  }
+  // split-plan@1: the active split run's waiting parts take every slot that freed since the last tick
+  const filled = [];
+  for (const b of live(loadStore()).filter((x) => x.status === 'running' && x.split?.run === 'building' && !launched.some((l) => l.id === x.id))) {
+    try { const f = fillParts(b, { rules, env, accounts, settings, sl: slotsNow() }); if (f.parts.length) { filled.push({ id: b.id, parts: f.parts.map((p) => p.id) }); setPipeline(b.id, {}, { note: `Split run ${b.split.id}: started ${f.parts.map((p) => `${p.id} on ${p.account}`).join(', ')}.`, action: 'pipeline:split-fill' }); } }
+    catch (e) { logLine({ event: 'part-fill-failed', build: b.id, error: str(e.message, 300) }); }
   }
   // main-lock@1 (split-plan@1): the launched run holds main from the sha its worktree started on; a lock whose build has
   // no active run any more is released, so the next Queue build may start
@@ -1491,7 +1639,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify };
+  return { ok: true, at: next.at, intake: inta, ended, failures, retries, authRequeued, launched, filled, failed, plan, idle, alertsSent: sent, selfCheck: check, health, verify };
 }
 
 const MAX_PICK_TRIES = 4;

@@ -117,8 +117,17 @@ export function verdict({ b = null, name = '', rec = null, token = '', now = Dat
 export function check({ build = '', name = '', brief = '', token = '', env = process.env, store = null, now = Date.now() } = {}) {
   let s = store; if (!s) { try { s = loadStore(); } catch { s = { builds: [] }; } }
   const b = findBuild(s, { build, name, brief });
-  const rec = b ? load(env).tokens[b.id] ?? null : null;
-  return verdict({ b, name, rec, token, now });
+  const rec = b ? load(env).tokens[tokenKey(b.id, env)] ?? null : null;
+  return { ...verdict({ b, name, rec, token, now }), ...(b && tokenKey(b.id, env) !== b.id ? { key: tokenKey(b.id, env) } : {}) };
+}
+/**
+ * The token a launch spends: the build's, or for one part of a split run (split-plan@1: AXF_SPLIT_ID + AXF_PART_ID
+ * naming that build) the part's own `<splitId>-<part>`, so every part of the run starts on its own one-use token.
+ */
+export function tokenKey(buildId, env = process.env) {
+  const sid = String(env.AXF_SPLIT_ID || ''); const part = String(env.AXF_PART_ID || '');
+  const m = /^([a-z0-9][a-z0-9-]{0,39})\.r[1-9][0-9]{0,3}$/.exec(sid);
+  return m && m[1] === buildId && /^p[1-9][0-9]?$/.test(part) ? `${sid}-${part}` : buildId;
 }
 
 /** The session really starts: the token is spent. */
@@ -127,7 +136,8 @@ export function consume(opts = {}) {
   const v = check(opts);
   if (!v.ok || !v.build) return v;
   const doc = load(env);
-  if (doc.tokens[v.build]) { doc.tokens[v.build].used = new Date(opts.now ?? Date.now()).toISOString(); save(doc, env); }
+  const key = v.key || v.build;
+  if (doc.tokens[key]) { doc.tokens[key].used = new Date(opts.now ?? Date.now()).toISOString(); save(doc, env); }
   return { ...v, consumed: true };
 }
 
