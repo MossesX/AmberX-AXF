@@ -2,6 +2,61 @@
 
 Build `plan-studio-2-open-button-working-deep`, branch `claude/plan-studio-2-open-button-working-deep`.
 
+## Result
+
+- **Plan Studio 2.0 opens its page, not only its settings.** Its view root is a `SkinScope` with the control scope
+  `view:plan-studio-2`; the tree is `grid:plan-studio-2.tree`, every item a `row:<id>`. Its settings sub-tab has an
+  *Open Plan Studio 2.0* button, and the Plugin Manager / Amber → Plugins know its page from `plugin.json` before
+  the chunk has loaded once (that gap is what sent "open" to the settings).
+- **Open button** on the tree tools (the selected row) and on every plan row (and any row with children): the plan on
+  its own, with *All plans* to go back. Framework `Button`s in `role="toolbar"` rows with aria-labels, so tap-confirm
+  applies on touch.
+- **Deep links work**: `#/<view>[/<sub>…]`, `?axf-target=<address>` and `?axf-open=` are read before the first
+  render, wait for a lazily loaded plugin view, then open with the highlight; `hashchange` / `popstate` follow links
+  while the console is open; a target that never arrives is a notice, not Home.
+- **One Ctrl+K command palette**: the console-control search palette, now over every control target, plugin
+  command and Plan Studio 2.0 plan, recent first, destructive presses confirm, approve / deny / owner-only never
+  listed; a Search button on the banner for phones; three looks as dialog assets.
+
+## How each feature is reached
+
+| Feature | Deep link | REST | MCP | CLI | Voice (AmberX) |
+| --- | --- | --- | --- | --- | --- |
+| Plan Studio 2.0 page | `#/plan-studio-2`, `?axf-target=view:plan-studio-2` | `POST /api/console-control/open {target}` | `console_open("view:plan-studio-2")` | `axf console open '#/plan-studio-2'` | "open plan studio 2" |
+| Open one plan | `?axf-target=view:plan-studio-2/plan:<id>`, `#/plan-studio-2/plan:<id>` | `GET /api/plugins/plan-studio-2/plans/<id>` (state + address), `POST …/plans/<id>/open` | plugin commands `plan-studio-2 plan` / `open` (plugin-commands@1), `console_open("view:plan-studio-2/plan:<id>")` | `node apps/console-web/plugins/plan-studio-2/tree.mjs open <id or words>`, `axf plan-studio-2 open --id <id>` | "open Launch day" (`POST …/plan-studio-2/say`, relayed to the console) |
+| Back to all plans | — | console action `plan-studio-2.close-plan` via `/api/console-control/do` | `console_action("plan-studio-2.close-plan")` | `axf console do press function:plan-studio-2.close-plan` | — |
+| What a link opens | — | `GET /api/console-control/resolve?target=…` | via REST | `axf console resolve <link>` | — |
+| Follow any link | the link itself | `POST /api/console-control/open {target}` | `console_open` / `console_show` take URLs, `#/…`, `?axf-…=` | `axf console open <link or address>` | "open #/…", "open view:…" (`POST /api/console-control/voice`) |
+| Command palette | `#/command-palette/<words>`, `?axf-target=view:command-palette&q=<words>`, `?axf-cmd=search&q=` | `GET /api/console-control/search?q=` | `console_control_search`, `console_open("view:command-palette")` | `axf console search <words>` | "search for …", "find …" |
+| Palette look | — | `/api/console-control/do {verb: set, address: setting:console.palette.look}` | `console_control_set` | `axf console do set setting:console.palette.look --value command-palette-sheet` | "set the palette look to <option>" (the generic set intent) |
+
+State is readable everywhere: `console_control_state` (screen, open dialog = the palette), `GET …/plans/<id>`,
+`plan-studio-2 state`.
+
+## What changed
+
+- `plugins/plan-studio-2/web/{ui,index,api}.tsx`: SkinScope root, control scopes, Open buttons, opened-plan state,
+  `plan-studio-2.open[:<id>]` / `plan-studio-2.close-plan`, Open panel, palette source for plans.
+- `plugins/plan-studio-2/tree.mjs` (`open` op + CLI), `server/__init__.py` (`GET /plans/{id}`, `POST /plans/{id}/open`,
+  voice open relayed), `plugin.json` (commands `plan`, `open`), `help.json`.
+- `plugins/plugin-manager/web/model.ts`, `src/menuLibrary.tsx`: a plugin's page from `plugin.json` before its chunk loaded.
+- `src/control/deepLink-core.mjs` + `deepLink.ts` (new), `executor.ts` (link opener), `index.ts`, `native/axfNative.ts`
+  (its `?axf-open=` handling moved into the resolver).
+- `src/control/SearchPalette.tsx`, `palette-core.mjs` (new), `src/assets/dialog/command-palette*.json` (new),
+  `console.css`, `consoleSettings.tsx` (Settings → Interface → Command palette), `actions/console-control.ts`.
+- `server/console_control.py` (`parse_link`, `resolve_link`), `console_control_api.py` (`/resolve`, `/open`, voice),
+  `mcp_server.py` (`LINK_RE`), `framework/cli/console-control.mjs` + `axf.mjs` (`console open|resolve`).
+- `framework/spec/CONSOLE-CONTROL.md` (deep links section). CI: `deeplink.test.mjs`, `palette.test.mjs`.
+
+## Decisions
+
+- `plan:<id>` is not a new console-control kind (that would be a contract change): a segment of a kind the contract
+  has not got is the view's own `<view>.open:<id>` action.
+- `axf plan` stays the control@1 planner word; Plan Studio 2.0's CLI is `tree.mjs open` and the plugin-commands
+  `axf plan-studio-2 open`.
+- Per-dialog asset picks (any dialog choosing its own dialog asset) need the asset contract (Fable). The palette reads
+  its look from `console.palette.look` over its own three dialog assets meanwhile.
+
 ## Draft: trace (s1)
 
 ### Naming
