@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `separate-settings-per-plugin-reset` added (18 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `rebuild-every-toolbar-page-specific` added (28 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `notify-phone-when-queue-starts-building` added (10 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `rebuild-every-context-menu-toolbar-nav` added (3 steps) (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 17:30 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 17:30 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 - 2026-11-18 17:30 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-18 17:31 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 
