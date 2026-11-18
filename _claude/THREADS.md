@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:48 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · foreign-write
-- 2026-11-17 23:48 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · orchestrator
 - 2026-11-17 23:49 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · foreign-write
 - 2026-11-17 23:49 UTC · `move-server-side-console-parts-onto-vps` s11 done (all) · orchestrator
 - 2026-11-17 23:49 UTC · `move-server-side-console-parts-onto-vps` s11 done (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s10 done (all) · orchestrator
 - 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s9 done (all) · foreign-write
 - 2026-11-18 00:56 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
+- 2026-11-18 00:57 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
+- 2026-11-18 00:57 UTC · `auto-lander-never-wait-missing-ui-review` s9 done, s10 done (all) · foreign-write
 
 ## Token passes (log)
 
