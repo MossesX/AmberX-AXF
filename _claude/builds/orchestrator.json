@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:03:57.758Z",
+ "updatedAt": "2026-11-18T01:04:41.446Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -184131,7 +184131,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
