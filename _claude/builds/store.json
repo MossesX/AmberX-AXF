@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9031,
- "updatedAt": "2026-11-18T14:45:48.516Z",
+ "rev": 9032,
+ "updatedAt": "2026-11-18T14:47:09.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319137,7 +319137,7 @@
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T14:41:01.745Z",
+   "updatedAt": "2026-11-18T14:46:53.518Z",
    "builtAt": "",
    "notes": [
     {
@@ -319206,13 +319206,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:27:47.559Z",
     "queuedBy": "Brett",
-    "account": "hulu0241",
-    "session": "axf-every-app-gets-own-locked-default--lenny",
+    "account": "mossesx-max-",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-18T14:40:41.917Z",
-    "runs": 2,
+    "phase": "",
+    "launchedAt": "2026-11-18T12:39:46.830Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": {
      "at": "2026-11-18T12:45:04.157Z",
@@ -319232,9 +319232,9 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
-    "dispatchedAt": "2026-11-18T14:40:41.917Z",
+    "dispatchedAt": "2026-11-18T12:39:46.830Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -319242,8 +319242,10 @@
      "at": "2026-11-18T12:52:31.420Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-18T14:40:41.917Z",
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "2026-11-18T12:39:46.830Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -319264,12 +319266,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:46:53.518Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:28:57.431Z",
-     "updatedAt": "2026-11-18T12:28:57.431Z"
+     "updatedAt": "2026-11-18T14:46:56.228Z"
     },
     {
      "id": "s2",
