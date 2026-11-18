@@ -300,7 +300,7 @@ function ProfilesDialog({ run, close }: { run: string; close: () => void }) {
       ))}
       {plan.empty.length > 0 && <Note tone="warning">Nothing left to build in {plan.empty.join(', ')} once this is applied. They are flagged here, never removed.</Note>}
       <div className="axp-maintenance__acts">
-        <span className="fx-small fx-muted">{picked} of {all.length} ticked · done → complete, not needed and duplicates → archived (never deleted), merges folded in · running builds are never touched</span>
+        <span className="fx-small fx-muted">{picked} of {all.length} ticked · done → complete (archived without merge evidence), not needed and duplicates → archived (never deleted), merges folded in · running builds are never touched</span>
         <Button onClick={close}>Cancel</Button>
         <Button tone="primary" icon="check" disabled={!picked || busy} busy={busy} onClick={() => void doApply()}>Apply {picked}</Button>
       </div>

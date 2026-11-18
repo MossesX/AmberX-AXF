@@ -58,7 +58,7 @@ steps, copied tracker checklists and copied plans. Each item gets a verdict, a o
 
 | Verdict | When (Basic) | Apply does |
 | --- | --- | --- |
-| Done already | its PR or branch is merged into main, all its steps are ticked, or the catalog marks it built | status → complete, note with the date and proof |
+| Done already | its PR or branch is merged into main, all its steps are ticked, or the catalog marks it built | status → complete when the build carries its merge evidence (done-means-merged@1), otherwise archived; a note with the date and proof either way |
 | Not needed | it belongs to a retired app (Patches, Build Pilot) | archived |
 | Duplicate | same title or pending id as a finished build; a profile's copy of the framework tracker or plan | archived (copies move into the run's archive) |
 | Merge | same title as an older open build | its open steps fold into the older one, then archived |

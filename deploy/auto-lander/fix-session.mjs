@@ -56,8 +56,8 @@ export function branchWorktree(dir, branch, repo) {
 
 /** Default dependencies: the real orchestrator, pipeline, router, lock and attempt log (loaded on first use). */
 export async function realDeps() {
-  const pipe = await import('../../apps/console-web/plugins/build-orchestrator/pipeline.mjs');
-  const orch = await import('../../apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
+  const pipe = await import('../../apps/console-web/plugins/build-orchestrator/pipeline.mjs'); // axf-plugin:build-orchestrator
+  const orch = await import('../../apps/console-web/plugins/build-orchestrator/orchestrator.mjs'); // axf-plugin:build-orchestrator
   const { loadStore } = await import('../../framework/cli/builds-store.mjs');
   const storeCore = await import('../../framework/plan/builds-store-core.mjs');
   const lock = await import('../../framework/cli/build-lock.mjs');

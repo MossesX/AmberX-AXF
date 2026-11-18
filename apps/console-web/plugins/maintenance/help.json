@@ -56,7 +56,7 @@
       {
         "target": "apply",
         "title": "Apply",
-        "text": "Applies the ticked items: done → complete with the date and proof, not needed and duplicates → archived (never deleted), merges folded into the older build. Running builds are never touched. Undo is on the run."
+        "text": "Applies the ticked items: done → complete when the build carries its merge evidence, otherwise archived, with the date and proof, not needed and duplicates → archived (never deleted), merges folded into the older build. Running builds are never touched. Undo is on the run."
       },
       {
         "target": "undo",

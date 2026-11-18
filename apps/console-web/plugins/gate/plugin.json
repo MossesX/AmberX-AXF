@@ -43,7 +43,16 @@
       "_claude/rules/RULES.md",
       "framework/spec/BUILD-RULES.md",
       "_claude/builds/BRIEF-TEMPLATE.md",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "_claude/memory/docs/auto-lander.md",
+      "apps/console-web/scripts/auto-lander-shots.mjs",
+      "deploy/auto-lander/auto-lander.mjs",
+      "deploy/auto-lander/escalate.mjs",
+      "deploy/auto-lander/test/loop.test.mjs",
+      "framework/spec/AUTO-LANDER.md",
+      "framework/spec/DONE-MEANS-MERGED.md",
+      "_claude/memory/decisions.md",
+      "deploy/install-console.sh"
     ]
   },
   "commands": {

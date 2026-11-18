@@ -44,8 +44,8 @@ const cmd = (id, command, status, min, from, error) => ({ id, command, status, a
 const COMMANDS = [
   cmd('c1', 'notify', 'done', 2, { kind: 'service', who: 'alerts', via: 'console' }),
   cmd('c2', 'open_url', 'done', 9, { kind: 'session', who: 'axf-build-gate', via: 'mcp' }),
-  cmd('c3', 'recorder.start', 'done', 25, { kind: 'session', who: 'claude-session', via: 'hub' }),
-  cmd('c4', 'voice', 'failed', 40, { kind: 'session', who: 'ai-assistant', via: 'console' }, { code: 'denied', message: 'Voice line is switched off in Settings → Plugins → Phone Connect' }),
+  cmd('c3', 'recorder.start', 'done', 25, { kind: 'session', who: 'claude-session', via: 'hub' }), // axf-not-plugin:claude-session
+  cmd('c4', 'voice', 'failed', 40, { kind: 'session', who: 'ai-assistant', via: 'console' }, { code: 'denied', message: 'Voice line is switched off in Settings → Plugins → Phone Connect' }), // axf-not-plugin:ai-assistant
 ];
 const STATUS = { ok: true, $axf: 'phone-connect-status@1', at: at(0), paired: true, device: DEVICE, presence: 'online', online: true, devices: 2,
   pairing: { code: 'R6HUG9C9', expiresAt: at(-8), secondsLeft: 480, state: 'pending', claimUrl: '', pairPage: '' }, features: FEATURES, recorder: DEVICE.capabilityState['recorder@1'], origin: 'https://console.amberxai.com' };
