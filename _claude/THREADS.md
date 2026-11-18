@@ -832,10 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:53 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `molly-ri-court-records` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `new-app-wizard` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
 - 2026-11-17 23:53 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
 - 2026-11-17 23:53 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
 - 2026-11-17 23:53 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
@@ -1232,6 +1228,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
 - 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
 - 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `move-everything-axhub-web-console` s12 done (all) · foreign-write
+- 2026-11-18 01:13 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
 
 ## Token passes (log)
 
