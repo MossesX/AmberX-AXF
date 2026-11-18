@@ -21,7 +21,9 @@
     "action:hub.passes",
     "action:hub.users",
     "action:hub.account",
-    "action:hub.overview"
+    "action:hub.overview",
+    "action:hub.connectors",
+    "health:hub-connectors"
   ],
   "requires": [
     "service:control@1"
@@ -539,6 +541,71 @@
         "title": "Hub: check now",
         "tool": "hub_check",
         "description": "Reads axHub again now and answers the Hub status (hub-status@1)."
+      },
+      {
+        "id": "policy-set",
+        "route": "POST /connectors/{row}/policy",
+        "title": "Connectors: set a tool's policy",
+        "tool": "hub_policy_set",
+        "confirm": true,
+        "description": "Sets one tool's policy on a service (allow / veto / confirm / deny, null = follow the service) and the veto hold in seconds; a confirm that writes axHub's policy table (policy-table@1).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "type": "string"
+            },
+            "policy": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                "allow",
+                "veto",
+                "confirm",
+                "deny",
+                null
+              ]
+            },
+            "vetoSeconds": {
+              "type": "integer",
+              "minimum": 10,
+              "maximum": 1800
+            },
+            "reason": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "tool"
+          ]
+        }
+      },
+      {
+        "id": "connector-add",
+        "route": "POST /connectors/add",
+        "title": "Connectors: add a connector",
+        "tool": "hub_connector_add",
+        "confirm": true,
+        "description": "Adds a connector. axHub has no route for it yet: answers hub_missing with the proposed route and the hub's own CLI line."
+      },
+      {
+        "id": "connector-reconnect",
+        "route": "POST /connectors/{row}/reconnect",
+        "title": "Connectors: reconnect",
+        "tool": "hub_connector_reconnect",
+        "confirm": true,
+        "description": "Reconnects a service. axHub has no route for it yet: answers hub_missing."
+      },
+      {
+        "id": "connector-remove",
+        "route": "DELETE /connectors/{row}",
+        "title": "Connectors: remove",
+        "tool": "hub_connector_remove",
+        "confirm": true,
+        "destructive": true,
+        "description": "Removes a connector. axHub has no route for it yet: answers hub_missing."
       }
     ]
   },

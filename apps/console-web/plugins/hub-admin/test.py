@@ -478,6 +478,21 @@ ok(j["ok"] and j["state"]["screen"] == "overview", "overview check reads again")
 ok(post("/overview/sign-in").json()["opens"].endswith("/auth/login"), "sign-in answers the hub's own page")
 ok(post("/overview/sign-out").json()["ok"] and writes[-1] == ("/auth/api/logout", {}, True), "sign-out from the overview is Brett's tap")
 
+# ---------------------------------------------------------------- connectors (s17 / s18 / s19)
+j = confirmed("/connectors/vps/policy", {"tool": "run", "policy": "confirm", "vetoSeconds": 60})
+ok(j["ok"] and writes[-1][0] == "PUT" and writes[-1][2]["changes"] == [{"service": "vps", "tool": "run", "policy": "confirm", "vetoSeconds": 60}], f"policy set confirms, then PUTs one change ({writes[-1]})")
+j = confirmed("/connectors/vps/policy", {"tool": "run", "policy": None})
+ok(j["ok"] and writes[-1][2]["changes"][0]["policy"] is None, "policy null = follow the service")
+ok(post("/connectors/vps/policy", {"tool": "run", "policy": "maybe"}).status_code == 400, "an unknown policy is refused")
+ok(post("/connectors/vps/policy", {"policy": "allow"}).status_code == 400, "a policy change needs the tool")
+j = post("/connectors/add", {}).json()
+ok(j["ok"] is False and j["code"] == "hub_missing" and j["proposed"].startswith("POST /auth/api/services") and "axhub services add" in j.get("cli", ""), "add a connector: hub_missing with the proposed route and the hub's CLI line")
+ok(post("/connectors/vps/reconnect").json()["code"] == "hub_missing", "reconnect: hub_missing")
+ok(c.delete("/connectors/vps").json()["code"] == "hub_missing", "remove: hub_missing (no token handed out for a route the hub lacks)")
+ok(c.delete("/connectors/Bad Name").status_code == 400, "a bad service id is 400")
+h = srv.connectors_health_probe()
+ok(h["status"] == "error" and any(d.startswith("dead:") for d in h["details"]), f"the health probe names the stale connector ({h['details']})")
+
 # ---------------------------------------------------------------- the manifest declares every read with its tool
 
 manifest = json.loads((HERE / "plugin.json").read_text())

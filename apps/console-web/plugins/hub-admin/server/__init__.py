@@ -458,6 +458,7 @@ async def read_screen(request: Request, sid: str, row: str | None = None) -> dic
     if row is not None:
         out.setdefault("row", row)
     ensure_health()
+    ensure_connectors_health()
     return out
 
 
@@ -1117,6 +1118,94 @@ async def post_overview_check(request: Request) -> dict[str, Any]:
     """Read the hub again now and answer the Hub status."""
     out = await run_action(request, "overview", "check", None, None)
     return {**out, "state": await read_screen(request, "overview")}
+
+
+# ---- Connectors and services (s17 / s18 / s19): policy set confirms and PUTs the policy table; add / reconnect / remove say what the hub lacks
+
+POLICIES = ("allow", "veto", "confirm", "deny")
+
+
+@router.post("/connectors/{row}/policy")
+async def post_connector_policy(request: Request, row: str) -> dict[str, Any]:
+    """Set one tool's policy on a service: allow / veto / confirm / deny (null = follow the service) and the veto hold in seconds (a confirm)."""
+    def call(s: Session, b: dict[str, Any]) -> tuple[str, Any, str]:
+        tool = _str(b, "tool", 120, True)
+        policy = b.get("policy")
+        if policy is not None and policy not in POLICIES:
+            raise HTTPException(400, f"policy: one of {', '.join(POLICIES)}, or null to follow the service")
+        change: dict[str, Any] = {"service": row, "tool": tool, "policy": policy}
+        if "vetoSeconds" in b and b["vetoSeconds"] is not None:
+            vs = b["vetoSeconds"]
+            if not isinstance(vs, int) or isinstance(vs, bool) or vs < 10 or vs > 1800:
+                raise HTTPException(400, "vetoSeconds: 10 to 1800")
+            change["vetoSeconds"] = vs
+        return "/auth/api/policy", {"changes": [change], "reason": _str(b, "reason", 200) or f"Policy of {row}.{tool} from the console"}, "PUT"
+    return await run_action(request, "connectors", "policy", row, call)
+
+
+@router.post("/connectors/add")
+async def post_connector_add(request: Request) -> dict[str, Any]:
+    """Add a connector: the hub has no route yet; answers hub_missing with the proposed route and the hub's own CLI line."""
+    return await run_action(request, "connectors", "add", None, None)
+
+
+@router.post("/connectors/{row}/reconnect")
+async def post_connector_reconnect(request: Request, row: str) -> dict[str, Any]:
+    """Reconnect a service: the hub has no route yet (hub_missing)."""
+    return await run_action(request, "connectors", "reconnect", row, None)
+
+
+@router.delete("/connectors/{row}")
+async def delete_connector(request: Request, row: str) -> dict[str, Any]:
+    """Remove a connector: the hub has no route yet (hub_missing)."""
+    return await run_action(request, "connectors", "remove", row, None)
+
+
+# ---- systems check: dead, expired or under-scoped connector keys (health@1, hub-console@1 `health` on the connectors screen)
+
+CONNECTORS_HEALTH_ID = "hub-connectors"
+_connectors_health_done = False
+
+
+def connectors_health_probe() -> dict[str, Any]:
+    listed = hub_tool("list_services", {})
+    pol = policy_table()
+    if not listed["ok"] and not pol["ok"]:
+        return {"status": "warn", "summary": f"Connectors can't be checked: {listed['message']}", "details": []}
+    bad: list[str] = []
+    for svc in (pol["data"].get("services", []) if pol["ok"] else []):
+        if not isinstance(svc, dict) or not svc.get("enabled", True):
+            continue
+        if svc.get("toolsStale"):
+            bad.append(f"{svc.get('namespace')}: the hub's tool list is stale (its key may have died or lost scopes)")
+        elif not svc.get("tools"):
+            bad.append(f"{svc.get('namespace')}: enabled but no tools answered")
+    raw = listed["data"] if listed["ok"] else {}
+    items = raw.get("services") if isinstance(raw, dict) else raw
+    for svc in (items if isinstance(items, list) else []):
+        if isinstance(svc, dict) and str(svc.get("status", "")).lower() in ("error", "dead", "expired", "unauthorized"):
+            bad.append(f"{svc.get('namespace') or svc.get('name')}: {svc.get('status')}")
+    if bad:
+        return {"status": "error", "summary": f"{len(bad)} connector{'s' if len(bad) != 1 else ''} with a dead or under-scoped key.", "details": bad}
+    return {"status": "ok", "summary": "Every enabled connector answers with its tools.", "details": []}
+
+
+def ensure_connectors_health() -> bool:
+    global _connectors_health_done
+    if _connectors_health_done:
+        return True
+    reg = plugin_services.get(HEALTH_CAP)
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": CONNECTORS_HEALTH_ID, "label": "Connector keys (axHub services)", "service": "axhub", "order": 42, "severity": "error", "run": lambda: connectors_health_probe(),
+                      "breaks": "A connector with a dead or under-scoped key answers no tools: every call through it fails or is refused.",
+                      "instructions": ["Open Hub → Apps and connectors in the console: the row says which key.", "Renew the key on the service's site and set it on the hub: axhub services refresh <namespace> (the hub's own CLI).", "This item turns green when the hub lists the service's tools again."],
+                      "links": [{"label": "Hub → Apps and connectors", "open": "view:hub/tab:hub.tabs=connectors"}]}, FOLDER)
+    except Exception:  # noqa: BLE001 — the screens work without the health item
+        return False
+    _connectors_health_done = True
+    return True
 
 
 # ---- Approval log (s10): the hub's whole log as JSON, a command
