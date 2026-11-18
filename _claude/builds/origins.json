@@ -10644,6 +10644,18 @@
    "from": "detail",
    "addenda": []
   },
+  "watchdog-plugin-owns-every-vps": {
+   "said": "Anything automated by the VPS goes into that plugin.",
+   "at": "2026-11-18T01:39:44.152Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "whats-new-banner": {
    "said": "",
    "at": "",
