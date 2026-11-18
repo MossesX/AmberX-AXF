@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T07:17:50.818Z",
+ "updatedAt": "2026-11-18T08:09:37.819Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -191207,7 +191207,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -191215,8 +191215,8 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T07:14:55.421Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T08:07:51.338Z",
+   "builtAt": "2026-11-18T07:55:44.837Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -191307,8 +191307,44 @@
      "at": "2026-11-18T07:02:40.729Z"
     },
     {
+     "text": "CI: check-page-toolbars fails on main for orchestrator-demo (toolbar asset, no page draws it); not this build's plugin, left alone. UI Review shots submitted with --single-option (one design, three states).",
+     "at": "2026-11-18T07:50:13.060Z"
+    },
+    {
      "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s11): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-18T07:14:55.421Z"
+    },
+    {
+     "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-18T07:23:30.721Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s12): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T07:24:37.332Z"
+    },
+    {
+     "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T07:13:29.315Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s12): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T07:29:58.935Z"
+    },
+    {
+     "text": "Session stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-18T07:29:01.036Z"
+    },
+    {
+     "text": "Reconciler: PR #836 names s11, s12 done",
+     "at": "2026-11-18T07:55:44.837Z"
+    },
+    {
+     "text": "Headless run axf-approval-pass-covers-every-call--gina: brief only · start 13.6K tokens ($0.04) · cost $17.07 · 279 turns · 6 tools, MCP none",
+     "at": "2026-11-18T08:07:51.338Z"
+    },
+    {
+     "text": "UI Review upload hung from the VPS session (review.mjs submit --console and shot.mjs --console, both console.amberxai.com and 172.16.7.4:7090 answer 200 but the CLI never returns). Shots are in _claude/builds/reports/approval-pass-covers-every-call/; resubmit: node apps/console-web/plugins/ui-review/review.mjs submit --app axhub-web --screen passes --shots <those 6 files> --single-option ... --console",
+     "at": "2026-11-18T08:05:13.633Z"
     }
    ],
    "approvals": [
@@ -191557,8 +191593,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T08:05:43.118Z",
      "note": "",
      "uid": "st-mwlgr9vm0cf0t7",
      "createdAt": "2026-11-18T01:49:40.384Z"

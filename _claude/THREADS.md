@@ -71,6 +71,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 | Orchestrator custom groups and custom tabs (`orchestrator-custom-groups-custom-tabs`, Opus, phase 1): user-made and smart groups on the builds board, sorted partial → pending → queued → running → failed → done → landed with counts, pinned as custom tabs next to Pending and the other stages, drag / select / voice / API assign, group actions (queue, land, archive, priority), saved per project; REST `/groups`, plugin commands `groups-*`, console actions `build-orchestrator.groups` / `group-add` / `group-remove` / `group-action` <!-- axf-plugin:build-orchestrator --> | phase 1 done; PR draft until UI Review shots | `claude/orchestrator-custom-groups-custom-tabs` | (see build) | Desktop + phone shots of the Groups board and a custom Pending tab to UI Review (scratch console didn't load the orchestrator's web part). Report `_claude/builds/reports/orchestrator-custom-groups-custom-tabs.md` | 2026-11-13 |
 | Skin from axHub: Override switch + greyed-out editors (`skin-axhub-override-switch-greyed-out`, Opus; Brett Nov 13: "an override switch … you only have one or the other; every screen where you'd change properties is greyed out with a note"): Override axHub (`axf.lock.hubskin.override`) under Get my skin only from axHub, mutually exclusive; skin/asset editors disabled under HubSkinLockNote with "Click here to override" (one confirm); edits marked Overridden; action `appearance.hubskin.override`, settings.set, voice | phase 1 done, PR open; builds on #618 | `claude/skin-axhub-override-switch-greyed-out` | #641 | land #618 first; UI Review item local only (no console token): re-send. Report `_claude/builds/reports/skin-axhub-override-switch-greyed-out.md` | 2026-11-13 |
 | Per-instance settings interface picker (`per-instance-settings-window-picker`, Opus, phase 1; Brett Nov 13: "every tab group and toolbar has its own settings interface, and within it you can select our settings interface"): every tab group / toolbar / banner / nav / menu bar picks its own settings interface inside its own dialog (`axf.chrome.<type>.<instance>.interface`, shared default preselected), action `chrome.instance-interface` (REST, MCP, CLI, voice); workspace toolbars + All toolbars list open each toolbar's own dialog | phase 1 done (s1–s3); PR draft until UI Review shots | `claude/per-instance-settings-window-picker` | [#622](https://github.com/MossesX/AmberX-AXF/pull/622) | Desktop + phone shots of a toolbar and a tab-group dialog to UI Review (Playwright not installed on the VPS). Report `_claude/builds/reports/per-instance-settings-window-picker.md` | 2026-11-13 |
+| Locked default settings interface for every asset and plugin (`settings-iface-default-all`, Opus; Brett Nov 18): settings-iface@1, required `builtFor` on every settings asset (backfilled), `default-<name>` per asset type (55) and console plugin (75), locked greyed row + checkbox + picker dialog filtered on builtFor on every plugin tab and Settings → Appearance → Asset types; actions `settings.iface` / `settings.iface.choose` | done; PR ready, waiting in UI Review (r-20261118-67d6cc51) | `claude/settings-iface-default-all-2` | [#834](https://github.com/MossesX/AmberX-AXF/pull/834) | Android twin deferred (PORTING.md). Report `_claude/builds/reports/settings-iface-default-all.md` | 2026-11-18 |
 | Per-instance settings picker: merge main and land (`per-instance-settings-picker-merge-main`, Opus, phase 1; Brett Nov 13: "every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency"): #622 merged onto main (Overlays imports from both sides, console copy re-baked, lock rehashed for the branch's files only); coverage check done | phase 1 done (s1–s3); PR open | `claude/per-instance-settings-picker-merge-main` | [#642](https://github.com/MossesX/AmberX-AXF/pull/642) | Follow-up (Fable): per-instance transparency field on every chrome kind + a `dialog` chrome kind. Report `_claude/builds/reports/per-instance-settings-picker-merge-main.md` | 2026-11-13 |
 | Per-toolbar settings: fix failing chrome-settings check and land (`per-toolbar-settings-fix-failing-chrome`, Fable s1; Brett Nov 13: "land the per-toolbar, tab group and menu settings"): #642 plus latest main; `gen-fixtures.mts` now writes the per-instance fixture sections (`keys.instanceInterface`, `instancePicks`, `instanceInterfaces`, `prefixTargets`, `instanceSlugs`) that the hand-edited fixture lost on regeneration; `check-chrome-settings` green (304) next to main's tab rows | landed: #650 merged Nov 13 20:44 UTC (also lands #642); s2–s3 done (Opus) | `claude/per-toolbar-settings-fix-failing-chrome` | [#650](https://github.com/MossesX/AmberX-AXF/pull/650) | Report `_claude/builds/reports/per-toolbar-settings-fix-failing-chrome.md`. On main: `check-chrome-settings` 304 green, `check-toolbars`, `check-chrome-assets` green. Still open (Fable): per-instance transparency field on every chrome kind + a `dialog` chrome kind | 2026-11-14 |
 | HOTFIX desktop console draws app menu, banners and nav twice (`hotfix-desktop-console-draws-app-menu`, Opus; Brett Nov 13: "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings"): not a code defect, a stale cached bundle (Brett: fine after hard refresh); per-toolbar settings kept, nothing reverted. Added `apps/console-web/scripts/chrome-once.e2e.mjs` (counts menubar / banner / app nav, desktop + phone, standalone + embedded): 29 checks pass on the console redeployed Nov 14 22:38, which carries the per-instance settings | s1-s3 done; PR open (test + report only) | `claude/hotfix-desktop-console-draws-app-menu` | [#658](https://github.com/MossesX/AmberX-AXF/pull/658) | Toolbar settings not applying: build `hotfix-toolbar-settings-still-change` | 2026-11-14 |
@@ -835,21 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:10 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
-- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:10 UTC · `flagship-professional-skin-covering-2` s20 done, → landing (all) · orchestrator
-- 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · orchestrator
-- 2026-11-18 01:11 UTC · `move-everything-axhub-web-console` s12 done (all) · orchestrator
-- 2026-11-18 01:11 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
-- 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
-- 2026-11-18 01:12 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:12 UTC · `move-everything-axhub-web-console` s12 done (all) · foreign-write
-- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
-- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
 - 2026-11-18 01:13 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
 - 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
 - 2026-11-18 01:13 UTC · `move-everything-axhub-web-console` s12 done (all) · foreign-write
@@ -1235,6 +1221,21 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s7 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
 - 2026-11-18 07:13 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
 - 2026-11-18 07:14 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-18 07:20 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
+- 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s10 undone, → pending, note (all) · foreign-write
+- 2026-11-18 07:17 UTC · `approval-pass-covers-every-call` s11 done, note (all) · foreign-write
+- 2026-11-18 07:23 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
+- 2026-11-18 07:24 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-18 07:29 UTC · `approval-pass-covers-every-call` note (all) · pipeline
+- 2026-11-18 07:29 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-18 07:31 UTC · `approval-pass-covers-every-call` note (all) · builds-live
+- 2026-11-18 07:50 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 07:55 UTC · `approval-pass-covers-every-call` s12 done, → landing, note (all) · reconciler
+- 2026-11-18 07:59 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
+- 2026-11-18 08:05 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 08:05 UTC · `approval-pass-covers-every-call` s12 done, → landing (all) · orchestrator
+- 2026-11-18 08:07 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 08:10 UTC · `approval-pass-covers-every-call` note (all) · builds-live
 
 ## Token passes (log)
 

@@ -52,6 +52,7 @@
       "behaviour": "basic",
       "asset": "basic",
       "interface": "developer"
-    }
+    },
+    "builtFor": "chrome:app-menu"
   }
 }
