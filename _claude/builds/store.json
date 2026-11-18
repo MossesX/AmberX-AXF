@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9044,
- "updatedAt": "2026-11-18T15:03:39.812Z",
+ "rev": 9045,
+ "updatedAt": "2026-11-18T15:04:23.012Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321217,7 +321217,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-18T14:59:48.022Z",
+   "updatedAt": "2026-11-18T15:02:23.319Z",
    "builtAt": "",
    "notes": [
     {
@@ -321227,6 +321227,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit null: warning: the brief has no \"## Brett said (verbatim)\" block",
      "at": "2026-11-18T14:51:59.721Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T15:02:23.319Z"
     },
     {
      "text": "Launch failed on hulu0241: launcher exit null: warning: the brief has no \"## Brett said (verbatim)\" block",
@@ -321261,7 +321265,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: launcher exit null: warning: the brief has no \"## Brett said (verbatim)\" block",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "",
     "planned": {
