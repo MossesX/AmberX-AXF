@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T14:25:57.718Z",
+ "updatedAt": "2026-11-18T14:26:46.925Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157004,7 +157004,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157013,8 +157013,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T13:42:36.621Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -157171,6 +157171,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T13:42:36.621Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [],
@@ -177709,8 +177713,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T13:41:54.711Z",
-   "builtAt": "2026-11-18T13:41:54.711Z",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -178007,6 +178011,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T13:41:54.711Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [
@@ -188697,8 +188705,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T13:41:54.711Z",
-   "builtAt": "2026-11-18T13:41:54.711Z",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -188767,6 +188775,10 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T13:41:54.711Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [],
@@ -192655,15 +192667,16 @@
    "title": "VPS never gives up: fix and land every build until all options are exhausted",
    "category": "",
    "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
    "pr": "#842",
+   "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T13:12:35.033Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -192716,6 +192729,10 @@
     {
      "text": "Reconciler: PR #842",
      "at": "2026-11-18T13:12:35.033Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [],
