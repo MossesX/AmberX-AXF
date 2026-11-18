@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9061,
- "updatedAt": "2026-11-18T15:22:29.315Z",
+ "rev": 9062,
+ "updatedAt": "2026-11-18T15:24:15.420Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252571,7 +252571,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T15:18:58.418Z",
+   "updatedAt": "2026-11-18T15:23:57.826Z",
    "builtAt": "",
    "notes": [
     {
@@ -252631,7 +252631,16 @@
      "at": "2026-11-18T15:18:58.418Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-18T15:23:57.825Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Rebuild.",
@@ -252648,13 +252657,13 @@
    "pipeline": {
     "queuedAt": "2026-11-16T22:45:02.695Z",
     "queuedBy": "console",
-    "account": "hulu0241",
-    "session": "axf-attach-widgets-to-any-toolbar-banner--earl",
-    "slot": "",
-    "model": "Opus",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-18T15:18:36.120Z",
-    "runs": 1,
+    "account": "",
+    "session": "",
+    "slot": "[object Object]",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -252665,9 +252674,9 @@
      "note": "Split by Claude into 19 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
-    "dispatchedAt": "2026-11-18T15:18:36.120Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -252675,8 +252684,10 @@
      "at": "2026-11-18T12:52:31.419Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-18T15:18:36.120Z",
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -252828,12 +252839,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T15:23:57.826Z",
      "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-18T14:14:41.726Z",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T14:16:19.126Z"
+     "updatedAt": "2026-11-18T15:24:00.715Z"
     },
     {
      "id": "s7",
