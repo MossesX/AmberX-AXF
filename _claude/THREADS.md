@@ -835,43 +835,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `flagship-professional-skin-covering` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `flagship-professional-skin-covering-2` s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `settings-fix-part-2-blank-toolbars` s1 done, s2 done, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `move-everything-axhub-web-console` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, note (all) · foreign-write
-- 2026-11-18 00:47 UTC · `auto-lander-never-wait-missing-ui-review` added (17 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `one-true-source-for-every-setting` added (20 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `vps-sets-every-build-status-manifest` added (15 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `api-fully-drives-every-field-type-forms` added (18 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `fix-launcher-crash-duplicate-steps-brief` added (16 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `active-tab-stop-button-grid-alignment` added (12 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
-- 2026-11-18 00:47 UTC · `auto-lander-never-wait-missing-ui-review` s7 done (all) · foreign-write
-- 2026-11-18 00:49 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 00:49 UTC · `flagship-professional-skin-covering-2` s26 done (all) · foreign-write
-- 2026-11-18 00:49 UTC · `auto-lander-never-wait-missing-ui-review` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done (all) · foreign-write
-- 2026-11-18 00:49 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 00:49 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
-- 2026-11-18 00:49 UTC · `move-server-side-console-parts-onto-vps` PR #828 (all) · builds-live
-- 2026-11-18 00:19 UTC · `move-everything-axhub-web-console` s9 done (all) · orchestrator
-- 2026-11-18 00:50 UTC · `move-server-side-console-parts-onto-vps` s24 done, s25 done (all) · foreign-write
-- 2026-11-18 00:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 00:50 UTC · `flagship-professional-skin-covering-2` s26 done (all) · foreign-write
-- 2026-11-18 00:50 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, note (all) · foreign-write
-- 2026-11-18 00:50 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 00:50 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
-- 2026-11-18 00:50 UTC · `move-everything-axhub-web-console` s9 done (all) · foreign-write
-- 2026-11-18 00:51 UTC · `move-everything-axhub-web-console` s9 done (all) · foreign-write
-- 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s10 done (all) · orchestrator
-- 2026-11-18 00:51 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · orchestrator
-- 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s11 done (all) · orchestrator
-- 2026-11-18 00:52 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · foreign-write
-- 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s10 done (all) · foreign-write
-- 2026-11-18 00:53 UTC · `move-everything-axhub-web-console` s9 done, s10 done, s11 done (all) · foreign-write
-- 2026-11-18 00:53 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · foreign-write
 - 2026-11-18 00:53 UTC · `move-everything-axhub-web-console` s11 done (all) · foreign-write
 - 2026-11-18 00:53 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-18 00:53 UTC · `auto-lander-never-wait-missing-ui-review` s4 done, s5 done, s6 done, s7 done, s8 done (all) · foreign-write
@@ -1235,6 +1198,43 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 02:21 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
 - 2026-11-18 02:34 UTC · `move-everything-axhub-web-console` → pending, note (all) · reconciler
 - 2026-11-18 02:34 UTC · `one-true-source-for-every-setting` → pending, note (all) · reconciler
+- 2026-11-18 04:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 04:23 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
+- 2026-11-18 04:23 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
+- 2026-11-18 04:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 04:27 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
+- 2026-11-18 04:27 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-18 04:27 UTC · `approval-pass-covers-every-call` note (all) · pipeline
+- 2026-11-18 04:28 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 04:34 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
+- 2026-11-18 04:34 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-18 04:31 UTC · `approval-pass-covers-every-call` note (all) · builds-live
+- 2026-11-18 04:58 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:00 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` branch claude/approval-pass-covers-every-call, note (all) · reconciler
+- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` s1 done, → running (all) · orchestrator
+- 2026-11-18 05:15 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
+- 2026-11-18 05:14 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
+- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
+- 2026-11-18 05:18 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, → running, note (all) · foreign-write
+- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
+- 2026-11-18 05:23 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-18 05:29 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-18 05:27 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
+- 2026-11-18 05:28 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-18 05:30 UTC · `approval-pass-covers-every-call` → running, PR #836, note (all) · reconciler
+- 2026-11-18 05:31 UTC · `approval-pass-covers-every-call` PR #836, note (all) · builds-live
+- 2026-11-18 05:37 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
+- 2026-11-18 05:37 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-18 05:37 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
+- 2026-11-18 05:35 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
