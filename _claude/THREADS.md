@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:32 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
 - 2026-11-18 12:32 UTC · `server-gate-reject-any-build-without` added (0 steps) (all) · Brett
 - 2026-11-18 12:33 UTC · `server-gate-reject-any-build-without` note (all) · orchestrator
 - 2026-11-18 12:34 UTC · `plan-studio-2-open-button-working-deep` s1 done (all) · orchestrator
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 21:26 UTC · `console-app-text-way-too-big-system-font` added (0 steps) (all) · foreign-write
 - 2026-11-18 21:27 UTC · `console-app-text-way-too-big-system-font` note (all) · orchestrator
 - 2026-11-18 22:57 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · orchestrator
+- 2026-11-18 22:57 UTC · `urgent-all-data-to-postgres-builds-store` s2 done, note (all) · orchestrator
 
 ## Token passes (log)
 

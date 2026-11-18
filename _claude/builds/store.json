@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9150,
- "updatedAt": "2026-11-18T22:57:22.128Z",
+ "rev": 9151,
+ "updatedAt": "2026-11-18T22:58:08.137Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321752,7 +321752,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T22:57:10.231Z",
+   "updatedAt": "2026-11-18T22:57:27.033Z",
    "builtAt": "",
    "notes": [
     {
@@ -321788,6 +321788,10 @@
      "at": "2026-11-18T22:57:10.231Z"
     },
     {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-18T22:57:27.033Z"
+    },
+    {
      "text": "Started run 1 on hulu0241 (Fable, Phase 2): axf-urgent-all-data-to-postgres-builds-store--joey.",
      "at": "2026-11-18T20:59:53.928Z"
     },
@@ -321796,7 +321800,18 @@
      "at": "2026-11-18T21:00:01.858Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-18T22:57:27.033Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -321880,12 +321895,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T22:57:27.033Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-18T14:45:31.829Z"
+     "updatedAt": "2026-11-18T22:57:28.722Z"
     },
     {
      "id": "s3",
