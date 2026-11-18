@@ -25,6 +25,7 @@ import { AppsScreen, OverviewScreen } from './overview';
 import { UsersScreen } from './users';
 import { registerHubActions } from './actions';
 import { hubSettingsGroups, wireHubSettings } from './settings';
+import { HubRememberedPanel } from './settings-panel';
 import { setActiveScreen, useActiveScreen } from './store';
 import './hub-admin.css';
 
@@ -91,7 +92,7 @@ export function HubPage() {
   const render = SCREEN_RENDERERS[screen.id];
   return (
     <div className="fx-stack fx-stack--lg" data-axf-view={VIEW}>
-      <TabGroup id={TABLE.tabRow} label="Hub screens" value={screen.id} onChange={setActiveScreen} tabs={SCREENS.map((s) => ({ value: s.id, label: s.title, icon: s.icon, title: s.title }))}>
+      <TabGroup id="hub.tabs" label="Hub screens" value={screen.id} onChange={setActiveScreen} tabs={SCREENS.map((s) => ({ value: s.id, label: s.title, icon: s.icon, title: s.title }))}>
         {render ? render(screen) : <ScreenPlaceholder screen={screen} />}
       </TabGroup>
     </div>
@@ -110,5 +111,8 @@ export const plugin: AxfWebLibrary = {
   // Plugins never ship their own settings screen: a sub-tab of Settings → Plugins, with the shared lifecycle panel.
   settingsTabs: [{ id: TABLE.settingsSubtab, label: 'Hub', icon: 'shield', order: 60, parent: 'plugins' }],
   settings: hubSettingsGroups(TABLE),
-  settingsPanels: [{ id: 'hub.lifecycle', tab: TABLE.settingsSubtab, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [
+    { id: 'hub.remembered', tab: TABLE.settingsSubtab, title: 'Remembered by the screens', icon: 'save', order: 50, render: () => <HubRememberedPanel table={TABLE} /> },
+    { id: 'hub.lifecycle', tab: TABLE.settingsSubtab, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
+  ],
 };

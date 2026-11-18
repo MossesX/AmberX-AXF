@@ -32,7 +32,6 @@ export interface ApprovalGrid {
 }
 
 export const GRID_ID = 'hub.approvals';
-export const FILTER_ROW = 'hub.approvals.filter';
 const SCOPE = 'hub';
 const POLL_KEY = 'axf.hub.poll';
 const STATUS_TONE: Record<string, 'accent' | 'success' | 'warning' | 'danger' | undefined> = {
@@ -118,7 +117,7 @@ export function ApprovalsScreen({ screen }: { screen: HubScreen }) {
       {stale && <Note tone="warning">The last read failed ({UNAVAILABLE_WORDS[stale.code] ?? stale.message}); showing the previous answer.</Note>}
       {g && <p className="axp-hub-admin-status">Read through {g.via === 'owner' ? "the console's own hub sign-in" : g.via === 'browser' ? "this browser's hub session" : 'the hub'} · page {g.page} of {g.pages} · {g.total} requests</p>}
 
-      <TabGroup id={FILTER_ROW} label="Show" value={status} onChange={(v) => { setPage(1); setStatus(v); }} size="sm"
+      <TabGroup id="hub.approvals.filter" label="Show" value={status} onChange={(v) => { setPage(1); setStatus(v); }} size="sm"
         tabs={filters.map((f) => ({ value: f.id, label: f.label, title: f.label }))}>
         {!data && <p className="fx-muted">Reading the hub…</p>}
         {g && g.items.length === 0 && <Note tone="success">{g.filter === 'all' ? 'No requests yet.' : 'None with this status.'}</Note>}
