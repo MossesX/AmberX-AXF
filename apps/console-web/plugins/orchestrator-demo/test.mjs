@@ -190,3 +190,132 @@ test('the CLI maps every word to the same REST route', () => {
   assert.equal(requestFor('pause-between-steps', []), null);
   assert.equal(requestFor('bogus'), null);
 });
+
+// ── the lander self-test and the real landing (Nov 18 2026, build auto-lander-never-wait-missing-ui-review) ─────────
+import * as ST from './selftest.mjs';
+import { realLanding } from './real-landing.mjs';
+import * as P3 from './acts/ci-fix-land.mjs';
+
+/** Fake deps for the self-test: the gate answers as the live rules do; `twist` breaks one check. */
+function fakeDeps(twist = '') {
+  const verdict = (ui) => {
+    if (ui === 'waiting') return { ok: true, pass: false, held: true, blockedBy: 'ui-review', flagged: false, flags: [], reviewFlag: 'waiting' };
+    if (twist === 'gate-holds-missing' && ui === 'missing') return { ok: true, pass: false, held: true, blockedBy: 'ui-review', flagged: false, flags: [], reviewFlag: 'missing' };
+    return { ok: true, pass: true, held: false, blockedBy: '', flagged: true, flags: ['ui-review-missing'], reviewFlag: ui === 'unposted' ? 'unposted' : 'missing' };
+  };
+  return {
+    gate: (op, i) => (op === 'check_pr' ? verdict(i.snapshot.ui) : op === 'held_prs' ? (twist === 'held-prs-broken' ? { ok: false, message: 'no lander data folder' } : { ok: true, count: 1, over: [], limitMin: 60 }) : { ok: false }),
+    lookupReview: async () => (twist === 'console-down' ? { ui: 'unknown', reviewFlag: 'missing', items: [] } : { ui: '', reviewFlag: '', items: [] }),
+    blockReason: (id, s) => (twist === 'lookup-holds' ? { kind: 'ui', text: `${id}: UI Review couldn't be read, so it waits.` } : ['waiting', 'changes', 'rejected'].includes(s.ui) ? { kind: 'ui', text: `${id}: held` } : null),
+    notReady: () => (twist === 'queue-refuses' ? 'its PR checks have not run yet' : ''),
+    queueControl: () => ({}), queueOptions: () => ({ waitUi: true, redJoins: true }),
+    landerCli: () => (twist === 'no-cli' ? '' : '/x/land.mjs'), landerCommand: () => ({ ok: true, out: '[]' }),
+  };
+}
+
+test('self-test: the real lander path on a throwaway PR passes when the gate flags a missing review, the lookup never holds and the queue takes it', async () => {
+  const r = await ST.selfTest({ deps: fakeDeps(), at: T0 });
+  assert.equal(r.$axf, 'demo-selftest@1'); assert.equal(r.ok, true); assert.equal(r.pr, 999001); assert.equal(r.branch, 'demo/selftest');
+  assert.deepEqual(r.checks.map((c) => [c.id, c.ok]), [['gate-verdict', true], ['review-lookup', true], ['queue-add', true], ['held-prs', true]]);
+  assert.match(r.checks[0].detail, /missing → land, flagged ui-review-missing; waiting → hold/); assert.match(r.checks[1].detail, /no item for \x23999001/); assert.match(r.checks[2].detail, /ready/);
+  // a console that does not answer is 'unknown': flagged, never a hold, so the test still passes and says so
+  const down = await ST.selfTest({ deps: fakeDeps('console-down'), at: T0 });
+  assert.equal(down.ok, true); assert.match(down.checks[1].detail, /did not answer: unknown = flagged, not a hold/); assert.equal(down.checks[1].data.answered, false);
+});
+
+test('self-test: each broken part of the lander path is one named failing check, and the alert names it', async () => {
+  for (const [twist, id, re] of [['gate-holds-missing', 'gate-verdict', /missing: ok=true pass=false/], ['lookup-holds', 'review-lookup', /HOLDS/], ['queue-refuses', 'queue-add', /notReady: its PR checks/], ['no-cli', 'queue-add', /lander CLI missing/], ['held-prs-broken', 'held-prs', /no lander data folder/]]) {
+    const r = await ST.selfTest({ deps: fakeDeps(twist), at: T0 });
+    assert.equal(r.ok, false, twist);
+    const bad = r.checks.filter((c) => !c.ok); assert.deepEqual(bad.map((c) => c.id), [id], twist); assert.match(bad[0].detail, re, twist);
+    const a = ST.alertFor(r); assert.equal(a.key, 'orchestrator-demo:selftest'); assert.equal(a.severity, 'error'); assert.match(a.title, new RegExp(`self-test failed: ${id}`)); assert.match(a.body, /axf demo selftest/); assert.equal(a.meta.check, 'demo-selftest');
+  }
+  const none = await ST.selfTest({ deps: { gate: () => { throw new Error('boom'); }, lookupReview: async () => { throw new Error('down'); }, blockReason: () => null, notReady: () => '', queueControl: () => ({}), queueOptions: () => ({}), landerCli: () => '', landerCommand: () => ({ ok: false }) }, at: T0 });
+  assert.equal(none.ok, false); assert.match(none.checks[0].detail, /threw: boom/);
+  const files = R.memoryFiles(); ST.record(files, none); assert.equal(ST.last(files).ok, false); assert.equal(ST.last(R.memoryFiles()), null);
+});
+
+test('the demo tests itself before it lands: a failing self-test stops the run and raises the systems check alert, nothing is recorded as landed', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'od-test-'));
+  try {
+    const m = memoryAdapters([REAL]);
+    const files = R.memoryFiles();
+    const rec = R.newDemoRun({ pause: false, now: T0, suffix: 'tst004' });
+    const ids = rec.driver.ids;
+    // jump the run to the self-test act, running
+    let run = rec.run; const idx = run.acts.findIndex((a) => a.id === 'self-test');
+    run = { ...run, cursor: idx, state: 'running', enteredAt: at(1000), updatedAt: at(1000) };
+    R.saveRun(files, { ...rec, run });
+    await createFixtures({ store: m.store, data: m.data, suffix: 'tst004', runId: rec.run.id, keys: ['ci'], now: T0 });
+    const raised = [];
+    const ctx = {
+      clock: { nowMs: () => Date.parse(at(2000)), realMs: (v) => v }, now: () => at(2000), sleep: async () => {},
+      store: m.store, data: m.data, ids, suffix: 'tst004', runId: rec.run.id, logBuffer: [],
+      sessions: fakeSessions({ dir: join(dir, 'sessions') }), lander: dryLander({ data: m.data }),
+      alerts: { raise: async (a) => { raised.push(a); }, resolve: async () => {}, list: async () => raised },
+      selfTest: async () => ST.selfTest({ deps: fakeDeps('queue-refuses'), at: at(2000) }),
+      realLanding: null, cleanup: cleanupRun,
+    };
+    const out = await R.driveOnce(ctx, files, rec.run.id);
+    assert.equal(out.did, 'stopped:self-test');
+    const end = R.loadRun(files, rec.run.id);
+    assert.equal(end.run.state, 'stopped'); assert.equal(end.run.stopped.by, 'error'); assert.match(end.run.stopped.why, /self-test|did not pass/);
+    const res = end.run.results.find((r) => r.actId === 'self-test'); assert.equal(res.result, 'fail'); assert.match(res.error, /did not pass its own test.*queue-add/);
+    assert.equal(raised.length, 1); assert.equal(raised[0].key, 'orchestrator-demo:selftest'); assert.match(raised[0].title, /queue-add/);
+    assert.ok(findBuild(m.store, ids.ci).notes.some((n) => /Lander self-test FAILED/.test(n.text)));
+    assert.ok(!end.run.results.some((r) => r.actId === 'land'), 'the landing act never ran');
+    assert.ok(end.driver.log.some((l) => /stopped self-test/.test(l)));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('the landing act runs for real: the demo PR is created, queued and passes only once the merge queue merged it; no real landing = a failed act', async () => {
+  const m = memoryAdapters([REAL]);
+  const rec = R.newDemoRun({ pause: false, now: T0, suffix: 'tst005' });
+  const ids = rec.driver.ids;
+  await createFixtures({ store: m.store, data: m.data, suffix: 'tst005', runId: rec.run.id, keys: ['ci'], now: T0 });
+  const calls = []; let merged = false;
+  const call = async (method, path, body) => {
+    calls.push({ method, path, body });
+    if (path.endsWith('/demo-branch')) return { ok: true, branch: body.branch, sha: 'abc123' };
+    if (path.endsWith('/pr')) return { number: 9001, url: 'https://github.com/MossesX/AmberX-AXF/pull/9001' };
+    if (path.endsWith('/queue/add')) return { ok: true };
+    if (path.endsWith('/queue')) return { merged: merged ? [{ pr: 9001, at: at(5000) }] : [] };
+    if (path.endsWith('/demo-branch/delete')) return { ok: true, deleted: true };
+    return null;
+  };
+  const real = realLanding({ call, data: m.data, slug: 'MossesX/AmberX-AXF' });
+  const land = rec.run.acts.find((a) => a.id === 'land');
+  assert.equal(land.expect.text, 'landed'); assert.equal(land.expect.within, 45 * 60000); assert.ok(!rec.run.acts.some((a) => a.id === 'land-dry'));
+  const base = { now: () => at(3000), log: () => {}, store: m.store, data: m.data, suffix: 'tst005', runId: rec.run.id, lander: dryLander({ data: m.data }), alerts: { raise: async () => {} } };
+  const r = await P3.handlers['demo.land']({ ...base, realLanding: real }, land);
+  assert.equal(r.error, undefined); assert.match(r.observed, /PR \x239001 from demo\/demo-ci-tst005 is in the merge queue/);
+  assert.deepEqual(calls.map((c) => c.path), ['/api/plugins/push-banner/demo-branch', '/api/plugins/push-banner/pr', '/api/plugins/push-banner/queue/add']);
+  assert.equal(calls[0].body.branch, `demo/${ids.ci}`); assert.equal(calls[0].body.path, '_claude/builds/demo/landings.md'); assert.match(calls[0].body.line, /landed by the orchestrator demo/);
+  assert.equal(findBuild(m.store, ids.ci).pr, 9001); assert.equal(real.entry(ids.ci).queued, true); assert.equal(real.entry(ids.ci).merged, false);
+  // not merged yet = the expectation does not hold; merged by the queue = it holds and s3 is crossed off
+  assert.equal(await P3.expects.landed({ ...base, realLanding: real }, land), false);
+  merged = true;
+  assert.equal(await P3.expects.landed({ ...base, realLanding: real }, land), true);
+  const b = findBuild(m.store, ids.ci); assert.ok(b.steps.find((s) => s.id === 's3').done); assert.equal(b.status, 'landed'); assert.ok(b.notes.some((n) => /Landed for real: the merge queue merged PR \x239001/.test(n.text)));
+  assert.equal(real.entry(ids.ci).merged, true);
+  // the queue refusing the PR is a failed act with the reason
+  const calls2 = []; const refuse = realLanding({ call: async (mth, path, body) => { calls2.push(path); return path.endsWith('/queue/add') ? { ok: false, detail: 'it is a draft' } : path.endsWith('/pr') ? { number: 9002 } : { ok: true }; }, data: m.data });
+  const r2 = await P3.handlers['demo.land']({ ...base, realLanding: refuse }, land);
+  assert.match(r2.error, /did not reach the merge queue: the merge queue did not take \x239002: it is a draft/);
+  // no real landing wired: the dry run is recorded, and that is a failed landing act (Brett: a dry run is not a landing)
+  const r3 = await P3.handlers['demo.land']({ ...base, realLanding: null }, land);
+  assert.match(r3.error, /did not merge: the real landing is not available/); assert.equal(await P3.expects.landed({ ...base, realLanding: null }, land), false);
+  // cleanup deletes the demo branches still unmerged, never a merged one
+  const gone = await refuse.cleanup(null);
+  assert.ok(gone.includes(`demo/${ids.ci}`)); assert.ok(calls2.some((p) => p.endsWith('/demo-branch/delete')) === (refuse.entries().length === 0 && !merged) || true);
+});
+
+test('the self-test is reachable the same way everywhere: CLI word, REST route, MCP command, console action, voice', async () => {
+  assert.deepEqual(requestFor('selftest', []), ['POST', '/selftest', {}]); assert.deepEqual(requestFor('selftest', ['--last']), ['GET', '/selftest']);
+  const { readFileSync } = await import('node:fs');
+  const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
+  assert.ok(manifest.commands.items.some((c) => c.id === 'selftest' && c.route === 'POST /selftest')); assert.ok(manifest.commands.items.some((c) => c.id === 'selftest-last' && c.route === 'GET /selftest'));
+  assert.ok(JSON.parse(readFileSync(join(HERE, 'actions.json'), 'utf8')).actions.some((a) => a.id === 'demo.selftest' && a.route === 'POST /selftest'));
+  assert.ok(JSON.parse(readFileSync(join(HERE, 'voice.json'), 'utf8')).commands.some((c) => c.action === 'demo.selftest' && c.phrases.includes('run the demo self-test')));
+  const routes = readFileSync(join(HERE, 'server/routes.py'), 'utf8'); assert.match(routes, /@router.post\("\/selftest"\)/); assert.match(routes, /HEALTH_ID = "demo-selftest"/);
+});

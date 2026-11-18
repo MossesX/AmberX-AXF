@@ -34,7 +34,7 @@ function seed() {
       { pr: 701, title: 'Skins', build: 'skins', branch: 'claude/skins', head: 'a1', state: 'testing', ci: 'running', startedAt: '2026-11-15T11:50:00.000Z' },
       { pr: 702, title: 'Help gate', build: 'help-gate', branch: 'claude/help-gate', head: 'b2', state: 'waiting', why: 'its screenshots are waiting in UI Review.' },
     ],
-    waiting: [{ pr: 704, title: 'Dock sizes', build: 'dock', branch: 'claude/dock', head: 'd4', state: 'kicked', why: 'PR 704 conflicts with main in code (framework/ui/axf.css). Merge main in and fix them.' }],
+    waiting: [{ pr: 704, title: 'Dock sizes', build: 'dock', branch: 'claude/dock', head: 'd4', state: 'kicked', why: 'PR 704 conflicts with main in code (framework/ui/axf.css). Merge main in and fix them.', heldSince: '2026-11-15T09:00:00.000Z', holdReason: 'PR 704 conflicts with main in code (framework/ui/axf.css). Merge main in and fix them.' }, { pr: 705, title: 'Phone shots', build: 'shots', branch: 'claude/shots', head: 'e5', state: 'held', why: 'its screenshots wait for Brett in UI Review', since: '2026-11-15T11:50:00.000Z', reviewFlag: 'waiting' }],
     merged: [{ pr: 690, title: 'Earlier', at: '2026-11-15T10:00:00.000Z' }],
   });
   json(join(LAND, 'land.json'), { $axf: 'land@1', items: [{ id: 'notes', pr: 710, title: 'Notes', branch: 'claude/notes', head: 'n1', state: 'ready', ci: 'success' }, { id: 'red', pr: 711, title: 'Red', branch: 'claude/red', head: 'r1', state: 'blocked', ci: 'failure', failing: ['android / check-theme'], reason: { kind: 'ci', text: 'red: CI is red.' } }] });
@@ -80,11 +80,14 @@ try {
   const st2 = createStore(); const L = createLander(st2);
   t('mode: on while the config has the queue on and auto-land off; status reads the queue', () => {
     assert.equal(L.mode().mergeQueue, true);
-    const x = L.status(); assert.equal(x.status, 'running'); assert.equal(x.landing.pr, 701); assert.equal(x.counts.waiting, 2); assert.equal(x.mode, 'stack');
+    const x = L.status(); assert.equal(x.status, 'running'); assert.equal(x.landing.pr, 701); assert.equal(x.counts.waiting, 3); assert.equal(x.mode, 'stack');
   });
   t('waiting PRs carry the rule that holds them and the gate verdict', () => {
     const w = L.waiting().items;
-    assert.deepEqual(w.map((x) => x.pr), [702, 704]); assert.equal(w[0].rule, 'ui-review'); assert.equal(w[1].rule, 'clash'); assert.equal(w[1].state, 'kicked');
+    assert.deepEqual(w.map((x) => x.pr), [702, 704, 705]); assert.equal(w[0].rule, 'ui-review'); assert.equal(w[1].rule, 'clash'); assert.equal(w[1].state, 'kicked');
+    // lander-state@1 (Nov 18 2026): held records say since when and why; the queue's heldSince is kept, an older record gets its last-seen time
+    assert.equal(w[1].heldSince, '2026-11-15T09:00:00.000Z'); assert.match(w[1].holdReason, /conflicts with main/); assert.equal(w[2].heldSince, '2026-11-15T11:50:00.000Z'); assert.equal(w[2].reviewFlag, 'waiting'); assert.equal(w[2].rule, 'ui-review');
+    assert.equal(w[0].heldSince, ''); assert.equal(w[0].holdReason, '');
     assert.equal(w[1].gate.pass, false);
     assert.deepEqual(L.waiting({ rule: 'clash' }).items.map((x) => x.pr), [704]);
   });
@@ -161,7 +164,19 @@ try {
     assert.equal(g.run('check_pr', { snapshot: { number: 9, ci: 'success' } }).pass, true);
   });
   t('settings: defaults, validation, saved', () => {
-    assert.deepEqual(g.run('settings_get').settings, { refreshSec: 30, historySize: 2000, defaultTab: 'rules' });
+    // held-prs@1: every truly held PR with its age; over = older than heldAlertMin (the systems check's red line)
+    const hp = g.run('held_prs'); assert.equal(hp.ok, true); assert.equal(hp.limitMin, 60);
+    assert.deepEqual(hp.items.map((x) => [x.pr, x.state, x.heldMin, x.over, x.reviewFlag]), [[704, 'kicked', 180, true, ''], [705, 'held', 10, false, 'waiting']]); // merge-queue mode: the queue's held PRs
+    assert.deepEqual(hp.over, [704]); assert.match(hp.items[0].holdReason, /conflicts with main/); assert.equal(hp.items[0].link, 'grid:held-prs/row:704'); assert.equal(hp.items[0].landNow.cli, 'axf gate land-now 704');
+    assert.deepEqual(g.run('held_prs', { limitMin: 5 }).over, [704, 705]);
+    // land now from the item: two-step, says what holds it, then front of the queue with an override note in History
+    const ln = g.run('land_now', { pr: 705, by: 'systems-check' }); assert.equal(ln.code, 'confirmation_required'); assert.equal(ln.held.state, 'held'); assert.match(ln.message, /ahead of its hold/);
+    process.env.AXF_GATE_NO_BUILD_NOTES = '1';
+    const ln2 = g.run('land_now', { pr: 705, confirm: ln.confirm, by: 'systems-check' }); assert.equal(ln2.ok, true); assert.equal(ln2.via, 'merge-queue'); assert.match(ln2.override.note, /Land now pressed by systems-check/); assert.equal(ln2.override.held.holdReason, 'its screenshots wait for Brett in UI Review');
+    assert.deepEqual(calls().slice(-2).map((c) => c.slice(0, 2)), [['queue', 'add'], ['queue', 'move']]);
+    const hist = g.run('history', { kind: 'lander', pr: 705 }); assert.equal(hist.items[0].action, 'land-now'); assert.match(hist.items[0].after.override, /ahead of its hold/); assert.equal(hist.items[0].before.state, 'held');
+    assert.deepEqual(g.run('settings_get').settings, { refreshSec: 30, historySize: 2000, defaultTab: 'rules', heldAlertMin: 60 });
+    assert.equal(g.run('settings_set', { settings: { heldAlertMin: 2 } }).code, 'invalid'); assert.equal(g.run('settings_set', { heldAlertMin: '90' }).settings.heldAlertMin, 90); assert.equal(g.run('settings_get').schema.heldAlertMin.title, 'Held PR alert after (minutes)');
     assert.equal(g.run('settings_set', { settings: { refreshSec: 2 } }).code, 'invalid');
     assert.equal(g.run('settings_set', { refreshSec: '60' }).settings.refreshSec, 60);
   });
@@ -178,7 +193,7 @@ try {
     assert.deepEqual(a, b, `axf gate ${args.join(' ')} == ${op}`);
   };
   t('every op is reachable from the CLI', () => {
-    const reached = new Set([['rules', 'list'], ['rules', 'get', 'x'], ['rules', 'set', 'x', 'severity', 'warn'], ['rules', 'on', 'x'], ['rules', 'reset'], ['check', '1'], ['history'], ['lander', 'status'], ['lander', 'waiting'], ['lander', 'runs'], ['lander', 'mode'], ['lander', 'land-now', '1'], ['lander', 'pause'], ['lander', 'resume'], ['settings'], ['settings', 'set', 'refreshSec', '60'],
+    const reached = new Set([['rules', 'list'], ['rules', 'get', 'x'], ['rules', 'set', 'x', 'severity', 'warn'], ['rules', 'on', 'x'], ['rules', 'reset'], ['check', '1'], ['history'], ['lander', 'status'], ['lander', 'waiting'], ['lander', 'runs'], ['lander', 'mode'], ['lander', 'land-now', '1'], ['lander', 'pause'], ['lander', 'resume'], ['held-prs'], ['land-now', '1'], ['settings'], ['settings', 'set', 'refreshSec', '60'],
       ['build-rules', 'list'], ['build-rules', 'get', 'x'], ['build-rules', 'add', 'x', '--title', 't'], ['build-rules', 'edit', 'x', 'title', 't'], ['build-rules', 'on', 'x'], ['build-rules', 'delete', 'x'], ['build-rules', 'history'], ['build-rules', 'runs'], ['build-rules', 'run', 'b', '--phase', 'after'], ['build-rules', 'brief', 'b']].map((a) => parseCli(a).op));
     assert.deepEqual([...reached].sort(), [...OPS].sort());
   });
@@ -197,6 +212,8 @@ try {
     same(['lander', 'mode', 'off', '--by', 'parity'], 'lander_mode');
     same(['lander', 'land-now', '702'], 'lander_land_now');
     same(['lander', 'pause', '--why', 'parity', '--by', 'parity'], 'lander_pause');
+    same(['held-prs'], 'held_prs');
+    same(['land-now', '702'], 'land_now');
     same(['settings'], 'settings_get');
     same(['settings', 'set', 'defaultTab', 'history'], 'settings_set');
   });

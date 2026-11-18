@@ -9,6 +9,7 @@
     { "id": "demo.pause", "action": "demo.pause", "phrases": ["pause the demo", "pause the orchestrator demo", "hold the demo"] },
     { "id": "demo.resume", "action": "demo.resume", "phrases": ["resume the demo", "continue the demo", "unpause the demo"] },
     { "id": "demo.stop", "action": "demo.stop", "phrases": ["stop the demo", "stop the orchestrator demo", "end the demo"] },
-    { "id": "demo.state", "action": "demo.state", "phrases": ["where is the demo", "demo status", "how is the demo going"] }
+    { "id": "demo.state", "action": "demo.state", "phrases": ["where is the demo", "demo status", "how is the demo going"] },
+    { "id": "demo.selftest", "action": "demo.selftest", "phrases": ["run the demo self-test", "run the lander self-test", "test the lander", "self-test the demo"] }
   ]
 }

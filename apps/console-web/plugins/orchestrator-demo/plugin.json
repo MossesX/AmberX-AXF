@@ -164,6 +164,19 @@
         "description": "What the demo needs from the live build status build (real-time grids, the break alert, the broke dialog) and what is missing; start refuses while anything is."
       },
       {
+        "id": "selftest",
+        "route": "POST /selftest",
+        "title": "Orchestrator demo: run the lander self-test",
+        "description": "Run the lander self-test now (demo-selftest@1): the live gate verdict on a throwaway PR (a missing UI Review lands flagged, a waiting one holds, a failed lookup never holds), the real review lookup in the console, the merge queue in check mode and the held-prs state. The demo runs it before its landing act and stops when it fails (systems check item demo-selftest)."
+      },
+      {
+        "id": "selftest-last",
+        "route": "GET /selftest",
+        "title": "Orchestrator demo: the last self-test",
+        "readOnly": true,
+        "description": "The saved result of the last lander self-test: ok, at, each check with its detail."
+      },
+      {
         "id": "summary",
         "route": "GET /summary",
         "title": "Orchestrator demo: summary",

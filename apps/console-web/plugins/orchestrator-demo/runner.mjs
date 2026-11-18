@@ -21,6 +21,7 @@
  *   node runner.mjs drive [--id <run>]                 the driver loop (spawned detached by `ensure`)
  *   node runner.mjs ensure                             start a driver for the current run when none is alive
  *   node runner.mjs state [--id <run>] | summary [--id <run>]
+ *   node runner.mjs selftest [--last]                  the lander self-test now (demo-selftest@1), or the saved result
  * Every command prints one JSON line.
  *
  * Test only: AXF_DEMO_GAP_MS_TEST=<ms> runs the driver on a scaled clock (30 000 virtual ms pass in <ms> real ms) so a
@@ -38,6 +39,8 @@ import * as P3 from './acts/ci-fix-land.mjs';
 import * as P4 from './acts/die-cleanup-notify.mjs';
 import { FOLDER, demoBuildId, findBuild } from './sandbox.mjs';
 import { checkDeps } from './deps.mjs';
+import { selfTest, alertFor, record as selftestRecord, last as selftestLast, ALERT_KEY as SELFTEST_ALERT_KEY } from './selftest.mjs';
+import { realLanding } from './real-landing.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, '../../../..');
@@ -198,14 +201,15 @@ export async function expectationHolds(ctx, act) {
 /** Run one act: its action, then watch for the expectation. Returns an act-result@1 (without times). */
 export async function runAct(ctx, act) {
   const ev = [];
-  let observed = ''; let error = '';
+  let observed = ''; let error = ''; let stop = false;
   try {
     const h = act.run.kind === 'custom' ? handlers[act.run.cmd] : null;
     if (act.run.kind === 'custom' && !h) throw new Error(`no handler for ${act.run.cmd}`);
-    if (h) { const r = await h(ctx, act); observed = r?.observed ?? ''; ev.push(...(r?.evidence ?? [])); error = r?.error ?? ''; }
+    if (h) { const r = await h(ctx, act); observed = r?.observed ?? ''; ev.push(...(r?.evidence ?? [])); error = r?.error ?? ''; stop = r?.stop === true; }
     else if (act.run.kind !== 'noop') { const r = await ctx.action(act.run); observed = r?.observed ?? `${act.run.kind} ${act.run.cmd || act.run.path} done`; }
   } catch (e) { error = e?.message || String(e); }
-  if (error) return { result: 'fail', observed: observed || error, evidence: [...ev, { kind: 'error', text: error, ref: '', at: ctx.now() }], error };
+  // `stop`: the handler says the run must not go on (the lander self-test failed): the driver stops it after recording the fail
+  if (error) return { result: 'fail', observed: observed || error, evidence: [...ev, { kind: 'error', text: error, ref: '', at: ctx.now() }], error, ...(stop ? { stop: true } : {}) };
   const within = act.expect.within || act.run.timeoutMs;
   const until = ctx.clock.nowMs() + within;
   let held = await expectationHolds(ctx, act);
@@ -266,8 +270,15 @@ export async function driveOnce(ctx, files, id) {
       for (const t of ctx.logBuffer.splice(0)) await log(t);
       const stillRunning = loadRun(files, id);
       if (stillRunning.run.state !== 'running' || stillRunning.run.cursor !== run.cursor) return { rec: stillRunning, did: 'superseded', wait: 0 }; // stopped while it ran
-      const rec = fire('finish', { result: { ...res, startedAt: run.enteredAt, endedAt: ctx.now() } });
+      const { stop, ...result } = res;
+      let rec = fire('finish', { result: { ...result, startedAt: run.enteredAt, endedAt: ctx.now() } });
       await log(`${res.result} ${act.id}: ${res.observed}`);
+      // the self-test failed: the demo stops here instead of recording a landing it could not trust (Nov 18 2026)
+      if (stop && !core.TERMINAL_STATES.includes(rec.run.state)) {
+        rec = withLock(files, id, () => { const cur = loadRun(files, id); if (core.TERMINAL_STATES.includes(cur.run.state)) return cur; return saveRun(files, { run: core.step(cur.run, { type: 'stop', at: ctx.now(), by: 'error', why: String(res.error || 'self-test failed').slice(0, 200) }), driver: { ...cur.driver, held: false } }); });
+        await log(`stopped ${act.id}: ${res.error}`);
+        return { rec, did: 'stopped:self-test', wait: 0 };
+      }
       return { rec, did: `finished:${res.result}`, wait: 0 };
     }
     case 'cooldown': {
@@ -315,6 +326,9 @@ export async function realContext({ files, rec, env = process.env } = {}) {
     clock, now: clock.now, sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
     store: await sandbox.realStore(), data, ids: rec.driver.ids, suffix: rec.driver.suffix, runId: rec.run.id,
     sessions: fakeSessions({ dir: join(files.dir, 'sessions') }), lander: dryLander({ data }), logBuffer: [],
+    // Nov 18 2026: the lander self-test before the landing act, and the real landing through the console's push-banner routes
+    selfTest: () => runSelfTest({ files, env }),
+    realLanding: env.AXF_DEMO_LAND === 'dry' ? null : realLanding({ call: (m, p, b) => consoleCall(m, p, b, env), data }),
     alerts: {
       raise: async (a) => { raised.push(a); await consoleCall('POST', '/api/alerts', a, env); },
       resolve: async (keys) => { await consoleCall('POST', '/api/alerts/resolve', { keys }, env); },
@@ -335,6 +349,16 @@ export async function realContext({ files, rec, env = process.env } = {}) {
     },
   };
   return ctx;
+}
+
+/** The lander self-test (selftest.mjs) against the live console; the result is saved and a failure raises the alert, a pass resolves it. */
+export async function runSelfTest({ files, env = process.env, deps = null } = {}) {
+  const api = async (method, path, body) => consoleCall(method, path, body, env);
+  const r = await selfTest({ api, deps });
+  selftestRecord(files, r);
+  if (!r.ok) await consoleCall('POST', '/api/alerts', alertFor(r), env);
+  else await consoleCall('POST', '/api/alerts/resolve', { keys: [SELFTEST_ALERT_KEY] }, env);
+  return r;
 }
 
 // ── settings (the plugin's own, data folder settings.json) ──────────────────────────────────────────────────────────
@@ -415,6 +439,8 @@ export async function main(argv = process.argv.slice(2), env = process.env) {
       return out({ ok: true, state: view(end) });
     }
     if (cmd === 'ensure') return out({ ok: true, ...ensureDriver(files, id) });
+    // the lander self-test on its own (REST POST /selftest, MCP orchestrator-demo_selftest, `axf demo selftest`, voice); `selftest --last` = the saved result
+    if (cmd === 'selftest') { if (argv.includes('--last')) { const r = selftestLast(files); return out({ ok: true, selftest: r, ran: !!r }); } const r = await runSelfTest({ files, env }); return out({ ok: true, selftest: r, passed: r.ok }); }
     if (cmd === 'state') return out({ ok: true, state: view(loadRun(files, id)), deps: checkDeps({ env }) });
     if (cmd === 'deps') return out({ ok: true, deps: checkDeps({ env }) });
     if (cmd === 'summary') { const rec = loadRun(files, id); return out({ ok: !!rec, summary: rec ? (rec.driver.summary ?? summaryRecord(rec.run)) : null, checklist: rec ? core.checklist(rec.run) : [], cleanup: rec?.driver.cleanup ?? null, ...(rec ? {} : { code: 'no-run', error: 'no demo run' }) }); }

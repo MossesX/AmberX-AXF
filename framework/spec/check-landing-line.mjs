@@ -40,6 +40,8 @@ const QUEUE_IN = {
     { pr: 535, title: 'Console: dock sizes', url: 'https://github.com/MossesX/AmberX-AXF/pull/535', branch: 'claude/dock-sizes', head: 'f535f535f535f535f535f535f535f535f535f535', build: 'console-dock-sizes', agent: 'Opus', state: 'held', why: 'taken out of the queue by hand (waiting for the skins build)', prCi: 'success' },
     { pr: 544, title: 'UI Review: phone shots', url: 'https://github.com/MossesX/AmberX-AXF/pull/544', branch: 'claude/phone-shots', head: 'a544a544a544a544a544a544a544a544a544a544', build: 'ui-review-phone-shots', agent: 'Opus', state: 'held', why: 'its screenshots wait for Brett in UI Review', prCi: 'success' },
     { pr: 545, title: 'Draft: nothing yet', url: 'https://github.com/MossesX/AmberX-AXF/pull/545', branch: 'claude/draft', head: 'b545b545b545b545b545b545b545b545b545b545', build: '', agent: '', state: 'held', why: 'it is a draft', prCi: 'none' },
+    // Nov 18 2026 (PR #816): held on a UI Review whose item was never in the console → not a hold any more, it goes ahead flagged
+    { pr: 816, title: 'Orchestrator: live demo', url: 'https://github.com/MossesX/AmberX-AXF/pull/816', branch: 'claude/orchestrator-live-demo', head: 'a816a816a816a816a816a816a816a816a816a816', build: 'orchestrator-live-demo', agent: 'Opus', state: 'held', why: 'its screenshots wait for Brett in UI Review', prCi: 'success', reviewFlag: 'missing', heldSince: '2026-11-14T20:00:00Z' },
   ],
   kicked: [
     { pr: 537, title: 'Voice: wake word', head: 'e537e537e537e537e537e537e537e537e537e537', why: '#537 broke CI when tested on top of main (failed: android / conformance). Run: https://github.com/MossesX/AmberX-AXF/actions/runs/8990', at: '2026-11-14T21:40:00Z', runUrl: 'https://github.com/MossesX/AmberX-AXF/actions/runs/8990' },
@@ -121,8 +123,8 @@ for (const k of Object.keys(actual)) t(`migrated line fits the schema: ${k}`, ()
 
 t('migration: the queue order is the line order, held PRs behind, nothing in flight', () => {
   const { line, drop, notes } = actual.batch;
-  assert.deepEqual(line.entries.map((e) => e.id), ['pr-540', 'pr-541', 'pr-543', 'pr-539', 'pr-537', 'pr-535', 'pr-544', 'pr-545']);
-  assert.deepEqual(line.entries.map((e) => e.state), ['waiting', 'waiting', 'waiting', 'waiting', 'fix-filed', 'paused', 'waiting', 'waiting']);
+  assert.deepEqual(line.entries.map((e) => e.id), ['pr-540', 'pr-541', 'pr-543', 'pr-539', 'pr-537', 'pr-535', 'pr-544', 'pr-545', 'pr-816']);
+  assert.deepEqual(line.entries.map((e) => e.state), ['waiting', 'waiting', 'waiting', 'waiting', 'fix-filed', 'paused', 'waiting', 'waiting', 'waiting']);
   assert.equal(L.inFlight(line), null);
   assert.equal(L.next(line).id, 'pr-540'); // the runner starts the front one; its batch run is not reused
   assert.equal(line.entries[0].attempts[0].result, 'aborted');
@@ -131,8 +133,15 @@ t('migration: the queue order is the line order, held PRs behind, nothing in fli
   assert.equal(line.entries[2].attempts.length, 0);
   assert.equal(line.entries[6].hold, 'its screenshots wait for Brett in UI Review');
   assert.equal(line.entries[7].hold, 'it is a draft');
+  // lander-state@1: a held entry says since when; a UI Review hold is the flag waiting (the item exists in the console)
+  assert.equal(line.entries[6].heldSince, AT); assert.equal(line.entries[6].reviewFlag, 'waiting'); assert.equal(line.entries[7].heldSince, AT); assert.equal(line.entries[7].reviewFlag, undefined);
+  // #816: the review item is missing from the console → no hold, it goes ahead with the flag, and the runner may start it
+  assert.equal(line.entries[8].hold, undefined); assert.equal(line.entries[8].reviewFlag, 'missing'); assert.match(line.entries[8].note, /missing: flagged, not holding/);
+  assert.ok(notes.some((x) => /#816.*missing.*goes ahead/.test(x)));
+  assert.equal(L.next({ ...line, entries: line.entries.filter((e) => e.id === 'pr-544' || e.id === 'pr-816') }).id, 'pr-816');
+  assert.equal(L.view(line).items.find((x) => x.id === 'pr-816').reviewFlag, 'missing'); assert.equal(L.view(line).items.find((x) => x.id === 'pr-544').heldSince, AT);
   assert.equal(line.mainSha, QUEUE_IN.mainSha);
-  assert.deepEqual(line.migratedFrom, { frame: 'merge-queue@1', at: AT, entries: 8, landed: 3 });
+  assert.deepEqual(line.migratedFrom, { frame: 'merge-queue@1', at: AT, entries: 9, landed: 3 });
   assert.deepEqual(drop.branches, ['queue/batch']);
   assert.deepEqual(drop.files, ['merge-queue.json', 'merge-queue-control.json']);
   assert.ok(notes.some((x) => /manual order/.test(x)) && notes.some((x) => /add back/.test(x)));

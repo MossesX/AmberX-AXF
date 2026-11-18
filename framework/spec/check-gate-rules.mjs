@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 /**
  * gate-rules@1 conformance: the default rule set, the migration from today's push banner lander settings, evaluate
- * verdicts (green, red CI, UI Review held, code clash, draft, held by hand, a warn rule), lander-state@1 from the merge
- * queue, validation, and the schema snapshots.
+ * verdicts (green, red CI, UI Review held, a missing / unposted / unreadable review that lands flagged, code clash, draft,
+ * held by hand, a warn rule), lander-state@1 from the merge queue (heldSince, holdReason, reviewFlag, flagged[]), validation,
+ * and the schema snapshots.
  *   node framework/spec/check-gate-rules.mjs           check
  *   node framework/spec/check-gate-rules.mjs --write   regenerate fixtures/gate-rules.json's expected outputs
  */
@@ -40,6 +41,12 @@ const SNAPSHOTS = {
   ciRunning: { number: 706, head: 'c706c706c706c706c706c706c706c706c706c706', ci: 'running' },
   uiWaiting: { number: 703, title: 'UI Review: phone shots', build: 'ui-review-phone-shots', head: 'c703c703c703c703c703c703c703c703c703c703', ci: 'success', ui: 'waiting' },
   uiChanges: { number: 703, head: 'c703c703c703c703c703c703c703c703c703c703', ci: 'success', ui: 'changes' },
+  uiRejected: { number: 703, head: 'c703c703c703c703c703c703c703c703c703c703', ci: 'success', ui: 'rejected' },
+  // PR #816 (Nov 18 2026): CI green, the build claimed a UI Review but the console had no item for it
+  uiMissing: { number: 816, title: 'Orchestrator: live demo', build: 'orchestrator-live-demo', branch: 'claude/orchestrator-live-demo', head: 'a816a816a816a816a816a816a816a816a816a816', ci: 'success', ui: 'missing' },
+  uiUnposted: { number: 816, head: 'a816a816a816a816a816a816a816a816a816a816', ci: 'success', ui: 'unposted' },
+  uiUnknown: { number: 816, head: 'a816a816a816a816a816a816a816a816a816a816', ci: 'success', ui: 'unknown' },
+  uiMissingRedCi: { number: 817, head: 'b817b817b817b817b817b817b817b817b817b817', ci: 'failure', failing: ['android / conformance tests'], ui: 'missing' },
   clash: { number: 704, title: 'Console: dock sizes', build: 'console-dock-sizes', head: 'd704d704d704d704d704d704d704d704d704d704', ci: 'none', conflicts: ['framework/ui/axf.css', 'apps/console-web/src/App.tsx'], dataConflicts: ['_claude/builds/store.json'] },
   dataClashOnly: { number: 707, head: 'e707e707e707e707e707e707e707e707e707e707', ci: 'success', dataConflicts: ['_claude/builds/store.json', 'framework/spec/fixtures/theme.json'] },
   draft: { number: 705, head: 'f705f705f705f705f705f705f705f705f705f705', ci: 'none', draft: true },
@@ -51,6 +58,8 @@ const SNAPSHOTS = {
 
 /** The default set with UI Review as a warning and the toolbars rule off: a warn never blocks, an off rule is skipped. */
 const SOFT_SET = (() => { const s = G.defaultRuleSet({ at: AT }); for (const r of s.rules) { if (r.id === 'ui-review') r.severity = 'warn'; if (r.id === 'toolbars') r.enabled = false; } return s; })();
+/** A rule set saved before Nov 18 2026 whose ui-review holdOn still lists unknown: it never holds a flagged review. */
+const LEGACY_HOLD_SET = (() => { const s = G.defaultRuleSet({ at: AT }); for (const r of s.rules) if (r.id === 'ui-review') r.settings = { holdOn: ['waiting', 'changes', 'rejected', 'unknown'] }; return s; })();
 /** Two rules handed to axf-molly. */
 const SPLIT_SET = (() => { const s = G.defaultRuleSet({ at: AT }); for (const r of s.rules) if (r.id === 'ci-green' || r.id === 'tests') r.owner = 'axf-molly'; return s; })();
 
@@ -71,12 +80,23 @@ const QUEUE = {
   merged: [{ pr: 538, at: '2026-11-15T11:40:00Z' }, { pr: 536, at: '2026-11-15T11:40:00Z' }],
 };
 const CONTROL = { $axf: 'merge-queue-control@1', removed: { 535: { why: 'waiting for the skins build', head: 'f535f535f535f535f535f535f535f535f535f535' } } };
+/** The queue after Nov 18 2026: a hold records when it began, a flagged review goes ahead, and #816 landed flagged. */
+const QUEUE_FLAGGED = {
+  $axf: 'merge-queue@1', at: '2026-11-18T09:57:00Z', on: true, mode: 'batch',
+  items: [{ pr: 820, title: 'Gate: held PRs', branch: 'claude/gate-held-prs', head: 'a820a820a820a820a820a820a820a820a820a820', build: 'gate-held-prs', state: 'waiting', ci: 'success', why: '', reviewFlag: 'missing' }],
+  waiting: [
+    { pr: 544, title: 'UI Review: phone shots', branch: 'claude/phone-shots', head: 'a544a544a544a544a544a544a544a544a544a544', build: 'ui-review-phone-shots', state: 'held', why: 'its screenshots wait for Brett in UI Review', since: '2026-11-18T09:50:00Z', heldSince: '2026-11-18T07:00:00Z', holdReason: 'its screenshots wait for Brett in UI Review (item rv-544 in the console)' },
+    { pr: 545, title: 'Draft: nothing yet', head: 'b545b545b545b545b545b545b545b545b545b545', state: 'held', why: 'it is a draft', since: '2026-11-18T09:30:00Z' },
+  ],
+  merged: [{ pr: 816, at: '2026-11-18T09:40:00Z' }],
+  flagged: [{ pr: 816, build: 'orchestrator-live-demo', branch: 'claude/orchestrator-live-demo', reviewFlag: 'missing', at: '2026-11-18T09:40:00Z', notice: 'orchestrator-live-demo - missing review' }],
+};
 const RUNS = [
   { $axf: 'auto-lander-run@1', startedAt: '2026-11-15T11:51:00Z', finishedAt: '2026-11-15T11:51:20Z', result: 'idle', mode: 'batch', reason: 'queue-empty', reasonText: 'Nothing is ready to land.', landing: null, merged: [], waiting: 0 },
   { $axf: 'auto-lander-run@1', startedAt: '2026-11-15T11:54:00Z', finishedAt: '2026-11-15T11:54:30Z', result: 'landing', mode: 'batch', reason: 'ci-waiting', reasonText: 'Waiting for CI on the PR being landed.', landing: { pr: 540, title: 'Skins: hot-swap tokens', build: 'skins-hot-swap', ci: 'running' }, merged: [], waiting: 2 },
 ];
 
-const IN = { CONFIG_TODAY, CONFIG_705, CONFIG_HAND, CONFIG_AUTO, SAVED_EIGHT, SNAPSHOTS, SOFT_SET, SPLIT_SET, QUEUE, CONTROL, RUNS, AT };
+const IN = { CONFIG_TODAY, CONFIG_705, CONFIG_HAND, CONFIG_AUTO, SAVED_EIGHT, SNAPSHOTS, SOFT_SET, LEGACY_HOLD_SET, SPLIT_SET, QUEUE, QUEUE_FLAGGED, CONTROL, RUNS, AT };
 
 // ------------------------------------------------------------------ outputs
 
@@ -91,19 +111,28 @@ function run() {
     evaluateSerial: G.evaluate(G.migrate(CONFIG_705, { at: AT }), SNAPSHOTS.redCiSerial, { at: AT }),
     evaluateBatch: G.evaluate(G.migrate(CONFIG_TODAY, { at: AT }), SNAPSHOTS.redCi, { at: AT }),
     evaluateSoft: { uiWaiting: G.evaluate(SOFT_SET, SNAPSHOTS.uiWaiting, { at: AT }), uiChanges: G.evaluate(SOFT_SET, SNAPSHOTS.uiChanges, { at: AT }), namedChecks: G.evaluate(SOFT_SET, SNAPSHOTS.namedChecks, { at: AT }) },
+    evaluateLegacyHold: { uiUnknown: G.evaluate(LEGACY_HOLD_SET, SNAPSHOTS.uiUnknown, { at: AT }), uiMissing: G.evaluate(LEGACY_HOLD_SET, SNAPSHOTS.uiMissing, { at: AT }), uiWaiting: G.evaluate(LEGACY_HOLD_SET, SNAPSHOTS.uiWaiting, { at: AT }) },
     evaluateSplit: { console: G.evaluate(SPLIT_SET, SNAPSHOTS.redCi, { owner: 'console', at: AT }), molly: G.evaluate(SPLIT_SET, SNAPSHOTS.redCi, { owner: 'axf-molly', at: AT }) },
     landerState: {
       running: G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, at: AT }),
       paused: G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, pause: { why: 'Brett is landing one by hand', by: 'brett', at: '2026-11-15T11:58:00Z' }, at: AT }),
       off: G.landerStateFrom({ config: CONFIG_HAND, queue: {}, runs: [{ startedAt: AT, finishedAt: AT, result: 'skipped', reason: 'switched-off' }], at: AT }),
       empty: G.landerStateFrom({ at: AT }),
+      flagged: G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE_FLAGGED, runs: [], at: '2026-11-18T10:00:00Z' }),
     },
+    heldOlderThan: {
+      running30: G.heldOlderThan(G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, at: AT }), 30, '2026-11-15T13:00:00Z'),
+      flagged60: G.heldOlderThan(G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE_FLAGGED, runs: [], at: '2026-11-18T10:00:00Z' }), 60, '2026-11-18T10:00:00Z'),
+      flagged0: G.heldOlderThan(G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE_FLAGGED, runs: [], at: '2026-11-18T10:00:00Z' }), 0, '2026-11-18T10:00:00Z'),
+    },
+    migrateHeld: G.normLanderState({ $axf: G.STATE_FRAME, at: AT, status: 'idle', paused: false, mode: 'serial', lastRuns: [], waiting: [{ pr: 544, state: 'held', reason: 'its screenshots wait for Brett in UI Review', rule: 'ui-review', since: '2026-11-15T11:40:00Z' }, { pr: 537, state: 'kicked', reason: 'kicked out: broke CI', rule: 'ci-green' }, { pr: 539, state: 'waiting', reason: 'waits its turn in the line.' }] }, AT),
     ruleForWhy: Object.fromEntries(['', 'its screenshots wait for Brett in UI Review', 'UI Review holds it (changes)', 'it conflicts with main in code (framework/ui/axf.css)', 'conflicts in code with #540; goes in the next batch', 'its PR checks are red', 'its PR checks have not run yet', 'its batch went red: tested again in a smaller batch', 'it is a draft', 'it comes from a fork', "couldn't build its queue commit; tried again when its head or main changes", 'taken out of the queue by hand (x)', 'kicked out: #537 broke CI when tested on top of main.'].map((w) => [w || '(empty)', G.ruleForWhy(w)])),
     errors: {
       goodSet: G.ruleSetErrors(set), badRule: G.ruleErrors({ id: 'Bad Id', kind: 'x', enabled: 'yes', severity: 'hard', owner: 'me', settings: [] }),
       dupIds: G.ruleSetErrors({ $axf: G.SET_FRAME, rev: 1, at: AT, rules: [set.rules[0], set.rules[0]] }), notASet: G.ruleSetErrors({ rev: -1, at: 'yesterday' }),
       goodState: G.landerStateErrors(G.landerStateFrom({ config: CONFIG_TODAY, queue: QUEUE, control: CONTROL, runs: RUNS, at: AT })),
       badState: G.landerStateErrors({ $axf: G.STATE_FRAME, at: AT, status: 'paused', paused: false, mode: 'merge-queue', lastRuns: [{ result: 'done', reason: 'why' }], waiting: [{ pr: 0, state: 'zzz', reason: '', rule: 'Bad Rule' }], landing: {} }),
+      heldWithoutAge: G.landerStateErrors({ $axf: G.STATE_FRAME, at: AT, status: 'idle', paused: false, mode: 'serial', lastRuns: [], waiting: [{ pr: 544, state: 'held', reason: 'held.', reviewFlag: 'nope' }], flagged: [{ pr: 0, reviewFlag: 'waiting' }] }),
     },
     norm: { rule: G.normRule({ id: 'x', kind: 'nope', severity: 'loud', owner: 'nobody', enabled: 'y', settings: null, source: 'config.json foo' }), run: G.normRun({ startedAt: AT, result: 'landed', mode: 'merge-queue', merged: [1, 0, -2, 'x', 5], reason: 'nope' }) },
   };
@@ -179,6 +208,28 @@ t('UI Review waiting holds; changes asked fails', () => {
   assert.equal(ev.uiWaiting.pass, false); assert.equal(ev.uiWaiting.held, true); assert.equal(ev.uiWaiting.blockedBy, 'ui-review'); assert.match(ev.uiWaiting.reasons[0], /waiting in UI Review/);
   assert.equal(ev.uiChanges.held, false); assert.equal(by(ev.uiChanges, 'ui-review').verdict, 'fail');
 });
+t('a missing review lands, review flagged (PR #816): pass, ui-review-missing, reviewFlag missing, nothing in reasons', () => {
+  const v = ev.uiMissing;
+  assert.equal(v.pass, true); assert.equal(v.held, false); assert.equal(v.blockedBy, ''); assert.equal(v.flagged, true); assert.deepEqual(v.flags, ['ui-review-missing']); assert.equal(v.reviewFlag, 'missing');
+  assert.equal(by(v, 'ui-review').verdict, 'pass'); assert.equal(by(v, 'ui-review').flag, 'ui-review-missing'); assert.deepEqual(v.reasons, []); assert.match(v.notes[0], /not in the console.*lands.*flagged/);
+  assert.equal(by(ev.green, 'ui-review').flag, undefined); assert.equal(ev.green.flagged, false); assert.deepEqual(ev.green.flags, []); assert.equal(ev.green.reviewFlag, '');
+});
+t('an unposted review lands with the flag (reviewFlag unposted); a failed lookup is never a hold', () => {
+  assert.equal(ev.uiUnposted.pass, true); assert.equal(ev.uiUnposted.flagged, true); assert.equal(ev.uiUnposted.reviewFlag, 'unposted'); assert.match(by(ev.uiUnposted, 'ui-review').reason, /never posted/);
+  assert.equal(ev.uiUnknown.pass, true); assert.equal(ev.uiUnknown.held, false); assert.equal(ev.uiUnknown.flagged, true); assert.equal(ev.uiUnknown.reviewFlag, 'missing'); assert.match(by(ev.uiUnknown, 'ui-review').reason, /couldn't be read.*lands/);
+  // the flag never hides a real block: red CI with a missing review still needs a fix; the flag stays as information, flagged (= landed flagged) is false
+  assert.equal(ev.uiMissingRedCi.pass, false); assert.equal(ev.uiMissingRedCi.blockedBy, 'ci-green'); assert.equal(ev.uiMissingRedCi.flagged, false); assert.deepEqual(ev.uiMissingRedCi.flags, ['ui-review-missing']); assert.equal(ev.uiMissingRedCi.reviewFlag, 'missing');
+});
+t('a review item that exists in the console still holds: waiting holds, changes asked and rejected do not land', () => {
+  assert.equal(ev.uiWaiting.pass, false); assert.equal(ev.uiWaiting.held, true); assert.equal(ev.uiWaiting.reviewFlag, 'waiting'); assert.equal(ev.uiWaiting.flagged, false);
+  assert.equal(ev.uiChanges.pass, false); assert.equal(by(ev.uiChanges, 'ui-review').verdict, 'fail'); assert.equal(ev.uiChanges.blockedBy, 'ui-review');
+  assert.equal(ev.uiRejected.pass, false); assert.equal(by(ev.uiRejected, 'ui-review').verdict, 'fail'); assert.match(ev.uiRejected.reasons[0], /rejected/); assert.equal(ev.uiRejected.reviewFlag, 'waiting');
+  assert.deepEqual(actual.defaultRuleSet.rules.find((r) => r.id === 'ui-review').settings.holdOn, ['waiting', 'changes', 'rejected']);
+});
+t('a saved set whose holdOn still lists unknown never holds a flagged review; waiting still holds', () => {
+  const l = actual.evaluateLegacyHold;
+  assert.equal(l.uiUnknown.pass, true); assert.equal(l.uiUnknown.flagged, true); assert.equal(l.uiMissing.pass, true); assert.equal(l.uiWaiting.held, true);
+});
 t('a code clash is the headline even though CI never ran; data clashes resolve by themselves', () => {
   assert.equal(ev.clash.pass, false); assert.equal(ev.clash.blockedBy, 'clash'); assert.equal(ev.clash.agent, true); assert.deepEqual(by(ev.clash, 'clash').files, ['framework/ui/axf.css', 'apps/console-web/src/App.tsx']);
   assert.equal(ev.dataClashOnly.pass, true); assert.match(by(ev.dataClashOnly, 'clash').reason, /resolve by themselves/);
@@ -209,6 +260,29 @@ t('lander-state from the merge queue: running on #540, every other PR waits with
   assert.deepEqual(s.waiting.map((w) => [w.pr, w.state, w.rule]), [[543, 'waiting', 'clash'], [539, 'waiting', ''], [544, 'held', 'ui-review'], [537, 'kicked', 'ci-green'], [545, 'held', 'merge-queue-only'], [535, 'held', '']]);
   assert.ok(s.waiting.every((w) => w.reason)); assert.deepEqual(s.landedRecently, [538, 536]); assert.equal(s.lastRuns.length, 2); assert.deepEqual(G.landerStateErrors(s), []);
 });
+t('the held-age field is filled in: every held / kicked record has heldSince and holdReason, a merely waiting one has none', () => {
+  const s = actual.landerState.running;
+  for (const w of s.waiting.filter((w) => G.HELD_STATES.includes(w.state))) { assert.equal(w.heldSince, AT, `#${w.pr} heldSince`); assert.ok(w.holdReason, `#${w.pr} holdReason`); }
+  for (const w of s.waiting.filter((w) => !G.HELD_STATES.includes(w.state))) { assert.equal(w.heldSince, ''); assert.equal(w.holdReason, ''); }
+  assert.equal(s.waiting.find((w) => w.pr === 544).reviewFlag, 'waiting'); assert.equal(s.waiting.find((w) => w.pr === 545).reviewFlag, ''); assert.deepEqual(s.flagged, []);
+  // migration: a held record written before the fields gets heldSince = its last-seen time (since, else at), holdReason = its reason
+  const m = actual.migrateHeld.waiting;
+  assert.equal(m[0].heldSince, '2026-11-15T11:40:00Z'); assert.equal(m[0].holdReason, m[0].reason); assert.equal(m[0].reviewFlag, '');
+  assert.equal(m[1].heldSince, AT); assert.equal(m[1].holdReason, 'kicked out: broke CI'); assert.equal(m[2].heldSince, ''); assert.deepEqual(G.landerStateErrors(actual.migrateHeld), []);
+});
+t('heldSince is kept when the queue says it; a flagged review goes ahead; flagged[] lists what landed flagged', () => {
+  const s = actual.landerState.flagged;
+  const held = s.waiting.find((w) => w.pr === 544); assert.equal(held.heldSince, '2026-11-18T07:00:00Z'); assert.match(held.holdReason, /rv-544/); assert.equal(held.reviewFlag, 'waiting');
+  assert.equal(s.waiting.find((w) => w.pr === 545).heldSince, '2026-11-18T09:30:00Z');
+  const ahead = s.waiting.find((w) => w.pr === 820); assert.equal(ahead.state, 'waiting'); assert.equal(ahead.reviewFlag, 'missing'); assert.equal(ahead.heldSince, '');
+  assert.deepEqual(s.flagged, [{ pr: 816, build: 'orchestrator-live-demo', branch: 'claude/orchestrator-live-demo', reviewFlag: 'missing', at: '2026-11-18T09:40:00Z', notice: 'orchestrator-live-demo - missing review' }]);
+  assert.deepEqual(s.landedRecently, [816]); assert.deepEqual(G.landerStateErrors(s), []);
+});
+t('heldOlderThan lists the held PRs past the limit with how long, oldest hold first kept in line order', () => {
+  assert.deepEqual(actual.heldOlderThan.running30.map((x) => [x.pr, x.heldMin, x.state]), [[544, 60, 'held'], [537, 60, 'kicked'], [545, 60, 'held'], [535, 60, 'held']]);
+  assert.deepEqual(actual.heldOlderThan.flagged60.map((x) => [x.pr, x.heldMin, x.reviewFlag]), [[544, 180, 'waiting']]); // #545 held 30 min: under the limit
+  assert.deepEqual(actual.heldOlderThan.flagged0.map((x) => x.pr), [544, 545]); assert.ok(actual.heldOlderThan.flagged60.every((x) => x.holdReason && x.heldSince));
+});
 t('paused by hand says who and why; off says off; nothing at all is idle', () => {
   assert.equal(actual.landerState.paused.status, 'paused'); assert.equal(actual.landerState.paused.pause.by, 'brett'); assert.deepEqual(G.landerStateErrors(actual.landerState.paused), []);
   assert.equal(actual.landerState.off.status, 'off'); assert.equal(actual.landerState.off.enabled, false); assert.equal(actual.landerState.off.mode, 'stack');
@@ -220,6 +294,7 @@ t('paused by hand says who and why; off says off; nothing at all is idle', () =>
 t('validation names every bad field', () => {
   assert.deepEqual(actual.errors.goodSet, []); assert.equal(actual.errors.badRule.length, 6); assert.ok(actual.errors.dupIds.some((e) => /appears twice/.test(e)));
   assert.deepEqual(actual.errors.goodState, []); assert.ok(actual.errors.badState.length >= 7);
+  assert.ok(actual.errors.heldWithoutAge.some((e) => /heldSince/.test(e))); assert.ok(actual.errors.heldWithoutAge.some((e) => /holdReason/.test(e))); assert.ok(actual.errors.heldWithoutAge.some((e) => /reviewFlag/.test(e))); assert.ok(actual.errors.heldWithoutAge.some((e) => /flagged\[0\]\.pr/.test(e)));
   assert.deepEqual(actual.norm.rule, { $axf: G.RULE_FRAME, id: 'x', kind: 'custom', enabled: true, severity: 'block', owner: 'console', title: '', description: '', settings: {}, source: 'config.json foo' });
   assert.deepEqual(actual.norm.run.merged, [1, 5]); assert.equal(actual.norm.run.mode, 'batch'); assert.equal(actual.norm.run.reason, '');
 });

@@ -264,6 +264,24 @@
           },
           "since": {
             "type": "string"
+          },
+          "heldSince": {
+            "type": "string",
+            "description": "when the hold began (ISO); required while state is held, kicked or paused. A record written before Nov 18 2026 gets its last-seen time"
+          },
+          "holdReason": {
+            "type": "string",
+            "maxLength": 600,
+            "description": "why it is held, in plain words (the held-prs check and Land now show it)"
+          },
+          "reviewFlag": {
+            "enum": [
+              "",
+              "missing",
+              "unposted",
+              "waiting"
+            ],
+            "description": "the UI Review flag: waiting = an item in the console holds it; missing / unposted = it lands flagged; '' = no review"
           }
         }
       }
@@ -274,6 +292,44 @@
         "type": "integer",
         "minimum": 1
       }
+    },
+    "flagged": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": [
+          "pr",
+          "reviewFlag"
+        ],
+        "properties": {
+          "pr": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "build": {
+            "type": "string"
+          },
+          "branch": {
+            "type": "string"
+          },
+          "reviewFlag": {
+            "enum": [
+              "missing",
+              "unposted",
+              "waiting"
+            ]
+          },
+          "at": {
+            "type": "string"
+          },
+          "notice": {
+            "type": "string",
+            "description": "the UI Review notice (Screenshots group \"<build> - missing review\") filed for it"
+          }
+        }
+      },
+      "description": "PRs that landed with their UI Review missing or unposted (land, review flagged), oldest first"
     },
     "error": {
       "type": "string"

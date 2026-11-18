@@ -260,6 +260,45 @@ export function statusOnly(commits, files) {
  * kind = held | code | conflict | ci | ui | dependency | push | pr | running. `agent` = needs a code change (only
  * conflict and ci): those, and only those, may create an agent job.
  */
+/**
+ * UI Review (Nov 18 2026, build auto-lander-never-wait-missing-ui-review; Brett: "If it recorded the test of the pipeline
+ * and didn't merge it on its own, then the test failed."): a hold applies only when the review item exists in the live
+ * console. UI_HOLDS are the states that hold; UI_FLAGGED land with the review flagged (gate-rules@1 ui-review-missing).
+ */
+export const UI_HOLDS = Object.freeze(['waiting', 'changes', 'rejected']);
+export const UI_FLAGGED = Object.freeze(['unknown', 'missing', 'unposted']);
+/** The console route the lander asks (ui-review@1): the item's state for a branch / PR. */
+export const REVIEW_STATE_PATH = (branch, pr) => `/api/plugins/ui-review/state?branch=${encodeURIComponent(branch || '')}&pr=${encodeURIComponent(pr || '')}`;
+
+/**
+ * What the lander makes of the console's answer to REVIEW_STATE_PATH → { ui, reviewFlag, items }.
+ *   answer null / not an object   the lookup failed: never a hold → ui 'unknown', flag 'missing'
+ *   holds                         an item exists and holds → ui = its state, flag 'waiting'
+ *   state 'none' + claimed        the build or the lander said there is a review, the console has none → 'missing'
+ *   state 'none' + unposted       an item exists only in the worktree (local items.json) → 'unposted'
+ *   otherwise                     approved or no review at all → '' (nothing to flag)
+ * `claimed` = the PR was held on UI Review before, carried a flag, or its build recorded UI Review items.
+ */
+export function reviewLookup(answer, { claimed = false, unposted = false } = {}) {
+  if (!answer || typeof answer !== 'object') return { ui: 'unknown', reviewFlag: 'missing', items: [] };
+  const items = Array.isArray(answer.items) ? answer.items.map((x) => str(x?.id || '', 60)).filter(Boolean) : [];
+  const state = str(answer.state, 20);
+  if (answer.holds === true || UI_HOLDS.includes(state)) return { ui: UI_HOLDS.includes(state) ? state : 'waiting', reviewFlag: 'waiting', items };
+  if (state === 'none' || !items.length) {
+    if (unposted) return { ui: 'unposted', reviewFlag: 'unposted', items: [] };
+    if (claimed) return { ui: 'missing', reviewFlag: 'missing', items: [] };
+  }
+  return { ui: '', reviewFlag: '', items };
+}
+
+/** The review flag a landing record carries ('' | missing | unposted | waiting), from what the round found. */
+export function reviewFlagOf(s = {}) {
+  if (s.reviewFlag) return str(s.reviewFlag, 20);
+  if (s.ui === 'unposted') return 'unposted';
+  if (UI_FLAGGED.includes(s.ui)) return 'missing';
+  return UI_HOLDS.includes(s.ui) ? 'waiting' : '';
+}
+
 export function blockReason(id, s = {}) {
   const r = (kind, text, extra = {}) => ({ kind, text: `${id}: ${text}`, agent: kind === 'conflict' || kind === 'ci', ...extra });
   if (s.held) return r('held', `held by hand${s.held === true ? '' : ` (${str(s.held, 160)})`}. Release it to land it.`);
@@ -270,9 +309,10 @@ export function blockReason(id, s = {}) {
   if (s.deps?.length) return r('dependency', `waits for ${s.deps.join(', ')} to land first.`);
   if (s.ci === 'failure') return r('ci', `CI is red${s.failing?.length ? ` (${s.failing.slice(0, 3).join(', ')})` : ''}. Needs a code fix.`, { checks: (s.failing || []).slice(0, 10) });
   if (s.rules?.failing?.length) return r('rules', `build rules fail (${s.rules.failing.slice(0, 4).join(', ')}${s.rules.failing.length > 4 ? ', …' : ''}). The VPS fixed what it could; the rest needs a fix (Builds → Gate & rules → Build rules).`, { rules: s.rules.failing.slice(0, 20) });
-  if (s.waitUi !== false && s.ui && s.ui !== '') {
-    const words = { waiting: 'its screenshots are waiting in UI Review. Approve them and it merges by itself.', changes: 'UI Review asked for changes.', rejected: 'UI Review rejected it.', unknown: "UI Review couldn't be read, so it waits." };
-    return r('ui', words[s.ui] || `UI Review holds it (${str(s.ui, 40)}).`);
+  // only a review item that exists in the console holds; missing / unposted / unreadable lands with the review flagged
+  if (s.waitUi !== false && UI_HOLDS.includes(s.ui)) {
+    const words = { waiting: 'its screenshots are waiting in UI Review. Approve them and it merges by itself.', changes: 'UI Review asked for changes.', rejected: 'UI Review rejected it.' };
+    return r('ui', words[s.ui]);
   }
   if (s.ci === 'running' || s.ci === 'none') return r('running', s.ci === 'running' ? 'CI is running on its head.' : 'CI has not run on its head yet; started it.', { quiet: true });
   return null;

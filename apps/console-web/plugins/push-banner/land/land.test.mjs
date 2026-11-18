@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, ciOf, reasonEvent, worktrees } from './land.mjs';
+import { makeGit, round, control, readState, ciOf, reasonEvent, worktrees, noticePng, flagReview, flagGroup } from './land.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -108,6 +108,18 @@ const kinds = [['held', { held: 'later' }], ['code', { code: ['a.ts'] }], ['conf
 for (const [k, f] of kinds) check(core.blockReason('b', f)?.kind === k, `reason ${k}: ${core.blockReason('b', f)?.text}`);
 check(core.blockReason('b', { ci: 'success', ui: '' }) === null, 'green + UI free = nothing holds it');
 check(core.blockReason('b', { ci: 'success', ui: 'waiting', waitUi: false }) === null, 'Wait for UI Review off = UI Review does not hold it');
+// Nov 18 2026: a hold needs an item in the console; missing / unposted / unreadable lands with the review flagged
+check(core.blockReason('b', { ci: 'success', ui: 'unknown' }) === null && core.blockReason('b', { ci: 'success', ui: 'missing' }) === null && core.blockReason('b', { ci: 'success', ui: 'unposted' }) === null, 'a missing, unposted or unreadable UI Review never holds');
+check(core.blockReason('b', { ci: 'success', ui: 'changes' })?.kind === 'ui' && core.blockReason('b', { ci: 'success', ui: 'rejected' })?.kind === 'ui', 'changes asked / rejected still hold (the item exists)');
+check(core.reviewFlagOf({ ui: 'missing' }) === 'missing' && core.reviewFlagOf({ ui: 'unknown' }) === 'missing' && core.reviewFlagOf({ ui: 'unposted' }) === 'unposted' && core.reviewFlagOf({ ui: 'waiting' }) === 'waiting' && core.reviewFlagOf({ ui: '' }) === '' && core.reviewFlagOf({ reviewFlag: 'unposted', ui: '' }) === 'unposted', 'reviewFlagOf: the flag a landing record carries');
+const rl = core.reviewLookup;
+check(rl(null).ui === 'unknown' && rl(null).reviewFlag === 'missing' && rl('nope').ui === 'unknown', 'reviewLookup: a failed lookup is flagged missing, never a hold');
+check(rl({ state: 'waiting', holds: true, items: [{ id: 'rv-1' }] }).ui === 'waiting' && rl({ state: 'waiting', holds: true, items: [{ id: 'rv-1' }] }).reviewFlag === 'waiting' && rl({ state: 'waiting', holds: true, items: [{ id: 'rv-1' }] }).items.join() === 'rv-1', 'reviewLookup: an item in the console that waits holds');
+check(rl({ state: 'changes', holds: true, items: [{ id: 'rv-1' }] }).ui === 'changes' && rl({ state: 'rejected', holds: true, items: [] }).ui === 'rejected', 'reviewLookup: changes / rejected come through as themselves');
+check(rl({ state: 'none', holds: false, items: [] }).ui === '' && rl({ state: 'none', holds: false, items: [] }).reviewFlag === '', 'reviewLookup: no review claimed and none in the console = nothing to flag');
+check(rl({ state: 'none', holds: false, items: [] }, { claimed: true }).ui === 'missing' && rl({ state: 'none', holds: false, items: [] }, { claimed: true }).reviewFlag === 'missing', 'reviewLookup: a claimed review the console has no item for = missing (PR \x23816)');
+check(rl({ state: 'none', holds: false, items: [] }, { claimed: true, unposted: true }).ui === 'unposted' && rl({ state: 'none', items: [] }, { unposted: true }).reviewFlag === 'unposted', 'reviewLookup: an item only in the worktree = unposted');
+check(rl({ state: 'approved', holds: false, items: [{ id: 'rv-2' }] }).ui === '' && rl({ state: 'approved', holds: false, items: [{ id: 'rv-2' }] }).reviewFlag === '', 'reviewLookup: approved = free');
 check(core.blockReason('b', { conflicts: ['a'] }).agent && core.blockReason('b', { ci: 'failure' }).agent && !core.blockReason('b', { ui: 'waiting', ci: 'success' }).agent && !core.blockReason('b', { deps: ['y'] }).agent, 'only a code conflict or red CI asks for an agent');
 const r1 = core.blockReason('b', { ui: 'waiting', ci: 'success' });
 check(core.shouldPush(null, r1, 'h1') && !core.shouldPush({ kind: 'ui', head: 'h1' }, r1, 'h1') && core.shouldPush({ kind: 'ui', head: 'h1' }, r1, 'h2') && !core.shouldPush(null, core.blockReason('b', { ci: 'running' }), 'h'), 'one push per reason and head; never for a quiet wait');
@@ -194,7 +206,8 @@ const gh = async (method, path, body) => {
   if (method === 'POST' && path.includes('/dispatches')) return null;
   throw new Error(`unexpected ${method} ${path}`);
 };
-const api = async (method, path, body) => { calls.api.push({ method, path, body }); if (path.includes('/ui-hold')) return path.includes('claude%2Fui') ? { hold: 'waiting' } : { hold: '' }; return { ok: true }; };
+// the live console's UI Review: only `claude/ui` has an item (waiting); every other branch has none (state none, nothing holds)
+const api = async (method, path, body) => { calls.api.push({ method, path, body }); if (path.includes('/ui-review/state')) return path.includes('claude%2Fui') ? { $axf: 'ui-review@1', state: 'waiting', holds: true, items: [{ id: 'rv-ui', status: 'waiting' }] } : { $axf: 'ui-review@1', state: 'none', holds: false, items: [] }; return { ok: true }; };
 const s = { repo, slug: 'MossesX/AmberX-AXF', dataDir: join(tmp, 'data'), archive: join(tmp, 'archive'), console: 'off', api: '', workflow: 'android.yml', projects, remote: 'origin', base: 'main' };
 mkdirSync(s.dataDir, { recursive: true });
 // these rounds check auto-land's own main merging; with the merge queue on, main is combined in on queue branches instead (merge-queue.test.mjs)
@@ -216,6 +229,17 @@ check(sh(['show', 'origin/claude/logs:shared.ts'], repo).includes('main'), 'logs
 check(by.later?.reason?.kind === 'dependency' && /waits for ok/.test(by.later.reason.text), 'later: waits for its dependency (before its red CI is even looked at)');
 check(by.held?.reason?.kind === 'held' && /Brett wants to look first/.test(by.held.reason.text) && !calls.gh.some((c) => c.includes('claude%2Fheld')), 'held: held by hand, nothing done to it');
 check(by.ui?.state === 'blocked' && by.ui.reason.kind === 'ui' && by.ui.pr === 51, 'ui: CI green, UI Review waiting = held, says so');
+check(by.ui?.reviewFlag === 'waiting' && by.ui.heldSince === by.ui.since && /waiting in UI Review/.test(by.ui.holdReason) && !by.ui.holdReason.startsWith('ui:'), 'ui: the held record says since when and why (lander-state@1 heldSince, holdReason, reviewFlag waiting)');
+check(calls.api.some((c) => c.path.includes('/api/plugins/ui-review/state?branch=claude%2Fui&pr=51')) && !calls.api.some((c) => c.path.includes('/ui-hold')), 'the lander looks the review item up in the live console (ui-review state), not the old ui-hold');
+check(by.green?.reviewFlag === '' && by.green.heldSince === undefined, 'green: no review claimed, none in the console = no flag, not held');
+// s6: a PR that landed with its review missing / unposted files a UI Review notice (Screenshots, never the review queue) and a build note
+const png = noticePng(); check(png.subarray(0, 8).toString('hex') === '89504e470d0a1a0a' && png.subarray(12, 16).toString() === 'IHDR' && png.length < 2000, 'the notice picture is a small valid PNG');
+check(flagGroup('orchestrator-live-demo', 816) === 'orchestrator-live-demo - missing review' && flagGroup('', 816) === 'pr-816 - missing review', 'the notice group is "<build id> - missing review"');
+const posted = []; const fr = await flagReview({ s: { ...s, repo: tmp }, api: async (m, p, body) => { posted.push({ m, p, body }); return { ok: true, shot: { id: 'sh-816' } }; }, pr: 816, build: '', branch: 'claude/orchestrator-live-demo', reviewFlag: 'missing', at: '2026-11-18T10:00:00Z' });
+check(fr.ok && fr.notice === 'sh-816' && fr.group === 'pr-816 - missing review' && posted.length === 1 && posted[0].m === 'POST' && posted[0].p === '/api/plugins/ui-review/shots', 'flagReview posts one Screenshots notice to the console');
+check(posted[0].body.group === 'pr-816 - missing review' && /\x23816 landed with its UI Review missing/.test(posted[0].body.title) && /no item for \x23816/.test(posted[0].body.note) && posted[0].body.source === 'auto-lander' && typeof posted[0].body.data === 'string', 'the notice says what happened in plain words, in the right group, with a picture');
+const fr2 = await flagReview({ s, api: async () => null, pr: 817, reviewFlag: 'unposted', at: '2026-11-18T10:00:00Z', log: () => {} });
+check(!fr2.ok && fr2.notice === '' && fr2.reviewFlag === 'unposted', 'a console that does not answer never fails the landing: the notice is logged as not taken');
 check(by.green?.state === 'ready' && by.green.reason === null && by.green.pr === 52, 'green: CI green, UI free = ready (the push banner merges it)');
 check(st.order[0] && st.managed.includes(52), 'land.json gives the push banner the order and the PRs it manages');
 check(!existsSync(join(wtDir, '_claude/dropped.md')) && readFileSync(join(s.archive, 'wt/_claude/dropped.md'), 'utf8') === 'hub copy\n', 'wt: claude-sync\'s copy backed up to the archive and removed');

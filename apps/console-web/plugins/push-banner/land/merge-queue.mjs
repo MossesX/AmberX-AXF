@@ -33,7 +33,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
-import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
+import { ciOf, crewSay, flagReview, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -41,6 +41,24 @@ const lines = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boo
 
 export const queueFile = (s) => join(s.dataDir, 'merge-queue.json');
 export const queueControlFile = (s) => join(s.dataDir, 'merge-queue-control.json');
+/** The UI Review item of a PR in the live console (GET /api/plugins/ui-review/state) → { ui, reviewFlag, items }; a failed lookup is never a hold. */
+export async function lookupReview({ api, branch, pr, claimed = false }) {
+  let answer = null;
+  try { answer = await api('GET', core.REVIEW_STATE_PATH(branch, pr)); } catch { answer = null; }
+  return core.reviewLookup(answer, { claimed });
+}
+
+/** The UI Review notice + build note for each PR that landed this round with a flagged review (once: the entry keeps `notice`). */
+export async function noticeFlagged({ s, api, dry, log = () => {}, flagged, at }) {
+  const out = [];
+  for (const f of flagged) {
+    if (f.at !== at || f.notice !== undefined || dry) { out.push(f); continue; }
+    const r = await flagReview({ s, api, pr: f.pr, build: f.build, branch: f.branch, reviewFlag: f.reviewFlag, at, log });
+    out.push({ ...f, notice: r.notice || '', group: r.group });
+  }
+  return out;
+}
+
 export const readQueue = (s) => readJson(queueFile(s), { $axf: q.QUEUE_FRAME, items: [], stack: [], waiting: [], kicked: [], merged: [] });
 export const readQueueControl = (s) => readJson(queueControlFile(s), { $axf: q.QUEUE_CONTROL_FRAME, order: [], removed: {}, kicked: {}, added: [] });
 export function readQueueConfig(s) {
@@ -156,6 +174,7 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   const buildOf = (br) => builds.find((b) => b.branch === br);
   const land = readJson(join(s.dataDir, 'land.json'), {}) || {};
   const landCtl = readJson(join(s.dataDir, 'land-control.json'), {}) || {};
+  const landItems = (readJson(join(s.dataDir, 'land.json'), {}) || {}).items || []; // the landing line's records (reviewFlag) for the claim
   const rank = Object.fromEntries((land.order || []).map((n, i) => [n, i]));
 
   let pulls = [];
@@ -176,7 +195,10 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     else { try { fact.ci = ciOf((await gh('GET', `/repos/${s.slug}/commits/${fact.head}/check-runs?per_page=100`))?.check_runs || []).ci; } catch { fact.ci = 'running'; } }
     // no PR checks at all: does it conflict with main? (git, no API call)
     if (fact.ci === 'none') fact.conflicted = git(['merge-tree', '--write-tree', '--quiet', `${s.remote}/${s.base}`, fact.head]).code === 1;
-    if (cfg.waitUi) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(fact.branch)}&pr=${fact.number}`); fact.ui = u ? String(u.hold || '') : 'unknown'; }
+    // UI Review (Nov 18 2026): the item is looked up in the live console; only an item that exists holds. Not found or the
+    // lookup failed = the PR goes ahead and its record carries reviewFlag (gate-rules@1 ui-review-missing), never a hold.
+    if (cfg.waitUi) { const rv = await lookupReview({ api, branch: fact.branch, pr: fact.number, claimed: /ui review/i.test(String(old.why || '')) || !!old.reviewFlag || !!landItems.find((x) => x.pr === fact.number)?.reviewFlag }); fact.ui = rv.ui; fact.reviewFlag = rv.reviewFlag; }
+    else fact.reviewFlag = '';
     if (b && landCtl.holds?.[b.id]) fact.landHeld = landCtl.holds[b.id].why || 'held';
     fact.why = q.notReady(fact, ctl, { waitUi: cfg.waitUi, redJoins: cfg.mode === 'batch' });
     prs.push(fact);
@@ -293,9 +315,11 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   }
   const rest = order.filter((p) => !stack.some((e) => e.pr === p.number) && !p.why);
   for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || '', etaMin: q.etaMinutes(stack.length + j, { depth: cfg.depth, avg }) });
-  const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
+  const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => q.heldEntry(p, prevAll.get(p.number), at));
+  for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.reviewFlag = q.reviewFlagOf(p); }
+  const flagged = await noticeFlagged({ s, api, dry, log, flagged: q.flaggedLandings(prev.flagged, prs, mergedNow, at), at });
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.prCi = p.ci; }
-  const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
+  const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, flagged, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
   return st;
 }
@@ -460,8 +484,11 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
   }
   const rest = q.greenFirst(q.queueOrder(prs.filter((p) => !p.why && !landedNow.has(p.number) && !(batch?.members || []).some((m) => m.pr === p.number)), ctl, rank, []), ctl);
   for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || (split.includes(p.number) ? 'its batch went red: tested again in a smaller batch' : ''), etaMin: Math.round(avg * (2 + Math.floor(j / cfg.batchSize))), prCi: p.ci });
-  const waiting = prs.filter((p) => p.why && !landedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
-  const st = { ...base, mainSha, expect: batch?.base || mainSha, avgMin: avg, history: history.slice(-20), batch, split, stack: [], items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, lastLanded, enlisted, ...v };
+  const prevAll = new Map([...(prev.items || []), ...(prev.waiting || [])].map((x) => [x.pr, x]));
+  const waiting = prs.filter((p) => p.why && !landedNow.has(p.number)).map((p) => q.heldEntry(p, prevAll.get(p.number), at));
+  for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.reviewFlag = q.reviewFlagOf(p); }
+  const flagged = await noticeFlagged({ s, api, dry, log, flagged: q.flaggedLandings(prev.flagged, prs, landedNow, at), at });
+  const st = { ...base, mainSha, expect: batch?.base || mainSha, avgMin: avg, history: history.slice(-20), batch, split, stack: [], items, waiting, flagged, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, lastLanded, enlisted, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
   return st;
 }

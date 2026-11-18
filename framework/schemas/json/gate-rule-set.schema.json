@@ -125,11 +125,10 @@
                   "enum": [
                     "waiting",
                     "changes",
-                    "rejected",
-                    "unknown"
+                    "rejected"
                   ]
                 },
-                "description": "ui-review: the UI Review states that hold a PR"
+                "description": "ui-review: the UI Review states that hold a PR. A review that is missing from the console, unposted or unreadable never holds: the PR lands and the verdict carries the flag ui-review-missing (Nov 18 2026)"
               },
               "autoResolve": {
                 "type": "array",

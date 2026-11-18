@@ -72,6 +72,7 @@ errors scrubbed. Nothing here returns the token, and everything GitHub says is d
 """
 from __future__ import annotations
 
+import base64
 import json
 import os
 import re
@@ -116,6 +117,7 @@ AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
+UI_HOLDS = ("waiting", "changes", "rejected")  # the only UI Review states that hold; unknown / missing / unposted land flagged (Nov 18 2026)
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
 MEM_MAX = 4000  # finished check-run answers kept per commit (cleared when full)
@@ -768,6 +770,75 @@ class Pushes:
             self._cache = None
 
     # ---- writes
+    # ---- the orchestrator demo's real landing (Nov 18 2026): a demo branch with one commit, made through the console's token
+    DEMO_BRANCH_RE = re.compile(r"^demo/demo-[a-z0-9][a-z0-9-]{0,80}$")
+    DEMO_PATH_PREFIX = "_claude/builds/demo/"
+
+    def _demo_branch_body(self, body: Any, keys: set[str]) -> tuple[str, str]:
+        if not isinstance(body, dict) or set(body) - keys:
+            raise HTTPException(400, f"send {{{', '.join(sorted(keys))}}}")
+        repo, branch = body.get("repo") or UI_REVIEW_REPO, str(body.get("branch") or "")
+        if repo not in self.config()["repos"]:
+            raise HTTPException(400, "that repo isn't watched here")
+        if not self.DEMO_BRANCH_RE.match(branch):
+            raise HTTPException(400, "only a demo branch (demo/demo-<id>) can be made or deleted here")
+        return repo, branch
+
+    def demo_branch(self, body: Any) -> dict[str, Any]:
+        """Create (or reuse) a demo branch from the default branch and append one line to a file under _claude/builds/demo/
+        on it: the one commit the orchestrator demo lands for real through the merge queue. Demo branches only."""
+        repo, branch = self._demo_branch_body(body, {"repo", "branch", "build", "path", "line", "message"})
+        path = str(body.get("path") or f"{self.DEMO_PATH_PREFIX}landings.md")
+        if not path.startswith(self.DEMO_PATH_PREFIX) or ".." in path or not re.match(r"^[a-zA-Z0-9_./-]+$", path):
+            raise HTTPException(400, f"the file must sit under {self.DEMO_PATH_PREFIX}")
+        line = _text(body.get("line"), 300) or f"{time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())} landed by the orchestrator demo"
+        message = _text(body.get("message"), 120) or f"Orchestrator demo: {branch} lands for real"
+        gh = self.gh()
+        try:
+            info = gh.repo(repo)
+            base = info.get("default_branch") if isinstance(info, dict) and valid_branch(info.get("default_branch")) else "main"
+            base_sha = _text(self._head(gh, repo, base).get("sha"), 40)
+            if not base_sha:
+                raise HTTPException(502, f"can't read the head of {base}")
+            existing = True
+            try:
+                gh.get(github.repo_path(repo, "git", "ref", "heads", *branch.split("/")))
+            except github.GitHubError as e:
+                if e.status != 404:
+                    raise
+                existing = False
+            if not existing:
+                gh.json("POST", github.repo_path(repo, "git", "refs"), {"ref": f"refs/heads/{branch}", "sha": base_sha})
+            old_sha, old_text = "", ""
+            try:
+                cur = gh.get(github.repo_path(repo, "contents", *path.split("/"), query={"ref": branch}))
+                if isinstance(cur, dict) and cur.get("sha"):
+                    old_sha = _text(cur.get("sha"), 40)
+                    old_text = base64.b64decode(str(cur.get("content") or "").encode()).decode("utf-8", "replace")
+            except github.GitHubError as e:
+                if e.status != 404:
+                    raise
+            header = "" if old_text else "# Orchestrator demo landings\n\nOne line per demo PR the real merge queue merged (orchestrator-demo, real-landing.mjs).\n\n"
+            content = base64.b64encode(f"{header}{old_text}{'' if not old_text or old_text.endswith(chr(10)) else chr(10)}{line}\n".encode()).decode()
+            put = gh.json("PUT", github.repo_path(repo, "contents", *path.split("/")), {"message": message, "content": content, "branch": branch, **({"sha": old_sha} if old_sha else {})})
+            sha = _text(((put or {}).get("commit") or {}).get("sha") if isinstance(put, dict) else "", 40)
+        except github.GitHubError as e:
+            raise HTTPException(502, _text(str(e))) from None
+        self._forget()
+        return {"ok": True, "repo": repo, "branch": branch, "base": base, "existing": existing, "sha": sha, "path": path}
+
+    def demo_branch_delete(self, body: Any) -> dict[str, Any]:
+        """Delete a demo branch (its open PR closes with it). Demo branches only."""
+        repo, branch = self._demo_branch_body(body, {"repo", "branch"})
+        gh = self.gh()
+        try:
+            gh.json("DELETE", github.repo_path(repo, "git", "refs", "heads", *branch.split("/")))
+        except github.GitHubError as e:
+            if e.status not in (404, 422):
+                raise HTTPException(502, _text(str(e))) from None
+        self._forget()
+        return {"ok": True, "repo": repo, "branch": branch, "deleted": True}
+
     def open_pr(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "branch"}:
             raise HTTPException(400, "send {repo, branch}")
@@ -816,15 +887,21 @@ class Pushes:
     def ui_hold(self, repo: str, number: int, branch: str) -> str:
         """The UI Review state that holds this PR ('' = free to merge). ui-review@1 items carry a branch and a PR number
         but no repo, so PR numbers count only for the console's own repo; other repos match by branch. Without the
-        UI Review plugin nothing is held."""
+        UI Review plugin nothing is held. Nov 18 2026 (gate-rules@1 ui-review-missing): a hold needs an item in the
+        console; a lookup that fails answers 'unknown', which callers treat as a flag, never as a hold (ui_holds)."""
         svc = claudefix.plugin_services.get(UI_REVIEW_CAP)
         if svc is None or not (branch or number):
             return ""
         try:
             st = svc.state(branch, number if repo == UI_REVIEW_REPO else None)
-        except Exception:  # noqa: BLE001 — UI Review broken: don't merge blind
+        except Exception:  # noqa: BLE001 — UI Review broken: flagged, not a blind hold
             return "unknown"
         return str(st.get("state") or "waiting") if st.get("holds") else ""
+
+    @staticmethod
+    def ui_holds(held: str) -> bool:
+        """True only for a review item that exists in the console and holds (waiting, changes, rejected)."""
+        return held in UI_HOLDS
 
     def merge(self, body: Any, wait_ui: bool = True) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
@@ -850,7 +927,7 @@ class Pushes:
             if p.get("draft") is True:
                 raise HTTPException(409, "that PR is a draft")
             held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)) if wait_ui else ""
-            if held:
+            if self.ui_holds(held):
                 raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
             task = self._task(repo, p, "merge", "merge it")
             sha = _text((p.get("head") or {}).get("sha"), 40)
@@ -945,7 +1022,7 @@ class Pushes:
                 if p.get("ci") in ("failure", "none", "unknown"):
                     continue  # nothing to do until it is fixed (or, without CI, never)
                 held = self.ui_hold(repo, p["number"], p.get("head") or "") if wait_ui else ""
-                if held:  # waiting on Brett in UI Review: the next PR gets its turn
+                if self.ui_holds(held):  # an item in the console waits on Brett: the next PR gets its turn
                     done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
                     continue
                 try:
@@ -1469,6 +1546,19 @@ def open_pr(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("push", "Open pull request", body, PUSHES.open_pr)
 
 
+@router.post("/demo-branch")
+def demo_branch(body: Any = Body(None)) -> dict[str, Any]:
+    """The orchestrator demo's real landing: a demo branch (demo/demo-<id>) with one commit under _claude/builds/demo/, made
+    with the console's GitHub token. Body {repo?, branch, build?, path?, line?, message?}. Demo branches only."""
+    return _tracked("push", "Create demo branch", body, PUSHES.demo_branch)
+
+
+@router.post("/demo-branch/delete")
+def demo_branch_delete(body: Any = Body(None)) -> dict[str, Any]:
+    """Delete a demo branch left unmerged by the orchestrator demo. Body {repo?, branch}. Demo branches only."""
+    return PUSHES.demo_branch_delete(body)
+
+
 @router.post("/merge")
 def merge(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("merge", "Merge", body, PUSHES.merge)
@@ -1562,8 +1652,10 @@ def land_tracking_show(body: Any = Body(None)) -> dict[str, Any]:
 
 @router.get("/ui-hold")
 def ui_hold(branch: str = "", pr: int = 0) -> dict[str, Any]:
-    """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1."""
-    return {"hold": PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)}
+    """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1. `holds` is true only
+    for an item that exists in the console (waiting, changes, rejected); 'unknown' is a failed lookup = flagged, never a hold."""
+    held = PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)
+    return {"hold": held, "holds": PUSHES.ui_holds(held), "flag": "missing" if held == "unknown" else ("waiting" if held in UI_HOLDS else "")}
 
 
 @router.post("/land/now")

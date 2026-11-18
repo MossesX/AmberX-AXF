@@ -42,6 +42,7 @@
  * (/root/archive/auto-land), AXF_LAND_GITHUB_API (https://api.github.com), AXF_LAND_WORKFLOW (android.yml).
  */
 import { spawnSync } from 'node:child_process';
+import { deflateSync } from 'node:zlib';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -133,6 +134,69 @@ export function makeConsole(s) {
     if (r.status !== 0) return null;
     try { return JSON.parse(r.stdout); } catch { return null; }
   };
+}
+
+/**
+ * The UI Review item of a PR, looked up in the live console (GET /api/plugins/ui-review/state, what `review.mjs state --pr N
+ * --console` reads) → { ui, reviewFlag, items } (land-core.reviewLookup). A failed lookup is never a hold. An item that
+ * exists only in the build's worktree (its local ui-review items.json names the PR / branch) is `unposted`.
+ */
+export async function lookupReview({ api, branch, pr, claimed = false, worktree = '' }) {
+  let answer = null;
+  try { answer = await api('GET', core.REVIEW_STATE_PATH(branch, pr)); } catch { answer = null; }
+  const unposted = answer && typeof answer === 'object' && String(answer.state || 'none') === 'none' ? localReviewItems(worktree, { branch, pr }) : false;
+  return core.reviewLookup(answer, { claimed, unposted });
+}
+
+/** True when the worktree's local UI Review store (apps/console-web/.axf-console/plugins/ui-review/items.json) names the PR or branch. */
+export function localReviewItems(worktree, { branch = '', pr = 0 } = {}) {
+  if (!worktree) return false;
+  const manifest = readJson(join(worktree, 'apps/console-web/plugins/ui-review/plugin.json'), {}) || {};
+  const file = join(worktree, manifest.lifecycle?.dataDir || 'apps/console-web/.axf-console/plugins/ui-review', 'items.json');
+  const doc = readJson(file, null);
+  return !!(doc && Array.isArray(doc.items) && doc.items.some((it) => it && !it.landed && ((branch && it.branch === branch) || (pr && Number(it.pr) === Number(pr)))));
+}
+
+/** A small solid PNG (the notice's picture: Screenshots needs one; the words are in the title and note). */
+export function noticePng({ w = 320, h = 80, rgb = [0xf2, 0xb8, 0x3a] } = {}) {
+  const crcTable = new Int32Array(256).map((_, n) => { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; return c; });
+  const crc = (buf) => { let c = -1; for (const b of buf) c = crcTable[(c ^ b) & 0xff] ^ (c >>> 8); return (c ^ -1) >>> 0; };
+  const chunk = (type, data) => { const len = Buffer.alloc(4); len.writeUInt32BE(data.length); const td = Buffer.concat([Buffer.from(type, 'ascii'), data]); const c = Buffer.alloc(4); c.writeUInt32BE(crc(td)); return Buffer.concat([len, td, c]); };
+  const ihdr = Buffer.alloc(13); ihdr.writeUInt32BE(w, 0); ihdr.writeUInt32BE(h, 4); ihdr[8] = 8; ihdr[9] = 2; ihdr[10] = 0; ihdr[11] = 0; ihdr[12] = 0;
+  const row = Buffer.concat([Buffer.from([0]), Buffer.from(Array.from({ length: w }, () => rgb).flat())]);
+  const raw = Buffer.concat(Array.from({ length: h }, () => row));
+  return Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), chunk('IHDR', ihdr), chunk('IDAT', deflateSync(raw)), chunk('IEND', Buffer.alloc(0))]);
+}
+
+/** The Screenshots group a flagged review's notice goes in (GATE.md: '<build id> - missing review'). */
+export const flagGroup = (build, pr) => `${build || `pr-${pr}`} - missing review`;
+
+/**
+ * A PR landed with its UI Review missing or unposted (gate-rules@1 ui-review-missing): file a UI Review notice in Screenshots
+ * (group '<build id> - missing review', never the approve / reject queue) and a build note, so the review is flagged where
+ * Brett looks and nothing blocks. Returns { ok, notice, group, note }. Never throws: a failed notice is logged, the landing stands.
+ */
+export async function flagReview({ s, api, pr, build = '', branch = '', reviewFlag = 'missing', at = new Date().toISOString(), log = () => {}, dry = false }) {
+  const group = flagGroup(build, pr);
+  const title = `PR #${pr} landed with its UI Review ${reviewFlag}`.slice(0, 200);
+  const note = (reviewFlag === 'unposted'
+    ? `The build's UI Review item was never posted to the console (review.mjs submit without --console, or the console did not confirm the item). The PR landed when CI was green; the review is flagged here so it is seen, and nothing holds on it.`
+    : `The build claimed a UI Review but the console had no item for #${pr}${branch ? ` (${branch})` : ''}, or the lookup failed. The PR landed when CI was green; the review is flagged here so it is seen, and nothing holds on it.`) + ` Look: Settings → Gate & rules → Auto-lander, or axf gate lander waiting.`;
+  const out = { ok: false, notice: '', group, note: '', pr, build, reviewFlag, at };
+  if (dry) return { ...out, ok: true, dry: true };
+  try {
+    const r = await api('POST', '/api/plugins/ui-review/shots', { title, note, build, pr, branch, app: 'console-web', screen: '/gate', source: 'auto-lander', group, viewport: 'desktop', takenAt: at, data: noticePng().toString('base64') });
+    out.notice = String(r?.shot?.id || r?.shots?.[0]?.id || r?.id || '');
+    out.ok = !!r && r.ok !== false;
+    if (!out.ok) log(`flag review #${pr}: the console did not take the notice`);
+  } catch (e) { log(`flag review #${pr}: ${e.message}`); }
+  if (build) {
+    const text = `Landed with its UI Review ${reviewFlag} (#${pr}): the review is flagged in UI Review → Screenshots, group "${group}"${out.notice ? ` (${out.notice})` : ''}. Nothing held on it (gate-rules@1 ui-review-missing).`;
+    const r = storeCli(s, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs', ['act', 'note', build, text]);
+    out.note = r.code ? '' : text;
+    if (r.code) log(`flag review ${build}: build note failed (${r.err || 'orchestrator'})`);
+  }
+  return out;
 }
 
 // ------------------------------------------------------------------ state files (the push banner's data folder)
@@ -504,13 +568,18 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
           else { const br = buildRules({ id: b.id, head: it.head, root: wts[b.branch] || '' }); if (br) it.rules = { head: it.head, ...br }; }
           if (it.rules) facts.rules = it.rules;
         }
-        if (it.pr) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(b.branch)}&pr=${it.pr}`); facts.ui = u ? String(u.hold || '') : 'unknown'; } // UI Review through ui-review@1
+        // UI Review (ui-review@1, Nov 18 2026): the item is looked up in the live console; only an item that exists holds.
+        // Not found or the lookup failed = it lands when CI is green and the record carries reviewFlag (never a hold).
+        if (it.pr) { const rv = await lookupReview({ api, branch: b.branch, pr: it.pr, claimed: old.reason?.kind === 'ui' || !!old.reviewFlag || !!b.uiReview, worktree: wts[b.branch] || '' }); facts.ui = rv.ui; facts.reviewFlag = rv.reviewFlag; it.reviewItems = rv.items; }
         facts.deps = o.after.filter((d) => { const x = byId.get(d); return x && !x.mergedAt && x.status !== 'complete' && x.status !== 'archived'; });
       }
       it.reason = core.blockReason(b.id, facts);
       it.state = !it.reason ? 'ready' : it.reason.quiet ? 'waiting' : 'blocked';
+      it.reviewFlag = core.reviewFlagOf(facts);
     } catch (e) { it.state = 'blocked'; it.reason = { kind: 'error', text: `${b.id}: the landing round failed (${String(e.message).slice(0, 160)}).` }; }
     it.since = old.reason?.kind === it.reason?.kind ? old.since || at : at;
+    // lander-state@1: a truly held build says since when and why (the held-prs check ages it from heldSince)
+    if (it.state === 'blocked') { it.heldSince = old.state === 'blocked' && old.heldSince ? old.heldSince : it.since; it.holdReason = it.reason.text.replace(`${b.id}: `, ''); }
     // one push per new reason; an agent only for a code conflict or red CI, once per head
     it.pushed = old.pushed || null; it.agent = old.agent || null;
     if (it.reason && !it.reason.quiet && core.shouldPush(old.pushed, it.reason, it.head)) {
@@ -535,12 +604,13 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     items.push(it);
   }
   // done-means-merged@1: one log with the builds (attempts, landing) and CI on the merge commit of what merged
-  if (!dry) { try { await shareWithBuilds({ s, gh, items, prevItems, byId, builds, at, log }); } catch (e) { log(`share: ${e.message}`); } }
+  let flagged = Array.isArray(prev.flagged) ? prev.flagged : [];
+  if (!dry) { try { const r = await shareWithBuilds({ s, gh, api, items, prevItems, byId, builds, at, log }); if (r?.flagged?.length) flagged = [...flagged.filter((f) => !r.flagged.some((x) => x.pr === f.pr)), ...r.flagged].slice(-50); } catch (e) { log(`share: ${e.message}`); } }
   // builds that left the list (merged, or no longer finished): their alert goes
   const gone = [...prevItems.keys()].filter((id) => !items.some((x) => x.id === id) && prevItems.get(id)?.pushed);
   if (gone.length && !dry && !only) await api('POST', '/api/alerts/resolve', { keys: gone.map(core.alertKey) });
   const st = { $axf: core.LAND_FRAME, at, on: true, waitUi: cfg.landWaitUi, mainSha, order: items.map((x) => x.pr).filter(Boolean), managed: items.map((x) => x.pr).filter(Boolean),
-    items: only ? [...items, ...(prev.items || []).filter((x) => x.id !== only)] : items };
+    items: only ? [...items, ...(prev.items || []).filter((x) => x.id !== only)] : items, flagged };
   if (!dry) { writeJson(stateFile(s), st); const c = readControl(s); if (c.now?.length) writeJson(controlFile(s), { ...c, now: c.now.filter((id) => !items.some((x) => x.id === id)) }); }
   return st;
 }
@@ -560,7 +630,8 @@ function storeCli(s, file, args) {
  * on its merge commit recorded (builds-live link --sha --ci): green = landed (complete only after the verify), red = a
  * ci-red failure on the build (builds-store fail), so the ladder answers it. Never complete here.
  */
-export async function shareWithBuilds({ s, gh, items, prevItems, byId, builds, at, log = () => {} }) {
+export async function shareWithBuilds({ s, gh, api = async () => null, items, prevItems, byId, builds, at, log = () => {} }) {
+  const flagged = [];
   for (const it of items) {
     const b = byId.get(it.id); if (!b) continue;
     for (const op of core.shareOps(b, it, prevItems.get(it.id) || {}, at)) {
@@ -582,7 +653,15 @@ export async function shareWithBuilds({ s, gh, items, prevItems, byId, builds, a
     if (r.code) { log(`merge follow ${b.id}: ${r.err || 'link failed'}`); continue; }
     if (ci === 'failure') storeCli(s, 'framework/cli/builds-store.mjs', ['fail', b.id, '--kind', 'ci-red', '--why', `CI is red on main after the merge (${(c.failing || []).slice(0, 3).join(', ') || 'checks failed'})`, '--head', sha, '--by', 'auto-lander']);
     if (ci === 'success') crewSay('landing', 'done', `${b.id} (#${n}) merged and CI is green on main: landed. Complete once its verify passes.`, { ref: b.id, repo: s.repo });
+    // landed with its UI Review missing / unposted: the review is flagged (a Screenshots notice + a build note), once per PR
+    const rec = items.find((x) => x.id === b.id) || prevItems.get(b.id) || {};
+    if (['missing', 'unposted'].includes(rec.reviewFlag) && !rec.flagNotice) {
+      const f = await flagReview({ s, api, pr: n, build: b.id, branch: b.branch || rec.branch || '', reviewFlag: rec.reviewFlag, at, log });
+      rec.flagNotice = f.notice || 'filed';
+      flagged.push({ pr: n, build: b.id, branch: b.branch || rec.branch || '', reviewFlag: rec.reviewFlag, at, notice: f.notice || '', group: f.group });
+    }
   }
+  return { flagged };
 }
 
 /**

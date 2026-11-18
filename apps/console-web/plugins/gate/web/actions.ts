@@ -38,6 +38,11 @@ export function registerGateActions(rt: AxfRuntime): void {
     if (!pr) { rt.toast('Say which PR, for example lander.land-now:705.', 'warning', 'Auto-lander'); return; }
     void confirmed<{ pr: number; via: string }>('lander/land-now', { pr, by: 'voice' }).then((r) => rt.toast(`#${r.pr} lands next (${r.via}).`, 'success', 'Auto-lander'), fail(rt));
   }, { label: 'Land a PR next', params: true, effect: 'destructive' });
+  // Land now from the held-prs systems check item (Nov 18 2026): front of the merge queue with an override note; confirmed first
+  rt.actions.register('gate.land-now', ([pr = '']) => {
+    if (!pr) { rt.toast('Say which PR, for example gate.land-now:816.', 'warning', 'Held PRs'); return; }
+    void confirmed<{ pr: number; via: string; override?: { note: string } }>('land-now', { pr, by: 'voice' }).then((r) => rt.toast(`#${r.pr} lands next (${r.via}), ahead of its hold.`, 'success', 'Held PRs'), fail(rt));
+  }, { label: 'Land a held PR now (front of the queue, override noted)', params: true, effect: 'destructive' });
   rt.actions.register('lander.pause', (args) => {
     void gateCall<LanderStatus>('lander/pause', 'POST', { why: args.join(':') || 'paused from the console', by: 'voice' }).then(() => rt.toast('The auto-lander is paused.', 'success', 'Auto-lander'), fail(rt));
   }, { label: 'Pause the auto-lander', effect: 'write' });

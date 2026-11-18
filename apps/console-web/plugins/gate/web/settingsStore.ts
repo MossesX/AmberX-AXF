@@ -15,6 +15,7 @@ const KEYS: { key: keyof GateSettings; label: string; parse: (v: unknown) => unk
   { key: 'refreshSec', label: 'Gate: refresh every (seconds)', parse: (v) => Number(v) },
   { key: 'historySize', label: 'Gate: history size', parse: (v) => Number(v) },
   { key: 'defaultTab', label: 'Gate: tab it opens on', parse: (v) => (isTab(v) ? v : String(v)) },
+  { key: 'heldAlertMin', label: 'Gate: held PR alert after (minutes)', parse: (v) => Number(v) },
 ];
 
 // the server auto-lander's settings (deploy/auto-lander, POST auto-lander/settings): the same call as MCP, CLI and voice

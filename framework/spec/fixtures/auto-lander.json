@@ -107,6 +107,30 @@
     "ci": "success",
     "ui": "changes"
    },
+   "uiMissing": {
+    "number": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "ci": "success",
+    "ui": "missing"
+   },
+   "uiUnposted": {
+    "number": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "ci": "success",
+    "ui": "unposted"
+   },
+   "uiUnknown": {
+    "number": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "ci": "success",
+    "ui": "unknown"
+   },
+   "uiRejected": {
+    "number": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "ci": "success",
+    "ui": "rejected"
+   },
    "draft": {
     "number": 710,
     "head": "a710a710a710a710a710a710a710a710a710a710",
@@ -752,6 +776,65 @@
     "notBefore": "",
     "waitReason": "ui-review",
     "reason": "UI Review asked for changes: it waits for the review."
+   },
+   "uiRejected": {
+    "$axf": "auto-lander-action@1",
+    "at": "2026-11-16T12:00:00Z",
+    "build": "help-coverage-gate",
+    "pr": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "action": "wait",
+    "state": "waiting",
+    "kind": "",
+    "attempt": 0,
+    "notBefore": "",
+    "waitReason": "ui-review",
+    "reason": "UI Review rejected it: it waits for the review."
+   },
+   "uiMissing": {
+    "$axf": "auto-lander-action@1",
+    "at": "2026-11-16T12:00:00Z",
+    "build": "help-coverage-gate",
+    "pr": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "action": "land",
+    "state": "landing",
+    "kind": "land",
+    "attempt": 1,
+    "notBefore": "",
+    "waitReason": "",
+    "reason": "CI is green: landing. Its UI Review item is missing from the console: the review is flagged, nothing holds it.",
+    "reviewFlag": "missing"
+   },
+   "uiUnposted": {
+    "$axf": "auto-lander-action@1",
+    "at": "2026-11-16T12:00:00Z",
+    "build": "help-coverage-gate",
+    "pr": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "action": "land",
+    "state": "landing",
+    "kind": "land",
+    "attempt": 1,
+    "notBefore": "",
+    "waitReason": "",
+    "reason": "CI is green: landing. Its UI Review item is not posted to the console: the review is flagged, nothing holds it.",
+    "reviewFlag": "unposted"
+   },
+   "uiUnknown": {
+    "$axf": "auto-lander-action@1",
+    "at": "2026-11-16T12:00:00Z",
+    "build": "help-coverage-gate",
+    "pr": 710,
+    "head": "a710a710a710a710a710a710a710a710a710a710",
+    "action": "land",
+    "state": "landing",
+    "kind": "land",
+    "attempt": 1,
+    "notBefore": "",
+    "waitReason": "",
+    "reason": "CI is green: landing. Its UI Review item is missing from the console: the review is flagged, nothing holds it.",
+    "reviewFlag": "missing"
    },
    "draft": {
     "$axf": "auto-lander-action@1",

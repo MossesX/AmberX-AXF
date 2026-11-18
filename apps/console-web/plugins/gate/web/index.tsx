@@ -14,6 +14,7 @@ import { GateView, PLUGIN_ID } from './GateView';
 import { appMenu } from './menu';
 import { VIEW_KEY } from './rows';
 import { registerSettingTargets } from './settingsStore';
+import { registerHeldPrsTargets } from './heldPrs';
 
 export const plugin: AxfWebLibrary = {
   id: PLUGIN_ID, // must equal plugin.json "id"
@@ -39,5 +40,5 @@ export const plugin: AxfWebLibrary = {
     { id: 'gate.screen-links', tab: FOLDER, title: 'On the Gate screen', icon: 'link', order: 30, render: () => <GateScreenLinks /> },
     { id: 'gate.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
-  register(rt) { registerGateActions(rt); registerSettingTargets(rt); },
+  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerHeldPrsTargets(rt); },
 };

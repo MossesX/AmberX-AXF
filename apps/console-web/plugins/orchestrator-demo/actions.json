@@ -7,6 +7,7 @@
     { "id": "demo.resume", "label": "Orchestrator demo: resume", "route": "POST /resume", "reply": "Demo resumed." },
     { "id": "demo.next", "label": "Orchestrator demo: next act", "route": "POST /next", "reply": "Next act in 30 seconds." },
     { "id": "demo.stop", "label": "Orchestrator demo: stop and clean up", "route": "POST /stop", "reply": "Demo stopped; cleaning up the demo builds." },
-    { "id": "demo.state", "label": "Orchestrator demo: where is it", "route": "GET /state", "reply": "" }
+    { "id": "demo.state", "label": "Orchestrator demo: where is it", "route": "GET /state", "reply": "" },
+    { "id": "demo.selftest", "label": "Orchestrator demo: run the lander self-test", "route": "POST /selftest", "reply": "Running the lander self-test: the real gate verdict, the review lookup and the merge queue in check mode." }
   ]
 }

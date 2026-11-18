@@ -156,13 +156,12 @@
      "severity": "block",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
        "changes",
-       "rejected",
-       "unknown"
+       "rejected"
       ]
      },
      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -237,6 +236,42 @@
     "head": "c703c703c703c703c703c703c703c703c703c703",
     "ci": "success",
     "ui": "changes"
+   },
+   "uiRejected": {
+    "number": 703,
+    "head": "c703c703c703c703c703c703c703c703c703c703",
+    "ci": "success",
+    "ui": "rejected"
+   },
+   "uiMissing": {
+    "number": 816,
+    "title": "Orchestrator: live demo",
+    "build": "orchestrator-live-demo",
+    "branch": "claude/orchestrator-live-demo",
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "ci": "success",
+    "ui": "missing"
+   },
+   "uiUnposted": {
+    "number": 816,
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "ci": "success",
+    "ui": "unposted"
+   },
+   "uiUnknown": {
+    "number": 816,
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "ci": "success",
+    "ui": "unknown"
+   },
+   "uiMissingRedCi": {
+    "number": 817,
+    "head": "b817b817b817b817b817b817b817b817b817b817",
+    "ci": "failure",
+    "failing": [
+     "android / conformance tests"
+    ],
+    "ui": "missing"
    },
    "clash": {
     "number": 704,
@@ -413,7 +448,176 @@
      "severity": "warn",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
+     "settings": {
+      "holdOn": [
+       "waiting",
+       "changes",
+       "rejected"
+      ]
+     },
+     "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "clash",
+     "kind": "clash",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "No code clash with main",
+     "description": "Builds, union and generated files are resolved by the lander; a code conflict files a fix and the PR waits for it.",
+     "settings": {
+      "autoResolve": [
+       "builds",
+       "union",
+       "union-json",
+       "generated"
+      ],
+      "fileFix": true
+     },
+     "source": "land-core.planConflicts / classifyPath"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "auto-lander",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "info",
+     "owner": "console",
+     "title": "Auto-lander fixes and lands",
+     "description": "The server fixes and lands every PR on its own: a clash merges main in, red CI starts a fix session, green lands. After maxAttempts failures of one kind the build escalates to a systems check banner item. Enforced server-side; the console only shows it.",
+     "settings": {
+      "maxAttempts": 3,
+      "backoff": {
+       "baseMin": 5,
+       "factor": 3,
+       "maxMin": 60
+      },
+      "attemptTimeoutMin": 45,
+      "mergeMain": true,
+      "fixSessions": true,
+      "land": true,
+      "escalateTo": "banner"
+     },
+     "source": "config.json autoLander.enabled, autoLander.maxAttempts, autoLander.backoffMin, autoLander.fix (new keys); autoLand / autoMerge stay the merge queue mode flags"
+    }
+   ]
+  },
+  "LEGACY_HOLD_SET": {
+   "$axf": "gate-rule-set@1",
+   "rev": 1,
+   "at": "2026-11-15T12:00:00Z",
+   "rules": [
+    {
+     "$axf": "gate-rule@1",
+     "id": "merge-queue-only",
+     "kind": "custom",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Only the lander merges",
+     "description": "A PR lands only through the lander: one at a time by default, or through the merge queue while its switch is on. No direct merge and no merge outside the lander; drafts and forks never land.",
+     "settings": {
+      "mode": "serial",
+      "autoLand": false,
+      "directMerge": false,
+      "depth": 3,
+      "batchSize": 8
+     },
+     "source": "shared rule Nov 4 2026 (Merge queue switch Nov 15 2026); config.json autoLand, mergeQueue, queueMode, queueDepth, batchSize"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "ci-green",
+     "kind": "ci",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "CI green",
+     "description": "Every check is green on the commit that lands (the PR head, or the queue commit built on main). Red = needs a code fix; running or not started = waits.",
+     "settings": {
+      "on": "head",
+      "redJoins": false,
+      "noRunMin": 10
+     },
+     "source": "land-core.blockReason ci; merge-queue-core.notReady"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "tests",
+     "kind": "tests",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Tests after regeneration",
+     "description": "The quick tests the generated-files manifest asks for pass after the lander resolved generated and additive files.",
+     "settings": {
+      "commands": [
+       [
+        "node",
+        "apps/console-web/scripts/control-inventory.mjs",
+        "--check"
+       ],
+       [
+        "node",
+        "framework/spec/check-project-fixtures.mjs"
+       ]
+      ]
+     },
+     "source": "land-core.landTests (framework/spec/generated-files.json)"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "theme",
+     "kind": "theme",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Theme tokens",
+     "description": "Every colour, size, spacing, font, radius and border comes from asset tokens (check-theme).",
+     "settings": {
+      "check": "framework/cli/check-theme.mjs"
+     },
+     "source": "CI job check-theme"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "controls",
+     "kind": "controls",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Framework controls",
+     "description": "UI uses framework controls, never raw ones (check-controls).",
+     "settings": {
+      "check": "framework/cli/check-controls.mjs"
+     },
+     "source": "CI job check-controls"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "toolbars",
+     "kind": "controls",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "Toolbars",
+     "description": "Every toolbar has role=\"toolbar\" and an aria-label; tab rows are the framework TabGroup (check-toolbars).",
+     "settings": {
+      "check": "framework/cli/check-toolbars.mjs"
+     },
+     "source": "CI job check-toolbars"
+    },
+    {
+     "$axf": "gate-rule@1",
+     "id": "ui-review",
+     "kind": "ui-review",
+     "enabled": true,
+     "severity": "block",
+     "owner": "console",
+     "title": "UI Review",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
@@ -583,13 +787,12 @@
      "severity": "block",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
        "changes",
-       "rejected",
-       "unknown"
+       "rejected"
       ]
      },
      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -725,6 +928,63 @@
     {
      "pr": 536,
      "at": "2026-11-15T11:40:00Z"
+    }
+   ]
+  },
+  "QUEUE_FLAGGED": {
+   "$axf": "merge-queue@1",
+   "at": "2026-11-18T09:57:00Z",
+   "on": true,
+   "mode": "batch",
+   "items": [
+    {
+     "pr": 820,
+     "title": "Gate: held PRs",
+     "branch": "claude/gate-held-prs",
+     "head": "a820a820a820a820a820a820a820a820a820a820",
+     "build": "gate-held-prs",
+     "state": "waiting",
+     "ci": "success",
+     "why": "",
+     "reviewFlag": "missing"
+    }
+   ],
+   "waiting": [
+    {
+     "pr": 544,
+     "title": "UI Review: phone shots",
+     "branch": "claude/phone-shots",
+     "head": "a544a544a544a544a544a544a544a544a544a544",
+     "build": "ui-review-phone-shots",
+     "state": "held",
+     "why": "its screenshots wait for Brett in UI Review",
+     "since": "2026-11-18T09:50:00Z",
+     "heldSince": "2026-11-18T07:00:00Z",
+     "holdReason": "its screenshots wait for Brett in UI Review (item rv-544 in the console)"
+    },
+    {
+     "pr": 545,
+     "title": "Draft: nothing yet",
+     "head": "b545b545b545b545b545b545b545b545b545b545",
+     "state": "held",
+     "why": "it is a draft",
+     "since": "2026-11-18T09:30:00Z"
+    }
+   ],
+   "merged": [
+    {
+     "pr": 816,
+     "at": "2026-11-18T09:40:00Z"
+    }
+   ],
+   "flagged": [
+    {
+     "pr": 816,
+     "build": "orchestrator-live-demo",
+     "branch": "claude/orchestrator-live-demo",
+     "reviewFlag": "missing",
+     "at": "2026-11-18T09:40:00Z",
+     "notice": "orchestrator-live-demo - missing review"
     }
    ]
   },
@@ -884,13 +1144,12 @@
      "severity": "block",
      "owner": "console",
      "title": "UI Review",
-     "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+     "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
      "settings": {
       "holdOn": [
        "waiting",
        "changes",
-       "rejected",
-       "unknown"
+       "rejected"
       ]
      },
      "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -1067,13 +1326,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1268,13 +1526,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1470,13 +1727,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1670,13 +1926,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)",
@@ -1858,13 +2113,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -2036,13 +2290,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -2211,13 +2464,12 @@
       "severity": "block",
       "owner": "console",
       "title": "UI Review",
-      "description": "A PR whose UI Review is waiting, has changes asked or is rejected does not land; one UI Review couldn't read waits.",
+      "description": "A PR whose UI Review item exists in the console and is waiting, has changes asked or is rejected does not land. A review the console has no item for (missing, unposted or unreadable) never holds: the PR lands and the review is flagged (ui-review-missing).",
       "settings": {
        "holdOn": [
         "waiting",
         "changes",
-        "rejected",
-        "unknown"
+        "rejected"
        ]
       },
       "source": "config.json landWaitUi; push-banner ui-hold (ui-review@1)"
@@ -2313,6 +2565,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2398,7 +2653,8 @@
      }
     ],
     "reasons": [],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "redCi": {
     "$axf": "gate-verdict@1",
@@ -2409,6 +2665,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2503,7 +2762,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "redCiSerial": {
     "$axf": "gate-verdict@1",
@@ -2514,6 +2774,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2607,7 +2870,8 @@
      "controls: check-controls fails: a raw control is used where a framework control exists.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "ciRunning": {
     "$axf": "gate-verdict@1",
@@ -2618,6 +2882,9 @@
     "held": true,
     "blockedBy": "ci-green",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -2709,7 +2976,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "uiWaiting": {
     "$axf": "gate-verdict@1",
@@ -2720,6 +2988,9 @@
     "held": true,
     "blockedBy": "ui-review",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -2783,7 +3054,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "hold",
-      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself."
+      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -2807,7 +3079,8 @@
     "reasons": [
      "ui-review: its screenshots are waiting in UI Review. Approve them and it lands by itself."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "uiChanges": {
     "$axf": "gate-verdict@1",
@@ -2818,6 +3091,9 @@
     "held": false,
     "blockedBy": "ui-review",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -2881,7 +3157,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "fail",
-      "reason": "UI Review asked for changes."
+      "reason": "UI Review asked for changes.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -2905,7 +3182,543 @@
     "reasons": [
      "ui-review: UI Review asked for changes."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
+   },
+   "uiRejected": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 703,
+    "head": "c703c703c703c703c703c703c703c703c703c703",
+    "pass": false,
+    "held": false,
+    "blockedBy": "ui-review",
+    "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "CI is green on its head."
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The tests pass."
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-theme passes."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-controls passes."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-toolbars passes."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "fail",
+      "reason": "UI Review rejected it.",
+      "reviewFlag": "waiting"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [
+     "ui-review: UI Review rejected it."
+    ],
+    "warnings": [],
+    "notes": []
+   },
+   "uiMissing": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 816,
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "pass": true,
+    "held": false,
+    "blockedBy": "",
+    "agent": false,
+    "flagged": true,
+    "flags": [
+     "ui-review-missing"
+    ],
+    "reviewFlag": "missing",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "CI is green on its head."
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The tests pass."
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-theme passes."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-controls passes."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-toolbars passes."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "its UI Review item is not in the console, so nothing holds it: it lands and the review is flagged.",
+      "flag": "ui-review-missing",
+      "reviewFlag": "missing"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [],
+    "warnings": [],
+    "notes": [
+     "ui-review: its UI Review item is not in the console, so nothing holds it: it lands and the review is flagged."
+    ]
+   },
+   "uiUnposted": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 816,
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "pass": true,
+    "held": false,
+    "blockedBy": "",
+    "agent": false,
+    "flagged": true,
+    "flags": [
+     "ui-review-missing"
+    ],
+    "reviewFlag": "unposted",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "CI is green on its head."
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The tests pass."
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-theme passes."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-controls passes."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-toolbars passes."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "its UI Review item was never posted to the console, so nothing holds it: it lands and the review is flagged.",
+      "flag": "ui-review-missing",
+      "reviewFlag": "unposted"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [],
+    "warnings": [],
+    "notes": [
+     "ui-review: its UI Review item was never posted to the console, so nothing holds it: it lands and the review is flagged."
+    ]
+   },
+   "uiUnknown": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 816,
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "pass": true,
+    "held": false,
+    "blockedBy": "",
+    "agent": false,
+    "flagged": true,
+    "flags": [
+     "ui-review-missing"
+    ],
+    "reviewFlag": "missing",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "CI is green on its head."
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The tests pass."
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-theme passes."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-controls passes."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-toolbars passes."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "UI Review couldn't be read, so nothing holds it: it lands and the review is flagged.",
+      "flag": "ui-review-missing",
+      "reviewFlag": "missing"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [],
+    "warnings": [],
+    "notes": [
+     "ui-review: UI Review couldn't be read, so nothing holds it: it lands and the review is flagged."
+    ]
+   },
+   "uiMissingRedCi": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 817,
+    "head": "b817b817b817b817b817b817b817b817b817b817",
+    "pass": false,
+    "held": false,
+    "blockedBy": "ci-green",
+    "agent": true,
+    "flagged": false,
+    "flags": [
+     "ui-review-missing"
+    ],
+    "reviewFlag": "missing",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "fail",
+      "reason": "CI is red (android / conformance tests). Needs a code fix.",
+      "agent": true
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "fail",
+      "reason": "The tests fail after regeneration. Needs a code fix.",
+      "agent": true
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "hold",
+      "reason": "check-theme has not run on its head yet."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "hold",
+      "reason": "check-controls has not run on its head yet."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "hold",
+      "reason": "check-toolbars has not run on its head yet."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "its UI Review item is not in the console, so nothing holds it: it lands and the review is flagged.",
+      "flag": "ui-review-missing",
+      "reviewFlag": "missing"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [
+     "ci-green: CI is red (android / conformance tests). Needs a code fix.",
+     "tests: The tests fail after regeneration. Needs a code fix.",
+     "theme: check-theme has not run on its head yet.",
+     "controls: check-controls has not run on its head yet.",
+     "toolbars: check-toolbars has not run on its head yet."
+    ],
+    "warnings": [],
+    "notes": [
+     "ui-review: its UI Review item is not in the console, so nothing holds it: it lands and the review is flagged."
+    ]
    },
    "clash": {
     "$axf": "gate-verdict@1",
@@ -2916,6 +3729,9 @@
     "held": false,
     "blockedBy": "clash",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3013,7 +3829,8 @@
      "toolbars: check-toolbars has not run on its head yet.",
      "clash: it conflicts with main in code (framework/ui/axf.css, apps/console-web/src/App.tsx). Needs a code fix; a fix is filed."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "dataClashOnly": {
     "$axf": "gate-verdict@1",
@@ -3024,6 +3841,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3109,7 +3929,8 @@
      }
     ],
     "reasons": [],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "draft": {
     "$axf": "gate-verdict@1",
@@ -3120,6 +3941,9 @@
     "held": false,
     "blockedBy": "merge-queue-only",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3212,7 +4036,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "heldByHand": {
     "$axf": "gate-verdict@1",
@@ -3223,6 +4048,9 @@
     "held": true,
     "blockedBy": "hand:held",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [
      {
       "kind": "held",
@@ -3315,7 +4143,8 @@
     "reasons": [
      "held by hand (waiting for the skins build). Release it to land it."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "kicked": {
     "$axf": "gate-verdict@1",
@@ -3326,6 +4155,9 @@
     "held": true,
     "blockedBy": "hand:kicked",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [
      {
       "kind": "kicked",
@@ -3418,7 +4250,8 @@
     "reasons": [
      "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "directMerge": {
     "$axf": "gate-verdict@1",
@@ -3429,6 +4262,9 @@
     "held": false,
     "blockedBy": "merge-queue-only",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3516,7 +4352,8 @@
     "reasons": [
      "merge-queue-only: only the lander merges: a direct merge is refused."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "namedChecks": {
     "$axf": "gate-verdict@1",
@@ -3527,6 +4364,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -3617,7 +4457,8 @@
      "ci-green: CI is red (lint). Needs a code fix.",
      "toolbars: check-toolbars fails: a toolbar lacks role=\"toolbar\" or an aria-label, or a tab row is not the TabGroup."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    }
   },
   "evaluateSerial": {
@@ -3629,6 +4470,9 @@
    "held": false,
    "blockedBy": "ci-green",
    "agent": true,
+   "flagged": false,
+   "flags": [],
+   "reviewFlag": "",
    "holds": [],
    "results": [
     {
@@ -3722,7 +4566,8 @@
     "controls: check-controls fails: a raw control is used where a framework control exists.",
     "toolbars: check-toolbars has not run on its head yet."
    ],
-   "warnings": []
+   "warnings": [],
+   "notes": []
   },
   "evaluateBatch": {
    "$axf": "gate-verdict@1",
@@ -3733,6 +4578,9 @@
    "held": false,
    "blockedBy": "tests",
    "agent": true,
+   "flagged": false,
+   "flags": [],
+   "reviewFlag": "",
    "holds": [],
    "results": [
     {
@@ -3826,7 +4674,8 @@
     "controls: check-controls has not run on its head yet.",
     "toolbars: check-toolbars has not run on its head yet."
    ],
-   "warnings": []
+   "warnings": [],
+   "notes": []
   },
   "evaluateSoft": {
    "uiWaiting": {
@@ -3838,6 +4687,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -3901,7 +4753,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "hold",
-      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself."
+      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -3925,7 +4778,8 @@
     "reasons": [
      "ui-review: its screenshots are waiting in UI Review. Approve them and it lands by itself."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "uiChanges": {
     "$axf": "gate-verdict@1",
@@ -3936,6 +4790,9 @@
     "held": false,
     "blockedBy": "",
     "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
     "holds": [],
     "results": [
      {
@@ -3999,7 +4856,8 @@
       "owner": "console",
       "enabled": true,
       "verdict": "fail",
-      "reason": "UI Review asked for changes."
+      "reason": "UI Review asked for changes.",
+      "reviewFlag": "waiting"
      },
      {
       "id": "clash",
@@ -4025,7 +4883,8 @@
     ],
     "warnings": [
      "ui-review: UI Review asked for changes."
-    ]
+    ],
+    "notes": []
    },
    "namedChecks": {
     "$axf": "gate-verdict@1",
@@ -4036,6 +4895,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -4124,7 +4986,325 @@
     "reasons": [
      "ci-green: CI is red (lint). Needs a code fix."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
+   }
+  },
+  "evaluateLegacyHold": {
+   "uiUnknown": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 816,
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "pass": true,
+    "held": false,
+    "blockedBy": "",
+    "agent": false,
+    "flagged": true,
+    "flags": [
+     "ui-review-missing"
+    ],
+    "reviewFlag": "missing",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "CI is green on its head."
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The tests pass."
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-theme passes."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-controls passes."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-toolbars passes."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "UI Review couldn't be read, so nothing holds it: it lands and the review is flagged.",
+      "flag": "ui-review-missing",
+      "reviewFlag": "missing"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [],
+    "warnings": [],
+    "notes": [
+     "ui-review: UI Review couldn't be read, so nothing holds it: it lands and the review is flagged."
+    ]
+   },
+   "uiMissing": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 816,
+    "head": "a816a816a816a816a816a816a816a816a816a816",
+    "pass": true,
+    "held": false,
+    "blockedBy": "",
+    "agent": false,
+    "flagged": true,
+    "flags": [
+     "ui-review-missing"
+    ],
+    "reviewFlag": "missing",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "CI is green on its head."
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The tests pass."
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-theme passes."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-controls passes."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-toolbars passes."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "its UI Review item is not in the console, so nothing holds it: it lands and the review is flagged.",
+      "flag": "ui-review-missing",
+      "reviewFlag": "missing"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [],
+    "warnings": [],
+    "notes": [
+     "ui-review: its UI Review item is not in the console, so nothing holds it: it lands and the review is flagged."
+    ]
+   },
+   "uiWaiting": {
+    "$axf": "gate-verdict@1",
+    "at": "2026-11-15T12:00:00Z",
+    "pr": 703,
+    "head": "c703c703c703c703c703c703c703c703c703c703",
+    "pass": false,
+    "held": true,
+    "blockedBy": "ui-review",
+    "agent": false,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "waiting",
+    "holds": [],
+    "results": [
+     {
+      "id": "merge-queue-only",
+      "kind": "custom",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It lands through the lander."
+     },
+     {
+      "id": "ci-green",
+      "kind": "ci",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "CI is green on its head."
+     },
+     {
+      "id": "tests",
+      "kind": "tests",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The tests pass."
+     },
+     {
+      "id": "theme",
+      "kind": "theme",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-theme passes."
+     },
+     {
+      "id": "controls",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-controls passes."
+     },
+     {
+      "id": "toolbars",
+      "kind": "controls",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "check-toolbars passes."
+     },
+     {
+      "id": "ui-review",
+      "kind": "ui-review",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "hold",
+      "reason": "its screenshots are waiting in UI Review. Approve them and it lands by itself.",
+      "reviewFlag": "waiting"
+     },
+     {
+      "id": "clash",
+      "kind": "clash",
+      "severity": "block",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "It merges cleanly with main."
+     },
+     {
+      "id": "auto-lander",
+      "kind": "custom",
+      "severity": "info",
+      "owner": "console",
+      "enabled": true,
+      "verdict": "pass",
+      "reason": "The server fixes and lands it on its own (auto-lander@1)."
+     }
+    ],
+    "reasons": [
+     "ui-review: its screenshots are waiting in UI Review. Approve them and it lands by itself."
+    ],
+    "warnings": [],
+    "notes": []
    }
   },
   "evaluateSplit": {
@@ -4137,6 +5317,9 @@
     "held": false,
     "blockedBy": "theme",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -4227,7 +5410,8 @@
      "controls: check-controls has not run on its head yet.",
      "toolbars: check-toolbars has not run on its head yet."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    },
    "molly": {
     "$axf": "gate-verdict@1",
@@ -4238,6 +5422,9 @@
     "held": false,
     "blockedBy": "ci-green",
     "agent": true,
+    "flagged": false,
+    "flags": [],
+    "reviewFlag": "",
     "holds": [],
     "results": [
      {
@@ -4328,7 +5515,8 @@
      "ci-green: CI is red (android / check-theme, android / conformance tests). Needs a code fix.",
      "tests: The tests fail after regeneration. Needs a code fix."
     ],
-    "warnings": []
+    "warnings": [],
+    "notes": []
    }
   },
   "landerState": {
@@ -4396,7 +5584,10 @@
       "rule": "clash",
       "reason": "conflicts in code with #540; goes in the next batch",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/543"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/543",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 2,
@@ -4409,7 +5600,10 @@
       "rule": "",
       "reason": "waits its turn in the line.",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/539"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/539",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 3,
@@ -4421,7 +5615,10 @@
       "state": "held",
       "rule": "ui-review",
       "reason": "its screenshots wait for Brett in UI Review",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "its screenshots wait for Brett in UI Review",
+      "reviewFlag": "waiting"
      },
      {
       "position": 4,
@@ -4433,7 +5630,10 @@
       "state": "kicked",
       "rule": "ci-green",
       "reason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+      "reviewFlag": ""
      },
      {
       "position": 5,
@@ -4445,7 +5645,10 @@
       "state": "held",
       "rule": "merge-queue-only",
       "reason": "it is a draft",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "it is a draft",
+      "reviewFlag": ""
      },
      {
       "position": 6,
@@ -4457,13 +5660,17 @@
       "state": "held",
       "rule": "",
       "reason": "taken out of the queue by hand (waiting for the skins build)",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "taken out of the queue by hand (waiting for the skins build)",
+      "reviewFlag": ""
      }
     ],
     "landedRecently": [
      538,
      536
-    ]
+    ],
+    "flagged": []
    },
    "paused": {
     "$axf": "lander-state@1",
@@ -4533,7 +5740,10 @@
       "rule": "clash",
       "reason": "conflicts in code with #540; goes in the next batch",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/543"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/543",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 2,
@@ -4546,7 +5756,10 @@
       "rule": "",
       "reason": "waits its turn in the line.",
       "since": "",
-      "url": "https://github.com/MossesX/AmberX-AXF/pull/539"
+      "url": "https://github.com/MossesX/AmberX-AXF/pull/539",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": ""
      },
      {
       "position": 3,
@@ -4558,7 +5771,10 @@
       "state": "held",
       "rule": "ui-review",
       "reason": "its screenshots wait for Brett in UI Review",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "its screenshots wait for Brett in UI Review",
+      "reviewFlag": "waiting"
      },
      {
       "position": 4,
@@ -4570,7 +5786,10 @@
       "state": "kicked",
       "rule": "ci-green",
       "reason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+      "reviewFlag": ""
      },
      {
       "position": 5,
@@ -4582,7 +5801,10 @@
       "state": "held",
       "rule": "merge-queue-only",
       "reason": "it is a draft",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "it is a draft",
+      "reviewFlag": ""
      },
      {
       "position": 6,
@@ -4594,13 +5816,17 @@
       "state": "held",
       "rule": "",
       "reason": "taken out of the queue by hand (waiting for the skins build)",
-      "since": ""
+      "since": "",
+      "heldSince": "2026-11-15T12:00:00Z",
+      "holdReason": "taken out of the queue by hand (waiting for the skins build)",
+      "reviewFlag": ""
      }
     ],
     "landedRecently": [
      538,
      536
-    ]
+    ],
+    "flagged": []
    },
    "off": {
     "$axf": "lander-state@1",
@@ -4627,7 +5853,8 @@
      }
     ],
     "waiting": [],
-    "landedRecently": []
+    "landedRecently": [],
+    "flagged": []
    },
    "empty": {
     "$axf": "lander-state@1",
@@ -4641,8 +5868,234 @@
     "landing": null,
     "lastRuns": [],
     "waiting": [],
-    "landedRecently": []
+    "landedRecently": [],
+    "flagged": []
+   },
+   "flagged": {
+    "$axf": "lander-state@1",
+    "at": "2026-11-18T10:00:00Z",
+    "status": "idle",
+    "enabled": true,
+    "paused": false,
+    "pause": null,
+    "mode": "batch",
+    "source": "merge-queue@1",
+    "landing": null,
+    "lastRuns": [],
+    "waiting": [
+     {
+      "position": 1,
+      "pr": 820,
+      "title": "Gate: held PRs",
+      "build": "gate-held-prs",
+      "branch": "claude/gate-held-prs",
+      "head": "a820a820a820a820a820a820a820a820a820a820",
+      "state": "waiting",
+      "rule": "",
+      "reason": "waits its turn in the line.",
+      "since": "",
+      "heldSince": "",
+      "holdReason": "",
+      "reviewFlag": "missing"
+     },
+     {
+      "position": 2,
+      "pr": 544,
+      "title": "UI Review: phone shots",
+      "build": "ui-review-phone-shots",
+      "branch": "claude/phone-shots",
+      "head": "a544a544a544a544a544a544a544a544a544a544",
+      "state": "held",
+      "rule": "ui-review",
+      "reason": "its screenshots wait for Brett in UI Review",
+      "since": "2026-11-18T09:50:00Z",
+      "heldSince": "2026-11-18T07:00:00Z",
+      "holdReason": "its screenshots wait for Brett in UI Review (item rv-544 in the console)",
+      "reviewFlag": "waiting"
+     },
+     {
+      "position": 3,
+      "pr": 545,
+      "title": "Draft: nothing yet",
+      "build": "",
+      "branch": "",
+      "head": "b545b545b545b545b545b545b545b545b545b545",
+      "state": "held",
+      "rule": "merge-queue-only",
+      "reason": "it is a draft",
+      "since": "2026-11-18T09:30:00Z",
+      "heldSince": "2026-11-18T09:30:00Z",
+      "holdReason": "it is a draft",
+      "reviewFlag": ""
+     }
+    ],
+    "landedRecently": [
+     816
+    ],
+    "flagged": [
+     {
+      "pr": 816,
+      "build": "orchestrator-live-demo",
+      "branch": "claude/orchestrator-live-demo",
+      "reviewFlag": "missing",
+      "at": "2026-11-18T09:40:00Z",
+      "notice": "orchestrator-live-demo - missing review"
+     }
+    ]
    }
+  },
+  "heldOlderThan": {
+   "running30": [
+    {
+     "pr": 544,
+     "build": "ui-review-phone-shots",
+     "title": "UI Review: phone shots",
+     "branch": "claude/phone-shots",
+     "state": "held",
+     "rule": "ui-review",
+     "reviewFlag": "waiting",
+     "holdReason": "its screenshots wait for Brett in UI Review",
+     "heldSince": "2026-11-15T12:00:00Z",
+     "heldMin": 60
+    },
+    {
+     "pr": 537,
+     "build": "voice-wake-word",
+     "title": "Voice: wake word",
+     "branch": "claude/wake-word",
+     "state": "kicked",
+     "rule": "ci-green",
+     "reviewFlag": "",
+     "holdReason": "kicked out: #537 broke CI when tested on top of main (failed: android / conformance). Push a fix and it rejoins by itself.",
+     "heldSince": "2026-11-15T12:00:00Z",
+     "heldMin": 60
+    },
+    {
+     "pr": 545,
+     "build": "",
+     "title": "Draft: nothing yet",
+     "branch": "",
+     "state": "held",
+     "rule": "merge-queue-only",
+     "reviewFlag": "",
+     "holdReason": "it is a draft",
+     "heldSince": "2026-11-15T12:00:00Z",
+     "heldMin": 60
+    },
+    {
+     "pr": 535,
+     "build": "console-dock-sizes",
+     "title": "Console: dock sizes",
+     "branch": "",
+     "state": "held",
+     "rule": "",
+     "reviewFlag": "",
+     "holdReason": "taken out of the queue by hand (waiting for the skins build)",
+     "heldSince": "2026-11-15T12:00:00Z",
+     "heldMin": 60
+    }
+   ],
+   "flagged60": [
+    {
+     "pr": 544,
+     "build": "ui-review-phone-shots",
+     "title": "UI Review: phone shots",
+     "branch": "claude/phone-shots",
+     "state": "held",
+     "rule": "ui-review",
+     "reviewFlag": "waiting",
+     "holdReason": "its screenshots wait for Brett in UI Review (item rv-544 in the console)",
+     "heldSince": "2026-11-18T07:00:00Z",
+     "heldMin": 180
+    }
+   ],
+   "flagged0": [
+    {
+     "pr": 544,
+     "build": "ui-review-phone-shots",
+     "title": "UI Review: phone shots",
+     "branch": "claude/phone-shots",
+     "state": "held",
+     "rule": "ui-review",
+     "reviewFlag": "waiting",
+     "holdReason": "its screenshots wait for Brett in UI Review (item rv-544 in the console)",
+     "heldSince": "2026-11-18T07:00:00Z",
+     "heldMin": 180
+    },
+    {
+     "pr": 545,
+     "build": "",
+     "title": "Draft: nothing yet",
+     "branch": "",
+     "state": "held",
+     "rule": "merge-queue-only",
+     "reviewFlag": "",
+     "holdReason": "it is a draft",
+     "heldSince": "2026-11-18T09:30:00Z",
+     "heldMin": 30
+    }
+   ]
+  },
+  "migrateHeld": {
+   "$axf": "lander-state@1",
+   "at": "2026-11-15T12:00:00Z",
+   "status": "idle",
+   "enabled": true,
+   "paused": false,
+   "pause": null,
+   "mode": "serial",
+   "source": "merge-queue@1",
+   "landing": null,
+   "lastRuns": [],
+   "waiting": [
+    {
+     "position": 1,
+     "pr": 544,
+     "title": "",
+     "build": "",
+     "branch": "",
+     "head": "",
+     "state": "held",
+     "rule": "ui-review",
+     "reason": "its screenshots wait for Brett in UI Review",
+     "since": "2026-11-15T11:40:00Z",
+     "heldSince": "2026-11-15T11:40:00Z",
+     "holdReason": "its screenshots wait for Brett in UI Review",
+     "reviewFlag": ""
+    },
+    {
+     "position": 2,
+     "pr": 537,
+     "title": "",
+     "build": "",
+     "branch": "",
+     "head": "",
+     "state": "kicked",
+     "rule": "ci-green",
+     "reason": "kicked out: broke CI",
+     "since": "",
+     "heldSince": "2026-11-15T12:00:00Z",
+     "holdReason": "kicked out: broke CI",
+     "reviewFlag": ""
+    },
+    {
+     "position": 3,
+     "pr": 539,
+     "title": "",
+     "build": "",
+     "branch": "",
+     "head": "",
+     "state": "waiting",
+     "rule": "",
+     "reason": "waits its turn in the line.",
+     "since": "",
+     "heldSince": "",
+     "holdReason": "",
+     "reviewFlag": ""
+    }
+   ],
+   "landedRecently": [],
+   "flagged": []
   },
   "ruleForWhy": {
    "(empty)": "",
@@ -4689,6 +6142,12 @@
     "waiting[0].reason says in plain words why it waits",
     "waiting[0].rule is a rule id",
     "landing is null or names a PR"
+   ],
+   "heldWithoutAge": [
+    "waiting[0].heldSince says when the hold began (a held record is aged from it)",
+    "waiting[0].holdReason says why it is held",
+    "waiting[0].reviewFlag is one of missing, unposted, waiting or empty",
+    "flagged[0].pr is a PR number"
    ]
   },
   "norm": {

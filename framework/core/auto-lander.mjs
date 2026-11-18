@@ -144,6 +144,7 @@ export function normBuild(b, at = new Date().toISOString()) {
     attempts: (Array.isArray(x.attempts) ? x.attempts : []).slice(-ATTEMPTS_MAX).map(normAttempt), reason: str(x.reason, TEXT_MAX),
     escalation: state === 'escalated' ? esc : null,
     ...(x.demo === true || isDemoId(x.build) ? { demo: true } : {}), // demo-build@1: a demo build is marked demo-only in the lander's state
+    ...(['missing', 'unposted'].includes(x.reviewFlag) ? { reviewFlag: x.reviewFlag } : {}), // Nov 18 2026: it landed (or lands) with its UI Review flagged
   };
 }
 
@@ -240,9 +241,14 @@ export function recordAttempt(build, attempt, at = new Date().toISOString()) {
 
 // ------------------------------------------------------------------ decide
 
+/** UI Review states that hold a landing, and those that land with the review flagged (gate-rules@1 UI_FLAGGED). */
+export const UI_HOLDS = Object.freeze(['waiting', 'changes', 'rejected']);
+export const UI_FLAGGED = Object.freeze(['unknown', 'missing', 'unposted']);
+
 const A = (build, action, extra = {}, at) => ({
   $axf: ACTION_FRAME, at, build: build.build, pr: build.pr, head: build.head, action, state: extra.state || build.state,
   kind: extra.kind || '', attempt: int(extra.attempt), notBefore: extra.notBefore || '', waitReason: extra.waitReason || '', reason: str(extra.reason, TEXT_MAX),
+  ...(extra.reviewFlag ? { reviewFlag: str(extra.reviewFlag, 20) } : {}),
 });
 
 /**
@@ -278,8 +284,12 @@ export function decide(build, prState, attempts, policy, { at = new Date().toISO
   else if (s.ci === 'failure') kind = 'red-ci';
   else if (s.ci === 'running') return A(b, 'wait', { waitReason: 'ci-running', state: 'ci-running', reason: 'CI is running on its head.' }, at);
   else if (s.ci !== 'success') return A(b, 'wait', { waitReason: 'ci-none', state: 'waiting', reason: 'CI has not run on its head yet.' }, at);
-  else if (s.ui && s.ui !== '') return A(b, 'wait', { waitReason: 'ui-review', state: 'waiting', reason: s.ui === 'waiting' ? 'Its screenshots are waiting in UI Review. Approve them and it lands by itself.' : s.ui === 'unknown' ? "UI Review couldn't be read, so it waits." : `UI Review ${s.ui === 'changes' ? 'asked for changes' : 'rejected it'}: it waits for the review.` }, at);
+  // Nov 18 2026: only a review item that exists in the console holds (waiting, changes, rejected). A review that is
+  // missing from the console, unposted or unreadable never holds: it lands and the action carries the flag.
+  else if (UI_HOLDS.includes(s.ui)) return A(b, 'wait', { waitReason: 'ui-review', state: 'waiting', reason: s.ui === 'waiting' ? 'Its screenshots are waiting in UI Review. Approve them and it lands by itself.' : `UI Review ${s.ui === 'changes' ? 'asked for changes' : 'rejected it'}: it waits for the review.` }, at);
   else kind = 'land';
+  const reviewFlag = UI_FLAGGED.includes(s.ui) ? (s.ui === 'unposted' ? 'unposted' : 'missing') : '';
+  const flagWords = reviewFlag ? ` Its UI Review item is ${reviewFlag === 'unposted' ? 'not posted to the console' : 'missing from the console'}: the review is flagged, nothing holds it.` : '';
 
   const action = KIND_ACTION[kind];
   const failures = failuresOf(list, kind, p, at);
@@ -295,7 +305,7 @@ export function decide(build, prState, attempts, policy, { at = new Date().toISO
     const notBefore = plusMin(since, backoffMinutes(n, p));
     if (Date.parse(at) < Date.parse(notBefore)) return A(b, 'wait', { waitReason: 'backoff', state: 'waiting', kind, attempt: n + 1, notBefore, reason: `${detail[0].toUpperCase()}${detail.slice(1)}; attempt ${n} of ${KIND_WORD[kind]} failed. Attempt ${n + 1} starts at ${notBefore}.` }, at);
   }
-  return A(b, action, { state: ACTION_STATE[action], kind, attempt: n + 1, reason: `${detail[0].toUpperCase()}${detail.slice(1)}: ${KIND_WORD[kind]}${n ? ` (attempt ${n + 1} of ${p.maxAttempts})` : ''}.` }, at);
+  return A(b, action, { state: ACTION_STATE[action], kind, attempt: n + 1, reason: `${detail[0].toUpperCase()}${detail.slice(1)}: ${KIND_WORD[kind]}${n ? ` (attempt ${n + 1} of ${p.maxAttempts})` : ''}.${kind === 'land' ? flagWords : ''}`, ...(kind === 'land' && reviewFlag ? { reviewFlag } : {}) }, at);
 }
 
 /** The build after an action is taken: state, since, reason; an escalation recorded; a started attempt added for a try. */
@@ -395,6 +405,7 @@ export function jsonSchemas() {
       state: { enum: STATES }, since: dateTime, at: dateTime, attempts: { type: 'array', maxItems: ATTEMPTS_MAX, items: { ...attempt, $schema: undefined, $id: undefined }, description: 'oldest first; at most one started' },
       reason: { type: 'string', maxLength: TEXT_MAX, description: 'why it is in this state, in plain words' }, escalation,
       demo: { const: true, description: 'demo-build@1: a demo (throwaway) build, id prefix demo-; absent on every other build' },
+      reviewFlag: { enum: ['missing', 'unposted'], description: 'its UI Review item was missing from the console or never posted when it landed: the review is flagged, nothing held it (Nov 18 2026)' },
     },
   };
   const action = {
@@ -402,6 +413,7 @@ export function jsonSchemas() {
     properties: {
       $axf: { const: ACTION_FRAME }, at: dateTime, build: { type: 'string' }, pr: { type: 'integer', minimum: 0 }, head: { type: 'string' }, action: { enum: ACTIONS }, state: { enum: STATES, description: 'the state after the action is taken' },
       kind: { enum: [...KINDS, ''] }, attempt: { type: 'integer', minimum: 0, description: 'the n of the attempt the action starts; 0 for wait / none' }, notBefore: dateOrEmpty, waitReason: { enum: [...WAIT_REASONS, ''] }, reason: { type: 'string', maxLength: TEXT_MAX },
+      reviewFlag: { enum: ['missing', 'unposted'], description: 'on a land action: the UI Review item is missing from the console or was never posted; the PR lands and the review is flagged (Nov 18 2026)' },
     },
   };
   const state = {

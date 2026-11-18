@@ -33,7 +33,36 @@ Contract: `framework/spec/GATE.md`. Engine: `framework/core/gate-rules.mjs` (pur
 - CLI `axf gate rules|check|history|lander|settings …` (gate.mjs, plugin.json `cli`), and every command id through
   plugin-commands (`axf gate rules-list --json`).
 - Voice / console actions: `gate.open[:tab]`, `gate.rule:<id>[:on|off]`, `lander.land-now:<pr>` (confirms first),
-  `lander.pause[:why]`, `lander.resume`.
+  `lander.pause[:why]`, `lander.resume`, `gate.land-now:<pr>` (Land now from the held-prs item, confirms first),
+  `gate.setting:<key>:<value>`.
+
+## Never wait on a missing UI Review (Nov 18 2026, build `auto-lander-never-wait-missing-ui-review`)
+Brett: "If it recorded the test of the pipeline and didn't merge it on its own, then the test failed. It should have
+tested itself before it did the demo." PR #816 sat held on a UI Review whose item was never posted to the console.
+- **Verdict** (`framework/spec/GATE.md`, "The UI Review verdict"): the `ui-review` rule holds only when the item exists
+  in the console (waiting, changes, rejected). Missing, unposted or unreadable = pass with the flag `ui-review-missing`
+  (`gate-verdict@1.flagged / flags / reviewFlag / notes`). `holdOn` lists waiting, changes, rejected only.
+- **Lander** (`lander.mjs`, push-banner `land.mjs` / `merge-queue.mjs`): the item is looked up in the live console
+  (`GET /api/plugins/ui-review/state`) before a hold; not found lands when CI is green with `reviewFlag` on the record;
+  a failed lookup is never a hold. A landing with a flagged review files a UI Review notice (Screenshots group
+  `<build id> - missing review`) and a build note. `lander-state@1` records carry `heldSince`, `holdReason`, `reviewFlag`;
+  `flagged[]` lists what landed flagged.
+- **Setting** `heldAlertMin` (Held PR alert after, default 60 min): `setting:gate.heldAlertMin`, `PUT settings`,
+  `gate_settings_set`, `axf gate settings set heldAlertMin 90`, voice `gate.setting:heldAlertMin:90`.
+- **Systems check `held-prs`** (`server/held_prs_health.py`, `test_held_prs.py`): every truly held PR with build,
+  reason and age; red past the limit, pushed once; **Land now** per PR (front of the merge queue with an override note,
+  confirm, never a direct merge). `GET /api/plugins/gate/held-prs` (`held-prs@1`; `?limitMin=`), `POST
+  /api/plugins/gate/land-now {pr, note?, confirm?}`, MCP `gate_held_prs` / `gate_land_now`, `axf gate held-prs`,
+  `axf gate land-now <pr> [--note …]`, voice `gate.land-now:<pr>`; console-control `row:held-prs`,
+  `grid:held-prs/row:<n>[/button:land-now]` (`web/heldPrs.ts`).
+- **Build rule `ui-review-posted`** (`fixers/ui-review-posted.mjs`, doer vps, phase gate, `when.ui`): every UI Review
+  item a build recorded in its worktree is in the console, else the fixer posts it; what cannot be posted holds the
+  landing with the reason. Added to the live store with `axf gate build-rules add ui-review-posted --doer vps --kind
+  mechanical --phase gate --check fixer:ui-review-posted --autofix ui-review-posted …` (then `edit ui-review-posted
+  when {"ui":true}`); not in the committed seed (the seed is the migration's output).
+- Tests: `test.mjs` (held_prs, land_now), `test_held_prs.py`, `test/test.ui-review-posted.mjs`,
+  `test/test.pr-816-replay.mjs` (the #816 replay: CI green + no item → lands; held past the limit → red with Land now;
+  an unconfirmed submit fails the step). Report: `_claude/builds/reports/auto-lander-never-wait-missing-ui-review.md`.
 
 ## Server auto-lander (auto-lander@1)
 The VPS runner that fixes and lands finished builds by itself (Brett, Nov 16 2026: "Make the server do it automatically
@@ -47,6 +76,8 @@ Doc: `_claude/memory/docs/auto-lander.md`.
 
 ## Lifecycle (plugin-lifecycle@1)
 Data: `.axf-console/plugins/gate/` (`rules.json`, `history.jsonl`, `lander.json`, `confirms.json`, `settings.json`).
+
+Settings (Settings → Plugins → Gate; `GET`/`PUT /api/plugins/gate/settings`, MCP `gate_settings` / `gate_settings_set`, `axf gate settings set <key> <value>`, voice `gate.setting:<key>:<value>`, console-control `setting:gate.<key>`): `refreshSec`, `historySize`, `defaultTab`, and `heldAlertMin` (Nov 18 2026, default 60): minutes a lander-held PR may wait before the systems check's `held-prs` item turns red.
 The server auto-lander's data (`<shared data>/auto-lander/`: state, attempt logs, control, escalations) belongs to the
 VPS service and stays on uninstall; `systemctl disable --now axf-auto-lander.timer` stops it.
 The lander keys mirrored into the merge-queue provider's `config.json` belong to that plugin and stay on uninstall.

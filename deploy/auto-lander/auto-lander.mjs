@@ -189,7 +189,10 @@ export async function snapshotFor(b, d, ctx) {
     number: n, title: p?.title || b.title || '', build: b.id, branch: b.branch, head, draft: p?.draft === true, fork, merged, closed,
     ci: ci.ci, failing: (ci.jobs || []).map((j) => j.job), summary: ci.text || '',
     conflicts: p?.mergeable_state === 'dirty' || p?.mergeable === false ? ['code'] : [],
-    ui: li?.reason?.kind === 'ui' ? 'waiting' : '', landHeld: hold ? String(hold.why || 'by hand') : closed ? 'the PR is closed' : '',
+    // UI Review from the landing line's record: a hold only when the item exists in the console (land.mjs looked it up);
+    // a missing / unposted review comes through as the flag and lands (Nov 18 2026)
+    ui: li?.reason?.kind === 'ui' ? 'waiting' : ['missing', 'unposted'].includes(li?.reviewFlag) ? li.reviewFlag : '',
+    reviewFlag: String(li?.reviewFlag || ''), landHeld: hold ? String(hold.why || 'by hand') : closed ? 'the PR is closed' : '',
   };
 }
 
@@ -226,7 +229,7 @@ export async function stepBuild(b, d, ctx, { policy, dry = false, at = nowIso(),
   } else if (act.action === 'land') {
     const a = attempts.start(b.id, 'land', { n: act.attempt, branch: b.branch, head: snap.head, pr: snap.number, account: 'merge-queue', at });
     const q = await d.queueAdd(snap.number);
-    if (q.ok) { state = 'landing'; reason = `CI is green: PR #${snap.number} is in the merge queue.`; }
+    if (q.ok) { state = 'landing'; reason = `CI is green: PR #${snap.number} is in the merge queue.${act.reviewFlag ? ` Its UI Review is ${act.reviewFlag}: flagged, not holding.` : ''}`; if (act.reviewFlag) rec.reviewFlag = act.reviewFlag; }
     else { attempts.end(a, 'failed', { log: q.out, at }); state = 'waiting'; reason = `Couldn't add PR #${snap.number} to the merge queue: ${q.out.split('\n').pop()}`; }
   } else if (act.action === 'escalate') {
     const last = rec.attempts.filter((x) => x.kind === act.kind).slice(-1)[0];

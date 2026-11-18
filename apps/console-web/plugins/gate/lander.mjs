@@ -61,7 +61,9 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
       return {
         number: n, title: qi?.title || li?.title || '', build: qi?.build || li?.id || '', branch: qi?.branch || li?.branch || '', head: qi?.head || li?.head || '',
         ci: qi?.ci === 'success' || qi?.ci === 'failure' || qi?.ci === 'running' ? qi.ci : li?.ci || 'none', failing: li?.failing || qi?.failing || [],
-        ui: uiOf(kind) || (/ui review/i.test(why) ? 'waiting' : ''), conflicts: kind === 'conflict' ? (li?.reason?.files || ['code']) : /conflicts? with main in code/i.test(why) ? ['code'] : [],
+        // a UI Review hold only when the lander found the item in the console; a missing / unposted review is the flag (Nov 18 2026)
+        ui: uiOf(kind) || (['missing', 'unposted'].includes(li?.reviewFlag || qi?.reviewFlag) ? (li?.reviewFlag || qi?.reviewFlag) : /ui review/i.test(why) ? 'waiting' : ''), reviewFlag: String(li?.reviewFlag || qi?.reviewFlag || ''),
+        conflicts: kind === 'conflict' ? (li?.reason?.files || ['code']) : /conflicts? with main in code/i.test(why) ? ['code'] : [],
         draft: /draft/i.test(why), landHeld: kind === 'held' ? String(li?.reason?.text || 'by hand') : '', removed: ctl.removed?.[n] ? String(ctl.removed[n].why || 'by hand') : '', kicked: qi?.state === 'kicked' ? why : '',
       };
     },
@@ -75,8 +77,9 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
       if (!m.mergeQueue) {
         // one at a time: the line is land.json's finished builds in landing order
         const items = (store.land().items || []).filter((x) => pr(x.pr));
-        const row = (x) => ({ pr: x.pr, title: x.title, build: x.id, branch: x.branch, head: x.head, url: x.url, why: x.reason?.text?.replace(`${x.id}: `, '') || '', since: x.since, state: x.state === 'blocked' ? 'held' : 'waiting' });
-        queue = { items: items.filter((x) => x.state !== 'blocked').map(row), waiting: items.filter((x) => x.state === 'blocked').map(row), merged: queue.merged || [] };
+        // lander-state@1 (Nov 18 2026): a held record says since when (heldSince) and why (holdReason), and carries the UI Review flag
+        const row = (x) => ({ pr: x.pr, title: x.title, build: x.id, branch: x.branch, head: x.head, url: x.url, why: x.reason?.text?.replace(`${x.id}: `, '') || '', since: x.since, state: x.state === 'blocked' ? 'held' : 'waiting', heldSince: x.state === 'blocked' ? x.heldSince || x.since : '', holdReason: x.state === 'blocked' ? x.holdReason || x.reason?.text?.replace(`${x.id}: `, '') || '' : '', reviewFlag: x.reviewFlag || '' });
+        queue = { items: items.filter((x) => x.state !== 'blocked').map(row), waiting: items.filter((x) => x.state === 'blocked').map(row), merged: queue.merged || [], flagged: queue.flagged || [] };
       }
       const core = { ...cfg, autoLander: { enabled, mode: m.mergeQueue ? 'merge-queue' : 'serial' }, ...(m.mergeQueue ? { queueMode: cfg.queueMode === 'batch' ? 'batch' : 'stack' } : {}) };
       const st = gate.landerStateFrom({ config: core, queue, control: store.queueControl(), runs: store.runs(), pause: g.pause || null, at: store.iso() });
@@ -111,14 +114,18 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
      * Land now (two-step): the first call answers { confirm, pr, title }; the second, with that token, puts the PR at the
      * head of the line in the current mode. It still passes every rule; nothing merges here.
      */
-    landNow({ pr: raw, by = 'console', reason = '', confirm = '' } = {}) {
+    landNow({ pr: raw, by = 'console', reason = '', confirm = '', override = null } = {}) {
       const n = pr(raw);
       if (!n) throw err('invalid', 'pr is a PR number');
       const snap = lander.snapshot(n);
-      if (!confirm) return { ok: false, code: 'confirmation_required', confirm: store.issueConfirm('lander.land_now', n), pr: n, title: snap?.title || '' };
+      const held = lander.state().waiting.find((w) => w.pr === n && gate.HELD_STATES.includes(w.state)) || null;
+      if (!confirm) return { ok: false, code: 'confirmation_required', confirm: store.issueConfirm('lander.land_now', n), pr: n, title: snap?.title || '', ...(held ? { held: { state: held.state, holdReason: held.holdReason, heldSince: held.heldSince, reviewFlag: held.reviewFlag } } : {}) };
       if (!store.takeConfirm('lander.land_now', n, confirm)) throw err('invalid', 'the confirm token is wrong or expired: ask again');
       const m = lander.mode();
       let via; let r;
+      // Land now from the held-prs item (Nov 18 2026): a hand hold on the build is released first, so the queue takes it
+      const item = (store.land().items || []).find((x) => x.pr === n);
+      if (override && item && store.landControl().holds?.[item.id]) { const rel = store.landerCommand(['release', item.id]); if (!rel.ok) throw err('failed', `couldn't release the hold on ${item.id}: ${rel.err || rel.out}`); }
       if (m.mergeQueue) {
         via = 'merge-queue';
         const inQueue = (store.queue().items || []).some((x) => x.pr === n);
@@ -126,13 +133,14 @@ export function createLander(store, { record = (e) => historyRecord(store, e) } 
         r = store.landerCommand(['queue', 'move', String(n), '0']);
       } else {
         via = 'auto-lander';
-        const item = (store.land().items || []).find((x) => x.pr === n);
         if (!item) throw err('not_found', `#${n} is not a finished build the auto-lander knows`);
         r = store.landerCommand(['now', item.id]);
       }
       if (!r.ok) throw err('failed', `the lander refused: ${r.err || r.out}`);
-      log('land-now', { by, reason, pr: n, after: { via, position: 0 } });
-      return { ok: true, pr: n, position: 0, via };
+      const note = override ? String(override.note || 'Land now: moved to the front ahead of its hold.').slice(0, 300) : '';
+      log('land-now', { by, reason: reason || note, pr: n, before: held ? { state: held.state, holdReason: held.holdReason, heldSince: held.heldSince } : undefined, after: { via, position: 0, ...(note ? { override: note } : {}) } });
+      if (note && (item?.id || snap?.build)) store.buildNote(item?.id || snap.build, `#${n}: ${note}`);
+      return { ok: true, pr: n, position: 0, via, ...(note ? { override: { note, held: held ? { state: held.state, holdReason: held.holdReason, heldSince: held.heldSince } : null } } : {}) };
     },
 
     pause({ why = '', by = 'console', reason = '' } = {}) {

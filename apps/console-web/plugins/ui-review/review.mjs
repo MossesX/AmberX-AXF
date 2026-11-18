@@ -15,6 +15,9 @@
  *   node apps/console-web/plugins/ui-review/review.mjs list [--kind K] [--status waiting|changes|rejected|approved|open]
  *        [--branch B] [--pr N] [--q text] [--console] [--json]
  *   node apps/console-web/plugins/ui-review/review.mjs state [--branch B] [--pr N] [--exit-code] [--console] [--json]
+ *   node apps/console-web/plugins/ui-review/review.mjs confirm <id> --console [--json]      exit 1 unless the console has the item
+ *   node apps/console-web/plugins/ui-review/review.mjs posted --build B [--branch B] --console [--json]
+ *        every item this checkout recorded for the build is in the live console (exit 1 and the missing ids otherwise)
  *   node apps/console-web/plugins/ui-review/review.mjs decide <id[,id…]> approve|changes|reject|reopen [--comment "…"] [--console]
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
  *   node apps/console-web/plugins/ui-review/review.mjs check        every stored item + screenshot conforms (exit 1 if not)
@@ -30,6 +33,10 @@
  * folder in this checkout (AXF_UI_REVIEW_DIR overrides). --console posts to the running console instead
  * (AXF_CONSOLE_URL + AXF_TOKEN), which is what a build on the VPS uses so Brett sees it at once.
  * state --exit-code exits 3 when the branch / PR is held (waiting, changes asked or rejected).
+ * Posting is confirmed (Nov 18 2026, build auto-lander-never-wait-missing-ui-review; Brett: "If it recorded the test of the
+ * pipeline and didn't merge it on its own, then the test failed."): `submit --console` reads the item back from the console
+ * (GET items) and exits 2 unless the console confirms the item id, so the build step that submits fails instead of
+ * carrying on with an item only this checkout knows (the lander lands such a PR flagged: gate-rules@1 ui-review-missing).
  */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -187,6 +194,30 @@ async function consoleCall(path, body) {
   return j;
 }
 
+/* -------------------------------------------------------------- posting is confirmed (Nov 18 2026) */
+/** Did the console take the item? `posted` = the submit answer's item, `items` = what GET items lists now. */
+export function confirmPosted(posted, items) {
+  const id = String(posted?.id || '');
+  if (!id) return { ok: false, id: '', why: 'the console answered without an item id: the item was not posted' };
+  const hit = (Array.isArray(items) ? items : []).find((it) => String(it?.id) === id);
+  return hit ? { ok: true, id, item: hit } : { ok: false, id, why: `the console did not confirm item ${id}: it is not in GET /api/plugins/ui-review/items` };
+}
+/** The items this checkout recorded for a build (by build id, else branch), as stored (never pack: records, never landed). */
+export function localItemsFor({ build = '', branch = '' } = {}, doc = loadDoc()) {
+  return doc.items.filter((it) => !String(it.id).startsWith('pack:') && !it.landed && ((build && it.build === build) || (branch && it.branch === branch)));
+}
+/**
+ * Which of the local items are not in the console: matched by id, else by build + name (a re-submitted item gets a new id).
+ * → { ok, posted: [ids], missing: [{ id, name }], total }
+ */
+export function postedState(local, consoleItems) {
+  const list = Array.isArray(consoleItems) ? consoleItems : [];
+  const ids = new Set(list.map((it) => String(it?.id)));
+  const byName = new Set(list.map((it) => `${it?.build || ''}\u0000${it?.name || it?.title || ''}`));
+  const missing = local.filter((it) => !ids.has(String(it.id)) && !byName.has(`${it.build || ''}\u0000${it.name || it.title || ''}`)).map((it) => ({ id: it.id, name: it.name || it.title || '' }));
+  return { ok: missing.length === 0, total: local.length, posted: local.filter((it) => !missing.some((m) => m.id === it.id)).map((it) => it.id), missing };
+}
+
 /* -------------------------------------------------------------- CLI */
 export function parseArgs(argv) {
   const pos = [], flags = {};
@@ -228,8 +259,11 @@ export async function main(argv = process.argv.slice(2)) {
     const item = remote
       ? (await consoleCall('submit', { ...fields, files: files.map((f) => ({ name: uploadName(f), device: core.deviceOf(basename(f)), data: readFileSync(f).toString('base64') })) })).item
       : submitLocal(fields, files);
+    // the console must confirm the item (Nov 18 2026): read it back; a submit the console did not take fails the step here
+    const confirmed = remote ? confirmPosted(item, (await consoleCall('items')).items) : { ok: true, id: item?.id };
+    if (!confirmed.ok) throw new Error(`UI Review submit was not confirmed by the console: ${confirmed.why}. The build step that submits fails here instead of carrying on; run it again with --console once the console answers.`);
     const n = (item.files?.after?.length ?? 0) + (item.files?.before?.length ?? 0);
-    return out({ ok: true, item }, `submitted ${item.id}: ${item.name} (${item.section}, ${n} screenshots, group "${item.group?.name}") — waiting for Brett in UI Review`);
+    return out({ ok: true, item, confirmed: remote }, `submitted ${item.id}: ${item.name} (${item.section}, ${n} screenshots, group "${item.group?.name}") — ${remote ? 'confirmed by the console, ' : ''}waiting for Brett in UI Review`);
   }
   if (cmd === 'ask-options') {
     if (!remote) throw new Error('ask-options needs --console');
@@ -257,6 +291,22 @@ export async function main(argv = process.argv.slice(2)) {
     out(s, `${s.state}${s.holds ? ' (holds the merge)' : ''} · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);
     if (flags['exit-code'] && s.holds) process.exitCode = 3;
     return;
+  }
+  if (cmd === 'confirm') {
+    if (!remote) throw new Error('confirm needs --console');
+    const id = String(pos[1] ?? ''); if (!id) throw new Error('usage: confirm <id> --console');
+    const c = confirmPosted({ id }, (await consoleCall('items')).items);
+    if (!c.ok) process.exitCode = 1;
+    return out(c, c.ok ? `${id} is in the console (${c.item.name || ''}, ${c.item.status || ''})` : `✗ ${c.why}`);
+  }
+  if (cmd === 'posted') {
+    if (!remote) throw new Error('posted needs --console');
+    const build = val(flags.build), branch = val(flags.branch);
+    if (!build && !branch) throw new Error('posted needs --build and/or --branch');
+    const local = localItemsFor({ build, branch });
+    const st = postedState(local, (await consoleCall('items')).items);
+    if (!st.ok) process.exitCode = 1;
+    return out({ ...st, build, branch }, st.total ? (st.ok ? `✓ ${st.total} item(s) this checkout recorded for ${build || branch} are in the console` : `✗ ${st.missing.length} of ${st.total} item(s) were never posted to the console: ${st.missing.map((m) => `${m.id} (${m.name})`).join(', ')}`) : `no UI Review items recorded here for ${build || branch}`);
   }
   if (cmd === 'decide') {
     const ids = String(pos[1] ?? '').split(',').filter(Boolean); const decision = String(pos[2] ?? '');

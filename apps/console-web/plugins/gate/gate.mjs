@@ -9,11 +9,12 @@
  *   node gate.mjs check <pr>
  *   node gate.mjs history [--kind rule|lander] [--since …] [--pr …] [--rule …] [--limit n]
  *   node gate.mjs lander status|waiting|runs|mode [on|off]|land-now <pr> [--confirm t]|pause [--why …]|resume
- *   node gate.mjs settings [get] | settings set <key> <value>
+ *   node gate.mjs held-prs [--limit-min n] | land-now <pr> [--confirm t] [--note "…"]
+ *   node gate.mjs settings [get] | settings set <key> <value>        (refreshSec, historySize, defaultTab, heldAlertMin)
  *   add --json for the record itself; --by and --reason say who and why (History).
  *
  * Ops (`run`): rules_list, rules_get, rules_set, rules_toggle, rules_reset, check_pr, history, lander_status,
- * lander_waiting, lander_runs, lander_mode, lander_land_now, lander_pause, lander_resume, settings_get, settings_set, and the
+ * lander_waiting, lander_runs, lander_mode, lander_land_now, lander_pause, lander_resume, held_prs, land_now, settings_get, settings_set, and the
  * build rules ops build_rules_* (build-rules-api.mjs).
  * Answers: { ok: true, … } or { ok: false, code: invalid | not_found | confirmation_required | unavailable | failed, message }.
  */
@@ -40,13 +41,15 @@ export function buildRulesVerdict(build, { dir } = {}) {
   return { build, ran: true, failing: results.filter((r) => r.result === 'fail').map((r) => r.id), results };
 }
 
-export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
+export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'held_prs', 'land_now', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
 
 /** The plugin's own settings (Settings → Plugins → Gate): key → { type, default, … }. */
 export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
   defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'history'], default: 'rules', title: 'Tab it opens on' },
+  // Nov 18 2026 (build auto-lander-never-wait-missing-ui-review): the systems check's held-prs item turns red once a lander-held PR is older than this
+  heldAlertMin: { type: 'integer', min: 5, max: 10080, default: 60, title: 'Held PR alert after (minutes)' },
 });
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
@@ -161,6 +164,25 @@ export function createGate(opts = {}) {
     lander_land_now(i = {}) { const r = lander.landNow({ pr: i.pr, by: by(i), reason: i.reason || '', confirm: i.confirm || '' }); return r.ok === false ? { ...r, message: `lands #${r.pr} next: call again with confirm` } : r; },
     lander_pause(i = {}) { return { ok: true, ...lander.pause({ why: i.why || '', by: by(i), reason: i.reason || '' }) }; },
     lander_resume(i = {}) { return { ok: true, ...lander.resume({ by: by(i), reason: i.reason || '' }) }; },
+    /**
+     * held-prs@1 (Nov 18 2026): every PR the lander truly holds (state held / kicked / paused) with how long, the reason and
+     * the UI Review flag; `over` names those older than the heldAlertMin setting (the systems check's held-prs item turns
+     * red on them). The state the banner item, GET held-prs, MCP gate_held_prs, `axf gate held-prs` and voice read.
+     */
+    held_prs(i = {}) {
+      const limitMin = Number.isInteger(Number(i.limitMin)) && Number(i.limitMin) > 0 ? Number(i.limitMin) : settingsOf(store).heldAlertMin;
+      const st = lander.state();
+      const items = gate.heldOlderThan(st, 0, st.at).map((x) => ({ ...x, over: x.heldMin >= limitMin, link: `grid:held-prs/row:${x.pr}`, landNow: { route: 'POST /api/plugins/gate/land-now', cli: `axf gate land-now ${x.pr}`, action: `gate.land-now:${x.pr}` } }));
+      return { ok: true, $axf: 'held-prs@1', at: st.at, limitMin, count: items.length, over: items.filter((x) => x.over).map((x) => x.pr), items };
+    },
+    /**
+     * Land now from the held-prs item (Nov 18 2026): the PR goes to the front of the merge queue with an override note in
+     * History and on the build; it still passes every rule, never a direct merge. Two-step (confirm), like lander_land_now.
+     */
+    land_now(i = {}) {
+      const r = lander.landNow({ pr: i.pr, by: by(i), reason: i.reason || '', confirm: i.confirm || '', override: { note: typeof i.note === 'string' && i.note.trim() ? i.note.trim().slice(0, 300) : `Land now pressed by ${by(i)} on the held-prs systems check item: moved to the front of the merge queue ahead of its hold. It still passes every gate rule; never a direct merge.` } });
+      return r.ok === false ? { ...r, message: `lands #${r.pr} next, ahead of its hold: call again with confirm` } : r;
+    },
     ...createBuildRulesOps({ confirms: store }),
     settings_get() { return { ok: true, settings: settingsOf(store), schema: SETTINGS }; },
     settings_set(i = {}) {
@@ -211,7 +233,7 @@ export async function main(argv, { out = (s) => console.log(s), err = (s) => con
 }
 
 /** The first words `axf gate …` hands to this file (framework/cli/axf.mjs, plugin.json "cli"); the rest go to plugin-commands. */
-export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'auto-lander', 'settings', 'help']);
+export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history', 'lander', 'auto-lander', 'held-prs', 'land-now', 'settings', 'help']);
 
 /**
  * `axf gate auto-lander status|show <build>|run [--now]|retry <build>|fix <build>|pause|resume|settings|set <key> <value>`:
@@ -237,6 +259,8 @@ const USAGE = [
   'axf gate history [--kind rule|lander] [--since <date>] [--pr <n>] [--rule <id>] [--action <a>] [--limit <n>]',
   'axf gate lander status | waiting [--rule r] [--state s] | runs [--limit n] [--result r]',
   'axf gate lander mode [on|off] | land-now <pr> [--confirm <token>] | pause [--why "…"] | resume',
+  'axf gate held-prs [--limit-min n]                       every PR the lander holds, how long and why; over = older than heldAlertMin',
+  'axf gate land-now <pr> [--confirm <token>] [--note "…"]   front of the merge queue with an override note (confirm; never a direct merge)',
   'axf gate settings [get] | settings set <key> <value>',
   'axf gate auto-lander status | show <build> | run [--now] | retry <build> | fix <build> | pause | resume | settings | set <key> <value>',
   'axf gate build-rules list [--doer vps|session] [--kind k] [--phase p] [--enabled true|false] [--q text]',
@@ -312,6 +336,8 @@ export function parseCli(argv) {
     if (b === 'resume') return { op: 'lander_resume', input: { ...who } };
     return { usage: true };
   }
+  if (a === 'held-prs') return { op: 'held_prs', input: { ...(f['limit-min'] ? { limitMin: Number(f['limit-min']) } : {}) } };
+  if (a === 'land-now') return b ? { op: 'land_now', input: { pr: b, ...pick('confirm', 'note'), ...who } } : { usage: true };
   if (a === 'settings') {
     if (!b || b === 'get') return { op: 'settings_get', input: {} };
     if (b === 'set' && c && d !== undefined) return { op: 'settings_set', input: { settings: { [c]: parseValue(d) } } };
@@ -338,6 +364,8 @@ export function textOf(op, r) {
     case 'lander_waiting': return r.items.map((w) => `${String(w.position).padStart(3)} #${w.pr} ${w.state.padEnd(8)} ${w.rule ? `[${w.rule}] ` : ''}${w.reason}`).join('\n') || 'nothing waits';
     case 'lander_runs': return r.items.map((x) => `${x.startedAt} ${x.result.padEnd(8)} ${x.landing?.pr ? `#${x.landing.pr} ` : ''}${x.reasonText}`).join('\n') || 'no runs yet';
     case 'lander_land_now': return `#${r.pr} lands next (${r.via})`;
+    case 'land_now': return `#${r.pr} lands next (${r.via}), ahead of its hold${r.override?.note ? `: ${r.override.note}` : ''}`;
+    case 'held_prs': return r.items.length ? `${r.count} held, ${r.over.length} over ${r.limitMin} min\n${r.items.map((x) => `${x.over ? 'OVER' : '    '} #${x.pr} ${(x.build || '').padEnd(28)} ${x.state.padEnd(7)} ${x.heldMin} min${x.reviewFlag ? ` [review ${x.reviewFlag}]` : ''}  ${x.holdReason}`).join('\n')}` : `nothing is held (limit ${r.limitMin} min)`;
     case 'build_rules_list': return `${r.counts.total} build rules (${r.counts.vps} VPS, ${r.counts.session} session, ${r.counts.on} on; ${r.source})\n${r.rules.map((x) => `${onOff(x.enabled).padEnd(4)} ${x.doer.padEnd(7)} ${x.phase.padEnd(8)} ${x.id.padEnd(28)} ${x.last ? `[${x.last.result}] ` : ''}${x.title}`).join('\n')}`;
     case 'build_rules_get': return `${r.rule.id} ${onOff(r.rule.enabled)}: ${r.rule.doer}, ${r.rule.kind}, ${r.rule.phase}${r.rule.check ? `, check ${r.rule.check}` : ''}${r.rule.autofix ? `, fixer ${r.rule.autofix}` : ''}\n${r.rule.title}\n${r.rule.text}${r.runs.length ? `\nlast run: ${r.runs[0].result} ${r.runs[0].at}` : ''}`;
     case 'build_rules_add': case 'build_rules_edit': case 'build_rules_toggle': return `${r.rule.id}: ${onOff(r.rule.enabled)}, ${r.rule.doer}, ${r.rule.phase}${r.rev ? ` (rev ${r.rev})` : ''}`;

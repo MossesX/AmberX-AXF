@@ -33,6 +33,11 @@
 .axp-systems-check-field__row { display: flex; gap: var(--fx-dens-gap-md); align-items: center } .axp-systems-check-field__row .fx-input { flex: 1; min-width: 0 }
 .axp-systems-check-cmd { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border-radius: var(--fx-radius-sm); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); overflow-wrap: anywhere; min-width: 0 }
 .axp-systems-check-fix__host { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+/* held-prs: one row per PR the lander has held past the limit, with Land now (gate plugin, Nov 18 2026) */
+.axp-systems-check-prs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-systems-check-prs__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface); min-width: 0 }
+.axp-systems-check-prs__who { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); white-space: nowrap }
+.axp-systems-check-prs__why { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere }
 .axp-systems-check-run { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-lg); border-radius: 999px; font-size: var(--fx-type-root-sm); font-weight: 600; white-space: nowrap; border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); color: var(--fx-muted) }
 .axp-systems-check-run.is-working { color: var(--fx-text); border-color: var(--fx-accent); background: var(--fx-accent-soft); animation: axp-systems-check-pulse 1.2s ease-in-out infinite }
 .axp-systems-check-run.is-done { color: var(--fx-success); border-color: var(--fx-success) }

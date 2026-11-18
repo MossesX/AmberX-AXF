@@ -81,13 +81,14 @@ function registerActions(rt: AxfRuntime) {
     'demo.next': () => demo.next(),
     'demo.stop': () => demo.stop(),
     'demo.state': () => demo.state(),
+    'demo.selftest': () => demo.selftest(),
   };
   for (const a of actionsDoc.actions) {
     const call = calls[a.id];
     if (!call) continue;
     rt.actions.register(a.id, (args: string[]) => {
       call(args ?? []).then(
-        (r) => { rt.toast(a.id === 'demo.state' ? stateLine(r.state) : a.reply, 'info', 'Orchestrator demo'); if (a.id === 'demo.start') rt.navigate('builds'); },
+        (r) => { const st = (r as { selftest?: { ok: boolean; checks: { id: string; ok: boolean }[] } }).selftest; rt.toast(a.id === 'demo.state' ? stateLine(r.state) : a.id === 'demo.selftest' && st ? (st.ok ? `Lander self-test passed (${st.checks.map((c) => c.id).join(', ')}).` : `Lander self-test FAILED: ${st.checks.filter((c) => !c.ok).map((c) => c.id).join(', ')}. See the systems check.`) : a.reply, a.id === 'demo.selftest' && st && !st.ok ? 'danger' : 'info', 'Orchestrator demo'); if (a.id === 'demo.start') rt.navigate('builds'); },
         (e: Error) => rt.toast(e.message, 'warning', 'Orchestrator demo'),
       );
     }, { label: a.label, params: a.id === 'demo.start' } as never);

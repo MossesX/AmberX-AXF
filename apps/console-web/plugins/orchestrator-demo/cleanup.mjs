@@ -13,7 +13,7 @@ import { removeFixtures } from './sandbox.mjs';
 export const alertKeys = (rec) => [
   ...Object.values(rec.driver.ids ?? {}).filter(isDemoId).map((id) => `orchestrator-demo:broke:${id}`),
   `orchestrator-demo:notify:${rec.run.id}`,
-];
+]; // the self-test alert (orchestrator-demo:selftest) stays until a self-test passes: it names what is broken
 
 export async function cleanupRun(ctx, rec) {
   const errors = [];
@@ -24,10 +24,12 @@ export async function cleanupRun(ctx, rec) {
   // a second pass for any demo build of another, older run still in the ledger
   const older = await step('builds (older runs)', () => removeFixtures({ store: ctx.store, data: ctx.data, sweep: true }), { removed: [] });
   const branches = await step('branches', () => ctx.lander.cleanup(null), []);
+  // real landings (Nov 18 2026): demo branches still unmerged are deleted on GitHub through the console; merged ones the queue tidies
+  const real = ctx.realLanding ? await step('real landings', () => ctx.realLanding.cleanup(null), []) : [];
   const keys = alertKeys(rec);
   await step('alerts', () => ctx.alerts.resolve?.(keys), null);
   const out = {
-    at: ctx.now(), removed: [...new Set([...r.removed, ...older.removed])], branches, alerts: keys, sessions,
+    at: ctx.now(), removed: [...new Set([...r.removed, ...older.removed])], branches: [...branches, ...real], alerts: keys, sessions,
     prefix: DEMO_PREFIX, errors,
   };
   ctx.log?.(`cleanup: removed ${out.removed.length} demo build(s), ${branches.length} branch(es), ${keys.length} alert key(s)${errors.length ? `; errors: ${errors.join('; ')}` : ''}`);

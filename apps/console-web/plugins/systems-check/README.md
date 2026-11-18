@@ -43,6 +43,25 @@ broken is a **red banner item** saying what broke, what it **breaks** and **sinc
   registers its own check there, `push-banner-github` ("Push banner reaches GitHub": red with no route, amber when it
   reads through axHub but has no local token for PRs and merges).
 
+## Items other plugins register (Nov 18 2026, build `auto-lander-never-wait-missing-ui-review`)
+
+- **`held-prs` — PRs the lander holds** (gate plugin, `server/held_prs_health.py`): every PR the lander truly holds (held,
+  kicked, paused) with the PR, its build, the reason (`holdReason`) and how long (`heldSince`, lander-state@1). Red once
+  one is older than the gate setting **Held PR alert after** (`heldAlertMin`, default 60 min; Settings → Plugins → Gate,
+  `axf gate settings set heldAlertMin 90`), pushed once to the AmberX app. Fix = **Land now** (one row per PR past the
+  limit, fix type `prs`): the PR goes to the front of the merge queue with an override note in History and on the build,
+  confirm first, never a direct merge; the item's Auto fix (ask) lands the one held longest. State `GET
+  /api/plugins/gate/held-prs`, MCP `gate_held_prs`, `axf gate held-prs`; the press `POST /api/plugins/gate/land-now`
+  (two-step), MCP `gate_land_now`, `axf gate land-now <pr>`, voice `gate.land-now:<pr>` ("land 816 now").
+  Console-control: `row:held-prs` (the item), `grid:held-prs/row:<n>` (each PR; state = its reason and age),
+  `grid:held-prs/row:<n>/button:land-now` (destructive: a press without confirm answers confirmation_required).
+- **`demo-selftest` — the lander passes its own test** (orchestrator-demo plugin): the demo runs the real lander path on a
+  throwaway PR before its landing act (`demo-selftest@1`: the live gate verdict, the review lookup in the console, the
+  merge queue in check mode, the held-prs state). Red when the last self-test failed (the demo stopped before landing),
+  Auto fix = Run the self-test again. `POST`/`GET /api/plugins/orchestrator-demo/selftest`, MCP
+  `orchestrator-demo_selftest`, `axf demo selftest`, voice "run the demo self-test".
+- Every banner item carries the console-control address `row:<check id>`.
+
 ## Fix it yourself: auto-fix + GitHub through axHub (Oct 30 2026)
 Brett: "Why do I have to tell you to fix something when you have the tools to do it?"
 - **Auto-fix:** a health@1 check may carry `autoFix: {label, run, mitigated?}` (built-in checks get one with

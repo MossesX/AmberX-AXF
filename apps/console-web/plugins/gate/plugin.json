@@ -143,6 +143,20 @@
         "description": "Put a PR at the head of the line in the current mode ({pr}). Two-step confirm; it still passes every rule and is never a direct merge."
       },
       {
+        "id": "held-prs",
+        "route": "GET /held-prs",
+        "title": "Gate: PRs the lander holds",
+        "readOnly": true,
+        "description": "Every PR the lander truly holds (held, kicked, paused) with its build, the reason, when the hold began and how long (held-prs@1). `over` names those older than the heldAlertMin setting; the systems check's held-prs item turns red on them. Each row names its Land now route, CLI and action."
+      },
+      {
+        "id": "land-now",
+        "route": "POST /land-now",
+        "title": "Gate: land a held PR now (confirm)",
+        "tool": "gate_land_now",
+        "description": "Land now from the held-prs systems check item ({pr, note?}): two-step confirm; the PR goes to the front of the merge queue with an override note in History and on its build. It still passes every rule; never a direct merge."
+      },
+      {
         "id": "lander-pause",
         "route": "POST /lander/pause",
         "title": "Auto-lander: pause",
@@ -219,13 +233,13 @@
         "route": "GET /settings",
         "title": "Gate: plugin settings",
         "readOnly": true,
-        "description": "The plugin's settings: refreshSec, historySize, defaultTab."
+        "description": "The plugin's settings: refreshSec, historySize, defaultTab, heldAlertMin (minutes a lander-held PR may wait before the systems check's held-prs item turns red)."
       },
       {
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history), heldAlertMin (5-10080, default 60: minutes a lander-held PR may wait before the held-prs systems check turns red)."
       },
       {
         "id": "build-rules-list",

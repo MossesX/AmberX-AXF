@@ -20,11 +20,19 @@
       "type": "enum",
       "values": [
         "rules",
+        "build-rules",
         "auto-lander",
         "history"
       ],
       "default": "rules",
       "title": "Tab it opens on"
+    },
+    "heldAlertMin": {
+      "type": "integer",
+      "min": 5,
+      "max": 10080,
+      "default": 60,
+      "title": "Held PR alert after (minutes)"
     }
   }
 }

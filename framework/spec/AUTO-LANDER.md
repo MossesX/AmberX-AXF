@@ -123,7 +123,11 @@ In order:
    counts as a `timeout` failure and the decision goes on.
 3. A draft, a fork, a hold by hand, no PR yet → `wait` with that reason.
 4. A code clash → kind `clash`; else red CI → kind `red-ci`; else CI running → `wait` (`ci-running`, state
-   `ci-running`); CI not run → `wait` (`ci-none`); UI Review holding → `wait` (`ui-review`); else kind `land`.
+   `ci-running`); CI not run → `wait` (`ci-none`); a UI Review item that exists in the console and holds (`waiting`,
+   `changes`, `rejected`) → `wait` (`ui-review`); else kind `land`. A review that is `missing` from the console,
+   `unposted` or `unknown` (the lookup failed) never waits (Nov 18 2026, build `auto-lander-never-wait-missing-ui-review`):
+   the `land` action carries `reviewFlag: missing | unposted`, the build record keeps it, and the lander files the UI
+   Review notice (GATE.md, "The UI Review verdict").
 5. For the kind: failures (`failed` + `timeout`, every head) ≥ `maxAttempts` → `escalate`. The kind switched off in the
    policy → `escalate` at once (there is nothing the server may do). Inside the backoff after the last failure → `wait`
    (`backoff`, `notBefore`). Otherwise the kind's action with `attempt` = failures + 1.
