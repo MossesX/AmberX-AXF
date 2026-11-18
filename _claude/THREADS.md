@@ -834,7 +834,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:49 UTC · `move-server-side-console-parts-onto-vps` PR #828 (all) · builds-live
 - 2026-11-18 00:19 UTC · `move-everything-axhub-web-console` s9 done (all) · orchestrator
 - 2026-11-18 00:50 UTC · `move-server-side-console-parts-onto-vps` s24 done, s25 done (all) · foreign-write
 - 2026-11-18 00:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
@@ -1234,6 +1233,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
 - 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
+- 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
 
 ## Token passes (log)
 
