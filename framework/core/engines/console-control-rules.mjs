@@ -12,7 +12,7 @@ export const CONSOLE_CONTROL_FRAME = 'console-control@1';
 export const CONSOLE_CONTROL_TARGETS_FRAME = 'console-control-targets@1';
 
 /** Address segment kinds, outermost first in an address. Append-only. */
-export const CONSOLE_CONTROL_KINDS = ['view', 'tab', 'subtab', 'setting', 'button', 'function', 'plugin', 'grid', 'row', 'step', 'panel', 'scroll', 'toolbar'];
+export const CONSOLE_CONTROL_KINDS = ['view', 'tab', 'subtab', 'setting', 'button', 'function', 'plugin', 'grid', 'row', 'step', 'panel', 'scroll', 'toolbar', 'widget'];
 
 /** Which kinds a segment may follow (`null` = may open an address). Order inside an address is outermost first. */
 export const CONSOLE_CONTROL_PARENTS = {
@@ -30,6 +30,8 @@ export const CONSOLE_CONTROL_PARENTS = {
   scroll: [null, 'view', 'tab', 'subtab', 'panel'],
   // page-toolbar@1 (Nov 17 2026, build rebuild-every-toolbar-page-specific): a toolbar by its settings id; its buttons under it
   toolbar: [null, 'view', 'tab', 'subtab', 'panel'],
+  // toolbar-widgets@1 (build attach-widgets-to-any-toolbar-banner): one widget on a toolbar, by its type:id key
+  widget: ['toolbar'],
 };
 
 /** Kinds whose id has the `<row>=<value>` form (a tab row, or one tab of it). */
