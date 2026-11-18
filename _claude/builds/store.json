@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8927,
- "updatedAt": "2026-11-18T12:32:47.936Z",
+ "rev": 8928,
+ "updatedAt": "2026-11-18T12:33:18.939Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319358,6 +319358,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-18T12:32:10.647Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "server-gate-reject-any-build-without",
+   "title": "Server gate: reject any build without an orchestrator build ID",
+   "category": "",
+   "detail": "Brett (Nov 18): add a rule on the Gate & rules screen (on by default) so the VPS only starts builds that carry an orchestrator-issued build ID. Any start without one (vps.build_start, launcher, hand launch) is rejected and kicked back to the orchestrator with the reason, and the orchestrator puts it in its Failed tab with that reason so it can be fixed and re-queued. Molly (the orchestrator gate) and the VPS both enforce it. Shows on the Gate & rules screen; full REST/MCP/CLI/voice parity; tests and a CI check.",
+   "status": "pending",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T12:32:49.331Z",
+   "updatedAt": "2026-11-18T12:32:49.331Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1003
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
