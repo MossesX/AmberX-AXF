@@ -568,7 +568,7 @@ def migrate_v2(conn) -> dict:
         if cur.fetchone():
             cur.execute(f'ALTER TABLE "{t}" ADD COLUMN IF NOT EXISTS children_lifted JSONB')
             ckey = next((s.child[0] for s in CONTROL.lists.values() if s.table == t and s.child), 'items')
-            cur.execute(f'UPDATE "{t}" SET children_lifted = jsonb_build_object(%s, child_lifted) WHERE children_lifted IS NULL AND child_lifted IS NOT NULL', (ckey,))
+            cur.execute(f'UPDATE "{t}" SET children_lifted = jsonb_build_object(%s::text, child_lifted) WHERE children_lifted IS NULL AND child_lifted IS NOT NULL', (ckey,))
             cur.execute(f'ALTER TABLE "{t}" DROP COLUMN child_lifted')
             out['lists'].append(t)
     cur.execute("SELECT to_regclass('builds_v1') AS t")

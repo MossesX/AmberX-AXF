@@ -246,12 +246,17 @@ def test_tables_v1_rows_are_rekeyed_on_connect():
         st.q("INSERT INTO builds (section, pos, id, title, extra, doc_hash, child_lifted) VALUES ('builds', 0, 'x', 'X', %s, 'h1', true), ('builds', 1, 'y', 'Y', '{}', 'h2', NULL)",
              (Jsonb({'notes': [{'text': 'n1'}]}),))
         st.q("INSERT INTO build_steps (section, parent_pos, pos, id, extra) VALUES ('builds', 0, 0, 's1', '{}')")
+        # the other list tables carried one BOOLEAN child flag in version 1
+        st.q('ALTER TABLE control_targets DROP COLUMN children_lifted')
+        st.q('ALTER TABLE control_targets ADD COLUMN child_lifted BOOLEAN')
+        st.q("INSERT INTO control_targets (section, pos, address, extra, doc_hash, child_lifted) VALUES ('tabGroups', 0, 'a', '{}', 'h', true), ('views', 0, 'v', '{}', 'h', NULL)")
         st.q("DELETE FROM meta WHERE k='tables_version'")
         st2 = pg_store(Path(st.dir).parent, st.schema)
         assert st2.meta_get('tables_version') == '2'
         assert st2.fetchall('SELECT rid, pos FROM builds ORDER BY pos') == [{'rid': 'x', 'pos': 0}, {'rid': 'y', 'pos': 1}]
         assert st2.fetchall('SELECT parent_rid, id FROM build_steps') == [{'parent_rid': 'x', 'id': 's1'}]
         assert st2.fetchall('SELECT parent_rid, text FROM build_notes') == [{'parent_rid': 'x', 'text': 'n1'}]
+        assert st2.fetchall('SELECT section, children_lifted FROM control_targets ORDER BY section') == [{'section': 'tabGroups', 'children_lifted': {'tabs': True}}, {'section': 'views', 'children_lifted': None}]
         r, body = st2.get('builds', 'store.json')
         assert json.loads(body) == json.loads(canonical(doc))
         assert st2.fetchone("SELECT to_regclass('builds_v1') AS t")['t'] is None

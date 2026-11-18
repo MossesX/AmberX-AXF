@@ -145,13 +145,18 @@ ENGINE="${AXF_DATA_ENGINE:-}"
 HAS_SQLITE="$(docker run --rm -v "$VOL":/data alpine:3.20 sh -c 'test -s /data/axf-data.sqlite && echo yes || echo no' 2>/dev/null || echo no)"
 if [ -z "$ENGINE" ] && [ "$HAS_SQLITE" = yes ]; then
   PG_KEYS="$(docker run --rm --network "$NET" -e "AXF_DATA_DSN=$DSN" -e AXF_DATA_DIR=/data -v "$VOL":/data "$NAME:latest" \
-    python -c "import pg,os; print(pg.PgStore(os.environ['AXF_DATA_DSN'],'/data').fetchone('SELECT COUNT(*) AS n FROM keys')['n'])" 2>/dev/null || echo 0)"
+    python -c "import pg,os; print(pg.PgStore(os.environ['AXF_DATA_DSN'],'/data').fetchone('SELECT COUNT(*) AS n FROM keys')['n'])" 2>/dev/null || echo error)"
+  # a probe that fails is not an empty database: stop here rather than start a copy over live data
+  [ "$PG_KEYS" != error ] || { say "could not read Postgres with the new image (schema migration or connection failed): docker run … $NAME:latest python -c 'import pg' to see why; nothing changed"; exit 1; }
   if [ "$PG_KEYS" = 0 ]; then
     say "SQLite store found on $VOL and Postgres is empty: migrating (backup first, counts and manifests checked)"
     docker run --rm --network "$NET" -e "AXF_DATA_DSN=$DSN" -e AXF_DATA_DIR=/data -e AXF_DATA_BACKUPS=/backups -v "$VOL":/data -v "$BACKUPS":/backups \
       "$NAME:latest" python migrate_pg.py || { say "migration refused: nothing moved to the console, Postgres left for inspection (docker run … migrate_pg.py --verify)"; exit 1; }
   fi
-  ENGINE=shadow
+  # the first run after a migration starts in shadow; once the service has recorded its own engine state (engine.json:
+  # a cut-over to postgres, a roll-back) that state is what a restart must come back to, so the env is not pinned over it
+  HAS_STATE="$(docker run --rm -v "$VOL":/data alpine:3.20 sh -c 'test -s /data/engine.json && echo yes || echo no' 2>/dev/null || echo no)"
+  [ "$HAS_STATE" = yes ] || ENGINE=shadow
 fi
 
 # ── 6. the service container ──

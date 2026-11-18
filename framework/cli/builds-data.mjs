@@ -12,7 +12,8 @@
  *                                                             and the remote journal lines the hub lacks are appended, then the
  *                                                             two keys go back to local (the namespace is untouched).
  *   --json on any command. --url / --token override AXF_DATA_URL / AXF_DATA_TOKEN (the cut needs the cli token: it reads
- *   `_meta/tables` for the row counts and publishes the mode document).
+ *   `_meta/tables` for the row counts and publishes the mode document). --store <file> names the store file to copy and
+ *   lock (default: this checkout's; on the VPS the console's live file is /opt/axf/_claude/builds/store.json).
  *
  * Why keys and not the namespace: `builds` also holds pipeline state, reconcile journals, shipped manifests, reports and
  * progress files that other steps move later (framework/spec/DATA-INVENTORY.md). data-store-mode@1 key overrides move the
@@ -102,11 +103,11 @@ async function remoteCount(store, part) {
   try { return (await store.read(partKey(part), { tail: 1 })).entries.at(-1)?.seq || 0; } catch (e) { if (e.code === 'not_found') return 0; throw e; }
 }
 
-export async function status({ store = files.remoteStore(), json = false } = {}) {
+export async function status({ store = files.remoteStore(), file = storeFile() } = {}) {
   const state = readState();
   const modes = Object.fromEntries(KEYS.map((k) => [k, MODE.modeOf(state, NS, k.endsWith('/') ? `${k}x` : k)]));
-  const local = core.normalizeStore(JSON.parse(readFileSync(storeFile(), 'utf8')));
-  const out = { $axf: 'builds-data-status@1', at: nowIso(), modes, local: { file: storeFile(), rev: local.rev, ...counts(local) }, remote: null, journal: [], tables: null };
+  const local = core.normalizeStore(JSON.parse(readFileSync(file, 'utf8')));
+  const out = { $axf: 'builds-data-status@1', at: nowIso(), modes, local: { file, rev: local.rev, ...counts(local) }, remote: null, journal: [], tables: null };
   if (store) {
     const rec = await store.get(STORE_KEY);
     if (rec) { const rs = core.normalizeStore(rec.data); out.remote = { rev: rec.rev, etag: rec.etag, at: rec.at, storeRev: rs.rev, ...counts(rs), equal: canonical(rec.data) === canonical(JSON.parse(storeText(local))) }; }
@@ -122,13 +123,14 @@ export async function status({ store = files.remoteStore(), json = false } = {})
  * The cut: under the store lock, put the store (when it differs), sync every journal part, verify, flip the keys.
  * Returns the report; `ok` is false when anything did not verify (nothing flipped then).
  */
-export async function cutover({ store = files.remoteStore(), apply = false, by = 'svc:cli', log = () => {} } = {}) {
+export async function cutover({ store = files.remoteStore(), apply = false, by = 'svc:cli', log = () => {}, file = storeFile() } = {}) {
   if (!store) throw new DataStoreError('unavailable', 'axf-data is not configured (AXF_DATA_URL / --url)');
   const at = nowIso();
   const report = { $axf: 'builds-data-cutover@1', at, apply, ok: false, store: null, journal: [], counts: null, tables: null, flipped: [], problems: [] };
   const run = async () => {
-    const localStore = core.normalizeStore(JSON.parse(readFileSync(storeFile(), 'utf8')));
+    const localStore = core.normalizeStore(JSON.parse(readFileSync(file, 'utf8')));
     const localDoc = JSON.parse(storeText(localStore));
+    report.file = file;
     const want = canonical(localDoc);
     let rec = await store.get(STORE_KEY);
     const same = rec && canonical(rec.data) === want;
@@ -170,19 +172,19 @@ export async function cutover({ store = files.remoteStore(), apply = false, by =
     try { await publish(store, state, changes, by); report.published = true; } catch (e) { report.published = false; report.publishError = `${e.code || 'error'}: ${e.message}`; }
   };
   // hold the store lock the whole time: no local writer can change the file or the journal while they are copied and checked
-  await withStoreLock(() => run(), 60000);
+  await withStoreLock(() => run(), 60000, file);
   return report;
 }
 
 /** Back to the files: remote → local file and hub journal, then the keys go local. */
-export async function toLocal({ store = files.remoteStore(), apply = false, by = 'svc:cli', log = () => {} } = {}) {
+export async function toLocal({ store = files.remoteStore(), apply = false, by = 'svc:cli', log = () => {}, file = storeFile() } = {}) {
   if (!store) throw new DataStoreError('unavailable', 'axf-data is not configured (AXF_DATA_URL / --url)');
   const report = { $axf: 'builds-data-local@1', at: nowIso(), apply, ok: false, store: null, journal: [], flipped: [], problems: [] };
   await withStoreLock(async () => {
     const rec = await store.get(STORE_KEY);
     if (!rec) { report.problems.push('no store on axf-data'); return; }
     const text = storeText(core.normalizeStore(rec.data));
-    const f = storeFile();
+    const f = file;
     report.store = { remoteRev: rec.rev, bytes: text.length, written: false };
     if (apply) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, text); renameSync(tmp, f); report.store.written = true; }
     let after = '';
@@ -203,19 +205,19 @@ export async function toLocal({ store = files.remoteStore(), apply = false, by =
     writeState(state);
     report.flipped = changes.map((c) => `${c.ns}/${c.key}: ${c.from} → ${c.to}`);
     try { await publish(store, state, changes, by); } catch (e) { report.publishError = `${e.code || 'error'}: ${e.message}`; }
-  }, 60000);
+  }, 60000, file);
   return report;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
   const flag = (k) => { const i = args.indexOf(`--${k}`); if (i < 0) return undefined; const v = args[i + 1]; args.splice(i, v && !v.startsWith('--') ? 2 : 1); return v && !v.startsWith('--') ? v : true; };
-  const json = !!flag('json'); const apply = !!flag('apply'); const url = flag('url'); const token = flag('token'); const by = flag('by');
+  const json = !!flag('json'); const apply = !!flag('apply'); const url = flag('url'); const token = flag('token'); const by = flag('by'); const storeArg = flag('store'); const file = typeof storeArg === 'string' ? resolve(storeArg) : storeFile();
   const cmd = ['status', 'cutover', 'local'].includes(args[0]) ? args.shift() : 'status';
   const store = typeof url === 'string' ? createDataStore({ backend: httpBackend({ url, token: typeof token === 'string' ? token : process.env.AXF_DATA_TOKEN || '' }), by: 'svc:cli' }) : files.remoteStore();
   const log = json ? () => {} : (m) => console.error(m);
   try {
-    const r = cmd === 'status' ? await status({ store, json }) : cmd === 'cutover' ? await cutover({ store, apply, by: typeof by === 'string' ? by : 'svc:cli', log }) : await toLocal({ store, apply, by: typeof by === 'string' ? by : 'svc:cli', log });
+    const r = cmd === 'status' ? await status({ store, file }) : cmd === 'cutover' ? await cutover({ store, apply, by: typeof by === 'string' ? by : 'svc:cli', log, file }) : await toLocal({ store, apply, by: typeof by === 'string' ? by : 'svc:cli', log, file });
     if (json) console.log(JSON.stringify(r, null, 1));
     else if (cmd === 'status') {
       console.log(`modes: ${Object.entries(r.modes).map(([k, m]) => `${k} ${m}`).join(', ')}${r.engine ? `; engine ${r.engine}` : ''}`);

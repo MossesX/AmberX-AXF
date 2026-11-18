@@ -121,8 +121,8 @@ export function journalPartText(key) {
 export class StoreLocked extends Error {}
 /** cutover: someone else wrote a build we changed (or the store) on axf-data between our read and our write (withStore re-runs). */
 export class StoreConflict extends Error {}
-/** The store file's lock (a writer's, or the data cut-over's): fn() runs while it is held. */
-export function withStoreLock(fn, waitMs) { const unlock = lock(storeFile(), waitMs); try { return fn(); } finally { unlock(); } }
+/** The store file's lock (a writer's, or the data cut-over's on the file it names): fn() runs while it is held. */
+export function withStoreLock(fn, waitMs, file = storeFile()) { const unlock = lock(file, waitMs); try { return fn(); } finally { unlock(); } }
 /**
  * The store's axf-data key. A build worktree's hub home (worktreeHome) is a local copy of the one store, so it maps
  * to the canonical key (builds/store.json), never to a per-worktree key: in cutover nothing is written to the checkout.
