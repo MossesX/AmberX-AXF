@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "bottom-sheet",
+  "name": "Bottom Sheet",
+  "version": "1.0.0",
+  "description": "Mobile-style sheet rising from the bottom with a filled header.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "variant": "sheet",
+    "width": 680,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "filled",
+    "closeOnBackdrop": true
+  }
+}

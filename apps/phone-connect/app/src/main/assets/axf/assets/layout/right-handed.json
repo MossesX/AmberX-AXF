@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "right-handed",
+  "name": "Right Handed",
+  "version": "1.0.0",
+  "description": "Navigation on the right and the toolbar at the bottom, in reach of the thumb on tablets and big phones.",
+  "author": "AmberX AXF",
+  "tags": [
+    "tablet",
+    "touch"
+  ],
+  "data": {
+    "nav": "right",
+    "navWidth": 220,
+    "showMenubar": false,
+    "showToolbar": true,
+    "toolbarPosition": "bottom",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 0
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "branding",
+  "id": "amberx",
+  "name": "AmberX",
+  "version": "1.0.0",
+  "description": "The AmberX Framework brand: amber gem, pulse on the splash, outline icons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "default"
+  ],
+  "data": {
+    "brand": {
+      "name": "AmberX",
+      "tagline": "One framework, every port."
+    },
+    "marks": {
+      "mark": "amberx",
+      "wordmark": "amberx-wordmark",
+      "lockup": "amberx-lockup",
+      "animated": "amberx-pulse"
+    },
+    "iconPack": "amberx-outline",
+    "palette": {
+      "brand1": "#f59e0b",
+      "brand2": "#b45309",
+      "brand3": "#fde68a"
+    },
+    "accentFromBrand": false,
+    "decorations": {
+      "banner": "lockup",
+      "window": "mark",
+      "floating-window": "mark",
+      "dialog": "mark",
+      "container": "none",
+      "tab-group": "none",
+      "splash": "animated",
+      "favicon": "mark",
+      "empty-state": "watermark"
+    }
+  }
+}

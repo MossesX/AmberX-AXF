@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "plum-noir",
+  "name": "Plum Noir",
+  "version": "1.0.0",
+  "description": "Plum-black surfaces with an orchid accent for creative work at night.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "creative"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#120d14",
+      "surface": "#1b131e",
+      "surface2": "#231927",
+      "surface3": "#2f2133",
+      "text": "#ebe3ed",
+      "muted": "#a68fae",
+      "border": "#3a2940",
+      "accent": "#d56ce5",
+      "accentText": "#210925",
+      "accentSoft": "rgba(213,108,229,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#d56ce5",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

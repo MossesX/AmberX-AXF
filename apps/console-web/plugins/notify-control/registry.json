@@ -3,7 +3,7 @@
   "note": "One registry of every notification type. Types a plugin sends live in that plugin's own notify.json, so they leave with it. Everything else (the console core, AmberX, axHub) is here. A type's `match` ties it to the alerts it covers; `enforced` says who really checks it.",
   "channels": [
     { "id": "banner", "label": "Banner", "icon": "bell", "app": "console", "description": "The console's alerts bell and its unread count. Off: the alert is still kept in the Alerts list, already marked read." },
-    { "id": "amberx", "label": "AmberX push", "icon": "smartphone", "app": "amberx", "description": "A notification from the AmberX app on the phone." },
+    { "id": "amberx", "label": "Phone push", "icon": "smartphone", "app": "amberx", "description": "A notification on the phone: Phone Connect when a phone is paired (the AmberX app reads it while it is still installed)." },
     { "id": "sound", "label": "Sound", "icon": "play", "app": "console", "description": "A short tone in an open console." },
     { "id": "popup", "label": "Console pop-up", "icon": "info", "app": "console", "description": "A pop-up in an open console." },
     { "id": "webpush", "label": "Web push / ntfy", "icon": "cloud", "app": "webpush", "description": "Browser web push and ntfy, when they are set up in Settings → Alerts. Their severity rules there still apply." }
@@ -23,6 +23,7 @@
     { "id": "sessions", "label": "Claude sessions", "icon": "sparkles" },
     { "id": "console", "label": "Console", "icon": "terminal" },
     { "id": "amberx", "label": "AmberX app", "icon": "smartphone" },
+    { "id": "phone", "label": "Phone Connect", "icon": "smartphone" },
     { "id": "banners", "label": "Status banners", "icon": "layout" },
     { "id": "other", "label": "Not in the registry yet", "icon": "help" }
   ],

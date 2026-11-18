@@ -1,0 +1,166 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "enterprise-standard",
+  "name": "Enterprise Standard",
+  "version": "1.0.0",
+  "description": "The complete desktop menu: edit commands with shortcuts, settings and help, grouped by intent.",
+  "author": "AmberX AXF",
+  "tags": [
+    "desktop",
+    "enterprise"
+  ],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "undo",
+          "label": "Undo",
+          "icon": "undo",
+          "action": "edit.undo",
+          "shortcut": "Ctrl+Z"
+        },
+        {
+          "id": "redo",
+          "label": "Redo",
+          "icon": "redo",
+          "action": "edit.redo",
+          "shortcut": "Ctrl+Shift+Z"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "cut",
+          "label": "Cut",
+          "icon": "cut",
+          "action": "edit.cut",
+          "shortcut": "Ctrl+X"
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "paste",
+          "action": "edit.paste",
+          "shortcut": "Ctrl+V"
+        },
+        {
+          "id": "delete",
+          "label": "Delete",
+          "icon": "trash",
+          "action": "edit.delete",
+          "shortcut": "Del"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": "app.settings",
+          "shortcut": "Ctrl+,"
+        },
+        {
+          "id": "shortcuts",
+          "label": "Keyboard shortcuts",
+          "icon": "keyboard",
+          "action": "view.shortcuts",
+          "shortcut": "Alt+K"
+        },
+        {
+          "id": "docs",
+          "label": "Documentation",
+          "icon": "help",
+          "action": "help.docs",
+          "shortcut": "F1"
+        }
+      ],
+      "asset-card": [
+        {
+          "id": "activate",
+          "label": "Use this",
+          "icon": "zap",
+          "action": "swap:{payload}",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "json",
+          "label": "View JSON",
+          "icon": "code",
+          "action": "asset.json:{payload}"
+        },
+        {
+          "id": "copy-json",
+          "label": "Copy JSON",
+          "icon": "copy",
+          "action": "asset.copy:{payload}"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "next-nav",
+          "label": "Next navigation menu",
+          "icon": "grid",
+          "action": "swap:nav-menu:next",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "toggle-nav",
+          "label": "Show or hide navigation",
+          "icon": "list",
+          "action": "slot.hide:nav-menu:toggle"
+        }
+      ]
+    }
+  }
+}

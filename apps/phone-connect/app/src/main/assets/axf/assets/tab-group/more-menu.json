@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "more-menu",
+  "name": "More menu",
+  "version": "1.0.0",
+  "description": "Underline tabs that never scroll: whatever does not fit goes under a More menu at the end of the row.",
+  "author": "AmberX AXF",
+  "tags": ["more", "overflow", "underline"],
+  "data": {
+    "style": "underline",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "more",
+    "display": "both",
+    "divider": true,
+    "badges": true
+  }
+}

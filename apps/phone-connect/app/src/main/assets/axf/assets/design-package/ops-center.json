@@ -1,0 +1,29 @@
+{
+  "$axf": "asset@1",
+  "type": "design-package",
+  "id": "ops-center",
+  "name": "Ops Center",
+  "version": "1.0.0",
+  "description": "Condensed industrial type, mint on graphite, a command-center frame and attention-getting notices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "ops"
+  ],
+  "data": {
+    "style-theme": "industrial",
+    "color-theme": "graphite-mint",
+    "layout": "command-center",
+    "behavior-theme": "alert",
+    "extras": {
+      "slots": {
+        "style-package": "command-deck",
+        "toolbar": "ops-monitor",
+        "nav-menu": "ops-monitor",
+        "typography": "compact",
+        "density": "compact",
+        "sizing": "compact"
+      }
+    }
+  }
+}

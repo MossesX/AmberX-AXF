@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "neon-edge",
+  "name": "Neon Edge dialog",
+  "version": "1.0.0",
+  "description": "Neon Edge: modal, blur backdrop, scale in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "neon",
+    "vivid",
+    "dark"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 520,
+    "backdrop": "blur",
+    "animation": "scale",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

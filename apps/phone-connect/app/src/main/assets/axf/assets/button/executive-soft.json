@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "executive-soft",
+  "name": "Executive Soft button",
+  "version": "1.0.0",
+  "description": "Executive Soft: pill soft buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "soft",
+    "enterprise",
+    "spacious"
+  ],
+  "data": {
+    "shape": "pill",
+    "fill": "soft",
+    "weight": 600,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

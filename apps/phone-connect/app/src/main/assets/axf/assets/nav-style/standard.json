@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-style",
+  "id": "standard",
+  "name": "Standard",
+  "version": "0.1.0",
+  "description": "Sub menus slide open under their item; the theme decides colours, fonts and spacing, so the nav looks as it always did. One sub menu open at a time, the active page opens its own.",
+  "author": "AmberX AXF",
+  "tags": [
+    "navigation"
+  ],
+  "data": {
+    "animation": {
+      "kind": "slide",
+      "durationMs": 220,
+      "easing": "standard",
+      "staggerMs": 24,
+      "chevron": "rotate",
+      "reduced": "system"
+    },
+    "behavior": {
+      "single": true,
+      "openOn": "tap",
+      "autoCollapse": true,
+      "remember": true,
+      "followActive": true,
+      "swipe": true
+    }
+  }
+}

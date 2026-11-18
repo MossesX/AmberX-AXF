@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "meter",
+  "id": "segments",
+  "name": "Segments",
+  "version": "1.0.0",
+  "description": "A row of cells that light up one by one.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "segments",
+    "height": 12,
+    "radius": "soft",
+    "stripes": false,
+    "animated": true,
+    "fill": "solid",
+    "segments": 24
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "warm-craft",
+  "name": "Warm Craft button",
+  "version": "1.0.0",
+  "description": "Warm Craft: rounded soft buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "warm",
+    "warm"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "soft",
+    "weight": 600,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

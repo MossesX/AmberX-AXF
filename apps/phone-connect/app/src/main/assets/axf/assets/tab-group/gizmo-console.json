@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "gizmo-console",
+  "name": "GizmoX Console tabs",
+  "version": "1.0.0",
+  "description": "GizmoX Console: underline tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "developer",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "style": "underline",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": true
+  }
+}

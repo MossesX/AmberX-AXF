@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "field-rugged",
+  "name": "Field Rugged",
+  "version": "1.0.0",
+  "description": "Big square controls, chunky ticked sliders and bottom sheets for gloves and field tablets.",
+  "author": "AmberX AXF",
+  "tags": [
+    "rugged",
+    "rugged",
+    "touch"
+  ],
+  "data": {
+    "slots": {
+      "button": "field-rugged",
+      "container": "field-rugged",
+      "slider": "field-rugged",
+      "dialog": "field-rugged",
+      "popup": "field-rugged",
+      "tab-group": "field-rugged",
+      "gauge": "level-bar",
+      "meter": "steps"
+    },
+    "tone": "rugged"
+  }
+}

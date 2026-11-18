@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "frosted-dock",
+  "name": "Frosted Dock button",
+  "version": "1.0.0",
+  "description": "Frosted Dock: pill soft buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "frosted",
+    "glass"
+  ],
+  "data": {
+    "shape": "pill",
+    "fill": "soft",
+    "weight": 600,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

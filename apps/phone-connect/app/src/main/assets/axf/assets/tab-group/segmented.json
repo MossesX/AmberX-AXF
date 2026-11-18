@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "segmented",
+  "name": "Segmented",
+  "version": "1.0.0",
+  "description": "One segmented control; tabs share the width.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "style": "segmented",
+    "align": "stretch",
+    "position": "top",
+    "density": "compact",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

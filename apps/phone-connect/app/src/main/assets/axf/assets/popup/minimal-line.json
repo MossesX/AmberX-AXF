@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "minimal-line",
+  "name": "Minimal Line pop-ups",
+  "version": "1.0.0",
+  "description": "Minimal Line: minimal pop-ups at the top-center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "minimal",
+    "minimal"
+  ],
+  "data": {
+    "position": "top-center",
+    "variant": "minimal",
+    "duration": 3000,
+    "showIcon": false,
+    "maxVisible": 2
+  }
+}

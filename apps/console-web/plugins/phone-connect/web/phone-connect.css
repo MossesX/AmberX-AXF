@@ -1,0 +1,10 @@
+/* Phone Connect settings (Settings → Plugins → Phone Connect): layout only; controls come from the framework. */
+.axp-phone { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-phone__muted { margin: 0; color: var(--fx-muted); }
+.axp-phone__line { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-phone__code { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-2xl); letter-spacing: var(--fx-type-eyebrow-tracking); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); overflow-wrap: anywhere; }
+.axp-phone__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) 0; border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-phone__row:last-child { border-bottom: 0; }
+.axp-phone__name { flex: 1 1 14em; min-width: 0; overflow-wrap: anywhere; }
+.axp-phone__meta { color: var(--fx-muted); font-size: var(--fx-type-scale-sm); overflow-wrap: anywhere; }
+.axp-phone__field { flex: 1 1 14em; min-width: 0; }

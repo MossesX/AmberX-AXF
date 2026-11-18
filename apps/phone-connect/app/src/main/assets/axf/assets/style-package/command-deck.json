@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "command-deck",
+  "name": "Command Deck",
+  "version": "1.0.0",
+  "description": "Tight uppercase command buttons, accent panels and ticked bar sliders for control rooms.",
+  "author": "AmberX AXF",
+  "tags": [
+    "command",
+    "ops"
+  ],
+  "data": {
+    "slots": {
+      "button": "command-deck",
+      "container": "command-deck",
+      "slider": "command-deck",
+      "dialog": "command-deck",
+      "popup": "command-deck",
+      "tab-group": "command-deck",
+      "gauge": "digital",
+      "meter": "segments"
+    },
+    "tone": "command"
+  }
+}

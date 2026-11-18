@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "terminal",
+  "name": "Terminal tabs",
+  "version": "1.0.0",
+  "description": "Terminal: boxed tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "technical",
+    "developer"
+  ],
+  "data": {
+    "style": "boxed",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "scroll",
+    "showIcons": false,
+    "divider": true
+  }
+}
