@@ -32,3 +32,10 @@ The alert engine checks themselves pass. The step fails later on the token regis
 
 Locally on current main the same check also flags `apps/console-web/plugins/orchestrator-demo/plugin.json`.
 Not engine drift and not a stale fixture: two new plugins landed without the token-registry@1 `tokens` block.
+
+## Reproduction
+
+`AXF_DATA_DIR=off node apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs` fails locally with the same
+refusal. Code path: `watchdog.mjs` `plan()` → `stale-rows` verdict `complete/pr-merged` → `watchdog/tables/builds.mjs`
+`apply()` → `settleStatus()` sets `landed` → `builds-store withStore` → `enforceDoneGuard` → `guardStatus`
+(`framework/core/build-pipeline.mjs`) refuses: landed needs `landed.sha` and `landed.ci = success`.
