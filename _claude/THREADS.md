@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `token-registry-skin-editor-live-sandbox` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `banner-widget-shapes-more-than-circle` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `group-chat-audio-hear-agents-talk-while` → landing, note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `ui-review-filter-and-search-by-pr` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · foreign-write
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:12 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
 - 2026-11-18 16:13 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
 - 2026-11-18 16:14 UTC · `attach-widgets-to-any-toolbar-banner` s16 done (all) · orchestrator
+- 2026-11-18 16:11 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
+- 2026-11-18 16:13 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
+- 2026-11-18 16:14 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 
