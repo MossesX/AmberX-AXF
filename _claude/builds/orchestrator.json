@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T00:03:53.519Z",
+ "updatedAt": "2026-11-18T00:04:22.789Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -171065,7 +171065,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -171073,7 +171073,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:56:16.652Z",
+   "updatedAt": "2026-11-18T00:04:17.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -171431,6 +171431,10 @@
     {
      "text": "Brett: land this now. vps.build_land failed: code clash with main in framework/spec/check-ci-scope.mjs. Merge origin/main in, resolve that file keeping both sides, run the checks, push, get CI green, land, and confirm CI built the Phone Connect APK.",
      "at": "2026-11-17T22:56:16.652Z"
+    },
+    {
+     "text": "Clashes with main in framework/spec/check-ci-scope.mjs: added s28 (merge main in, resolve, push) and moved it back to the Queue.",
+     "at": "2026-11-18T00:04:17.129Z"
     }
    ],
    "approvals": [
@@ -172046,6 +172050,27 @@
      "note": "",
      "uid": "st-mwkxnkav0r9nbj",
      "createdAt": "2026-11-17T16:54:55.110Z"
+    },
+    {
+     "id": "s28",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "land-clash bounce",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-ci-scope.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlczrzl01ywfx",
+     "createdAt": "2026-11-18T00:04:17.129Z"
     }
    ]
   },

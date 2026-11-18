@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8510,
- "updatedAt": "2026-11-18T00:03:53.519Z",
+ "rev": 8511,
+ "updatedAt": "2026-11-18T00:04:22.789Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -266720,7 +266720,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -266728,7 +266728,7 @@
    "pr": "#787",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-17T22:56:16.652Z",
+   "updatedAt": "2026-11-18T00:04:17.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -267086,6 +267086,10 @@
     {
      "text": "Brett: land this now. vps.build_land failed: code clash with main in framework/spec/check-ci-scope.mjs. Merge origin/main in, resolve that file keeping both sides, run the checks, push, get CI green, land, and confirm CI built the Phone Connect APK.",
      "at": "2026-11-17T22:56:16.652Z"
+    },
+    {
+     "text": "Clashes with main in framework/spec/check-ci-scope.mjs: added s28 (merge main in, resolve, push) and moved it back to the Queue.",
+     "at": "2026-11-18T00:04:17.129Z"
     }
    ],
    "approvals": [
@@ -267120,8 +267124,8 @@
     "model": "Fable",
     "phase": "Phase 1",
     "launchedAt": "2026-11-17T20:39:27.512Z",
-    "runs": 2,
-    "crashes": 1,
+    "runs": 0,
+    "crashes": 0,
     "lastRun": {
      "at": "2026-11-17T22:31:46.088Z",
      "exit": 0,
@@ -267140,7 +267144,7 @@
      "note": "Split by Claude into 27 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "clash with main: s28 merges main in",
     "route": "",
     "dispatchedAt": "2026-11-17T20:39:27.512Z",
     "planned": {
@@ -267154,7 +267158,17 @@
     "pickedAt": "2026-11-17T20:39:27.512Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "bounce": {
+     "at": "2026-11-18T00:04:17.129Z",
+     "why": "merging main in conflicts in framework/spec/check-ci-scope.mjs",
+     "head": "ef546c1272fd3c0aa9243623f43d022b3ae748c9",
+     "files": [
+      "framework/spec/check-ci-scope.mjs"
+     ],
+     "step": "s28",
+     "count": 1
+    }
    },
    "steps": [
     {
@@ -267827,6 +267841,30 @@
      "rev": 2,
      "createdAt": "2026-11-17T16:54:55.110Z",
      "updatedAt": "2026-11-17T22:58:41.675Z"
+    },
+    {
+     "id": "s28",
+     "uid": "st-mwlczrzl01ywfx",
+     "title": "",
+     "text": "Merge main into claude/rebuild-fresh-main-phone-connect-small and resolve conflicts in framework/spec/check-ci-scope.mjs (clash at ef546c1); keep both sides' intent, run the checks, push.",
+     "model": "Opus",
+     "why": "land-clash bounce",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-ci-scope.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T00:04:17.129Z",
+     "updatedAt": "2026-11-18T00:04:17.129Z"
     }
    ],
    "profiles": [
@@ -267837,7 +267875,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
