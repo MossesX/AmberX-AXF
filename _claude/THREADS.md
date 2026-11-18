@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `molly-ri-court-records` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:52 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:52 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
 - 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
+- 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 
