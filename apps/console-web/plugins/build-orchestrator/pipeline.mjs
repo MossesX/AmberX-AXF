@@ -825,7 +825,9 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
 
 /** The retry policy: the done-means-merged build rule's settings when it has them, else the defaults (retry-policy@1). */
 export function retryPolicy() {
-  try { const r = BR.load().store.rules.find((x) => x.id === 'done-means-merged'); return RL.normPolicy(r?.settings ?? {}); } catch { return RL.normPolicy({}); }
+  // vps-never-gives-up: the caps never cut the ladder short; only a ladder with no rung left gives up
+  const ceil = { maxAttempts: RL.MAX_ATTEMPTS_RANGE[1], maxTotal: RL.MAX_TOTAL_RANGE[1] };
+  try { const r = BR.load().store.rules.find((x) => x.id === 'done-means-merged'); return P.exhaustPolicy(RL.normPolicy(r?.settings ?? {}), r?.settings ?? {}, ceil); } catch { return P.exhaustPolicy(RL.normPolicy({}), {}, ceil); }
 }
 /** The auto-lander's land.json items by build id (the merge-queue provider's data; found by capability, never by folder). */
 export function landItems(env = process.env) {

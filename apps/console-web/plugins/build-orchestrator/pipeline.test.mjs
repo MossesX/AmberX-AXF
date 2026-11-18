@@ -949,4 +949,26 @@ t('alertFor: an alert about a demo build is marked from its id alone', () => {
   assert.equal(P.alertFor('failed', { id: 'demo-crash', title: 'Demo crash', note: 'exit 143' }).meta.demo, true);
 });
 
+// ---------------- vps-never-gives-up: the ladder is walked until every option is used up
+t('exhaustPolicy: the caps never cut the ladder short; untilExhausted off keeps them', () => {
+  const base = RL.normPolicy({});
+  const p = P.exhaustPolicy(base, {});
+  assert.equal(p.maxAttempts, 10); assert.equal(p.maxTotal, 30); assert.equal(p.untilExhausted, true);
+  assert.equal(P.exhaustPolicy(base, { untilExhausted: false }), base);
+  assert.equal(P.exhaustPolicy(RL.normPolicy({ maxAttempts: 10, maxTotal: 30 }), {}).maxAttempts, 10);
+  const ctx = { pinnedModel: 'Fable', model: 'Fable', account: 'a1', accounts: ['a1', 'a2', 'a3', 'a4', 'a5'] };
+  for (const kind of RL.REGISTRY.kinds ?? ['crash', 'ci-red', 'clash', 'push-fail', 'stalled', 'fell-to-pending']) {
+    const capped = RL.walk(kind, base, ctx); const full = RL.walk(kind, RL.normPolicy(p), ctx);
+    const last = full[full.length - 1];
+    assert.equal(last.strategy, 'escalate', kind);
+    assert.match(last.reason, /every rung of the ladder was tried/, `${kind}: gives up only when no rung is left`);
+    assert.ok(full.length >= capped.length, kind);
+  }
+  // ci-red: merge main / fix / regenerate / fresh session / another model / every other account, all before giving up
+  const ci = RL.walk('ci-red', RL.normPolicy(p), ctx).map((d) => d.strategy);
+  for (const s of ['fix', 'fresh-session', 'switch-model', 'switch-account']) assert.ok(ci.includes(s), s);
+  assert.equal(ci.filter((s) => s === 'switch-account').length, 4);
+  assert.ok(RL.walk('clash', RL.normPolicy(p), ctx).some((d) => d.strategy === 'merge-main'));
+});
+
 console.log(`pipeline: ${n} checks passed${e2e ? '' : ' (CLI end-to-end skipped)'}`);

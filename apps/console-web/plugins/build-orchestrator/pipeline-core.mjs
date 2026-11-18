@@ -757,3 +757,17 @@ function alertBody(kind, d, base) {
     default: throw new Error(`unknown alert kind ${kind}`);
   }
 }
+
+// ------------------------------------------------------------------ never gives up (vps-never-gives-up-fix-land-every-build)
+
+/**
+ * The policy the VPS walks the ladder with. With `untilExhausted` on (the default; the done-means-merged rule's setting
+ * turns it off) the per-kind and per-build attempt caps are lifted to the contract's ceilings (retry-ladder@1
+ * MAX_ATTEMPTS_RANGE / MAX_TOTAL_RANGE), so a build is only given up on once every rung of its ladder was tried (merge
+ * main, fix the clash, fix red CI, regenerate, redo the step, a fresh session, another model, every other account). The
+ * ceilings stay as the one safety stop. Pure: (policy from normPolicy, raw rule settings) → policy.
+ */
+export function exhaustPolicy(policy, settings = {}, { maxAttempts = 10, maxTotal = 30 } = {}) {
+  if (settings && settings.untilExhausted === false) return policy;
+  return { ...policy, maxAttempts: Math.max(policy.maxAttempts, maxAttempts), maxTotal: Math.max(policy.maxTotal, maxTotal), untilExhausted: true };
+}
