@@ -43,6 +43,12 @@ object LinkRules {
     }
 
     /** The next wait after [failures] failed calls in a row. */
+    /**
+     * browser.open's `where`: anything but "browser" asks for the overlay, so the console app (ConsoleOverlay) gets the
+     * page first; "browser" always opens in the phone's browser.
+     */
+    fun wantsOverlay(where: String?): Boolean = where != "browser"
+
     fun backoffSeconds(failures: Int): Int = BACKOFF_S[(failures - 1).coerceIn(0, BACKOFF_S.size - 1)]
 
     /** The approval page on the hub, rebuilt from the id (a link in a reply is never followed as given). */
