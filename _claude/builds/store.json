@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9128,
- "updatedAt": "2026-11-18T19:21:42.216Z",
+ "rev": 9129,
+ "updatedAt": "2026-11-18T19:47:39.411Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -252627,7 +252627,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -252635,7 +252635,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-18T19:18:52.523Z",
+   "updatedAt": "2026-11-18T19:47:31.439Z",
    "builtAt": "",
    "notes": [
     {
@@ -253269,7 +253269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {

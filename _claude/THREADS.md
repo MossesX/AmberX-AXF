@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:21 UTC · `vps-never-gives-up-fix-land-every-build` added (0 steps) (all) · Brett
 - 2026-11-18 12:21 UTC · `vps-never-gives-up-fix-land-every-build` → queued, note (all) · Brett
 - 2026-11-18 12:22 UTC · `plan-studio-2-open-button-working-deep` note (all) · orchestrator
 - 2026-11-18 12:22 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · orchestrator
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 19:20 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 - 2026-11-18 19:20 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-18 19:21 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 19:47 UTC · `attach-widgets-to-any-toolbar-banner` → pending (all) · voice session
 
 ## Token passes (log)
 
