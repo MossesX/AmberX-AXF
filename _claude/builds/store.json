@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8634,
- "updatedAt": "2026-11-18T01:00:46.618Z",
+ "rev": 8635,
+ "updatedAt": "2026-11-18T01:01:00.479Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288246,7 +288246,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T00:56:40.198Z",
+   "updatedAt": "2026-11-18T01:00:55.295Z",
    "builtAt": "",
    "notes": [
     {
@@ -288388,6 +288388,10 @@
     {
      "text": "Self-check: flagship-professional-skin-covering-2 had no session on record but axf-flagship-professional-skin-covering-2--earl is alive: kept running and tracking it.",
      "at": "2026-11-18T00:56:40.198Z"
+    },
+    {
+     "text": "Phase 2 done, PR #829 (https://github.com/MossesX/AmberX-AXF/pull/829). Waits on UI Review r-20261118-e0399043: pick Flagship, Graphite or Daylight.",
+     "at": "2026-11-18T01:00:55.295Z"
     }
    ],
    "approvals": [
@@ -289197,7 +289201,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
