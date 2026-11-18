@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `context-menus-plugin-one-true-source` → complete, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `group-chat-audio-hear-agents-talk-while` → complete, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:40 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · orchestrator
 - 2026-11-18 01:41 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:41 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · console
+- 2026-11-18 01:41 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · foreign-write
 
 ## Token passes (log)
 
