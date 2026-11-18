@@ -840,10 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 07:15 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s7 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:13 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 07:14 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-18 07:20 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
 - 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s10 undone, → pending, note (all) · foreign-write
 - 2026-11-18 07:17 UTC · `approval-pass-covers-every-call` s11 done, note (all) · foreign-write
@@ -1240,6 +1236,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · watchdog
 - 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · builds-live
 - 2026-11-18 14:51 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
+- 2026-11-18 14:52 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 14:52 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 14:52 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 14:52 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
