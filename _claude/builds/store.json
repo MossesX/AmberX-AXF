@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8816,
- "updatedAt": "2026-11-18T01:53:29.103Z",
+ "rev": 8817,
+ "updatedAt": "2026-11-18T01:54:00.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27478,7 +27478,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -89746,7 +89749,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -96794,7 +96800,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -105602,7 +105611,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -115888,6 +115900,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -118494,7 +118507,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -118776,7 +118792,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -119173,7 +119192,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -132888,7 +132910,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -135470,7 +135495,10 @@
     "pickedAt": "2026-11-14T22:45:32.880Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -135903,7 +135931,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -137652,6 +137683,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -141913,7 +141945,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -142352,7 +142387,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -142936,7 +142974,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -144341,7 +144382,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -146678,7 +146722,10 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -146908,7 +146955,10 @@
     "pickedAt": "2026-11-17T19:06:31.477Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -148716,7 +148766,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -150925,7 +150978,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -151142,7 +151198,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -151709,7 +151768,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -151905,7 +151967,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152122,7 +152187,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152343,7 +152411,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152563,7 +152634,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -152788,7 +152862,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153017,7 +153094,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153253,7 +153333,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153486,7 +153569,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153727,7 +153813,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -153977,7 +154066,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -154635,7 +154727,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -155449,7 +155544,10 @@
     "pickedAt": "2026-11-15T01:24:21.442Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-molly-gap-axhub-cors",
@@ -155692,7 +155790,10 @@
     "pickedAt": "2026-11-16T16:47:14.644Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -155931,7 +156032,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156183,7 +156287,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156369,7 +156476,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156572,7 +156682,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -156856,7 +156969,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157050,7 +157166,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157257,7 +157376,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157455,7 +157577,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -157898,7 +158023,10 @@
     "pickedAt": "2026-11-14T23:56:20.868Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-axhub-36-pull-main-in-failed",
@@ -158691,7 +158819,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -158891,7 +159022,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -159117,7 +159251,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -159463,7 +159600,10 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159646,7 +159786,10 @@
     "pickedAt": "2026-11-13T10:43:09.520Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159790,7 +159933,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -159892,7 +160038,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160038,7 +160187,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160233,7 +160385,10 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -160364,7 +160519,10 @@
     "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160533,7 +160691,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -160706,7 +160867,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -160820,7 +160984,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168590,7 +168757,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168767,7 +168937,10 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168881,7 +169054,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -168999,7 +169175,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169152,7 +169331,10 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169310,7 +169492,10 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -169393,7 +169578,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -169597,7 +169785,10 @@
     "pickedAt": "2026-11-13T00:46:14.486Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
@@ -169787,7 +169978,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
@@ -170090,7 +170284,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -170163,7 +170360,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -170455,7 +170655,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
@@ -170660,7 +170863,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -170907,7 +171113,10 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171011,7 +171220,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171153,7 +171365,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171308,7 +171523,10 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171474,7 +171692,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -171657,7 +171878,10 @@
     "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
@@ -171862,7 +172086,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
@@ -172132,7 +172359,10 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172294,7 +172524,10 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172482,7 +172715,10 @@
     "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
@@ -172660,7 +172896,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172765,7 +173004,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -172899,7 +173141,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -173014,7 +173259,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
@@ -173210,7 +173458,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173377,7 +173628,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173603,7 +173857,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -173797,7 +174054,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -173977,7 +174237,10 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -174135,7 +174398,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
@@ -174349,7 +174615,10 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -174465,7 +174734,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
@@ -174705,7 +174977,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
@@ -174909,7 +175184,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
@@ -175217,7 +175495,10 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175405,7 +175686,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175590,7 +175874,10 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175738,7 +176025,10 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -175938,7 +176228,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -176103,7 +176396,10 @@
     "pickedAt": "2026-11-16T23:25:51.201Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -176583,7 +176879,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
@@ -177531,7 +177830,10 @@
     "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -177642,7 +177944,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -177814,7 +178119,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -177942,7 +178250,10 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -178062,7 +178373,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-android-approval-overlay-a-small-always-on-float",
@@ -178313,7 +178627,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -179035,7 +179352,10 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -179180,7 +179500,10 @@
     "pickedAt": "2026-11-13T11:37:09.309Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-overlay-opens-pages-the-floating-toolbar-expands",
@@ -179455,7 +179778,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-server-watchdog-orchestrator-auto-recovers-stuck",
@@ -180202,7 +180528,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -180736,7 +181065,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -181467,7 +181799,10 @@
     "pickedAt": "2026-11-13T12:17:15.710Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -181992,7 +182327,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182272,7 +182610,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -182367,7 +182708,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182592,7 +182936,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182813,7 +183160,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -182975,7 +183325,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183247,7 +183600,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183533,7 +183889,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -183766,7 +184125,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -184140,7 +184502,10 @@
     "pickedAt": "2026-11-17T19:08:15.640Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "push-fail",
@@ -184991,7 +185356,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185309,7 +185677,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185529,7 +185900,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185738,7 +186112,10 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -185986,7 +186363,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186216,7 +186596,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186493,7 +186876,10 @@
     "pickedAt": "2026-11-14T23:10:32.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -186784,7 +187170,10 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -187446,7 +187835,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-every-skin-ships-light-dark-colour-theme",
@@ -187713,7 +188105,10 @@
     "pickedAt": "2026-11-16T13:12:13.730Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-fix-build-whose-session-finishes-phase-e",
@@ -188179,7 +188574,10 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188396,7 +188794,10 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188573,7 +188974,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -188847,7 +189251,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -189094,7 +189501,10 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -189509,7 +189919,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -190111,7 +190524,10 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -190635,7 +191051,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191030,7 +191449,10 @@
     "pickedAt": "2026-11-14T23:08:13.680Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191246,7 +191668,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -191477,7 +191902,10 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -191773,7 +192201,10 @@
     "pickedAt": "2026-11-14T23:06:12.490Z",
     "heldAt": "2026-11-16T18:30:25.768Z",
     "heldBy": "cli",
-    "heldWhy": "Brett review Nov 16: on hold"
+    "heldWhy": "Brett review Nov 16: on hold",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-owner-recognized-everywhere-veto",
@@ -191972,7 +192403,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -192211,7 +192645,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -192480,7 +192917,10 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193120,7 +193560,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193355,7 +193798,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193609,7 +194055,10 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -193823,7 +194272,10 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194309,7 +194761,10 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194563,7 +195018,10 @@
     "pickedAt": "2026-11-14T23:04:23.303Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -194861,7 +195319,10 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -195148,7 +195609,10 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-configuration-panel-before-ai-makes",
@@ -195604,7 +196068,10 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skins-plugin-own-removable-console",
@@ -196875,7 +197342,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197107,7 +197577,10 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197313,7 +197786,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197509,7 +197985,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -197827,7 +198306,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -198080,7 +198562,10 @@
     "pickedAt": "2026-11-13T17:49:19.495Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-instance-settings-window-picker",
@@ -198290,7 +198775,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-tab-groups-choose-how-many-rows-tabs",
@@ -198520,7 +199008,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -198873,7 +199364,10 @@
     "pickedAt": "2026-11-16T18:36:18.505Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-all-settings-interfaces-open-floating",
@@ -199122,7 +199616,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -199505,7 +200002,10 @@
     "pickedAt": "2026-11-15T00:27:21.094Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -199886,7 +200386,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -200268,7 +200771,10 @@
     "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -200654,7 +201160,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201000,7 +201509,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201345,7 +201857,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -201599,7 +202114,10 @@
     "pickedAt": "2026-11-13T18:36:14.104Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-transparency-token-works-every-dialog",
@@ -202015,7 +202533,10 @@
     "pickedAt": "2026-11-16T13:23:15.243Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -202568,7 +203089,10 @@
     "pickedAt": "2026-11-13T19:19:07.577Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -203021,7 +203545,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -203524,7 +204051,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-console-app-part-2-native-floating",
@@ -203891,7 +204421,10 @@
     "pickedAt": "2026-11-13T19:29:11.351Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204190,7 +204723,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204514,7 +205050,10 @@
     "pickedAt": "2026-11-13T19:30:50.870Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -204837,7 +205376,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -205225,7 +205767,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-orchestrator-custom-groups-custom-tabs",
@@ -205657,7 +206202,10 @@
     "pickedAt": "2026-11-15T01:03:18.277Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-axhub-override-switch-greyed-out",
@@ -205985,7 +206533,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206098,6 +206649,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -206180,7 +206732,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206559,7 +207114,10 @@
     "pickedAt": "2026-11-14T23:15:54.090Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -206808,7 +207366,10 @@
     "pickedAt": "2026-11-13T19:53:15.999Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207024,7 +207585,10 @@
     "pickedAt": "2026-11-13T19:35:33.966Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207227,7 +207791,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207442,7 +208009,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -207659,7 +208229,10 @@
     "pickedAt": "2026-11-13T19:43:15.087Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-instance-settings-picker-merge-main",
@@ -207934,7 +208507,10 @@
     "pickedAt": "2026-11-14T23:35:28.763Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-config-panel-merge-main-and-land",
@@ -208165,7 +208741,10 @@
     "pickedAt": "2026-11-13T19:56:14.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skins-plugin-merge-main-and-land",
@@ -208378,7 +208957,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -208717,7 +209299,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-skin-animations-swatches-skin-switch",
@@ -209050,7 +209635,10 @@
     "pickedAt": "2026-11-13T19:59:07.053Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -209349,7 +209937,10 @@
     "pickedAt": "2026-11-14T03:35:14.704Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -209669,7 +210260,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -210010,7 +210604,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -210271,7 +210868,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-own-token-sets-for-grids-and-tab-groups",
@@ -210599,7 +211199,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-token-registry-skin-editor-live-sandbox",
@@ -210995,7 +211598,10 @@
     "pickedAt": "2026-11-13T20:18:14.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-dispatcher-gate-never-launch-build",
@@ -211251,7 +211857,10 @@
     "pickedAt": "2026-11-14T23:17:21.049Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-per-toolbar-settings-fix-failing-chrome",
@@ -211436,7 +212045,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -211879,7 +212491,10 @@
     "pickedAt": "2026-11-17T19:08:26.677Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "ci-red",
@@ -212224,7 +212839,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212592,7 +213210,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212798,7 +213419,10 @@
     "pickedAt": "2026-11-13T20:50:31.267Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -212976,7 +213600,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -213234,7 +213861,10 @@
     "pickedAt": "2026-11-14T23:23:17.794Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-lander-regenerates-generated-files-clash",
@@ -213489,7 +214119,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-desktop-console-draws-app-menu",
@@ -213687,7 +214320,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-main-ci-red-test-sandbox-profile-export",
@@ -213876,7 +214512,10 @@
     "pickedAt": "2026-11-13T23:41:19.408Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -214278,7 +214917,10 @@
     "pickedAt": "2026-11-14T23:23:43.044Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-batch-merge-main-each-finished",
@@ -214976,7 +215618,10 @@
     "pickedAt": "2026-11-14T23:28:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -215576,7 +216221,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-voice-listener-use-claude-when-connected",
@@ -216056,7 +216704,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -216950,7 +217601,10 @@
     "pickedAt": "2026-11-14T12:28:09.521Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-get-main-ci-green-theme-swap",
@@ -217208,7 +217862,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218123,7 +218780,10 @@
     "pickedAt": "2026-11-14T03:51:29.271Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218379,7 +219039,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -218489,6 +219152,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -218768,7 +219432,10 @@
     "pickedAt": "2026-11-16T13:24:57.284Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -219545,7 +220212,10 @@
     "pickedAt": "2026-11-16T13:13:13.711Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "failure": {
     "kind": "push-fail",
@@ -219841,7 +220511,10 @@
     "pickedAt": "2026-11-14T16:46:23.975Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-builds-share-one-claude-login-write",
@@ -220118,7 +220791,10 @@
     "pickedAt": "2026-11-14T16:51:21.042Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -220340,7 +221016,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-hotfix-toolbar-settings-still-change",
@@ -220641,7 +221320,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -221401,7 +222083,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -222156,7 +222841,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -223114,7 +223802,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-land-all-skin-builds",
@@ -223910,7 +224601,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-replace-merge-queue-one-time-landing",
@@ -224707,7 +225401,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -225700,7 +226397,10 @@
     "pickedAt": "2026-11-16T13:24:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -226348,7 +227048,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -226705,7 +227408,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-change-to-move-amberx",
@@ -227044,7 +227750,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -227409,7 +228118,10 @@
     "pickedAt": "2026-11-14T23:46:40.547Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -227765,7 +228477,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228102,7 +228817,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228464,7 +229182,10 @@
     "pickedAt": "2026-11-15T00:15:47.364Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -228825,7 +229546,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-voice-listener-use",
@@ -229215,7 +229939,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-merge-main-land-console-axhub-retry",
@@ -229631,7 +230358,10 @@
     "pickedAt": "2026-11-15T19:57:09.845Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -230243,7 +230973,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -231412,7 +232145,10 @@
     "pickedAt": "2026-11-16T23:31:13.598Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -232303,7 +233039,10 @@
     "pickedAt": "2026-11-15T11:54:29.199Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -232811,7 +233550,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -233617,7 +234359,10 @@
     "pickedAt": "2026-11-15T11:58:22.439Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-gate-rules-plugin-in-the-console",
@@ -234366,7 +235111,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -234643,7 +235391,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -235224,7 +235975,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -235443,7 +236197,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -236027,7 +236784,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-build-rules-tab-gate-rules-vps-owns",
@@ -236949,7 +237709,10 @@
     "pickedAt": "2026-11-16T16:26:37.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238013,7 +238776,10 @@
     "pickedAt": "2026-11-15T14:57:29.625Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238568,7 +239334,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -238771,7 +239540,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -239391,7 +240163,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -241058,7 +241833,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -241687,7 +242465,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -242351,7 +243132,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243091,7 +243875,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243526,7 +244313,10 @@
     "pickedAt": "2026-11-17T12:28:43.007Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -243787,7 +244577,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -244056,7 +244849,10 @@
     "pickedAt": "2026-11-16T23:17:52.842Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-axhub-veto-countdown-setting-read-only",
@@ -244609,7 +245405,10 @@
     "pickedAt": "2026-11-17T19:08:43.298Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -245382,7 +246181,10 @@
     "pickedAt": "2026-11-16T18:34:01.102Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -246248,7 +247050,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -246742,7 +247547,10 @@
     "pickedAt": "2026-11-16T23:17:18.218Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247319,7 +248127,10 @@
     "pickedAt": "2026-11-16T19:05:58.434Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247772,7 +248583,10 @@
     "pickedAt": "2026-11-16T19:16:48.399Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -247971,7 +248785,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248223,7 +249040,10 @@
     "pickedAt": "2026-11-17T12:28:56.306Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248484,7 +249304,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248708,7 +249531,10 @@
     "pickedAt": "2026-11-16T19:46:04.279Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -248906,7 +249732,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249107,7 +249936,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249339,7 +250171,10 @@
     "pickedAt": "2026-11-16T20:24:12.031Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -249541,7 +250376,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250361,7 +251199,10 @@
     "pickedAt": "2026-11-16T20:29:03.156Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250550,7 +251391,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -250687,7 +251531,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [],
    "profiles": [
@@ -250792,7 +251639,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -251425,7 +252275,10 @@
     "pickedAt": "2026-11-16T22:49:42.023Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -251957,7 +252810,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -252576,7 +253432,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -253181,7 +254040,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -254127,7 +254989,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -255056,7 +255921,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -255882,7 +256750,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -256418,7 +257289,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -257425,7 +258299,10 @@
     "pickedAt": "2026-11-17T22:10:38.850Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -258118,7 +258995,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -258934,7 +259814,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -259698,7 +260581,10 @@
     "pickedAt": "2026-11-17T12:38:16.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "shipped": {
     "id": "sm-stop-auto-lander-committing-tracking",
@@ -260203,7 +261089,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -260673,7 +261562,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -261307,7 +262199,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -261848,7 +262743,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -262355,7 +263253,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -262877,7 +263778,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -263136,6 +264040,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:27:13.513Z",
      "exit": 0,
@@ -263990,7 +264897,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -264480,7 +265390,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -265043,7 +265956,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -265712,7 +266628,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -266225,7 +267144,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -267300,7 +268222,10 @@
     "pickedAt": "2026-11-18T00:34:47.468Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -268201,7 +269126,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -268700,7 +269628,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -269280,7 +270211,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -270111,7 +271045,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -271071,7 +272008,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -271702,7 +272642,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -272262,7 +273205,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -272854,7 +273800,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273349,7 +274298,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273487,7 +274439,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -273972,7 +274927,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -274734,7 +275692,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -275605,7 +276566,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -276443,7 +277407,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -276804,7 +277771,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -277057,7 +278027,10 @@
     "pickedAt": "2026-11-17T20:16:29.639Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -278013,7 +278986,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -278734,7 +279710,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -279227,7 +280206,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -279772,6 +280754,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-18T00:17:54.575Z",
      "exit": 0,
@@ -284521,7 +285506,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -284868,7 +285856,10 @@
     "pickedAt": "2026-11-17T20:55:33.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285079,7 +286070,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285290,7 +286284,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285505,7 +286502,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285720,7 +286720,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -285934,7 +286937,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -286248,6 +287254,9 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:32:12.309Z",
      "exit": 0,
@@ -286772,7 +287781,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -287266,7 +288278,10 @@
     "pickedAt": "2026-11-17T21:27:56.788Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -287591,7 +288606,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -288628,7 +289646,10 @@
     "pickedAt": "2026-11-18T01:08:11.137Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "recoveries": [
     {
@@ -289539,7 +290560,10 @@
     "pickedAt": "2026-11-17T21:43:26.212Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -289932,7 +290956,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -290260,7 +291287,10 @@
     "pickedAt": "2026-11-17T22:28:58.757Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -292643,7 +293673,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -293058,7 +294091,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -297295,7 +298331,10 @@
     "pickedAt": "2026-11-18T00:19:41.557Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -312090,7 +313129,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -312245,7 +313287,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-17T22:42:25.629Z",
-     "updatedAt": "2026-11-18T01:53:25.642Z"
+     "updatedAt": "2026-11-18T01:53:52.194Z"
     },
     {
      "id": "s8",
@@ -312658,7 +313700,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -313141,7 +314186,10 @@
     "pickedAt": "",
     "heldAt": "2026-11-17T22:53:22.354Z",
     "heldBy": "console",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -313669,7 +314717,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -314140,7 +315191,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -314567,7 +315621,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -318893,7 +319950,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -319823,7 +320883,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -331462,7 +332525,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -334370,7 +335436,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -337509,7 +338578,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -342948,7 +344020,10 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
@@ -349415,11 +350490,894 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "maxParallel": 0,
+    "budgetUsd": 0,
+    "spentUsd": 0
    },
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwlgwm2001nitu",
+     "title": "",
+     "text": "Read the existing landing-line@1 engine, its fixture and spec (framework/core/landing-line.mjs, framework/spec/check-landing-line.mjs, framework/spec/fixtures/landing-line*.json), the merge-queue lander (land.mjs) and the Watchdog plugin. Write the gap list in _claude/builds/reports/one-landing-line-pull-main-merge-one.md: which parts already land one at a time, which still batch, and every place that pushes to main.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwlgwm2002xz79",
+     "title": "",
+     "text": "Extend the landing-line@1 contract to a strict single line: one ordered list, at most one entry 'landing', per-entry phases (waiting → fetch-main → merge-main → resolving → checks → merging → landed | failed), the main SHA it was checked against, and a recorded main-lock holder. Update the JSON Schema and the spec doc. Migrate old merge-queue stack records into line entries without losing any.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwlgwm20035uj6",
+     "title": "",
+     "text": "Engine state machine in framework/core/landing-line.mjs: pure functions next(), advance(entry, event), and the rule that the next entry starts only once the one before it is landed or failed, always from the new main SHA. Stacks and batches get flattened into the line.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwlgwm2004ttwd",
+     "title": "",
+     "text": "Main lock in the engine: acquireMainLock / releaseMainLock / mainLockHolder with a stale-lock timeout, plus a guard function that refuses any main push not made by the current lock holder. The builds-live [skip ci] status commits are the only exemption and wait for the lock window.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwlgwm2005ip8i",
+     "title": "",
+     "text": "Regenerate the landing-line fixture with node framework/spec/check-landing-line.mjs --write, and add cases for one at a time, starts from new main, red → fix session, clash → resolve, lock refusal and the migration. Make the check pass.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwlgwm20064n2e",
+     "title": "",
+     "text": "Watchdog runner: apps/console-web/plugins/watchdog/landing-line.mjs tick takes the line's head and runs the fetch-main and merge-main phases in a scratch worktree (git fetch origin main; git merge origin/main into the branch), recording each phase on the entry through data-store@1.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwlgwm2007b4n0",
+     "title": "",
+     "text": "Clash phase: on merge conflicts, first auto-resolve the generated files (store, THREADS, tracker, fixtures by regenerating them). If conflicts remain, launch one automatic fix session through deploy/claude-headless.sh (agent-slots, agent-job 'land' owner) with the conflict list, and mark the entry 'resolving'. If the fix fails, the entry fails and the line moves on.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwlgwm2008v2v8",
+     "title": "",
+     "text": "Checks phase: push the merged branch, wait for CI on that exact head (dispatch android.yml once if no pull_request run starts) and record the main SHA it was tested against. If main moved, go back to fetch-main. If CI is red, file a fix build and move on.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwlgwm2009l7cs",
+     "title": "",
+     "text": "Merge phase: take the main lock, merge the PR to main (fast-forward or merge commit, head pinned), release the lock, mark the entry landed, link it with builds-live.mjs link and set the build to complete. Then the next entry starts from the new main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.992Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwlgwm210arpxm",
+     "title": "",
+     "text": "Enforce the main lock in every writer that can push or merge to main (land.mjs, push-banner auto-merge, builds-live.mjs, pipeline lander, gate auto-lander): each one calls the guard and backs off while another build is landing. builds-live queues its status commits until the lock is free.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwlgwm210b7gvg",
+     "title": "",
+     "text": "Retire the batching paths: the merge-queue stacks and the Landin' Lenny batch job now add entries to the line one by one. Keep the old land.mjs queue commands as aliases onto the line.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwlgwm210c727k",
+     "title": "",
+     "text": "Built → line hook: when a build reaches 'built' (all steps done, PR open), a build-hook@1 listener adds it to the end of the line straight away, without duplicates. The order follows priority tags, and manual moves win.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwlgwm210d41a5",
+     "title": "",
+     "text": "Cron and service: register the watchdog landing-line tick (every minute, a single-run lock so two ticks never overlap) on the VPS next to axf-pipeline, and add a health@1 check that turns red with an Auto fix when the line is stuck, the lock is stale or main moved without the lock.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwlgwm210e96v8",
+     "title": "",
+     "text": "Watchdog settings: add the line's settings (on/off, stale-lock minutes, max fix-session tries, CI wait timeout, auto-add built builds) to plugin.json settings, shown as a sub-tab of Settings → Plugins → Watchdog with the level toolbar, framework controls and tokens only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwlgwm210f31or",
+     "title": "",
+     "text": "Watchdog Landing line view: an ordered DataGrid of the entries with the phase, the main SHA and the lock holder, the landing one highlighted, and actions to move up or down, remove, retry and pause the line. TabGroup and Toolbars-plugin toolbar (role=toolbar), console-control targets registered with data-axf-target.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwlgwm210gnptc",
+     "title": "",
+     "text": "API parity: REST routes /api/plugins/watchdog/line (GET state, POST add/move/remove/retry/pause/resume, GET/PUT settings), MCP through plugin-commands, the CLI 'axf land line list|add|move|remove|retry|pause|resume|lock', voice actions 'landing.line.*', a console_show deep link view:watchdog/tab:landing-line, and control@1 targets appended last.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwlgwm210h8t21",
+     "title": "",
+     "text": "CI check: framework/spec/check-landing-line.mjs also scans the repo statically for any main push or merge path that skips the main-lock guard, and verifies the one-landing-at-a-time invariant on the live line export. Wire it into .github/workflows/android.yml.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwlgwm210i04iz",
+     "title": "",
+     "text": "Tests: unit tests for the watchdog runner phases using a fake git remote (clash, red CI, main moved, lock refusal), python tests for the routes, and the plugin-lifecycle check --after-uninstall.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwlgwm210jp62i",
+     "title": "",
+     "text": "UI Review: shoot the Landing line view and its settings tab on desktop and phone with 3 option assets (ui-choices@1) under apps/console-web/plugins/watchdog/assets/, and submit them with review.mjs submit --choices. Update the help stub and docs at _claude/memory/docs/landing-line.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwlgwm210kn78u",
+     "title": "",
+     "text": "Run the full checks (check-landing-line, check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, builds-store verify, tracker --check). Finish the report at _claude/builds/reports/one-landing-line-pull-main-merge-one.md with the API reach list, add the THREADS row, open the PR stating how each feature is reached (REST/MCP/CLI/voice/deep link) and that UI Review is waiting, and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwlgwm210lpowu",
+     "title": "",
+     "text": "Read the existing landing-line@1 engine, its fixture and spec (framework/core/landing-line.mjs, framework/spec/check-landing-line.mjs, framework/spec/fixtures/landing-line*.json), the merge-queue lander (land.mjs) and the Watchdog plugin. Write the gap list in _claude/builds/reports/one-landing-line-pull-main-merge-one.md: which parts already land one at a time, which still batch, and every place that pushes to main.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s22",
+     "uid": "st-mwlgwm210mr3qc",
+     "title": "",
+     "text": "Extend the landing-line@1 contract to a strict single line: one ordered list, at most one entry 'landing', per-entry phases (waiting → fetch-main → merge-main → resolving → checks → merging → landed | failed), the main SHA it was checked against, and a recorded main-lock holder. Update the JSON Schema and the spec doc. Migrate old merge-queue stack records into line entries without losing any.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s23",
+     "uid": "st-mwlgwm210nq26x",
+     "title": "",
+     "text": "Engine state machine in framework/core/landing-line.mjs: pure functions next(), advance(entry, event), and the rule that the next entry starts only once the one before it is landed or failed, always from the new main SHA. Stacks and batches get flattened into the line.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s24",
+     "uid": "st-mwlgwm210o80t1",
+     "title": "",
+     "text": "Main lock in the engine: acquireMainLock / releaseMainLock / mainLockHolder with a stale-lock timeout, plus a guard function that refuses any main push not made by the current lock holder. The builds-live [skip ci] status commits are the only exemption and wait for the lock window.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s25",
+     "uid": "st-mwlgwm210pi13c",
+     "title": "",
+     "text": "Regenerate the landing-line fixture with node framework/spec/check-landing-line.mjs --write, and add cases for one at a time, starts from new main, red → fix session, clash → resolve, lock refusal and the migration. Make the check pass.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s26",
+     "uid": "st-mwlgwm210q4aim",
+     "title": "",
+     "text": "Watchdog runner: apps/console-web/plugins/watchdog/landing-line.mjs tick takes the line's head and runs the fetch-main and merge-main phases in a scratch worktree (git fetch origin main; git merge origin/main into the branch), recording each phase on the entry through data-store@1.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s27",
+     "uid": "st-mwlgwm210roquh",
+     "title": "",
+     "text": "Clash phase: on merge conflicts, first auto-resolve the generated files (store, THREADS, tracker, fixtures by regenerating them). If conflicts remain, launch one automatic fix session through deploy/claude-headless.sh (agent-slots, agent-job 'land' owner) with the conflict list, and mark the entry 'resolving'. If the fix fails, the entry fails and the line moves on.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s28",
+     "uid": "st-mwlgwm210sy2oa",
+     "title": "",
+     "text": "Checks phase: push the merged branch, wait for CI on that exact head (dispatch android.yml once if no pull_request run starts) and record the main SHA it was tested against. If main moved, go back to fetch-main. If CI is red, file a fix build and move on.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s29",
+     "uid": "st-mwlgwm210t8o87",
+     "title": "",
+     "text": "Merge phase: take the main lock, merge the PR to main (fast-forward or merge commit, head pinned), release the lock, mark the entry landed, link it with builds-live.mjs link and set the build to complete. Then the next entry starts from the new main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s30",
+     "uid": "st-mwlgwm210ub0xl",
+     "title": "",
+     "text": "Enforce the main lock in every writer that can push or merge to main (land.mjs, push-banner auto-merge, builds-live.mjs, pipeline lander, gate auto-lander): each one calls the guard and backs off while another build is landing. builds-live queues its status commits until the lock is free.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s31",
+     "uid": "st-mwlgwm210v3ifa",
+     "title": "",
+     "text": "Retire the batching paths: the merge-queue stacks and the Landin' Lenny batch job now add entries to the line one by one. Keep the old land.mjs queue commands as aliases onto the line.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s32",
+     "uid": "st-mwlgwm210w002a",
+     "title": "",
+     "text": "Built → line hook: when a build reaches 'built' (all steps done, PR open), a build-hook@1 listener adds it to the end of the line straight away, without duplicates. The order follows priority tags, and manual moves win.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s33",
+     "uid": "st-mwlgwm210x6uy1",
+     "title": "",
+     "text": "Cron and service: register the watchdog landing-line tick (every minute, a single-run lock so two ticks never overlap) on the VPS next to axf-pipeline, and add a health@1 check that turns red with an Auto fix when the line is stuck, the lock is stale or main moved without the lock.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s34",
+     "uid": "st-mwlgwm210yamik",
+     "title": "",
+     "text": "Watchdog settings: add the line's settings (on/off, stale-lock minutes, max fix-session tries, CI wait timeout, auto-add built builds) to plugin.json settings, shown as a sub-tab of Settings → Plugins → Watchdog with the level toolbar, framework controls and tokens only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s35",
+     "uid": "st-mwlgwm210zt7e7",
+     "title": "",
+     "text": "Watchdog Landing line view: an ordered DataGrid of the entries with the phase, the main SHA and the lock holder, the landing one highlighted, and actions to move up or down, remove, retry and pause the line. TabGroup and Toolbars-plugin toolbar (role=toolbar), console-control targets registered with data-axf-target.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s36",
+     "uid": "st-mwlgwm211068r0",
+     "title": "",
+     "text": "API parity: REST routes /api/plugins/watchdog/line (GET state, POST add/move/remove/retry/pause/resume, GET/PUT settings), MCP through plugin-commands, the CLI 'axf land line list|add|move|remove|retry|pause|resume|lock', voice actions 'landing.line.*', a console_show deep link view:watchdog/tab:landing-line, and control@1 targets appended last.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s37",
+     "uid": "st-mwlgwm21110roq",
+     "title": "",
+     "text": "CI check: framework/spec/check-landing-line.mjs also scans the repo statically for any main push or merge path that skips the main-lock guard, and verifies the one-landing-at-a-time invariant on the live line export. Wire it into .github/workflows/android.yml.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s38",
+     "uid": "st-mwlgwm2112dywc",
+     "title": "",
+     "text": "Tests: unit tests for the watchdog runner phases using a fake git remote (clash, red CI, main moved, lock refusal), python tests for the routes, and the plugin-lifecycle check --after-uninstall.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s39",
+     "uid": "st-mwlgwm21139kdn",
+     "title": "",
+     "text": "UI Review: shoot the Landing line view and its settings tab on desktop and phone with 3 option assets (ui-choices@1) under apps/console-web/plugins/watchdog/assets/, and submit them with review.mjs submit --choices. Update the help stub and docs at _claude/memory/docs/landing-line.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s40",
+     "uid": "st-mwlgwm21149mn7",
+     "title": "",
+     "text": "Run the full checks (check-landing-line, check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, builds-store verify, tracker --check). Finish the report at _claude/builds/reports/one-landing-line-pull-main-merge-one.md with the API reach list, add the THREADS row, open the PR stating how each feature is reached (REST/MCP/CLI/voice/deep link) and that UI Review is waiting, and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:53:49.481Z",
+     "updatedAt": "2026-11-18T01:53:49.993Z"
+    },
+    {
+     "id": "s41-40",
      "uid": "st-mwlgw1bg01edu6",
      "title": "",
      "text": "Read the existing landing-line@1 engine, its fixture and spec (framework/core/landing-line.mjs, framework/spec/check-landing-line.mjs, framework/spec/fixtures/landing-line*.json), the merge-queue lander (land.mjs) and the Watchdog plugin. Write the gap list in _claude/builds/reports/one-landing-line-pull-main-merge-one.md: which parts already land one at a time, which still batch, and every place that pushes to main.",
@@ -349441,7 +351399,7 @@
      "updatedAt": "2026-11-18T01:53:23.116Z"
     },
     {
-     "id": "s2",
+     "id": "s42-41",
      "uid": "st-mwlgw1bg02sww2",
      "title": "",
      "text": "Extend the landing-line@1 contract to a strict single line: one ordered list, at most one entry 'landing', per-entry phases (waiting → fetch-main → merge-main → resolving → checks → merging → landed | failed), the main SHA it was checked against, and a recorded main-lock holder. Update the JSON Schema and the spec doc. Migrate old merge-queue stack records into line entries without losing any.",
@@ -349463,7 +351421,7 @@
      "updatedAt": "2026-11-18T01:53:23.116Z"
     },
     {
-     "id": "s3",
+     "id": "s43-42",
      "uid": "st-mwlgw1bg03orsp",
      "title": "",
      "text": "Engine state machine in framework/core/landing-line.mjs: pure functions next(), advance(entry, event), and the rule that the next entry starts only once the one before it is landed or failed, always from the new main SHA. Stacks and batches get flattened into the line.",
@@ -349485,7 +351443,7 @@
      "updatedAt": "2026-11-18T01:53:23.116Z"
     },
     {
-     "id": "s4",
+     "id": "s44-43",
      "uid": "st-mwlgw1bg04pmuj",
      "title": "",
      "text": "Main lock in the engine: acquireMainLock / releaseMainLock / mainLockHolder with a stale-lock timeout, plus a guard function that refuses any main push not made by the current lock holder. The builds-live [skip ci] status commits are the only exemption and wait for the lock window.",
@@ -349507,7 +351465,7 @@
      "updatedAt": "2026-11-18T01:53:23.116Z"
     },
     {
-     "id": "s5",
+     "id": "s45-44",
      "uid": "st-mwlgw1bh05a3q8",
      "title": "",
      "text": "Regenerate the landing-line fixture with node framework/spec/check-landing-line.mjs --write, and add cases for one at a time, starts from new main, red → fix session, clash → resolve, lock refusal and the migration. Make the check pass.",
@@ -349529,7 +351487,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s6",
+     "id": "s46-45",
      "uid": "st-mwlgw1bh06tovh",
      "title": "",
      "text": "Watchdog runner: apps/console-web/plugins/watchdog/landing-line.mjs tick takes the line's head and runs the fetch-main and merge-main phases in a scratch worktree (git fetch origin main; git merge origin/main into the branch), recording each phase on the entry through data-store@1.",
@@ -349551,7 +351509,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s7",
+     "id": "s47-46",
      "uid": "st-mwlgw1bh07td8m",
      "title": "",
      "text": "Clash phase: on merge conflicts, first auto-resolve the generated files (store, THREADS, tracker, fixtures by regenerating them). If conflicts remain, launch one automatic fix session through deploy/claude-headless.sh (agent-slots, agent-job 'land' owner) with the conflict list, and mark the entry 'resolving'. If the fix fails, the entry fails and the line moves on.",
@@ -349573,7 +351531,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s8",
+     "id": "s48-47",
      "uid": "st-mwlgw1bh089w8r",
      "title": "",
      "text": "Checks phase: push the merged branch, wait for CI on that exact head (dispatch android.yml once if no pull_request run starts) and record the main SHA it was tested against. If main moved, go back to fetch-main. If CI is red, file a fix build and move on.",
@@ -349595,7 +351553,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s9",
+     "id": "s49-48",
      "uid": "st-mwlgw1bh09n5m1",
      "title": "",
      "text": "Merge phase: take the main lock, merge the PR to main (fast-forward or merge commit, head pinned), release the lock, mark the entry landed, link it with builds-live.mjs link and set the build to complete. Then the next entry starts from the new main.",
@@ -349617,7 +351575,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s10",
+     "id": "s50-49",
      "uid": "st-mwlgw1bh0ar0ia",
      "title": "",
      "text": "Enforce the main lock in every writer that can push or merge to main (land.mjs, push-banner auto-merge, builds-live.mjs, pipeline lander, gate auto-lander): each one calls the guard and backs off while another build is landing. builds-live queues its status commits until the lock is free.",
@@ -349639,7 +351597,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s11",
+     "id": "s51-50",
      "uid": "st-mwlgw1bh0bsmpc",
      "title": "",
      "text": "Retire the batching paths: the merge-queue stacks and the Landin' Lenny batch job now add entries to the line one by one. Keep the old land.mjs queue commands as aliases onto the line.",
@@ -349661,7 +351619,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s12",
+     "id": "s52-51",
      "uid": "st-mwlgw1bh0ciaeg",
      "title": "",
      "text": "Built → line hook: when a build reaches 'built' (all steps done, PR open), a build-hook@1 listener adds it to the end of the line straight away, without duplicates. The order follows priority tags, and manual moves win.",
@@ -349683,7 +351641,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s13",
+     "id": "s53-52",
      "uid": "st-mwlgw1bh0d6zjx",
      "title": "",
      "text": "Cron and service: register the watchdog landing-line tick (every minute, a single-run lock so two ticks never overlap) on the VPS next to axf-pipeline, and add a health@1 check that turns red with an Auto fix when the line is stuck, the lock is stale or main moved without the lock.",
@@ -349705,7 +351663,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s14",
+     "id": "s54-53",
      "uid": "st-mwlgw1bh0ej2v8",
      "title": "",
      "text": "Watchdog settings: add the line's settings (on/off, stale-lock minutes, max fix-session tries, CI wait timeout, auto-add built builds) to plugin.json settings, shown as a sub-tab of Settings → Plugins → Watchdog with the level toolbar, framework controls and tokens only.",
@@ -349727,7 +351685,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s15",
+     "id": "s55-54",
      "uid": "st-mwlgw1bh0fiusq",
      "title": "",
      "text": "Watchdog Landing line view: an ordered DataGrid of the entries with the phase, the main SHA and the lock holder, the landing one highlighted, and actions to move up or down, remove, retry and pause the line. TabGroup and Toolbars-plugin toolbar (role=toolbar), console-control targets registered with data-axf-target.",
@@ -349749,7 +351707,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s16",
+     "id": "s56-55",
      "uid": "st-mwlgw1bh0g6ezr",
      "title": "",
      "text": "API parity: REST routes /api/plugins/watchdog/line (GET state, POST add/move/remove/retry/pause/resume, GET/PUT settings), MCP through plugin-commands, the CLI 'axf land line list|add|move|remove|retry|pause|resume|lock', voice actions 'landing.line.*', a console_show deep link view:watchdog/tab:landing-line, and control@1 targets appended last.",
@@ -349771,7 +351729,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s17",
+     "id": "s57-56",
      "uid": "st-mwlgw1bh0hbbbu",
      "title": "",
      "text": "CI check: framework/spec/check-landing-line.mjs also scans the repo statically for any main push or merge path that skips the main-lock guard, and verifies the one-landing-at-a-time invariant on the live line export. Wire it into .github/workflows/android.yml.",
@@ -349793,7 +351751,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s18",
+     "id": "s58-57",
      "uid": "st-mwlgw1bh0ipbfj",
      "title": "",
      "text": "Tests: unit tests for the watchdog runner phases using a fake git remote (clash, red CI, main moved, lock refusal), python tests for the routes, and the plugin-lifecycle check --after-uninstall.",
@@ -349815,7 +351773,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s19",
+     "id": "s59-58",
      "uid": "st-mwlgw1bh0jnd53",
      "title": "",
      "text": "UI Review: shoot the Landing line view and its settings tab on desktop and phone with 3 option assets (ui-choices@1) under apps/console-web/plugins/watchdog/assets/, and submit them with review.mjs submit --choices. Update the help stub and docs at _claude/memory/docs/landing-line.md.",
@@ -349837,7 +351795,7 @@
      "updatedAt": "2026-11-18T01:53:23.117Z"
     },
     {
-     "id": "s20",
+     "id": "s60-59",
      "uid": "st-mwlgw1bh0k3gme",
      "title": "",
      "text": "Run the full checks (check-landing-line, check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, builds-store verify, tracker --check). Finish the report at _claude/builds/reports/one-landing-line-pull-main-merge-one.md with the API reach list, add the THREADS row, open the PR stating how each feature is reached (REST/MCP/CLI/voice/deep link) and that UI Review is waiting, and link it with builds-live.mjs link.",
