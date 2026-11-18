@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T05:23:57.338Z",
+ "updatedAt": "2026-11-18T05:27:12.151Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -191211,7 +191211,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T05:21:43.849Z",
+   "updatedAt": "2026-11-18T05:23:43.836Z",
    "builtAt": "",
    "notes": [
     {
@@ -191245,6 +191245,10 @@
     {
      "text": "Correction: the live build has 12 steps; there is no s13 (the duplicate was only in a stale repo snapshot of the store). Fable phase = s1, done.",
      "at": "2026-11-18T05:17:29.545Z"
+    },
+    {
+     "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s2): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T05:23:43.836Z"
     },
     {
      "text": "Headless run axf-approval-pass-covers-every-call--joey: brief only · start 14.5K tokens ($0.12) · cost $22.64 · 122 turns · 6 tools, MCP none",
