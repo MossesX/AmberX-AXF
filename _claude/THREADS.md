@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `alert-every-time-build-falls-back-to` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `auto-lander-grid-one-row-per-build` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `every-settings-interface-gets` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `to-do-manager-fully-voice-mcp-controlled` note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:35 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 16:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 - 2026-11-18 16:35 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-18 16:36 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 
