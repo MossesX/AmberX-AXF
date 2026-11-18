@@ -39,11 +39,35 @@ from fastapi import APIRouter, HTTPException, WebSocket, WebSocketDisconnect
 
 import plugin_services
 
-from . import health, nav, sessions, store
+from . import claude_link, health, hub_watch, nav, routes, sessions, store
 
 router = APIRouter()
 health.ensure()
 plugin_services.provide("axf.session-feed@1", nav.SessionFeed(), "console-terminal")
+# Claude link (terminal-main-tab-streaming-console-s): the console's connection to Claude and axHub as one live log
+BUS = claude_link.make_bus(store.data_dir, int(store.settings().get("claudeLinkBuffer") or claude_link.DEFAULT_SIZE))
+LINK = claude_link.ClaudeLinkService(BUS)
+plugin_services.provide("axf.claude-link@1", LINK, "console-terminal")
+_s0 = store.settings()
+# the shared live view starts from the settings: paused when auto-scroll is off, the default kinds
+VIEW = routes.View({"paused": _s0.get("claudeLinkAutoScroll") is False, "kinds": list(_s0.get("claudeLinkKinds") or [])})
+_LINK_ROUTES = routes.build(lambda: BUS, VIEW)
+router.include_router(_LINK_ROUTES)
+# the same routes again for the capability mount /api/claude-link (main.py CAPABILITY_MOUNTS): what the framework CLI
+# (axf claude-link) and claude-link-emit.mjs call, so nothing outside this folder names it
+LINK.router = routes.remount(_LINK_ROUTES)
+
+
+def _link_append(e: dict[str, Any]) -> None:
+    """Through the capability, so nothing is logged while the plugin is switched off."""
+    svc = plugin_services.get("axf.claude-link@1")
+    if svc is not None:
+        svc.append(e)
+
+
+# the console server's own axHub /mcp calls and Anthropic API health, from one observer on axf_server.http
+_CONSOLE_HOSTS = {"127.0.0.1", "localhost", "::1", "axf-console", (os.environ.get("AXF_CONSOLE_HOST") or "console.amberxai.com").lower()}
+hub_watch.install(_link_append, _CONSOLE_HOSTS)
 
 
 def _err(e: Exception) -> HTTPException:
@@ -287,9 +311,12 @@ def get_settings() -> dict[str, Any]:
 @router.put("/settings")
 def put_settings(body: dict[str, Any]) -> dict[str, Any]:
     try:
-        return {**store.save_settings(body), "publicKey": store.public_key()}
+        out = {**store.save_settings(body), "publicKey": store.public_key()}
     except Exception as e:  # noqa: BLE001
         raise _err(e) from None
+    if "claudeLinkBuffer" in body:
+        BUS.resize(int(out["claudeLinkBuffer"]))
+    return out
 
 
 @router.post("/ssh/keygen")

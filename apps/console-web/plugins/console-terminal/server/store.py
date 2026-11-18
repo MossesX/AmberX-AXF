@@ -44,13 +44,19 @@ DEFAULTS: dict[str, Any] = {"$axf": "terminal-settings@1", "idleMinutes": 60, "m
                             # terminal-no-focus (Nov 4 2026): what a new headless session does to the Terminal. nothing = no
                             # tab by itself (the sessions nav still lists it), quiet = a tab in the background + a count on
                             # the Terminal toolbar icon, front = open it and bring the window to the front (the old way)
-                            "newSession": "quiet"}
+                            "newSession": "quiet",
+                            # Claude link tab (terminal-main-tab-streaming-console-s, Nov 17 2026): ring size, the kinds shown
+                            # by default ([] = all), auto-scroll and whether a row opens with its detail shown
+                            "claudeLinkBuffer": 2000, "claudeLinkKinds": [], "claudeLinkAutoScroll": True, "claudeLinkDetail": False,
+                            # its layout (a UI Review choice, ui-choices@1 set claude-link-layout): dense rows, cards, or a
+                            # list with the picked event's detail beside it
+                            "claudeLinkLayout": "dense"}
 
 CHOICES: dict[str, tuple[str, ...]] = {"scheme": ("app", "campbell", "one-half-dark", "one-half-light", "solarized-dark", "tango-dark", "vintage"),
                                       "cursorStyle": ("bar", "block", "underline"), "bell": ("none", "visual", "sound"),
                                       "startup": ("claude", "console", "picker", "none"), "newTab": ("picker", "same"), "tabWidth": ("equal", "compact", "title"),
                                       "splitDefault": ("side", "stacked", "none"), "chainSpeed": ("slow", "normal", "fast", "instant"),
-                                      "newSession": ("nothing", "quiet", "front")}
+                                      "newSession": ("nothing", "quiet", "front"), "claudeLinkLayout": ("dense", "cards", "split")}
 PROFILE_ID = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
 CONN_ID = re.compile(r"^(console|vps|axhub|container:[A-Za-z0-9_.-]{1,128})$")
 
@@ -134,6 +140,18 @@ def save_settings(patch: dict[str, Any]) -> dict[str, Any]:
         if s["defaultClaudeProfile"] not in {p["id"] for p in s["claudeProfiles"]}:
             s["defaultClaudeProfile"] = s["claudeProfiles"][0]["id"]
         for k in ("windowsLook", "mica", "toolbar", "cursorBlink", "closeConfirm"):
+            if k in patch:
+                s[k] = bool(patch[k])
+        if "claudeLinkBuffer" in patch:
+            s["claudeLinkBuffer"] = max(100, min(int(patch["claudeLinkBuffer"]), 20000))
+        if "claudeLinkKinds" in patch:
+            from .claude_link import KINDS
+            ks = [str(k) for k in (patch["claudeLinkKinds"] or [])]
+            bad = [k for k in ks if k not in KINDS]
+            if bad:
+                raise ValueError(f"claudeLinkKinds: {', '.join(bad)} isn't one of {', '.join(KINDS)}")
+            s["claudeLinkKinds"] = list(dict.fromkeys(ks))
+        for k in ("claudeLinkAutoScroll", "claudeLinkDetail"):
             if k in patch:
                 s[k] = bool(patch[k])
         for k in ("copyOnSelect", "pasteWarn", "mouseDefault", "moshDefault", "showHubRuns", "showHeadless", "persistTabs", "showChain", "sessionsNav"):

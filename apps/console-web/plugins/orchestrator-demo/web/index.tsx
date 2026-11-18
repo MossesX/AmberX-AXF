@@ -14,6 +14,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { DIALOG_START, DIALOG_SUMMARY, FOLDER, VIEW, demo, type DemoState } from './api';
+import { appMenu } from './menu';
 import actionsDoc from '../actions.json';
 import voiceDoc from '../voice.json';
 import { CaptionBar } from './CaptionBar';
@@ -106,6 +107,8 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-17' },
   opens: 'dialog',
   opensUi: `dialog:${DIALOG_START}`,
+  appMenu,
+  nav: { label: 'Builds', items: [{ id: 'orchestrator-demo', label: 'Orchestrator demo', icon: 'play', view: VIEW }] },
   register(rt) {
     rt.actions.register('orchestrator-demo.open', () => rt.openDialog(DIALOG_START), { label: 'Orchestrator demo: open the start overlay' });
     rt.actions.register('orchestrator-demo.summary', () => rt.openDialog(DIALOG_SUMMARY), { label: 'Orchestrator demo: summary' });

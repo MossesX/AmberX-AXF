@@ -11,6 +11,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+process.env.AXF_CLAUDE_LINK ??= 'off'; // Claude link events (claude-link-emit.mjs) stay out of the real console
 process.env.AXF_CREW_SAY ??= 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');

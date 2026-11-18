@@ -55,6 +55,8 @@ const HOUR = 3600e3;
 const DAY = 24 * HOUR;
 /** No reset time in the message: 5 hours (the shortest subscription window). A dead login gets another try sooner. */
 const COOLDOWN = { usage: 5 * HOUR, auth: 10 * 60e3 };
+/** One line to the console's Claude link tab (framework/cli/claude-link-emit.mjs); never fails or slows the caller much. */
+const linkEvent = (e) => import('../framework/cli/claude-link-emit.mjs').then((m) => m.emit({ source: 'workers', ...e }, { timeoutMs: 1500 })).catch(() => undefined);
 const LIMIT_RE = /hit your (?:weekly |daily |session |5-hour )?limit|usage limit reached|out of credits|credit balance is too low/i;
 const AUTH_RE = /invalid api key|please run \/login|oauth token (?:has )?expired|authentication_error|not logged in/i;
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
@@ -408,13 +410,15 @@ const main = async () => {
       const d = claim(flag('session'), await jobArgs(), { exclude });
       console.log(d.state === 'run' ? `run ${d.account} ${d.kind}` : d.state === 'queue' ? `queue ${d.account} ${d.position}` : `none ${d.why}`);
       if (has('why')) console.error(decisionLine(d));
+      await linkEvent({ kind: d.state === 'none' ? 'error' : 'account', level: d.state === 'run' ? 'info' : 'warn', session: flag('session'), account: d.account || '', summary: decisionLine(d), detail: { state: d.state, accountKind: d.kind, position: d.position, why: d.why } });
     } else if (cmd === 'release') out({ released: release(flag('session')) }, 'released');
     else if (cmd === 'test' || cmd === 'preview') {
       const d = preview(await jobArgs(), { exclude });
       if (rest.includes('--json')) console.log(JSON.stringify(d));
       else { console.log(decisionLine(d)); for (const c of d.considered) console.log(`  ${c.match ? '✓' : '·'} ${c.name}: ${c.why}`); }
     } else if (cmd === 'hit') console.log(hitOf(tail(flag('log')), Number(flag('exit', '0'))));
-    else if (cmd === 'limit') { const kind = flag('kind', 'usage'); const l = markLimit(rest[0], { kind, text: tail(flag('log')) }); console.log(`${rest[0]} out until ${l.until} (${l.reason})`); }
+    else if (cmd === 'limit') { const kind = flag('kind', 'usage'); const l = markLimit(rest[0], { kind, text: tail(flag('log')) }); console.log(`${rest[0]} out until ${l.until} (${l.reason})`);
+      await linkEvent({ kind: kind === 'auth' ? 'error' : 'account', level: 'warn', account: rest[0], summary: `${rest[0]} ${l.reason}: out until ${l.until}, the next run goes to another worker`, detail: { limit: kind, until: l.until } }); }
     else if (cmd === 'status') { const s = status(); out(s, statusLines(s).join('\n')); }
     else if (cmd === 'alerts') { const a = status().alerts; out(a, a.map((x) => `${x.level} ${x.text}`).join('\n') || 'no alerts'); }
     else if (cmd === 'config' || cmd === 'rules') {

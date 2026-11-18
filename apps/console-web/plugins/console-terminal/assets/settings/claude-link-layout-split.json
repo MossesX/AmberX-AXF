@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "claude-link-layout-split",
+ "name": "claude-link-layout: Split detail",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The list on the left, the picked event's facts and detail on the right (stacked under it on a phone). Best for digging into axHub calls and crashes.",
+ "tags": [
+  "ui-choice",
+  "choice-set:claude-link-layout",
+  "choice-option:split"
+ ],
+ "data": {
+  "view": "split",
+  "settingKey": "terminal.claudeLinkLayout",
+  "appliesTo": [
+   "terminal.claude-link"
+  ]
+ }
+}

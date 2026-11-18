@@ -1373,6 +1373,11 @@ def feed_recorder() -> Callable[[str, str, dict[str, Any], bool, str, int], None
         svc = plugin_services.get("axf.session-feed@1")
         if svc is not None:
             svc.record_call(caller, tool, args, ok, err, ms)
+        link = plugin_services.get("axf.claude-link@1")  # the Terminal's Claude link tab: every console MCP call, live
+        if link is not None:
+            link.append({"kind": "mcp", "source": "mcp-server", "session": caller, "level": "info" if ok else "error",
+                         "summary": f"{caller or 'MCP client'}: {tool} {'ok' if ok else 'failed'} ({ms} ms){'' if ok else ': ' + err}"[:200],
+                         "detail": {"tool": tool, "ok": ok, "ms": ms, "args": sorted(str(k) for k in args)[:20], **({"error": err} if err else {})}})
 
     return rec
 

@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/** rebuild-shots: screenshots of the web Dev Console for rebuild logs (rebuild-log rule). */
 // rebuild-shots — screenshots of the web Dev Console for rebuild logs (rebuild-log rule, Oct 20 2026).
 //
 //   node framework/cli/rebuild-shots.mjs --repo <checkout> --out <dir> --shots <shots.json> [--label before|after] [--web-port N] [--env K=V …] [--nav-timeout ms] [--start-timeout ms]

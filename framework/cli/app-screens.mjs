@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/** app-screens: the screens of an Android app built on AXF (from its default nav-menu asset), in the shape boilerplate-capture.py reads. */
 // app-screens — the screens of an Android app built on AXF, in the shape boilerplate-capture.py reads
 // (`{ id, screens: [{ id, label, kind }] }`), taken from the app's default nav-menu asset.
 //

@@ -1,9 +1,11 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.terminal",
-  "lazy": { "core": "open" },
+  "lazy": {
+    "core": "open"
+  },
   "name": "Terminal",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
@@ -12,6 +14,12 @@
     "axf-console"
   ],
   "provides": [
+    "action:claude-link.clear",
+    "action:claude-link.filter",
+    "action:claude-link.open",
+    "action:claude-link.pause",
+    "action:claude-link.resume",
+    "action:claude-link.state",
     "action:terminal.claude",
     "action:terminal.jump",
     "action:terminal.mirror",
@@ -21,6 +29,7 @@
     "context-menu:*",
     "dialog:terminal.connect",
     "dialog:terminal.connection",
+    "service:axf.claude-link@1",
     "service:axf.headless@1",
     "service:axf.session-feed@1",
     "settings-tab:terminal",
@@ -201,6 +210,140 @@
       {
         "route": "GET /nav/ws",
         "skip": "the sessions nav's live websocket, not a command (sessions-list is the same answer)"
+      },
+      {
+        "route": "GET /claude-link",
+        "id": "claude-link-tail",
+        "title": "Read the Claude link log",
+        "description": "The Terminal's Claude link tab as data: the console's connection to Claude and axHub (launches, account picks and limit hand-offs, exits, console MCP calls, axHub calls with their held / veto / result state, connects, disconnects, errors), oldest first. Say 'show the Claude link'.",
+        "output": "claude-link-event@1",
+        "input": {
+          "type": "object",
+          "properties": {
+            "since": {
+              "type": "integer",
+              "description": "only events with a higher id"
+            },
+            "kind": {
+              "type": "string",
+              "description": "comma-separated kinds: launch, exit, account, mcp, axhub, connect, disconnect, error (empty or all = every kind)"
+            },
+            "q": {
+              "type": "string",
+              "description": "words that must all appear"
+            },
+            "limit": {
+              "type": "integer",
+              "description": "newest N (default 200)"
+            },
+            "all": {
+              "type": "boolean",
+              "description": "include what Clear hid"
+            }
+          }
+        }
+      },
+      {
+        "route": "GET /claude-link/state",
+        "id": "claude-link-state",
+        "title": "What Claude is doing (Claude link state)",
+        "description": "Whether axHub answers, the last event, counts per kind and the shared view (paused, filters). Say 'what's Claude doing'.",
+        "output": "claude-link-state@1"
+      },
+      {
+        "route": "POST /claude-link/clear",
+        "id": "claude-link-clear",
+        "title": "Clear the Claude link view",
+        "description": "Readers start after the newest event; the log itself is kept (claude-link?all=1 still shows it)."
+      },
+      {
+        "route": "POST /claude-link/pause",
+        "id": "claude-link-pause",
+        "title": "Pause the Claude link",
+        "description": "Stop following new events in the open tab (events keep arriving; the tab shows how many are new)."
+      },
+      {
+        "route": "POST /claude-link/resume",
+        "id": "claude-link-resume",
+        "title": "Resume the Claude link",
+        "description": "Follow new events again in the open tab."
+      },
+      {
+        "route": "POST /claude-link/filter",
+        "id": "claude-link-filter",
+        "title": "Filter the Claude link",
+        "description": "Set the kinds shown and the text filter for the tab and the API.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "kinds": {
+              "type": "string",
+              "description": "comma-separated kinds: launch, exit, account, mcp, axhub, connect, disconnect, error (empty or all = every kind)"
+            },
+            "q": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "GET /claude-link/view",
+        "id": "claude-link-view",
+        "title": "The Claude link view (paused, filters)",
+        "description": "The tab's shared view: paused, kinds, text filter."
+      },
+      {
+        "route": "PUT /claude-link/view",
+        "id": "claude-link-view-set",
+        "title": "Set the Claude link view",
+        "description": "paused, kinds and q in one call.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "paused": {
+              "type": "boolean"
+            },
+            "kinds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "q": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /claude-link/ingest",
+        "id": "claude-link-ingest",
+        "title": "Report an event to the Claude link",
+        "description": "One event or {events: [...]} (claude-link-event@1: kind, source, session, account, model, summary, detail, level); tokens and keys are redacted. framework/cli/claude-link-emit.mjs sends here.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "event": {
+              "type": "object"
+            },
+            "events": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      {
+        "action": "claude-link.open",
+        "id": "claude-link-open",
+        "title": "Show the Claude link",
+        "description": "Open the Terminal in the open console on its pinned Claude link tab (control@1 view:terminal/tab:claude-link, deep link ?view=terminal&tab=claude-link). Say 'show the Claude link'."
+      },
+      {
+        "route": "GET /claude-link/stream",
+        "skip": "the live SSE feed of the same events, not a command (claude-link-tail with since is the same answer)"
       }
     ]
   },
@@ -214,15 +357,18 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/console-terminal",
     "env": [
+      "AXF_CLAUDE_LINK_SPOOL",
       "AXF_TERMINAL_DIR",
       "AXF_VPS_HOST",
       "CLAUDE_BIN"
     ],
     "mentions": [
+      ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "_claude/shared/rules/RULES.md",
       "apps/console-web/plugins/README.md",
+      "framework/cli/axf.mjs",
       "framework/spec/PORTING.md"
     ]
   },

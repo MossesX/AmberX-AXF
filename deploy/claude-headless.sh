@@ -119,18 +119,23 @@ HDIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"
 model="${AXF_MODEL:-}"
 if [[ -z "$model" ]]; then prev=""; for a in "$@"; do [[ "$prev" == --model ]] && model="$a"; [[ "$a" == --model=* ]] && model="${a#--model=}"; prev="$a"; done; fi
 agent="${agent:-$name}"
+# Claude link (terminal-main-tab-streaming-console-s): each event below also goes to the console's Claude link tab
+# (framework/cli/claude-link-emit.mjs: launch, account, limit hand-off, exit code, error lines; spooled when the
+# console can't be reached; AXF_CLAUDE_LINK=off skips it)
+EMIT_JS="$HERE/../framework/cli/claude-link-emit.mjs"
 hdir_ready() { mkdir -p "$HDIR" 2>/dev/null && { [[ -O "$HDIR" ]] && chmod 1777 "$HDIR" 2>/dev/null; true; } && [[ -w "$HDIR" ]]; }
 event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit, $4 = exit kind (end only); one JSON line, never fails the run
   hdir_ready || return 0
   command -v node >/dev/null || return 0
-  EV="$1" SES="$2" EXITC="${3:-}" KIND="${4:-}" PHASE="${AXF_BUILD_PHASE:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" node -e '
+  EV="$1" SES="$2" EXITC="${3:-}" KIND="${4:-}" PHASE="${AXF_BUILD_PHASE:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" EMIT="$EMIT_JS" node -e '
     const e = process.env; const fs = require("fs"); const path = require("path");
     let cost = 0; try { cost = Number(JSON.parse(fs.readFileSync(path.join(e.HDIR, `${e.SES}.meter.json`), "utf8")).costUsd) || 0; } catch {}
     const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
       surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}),
       ...(e.KIND ? { kind: e.KIND } : {}), ...(e.KIND && e.PHASE ? { phase: e.PHASE } : {}),
       ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}), ...(/^session-(part|end)$/.test(e.EV) && cost ? { costUsd: cost } : {}) };
-    fs.appendFileSync(path.join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
+    fs.appendFileSync(path.join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");
+    if (e.EMIT && fs.existsSync(e.EMIT)) require("child_process").spawn(process.execPath, [e.EMIT, "--headless", JSON.stringify(line)], { detached: true, stdio: "ignore" }).unref();' 2>/dev/null || true
 }
 export HDIR
 

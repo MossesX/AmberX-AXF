@@ -104,6 +104,7 @@ jobs:
       - run: node deploy/claude-shared-login.test.mjs               # two builds on one Claude account: a forced renewal in one, the other keeps working
       - run: node deploy/claude-login-notify.test.mjs               # every Claude sign-in verified and every token refresh confirmed saved: one phone alert each, never a token
       - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
+      - run: node framework/cli/claude-link-emit.test.mjs           # Claude link: headless launch → launch/account/exit/error lines, ingest with the token, spool when the console is down
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
@@ -410,6 +411,7 @@ jobs:
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm, liveness, failover to the next live console, wake, late acks, build focus  # axf-plugin:console-commands
             python apps/console-web/plugins/output-recorder/test_transcripts.py  # axf-plugin:output-recorder
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session
+            python apps/console-web/plugins/console-terminal/server/test_claude_link.py  # Claude link: ring, JSONL tail, redaction, REST + SSE routes, axHub observer  # axf-plugin:console-terminal
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools

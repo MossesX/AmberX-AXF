@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/** plugin-catalog: the catalog of plugins any of Brett's apps can install, kept on axHub (plugin-catalog@1); details below. */
 /**
  * Plugin catalog (plugin-catalog@1): plugins anyone of Brett's apps can install, kept on axHub.
  *
