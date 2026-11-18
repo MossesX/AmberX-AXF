@@ -60,3 +60,13 @@ Two keydown handlers answer Ctrl+K: `menuLibrary.tsx` opens `console-search` (th
   `/api/console-control/resolve`; `axf console open <target|url>`; voice "open …".
 - s9–s12 one palette: extend the console-control `SearchPalette` (dialog asset, plugin commands and plans in the
   results, recent first, never approve/deny or owner-only), retire the second Ctrl+K handler.
+
+### Deep links: where they are resolved (s5)
+
+- Load time: `src/native/axfNative.ts` `runDeepLink()` (only `?axf-open=`, a fixed 300 ms timer),
+  `src/control/SearchPalette.tsx` (`?axf-cmd=search`), `framework/react/components/RefText.tsx` (`?axf-ref=`).
+- `#/…` and `?axf-target=` are read nowhere, so `rt.navigate` is never called and the shell keeps its default view
+  (Home). No `hashchange` / `popstate` listener either.
+- Failing test first: `apps/console-web/scripts/deeplink.test.mjs` (`#/plan-studio`, `#/plan-studio-2`,
+  `?axf-target=view:plan-studio`, plugin sub-targets, settings tabs, late plugin views, unknown targets). It fails
+  with `Cannot find module src/control/deepLink-core.mjs` until s6.
