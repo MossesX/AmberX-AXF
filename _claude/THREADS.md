@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:04 UTC · `land-pr-730-reset-all-button-far-right` added (5 steps) (all) · foreign-write
-- 2026-11-17 23:04 UTC · `flagship-professional-skin-covering` added (27 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `flagship-professional-skin-covering-2` added (28 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `fix-refreshing-console-jumps-back` added (11 steps) (all) · foreign-write
 - 2026-11-17 23:04 UTC · `remove-amberx-app-code-once-phone` added (140 steps) (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:12 UTC · `move-server-side-console-parts-onto-vps` s20 done (all) · foreign-write
 - 2026-11-18 00:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-18 00:12 UTC · `fix-launcher-crash-duplicate-steps-brief` s16 done, → complete (all) · foreign-write
+- 2026-11-18 00:13 UTC · `move-everything-axhub-web-console` s8 done (all) · foreign-write
+- 2026-11-18 00:13 UTC · `fix-launcher-crash-duplicate-steps-brief` s16 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 
