@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8548,
- "updatedAt": "2026-11-18T00:19:47.529Z",
+ "rev": 8549,
+ "updatedAt": "2026-11-18T00:20:08.479Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -296909,14 +296909,14 @@
    "title": "Auto-lander: never wait on a missing UI Review, and test the real lander",
    "category": "",
    "detail": "Bug: PR #816 (guided-live-demo-test-watch-orchestrator) was finished, CI green, but never merged on its own: the auto-lander held it for a UI Review pick whose review item was never posted to the console, so it would wait forever. Brett had to land it by hand. Fix: 1) The lander never holds a PR for a UI Review item that doesn't exist in the console; a missing or unposted review never blocks landing (land when CI is green, flag the review separately). 2) Any held PR older than a set time shows in the systems check banner with the reason and a Land now button. 3) Builds that ship UI Review items must post them to the live console (fail the build step if they can't). 4) The orchestrator demo must run its landing act against the real lander path (self-test before demo), not only a dry run. Tests. Land when green.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "auto-lander-never-wait-missing-ui-review",
    "branch": "claude/auto-lander-never-wait-missing-ui-review",
    "pr": "",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-18T00:19:33.003Z",
+   "updatedAt": "2026-11-18T00:19:52.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -296962,6 +296962,14 @@
     {
      "text": "Reconciler: branch claude/auto-lander-never-wait-missing-ui-review (no PR yet)",
      "at": "2026-11-17T23:10:19.720Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-auto-lander-never-wait-missing-ui-review--paulie.",
+     "at": "2026-11-18T00:19:45.628Z"
+    },
+    {
+     "text": "Brief only: brief is 24801 characters (~6201 tokens), over the 24000-character budget: trim it to what this job needs",
+     "at": "2026-11-18T00:19:52.961Z"
     }
    ],
    "approvals": [],
@@ -296981,13 +296989,13 @@
    "pipeline": {
     "queuedAt": "2026-11-17T22:36:20.866Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-auto-lander-never-wait-missing-ui-review--paulie",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-18T00:19:41.557Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -297000,7 +297008,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T00:19:41.557Z",
     "planned": {
      "model": "Fable",
      "account": "hulu0241",
@@ -297009,7 +297017,7 @@
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-18T00:19:41.557Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -297398,7 +297406,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
