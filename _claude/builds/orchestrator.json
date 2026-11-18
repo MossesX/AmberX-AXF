@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T01:51:40.741Z",
+ "updatedAt": "2026-11-18T01:52:13.130Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -214155,9 +214155,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:48:59.706Z",
-   "updatedAt": "2026-11-18T01:49:14.555Z",
+   "updatedAt": "2026-11-18T01:52:04.656Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 20 steps (5 Fable).",
+     "at": "2026-11-18T01:52:04.656Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -214172,7 +214177,461 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Read the existing landing-line@1 engine, its fixture and spec (framework/core/landing-line.mjs, framework/spec/check-landing-line.mjs, framework/spec/fixtures/landing-line*.json), the merge-queue lander (land.mjs) and the Watchdog plugin. Write the gap list in _claude/builds/reports/one-landing-line-pull-main-merge-one.md: which parts already land one at a time, which still batch, and every place that pushes to main.",
+     "model": "Fable",
+     "why": "Audit of the cross-cutting landing contract before the schema change",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/core/landing-line.mjs",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures/",
+      "apps/console-web/plugins/watchdog/",
+      "_claude/builds/reports/one-landing-line-pull-main-merge-one.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs001l27x",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s2",
+     "text": "Extend the landing-line@1 contract to a strict single line: one ordered list, at most one entry 'landing', per-entry phases (waiting → fetch-main → merge-main → resolving → checks → merging → landed | failed), the main SHA it was checked against, and a recorded main-lock holder. Update the JSON Schema and the spec doc. Migrate old merge-queue stack records into line entries without losing any.",
+     "model": "Fable",
+     "why": "Schema + migration design for the shared landing contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/landing-line.json",
+      "framework/spec/LANDING-LINE.md",
+      "framework/core/landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs0027901",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s3",
+     "text": "Engine state machine in framework/core/landing-line.mjs: pure functions next(), advance(entry, event), and the rule that the next entry starts only once the one before it is landed or failed, always from the new main SHA. Stacks and batches get flattened into the line.",
+     "model": "Fable",
+     "why": "Engine internals of the landing contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs003dpfp",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s4",
+     "text": "Main lock in the engine: acquireMainLock / releaseMainLock / mainLockHolder with a stale-lock timeout, plus a guard function that refuses any main push not made by the current lock holder. The builds-live [skip ci] status commits are the only exemption and wait for the lock window.",
+     "model": "Fable",
+     "why": "Cross-app contract on who may push to main",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/core/landing-line.mjs",
+      "framework/core/main-lock.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs004whbj",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s5",
+     "text": "Regenerate the landing-line fixture with node framework/spec/check-landing-line.mjs --write, and add cases for one at a time, starts from new main, red → fix session, clash → resolve, lock refusal and the migration. Make the check pass.",
+     "model": "Fable",
+     "why": "Conformance fixture for the changed contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures/landing-line.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs005rkg2",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s6",
+     "text": "Watchdog runner: apps/console-web/plugins/watchdog/landing-line.mjs tick takes the line's head and runs the fetch-main and merge-main phases in a scratch worktree (git fetch origin main; git merge origin/main into the branch), recording each phase on the entry through data-store@1.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/landing-line.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs006aul5",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s7",
+     "text": "Clash phase: on merge conflicts, first auto-resolve the generated files (store, THREADS, tracker, fixtures by regenerating them). If conflicts remain, launch one automatic fix session through deploy/claude-headless.sh (agent-slots, agent-job 'land' owner) with the conflict list, and mark the entry 'resolving'. If the fix fails, the entry fails and the line moves on.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/landing-line.mjs",
+      "apps/console-web/plugins/watchdog/resolve-clash.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs007oc7e",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s8",
+     "text": "Checks phase: push the merged branch, wait for CI on that exact head (dispatch android.yml once if no pull_request run starts) and record the main SHA it was tested against. If main moved, go back to fetch-main. If CI is red, file a fix build and move on.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/landing-line.mjs",
+      "apps/console-web/plugins/watchdog/ci-wait.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00882ke",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s9",
+     "text": "Merge phase: take the main lock, merge the PR to main (fast-forward or merge commit, head pinned), release the lock, mark the entry landed, link it with builds-live.mjs link and set the build to complete. Then the next entry starts from the new main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/landing-line.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs0097qj8",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s10",
+     "text": "Enforce the main lock in every writer that can push or merge to main (land.mjs, push-banner auto-merge, builds-live.mjs, pipeline lander, gate auto-lander): each one calls the guard and backs off while another build is landing. builds-live queues its status commits until the lock is free.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/land.mjs",
+      "framework/cli/builds-live.mjs",
+      "apps/console-web/plugins/push-banner/",
+      "apps/console-web/plugins/gate/",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00aluk6",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s11",
+     "text": "Retire the batching paths: the merge-queue stacks and the Landin' Lenny batch job now add entries to the line one by one. Keep the old land.mjs queue commands as aliases onto the line.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/land.mjs",
+      "framework/assets/job-type/",
+      "apps/console-web/plugins/push-banner/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00b6yc7",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s12",
+     "text": "Built → line hook: when a build reaches 'built' (all steps done, PR open), a build-hook@1 listener adds it to the end of the line straight away, without duplicates. The order follows priority tags, and manual moves win.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/hooks.mjs",
+      "apps/console-web/plugins/watchdog/plugin.json",
+      "framework/core/build-priority.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00cbjpv",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s13",
+     "text": "Cron and service: register the watchdog landing-line tick (every minute, a single-run lock so two ticks never overlap) on the VPS next to axf-pipeline, and add a health@1 check that turns red with an Auto fix when the line is stuck, the lock is stale or main moved without the lock.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/install.mjs",
+      "apps/console-web/plugins/watchdog/uninstall.mjs",
+      "apps/console-web/plugins/watchdog/server/",
+      "deploy/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00ddfen",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s14",
+     "text": "Watchdog settings: add the line's settings (on/off, stale-lock minutes, max fix-session tries, CI wait timeout, auto-add built builds) to plugin.json settings, shown as a sub-tab of Settings → Plugins → Watchdog with the level toolbar, framework controls and tokens only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/plugin.json",
+      "apps/console-web/plugins/watchdog/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00ec56n",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s15",
+     "text": "Watchdog Landing line view: an ordered DataGrid of the entries with the phase, the main SHA and the lock holder, the landing one highlighted, and actions to move up or down, remove, retry and pause the line. TabGroup and Toolbars-plugin toolbar (role=toolbar), console-control targets registered with data-axf-target.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/web/LandingLine.tsx",
+      "apps/console-web/plugins/watchdog/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00ffnye",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s16",
+     "text": "API parity: REST routes /api/plugins/watchdog/line (GET state, POST add/move/remove/retry/pause/resume, GET/PUT settings), MCP through plugin-commands, the CLI 'axf land line list|add|move|remove|retry|pause|resume|lock', voice actions 'landing.line.*', a console_show deep link view:watchdog/tab:landing-line, and control@1 targets appended last.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/server/routes.py",
+      "apps/console-web/plugins/watchdog/commands.json",
+      "framework/cli/axf.mjs",
+      "framework/schemas/control.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00g84nw",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s17",
+     "text": "CI check: framework/spec/check-landing-line.mjs also scans the repo statically for any main push or merge path that skips the main-lock guard, and verifies the one-landing-at-a-time invariant on the live line export. Wire it into .github/workflows/android.yml.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-landing-line.mjs",
+      "framework/cli/check-main-writers.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00h7s1q",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s18",
+     "text": "Tests: unit tests for the watchdog runner phases using a fake git remote (clash, red CI, main moved, lock refusal), python tests for the routes, and the plugin-lifecycle check --after-uninstall.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/test/",
+      "apps/console-web/plugins/watchdog/server/test_line.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00ib1k7",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s19",
+     "text": "UI Review: shoot the Landing line view and its settings tab on desktop and phone with 3 option assets (ui-choices@1) under apps/console-web/plugins/watchdog/assets/, and submit them with review.mjs submit --choices. Update the help stub and docs at _claude/memory/docs/landing-line.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/watchdog/assets/",
+      "_claude/memory/docs/landing-line.md",
+      "apps/console-web/plugins/watchdog/help.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00jvyvp",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "id": "s20",
+     "text": "Run the full checks (check-landing-line, check-theme, check-controls, check-toolbars, check-console-control, check-chrome-assets, builds-store verify, tracker --check). Finish the report at _claude/builds/reports/one-landing-line-pull-main-merge-one.md with the API reach list, add the THREADS row, open the PR stating how each feature is reached (REST/MCP/CLI/voice/deep link) and that UI Review is waiting, and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/one-landing-line-pull-main-merge-one.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwlgucs00ku0oo",
+     "createdAt": "2026-11-18T01:52:04.656Z"
+    }
+   ]
   }
  ]
 }
