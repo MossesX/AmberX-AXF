@@ -65,6 +65,17 @@ curl -H "Authorization: Bearer $AXF_TOKEN" -d '{"kind":"screen","name":"…","ap
 CLI writes this checkout's data folder (`AXF_UI_REVIEW_DIR` overrides). `rebuild-shots --submit` finds the submitter
 by capability (`service:ui-review@1` + `review.mjs`), never by folder name.
 
+**Must post, fails otherwise (Nov 18 2026, build `auto-lander-never-wait-missing-ui-review`; Brett: "If it recorded the
+test of the pipeline and didn't merge it on its own, then the test failed."):** a build that ships UI Review items posts
+them to the live console. `submit --console` reads the item back (`GET items`) and exits 2 unless the console confirms
+the item id, so the build step that submits fails instead of carrying on with an item only the checkout knows.
+`review.mjs confirm <id> --console` (exit 1 unless the console has it) and `review.mjs posted --build <id> --console`
+(every item this checkout recorded for the build is in the console, else exit 1 with the missing ids) check it by hand.
+At the gate the VPS runs the build rule `ui-review-posted` (gate plugin fixer `fixers/ui-review-posted.mjs`): every item
+the worktree recorded must be in the console; the fixer posts the missing ones with their pictures, what still cannot be
+posted holds the landing with the reason. An item only a worktree knows never holds a PR: the lander lands it with the
+review flagged (gate-rules@1 `ui-review-missing`) and files a notice in Screenshots (group `<build id> - missing review`).
+
 ## Screenshots tab (`ui-screenshot@1`, Nov 1 2026)
 
 Brett: UI Review only showed planned build screens waiting for a decision; there was no place for ad-hoc pictures.
@@ -167,7 +178,14 @@ when nothing was submitted. `holds` is true for waiting, changes and rejected.
 **Merges wait for UI Review (Nov 1 2026, orchestrator `ui-review` s9):** the push banner reads `ui-review@1` `state()`
 before every merge: a PR whose items are waiting, have changes asked or are rejected is skipped by auto-merge (the
 next PR gets its turn) and refused by Merge, until Brett approves it here. PR numbers count for AmberX-AXF only (items
-carry no repo); other repos match by branch. If this plugin errors, the PR is held, never merged blind.
+carry no repo); other repos match by branch.
+
+**A hold needs an item in the console (Nov 18 2026, `auto-lander-never-wait-missing-ui-review`):** the lander looks the
+item up here (`GET state?branch=&pr=`) before it holds. No item for the PR (`state: none`), an item only a worktree knows,
+or a lookup that fails = the PR lands when CI is green and the review is flagged (`gate-rules@1` verdict
+`ui-review-missing`, `lander-state@1.reviewFlag` missing / unposted), never a blind hold. Only an item that exists and is
+waiting, has changes asked or is rejected holds. The push banner's `/ui-hold` answers `{hold, holds, flag}` the same way;
+`unknown` (this plugin errored) is a flag, not a hold. Contract: `framework/spec/GATE.md`, "The UI Review verdict".
 
 ## Checks
 
