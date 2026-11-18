@@ -22,8 +22,10 @@ if command -v tmux >/dev/null && command -v node >/dev/null; then
 # fake claude: records how many bytes came on stdin and the longest argument, then answers like stream-json
 longest=0; for a in "$@"; do (( ${#a} > longest )) && longest=${#a}; done
 got="$(cat | wc -c)"
+# the prompt file on stdin (its path, not a count in TMPDIR: a shared tmux server may not carry the test's TMPDIR)
+src="$(readlink "/proc/$$/fd/0" 2>/dev/null)"; printf '%s\n' "$src" > "$PWD/claude-prompt-path.txt"
+[[ "$(basename "$src")" == axf-brief.* && -f "$src" ]] && echo 1 > "$PWD/claude-tmpfiles.txt" || echo 0 > "$PWD/claude-tmpfiles.txt"
 printf 'stdin=%s longest_arg=%s\n' "$got" "$longest" > "$PWD/claude-got.txt"
-ls "${TMPDIR:-/tmp}" | grep -c '^axf-brief\.' > "$PWD/claude-tmpfiles.txt"
 echo '{"type":"result","subtype":"success","result":"done"}'
 EOF
   chmod +x "$home/.local/bin/claude"
@@ -45,7 +47,8 @@ EOF
   ok '! grep -qi "argument list too long" "$tmp/run/run.log" "$tmp/launch.out" 2>/dev/null' 'no "Argument list too long" anywhere'
   ok '[[ "$(cat "$tmp/run/claude-tmpfiles.txt" 2>/dev/null)" == 1 ]]' 'the prompt file existed while claude ran'
   for _ in $(seq 1 $(( ${AXF_BRIEF_TEST_WAIT:-180} * 5 ))); do tmux has-session -t "axf-$tag" 2>/dev/null || break; sleep 0.2; done
-  ok '[[ -z "$(ls "$tmp/tmpdir" | grep "^axf-brief\.")" ]]' "the prompt file is removed after the run: $(ls "$tmp/tmpdir")"
+  prompt_path="$(cat "$tmp/run/claude-prompt-path.txt" 2>/dev/null)"
+  ok '[[ -n "$prompt_path" && ! -e "$prompt_path" ]]' "the prompt file is removed after the run: ${prompt_path:-none}"
 else
   echo '(tmux or node missing: skipped the launcher end-to-end checks)'
 fi
