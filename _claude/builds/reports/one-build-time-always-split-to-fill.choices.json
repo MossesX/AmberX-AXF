@@ -1,0 +1,385 @@
+{
+ "set": "split-part-status",
+ "assetType": "badge",
+ "owner": "build-orchestrator",
+ "options": [
+  {
+   "id": "pill",
+   "label": "Pill chips (what is built now)",
+   "notes": "A toned pill with icon and label per part; working states pulse softly. Reads like the Status chips next to it. The main row uses the same pill for the roll-up (Building k/n … Finished).",
+   "shots": [
+    "one-build-time-always-split-to-fill/shots/pill-pending-desktop.png",
+    "one-build-time-always-split-to-fill/shots/pill-pending-phone.png",
+    "one-build-time-always-split-to-fill/shots/pill-queue-collapsed-desktop.png",
+    "one-build-time-always-split-to-fill/shots/pill-queue-collapsed-phone.png",
+    "one-build-time-always-split-to-fill/shots/pill-queue-expanded-desktop.png",
+    "one-build-time-always-split-to-fill/shots/pill-queue-expanded-phone.png"
+   ],
+   "data": {
+    "icon": "branch",
+    "label": "Building",
+    "tone": "accent",
+    "shape": "pill",
+    "motion": "pulse",
+    "animateWhile": [
+     "waiting",
+     "building",
+     "testing",
+     "rebuilding"
+    ],
+    "statuses": {
+     "waiting": {
+      "label": "Waiting",
+      "tone": "muted",
+      "icon": "clock",
+      "animate": true
+     },
+     "building": {
+      "label": "Building",
+      "tone": "accent",
+      "icon": "hammer",
+      "animate": true
+     },
+     "testing": {
+      "label": "Testing",
+      "tone": "accent",
+      "icon": "check-circle",
+      "animate": true
+     },
+     "rebuilding": {
+      "label": "Rebuilding",
+      "tone": "warning",
+      "icon": "refresh",
+      "animate": true
+     },
+     "failed": {
+      "label": "Failed",
+      "tone": "danger",
+      "icon": "x-circle",
+      "animate": false
+     },
+     "done": {
+      "label": "Done",
+      "tone": "success",
+      "icon": "check",
+      "animate": false
+     }
+    },
+    "runs": {
+     "splitting": {
+      "label": "Splitting",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "queued": {
+      "label": "Queued",
+      "tone": "muted",
+      "icon": "clock",
+      "animate": false
+     },
+     "building": {
+      "label": "Building",
+      "tone": "accent",
+      "icon": "hammer",
+      "animate": true
+     },
+     "combining": {
+      "label": "Combining",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "ci": {
+      "label": "CI",
+      "tone": "accent",
+      "icon": "refresh",
+      "animate": true
+     },
+     "merging": {
+      "label": "Merging",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "merged": {
+      "label": "Merged",
+      "tone": "success",
+      "icon": "check",
+      "animate": false
+     },
+     "live": {
+      "label": "Live",
+      "tone": "success",
+      "icon": "rocket",
+      "animate": false
+     },
+     "finished": {
+      "label": "Finished",
+      "tone": "success",
+      "icon": "check-circle",
+      "animate": false
+     },
+     "failed": {
+      "label": "Failed",
+      "tone": "danger",
+      "icon": "x-circle",
+      "animate": false
+     }
+    }
+   }
+  },
+  {
+   "id": "dot",
+   "label": "Dot + word",
+   "notes": "A coloured dot and its word: quieter in a long parts list, easiest to scan on the phone. Working states blink the dot; failed and done stay still.",
+   "shots": [
+    "one-build-time-always-split-to-fill/shots/dot-pending-desktop.png",
+    "one-build-time-always-split-to-fill/shots/dot-pending-phone.png",
+    "one-build-time-always-split-to-fill/shots/dot-queue-collapsed-desktop.png",
+    "one-build-time-always-split-to-fill/shots/dot-queue-collapsed-phone.png",
+    "one-build-time-always-split-to-fill/shots/dot-queue-expanded-desktop.png",
+    "one-build-time-always-split-to-fill/shots/dot-queue-expanded-phone.png"
+   ],
+   "data": {
+    "icon": "branch",
+    "label": "Building",
+    "tone": "accent",
+    "shape": "dot",
+    "motion": "blink",
+    "animateWhile": [
+     "waiting",
+     "building",
+     "testing",
+     "rebuilding"
+    ],
+    "statuses": {
+     "waiting": {
+      "label": "Waiting",
+      "tone": "muted",
+      "icon": "clock",
+      "animate": true
+     },
+     "building": {
+      "label": "Building",
+      "tone": "accent",
+      "icon": "hammer",
+      "animate": true
+     },
+     "testing": {
+      "label": "Testing",
+      "tone": "accent",
+      "icon": "check-circle",
+      "animate": true
+     },
+     "rebuilding": {
+      "label": "Rebuilding",
+      "tone": "warning",
+      "icon": "refresh",
+      "animate": true
+     },
+     "failed": {
+      "label": "Failed",
+      "tone": "danger",
+      "icon": "x-circle",
+      "animate": false
+     },
+     "done": {
+      "label": "Done",
+      "tone": "success",
+      "icon": "check",
+      "animate": false
+     }
+    },
+    "runs": {
+     "splitting": {
+      "label": "Splitting",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "queued": {
+      "label": "Queued",
+      "tone": "muted",
+      "icon": "clock",
+      "animate": false
+     },
+     "building": {
+      "label": "Building",
+      "tone": "accent",
+      "icon": "hammer",
+      "animate": true
+     },
+     "combining": {
+      "label": "Combining",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "ci": {
+      "label": "CI",
+      "tone": "accent",
+      "icon": "refresh",
+      "animate": true
+     },
+     "merging": {
+      "label": "Merging",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "merged": {
+      "label": "Merged",
+      "tone": "success",
+      "icon": "check",
+      "animate": false
+     },
+     "live": {
+      "label": "Live",
+      "tone": "success",
+      "icon": "rocket",
+      "animate": false
+     },
+     "finished": {
+      "label": "Finished",
+      "tone": "success",
+      "icon": "check-circle",
+      "animate": false
+     },
+     "failed": {
+      "label": "Failed",
+      "tone": "danger",
+      "icon": "x-circle",
+      "animate": false
+     }
+    }
+   }
+  },
+  {
+   "id": "icon",
+   "label": "Icon only",
+   "notes": "Just the status icon per part (label as its tooltip and aria-label): the narrowest column, best when many parts fill the row. Working states spin; the main row keeps a pill so the roll-up stays readable.",
+   "shots": [
+    "one-build-time-always-split-to-fill/shots/icon-pending-desktop.png",
+    "one-build-time-always-split-to-fill/shots/icon-pending-phone.png",
+    "one-build-time-always-split-to-fill/shots/icon-queue-collapsed-desktop.png",
+    "one-build-time-always-split-to-fill/shots/icon-queue-collapsed-phone.png",
+    "one-build-time-always-split-to-fill/shots/icon-queue-expanded-desktop.png",
+    "one-build-time-always-split-to-fill/shots/icon-queue-expanded-phone.png"
+   ],
+   "data": {
+    "icon": "branch",
+    "label": "Building",
+    "tone": "accent",
+    "shape": "icon",
+    "motion": "spin",
+    "animateWhile": [
+     "waiting",
+     "building",
+     "testing",
+     "rebuilding"
+    ],
+    "statuses": {
+     "waiting": {
+      "label": "Waiting",
+      "tone": "muted",
+      "icon": "clock",
+      "animate": true
+     },
+     "building": {
+      "label": "Building",
+      "tone": "accent",
+      "icon": "hammer",
+      "animate": true
+     },
+     "testing": {
+      "label": "Testing",
+      "tone": "accent",
+      "icon": "check-circle",
+      "animate": true
+     },
+     "rebuilding": {
+      "label": "Rebuilding",
+      "tone": "warning",
+      "icon": "refresh",
+      "animate": true
+     },
+     "failed": {
+      "label": "Failed",
+      "tone": "danger",
+      "icon": "x-circle",
+      "animate": false
+     },
+     "done": {
+      "label": "Done",
+      "tone": "success",
+      "icon": "check",
+      "animate": false
+     }
+    },
+    "runs": {
+     "splitting": {
+      "label": "Splitting",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "queued": {
+      "label": "Queued",
+      "tone": "muted",
+      "icon": "clock",
+      "animate": false
+     },
+     "building": {
+      "label": "Building",
+      "tone": "accent",
+      "icon": "hammer",
+      "animate": true
+     },
+     "combining": {
+      "label": "Combining",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "ci": {
+      "label": "CI",
+      "tone": "accent",
+      "icon": "refresh",
+      "animate": true
+     },
+     "merging": {
+      "label": "Merging",
+      "tone": "accent",
+      "icon": "branch",
+      "animate": true
+     },
+     "merged": {
+      "label": "Merged",
+      "tone": "success",
+      "icon": "check",
+      "animate": false
+     },
+     "live": {
+      "label": "Live",
+      "tone": "success",
+      "icon": "rocket",
+      "animate": false
+     },
+     "finished": {
+      "label": "Finished",
+      "tone": "success",
+      "icon": "check-circle",
+      "animate": false
+     },
+     "failed": {
+      "label": "Failed",
+      "tone": "danger",
+      "icon": "x-circle",
+      "animate": false
+     }
+    }
+   }
+  }
+ ]
+}
