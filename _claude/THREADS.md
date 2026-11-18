@@ -838,7 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:45 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
 - 2026-11-18 01:45 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
 - 2026-11-18 01:45 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete, note (all) · foreign-write
 - 2026-11-18 01:45 UTC · `one-true-source-for-every-setting` s4 done, s5 done, s6 done (all) · foreign-write
@@ -1238,6 +1237,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:41 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · Brett
 - 2026-11-18 12:42 UTC · `vps-never-gives-up-fix-land-every-build` s2 done (all) · orchestrator
 - 2026-11-18 12:43 UTC · `plan-studio-2-open-button-working-deep` s2 done (all) · orchestrator
+- 2026-11-18 12:41 UTC · `every-app-gets-own-locked-default` → running, note (all) · builds-live
 
 ## Token passes (log)
 
