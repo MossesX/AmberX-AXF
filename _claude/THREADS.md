@@ -833,145 +833,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:46 UTC · `move-everything-axhub-web-console` s6 done (all) · foreign-write
-- 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
-- 2026-11-17 23:46 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-17 23:46 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-17 23:46 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-17 23:45 UTC · `context-menus-plugin-one-true-source` note (all) · dedupe-steps
-- 2026-11-17 23:45 UTC · `move-server-side-console-parts-onto-vps` s9 done (all) · foreign-write
-- 2026-11-17 23:46 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `stop-auto-lander-committing-tracking` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `server-rule-done-means-merged-working` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `terminal-main-tab-streaming-console-s` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `auto-lander-settings-log-placeholder` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `remove-amberx-app-code-once-phone` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `settings-fix-part-2-blank-toolbars` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-17 23:46 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-17 23:46 UTC · `dispatcher-split-builds-evenly-across` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `one-true-source-for-every-setting` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `vps-sets-every-build-status-manifest` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `api-fully-drives-every-field-type-forms` note (all) · dedupe-steps
-- 2026-11-17 23:46 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · dedupe-steps
-- 2026-11-17 23:47 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
-- 2026-11-17 23:47 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
-- 2026-11-17 23:47 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
-- 2026-11-17 23:47 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
-- 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` note (all) · pipeline
-- 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
-- 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` → fixing, note (all) · pipeline
-- 2026-11-17 23:47 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
-- 2026-11-17 23:47 UTC · `fix-launcher-crash-duplicate-steps-brief` s6 done, note (all) · foreign-write
-- 2026-11-17 23:47 UTC · `fix-launcher-crash-duplicate-steps-brief` s6 done (all) · orchestrator
-- 2026-11-17 23:48 UTC · `fix-launcher-crash-duplicate-steps-brief` s6 done (all) · foreign-write
-- 2026-11-17 23:48 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
-- 2026-11-17 23:48 UTC · `settings-fix-part-2-blank-toolbars` → fixing, note (all) · pipeline
-- 2026-11-17 23:48 UTC · `move-server-side-console-parts-onto-vps` s10 done (all) · foreign-write
-- 2026-11-17 23:48 UTC · `move-server-side-console-parts-onto-vps` s10 done (all) · orchestrator
-- 2026-11-17 23:48 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · foreign-write
-- 2026-11-17 23:48 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · orchestrator
-- 2026-11-17 23:49 UTC · `fix-launcher-crash-duplicate-steps-brief` s7 done (all) · foreign-write
-- 2026-11-17 23:49 UTC · `move-server-side-console-parts-onto-vps` s11 done (all) · orchestrator
-- 2026-11-17 23:49 UTC · `move-server-side-console-parts-onto-vps` s11 done (all) · foreign-write
-- 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s12 done (all) · orchestrator
-- 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s12 done (all) · foreign-write
-- 2026-11-17 23:50 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 23:50 UTC · `settings-fix-part-2-blank-toolbars` PR #826, note (all) · reconciler
-- 2026-11-17 23:50 UTC · `auto-lander-never-wait-missing-ui-review` branch claude/auto-lander-never-wait-missing-ui-review, note (all) · reconciler
-- 2026-11-17 23:50 UTC · `move-server-side-console-parts-onto-vps` s11 done, s12 done (all) · foreign-write
-- 2026-11-17 23:50 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
-- 2026-11-17 23:51 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · orchestrator
-- 2026-11-17 23:51 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · foreign-write
-- 2026-11-17 23:51 UTC · `molly-console-commands` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `profile-filter-tables` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `molly-ri-court-records` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `new-app-wizard` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `move-server-side-console-parts-onto-vps` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `terminal-main-tab-streaming-console-s` → running, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `icon-picker-every-banner-settings-widget` s11 done, s12 done, → complete, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `flagship-professional-skin-covering-2` s22 done, s23 done, s24 done, s25 done, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `settings-fix-part-2-blank-toolbars` s1 done, s2 done, note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `move-everything-axhub-web-console` s4 done, s5 done, s6 done (all) · foreign-write
-- 2026-11-17 23:51 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `fix-launcher-crash-duplicate-steps-brief` added (16 steps) (all) · foreign-write
-- 2026-11-17 23:51 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
-- 2026-11-17 23:51 UTC · `active-tab-stop-button-grid-alignment` added (24 steps) (all) · foreign-write
-- 2026-11-17 23:52 UTC · `move-server-side-console-parts-onto-vps` s13 done (all) · foreign-write
-- 2026-11-17 23:52 UTC · `fix-launcher-crash-duplicate-steps-brief` s8 done (all) · foreign-write
-- 2026-11-17 23:51 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
-- 2026-11-17 23:51 UTC · `move-server-side-console-parts-onto-vps` s13 done (all) · orchestrator
-- 2026-11-17 23:53 UTC · `move-server-side-console-parts-onto-vps` s14 done (all) · orchestrator
-- 2026-11-17 23:53 UTC · `molly-console-commands` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `profile-filter-tables` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `molly-ri-court-records` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `new-app-wizard` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `move-server-side-console-parts-onto-vps` s9 done, s10 done, s11 done, s12 done, s13 done (all) · foreign-write
-- 2026-11-17 23:53 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
-- 2026-11-17 23:53 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `settings-fix-part-2-blank-toolbars` s1 done, s2 done, note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `fix-launcher-crash-duplicate-steps-brief` s6 done, s7 done, s8 done, note (all) · foreign-write
-- 2026-11-17 23:53 UTC · `move-everything-axhub-web-console` s7 done (all) · foreign-write
-- 2026-11-17 23:53 UTC · `move-everything-axhub-web-console` s7 done (all) · orchestrator
-- 2026-11-17 23:53 UTC · `move-server-side-console-parts-onto-vps` s14 done (all) · foreign-write
-- 2026-11-17 23:54 UTC · `move-server-side-console-parts-onto-vps` s14 done (all) · foreign-write
-- 2026-11-17 23:54 UTC · `move-everything-axhub-web-console` s7 done (all) · foreign-write
-- 2026-11-17 23:54 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · foreign-write
-- 2026-11-17 23:54 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · orchestrator
-- 2026-11-17 23:54 UTC · `maintenance-plugin-clear-docker-cache` note (all) · orchestrator
-- 2026-11-17 23:55 UTC · `move-server-side-console-parts-onto-vps` s15 done (all) · orchestrator
-- 2026-11-17 23:55 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
-- 2026-11-17 23:55 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · foreign-write
-- 2026-11-17 23:55 UTC · `move-server-side-console-parts-onto-vps` s15 done (all) · foreign-write
-- 2026-11-17 23:55 UTC · `rebuild-every-toolbar-page-specific` note (all) · watchdog
-- 2026-11-17 23:56 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
-- 2026-11-17 23:56 UTC · `move-server-side-console-parts-onto-vps` s15 done (all) · foreign-write
-- 2026-11-17 23:56 UTC · `rebuild-every-toolbar-page-specific` → complete (all) · foreign-write
-- 2026-11-17 23:56 UTC · `fix-launcher-crash-duplicate-steps-brief` s9 done (all) · foreign-write
 - 2026-11-17 23:56 UTC · `move-server-side-console-parts-onto-vps` s16 done (all) · orchestrator
 - 2026-11-17 23:56 UTC · `move-server-side-console-parts-onto-vps` s16 done (all) · foreign-write
 - 2026-11-17 23:57 UTC · `move-server-side-console-parts-onto-vps` s16 done (all) · foreign-write
@@ -1233,6 +1094,145 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 00:47 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `active-tab-stop-button-grid-alignment` added (12 steps) (all) · foreign-write
 - 2026-11-18 00:47 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
+- 2026-11-18 00:47 UTC · `auto-lander-never-wait-missing-ui-review` s7 done (all) · foreign-write
+- 2026-11-18 00:49 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 00:49 UTC · `flagship-professional-skin-covering-2` s26 done (all) · foreign-write
+- 2026-11-18 00:49 UTC · `auto-lander-never-wait-missing-ui-review` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done (all) · foreign-write
+- 2026-11-18 00:49 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 00:49 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
+- 2026-11-18 00:49 UTC · `move-server-side-console-parts-onto-vps` PR #828 (all) · builds-live
+- 2026-11-18 00:19 UTC · `move-everything-axhub-web-console` s9 done (all) · orchestrator
+- 2026-11-18 00:50 UTC · `move-server-side-console-parts-onto-vps` s24 done, s25 done (all) · foreign-write
+- 2026-11-18 00:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 00:50 UTC · `flagship-professional-skin-covering-2` s26 done (all) · foreign-write
+- 2026-11-18 00:50 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, note (all) · foreign-write
+- 2026-11-18 00:50 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 00:50 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
+- 2026-11-18 00:50 UTC · `move-everything-axhub-web-console` s9 done (all) · foreign-write
+- 2026-11-18 00:51 UTC · `move-everything-axhub-web-console` s9 done (all) · foreign-write
+- 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s10 done (all) · orchestrator
+- 2026-11-18 00:51 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · orchestrator
+- 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s11 done (all) · orchestrator
+- 2026-11-18 00:52 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · foreign-write
+- 2026-11-18 00:52 UTC · `move-everything-axhub-web-console` s10 done (all) · foreign-write
+- 2026-11-18 00:53 UTC · `move-everything-axhub-web-console` s9 done, s10 done, s11 done (all) · foreign-write
+- 2026-11-18 00:53 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · foreign-write
+- 2026-11-18 00:53 UTC · `move-everything-axhub-web-console` s11 done (all) · foreign-write
+- 2026-11-18 00:53 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 00:53 UTC · `auto-lander-never-wait-missing-ui-review` s4 done, s5 done, s6 done, s7 done, s8 done (all) · foreign-write
+- 2026-11-18 00:53 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 00:53 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
+- 2026-11-18 00:54 UTC · `move-everything-axhub-web-console` s10 done, s11 done (all) · foreign-write
+- 2026-11-18 00:54 UTC · `auto-lander-never-wait-missing-ui-review` s8 done (all) · foreign-write
+- 2026-11-18 00:53 UTC · `flagship-professional-skin-covering-2` s27 done (all) · orchestrator
+- 2026-11-18 00:55 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
+- 2026-11-18 00:55 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-18 00:56 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
+- 2026-11-18 00:56 UTC · `move-everything-axhub-web-console` s11 done (all) · foreign-write
+- 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s9 done (all) · orchestrator
+- 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s10 done (all) · orchestrator
+- 2026-11-18 00:56 UTC · `auto-lander-never-wait-missing-ui-review` s9 done (all) · foreign-write
+- 2026-11-18 00:56 UTC · `flagship-professional-skin-covering-2` note (all) · pipeline
+- 2026-11-18 00:57 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
+- 2026-11-18 00:57 UTC · `auto-lander-never-wait-missing-ui-review` s9 done, s10 done (all) · foreign-write
+- 2026-11-18 01:00 UTC · `auto-lander-never-wait-missing-ui-review` s9 done, s10 done (all) · foreign-write
+- 2026-11-18 01:00 UTC · `flagship-professional-skin-covering-2` s27 done (all) · foreign-write
+- 2026-11-18 01:00 UTC · `move-everything-axhub-web-console` s9 done, s10 done, s11 done (all) · foreign-write
+- 2026-11-18 01:00 UTC · `auto-lander-never-wait-missing-ui-review` s8 done, s9 done, s10 done (all) · foreign-write
+- 2026-11-18 01:00 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done (all) · orchestrator
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done, note (all) · foreign-write
+- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` s28 done (all) · foreign-write
+- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` s28 done (all) · foreign-write
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` PR #829, note (all) · reconciler
+- 2026-11-18 01:01 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · watchdog
+- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-18 01:02 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
+- 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
+- 2026-11-18 01:03 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
+- 2026-11-18 01:04 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:04 UTC · `flagship-professional-skin-covering-2` s27 done, s28 done, note (all) · foreign-write
+- 2026-11-18 01:04 UTC · `auto-lander-never-wait-missing-ui-review` s9 done, s10 done (all) · foreign-write
+- 2026-11-18 01:05 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
+- 2026-11-18 01:05 UTC · `flagship-professional-skin-covering-2` s28 done, note (all) · foreign-write
+- 2026-11-18 01:05 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
+- 2026-11-18 01:05 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
+- 2026-11-18 01:05 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-18 01:05 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
+- 2026-11-18 01:06 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
+- 2026-11-18 01:06 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:07 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:06 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · orchestrator
+- 2026-11-18 01:06 UTC · `flagship-professional-skin-covering-2` → queued, note (all) · pipeline
+- 2026-11-18 01:08 UTC · `flagship-professional-skin-covering-2` → running, note (all) · pipeline
+- 2026-11-18 01:08 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:08 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-18 01:08 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-18 01:09 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `flagship-professional-skin-covering-2` s28 done, note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
+- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `flagship-professional-skin-covering-2` s20 done, → landing (all) · orchestrator
+- 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` → running, note (all) · orchestrator
+- 2026-11-18 01:11 UTC · `move-everything-axhub-web-console` s12 done (all) · orchestrator
+- 2026-11-18 01:11 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
+- 2026-11-18 01:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-18 01:12 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:12 UTC · `move-everything-axhub-web-console` s12 done (all) · foreign-write
+- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:11 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
+- 2026-11-18 01:12 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` s20 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `move-everything-axhub-web-console` s12 done (all) · foreign-write
+- 2026-11-18 01:13 UTC · `auto-lander-never-wait-missing-ui-review` s13 done (all) · foreign-write
+- 2026-11-18 01:13 UTC · `molly-console-commands` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `profile-filter-tables` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `molly-ri-court-records` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `new-app-wizard` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `context-menus-plugin-one-true-source` → landing, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `banner-widget-shapes-plus-change-icon` s18 done, s19 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `stop-auto-lander-committing-tracking` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `server-rule-done-means-merged-working` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `maintenance-plugin-clear-docker-cache` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `move-server-side-console-parts-onto-vps` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `rebuild-fresh-main-phone-connect-small` → running, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `auto-lander-settings-log-placeholder` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `icon-picker-every-banner-settings-widget` s11 done, s12 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `flagship-professional-skin-covering-2` s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done, → complete, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `settings-fix-part-2-blank-toolbars` s2 done, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `move-everything-axhub-web-console` s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done (all) · foreign-write
+- 2026-11-18 01:13 UTC · `auto-lander-never-wait-missing-ui-review` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s13 done, note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
+- 2026-11-18 01:13 UTC · `fix-launcher-crash-duplicate-steps-brief` added (16 steps) (all) · foreign-write
+- 2026-11-18 01:13 UTC · `active-tab-add-stop-button-per-running` added (13 steps) (all) · foreign-write
+- 2026-11-18 01:13 UTC · `active-tab-stop-button-grid-alignment` added (96 steps) (all) · foreign-write
+- 2026-11-18 01:13 UTC · `fix-ci-red-main-watchdog-test-vs-done` added (36 steps) (all) · foreign-write
 
 ## Token passes (log)
 
