@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8691,
- "updatedAt": "2026-11-18T01:20:05.164Z",
+ "rev": 8692,
+ "updatedAt": "2026-11-18T01:20:24.950Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288364,7 +288364,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:13:07.999Z",
+   "updatedAt": "2026-11-18T01:20:17.836Z",
    "builtAt": "2026-11-18T01:10:42.989Z",
    "notes": [
     {
@@ -288566,6 +288566,10 @@
     {
      "text": "Session axf-flagship-professional-skin-covering-2--sully on mossesx-max- ended (exit 0); the build was already landing.",
      "at": "2026-11-18T01:13:07.999Z"
+    },
+    {
+     "text": "Session axf-flagship-professional-skin-covering-2--sully on mossesx-max- ended (exit 0); the build was already landing.",
+     "at": "2026-11-18T01:20:17.836Z"
     }
    ],
    "approvals": [
@@ -288595,7 +288599,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-flagship-professional-skin-covering-2--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 2",
@@ -288603,14 +288607,14 @@
     "runs": 3,
     "crashes": 2,
     "lastRun": {
-     "at": "2026-11-18T01:05:12.564Z",
+     "at": "2026-11-18T01:20:15.971Z",
      "exit": 0,
-     "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 1,
-     "account": "hulu0241",
-     "session": "",
-     "phase": "Phase 1"
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-flagship-professional-skin-covering-2--sully",
+     "phase": "Phase 2"
     },
     "split": {
      "at": "2026-11-17T21:34:10.438Z",
@@ -289389,7 +289393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
