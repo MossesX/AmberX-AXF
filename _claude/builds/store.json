@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8587,
- "updatedAt": "2026-11-18T00:38:37.120Z",
+ "rev": 8588,
+ "updatedAt": "2026-11-18T00:38:54.319Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -314646,7 +314646,7 @@
    "title": "Fix CI red on main: watchdog test vs done-means-merged guard, alerts engine job",
    "category": "",
    "detail": "CI on main has been red since at least 2026-11-17 19:19 (runs 44171482751, 44186908843) on two jobs, and every PR inherits it (seen on #827):\n1. Build engine sweep: apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs fails 'run: complete / archive builds under the store lock': the stale-row watchdog moves a queued build whose PR merged straight to complete, and the done-means-merged guard refuses it ('refused q-merged queued → landed: landed needs the merge commit (landed.sha)'). Make the watchdog record the merge evidence (landed.sha from the merge commit) and move it to landed (complete only through verify), then update the test to match done-means-merged@1.\n2. Web Dev Console (React/TS) + Python API: step 'Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption' fails; read the run log, fix the engine or regenerate the fixture.\nDone when both jobs are green on main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "fix-launcher-crash-duplicate-steps-brief",
    "pendingId": "",
@@ -314654,7 +314654,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-18T00:32:34.912Z",
-   "updatedAt": "2026-11-18T00:38:32.495Z",
+   "updatedAt": "2026-11-18T00:38:45.918Z",
    "builtAt": "",
    "notes": [
     {
@@ -314664,6 +314664,10 @@
     {
      "text": "Split by Claude into 12 steps (0 Fable).",
      "at": "2026-11-18T00:34:08.301Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-ci-red-main-watchdog-test-vs-done--rhonda.",
+     "at": "2026-11-18T00:38:45.918Z"
     }
    ],
    "approvals": [],
@@ -314683,13 +314687,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T00:32:39.245Z",
     "queuedBy": "fix-launcher-crash-duplicate-steps-brief",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-ci-red-main-watchdog-test-vs-done--rhonda",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-18T00:38:44.202Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -314702,7 +314706,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T00:38:44.202Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -314711,7 +314715,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-18T00:38:44.202Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -315555,7 +315559,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
