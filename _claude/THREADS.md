@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:05 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 08:05 UTC · `approval-pass-covers-every-call` s12 done, → landing (all) · orchestrator
 - 2026-11-18 08:07 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-18 08:10 UTC · `approval-pass-covers-every-call` note (all) · builds-live
 - 2026-11-18 08:59 UTC · `molly-console-commands` note (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 15:04 UTC · `every-app-gets-own-locked-default` s4 done (all) · orchestrator
 - 2026-11-18 15:05 UTC · `every-app-gets-own-locked-default` s5 done (all) · orchestrator
 - 2026-11-18 15:05 UTC · `every-app-gets-own-locked-default` s6 done (all) · orchestrator
+- 2026-11-18 15:06 UTC · `every-app-gets-own-locked-default` s3 done, s4 done (all) · foreign-write
+- 2026-11-18 15:06 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
 
 ## Token passes (log)
 
