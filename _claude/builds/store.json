@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8892,
- "updatedAt": "2026-11-18T07:17:50.818Z",
+ "rev": 8893,
+ "updatedAt": "2026-11-18T07:19:37.117Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -317076,6 +317076,10 @@
     {
      "text": "Watchdog fixed Approval pass covers every call, including VPS commands and stops (step s11): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-18T07:14:55.421Z"
+    },
+    {
+     "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T07:13:29.315Z"
     }
    ],
    "approvals": [
