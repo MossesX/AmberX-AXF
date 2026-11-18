@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8689,
- "updatedAt": "2026-11-18T01:19:25.079Z",
+ "rev": 8690,
+ "updatedAt": "2026-11-18T01:19:49.367Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262903,7 +262903,7 @@
    "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
    "category": "",
    "detail": "Audit every console plugin. Anything that must keep running when the console is down, or touches Docker, disk or git, moves out of the axf-console container onto the VPS host as systemd services that start on boot and auto-restart, code at /opt/axf, run under a dedicated limited user with a sudo whitelist of only the commands needed (no general root). Candidates: Maintenance (coordinate with maintenance-plugin-clear-docker-cache), Systems check and its Auto fixes, agent-swarm job runner (CI-fix jobs), builds-live publisher, shipped-features watcher, axHub sync. Orchestrator/lander/watchdog are already moving in server-auto-lander-fixes-lands; reuse that, don't duplicate. App-only plugins (settings, skins, etc.) stay in the container. Console UI calls the host services over a local socket/API and shows a clear 'host service down' state. Include install script, health checks in Systems check, migration with rollback, and reachable via UI, REST, MCP, CLI, voice. Write the audit list into the report first.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -263048,22 +263048,22 @@
     "queuedAt": "2026-11-17T12:26:43.338Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 3",
     "launchedAt": "2026-11-17T23:33:43.195Z",
     "runs": 2,
-    "crashes": 1,
+    "crashes": 2,
     "lastRun": {
-     "at": "2026-11-17T23:28:06.377Z",
-     "exit": 0,
+     "at": "2026-11-18T01:18:14.066Z",
+     "exit": 143,
      "outcome": "requeued",
-     "reason": "phase-done",
-     "stepsLeft": 21,
-     "account": "mossesx-max-",
+     "reason": "crash",
+     "stepsLeft": 1,
+     "account": "hulu0241",
      "session": "axf-move-server-side-console-parts-onto-vps--lenny",
-     "phase": "Phase 2"
+     "phase": "Phase 3"
     },
     "split": {
      "at": "2026-11-17T12:28:31.327Z",
@@ -263073,15 +263073,15 @@
      "note": "Split by Claude into 26 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "session on hulu0241 was killed (exit 143): step s26 reset, slot released, back in the Queue (retry 1 of 3).",
     "route": "",
     "dispatchedAt": "2026-11-17T23:33:43.195Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-17T23:29:50.956Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T01:19:37.656Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T23:33:43.195Z",
@@ -263113,6 +263113,20 @@
      "notified": "2026-11-17T23:28:46.562Z",
      "session": "axf-move-server-side-console-parts-onto-vps--lenny",
      "note": "session on mossesx-max- ended clean (exit 0) but the build stayed marked running: back in the Queue at its place."
+    },
+    {
+     "at": "2026-11-18T01:18:14.066Z",
+     "buildId": "move-server-side-console-parts-onto-vps",
+     "phase": "Phase 3",
+     "step": "s26",
+     "cause": "exit-killed",
+     "exit": 143,
+     "action": "retry",
+     "attempt": 1,
+     "account": "hulu0241",
+     "notified": "",
+     "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+     "note": "session on hulu0241 was killed (exit 143): step s26 reset, slot released, back in the Queue (retry 1 of 3)."
     }
    ],
    "steps": [
@@ -263787,7 +263801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
