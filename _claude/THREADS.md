@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `fix-banner-settings-interface-tab` added (13 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `land-pr-730-reset-all-button-far-right` added (5 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `flagship-professional-skin-covering` added (27 steps) (all) · foreign-write
 - 2026-11-18 08:59 UTC · `flagship-professional-skin-covering-2` added (28 steps) (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 17:48 UTC · `one-build-time-always-split-to-fill` s23 done (all) · foreign-write
 - 2026-11-18 17:48 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
 - 2026-11-18 17:49 UTC · `one-build-time-always-split-to-fill` s24 done (all) · foreign-write
+- 2026-11-18 18:03 UTC · `one-build-time-always-split-to-fill` s25 done, s26 done (all) · foreign-write
 
 ## Token passes (log)
 
