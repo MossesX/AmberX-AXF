@@ -180,6 +180,8 @@ jobs:
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
       - name: Build rule ui-review-posted (gate fixer)
         run: node apps/console-web/plugins/gate/test/test.ui-review-posted.mjs  # axf-plugin:gate
+      - name: PR #816 replay (CI green, review item absent from the console → the lander lands it; held past the limit → held-prs red with Land now; an unconfirmed submit fails the step)
+        run: node apps/console-web/plugins/gate/test/test.pr-816-replay.mjs  # axf-plugin:gate
       - name: Server auto-lander (attempt log, clash resolver on a temp repo, red-CI reader, fix-session launcher, reconcile, the whole loop with a fake GitHub and claude-headless)
         run: node --test 'deploy/auto-lander/test/*.test.mjs'
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
