@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `molly-console-commands` note (all) · foreign-write
-- 2026-11-18 00:31 UTC · `profile-filter-tables` note (all) · foreign-write
-- 2026-11-18 00:31 UTC · `running-builds-follow-the-active-claude-account-fail-over-when-it-dies` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `headless-session-efficiency-shared-chain-control` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `amberx-open-any-url-apk` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · foreign-write
 - 2026-11-18 01:37 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · console
+- 2026-11-18 01:38 UTC · `one-true-source-for-every-setting` s4 done (all) · foreign-write
+- 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-minute` added (0 steps) (all) · foreign-write
+- 2026-11-18 01:38 UTC · `vps-frees-stale-build-slots-every-2` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
