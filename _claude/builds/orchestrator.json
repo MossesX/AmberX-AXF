@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:45:50.718Z",
+ "updatedAt": "2026-11-18T12:46:17.328Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192048,7 +192048,7 @@
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:43:32.725Z",
+   "updatedAt": "2026-11-18T12:45:57.232Z",
    "builtAt": "",
    "notes": [
     {
@@ -192148,8 +192148,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T12:45:57.232Z",
      "note": "",
      "uid": "st-mwm3h4jz03x1qj",
      "createdAt": "2026-11-18T12:25:38.639Z"

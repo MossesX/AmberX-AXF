@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8940,
- "updatedAt": "2026-11-18T12:45:50.718Z",
+ "rev": 8941,
+ "updatedAt": "2026-11-18T12:46:17.328Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318067,7 +318067,7 @@
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T12:43:32.725Z",
+   "updatedAt": "2026-11-18T12:45:57.232Z",
    "builtAt": "",
    "notes": [
     {
@@ -318211,12 +318211,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T12:45:57.232Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T12:25:38.639Z",
-     "updatedAt": "2026-11-18T12:25:38.639Z"
+     "updatedAt": "2026-11-18T12:45:59.736Z"
     },
     {
      "id": "s4",
@@ -318533,7 +318533,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

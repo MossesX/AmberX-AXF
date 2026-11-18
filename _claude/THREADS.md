@@ -838,7 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:45 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
 - 2026-11-18 01:45 UTC · `vps-frees-stale-build-slots-every-minute` added (56 steps) (all) · foreign-write
 - 2026-11-18 01:45 UTC · `vps-frees-stale-build-slots-every-2` added (75 steps) (all) · foreign-write
 - 2026-11-18 01:45 UTC · `watchdog-plugin-owns-every-vps` added (30 steps) (all) · foreign-write
@@ -1238,6 +1237,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:45 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
 - 2026-11-18 12:45 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 12:45 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
+- 2026-11-18 12:45 UTC · `plan-studio-2-open-button-working-deep` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
