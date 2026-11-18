@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `group-chat-audio-hear-agents-talk-while` → landing, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `ui-review-filter-and-search-by-pr` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `picker-dialog-plugin-replaces-all` → landing, note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `console-look-becomes-default-axhub-skin` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `merge-main-land-server-gate-one-session` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `merge-main-land-console-app-part-2` note (all) · foreign-write
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:11 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
 - 2026-11-18 16:13 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
 - 2026-11-18 16:14 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
+- 2026-11-18 16:18 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-18 16:18 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-18 16:18 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 16:18 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-18 16:18 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
 
 ## Token passes (log)
 
