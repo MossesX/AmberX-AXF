@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:40:08.920Z",
+ "updatedAt": "2026-11-18T12:41:23.624Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193134,12 +193134,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:38:28.230Z",
-   "updatedAt": "2026-11-18T12:39:14.439Z",
+   "updatedAt": "2026-11-18T12:40:13.541Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:39:14.439Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T12:40:13.541Z"
     }
    ],
    "approvals": [],
@@ -193161,8 +193165,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym130101ai",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt011eg7",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s2",
@@ -193180,8 +193184,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym1402p9jp",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt024vv7",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s3",
@@ -193199,8 +193203,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym14032ku9",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt0341ad",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s4",
@@ -193218,8 +193222,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym14042kz0",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt04w0ex",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s5",
@@ -193237,8 +193241,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym14058esf",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt056eyu",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s6",
@@ -193256,8 +193260,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym1406xqwu",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt06xcaz",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s7",
@@ -193275,8 +193279,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym1407h1mk",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt07v3wi",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s8",
@@ -193294,8 +193298,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym1408666z",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt08loul",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s9",
@@ -193316,10 +193320,35 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwm3ym14093geq",
-     "createdAt": "2026-11-18T12:39:14.439Z"
+     "uid": "st-mwm3zvmt097syo",
+     "createdAt": "2026-11-18T12:40:13.541Z"
     }
    ]
+  },
+  {
+   "id": "one-build-time-always-split-to-fill",
+   "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
+   "category": "",
+   "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
+   "status": "queued",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-18T12:40:40.117Z",
+   "updatedAt": "2026-11-18T12:41:13.745Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:41:13.745Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }

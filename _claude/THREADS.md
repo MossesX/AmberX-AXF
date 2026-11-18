@@ -838,10 +838,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
-- 2026-11-18 01:43 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete (all) · foreign-write
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete (all) · foreign-write
-- 2026-11-18 01:45 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
 - 2026-11-18 01:45 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
 - 2026-11-18 01:46 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
 - 2026-11-18 01:45 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
@@ -1238,6 +1234,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:38 UTC · `one-build-time-always-split-split-id` added (0 steps) (all) · Brett
 - 2026-11-18 12:39 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
 - 2026-11-18 12:39 UTC · `every-app-gets-own-locked-default` → running, note (all) · pipeline
+- 2026-11-18 12:40 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
+- 2026-11-18 12:40 UTC · `every-app-gets-own-locked-default` → running, note (all) · foreign-write
+- 2026-11-18 12:40 UTC · `one-build-time-always-split-to-fill` added (0 steps) (all) · Brett
+- 2026-11-18 12:41 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · Brett
 
 ## Token passes (log)
 

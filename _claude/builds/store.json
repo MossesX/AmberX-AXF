@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8936,
- "updatedAt": "2026-11-18T12:40:08.920Z",
+ "rev": 8937,
+ "updatedAt": "2026-11-18T12:41:23.624Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319581,12 +319581,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:38:28.230Z",
-   "updatedAt": "2026-11-18T12:39:14.439Z",
+   "updatedAt": "2026-11-18T12:40:13.541Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:39:14.439Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T12:40:13.541Z"
     }
    ],
    "approvals": [],
@@ -319604,7 +319608,7 @@
     "crashes": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-18T12:39:14.439Z",
+     "at": "2026-11-18T12:40:13.541Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 9,
@@ -319614,7 +319618,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-18T12:40:49.939Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -319624,7 +319634,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwm3ym130101ai",
+     "uid": "st-mwm3zvmt011eg7",
      "title": "",
      "text": "Brett (Nov 18). 1) ONE build at a time on the VPS.",
      "model": "Opus",
@@ -319641,12 +319651,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwm3ym1402p9jp",
+     "uid": "st-mwm3zvmt024vv7",
      "title": "",
      "text": "Every build is split into parts that can run in parallel without touching the same files; each part gets its own branch and slot (up to 4), merges current main first, then parts are combined into one branch, one CI run, one landing. 2) GATE: the VPS rejects any build start that lacks an orchestrator build ID AND a split ID proving it went through the orchestrator splitter; rejected starts go back to the orchestrator Failed tab with the reason.",
      "model": "Opus",
@@ -319663,12 +319673,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwm3ym14032ku9",
+     "uid": "st-mwm3zvmt0341ad",
      "title": "",
      "text": "Rule shown on Gate & rules, on by default. 3) PENDING: shows one row per build.",
      "model": "Opus",
@@ -319685,12 +319695,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwm3ym14042kz0",
+     "uid": "st-mwm3zvmt04w0ex",
      "title": "",
      "text": "As soon as the orchestrator receives a pending build it auto-splits it; while splitting the row status reads Splitting with an animated split icon. 4) QUEUE: when split is done the build moves to the Queue as ONE expandable row.",
      "model": "Opus",
@@ -319707,12 +319717,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwm3ym14058esf",
+     "uid": "st-mwm3zvmt056eyu",
      "title": "",
      "text": "Expanded, it lists every part with its slot and a live animated status badge (waiting, building, testing, rebuilding, failed, done; animation only while actually working).",
      "model": "Opus",
@@ -319729,12 +319739,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwm3ym1406xqwu",
+     "uid": "st-mwm3zvmt06xcaz",
      "title": "",
      "text": "The main row shows the overall status. 5) Once all parts are built it is sent on and the queue row keeps updating continuously (combining, running CI, merging, merged, live, Finished).",
      "model": "Opus",
@@ -319751,12 +319761,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwm3ym1407h1mk",
+     "uid": "st-mwm3zvmt07v3wi",
      "title": "",
      "text": "Full REST/MCP/CLI/voice parity, tests, CI checks.",
      "model": "Opus",
@@ -319773,12 +319783,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwm3ym1408666z",
+     "uid": "st-mwm3zvmt08loul",
      "title": "",
      "text": "Replaces orchestrator-auto-split-tab and supersedes the 4-builds rule; coordinate with the server-gate build queued just before.",
      "model": "Opus",
@@ -319795,12 +319805,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwm3ym14093geq",
+     "uid": "st-mwm3zvmt097syo",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/one-build-time-always-split-split-id.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -319820,8 +319830,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-18T12:39:14.439Z",
-     "updatedAt": "2026-11-18T12:39:14.439Z"
+     "createdAt": "2026-11-18T12:40:13.541Z",
+     "updatedAt": "2026-11-18T12:40:13.541Z"
     }
    ],
    "profiles": [
@@ -319832,12 +319842,79 @@
    },
    "kind": "build",
    "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-18T12:40:13.541Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "one-build-time-always-split-to-fill",
+   "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
+   "category": "",
+   "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
+   "status": "queued",
+   "hidden": false,
+   "source": "Brett",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-18T12:40:40.117Z",
+   "updatedAt": "2026-11-18T12:41:13.745Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by Brett.",
+     "at": "2026-11-18T12:41:13.745Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-18T12:40:55.823Z",
+    "queuedBy": "Brett",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1005
+   },
+   "kind": "build",
+   "planRef": "",
    "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-18T12:39:14.439Z",
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
