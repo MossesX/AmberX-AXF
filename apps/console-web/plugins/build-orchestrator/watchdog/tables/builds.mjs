@@ -10,6 +10,10 @@
  * status, merged time, branch and PR from it), `wantPrs` the PR numbers the rows name.
  */
 import { kindOfBuild, prNumber } from '../../../../../../framework/core/stale-rows.mjs';
+import { guardStatus } from '../../../../../../framework/core/build-pipeline.mjs';
+
+/** done-means-merged@1 statuses that need CI + verify evidence the watchdog does not have. */
+const GUARDED = Object.freeze(['landed', 'built', 'complete']);
 
 export const TABLE = Object.freeze({ id: 'builds', label: 'Builds store (Pending, Queue, Building)', kinds: ['pending', 'queued', 'building'] });
 
@@ -39,8 +43,10 @@ export const HANDS_OFF = Object.freeze(['running', 'waiting']);
 
 /**
  * Apply verdicts in ONE store write (withStore: under the store lock, journalled, live to main through builds-live):
- *   complete → the merged PR is recorded (pr, mergedAt) and the status settles by the store's own rule (built →
- *              complete only when every step is ticked: done-means-merged; otherwise it stays and says why)
+ *   complete → the merged PR is recorded (pr, mergedAt, landed.pr / sha / mergedAt) and the status settles by the
+ *              store's own rule. done-means-merged@1: landed / complete also need CI green on the merge commit and the
+ *              verify, which the watchdog never claims, so a build whose steps are all ticked goes to landing (the
+ *              lander checks CI and the verify finishes it); with steps still open it stays and says why
  *   remove   → archived, with the reason in a note
  * Every touched build gets a build note naming the watchdog and the evidence. Running / waiting builds are never
  * touched. `withStore` / `settle` override the store (tests). Returns each verdict with { applied, why, status }.
@@ -63,7 +69,13 @@ export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {
       if (v.action === 'complete') {
         if (v.row.pr) b.pr = `#${v.row.pr}`;
         if (!b.mergedAt) b.mergedAt = v.mergedAt || now;
+        b.landed = { ...(b.landed ?? {}), pr: v.row.pr || b.landed?.pr || 0, mergedAt: b.mergedAt, ...(v.mergeCommit && !b.landed?.sha ? { sha: v.mergeCommit } : {}) };
         settleStatus(b, now);
+        // the store's guard would refuse landed / complete without CI + verify: hand the build to the lander instead
+        if (GUARDED.includes(b.status) && !guardStatus({ ...b, status: before }, b.status).ok) {
+          b.status = guardStatus({ ...b, status: before }, 'landing').ok ? 'landing' : before;
+          b.builtAt = b.status === 'landing' ? (b.builtAt || now) : '';
+        }
       } else if (v.action === 'remove') {
         b.status = 'archived';
       }
