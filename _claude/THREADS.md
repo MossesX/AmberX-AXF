@@ -833,7 +833,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:47 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
 - 2026-11-18 00:47 UTC · `orchestrator-settings-collapsible-split` → complete, note (all) · foreign-write
@@ -1233,6 +1232,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:53 UTC · `one-landing-line-pull-main-merge-one` note (all) · foreign-write
 - 2026-11-18 01:54 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
 - 2026-11-18 01:55 UTC · `approval-pass-covers-every-call` note (all) · pipeline
+- 2026-11-18 02:02 UTC · `one-true-source-for-every-setting` s8 done (all) · orchestrator
 
 ## Token passes (log)
 
