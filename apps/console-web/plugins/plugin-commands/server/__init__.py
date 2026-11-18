@@ -32,6 +32,42 @@ from fastapi.responses import JSONResponse
 import console_context as cx
 import plugin_services
 
+try:  # the MCP request context (for `_meta["axhub/pass"]`, decision #120); absent in a bare test run
+    from mcp.server.mcpserver import Context
+except Exception:  # noqa: BLE001
+    Context = Any  # type: ignore[misc,assignment]
+
+import hashlib
+import hmac
+
+# A pass axHub sends with a call it ran under one (decision #120, axHub docs/veto-pass.md §2): good for five minutes.
+HUB_PASS_MAX_AGE_MS = 5 * 60 * 1000
+
+
+def hub_pass(meta: Any, now_ms: int | None = None, key: str | None = None) -> dict[str, Any] | None:
+    """The pass axHub ran this call under, verified, as a control-pass@1 record for the planner; or None.
+
+    `_meta["axhub/pass"] = {id, covers, expiresAt, callId, t, sig}` with sig = HMAC-SHA256(console token,
+    "<t>.<id>.<callId>") in hex. Unsigned, stale or wrongly signed: None, and the console confirms as usual."""
+    try:
+        raw = meta if isinstance(meta, dict) else {**(getattr(meta, "model_extra", None) or {}), **(meta.model_dump() if hasattr(meta, "model_dump") else {})}
+        p = raw.get("axhub/pass") if isinstance(raw, dict) else None
+        if not isinstance(p, dict):
+            return None
+        pid, call_id, t, sig = str(p.get("id") or ""), str(p.get("callId") or ""), int(p.get("t") or 0), str(p.get("sig") or "")
+        secret = key if key is not None else cx.current_token()
+        now = now_ms if now_ms is not None else int(time.time() * 1000)
+        if not (pid and call_id and sig and secret) or abs(now - t) > HUB_PASS_MAX_AGE_MS:
+            return None
+        want = hmac.new(secret.encode(), f"{t}.{pid}.{call_id}".encode(), hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(want, sig):
+            return None
+        covers = p.get("covers")
+        return {"id": pid, "scope": "all", "state": "active", "covers": covers if covers == "all" or isinstance(covers, list) else "all",
+                "expiresAt": str(p.get("expiresAt") or ""), "via": "axhub"}
+    except Exception:  # noqa: BLE001
+        return None
+
 FOLDER = "plugin-commands"
 RUNNER = Path(__file__).resolve().parents[1] / "commands.mjs"
 ROOT = RUNNER.parents[4]
@@ -293,8 +329,12 @@ def _action(plan: dict[str, Any], grants: list[str], by: str, request: Request |
     return {"ok": bool(r.get("ok")), "code": r.get("code"), "message": r.get("message", ""), "result": {k: v for k, v in r.items() if k not in ("$axf", "ok", "op", "target", "path", "action", "audit")}, "delivered": r.get("delivered")}
 
 
-def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", request: Request | None = None) -> dict[str, Any]:
-    """One plugins.* control@1 command for a caller → the control@1 answer."""
+def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", request: Request | None = None,
+        hub: dict[str, Any] | None = None) -> dict[str, Any]:
+    """One plugins.* control@1 command for a caller → the control@1 answer.
+
+    `hub`: the pass axHub ran the call under, already verified by `hub_pass` (the console's /mcp only). It is an
+    argument, never a field of the command, so no caller can send one in."""
     grants = grants if grants is not None else ["*"]
     command = {k: v for k, v in (command or {}).items() if v not in (None, "")}
     try:
@@ -302,7 +342,7 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     except Exception as e:  # noqa: BLE001
         return {"$axf": "control@1", "ok": False, "code": "unexpected", "message": f"plugin registry: {e}"[:600]}
     try:
-        plan = _engine("plan", {"command": command, "grants": grants, "by": by, "enabled": _enabled()}, reg, _cache["sig"])
+        plan = _engine("plan", {"command": command, "grants": grants, "by": by, "enabled": _enabled(), "pass": hub if isinstance(hub, dict) else None}, reg, _cache["sig"])
     except Exception as e:  # noqa: BLE001
         return {"$axf": "control@1", "ok": False, "code": "unexpected", "message": str(e)[:600]}
     if "dispatch" not in plan:
@@ -314,7 +354,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     else:
         outcome = _action(plan, grants, who, request)
     if plan.get("effect") != "read":
-        cx.log("plugins", f"{who}: {plan.get('name')} — {plan.get('title')} ({plan['command'].get('path')}) {'ok' if outcome.get('ok', 200 <= outcome.get('status', 200) < 300) else 'failed'}")
+        under = f" · ran under pass {plan['ranUnder']} (skipped {plan.get('skippedPolicy', 'confirm')})" if plan.get("ranUnder") else ""
+        cx.log("plugins", f"{who}: {plan.get('name')} — {plan.get('title')} ({plan['command'].get('path')}) {'ok' if outcome.get('ok', 200 <= outcome.get('status', 200) < 300) else 'failed'}{under}")
     return _engine("finish", {"command": plan["command"], "outcome": outcome})
 
 
@@ -356,26 +397,35 @@ def from_rest(method: str, command: dict[str, Any], query: dict[str, str], body:
 
 # ---------------------------------------------------------------------- MCP tools, kept in step with the plugins
 
-def _tool_fn(path: str, kind: str, run_cmd: Callable[[dict[str, Any]], dict[str, Any]]):
+def _ctx_pass(ctx: Any) -> dict[str, Any] | None:
+    """The verified pass axHub sent with this MCP call (decision #120), or None."""
+    try:
+        return hub_pass(ctx.request_context.meta) if ctx is not None else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _tool_fn(path: str, kind: str, run_cmd: Callable[..., dict[str, Any]]):
     import anyio
     from mcp.server.mcpserver.exceptions import ToolError
 
-    async def tool(input: dict[str, Any] | None = None, by: str = "", reason: str = "", confirm: str = "") -> dict[str, Any]:
+    async def tool(input: dict[str, Any] | None = None, by: str = "", reason: str = "", confirm: str = "", ctx: Context = None) -> dict[str, Any]:  # type: ignore[assignment]
         command = {"op": "act", "target": "plugins.reads" if kind == "read" else "plugins.commands", "path": path,
                    "action": "read" if kind == "read" else "run", "input": input or {}, "by": by or "mcp", "reason": reason, "confirm": confirm}
-        r = await anyio.to_thread.run_sync(lambda: run_cmd(command))
+        hp = _ctx_pass(ctx) if kind != "read" else None  # decision #120: lifts the command's own confirm
+        r = await anyio.to_thread.run_sync(lambda: run_cmd(command, hp))
         if not r.get("ok") and r.get("code") != "confirmation_required":
             raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
         return r
     return tool
 
 
-def _generic(run_cmd: Callable[[dict[str, Any]], dict[str, Any]]) -> list[tuple[str, Any, str, dict[str, Any], dict[str, bool]]]:
+def _generic(run_cmd: Callable[..., dict[str, Any]]) -> list[tuple[str, Any, str, dict[str, Any], dict[str, bool]]]:
     import anyio
     from mcp.server.mcpserver.exceptions import ToolError
 
-    async def go(command: dict[str, Any]) -> dict[str, Any]:
-        r = await anyio.to_thread.run_sync(lambda: run_cmd({k: v for k, v in command.items() if v not in (None, "")}))
+    async def go(command: dict[str, Any], hp: dict[str, Any] | None = None) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: run_cmd({k: v for k, v in command.items() if v not in (None, "")}, hp))
         if not r.get("ok") and r.get("code") != "confirmation_required":
             raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
         return r
@@ -393,14 +443,14 @@ def _generic(run_cmd: Callable[[dict[str, Any]], dict[str, Any]]) -> list[tuple[
     async def plugin_read(path: str, input: dict[str, Any] | None = None) -> dict[str, Any]:
         return await go({"op": "act", "target": "plugins.reads", "path": path, "action": "read", "input": input or {}, "by": "mcp"})
 
-    async def plugin_run(path: str, input: dict[str, Any] | None = None, confirm: str = "", by: str = "", reason: str = "") -> dict[str, Any]:
-        return await go({"op": "act", "target": "plugins.commands", "path": path, "action": "run", "input": input or {}, "confirm": confirm, "by": by or "mcp", "reason": reason})
+    async def plugin_run(path: str, input: dict[str, Any] | None = None, confirm: str = "", by: str = "", reason: str = "", ctx: Context = None) -> dict[str, Any]:  # type: ignore[assignment]
+        return await go({"op": "act", "target": "plugins.commands", "path": path, "action": "run", "input": input or {}, "confirm": confirm, "by": by or "mcp", "reason": reason}, _ctx_pass(ctx))
 
     read = {"readOnlyHint": True, "destructiveHint": False, "idempotentHint": True, "openWorldHint": False}
     return [
         ("plugin_commands", plugin_commands, "Every plugin's commands and reads (or one plugin's: plugin=<folder>; q filters; kind read|command). Each has a path <plugin>/<id> for plugin_read / plugin_run and its own <plugin>_<id> tool.", {}, read),
         ("plugin_read", plugin_read, "Read anything a plugin has: path <plugin>/<read> (plugin_commands lists them), input = its query.", {}, read),
-        ("plugin_run", plugin_run, "Run any plugin command: path <plugin>/<command>, input = what it takes. One that deletes answers confirmation_required with a token: call again with confirm set to it.", {},
+        ("plugin_run", plugin_run, "Run any plugin command: path <plugin>/<command>, input = what it takes. One that deletes answers confirmation_required with a token: call again with confirm set to it (a covering approval pass runs it at once).", {},
          {"readOnlyHint": False, "destructiveHint": True, "idempotentHint": False, "openWorldHint": False}),
     ]
 
@@ -426,7 +476,7 @@ def sync_mcp(force: bool = False) -> dict[str, int]:
                 pass
             _tools.pop(name, None)
             removed += 1
-        run_cmd = lambda c: run(c, ["*"], str(c.get("by") or "mcp"))  # noqa: E731 — the console's /mcp = the console token
+        run_cmd = lambda c, hp=None: run(c, ["*"], str(c.get("by") or "mcp"), hub=hp)  # noqa: E731 — the console's /mcp = the console token
         if on and not all(g in _tools for g in GENERIC_TOOLS):
             for name, fn, desc, _schema, ann in _generic(run_cmd):
                 if name not in _tools:

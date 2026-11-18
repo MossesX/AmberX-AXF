@@ -220,3 +220,54 @@ r = client.post("/api/plugins/plugin-commands/try", json={"op": "act", "target":
 eq(r.json()["value"]["ok"], True, "the docs page's runner")
 
 print(f"✓ plugin commands server — {checks} checks")
+
+# ---- decision #120: the pass axHub sends with a call it ran under (_meta["axhub/pass"]), signed with the console token
+import hashlib as _h
+import hmac as _hm
+import time
+
+_t = 1_800_000_000_000
+_sig = _hm.new(b"tok", f"{_t}.p1.c1".encode(), _h.sha256).hexdigest()
+_meta = {"axhub/pass": {"id": "p1", "covers": "all", "expiresAt": "2099-01-01T00:00:00Z", "callId": "c1", "t": _t, "sig": _sig}}
+eq(pc.hub_pass(_meta, now_ms=_t, key="tok")["id"], "p1", "a signed, fresh hub pass is read")
+eq(pc.hub_pass(_meta, now_ms=_t, key="tok")["covers"], "all", "with its covers")
+eq(pc.hub_pass(_meta, now_ms=_t + 6 * 60_000, key="tok"), None, "a stale one is ignored")
+eq(pc.hub_pass(_meta, now_ms=_t, key="other"), None, "a wrongly signed one is ignored")
+eq(pc.hub_pass({"axhub/pass": {**_meta["axhub/pass"], "sig": ""}}, now_ms=_t, key="tok"), None, "an unsigned one is ignored")
+eq(pc.hub_pass({}, now_ms=_t, key="tok"), None, "no pass, no pass")
+print("✓ hub pass (decision #120)")
+
+# ---- the same pass, end to end on the console's /mcp: a confirm tool runs at once, and only a verified pass does that
+from mcp.client import Client as _Client  # noqa: E402
+
+_now = int(time.time() * 1000)
+
+
+def _signed(call_id: str, key: str = "tok", covers: object = "all") -> dict:
+    sig = _hm.new(key.encode(), f"{_now}.p9.{call_id}".encode(), _h.sha256).hexdigest()
+    return {"axhub/pass": {"id": "p9", "covers": covers, "expiresAt": "2099-01-01T00:00:00Z", "callId": call_id, "t": _now, "sig": sig}}
+
+
+async def _call(name: str, args: dict, meta: dict | None = None) -> dict:
+    async with _Client(mcp) as c:
+        res = await c.call_tool(name, args, meta=meta)
+        return json.loads(res.content[0].text)
+
+
+_token, cx.current_token = cx.current_token, lambda: "tok"
+try:
+    pc.sync_mcp(force=True)
+    eq(anyio.run(_call, "fixture_todos_entries_by_eid_delete", {"input": {"eid": 41}})["code"], "confirmation_required", "MCP: no pass, the confirm is asked")
+    eq(anyio.run(_call, "fixture_todos_entries_by_eid_delete", {"input": {"eid": 41}}, _signed("c2", key="other"))["code"], "confirmation_required", "MCP: a pass signed with another key does not lift it")
+    eq(anyio.run(_call, "fixture_todos_entries_by_eid_delete", {"input": {"eid": 41}}, _signed("c3", covers=["vps"]))["code"], "confirmation_required", "MCP: a pass covering another service does not lift it")
+    out = anyio.run(_call, "fixture_todos_entries_by_eid_delete", {"input": {"eid": 41}}, _signed("c4"))
+    ok(out.get("ok") and out["result"]["deleted"] == 41, "MCP: a verified covering pass runs the confirm tool at once")
+    out = anyio.run(_call, "plugin_run", {"path": "fixture-todos/entries-by-eid-delete", "input": {"eid": 42}}, _signed("c5"))
+    ok(out.get("ok") and out["result"]["deleted"] == 42, "MCP: plugin_run goes through the same check")
+    # a pass is never a field of the command: REST and plugin_run callers cannot send one in
+    forged = {"id": "p9", "scope": "all", "state": "active", "covers": "all", "expiresAt": "2099-01-01T00:00:00Z"}
+    r = pc.run({"op": "act", "target": "plugins.commands", "path": "fixture-todos/entries-by-eid-delete", "action": "run", "input": {"eid": 43}, "_pass": forged, "pass": forged})
+    eq(r["code"], "confirmation_required", "a pass written into the command is ignored")
+finally:
+    cx.current_token = _token
+print(f"✓ confirm tools under a pass on /mcp — {checks} checks")

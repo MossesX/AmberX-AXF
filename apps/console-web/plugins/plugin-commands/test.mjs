@@ -66,12 +66,15 @@ eq(r.code, 'confirmation_required', 'a delete asks for a confirm token');
 ok(plan(act('fixture-todos/entries-by-eid-delete', { eid: 1 }, { confirm: r.confirm })).dispatch, 'the same command with it runs');
 eq(plan(act('fixture-todos/entries-by-eid-delete', { eid: 2 }, { confirm: r.confirm })).code, 'confirmation_required', 'not for another record');
 /* ---- a pass (build approval-pass-covers-every-call, s2). Reproduces Brett's "Why do I keep getting approvals when I
-   set a pass?": plan() has no way to hear about a covering pass, so a confirm command asks for its token even while an
-   `all` pass is on. Flipped to the fixed behaviour in s5. */
+   set a pass?": a confirm command asked for its token even while an `all` pass was on (s2). s5: a covering pass —
+   the console's own or the one axHub sent with the call — runs it at once. */
 {
   const pass = { id: 'p-all', scope: 'all', covers: 'all', state: 'active', expiresAt: new Date(Date.now() + 600000).toISOString() };
-  const gap = plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { pass });
-  eq(gap.code, 'confirmation_required', 'KNOWN GAP (s2 → s5): a covering pass does not lift the confirm yet');
+  const under = plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { pass });
+  ok(under.dispatch && under.ranUnder === 'p-all' && under.skippedPolicy === 'confirm', 'a covering pass runs a confirm command at once, logged ranUnder');
+  ok(plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { passes: [{ ...pass, covers: ['axf-console.fixture_todos_*'] }] }).dispatch, 'a pass naming the tool covers it');
+  eq(plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { passes: [{ ...pass, covers: ['vps'] }] }).code, 'confirmation_required', 'a pass naming another service does not');
+  eq(plan(act('fixture-todos/entries-by-eid-delete', { eid: 7 }), { pass: { ...pass, expiresAt: new Date(Date.now() - 1000).toISOString() } }).code, 'confirmation_required', 'an ended pass does not');
 }
 eq(plan(act('fixture-plans/nope')).code, 'not_found', 'unknown command');
 eq(plan(act('nobody/state')).code, 'not_found', 'unknown plugin');
@@ -121,6 +124,12 @@ eq(await main(['plugins', 'fixture-todos']), 0, 'main() for axf.mjs');
   eq(serveOne({ id: 3, op: 'plan', body: { command: act('fixture-plans/state'), registrySig: 'b' } }, state).error, 'registry_needed', 'serve: another signature asks for the registry');
   ok(serveOne({ id: 4, op: 'bundle', body: {} }, state).result.tools.length > 0, 'serve: bundle');
   eq(serveOne({ id: 5, op: 'nope' }, state).ok, false, 'serve: unknown op fails with its id');
+  // the long-lived runner hears about a pass too: the one sent with the call, and the console's own
+  const hubPass = { id: 'p-hub', scope: 'all', covers: 'all', state: 'active', expiresAt: new Date(Date.now() + 600000).toISOString() };
+  const del = act('fixture-todos/entries-by-eid-delete', { eid: 9 });
+  eq(serveOne({ id: 6, op: 'plan', body: { command: del, registrySig: 'a' } }, { ...state, passes: [] }).result.code, 'confirmation_required', 'serve: no pass, the confirm is asked');
+  eq(serveOne({ id: 7, op: 'plan', body: { command: del, registrySig: 'a', pass: hubPass } }, { ...state, passes: [] }).result.ranUnder, 'p-hub', 'serve: the pass sent with the call lifts the confirm');
+  eq(serveOne({ id: 8, op: 'plan', body: { command: del, registrySig: 'a' } }, { ...state, passes: () => [{ ...hubPass, id: 'p-own' }] }).result.ranUnder, 'p-own', "serve: the console's own pass lifts it");
   const out = spawnSync(process.execPath, [fileURLToPath(new URL('./commands.mjs', import.meta.url)), 'serve'], { input: 'not json\n{"id":7,"op":"nope"}\n', encoding: 'utf8', env: process.env });
   const lines = out.stdout.trim().split('\n').map((l) => JSON.parse(l));
   ok(lines.length === 2 && lines[0].ok === false && lines[1].id === 7, 'serve: every line is answered, errors included');
