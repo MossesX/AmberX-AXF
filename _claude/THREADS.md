@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 08:59 UTC · `axhub-veto-countdown-setting-read-only` note (all) · foreign-write
-- 2026-11-18 08:59 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `settings-interface-gear-every-plugin` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `hotfix-orchestrator-grid-columns-don-t` note (all) · foreign-write
 - 2026-11-18 08:59 UTC · `amberx-open-url-must-open-page-even-when` → complete, note (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 16:26 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · pipeline
 - 2026-11-18 16:27 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
 - 2026-11-18 16:27 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 16:28 UTC · `api-fully-drives-every-field-type-forms` → pending (all) · voice session
+- 2026-11-18 16:29 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
 
 ## Token passes (log)
 

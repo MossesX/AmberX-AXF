@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9092,
- "updatedAt": "2026-11-18T16:28:40.221Z",
+ "rev": 9093,
+ "updatedAt": "2026-11-18T16:29:45.217Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -313181,7 +313181,7 @@
    "title": "Voice drives the whole app: your mouth is the mouse (Fable sweep)",
    "category": "",
    "detail": "Brett: the API must fully control the entire app. Found in a live demo: Plan Studio 2.0 'plan-studio-2.new' and 'new-inside' only open a blank Plan item dialog; the text passed as args never fills Title/Note, and there is no console-control command to set a dialog field (title, note, kind, priority, model, checkbox, any input). Fix at the framework level: every input, textarea, select, switch and checkbox in every console dialog and screen gets a console-control address (field:<dialog>/<name>) with set/get, and a dialog submit/save. Action args that name a value (new:<title>) must fill the form and save. Plan Studio 2.0 first (new, new-inside, rename with text, note, priority, model), then sweep all plugins. CI check: fails on any form control without a settable address. Same through REST, MCP, CLI and voice. Test: create a nested plan with titles, notes and ticked checkboxes entirely through the API and verify it on screen.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -313189,7 +313189,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T22:53:07.696Z",
-   "updatedAt": "2026-11-17T23:46:36.260Z",
+   "updatedAt": "2026-11-18T16:28:56.414Z",
    "builtAt": "",
    "notes": [
     {
@@ -313673,7 +313673,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -320359,7 +320359,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T16:27:54.013Z",
+   "updatedAt": "2026-11-18T16:29:16.013Z",
    "builtAt": "",
    "notes": [
     {
@@ -320453,6 +320453,10 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T16:27:54.013Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T16:29:16.013Z"
     }
    ],
    "approvals": [
@@ -321206,7 +321210,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
