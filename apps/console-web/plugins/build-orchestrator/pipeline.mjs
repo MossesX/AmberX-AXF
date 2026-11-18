@@ -98,6 +98,7 @@ import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { SettingsSourceError, readSettingSync, writeSetting } from '../../../../framework/core/settings-source.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -135,12 +136,36 @@ export function loadSettings(env = process.env) {
   return P.normSettings({ ...fromClaude, ...file, ...patch });
 }
 export function saveSettings(patch) { const f = files(); const next = P.normSettings({ ...(readJson(f.settings, {}) ?? {}), ...patch }); writeJson(f.settings, next); return next; }
+/** The pipeline's own records (accounts.json): probe and health per account. Settings never live here (settings-source@1). */
+export const OWN_KEYS = ['probe', 'health'];
 export const loadOwnAccounts = () => { const j = readJson(files().accounts, {}); return j && typeof j === 'object' && !Array.isArray(j) ? j : {}; };
 export function saveOwnAccount(name, patch) {
   if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
+  const bad = Object.keys(patch).filter((k) => !OWN_KEYS.includes(k));
+  if (bad.length) throw Object.assign(new Error(`${bad.join(', ')}: a setting, owned by Claude accounts (workers.json); use setAccountSetting`), { code: 'not_owner' });
   const all = loadOwnAccounts(); const cur = all[name] && typeof all[name] === 'object' ? all[name] : {};
   const next = { ...cur, ...patch }; for (const k of Object.keys(next)) if (next[k] === undefined) delete next[k];
   all[name] = next; writeJson(files().accounts, all); return next;
+}
+/** The env the settings resolver sees: the pipeline names the workers folder AXF_CLAUDE_WORKERS, the claude-accounts plugin AXF_CLAUDE_ACCOUNTS_DATA_DIR. */
+const sourceEnv = (env = process.env) => (env.AXF_CLAUDE_WORKERS && !env.AXF_CLAUDE_ACCOUNTS_DATA_DIR ? { ...env, AXF_CLAUDE_ACCOUNTS_DATA_DIR: env.AXF_CLAUDE_WORKERS } : env);
+/** One account's settings as the owner holds them (settings-source@1 → claude-accounts workers.json): { use?, parallel?, fable? }, {} when the owner can't be read. */
+export function accountSettings(name, env = process.env) {
+  const out = {};
+  for (const [k, field] of [['use', 'use'], ['parallel', 'parallel'], ['fable', 'fable']]) {
+    try { const r = readSettingSync(`accounts.${name}.${k}`, { env: sourceEnv(env) }); if (r.set && r.value !== undefined) out[field] = r.value; }
+    catch (e) { if (!(e instanceof SettingsSourceError)) throw e; }
+  }
+  return out;
+}
+/** Change an account's settings through their owner (workers.json): { use?: boolean, parallel?: n, fable?: boolean | undefined (= auto) }. */
+export async function setAccountSetting(name, patch, env = process.env) {
+  if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
+  const e = sourceEnv(env); const done = {};
+  if (typeof patch.use === 'boolean') { await writeSetting(`accounts.${name}.use`, patch.use, { env: e, store: 'claude-accounts/workers' }); done.use = patch.use; }
+  if (patch.parallel !== undefined) { await writeSetting(`accounts.${name}.parallel`, Math.max(1, Math.min(12, Number(patch.parallel) || 1)), { env: e, store: 'claude-accounts/workers' }); done.parallel = Math.max(1, Math.min(12, Number(patch.parallel) || 1)); }
+  if ('fable' in patch) { await writeSetting(`accounts.${name}.fable`, typeof patch.fable === 'boolean' ? patch.fable : undefined, { env: e, store: 'claude-accounts/workers' }); done.fable = patch.fable; }
+  return { ...accountSettings(name, env), ...done };
 }
 export const loadState = () => ({ $axf: SCHEMA_STATE, at: '', plan: null, slots: null, accounts: [], idle: null, alerts: [], launchFails: {}, recent: [], ...(readJson(files().state, {}) ?? {}) });
 const saveState = (s) => writeJson(files().state, { ...s, $axf: SCHEMA_STATE });
@@ -203,6 +228,12 @@ export function accountsRead(store, settings = loadSettings(), env = process.env
   for (const r of rows) {
     const mine = running.filter((b) => b.pipeline.account === r.name).map((b) => b.pipeline.session || `build:${b.id}`);
     r.running = [...new Set([...(r.running ?? []), ...mine])];
+    // the account's settings come from their one owner (workers.json through settings-source@1); the status row already
+    // carries the router's view of them, the owner read wins when this process can see the document
+    const own = accountSettings(r.name, env);
+    if (typeof own.use === 'boolean') r.excluded = !own.use;
+    if (Number.isInteger(own.parallel) && own.parallel > 0) r.building = own.parallel;
+    if (typeof own.fable === 'boolean') r.fable = own.fable; else if (own.fable === undefined && Object.hasOwn(own, 'use')) delete r.fable;
   }
   return { accounts: P.accountViews(rows, loadOwnAccounts(), { settings }), rows: w.rows, source: w.source, at: w.at, why: w.why };
 }
@@ -1500,11 +1531,12 @@ async function main(argv) {
   }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {
+    // the settings' owner is Claude accounts (workers.json): this writes through settings-source@1, never accounts.json
     const patch = {};
     if (has('fable')) patch.fable = flag('fable') === 'auto' ? undefined : flag('fable') === 'on';
     if (has('parallel')) patch.parallel = Math.max(1, Math.min(12, Number(flag('parallel')) || 1));
     if (has('use')) patch.use = flag('use') !== 'off';
-    const r = saveOwnAccount(rest[0], patch); return out({ ok: true, name: rest[0], record: r }, `${rest[0]}: ${JSON.stringify(r)}`);
+    const r = await setAccountSetting(rest[0], patch); return out({ ok: true, name: rest[0], record: r, owner: 'claude-accounts/workers' }, `${rest[0]}: ${JSON.stringify(r)} (saved in Claude accounts)`);
   }
   if (cmd === 'health') {
     if (has('request')) { const r = requestHealth({ by }); return out({ ok: true, ran: false, requested: r.at, last: loadHealth() }, `health sweep asked for: the next tick starts it (last: ${loadHealth()?.line || 'none yet'})`); }

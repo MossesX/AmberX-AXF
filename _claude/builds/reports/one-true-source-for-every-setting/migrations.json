@@ -1,0 +1,256 @@
+{
+  "$axf": "settings-migration@1",
+  "build": "one-true-source-for-every-setting",
+  "entries": [
+    {
+      "at": "2026-11-18T02:00:13.931Z",
+      "by": "settings-migrate",
+      "key": "accounts.account-1.use",
+      "owner": "claude-accounts/workers",
+      "pointer": "/excluded",
+      "pick": {
+        "store": "claude-accounts/workers",
+        "value": false,
+        "why": "the owner holds the list: not-in-list says false"
+      },
+      "before": {
+        "claude-accounts/workers": false,
+        "pipeline/accounts": false
+      },
+      "after": {
+        "claude-accounts/workers": false,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:14.234Z",
+      "by": "settings-migrate",
+      "key": "accounts.account-3.use",
+      "owner": "claude-accounts/workers",
+      "pointer": "/excluded",
+      "pick": {
+        "store": "claude-accounts/workers",
+        "value": true,
+        "why": "the owner holds the list: not-in-list says true"
+      },
+      "before": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": true
+      },
+      "after": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:14.743Z",
+      "by": "settings-migrate",
+      "key": "accounts.hulu-api.use",
+      "owner": "claude-accounts/workers",
+      "pointer": "/excluded",
+      "pick": {
+        "store": "claude-accounts/workers",
+        "value": true,
+        "why": "the owner holds the list: not-in-list says true"
+      },
+      "before": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": false
+      },
+      "after": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": true,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:15.622Z",
+      "by": "settings-migrate",
+      "key": "accounts.hulu0241.use",
+      "owner": "claude-accounts/workers",
+      "pointer": "/excluded",
+      "pick": {
+        "store": "claude-accounts/workers",
+        "value": true,
+        "why": "the owner holds the list: not-in-list says true"
+      },
+      "before": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": true
+      },
+      "after": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:16.751Z",
+      "by": "settings-migrate",
+      "key": "accounts.mossesx-max-.use",
+      "owner": "claude-accounts/workers",
+      "pointer": "/excluded",
+      "pick": {
+        "store": "claude-accounts/workers",
+        "value": true,
+        "why": "the owner holds the list: not-in-list says true"
+      },
+      "before": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": true
+      },
+      "after": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:17.633Z",
+      "by": "settings-migrate",
+      "key": "accounts.account-3.parallel",
+      "owner": "claude-accounts/workers",
+      "pointer": "/perAccount/account-3/building",
+      "pick": {
+        "store": "pipeline/accounts",
+        "value": 5,
+        "why": "the owner is unset: the newest copy wins (pipeline/accounts, 2026-11-18T01:53:42.186Z)"
+      },
+      "before": {
+        "claude-accounts/workers": null,
+        "pipeline/accounts": 5
+      },
+      "after": {
+        "claude-accounts/workers": 5,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:19.325Z",
+      "by": "settings-migrate",
+      "key": "accounts.hulu0241.parallel",
+      "owner": "claude-accounts/workers",
+      "pointer": "/perAccount/hulu0241/building",
+      "pick": {
+        "store": "pipeline/accounts",
+        "value": 8,
+        "why": "the owner is unset: the newest copy wins (pipeline/accounts, 2026-11-18T01:53:42.186Z)"
+      },
+      "before": {
+        "claude-accounts/workers": null,
+        "pipeline/accounts": 8
+      },
+      "after": {
+        "claude-accounts/workers": 8,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:19.753Z",
+      "by": "settings-migrate",
+      "key": "accounts.mossesx-max-.parallel",
+      "owner": "claude-accounts/workers",
+      "pointer": "/perAccount/mossesx-max-/building",
+      "pick": {
+        "store": "pipeline/accounts",
+        "value": 8,
+        "why": "the owner is unset: the newest copy wins (pipeline/accounts, 2026-11-18T01:53:42.186Z)"
+      },
+      "before": {
+        "claude-accounts/workers": null,
+        "pipeline/accounts": 8
+      },
+      "after": {
+        "claude-accounts/workers": 8,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:20.128Z",
+      "by": "settings-migrate",
+      "key": "accounts.account-3.fable",
+      "owner": "claude-accounts/workers",
+      "pointer": "/perAccount/account-3/fable",
+      "pick": {
+        "store": "pipeline/accounts",
+        "value": false,
+        "why": "the owner is unset: the newest copy wins (pipeline/accounts, 2026-11-18T01:53:42.186Z)"
+      },
+      "before": {
+        "claude-accounts/workers": null,
+        "pipeline/accounts": false
+      },
+      "after": {
+        "claude-accounts/workers": false,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    },
+    {
+      "at": "2026-11-18T02:00:20.323Z",
+      "by": "settings-migrate",
+      "key": "accounts.hulu0241.fable",
+      "owner": "claude-accounts/workers",
+      "pointer": "/perAccount/hulu0241/fable",
+      "pick": {
+        "store": "pipeline/accounts",
+        "value": true,
+        "why": "the owner is unset: the newest copy wins (pipeline/accounts, 2026-11-18T01:53:42.186Z)"
+      },
+      "before": {
+        "claude-accounts/workers": null,
+        "pipeline/accounts": true
+      },
+      "after": {
+        "claude-accounts/workers": true,
+        "pipeline/accounts": null
+      },
+      "stripped": [
+        "pipeline/accounts"
+      ],
+      "conflict": false,
+      "applied": true
+    }
+  ]
+}

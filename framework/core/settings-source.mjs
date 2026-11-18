@@ -21,7 +21,7 @@ import { readFileSync, statSync } from 'node:fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DataStoreError } from './data-store.mjs';
-import { pathForKey, readJson, roots, updateJson, keyFor } from './data-files.mjs';
+import { pathForKey, readJson, readJsonSync, roots, updateJson, keyFor } from './data-files.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 export const FRAME = 'settings-source@1';
@@ -222,6 +222,16 @@ export async function readSetting(key, opts = {}) {
   if (!owner) throw new SettingsSourceError('no_owner', `"${key}" has no owner in settings-sources.json: register it first`);
   if (owner.store.kind !== 'data-store') return { key, owner, value: undefined, set: false, reachable: false };
   let doc; try { doc = await readJson(owner.file, null); } catch (e) { throw dataError(e); }
+  const raw = doc === null ? undefined : getAt(doc, owner.pointer);
+  const value = owner.derive ? deriveRead(owner, raw) : raw;
+  return { key, owner, value, set: owner.derive ? doc !== null : value !== undefined, reachable: true };
+}
+/** readSetting for sync callers (the pipeline's tick): the same answer through data-files' sync reads. */
+export function readSettingSync(key, opts = {}) {
+  const owner = ownerOf(key, opts);
+  if (!owner) throw new SettingsSourceError('no_owner', `"${key}" has no owner in settings-sources.json: register it first`);
+  if (owner.store.kind !== 'data-store') return { key, owner, value: undefined, set: false, reachable: false };
+  let doc; try { doc = readJsonSync(owner.file, null); } catch (e) { throw dataError(e); }
   const raw = doc === null ? undefined : getAt(doc, owner.pointer);
   const value = owner.derive ? deriveRead(owner, raw) : raw;
   return { key, owner, value, set: owner.derive ? doc !== null : value !== undefined, reachable: true };

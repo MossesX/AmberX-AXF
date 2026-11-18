@@ -16,7 +16,7 @@
  *                         other account (workers, the console's own when it differs, API accounts) is off for builds and
  *                         no rule applies (build one-account-picker, Nov 13 2026). The console is switched to it as well.
  *   limits                { building: 3, queue: 5 } per account: jobs running at once, jobs waiting for that account
- *   perAccount            { name: { label?, building?, queue? } }
+ *   perAccount            { name: { label?, building?, queue?, fable? } }  fable: may run Fable (override over the pipeline's probe / the plan)
  *   api                   { name: { label, enabled, dailyCapUsd, weeklyCapUsd, alertAt } } the API-key accounts that may
  *                         work. They bill per token, so they only take a job a rule sends them (never by default).
  *   rules                 ordered; the first enabled rule that matches a job decides:
@@ -97,6 +97,7 @@ export function normConfig(c) {
     if (str(v.label, 40)) o.label = str(v.label, 40);
     if (v.building !== undefined && v.building !== null && v.building !== '') o.building = int(v.building, 0, MAX_LIMIT, limits.building);
     if (v.queue !== undefined && v.queue !== null && v.queue !== '') o.queue = int(v.queue, 0, MAX_LIMIT, limits.queue);
+    if (typeof v.fable === 'boolean') o.fable = v.fable;
     if (Object.keys(o).length) perAccount[n] = o;
   }
   const api = {};
@@ -187,6 +188,7 @@ export function roster(config, accounts) {
     if (!why && limited) why = `out until ${limited.until}${limited.reason ? ` (${limited.reason})` : ''}`;
     if (!why && capped) why = spend.why;
     return { name: a.name, label: pa.label || api?.label || '', kind, role, active: !!a.active, buildAccount: picked, running, queued, building, queue, limited, spend,
+      excluded: cfg.excluded.includes(a.name), ...(typeof pa.fable === 'boolean' ? { fable: pa.fable } : {}),
       takesJobs: takes, canRun: can && running < building, canQueue: can && running >= building && queued < queue, order: role === 'interactive' ? 2e3 : order(a.name), why };
   });
 }

@@ -93,11 +93,13 @@ export function normSettings(raw = {}) {
 // ------------------------------------------------------------------ accounts
 
 /**
- * One account as the pipeline sees it. `row` = a claude-workers status row ({ name, role, email, plan, limited, running[] }),
- * `own` = the pipeline's own record for it (accounts.json: { fable?, parallel?, use?, probe?: { fable, at, error } }).
- *   fable      may this account run Fable? override (own.fable) > a fresh probe > the plan (fablePlans)
- *   parallel   sessions at once: own.parallel > settings.parallelPerAccount
- *   usable     may the dispatcher put a build on it? never limited, never an API key, never one Brett switched off;
+ * One account as the pipeline sees it. `row` = a claude-workers status row ({ name, role, email, plan, limited, running[],
+ * building, excluded, fable? }: claude-workers@1 workers.json is the one owner of the account's on/off, sessions at once and
+ * Fable override; settings-source@1 `accounts.<name>.use|parallel|fable`), `own` = the pipeline's own record for it
+ * (accounts.json: { probe?: { fable, at, error }, health? }: what the pipeline learned, never a setting).
+ *   fable      may this account run Fable? override (row.fable, workers.json perAccount.fable) > a fresh probe > the plan (fablePlans)
+ *   parallel   sessions at once: row.building (workers.json perAccount.building, else limits.building) > settings.parallelPerAccount
+ *   usable     may the dispatcher put a build on it? never limited, never an API key, never one Brett excluded (workers.json);
  *              workers always; the console's account only when no worker exists and useConsoleAccount is on
  */
 export function accountView(row, own = {}, { settings = normSettings(), anyWorker = false, now = Date.now(), pick = '' } = {}) {
@@ -107,13 +109,14 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   // a fresh health answer about Fable beats an older probe (an auth or credit failure says nothing about Fable)
   const hp = health && typeof health.fable === 'boolean' ? { fable: health.fable, at: health.at, error: health.error } : null;
   const probe = hp ?? (o.probe && typeof o.probe === 'object' && typeof o.probe.fable === 'boolean' && now - Date.parse(o.probe.at || 0) < settings.probeDays * 86400e3 ? o.probe : null);
-  const fable = typeof o.fable === 'boolean' ? o.fable : probe ? probe.fable : settings.fablePlans.includes(plan);
-  const fableFrom = typeof o.fable === 'boolean' ? 'override' : hp ? 'health' : probe ? 'probe' : plan ? 'plan' : 'unknown';
+  const override = typeof row?.fable === 'boolean' ? row.fable : undefined;
+  const fable = override !== undefined ? override : probe ? probe.fable : settings.fablePlans.includes(plan);
+  const fableFrom = override !== undefined ? 'override' : hp ? 'health' : probe ? 'probe' : plan ? 'plan' : 'unknown';
   const role = str(row?.role, 20) || 'saved';
   const running = list(row?.running).length;
-  const parallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : settings.parallelPerAccount;
+  const parallel = Number.isInteger(row?.building) && row.building > 0 ? Math.min(12, row.building) : settings.parallelPerAccount;
   const apiKey = row?.kind === 'api' || role === 'api-key' || role === 'api-worker' || role === 'api-off' || plan === 'api';
-  const off = o.use === false;
+  const off = row?.excluded === true;
   const sick = health && (health.signedIn === false || health.credits === false)
     ? { kind: health.signedIn === false ? 'auth' : 'credits', reason: health.signedIn === false ? 'cannot sign in (health check)' : 'no credits left (health check)', until: '' } : null;
   const limited = row?.limited && typeof row.limited === 'object' ? row.limited : sick;
@@ -126,17 +129,17 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   if (pick && !picked) why = `off for builds: ${pick} takes every build`;
   else if (picked && limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
   else if (picked) why = '';
-  else if (off) why = 'switched off for the pipeline';
+  else if (off) why = 'switched off (Claude accounts: not a worker)';
   else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
   else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
-  const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
+  const apiParallel = Number.isInteger(row?.building) && row.building > 0 ? Math.min(12, row.building) : settings.parallelPerAccount;
   const api = apiKey ? (pick ? { usable: false, why: `off for builds: ${pick} takes every build`, spend: row?.spend && typeof row.spend === 'object' ? row.spend : null } : apiState(row, o, settings, { limited, apiParallel, running })) : null;
   const rawOrder = o.order ?? row?.order;
   const order = typeof rawOrder === 'number' && Number.isFinite(rawOrder) ? rawOrder : null;
   return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40), order, buildAccount: picked, health: health ?? (o.health && typeof o.health === 'object' ? o.health : null),
-    fable: apiKey && typeof o.fable !== 'boolean' && !probe ? true : fable, fableFrom: apiKey && typeof o.fable !== 'boolean' && !probe ? 'api' : fableFrom,
+    fable: apiKey && override === undefined && !probe ? true : fable, fableFrom: apiKey && override === undefined && !probe ? 'api' : fableFrom,
     parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, why, limited, probe: probe ?? (o.probe ?? null), api };
 }
 
@@ -145,7 +148,7 @@ export function apiState(row, own = {}, settings = normSettings(), { limited = n
   const name = str(row?.name, 40);
   const spend = row?.spend && typeof row.spend === 'object' ? row.spend : null;
   let why = '';
-  if (own?.use === false) why = 'switched off for the pipeline';
+  if (row?.excluded === true) why = 'switched off (Claude accounts: not a worker)';
   else if (settings.apiAccounts.length && !settings.apiAccounts.includes(name)) why = 'not in the pipeline\'s API account list';
   else if (row?.hasKey === false) why = `no API key saved (Terminal → VPS host → claude-account savekey ${name})`;
   else if (row?.role === 'api-off') why = row?.why || 'not set up as an API worker (Claude accounts → Job routing → API accounts)';
@@ -155,7 +158,7 @@ export function apiState(row, own = {}, settings = normSettings(), { limited = n
   return { usable: !why, why, spend };
 }
 
-/** Every account as the pipeline sees it; `rows` = claude-workers status rows, `own` = accounts.json. */
+/** Every account as the pipeline sees it; `rows` = claude-workers status rows, `own` = accounts.json (probe / health only). */
 export function accountViews(rows, own = {}, opts = {}) {
   const anyWorker = list(rows).some((r) => r?.role === 'worker');
   const pick = buildPick(rows);

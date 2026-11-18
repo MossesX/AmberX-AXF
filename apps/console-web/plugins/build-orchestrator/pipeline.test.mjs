@@ -59,8 +59,9 @@ const rows = [
   { name: 'w-max', role: 'worker', email: 'm@x', plan: 'max', limited: null, running: [] },
   { name: 'w-out', role: 'worker', email: 'o@x', plan: 'max', limited: { until: '2026-11-09T00:00:00Z', reason: 'hit its limit' }, running: [] },
 ];
-t('accountView: Fable from the plan, override and probe win over it; parallel per account', () => {
-  const v = P.accountViews(rows, { 'w-pro': { fable: true }, 'w-max': { probe: { fable: false, at: now }, parallel: 3 } }, { settings, now: Date.parse(now) + 1000 });
+t('accountView: Fable from the plan, override and probe win over it; parallel per account (both from the workers.json row)', () => {
+  const owned = rows.map((r) => (r.name === 'w-pro' ? { ...r, fable: true } : r.name === 'w-max' ? { ...r, building: 3 } : r));
+  const v = P.accountViews(owned, { 'w-max': { probe: { fable: false, at: now } } }, { settings, now: Date.parse(now) + 1000 });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
   assert.equal(by.console.fable, true); assert.equal(by.console.fableFrom, 'plan');
   assert.equal(by['w-pro'].fable, true); assert.equal(by['w-pro'].fableFrom, 'override');
@@ -359,10 +360,10 @@ t('actions: Queue → back to Pending / hold / archive / delete; live builds are
 });
 t('one build account: only it takes builds, whatever its role; every other one (API too) is off, overflow included', () => {
   const pick = (r) => ({ ...r, buildPick: 'console' });
-  const v = P.accountViews([...rows, apiRow('hulu-api')].map(pick), { console: { use: false } }, { settings });
+  const v = P.accountViews([...rows, apiRow('hulu-api')].map(pick).map((r) => (r.name === 'console' ? { ...r, excluded: true } : r)), {}, { settings });
   const by = Object.fromEntries(v.map((a) => [a.name, a]));
   assert.equal(P.buildPick(v.length ? [...rows, apiRow('hulu-api')].map(pick) : []), 'console');
-  assert.equal(by.console.usable, true, 'the pick wins over the pipeline\'s own off and over workers existing');
+  assert.equal(by.console.usable, true, 'the pick wins over the account being excluded and over workers existing');
   assert.equal(by.console.buildAccount, true);
   for (const n of ['w-pro', 'w-max']) { assert.equal(by[n].usable, false); assert.match(by[n].why, /off for builds: console takes every build/); }
   assert.equal(by['hulu-api'].api.usable, false, 'API accounts are off too');
@@ -560,6 +561,18 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   const pipe = (...a) => run('pipeline.mjs', ...a);
   const orch = (...a) => run('orchestrator.mjs', ...a);
   const json = (r) => JSON.parse(r.stdout.trim().split('\n').pop());
+  const workersFile = () => JSON.parse(readFileSync(join(workersDir, 'workers.json'), 'utf8'));
+  t('account settings live in workers.json (settings-source@1): the pipeline writes the owner, never accounts.json', () => {
+    let r = json(pipe('account', 'w-pro', '--use', 'off', '--parallel', '4', '--fable', 'on', '--json'));
+    assert.equal(r.owner, 'claude-accounts/workers'); assert.deepEqual([r.record.use, r.record.parallel, r.record.fable], [false, 4, true]);
+    let w = workersFile(); assert.ok(w.excluded.includes('w-pro')); assert.equal(w.perAccount['w-pro'].building, 4); assert.equal(w.perAccount['w-pro'].fable, true);
+    assert.ok(!existsSync(join(pipeDir, 'accounts.json')) || !('use' in (JSON.parse(readFileSync(join(pipeDir, 'accounts.json'), 'utf8'))['w-pro'] ?? {})), 'no copy in accounts.json');
+    const a = json(pipe('accounts', '--json')).accounts.find((x) => x.name === 'w-pro');
+    assert.equal(a.usable, false); assert.match(a.why, /not a worker/); assert.equal(a.parallel, 4); assert.equal(a.fable, true); assert.equal(a.fableFrom, 'override');
+    r = json(pipe('account', 'w-pro', '--use', 'on', '--fable', 'auto', '--json'));
+    w = workersFile(); assert.ok(!w.excluded.includes('w-pro')); assert.equal(w.perAccount['w-pro'].fable, undefined); assert.equal(w.perAccount['w-pro'].building, 4);
+    assert.equal(json(pipe('accounts', '--json')).accounts.find((x) => x.name === 'w-pro').usable, true);
+  });
   const store = () => JSON.parse(readFileSync(storeFile, 'utf8'));
   const find = (id) => store().builds.find((b) => b.id === id);
 
