@@ -832,8 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:17 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
-- 2026-11-18 00:17 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
 - 2026-11-18 00:17 UTC · `terminal-main-tab-streaming-console-s` s365 done, → landing (all) · orchestrator
 - 2026-11-18 00:17 UTC · `terminal-main-tab-streaming-console-s` note (all) · orchestrator
 - 2026-11-18 00:18 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
@@ -1232,6 +1230,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:33 UTC · `one-true-source-for-every-setting` s3 done (all) · orchestrator
 - 2026-11-18 01:33 UTC · `one-true-source-for-every-setting` s3 done (all) · foreign-write
 - 2026-11-18 01:33 UTC · `axhub-routes-for-console-hub` added (0 steps) (all) · foreign-write
+- 2026-11-18 01:34 UTC · `one-true-source-for-every-setting` s3 done (all) · foreign-write
+- 2026-11-18 01:34 UTC · `axhub-routes-for-console-hub` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
