@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8637,
- "updatedAt": "2026-11-18T01:01:34.309Z",
+ "rev": 8638,
+ "updatedAt": "2026-11-18T01:02:03.465Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -288242,7 +288242,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:01:11.723Z",
+   "updatedAt": "2026-11-18T01:01:34.775Z",
    "builtAt": "",
    "notes": [
     {
@@ -288388,6 +288388,10 @@
     {
      "text": "Phase 2 done, PR #829 (https://github.com/MossesX/AmberX-AXF/pull/829). Waits on UI Review r-20261118-e0399043: pick Flagship, Graphite or Daylight.",
      "at": "2026-11-18T01:00:55.295Z"
+    },
+    {
+     "text": "Reconciler: PR #829; PR #829 names s5, s26, s10, s11, s12, s13, s14, s15, s16, s17 done",
+     "at": "2026-11-18T01:01:34.775Z"
     }
    ],
    "approvals": [
