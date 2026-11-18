@@ -55,6 +55,16 @@ import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { guardStatus, normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
 import { normRecoveries, normRecovery } from '../core/build-watchdog.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
+import { DEMO_PREFIX, demoTag, demoViolations, isDemo, isDemoId } from '../core/demo-build.mjs';
+
+/*
+ * demo-build@1 (framework/core/demo-build.mjs, Nov 17 2026, guided live demo): a throwaway build the live demo plays
+ * with carries `demo: true` and an id starting with `demo-`. The tag is derived from the id on every read, so older
+ * records need no migration; validateStore refuses a tag that disagrees with the id; the orchestrator and Pending
+ * projections carry it read-only (an absorb never grants it); a demo write (withStore meta `demo: true`) that touches
+ * a build without the tag is refused (demoViolations).
+ */
+export { DEMO_PREFIX, demoViolations, isDemo, isDemoId };
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -96,7 +106,7 @@ const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
 /** A new build's id from a title (build-id@1: at most 40 characters). `slug` stays for profile names and old lookups. */
 export const newBuildId = (t) => shortBuildId(str(t, 300));
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'demo', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -165,6 +175,7 @@ export function normBuild(b, ctx = {}) {
     detail: str(o.detail, 8000),
     status: STATUSES.includes(o.status) ? o.status : 'pending',
     hidden: o.hidden === true,
+    ...(demoTag(id) ? { demo: true } : {}), // demo-build@1: the sandbox tag, derived from the id (never from the record)
     source: str(o.source, 40) || 'console',
     pendingId: str(o.pendingId, 80),
     ...(isBuildId(o.alias) && o.alias !== id ? { alias: o.alias } : {}), // build-id@1: the short name of a build whose id is longer than 40 characters
@@ -324,6 +335,10 @@ export function validateStore(store) {
     if (!Number.isInteger(b.rev) || b.rev < 1) err(`${at}.rev`, 'must be a whole number from 1');
     for (const k of ['createdAt', 'updatedAt']) if (typeof b[k] !== 'string' || !ISO.test(b[k])) err(`${at}.${k}`, 'is not an ISO timestamp');
     if (b.deleted === true && !ISO.test(b.deletedAt ?? '')) err(`${at}.deletedAt`, 'a deleted build says when');
+    // demo-build@1: the tag and the id prefix always agree (absent on every other build)
+    if (b.demo !== undefined && b.demo !== true) err(`${at}.demo`, 'is true on a demo build and absent otherwise');
+    if (b.demo === true && !isDemoId(b.id)) err(`${at}.demo`, `a demo build's id starts with ${DEMO_PREFIX}`);
+    if (b.demo !== true && isDemoId(b.id)) err(`${at}.demo`, `a ${DEMO_PREFIX} build carries demo: true`);
     if (!Array.isArray(b.notes) || b.notes.some((n) => !n || typeof n.text !== 'string')) err(`${at}.notes`, 'must be a list of { text, at }');
     // build-watchdog@1: optional; when present, every record is a watchdog-recovery@1 (an action, a time, a known cause)
     if (b.recoveries !== undefined) {
@@ -499,7 +514,7 @@ export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 
     }
     if (rec.deleted) { rec.deleted = false; rec.deletedAt = ''; }
     if (!rec.profiles.includes(profile)) { rec.profiles.push(profile); rec.order[profile] = nextOrder(s, profile); }
-    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && ob[k] !== undefined) rec[k] = clone(ob[k]);
+    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && k !== 'demo' && ob[k] !== undefined) rec[k] = clone(ob[k]); // demo: read-only, from the id
     { const og = mergeOrigin(ob.origin, rec.origin); if (og) rec.origin = og; } // his words are never lost on a write
     mergeSteps(rec, ob.steps ?? [], now, by, 'removed in the orchestrator');
     followDefault(rec, now);
@@ -549,6 +564,7 @@ export function itemOfBuild(b, now = nowIso()) {
   if (p.planId || b.planRef) item.planId = p.planId || b.planRef;
   if (p.estimate) item.estimate = p.estimate;
   if (b.origin) item.origin = clone(b.origin);
+  if (b.demo === true) item.demo = true; // demo-build@1: the Pending list marks it demo-only
   return item;
 }
 
@@ -608,7 +624,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (b.deleted) { b.deleted = false; b.deletedAt = ''; }
     if (!b.profiles.includes(profile)) { b.profiles.push(profile); b.order[profile] = nextOrder(s, profile); }
     const shownItem = itemOfBuild(b, now);
-    if (canon(shownItem) === canon(it)) continue;
+    if (canon({ ...shownItem, demo: undefined }) === canon({ ...it, demo: undefined })) continue; // demo: a read-only mark, never a change
     const prefix = b.pending?.prefixSteps ?? (it.subPrompts ?? []).some((p) => PREFIX.test(str(p.text)));
     b.title = str(it.title, 300) || b.title;
     b.detail = str(it.detail, 8000);
@@ -654,6 +670,7 @@ export function projectQueue(store, profile) {
     const rec = { ...(b.queue ?? {}) };
     delete rec.steps;
     if (b.steps.length) rec.steps = b.steps.map((x) => ({ text: x.text, ...(x.estimate ? { estimate: x.estimate } : {}), ...(x.done ? { done: true, doneAt: x.doneAt } : {}), ...(x.skip ? { skip: true } : {}), ...(x.fm ? { fm: x.fm } : {}) }));
+    if (b.demo === true) rec.demo = true; // demo-build@1: the queue marks it demo-only
     if (Object.keys(rec).length) steps[b.planRef || b.id] = rec;
   }
   return { $axf: 'build-queue@1', order: epics.map((b) => b.planRef || b.id), steps, dirty: m.dirty === true, updatedAt: m.updatedAt || store.updatedAt, history: clone(m.history ?? []) };
