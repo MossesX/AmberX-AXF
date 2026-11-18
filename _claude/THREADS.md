@@ -832,7 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 00:31 UTC · `pass-approval-hook-deep-link-amberx-notification` → complete, note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
 - 2026-11-18 00:31 UTC · `fix-step-splitter-claude-exit-1-input` → complete, note (all) · foreign-write
@@ -1232,6 +1231,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:39 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
 - 2026-11-18 01:39 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · console
 - 2026-11-18 01:39 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
+- 2026-11-18 01:40 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 
