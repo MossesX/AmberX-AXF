@@ -247,6 +247,10 @@ axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/
 # Stale-row watchdog (Brett, Nov 16 2026: "I want a server fucking watchdog on the VPS to do that."): every 5 minutes,
 # rows left on the builds lists after their PR merged or closed are completed or removed (template deploy/cron/axf-stale-watchdog).
 axf_cron_file axf-stale-watchdog "*/5 * * * * root cd $DIR && flock -n /tmp/axf-stale-watchdog.lock node apps/console-web/plugins/build-orchestrator/watchdog.mjs run --cron --by watchdog >> /var/log/axf-stale-watchdog.log 2>&1"  # axf-plugin:build-orchestrator
+# VPS reaper (vps-reaper@1, Nov 18 2026: the VPS cleans up its own ghosts): every 2 minutes finished claude -p processes,
+# dead tmux axf-* sessions, ghost agent slots, ownerless heavy locks, leftover test servers and stale temp folders go.
+# One source for the line: the template deploy/cron/axf-reaper.
+axf_cron_file axf-reaper "$(grep -v '^#' "$DIR/deploy/cron/axf-reaper" | sed "s#__DIR__#$DIR#g")"
 # The build pipeline's dispatcher (Brett, Nov 8 2026): every minute, split new builds, watch the Queue, the Claude accounts
 # and the agent slots, and start a headless session for the next Queue build when a slot is free (never two at once).
 axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator

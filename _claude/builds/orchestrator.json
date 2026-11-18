@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T13:26:13.341Z",
+ "updatedAt": "2026-11-18T14:26:46.925Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -157004,7 +157004,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -157013,8 +157013,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T13:20:38.220Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -157163,6 +157163,18 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T13:20:38.220Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T13:41:54.711Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-18T13:42:36.621Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [],
@@ -162570,7 +162582,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -162578,7 +162590,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-17T00:02:44.120Z",
+   "updatedAt": "2026-11-18T14:22:49.625Z",
    "builtAt": "",
    "notes": [
     {
@@ -162604,6 +162616,22 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T00:02:44.120Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T14:01:29.733Z"
+    },
+    {
+     "text": "Watchdog fixed Attach widgets to any toolbar, banner style (step s6): its tmux session is gone: step s6 reset, slot released, back in the Queue (retry 1 of 3).",
+     "at": "2026-11-18T14:14:41.726Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T14:17:40.230Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for attach-widgets-to-any-toolbar-banner: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T14:20:00.348Z"
     }
    ],
    "approvals": [],
@@ -162615,7 +162643,7 @@
     "session": "",
     "link": "",
     "by": "attach-widgets-to-any-toolbar-banner",
-    "brief": "# Build: attach-widgets-to-any-toolbar-banner\n\n## Brett said (verbatim)\nAt: 2026-11-16T22:44:59.053Z\n> Rebuild.\n\n## What to build\nContinue build \"Attach widgets to any toolbar, banner style\" (attach-widgets-to-any-toolbar-banner) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 22:44):\n\"Rebuild.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~41 min):\n[ ] s1 (~8 min) Survey current main for intent and seams: read the archived branch diff (git log/diff of toolbar-widgets-attach-any-banner-style) for intent only, plus framework/core/engines (banner widget host, attach/snap rules), framework/react/tapConfirm.ts, framework/ui/axf.css banner section, schemas/customize.json style targets; write the design note _claude/builds/reports/attach-widgets-to-any-toolbar-banner.design.md (contract, settings keys, addresses) and commit\n[ ] s2 (~8 min) Schema: extend the toolbar asset type and widget attach model in framework/schemas/asset-types.json so a toolbar declares a widget slot list (widget id, side, order, banner widget style + shape ref); regenerate JSON Schemas (axf.mjs schemas) and commit\n[ ] s3 (~10 min) Reference engine: toolbar-widget host engine in framework/core/engines (resolve attached widgets per toolbar id, apply banner widget style/shape tokens, snap-not-overlap sizing order: sides size to content, flexible piece shrinks first, overflow scroll-snap); export from core index; commit\n[ ] s4 (~8 min) Settings keys + migration: per-toolbar keys axf.toolbar.<id>.widgets (list) and defaults; migrate any existing banner-only widget placements so nothing moves; validators agree (core validator + project-check); commit\n[ ] s5 (~7 min) Fixtures: add framework/spec/fixtures/toolbar-widgets.json golden outputs, regenerate with gen-fixtures.mts, record the Kotlin twin as a deferred gap in framework/spec/PORTING.md; commit\nRead first: framework/core/engines/, framework/react/, framework/ui/axf.css, framework/schemas/customize.json, _claude/builds/reports/, framework/schemas/asset-types.json, framework/schemas/json/, framework/core/engines/toolbar-widgets.ts, framework/core/index.ts, framework/core/validate.ts, framework/spec/gen-fixtures.mts, framework/spec/fixtures/toolbar-widgets.json, framework/spec/PORTING.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step attach-widgets-to-any-toolbar-banner <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step attach-widgets-to-any-toolbar-banner <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note attach-widgets-to-any-toolbar-banner \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n",
+    "brief": "# Build: attach-widgets-to-any-toolbar-banner\n\n## Brett said (verbatim)\nAt: 2026-11-16T22:44:59.053Z\n> Rebuild.\n\n## What to build\nContinue build \"Attach widgets to any toolbar, banner style\" (attach-widgets-to-any-toolbar-banner) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-16 22:44):\n\"Rebuild.\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/attach-widgets-to-any-toolbar-banner\nSteps in this phase (14 left, ~2.1 h):\n[ ] s6 (~8 min) Engine check: framework/spec/check-toolbar-widgets.mts (attach, detach, reorder, style/shape resolution, snap/overflow cases, fixture match); run it; commit\n[ ] s7 (~10 min) React host: ToolbarWidgetSlot component in framework/react that renders attached widgets inside any role=toolbar element through the existing banner widget frame (same classes/tokens, any banner widget style + shape), registered data-axf-target addresses toolbar:<id>/widget:<wid>; commit\n[ ] s8 (~7 min) CSS: snap-not-overlap rules for widgets in toolbars in framework/ui/axf.css (tokens only, no var() fallbacks, color-mix opacity tokens); run check-theme.mjs and check-controls.mjs; commit\n[ ] s9 (~9 min) Wire the slot into the framework toolbar path (AxfProvider/Toolbars plugin toolbar wrapper) so every toolbar with a settings id gets it automatically, tap-to-confirm untouched; run check-toolbars.mjs; commit\n[ ] s10 (~10 min) Context menu UI: toolbar right-click/long-press adds 'Attach widget…' (widget picker + style/shape picker) and per-widget 'Style…', 'Move', 'Detach' via ChromeContext; framework controls only; commit\n[ ] s11 (~9 min) Drag/drop: accept a widget dropped on any toolbar (drop-target@1) and reorder within/between toolbars with snap; commit\n[ ] s12 (~9 min) Toolbar settings panel: 'Widgets' section in the toolbar's settings interface (chrome-toolbar settings asset) listing attached widgets with style, shape, order, detach; settings asset update in framework/assets/settings/chrome-toolbar; commit\n[ ] s13 (~9 min) API REST: toolbars plugin server routes GET /api/plugins/toolbars/widgets[?toolbar=], POST attach|detach|move|style; state readable; destructive detach needs confirm; commit\n[ ] s14 (~9 min) API console-control + MCP: register addresses (toolbar:<id>/widget:<wid>, setting:axf.toolbar.<id>.widgets), console actions toolbar.widget.attach|detach|move|style, plugin-commands MCP tools, console_show deep link target; run check-console-control.mjs; commit\n[ ] s15 (~8 min) API CLI + voice: axf toolbar widgets list|attach|detach|move|style (framework/cli) and AmberX voice intents mapping to the same console actions; commit\n[ ] s16 (~8 min) Server tests: test the REST routes and MCP tool parity (same results through REST/MCP/CLI); commit\n[ ] s17 (~8 min) Rebake console + shared apps (rebake.mjs, shared-assets.mjs bake), backfill chrome settings copies, regenerate tracker/catalog entries and glossary descriptions; run their --check commands; commit\n[ ] s18 (~10 min) UI Review: shoot desktop + phone (widgets on the console toolbar, the attach menu, the settings Widgets section) and submit with 3 options as assets (style presets) via review.mjs submit --choices, group named after the build; commit assets\n[ ] s19 (~10 min) Tests, report and PR: run check-toolbar-widgets.mts, check-widgets.mts, check-theme/controls/toolbars/chrome-assets/console-control, validate --framework, tracker --check; write _claude/builds/reports/attach-widgets-to-any-toolbar-banner.md (API reach per feature: deep link, state, actions, REST/MCP/CLI/voice), THREADS row, open the PR and link it with builds-live.mjs link; hand to the merge queue\nRead first: framework/spec/check-toolbar-widgets.mts, framework/react/components/ToolbarWidgetSlot.tsx, framework/react/index.ts, framework/ui/axf.css, framework/react/AxfProvider.tsx, framework/react/tapConfirm.ts, apps/console-web/plugins/toolbars/, framework/react/components/ChromeContext.tsx, framework/assets/settings/, apps/console-web/plugins/toolbars/server/, framework/cli/check-console-control.mjs, framework/cli/axf.mjs, framework/cli/toolbar-widgets.mjs, apps/console-web/plugins/toolbars/voice.json, apps/console-web/plugins/toolbars/test.py, apps/console-web/plugins/toolbars/test.mjs, apps/console-web/src/axf/, framework/catalog/status.json, tracker.json, apps/console-web/plugins/toolbars/assets/, _claude/builds/reports/attach-widgets-to-any-toolbar-banner/shots/, _claude/builds/reports/attach-widgets-to-any-toolbar-banner.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step attach-widgets-to-any-toolbar-banner <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step attach-widgets-to-any-toolbar-banner <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note attach-widgets-to-any-toolbar-banner \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -162752,7 +162780,7 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "Reset by the watchdog (tmux-missing, attempt 1) 2026-11-18T14:14:41.726Z",
      "uid": "st-mwjuvk4n1314im",
      "createdAt": "2026-11-16T22:49:23.111Z"
     },
@@ -177685,8 +177713,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T13:16:27.811Z",
-   "builtAt": "2026-11-18T13:16:27.811Z",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -177979,6 +178007,14 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T13:16:27.811Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T13:41:54.711Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [
@@ -178899,12 +178935,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:18:29.714Z",
-   "updatedAt": "2026-11-17T19:22:21.900Z",
+   "updatedAt": "2026-11-18T13:57:02.232Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Claude Code could not save all of this session's transcript under /root/.claude-accounts/.shared/mossesx-max- because the disk is full (ENOSPC). If you resume this session, part ): one step per line of the request, review the steps.",
      "at": "2026-11-17T19:22:21.900Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:57:02.232Z"
     }
    ],
    "approvals": [],
@@ -181737,7 +181777,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-17T20:56:58.377Z",
+   "updatedAt": "2026-11-18T13:57:24.630Z",
    "builtAt": "",
    "notes": [
     {
@@ -181771,6 +181811,10 @@
     {
      "text": "Session on hulu0241 stopped on its own with 4 steps left: back in Pending for Brett.",
      "at": "2026-11-17T20:56:58.377Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:57:24.630Z"
     }
    ],
    "approvals": [],
@@ -181896,12 +181940,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:40:33.480Z",
-   "updatedAt": "2026-11-17T20:43:36.610Z",
+   "updatedAt": "2026-11-18T13:59:17.223Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:43:36.610Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:59:17.223Z"
     }
    ],
    "approvals": [],
@@ -182029,12 +182077,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T20:40:07.679Z",
-   "updatedAt": "2026-11-17T20:42:45.374Z",
+   "updatedAt": "2026-11-18T13:58:04.213Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:42:45.374Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:58:04.213Z"
     }
    ],
    "approvals": [],
@@ -182159,12 +182211,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:40:41.293Z",
-   "updatedAt": "2026-11-17T20:44:19.808Z",
+   "updatedAt": "2026-11-18T14:00:06.040Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:44:19.808Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T14:00:06.040Z"
     }
    ],
    "approvals": [],
@@ -182293,12 +182349,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:41:31.688Z",
-   "updatedAt": "2026-11-17T20:45:55.469Z",
+   "updatedAt": "2026-11-18T13:58:51.015Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:45:55.469Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:58:51.015Z"
     }
    ],
    "approvals": [],
@@ -182426,12 +182486,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:41:37.028Z",
-   "updatedAt": "2026-11-17T20:46:27.074Z",
+   "updatedAt": "2026-11-18T14:01:02.623Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:46:27.074Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T14:01:02.623Z"
     }
    ],
    "approvals": [],
@@ -185586,7 +185650,7 @@
    "branch": "claude/settings-fix-part-2-blank-toolbars",
    "pr": "#826",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-17T23:50:39.041Z",
+   "updatedAt": "2026-11-18T14:06:36.923Z",
    "builtAt": "",
    "notes": [
     {
@@ -185648,6 +185712,22 @@
     {
      "text": "Reconciler: PR #826; PR #826 names s1, s2 done",
      "at": "2026-11-17T23:10:19.720Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1, core/engines/toolbar-owner-rules.mjs). s3 override switch (axf.toolbar.<id>.override): the switch may only unlock look and style; route its keys through toolbarOverrideOnly / TOOLBAR_OVERRIDE_KEYS (resolvePageToolbar already filters axf.chrome.toolbar.<id>), never groups/items/widgets. s4: toolbars carry data.builtFor now (generic | view:<id> | plugin:<name>); framework/assets/toolbar must stay generic (toolbar-owner check). s6-s9 blank gear-only toolbars: every plugin's toolbar is now apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (15 migrated page toolbars + placeholders with one Settings button); strip those files instead of adding new assets, keep id/builtFor/scope, and run node framework/cli/toolbar-owner.mjs check + node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:55:53.135Z"
+    },
+    {
+     "text": "Session on hulu0241 stopped on its own with 19 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T14:06:36.923Z"
+    },
+    {
+     "text": "Watchdog fixed Settings fix part 2: blank toolbars, locked settings layout (step s3): session on hulu0241 ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
+     "at": "2026-11-18T14:01:53.926Z"
+    },
+    {
+     "text": "Self-check: settings-fix-part-2-blank-toolbars was marked running on hulu0241 with no session: released and back in the Queue.",
+     "at": "2026-11-18T13:59:57.222Z"
     }
    ],
    "approvals": [],
@@ -188625,8 +188705,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T13:16:27.811Z",
-   "builtAt": "2026-11-18T13:16:27.811Z",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -188691,6 +188771,14 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T13:16:27.811Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T13:41:54.711Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [],
@@ -192092,7 +192180,7 @@
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T13:24:53.619Z",
+   "updatedAt": "2026-11-18T14:18:20.242Z",
    "builtAt": "",
    "notes": [
     {
@@ -192440,8 +192528,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:18:20.242Z",
      "note": "",
      "uid": "st-mwm3h4k00ecoyu",
      "createdAt": "2026-11-18T12:25:38.639Z"
@@ -192579,15 +192667,16 @@
    "title": "VPS never gives up: fix and land every build until all options are exhausted",
    "category": "",
    "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/vps-never-gives-up-fix-land-every-build",
    "pr": "#842",
+   "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T13:12:35.033Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-18T14:23:46.233Z",
+   "builtAt": "2026-11-18T14:23:46.233Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -192640,6 +192729,10 @@
     {
      "text": "Reconciler: PR #842",
      "at": "2026-11-18T13:12:35.033Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T14:23:46.233Z"
     }
    ],
    "approvals": [],
@@ -192750,7 +192843,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:46:19.234Z",
+   "updatedAt": "2026-11-18T13:46:28.536Z",
    "builtAt": "",
    "notes": [
     {
@@ -192784,6 +192877,18 @@
     {
      "text": "Launch failed on mossesx-max-, hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-18T12:46:19.234Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T13:39:22.115Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T13:40:21.026Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T13:46:28.536Z"
     }
    ],
    "approvals": [],
@@ -192917,10 +193022,10 @@
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/every-plugin-gets-own-default-toolbar",
    "pr": "",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T13:18:16.517Z",
+   "updatedAt": "2026-11-18T14:07:05.018Z",
    "builtAt": "",
    "notes": [
     {
@@ -192950,6 +193055,10 @@
     {
      "text": "Launch failed on hulu0241: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
      "at": "2026-11-18T13:18:16.517Z"
+    },
+    {
+     "text": "Reconciler: branch claude/every-plugin-gets-own-default-toolbar (no PR yet)",
+     "at": "2026-11-18T13:43:28.524Z"
     }
    ],
    "approvals": [],
@@ -192980,8 +193089,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:28:14.734Z",
      "note": "",
      "uid": "st-mwm3pj1301peo9",
      "createdAt": "2026-11-18T12:32:10.647Z"
@@ -192999,8 +193108,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:30:48.723Z",
      "note": "",
      "uid": "st-mwm3pj1302oacx",
      "createdAt": "2026-11-18T12:32:10.647Z"
@@ -193018,8 +193127,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:44:40.330Z",
      "note": "",
      "uid": "st-mwm3pj1303lpdb",
      "createdAt": "2026-11-18T12:32:10.647Z"
@@ -193037,8 +193146,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:47:10.413Z",
      "note": "",
      "uid": "st-mwm3pj1304ugvu",
      "createdAt": "2026-11-18T12:32:10.647Z"
@@ -193056,8 +193165,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T13:51:58.916Z",
      "note": "",
      "uid": "st-mwm3pj13059594",
      "createdAt": "2026-11-18T12:32:10.647Z"
@@ -193075,8 +193184,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:07:05.018Z",
      "note": "",
      "uid": "st-mwm3pj13063r4n",
      "createdAt": "2026-11-18T12:32:10.647Z"
@@ -193438,7 +193547,7 @@
    "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
    "category": "",
    "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -193446,7 +193555,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T12:51:54.012Z",
+   "updatedAt": "2026-11-18T14:25:06.734Z",
    "builtAt": "",
    "notes": [
     {
@@ -193472,10 +193581,38 @@
     {
      "text": "Launch failed on hulu0241: worktree for one-build-time-always-split-to-fill: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:51:54.012Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T13:49:47.513Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-18T13:50:41.135Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: builds store is locked (/opt/axf/_claude/builds/store.json.lock)",
+     "at": "2026-11-18T13:54:44.123Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-one-build-time-always-split-to-fill--gina.",
+     "at": "2026-11-18T13:53:50.015Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "one-build-time-always-split-to-fill",
+    "brief": "# Build: one-build-time-always-split-to-fill\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges\" (one-build-time-always-split-to-fill) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Design the split-plan@1 contract: split id format, the parts list (part id, files claimed, branch, slot, base main sha), the part status enum (waiting, building, testing, rebuilding, failed, done) and the overall run states (splitting, queued, building, combining, ci, merging, merged, live, finished, failed). Write it in framework/spec/BUILD-SPLIT.md and the JSON schema.\n[ ] s2 (~10 min) Add split-plan@1 to the builds@1 record in the store. Add the optional splitId, split {parts[], combine} and the new 'splitting' status, and carry over unknown fields so normBuild keeps them. Migration: existing builds get no split, so nothing is lost.\n[ ] s3 (~10 min) Write the split engine core framework/core/build-split.mjs. planParts(build, freeSlots, fileClaims) makes as many parts as there are free slots and gives no two parts the same file. It assigns split ids and validates a plan (no overlap, every step in exactly one part).\n[ ] s4 (~10 min) Write the part and run state machine in build-split.mjs. Cover the allowed transitions, rollUp(parts) giving the overall row status, all-or-nothing combine readiness, and how a failed part triggers a rebuild or a failed run. Add golden fixtures.\n[ ] s5 (~10 min) Change the build-pipeline@1 dispatcher rule from up to 4 builds to ONE build at a time. Main is locked while a run is active (main-lock record) and every part's base is the same main sha. Retire the 4-builds setting with a migration note.\nRead first: framework/spec/BUILD-SPLIT.md, framework/schemas/split-plan.json, framework/cli/builds-store.mjs, framework/core/build-pipeline.mjs, framework/schemas/builds.json, framework/core/build-split.mjs, framework/spec/fixtures/build-split.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-build-time-always-split-to-fill <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step one-build-time-always-split-to-fill <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-build-time-always-split-to-fill \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Tab rows are the framework TabGroup. Every toolbar has role=\"toolbar\" and an aria-label. Checks: `node framework/cli/check-toolbars.mjs`, `node framework/cli/check-chrome-assets.mjs`.\n- Plugin and library UIs conform to the theme engines (tokens only, framework layout primitives, `axf-<lib>` / `axp-<plugin>` naming, never define `--fx-*`); a plugin wanting its own look ships its own assets through the engines (scoping not built yet). The future plugin designer depends on this. Spec: `framework/spec/THEMING.md`. CI checks: `node framework/cli/check-theme.mjs` (static) and `apps/console-web/scripts/theme-swap.mjs` (switches every colour and style theme in the built console and fails on any colour or transparency that doesn't follow).\n- Transparency is themed too: style themes carry `opacityDisabled/Muted/Hover/Tint/Scrim/Glass` (→ `--fx-opacity-*`, same defaults on both ports). Translucent colours are `color-mix(in srgb, var(--fx-x) calc(var(--fx-opacity-…) * 100%), transparent)`, never a fixed percentage. `apps/demo` still has an older baked framework and needs a re-bake to get them.\n- Console sizes are tokens (Oct 17 2026): `console.css` and the console views use `--fx-space`, `--fx-font-size`, `--fx-radius-*` and `--fx-border-w` (exact at the default soft-studio theme, so it looks pixel-identical there); the console is held to every theme rule. Shapes stay fixed: pill radii (999px), bar/chart heights, icon sizes.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- UI Review choices (Nov 7 2026): a build ships at least 3 options (ui-choices@1, `framework/core/ui-choices.mjs`), each a predicted look and an asset in `plugins/<owner>/assets/<type>/`, picked or not; Brett picks in the item's Choices tab, several in priority order where the type holds several views. Nightly console deploy: `deploy/console-nightly.mjs` (Claude settings `nightly.*`). `console.refresh`: `axf console refresh [--hard]`.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Console control (Nov 13 2026): every screen, tab, setting, button, function, plugin, grid row and build step of the console has an address (`view:settings/tab:settings.tabs=plugins`, `setting:…`, `row:<build>/step:s3`) and is driven the same way through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice (Ctrl+K searches it in the console). New UI registers its targets through the framework controls or `data-axf-target`; `framework/cli/check-console-control.mjs` fails CI otherwise. Approve / deny and owner-only settings are never commands; destructive presses need `confirm`. Doc `_claude/memory/docs/console-control.md`, contract `framework/spec/CONSOLE-CONTROL.md`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Screenshots that aren't for approval go to Screenshots, not the review queue (Nov 1 2026, Brett): a session checking a screen (e.g. the Breakroom), live captures, PR before/after and other ad-hoc pictures are saved with `axf shot <file> --name \"…\" --app <app> --screen <route> --group \"…\"` (`node framework/cli/shot.mjs`, or `POST /api/plugins/ui-review/shots`), which lands in UI Review → Screenshots and never waits for approve / reject; Brett can still *Send to review* one. Only planned UI goes through `review.mjs submit`.\n- Every tab group, toolbar, banner and nav menu is an asset with an asset settings interface (Nov 4 2026, Brett; shared rule of the same name; build `tab-group-assets`): every tab row in the console, Molly, AmberX web and axHub web is the framework `TabGroup` on the `tab-group` asset (per-row pick `axf.chrome.tab-group.<id>.asset`, per-row overrides `axf.chrome.tab-group.<id>`); right-click / long-press any tab group, toolbar, banner, nav or menu bar → Settings… / Change… / Move (`framework/react/components/ChromeContext.tsx`, dialogs `axf.chrome.settings` + `axf.chrome.pick`). Settings dialogs render through the `settings` asset picked for the kind (`axf.chrome.settings.<type>`; the shared default `settings/chrome-<type>` unless the app's copy `settings/chrome-<type>-<app>` is picked; `extends` folds the chain). Every app in `framework/schemas/shared-assets.json` + Expenses carries its six copies (`node framework/cli/chrome-settings.mjs check` in CI; `backfill` writes missing ones). A strip that must stay hand-drawn (the Terminal tab strip, the workspace pane strip) carries `data-axf-tab-group=\"<id>\"` + `data-fx-ctx-target=\"tab-group\"`; anything else is a finding in `node framework/cli/check-chrome-assets.mjs`, whose ratchet `framework/spec/chrome-baseline.json` only comes down (`--write-baseline` after a real migration). Report: `_claude/builds/reports/tab-group-assets.md`.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Every rebuild ends with a differences report (Oct 20 2026): after any rebuild (Fable rebuilds and every future one, any model), write `_claude/memory/docs/rebuilds/<pending-id>.md` comparing the new build with the version it replaced: what was removed, kept, changed and added; contract/API/asset/fixture changes; migrations and compatibility notes for apps already using it; tests before vs after; known gaps. Then show Brett the differences and improvements in chat (phone-readable summary, link to the report).\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- The axHub badge is red unless settings come live from axHub (Oct 24 2026, Brett): any axHub status badge or indicator starts red and turns green only while the app is reading its settings live from axHub right now (a fresh read of the hub's settings document succeeded, and a developer app's own hub source is ready). Repo copies, cached copies, local settings, a signed-out session or a read older than two check periods are red. Library: `framework/libs/hubstatus` (`hubLive` in `core.ts`).\n- Attached things snap, never overlap (Oct 28 2026, Brett): anything attached to a host (banner, toolbar, menubar; plugin badges, widgets, popups) never draws over or clips a neighbour. Sides size to their content, the flexible piece (search bar) shrinks to its minimum first, and a full host scrolls sideways with scroll snap. New hosts and new widget kinds follow the same rule (`framework/ui/axf.css`, banner section).\n- Every settings interface keeps its level toolbar; plugin settings are a sub-tab of Settings → Plugins.\n- Everything in the UI is an asset, and an asset change reaches every app (Oct 30 2026, Brett): any part of the UI that should be changeable is an asset (`asset@1`) — make a new asset type when none fits (asset-types.json, validators, engine, fixture; Fable for the contract). No look or layout value is decided in a component or a stylesheet alone: it comes from an asset through the engines' tokens. Assets are shared through the axHub look, so changing one changes every app on the framework live. Build `ui-all-assets` (Angel) does the existing UI; every new UI follows it from now on.\n- The look comes from axHub only, and every app ships every shareable asset (Nov 1 2026, Brett: \"The apps should only get appearance from axhub period.\" \"If you select design package in one app it changes it for all! Any theme change applies to all.\" \"They all gotta ship all assets that can be shared bruh!\"): no opt-out switch, no look tabs or scopes that draw an app under a look that isn't the hub's, no local fallback. Every look change in any app (design package, slot, spacing, hidden chrome, Sliders, per-asset tokens) goes to the one appearance@1 document and applies in every app. Every listed app (`framework/schemas/shared-assets.json`: Dev Console, axHub web, AmberX) ships the whole shared set baked at `src/axf/assets` (`node framework/cli/shared-assets.mjs bake|check`, CI); an app's `src/assets` holds only what is truly its own, `src/assets-overrides` the shared ids it tunes. A new asset that more than one app could use goes in `framework/assets`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Skins: every app has its own look (Nov 4 2026, Brett: \"by default they're all their own.\" + \"every one has a reset, restore to default.\"; build `skins`; replaces the \"any look change applies to all\" part of the rule above, the look still comes from axHub only): each app's slots, spacing and hidden chrome are in its own app-look@1 document on the hub (`shared/settings/looks/<app>.json`), snapshotted as that app's default when skins landed. A skin (skin@1, `framework/assets/skin/`, design packages read as skins too) is a layout + colour + style theme plus assets, switched on per app with Use skin (off by default); a pick with a skin on overrides just that part (Back to skin), and Restore to default puts the app back on its snapshot with a confirm and one undo. Settings → Appearance is the Theme manager in every app: one shared panel, `AppearancePanel` in `framework/libs/settings`. Control@1 token overrides (`axf.tokens.*`) still reach every app. CLI `node framework/cli/skins.mjs`, MCP through the theme-manager routes, CI `npx -y tsx framework/spec/check-skin.mts`. Format built on Opus, possible Fable review: plan `skins-possible-fable-review-6xha`. Spec: `framework/spec/APPEARANCE-SOURCE.md`.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Every banner launches expanded (activity, build manager, codebase changes, approvals, systems check, keys, What's new). Activity still only appears while something runs or just finished.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
@@ -193493,8 +193630,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:02:36.124Z",
      "note": "",
      "uid": "st-mwm47ohv01anqh",
      "createdAt": "2026-11-18T12:46:17.539Z"
@@ -193516,8 +193653,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T14:25:06.734Z",
      "note": "",
      "uid": "st-mwm47ohv02ikii",
      "createdAt": "2026-11-18T12:46:17.539Z"
@@ -194081,7 +194218,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:52:45.120Z",
-   "updatedAt": "2026-11-18T12:52:45.121Z",
+   "updatedAt": "2026-11-18T13:48:23.424Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -194089,12 +194226,12 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Detect out-of-credits responses per account and record the account state (dead, when, which build/step) in the builds store",
+     "text": "Orchestrator already splits jobs one-to-one across every subscription that has credits. When a subscription hits out-of-credits: deactivate it as a build target so the rotation just skips it, and set its status to \"waiting for credits\" everywhere it shows (banner, Builds page, orchestrator, axHub). Reactivate when credits come back. Reuse the existing rotation; no new allocator.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "15 min",
      "files": [],
      "checks": [],
      "session": "same",
@@ -194143,6 +194280,64 @@
      "note": "",
      "uid": "st-mwm5liml28r625",
      "createdAt": "2026-11-18T12:52:45.122Z"
+    }
+   ]
+  },
+  {
+   "id": "stop-push-storm-builds-live-pushes-build",
+   "title": "Stop the push storm: builds-live pushes at build end only, Expenses rebuilds only on its own changes",
+   "category": "orchestrator",
+   "detail": "Brett's words: \"We don't need it to do a update main on every fucking little thing. It needs to do it just at the end of the build.\" (about builds-live) and, about Expenses: \"Why is that shit even running? ... I just want to do what it needs to do to fucking update.\"\n\nFound on the VPS (load average 60): framework/cli/builds-live.mjs pushes a status-only [skip ci] commit to main for every store write (step, note, status), rewriting _claude/builds/store.json (over 2 MB), the orchestrator export and a THREADS.md live-log line, roughly every 30 s. apps/expenses/deploy/install.sh then builds a new expenses-axf image tagged with every new main commit (the live container is tagged with a status-only commit), so every status push also triggers a Docker build.\n\nReplaces the Nov 3 2026 'Builds go live to main' rule: store writes stay local/in the build's branch while it runs; one push to main when the build finishes (built/landed/failed). Update CLAUDE.md and _claude/builds/README.md to match.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T14:09:32.821Z",
+   "updatedAt": "2026-11-18T14:09:32.821Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "builds-live.mjs: stop pushing to main on every store write; push once when a build ends (built, landed, failed, cancelled). Keep the local store and journal writes. Update the CLAUDE.md 'Builds go live to main' line and _claude/builds/README.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm76ti603mf5u",
+     "createdAt": "2026-11-18T14:09:32.825Z"
+    },
+    {
+     "id": "s2",
+     "text": "apps/expenses/deploy/install.sh: rebuild only when apps/expenses (or the framework files it bakes) changed since the running image's commit; skip status-only commits",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwm76ti604oj61",
+     "createdAt": "2026-11-18T14:09:32.825Z"
     }
    ]
   }
