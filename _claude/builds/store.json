@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8779,
- "updatedAt": "2026-11-18T01:43:28.066Z",
+ "rev": 8780,
+ "updatedAt": "2026-11-18T01:43:37.013Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -325275,6 +325275,336 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwlghtfd01ejla",
+     "title": "",
+     "text": "Design the slot-reaper contract: add a liveness record to agent-slots entries (pid, claude pid, tmux session, kind run|heavy, startedAt, lastSeenAt) and a slot-reap@1 log line shape (slot id, reason dead|finished|hung|stale, age, action); document in framework/cli/agent-slots.mjs header and a short spec section; keep old entries readable (missing fields = check by session name only)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwlghtfd020y28",
+     "title": "",
+     "text": "Make agent-slots record pid, child claude pid and tmux session on every take (run + heavy wrapper), so each entry can be checked later; heavy wrapper records its own child pid and a max runtime (setting heavyMaxMin, default 30)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwlghtfd03s6a9",
+     "title": "",
+     "text": "Add a pure liveness classifier framework/cli/slot-reaper-core.mjs: given slot entries, a process list (pid, ppid, cmd, etime) and tmux sessions (name, dead/exited panes), return per entry keep | free-dead | free-finished | kill-hung | close-session with a reason; no side effects",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwlghtfd043l5o",
+     "title": "",
+     "text": "Unit tests for the classifier: live claude in live tmux = keep; no pid + no tmux = free-dead; tmux exists but claude exited / pane dead = free-finished + close-session; 3-day-old rhonda-ci-fix entry = free-dead; builds-store verify heavy over heavyMaxMin = kill-hung; pid reused by another command = free-dead",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwlghtfd05duj5",
+     "title": "",
+     "text": "Add the reaper runner: agent-slots.mjs reap [--dry-run] [--json] reads ps + tmux ls/list-panes, runs the classifier, frees slots under the existing slots lock, kills hung heavy steps (SIGTERM, then SIGKILL after 10 s, process group only), closes finished tmux sessions (never the shared human tmux session, guarded by an allowlist prefix axf-)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwlghtfd06axw9",
+     "title": "",
+     "text": "Log every freed slot: append a slot-reap@1 line per action to a data-store namespace (plugins/agent-slots/reap-log.jsonl via framework/core/data-files.mjs), plus a one-line summary to stdout; add the namespace to framework/schemas/data-store-paths.json",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwlghtfd0719ox",
+     "title": "",
+     "text": "After a reap that freed anything, start the next queued build: call the pipeline dispatcher (apps/console-web/plugins/build-orchestrator/pipeline.mjs tick) and the agent-slots queue start, once per run, guarded so a dispatcher error is logged and never stops the reaper",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwlghtfd08fk6j",
+     "title": "",
+     "text": "VPS timer every minute: add a systemd timer + service (or cron line, matching how axf-pipeline is installed) axf-slot-reaper running agent-slots.mjs reap with flock so runs never overlap; install/uninstall through the agent-slots plugin's install.mjs/uninstall.mjs and framework/deploy/axf-deploy.sh helper",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwlghtfd09qswf",
+     "title": "",
+     "text": "Health check: register a systems-check health@1 item 'Slot reaper' (red when the last reap is older than 3 min or the timer is missing; auto-fix reinstalls/starts the timer) so a dead timer shows in the banner",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwlghtfd0a4wmw",
+     "title": "",
+     "text": "Settings: add reaper settings to the Agent cap plugin (enabled, heavyMaxMin, closeFinishedSessions, dry-run) with the settings sub-tab under Settings → Plugins → Agent cap showing last reap time and the recent freed-slots log (framework controls + tokens only, TabGroup/DataGrid, settings level toolbar)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwlghtfd0bm79c",
+     "title": "",
+     "text": "API parity for the reaper: REST GET /api/plugins/agent-slots/reap/status, GET reap/log, POST reap (dry_run), settings read/write routes; MCP via plugin-commands (agent-slots_reap, agent-slots_reap_log), CLI axf slots reap|reap-log, voice/console action slots.reap; console_show deep link view:settings/tab:settings.tabs=plugins → agent-slots reaper section with data-axf-target",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwlghtfd0cmn5q",
+     "title": "",
+     "text": "CI check: wire framework/spec/check-slot-reaper.mjs into the CI workflow, plus a check that the timer unit and install step exist; run check-theme, check-controls, check-console-control, plugin-lifecycle check agent-slots --after-uninstall",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwlghtfd0dxf4q",
+     "title": "",
+     "text": "Live dry run on the VPS: agent-slots.mjs reap --dry-run --json against the real slots, confirm it flags the 3-day-old rhonda-ci-fix entry, finished tmux sessions and stuck builds-store verify heavies and keeps live builds; save the output to the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwlghtfd0euzcf",
+     "title": "",
+     "text": "UI Review: shoot the Agent cap reaper section desktop + phone, submit with 3 layout options as assets (review.mjs submit --choices), note it in the PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwlghtfd0f30ib",
+     "title": "",
+     "text": "Tests, report (_claude/builds/reports/vps-frees-stale-build-slots-every-2.md: what was stale, how each is detected, timer, log, API routes REST/MCP/CLI/voice, deep link), THREADS row and PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:42:18.914Z",
+     "updatedAt": "2026-11-18T01:42:19.705Z"
+    },
+    {
+     "id": "s16-15",
      "uid": "st-mwlghuz401crxm",
      "title": "",
      "text": "Design the slot-reaper contract: add a liveness record to agent-slots entries (pid, claude pid, tmux session, kind run|heavy, startedAt, lastSeenAt) and a slot-reap@1 log line shape (slot id, reason dead|finished|hung|stale, age, action); document in framework/cli/agent-slots.mjs header and a short spec section; keep old entries readable (missing fields = check by session name only)",
@@ -325296,7 +325626,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s2",
+     "id": "s17-16",
      "uid": "st-mwlghuz4025mhb",
      "title": "",
      "text": "Make agent-slots record pid, child claude pid and tmux session on every take (run + heavy wrapper), so each entry can be checked later; heavy wrapper records its own child pid and a max runtime (setting heavyMaxMin, default 30)",
@@ -325318,7 +325648,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s3",
+     "id": "s18-17",
      "uid": "st-mwlghuz4036e05",
      "title": "",
      "text": "Add a pure liveness classifier framework/cli/slot-reaper-core.mjs: given slot entries, a process list (pid, ppid, cmd, etime) and tmux sessions (name, dead/exited panes), return per entry keep | free-dead | free-finished | kill-hung | close-session with a reason; no side effects",
@@ -325340,7 +325670,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s4",
+     "id": "s19-18",
      "uid": "st-mwlghuz4042k06",
      "title": "",
      "text": "Unit tests for the classifier: live claude in live tmux = keep; no pid + no tmux = free-dead; tmux exists but claude exited / pane dead = free-finished + close-session; 3-day-old rhonda-ci-fix entry = free-dead; builds-store verify heavy over heavyMaxMin = kill-hung; pid reused by another command = free-dead",
@@ -325362,7 +325692,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s5",
+     "id": "s20-19",
      "uid": "st-mwlghuz405i8vv",
      "title": "",
      "text": "Add the reaper runner: agent-slots.mjs reap [--dry-run] [--json] reads ps + tmux ls/list-panes, runs the classifier, frees slots under the existing slots lock, kills hung heavy steps (SIGTERM, then SIGKILL after 10 s, process group only), closes finished tmux sessions (never the shared human tmux session, guarded by an allowlist prefix axf-)",
@@ -325384,7 +325714,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s6",
+     "id": "s21-20",
      "uid": "st-mwlghuz406lrg0",
      "title": "",
      "text": "Log every freed slot: append a slot-reap@1 line per action to a data-store namespace (plugins/agent-slots/reap-log.jsonl via framework/core/data-files.mjs), plus a one-line summary to stdout; add the namespace to framework/schemas/data-store-paths.json",
@@ -325406,7 +325736,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s7",
+     "id": "s22-21",
      "uid": "st-mwlghuz407ioxr",
      "title": "",
      "text": "After a reap that freed anything, start the next queued build: call the pipeline dispatcher (apps/console-web/plugins/build-orchestrator/pipeline.mjs tick) and the agent-slots queue start, once per run, guarded so a dispatcher error is logged and never stops the reaper",
@@ -325428,7 +325758,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s8",
+     "id": "s23-22",
      "uid": "st-mwlghuz408afqc",
      "title": "",
      "text": "VPS timer every minute: add a systemd timer + service (or cron line, matching how axf-pipeline is installed) axf-slot-reaper running agent-slots.mjs reap with flock so runs never overlap; install/uninstall through the agent-slots plugin's install.mjs/uninstall.mjs and framework/deploy/axf-deploy.sh helper",
@@ -325450,7 +325780,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s9",
+     "id": "s24-23",
      "uid": "st-mwlghuz409la9r",
      "title": "",
      "text": "Health check: register a systems-check health@1 item 'Slot reaper' (red when the last reap is older than 3 min or the timer is missing; auto-fix reinstalls/starts the timer) so a dead timer shows in the banner",
@@ -325472,7 +325802,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s10",
+     "id": "s25-24",
      "uid": "st-mwlghuz40aenc6",
      "title": "",
      "text": "Settings: add reaper settings to the Agent cap plugin (enabled, heavyMaxMin, closeFinishedSessions, dry-run) with the settings sub-tab under Settings → Plugins → Agent cap showing last reap time and the recent freed-slots log (framework controls + tokens only, TabGroup/DataGrid, settings level toolbar)",
@@ -325494,7 +325824,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s11",
+     "id": "s26-25",
      "uid": "st-mwlghuz40b2ku4",
      "title": "",
      "text": "API parity for the reaper: REST GET /api/plugins/agent-slots/reap/status, GET reap/log, POST reap (dry_run), settings read/write routes; MCP via plugin-commands (agent-slots_reap, agent-slots_reap_log), CLI axf slots reap|reap-log, voice/console action slots.reap; console_show deep link view:settings/tab:settings.tabs=plugins → agent-slots reaper section with data-axf-target",
@@ -325516,7 +325846,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s12",
+     "id": "s27-26",
      "uid": "st-mwlghuz40crqod",
      "title": "",
      "text": "CI check: wire framework/spec/check-slot-reaper.mjs into the CI workflow, plus a check that the timer unit and install step exist; run check-theme, check-controls, check-console-control, plugin-lifecycle check agent-slots --after-uninstall",
@@ -325538,7 +325868,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s13",
+     "id": "s28-27",
      "uid": "st-mwlghuz40d7nq4",
      "title": "",
      "text": "Live dry run on the VPS: agent-slots.mjs reap --dry-run --json against the real slots, confirm it flags the 3-day-old rhonda-ci-fix entry, finished tmux sessions and stuck builds-store verify heavies and keeps live builds; save the output to the report",
@@ -325560,7 +325890,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s14",
+     "id": "s29-28",
      "uid": "st-mwlghuz40eg75j",
      "title": "",
      "text": "UI Review: shoot the Agent cap reaper section desktop + phone, submit with 3 layout options as assets (review.mjs submit --choices), note it in the PR",
@@ -325582,7 +325912,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s15",
+     "id": "s30-29",
      "uid": "st-mwlghuz40ffy62",
      "title": "",
      "text": "Tests, report (_claude/builds/reports/vps-frees-stale-build-slots-every-2.md: what was stale, how each is detected, timer, log, API routes REST/MCP/CLI/voice, deep link), THREADS row and PR",
@@ -325604,7 +325934,7 @@
      "updatedAt": "2026-11-18T01:42:21.712Z"
     },
     {
-     "id": "s16-15",
+     "id": "s31-30",
      "uid": "st-mwlghhvt01k8nn",
      "title": "",
      "text": "Design the slot-reaper contract: add a liveness record to agent-slots entries (pid, claude pid, tmux session, kind run|heavy, startedAt, lastSeenAt) and a slot-reap@1 log line shape (slot id, reason dead|finished|hung|stale, age, action); document in framework/cli/agent-slots.mjs header and a short spec section; keep old entries readable (missing fields = check by session name only)",
@@ -325626,7 +325956,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s17-16",
+     "id": "s32-31",
      "uid": "st-mwlghhvt02odhh",
      "title": "",
      "text": "Make agent-slots record pid, child claude pid and tmux session on every take (run + heavy wrapper), so each entry can be checked later; heavy wrapper records its own child pid and a max runtime (setting heavyMaxMin, default 30)",
@@ -325648,7 +325978,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s18-17",
+     "id": "s33-32",
      "uid": "st-mwlghhvt03u9o8",
      "title": "",
      "text": "Add a pure liveness classifier framework/cli/slot-reaper-core.mjs: given slot entries, a process list (pid, ppid, cmd, etime) and tmux sessions (name, dead/exited panes), return per entry keep | free-dead | free-finished | kill-hung | close-session with a reason; no side effects",
@@ -325670,7 +326000,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s19-18",
+     "id": "s34-33",
      "uid": "st-mwlghhvt043e34",
      "title": "",
      "text": "Unit tests for the classifier: live claude in live tmux = keep; no pid + no tmux = free-dead; tmux exists but claude exited / pane dead = free-finished + close-session; 3-day-old rhonda-ci-fix entry = free-dead; builds-store verify heavy over heavyMaxMin = kill-hung; pid reused by another command = free-dead",
@@ -325692,7 +326022,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s20-19",
+     "id": "s35-34",
      "uid": "st-mwlghhvt05l3u1",
      "title": "",
      "text": "Add the reaper runner: agent-slots.mjs reap [--dry-run] [--json] reads ps + tmux ls/list-panes, runs the classifier, frees slots under the existing slots lock, kills hung heavy steps (SIGTERM, then SIGKILL after 10 s, process group only), closes finished tmux sessions (never the shared human tmux session, guarded by an allowlist prefix axf-)",
@@ -325714,7 +326044,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s21-20",
+     "id": "s36-35",
      "uid": "st-mwlghhvt06y270",
      "title": "",
      "text": "Log every freed slot: append a slot-reap@1 line per action to a data-store namespace (plugins/agent-slots/reap-log.jsonl via framework/core/data-files.mjs), plus a one-line summary to stdout; add the namespace to framework/schemas/data-store-paths.json",
@@ -325736,7 +326066,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s22-21",
+     "id": "s37-36",
      "uid": "st-mwlghhvt07wnda",
      "title": "",
      "text": "After a reap that freed anything, start the next queued build: call the pipeline dispatcher (apps/console-web/plugins/build-orchestrator/pipeline.mjs tick) and the agent-slots queue start, once per run, guarded so a dispatcher error is logged and never stops the reaper",
@@ -325758,7 +326088,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s23-22",
+     "id": "s38-37",
      "uid": "st-mwlghhvt08luq3",
      "title": "",
      "text": "VPS timer every minute: add a systemd timer + service (or cron line, matching how axf-pipeline is installed) axf-slot-reaper running agent-slots.mjs reap with flock so runs never overlap; install/uninstall through the agent-slots plugin's install.mjs/uninstall.mjs and framework/deploy/axf-deploy.sh helper",
@@ -325780,7 +326110,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s24-23",
+     "id": "s39-38",
      "uid": "st-mwlghhvt09tht6",
      "title": "",
      "text": "Health check: register a systems-check health@1 item 'Slot reaper' (red when the last reap is older than 3 min or the timer is missing; auto-fix reinstalls/starts the timer) so a dead timer shows in the banner",
@@ -325802,7 +326132,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s25-24",
+     "id": "s40-39",
      "uid": "st-mwlghhvt0a2cyq",
      "title": "",
      "text": "Settings: add reaper settings to the Agent cap plugin (enabled, heavyMaxMin, closeFinishedSessions, dry-run) with the settings sub-tab under Settings → Plugins → Agent cap showing last reap time and the recent freed-slots log (framework controls + tokens only, TabGroup/DataGrid, settings level toolbar)",
@@ -325824,7 +326154,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s26-25",
+     "id": "s41-40",
      "uid": "st-mwlghhvt0bkdg8",
      "title": "",
      "text": "API parity for the reaper: REST GET /api/plugins/agent-slots/reap/status, GET reap/log, POST reap (dry_run), settings read/write routes; MCP via plugin-commands (agent-slots_reap, agent-slots_reap_log), CLI axf slots reap|reap-log, voice/console action slots.reap; console_show deep link view:settings/tab:settings.tabs=plugins → agent-slots reaper section with data-axf-target",
@@ -325846,7 +326176,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s27-26",
+     "id": "s42-41",
      "uid": "st-mwlghhvt0ct1bh",
      "title": "",
      "text": "CI check: wire framework/spec/check-slot-reaper.mjs into the CI workflow, plus a check that the timer unit and install step exist; run check-theme, check-controls, check-console-control, plugin-lifecycle check agent-slots --after-uninstall",
@@ -325868,7 +326198,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s28-27",
+     "id": "s43-42",
      "uid": "st-mwlghhvt0dbvpf",
      "title": "",
      "text": "Live dry run on the VPS: agent-slots.mjs reap --dry-run --json against the real slots, confirm it flags the 3-day-old rhonda-ci-fix entry, finished tmux sessions and stuck builds-store verify heavies and keeps live builds; save the output to the report",
@@ -325890,7 +326220,7 @@
      "updatedAt": "2026-11-18T01:42:04.745Z"
     },
     {
-     "id": "s29-28",
+     "id": "s44-43",
      "uid": "st-mwlghhvt0ekqz2",
      "title": "",
      "text": "UI Review: shoot the Agent cap reaper section desktop + phone, submit with 3 layout options as assets (review.mjs submit --choices), note it in the PR",
@@ -325912,7 +326242,7 @@
      "updatedAt": "2026-11-18T01:42:04.746Z"
     },
     {
-     "id": "s30-29",
+     "id": "s45-44",
      "uid": "st-mwlghhvu0fo4v1",
      "title": "",
      "text": "Tests, report (_claude/builds/reports/vps-frees-stale-build-slots-every-2.md: what was stale, how each is detected, timer, log, API routes REST/MCP/CLI/voice, deep link), THREADS row and PR",
@@ -325934,7 +326264,7 @@
      "updatedAt": "2026-11-18T01:42:04.746Z"
     },
     {
-     "id": "s31-30",
+     "id": "s46-45",
      "uid": "st-mwlgh3i30f8plp",
      "title": "",
      "text": "Design the slot-reaper contract: add a liveness record to agent-slots entries (pid, claude pid, tmux session, kind run|heavy, startedAt, lastSeenAt) and a slot-reap@1 log line shape (slot id, reason dead|finished|hung|stale, age, action); document in framework/cli/agent-slots.mjs header and a short spec section; keep old entries readable (missing fields = check by session name only)",
@@ -325959,7 +326289,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s32-31",
+     "id": "s47-46",
      "uid": "st-mwlgh3i30g057b",
      "title": "",
      "text": "Make agent-slots record pid, child claude pid and tmux session on every take (run + heavy wrapper), so each entry can be checked later; heavy wrapper records its own child pid and a max runtime (setting heavyMaxMin, default 30)",
@@ -325984,7 +326314,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s33-32",
+     "id": "s48-47",
      "uid": "st-mwlgh3i30h7brh",
      "title": "",
      "text": "Add a pure liveness classifier framework/cli/slot-reaper-core.mjs: given slot entries, a process list (pid, ppid, cmd, etime) and tmux sessions (name, dead/exited panes), return per entry keep | free-dead | free-finished | kill-hung | close-session with a reason; no side effects",
@@ -326008,7 +326338,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s34-33",
+     "id": "s49-48",
      "uid": "st-mwlgh3i30ib55e",
      "title": "",
      "text": "Unit tests for the classifier: live claude in live tmux = keep; no pid + no tmux = free-dead; tmux exists but claude exited / pane dead = free-finished + close-session; 3-day-old rhonda-ci-fix entry = free-dead; builds-store verify heavy over heavyMaxMin = kill-hung; pid reused by another command = free-dead",
@@ -326032,7 +326362,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s35-34",
+     "id": "s50-49",
      "uid": "st-mwlgh3i30juszt",
      "title": "",
      "text": "Add the reaper runner: agent-slots.mjs reap [--dry-run] [--json] reads ps + tmux ls/list-panes, runs the classifier, frees slots under the existing slots lock, kills hung heavy steps (SIGTERM, then SIGKILL after 10 s, process group only), closes finished tmux sessions (never the shared human tmux session, guarded by an allowlist prefix axf-)",
@@ -326056,7 +326386,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s36-35",
+     "id": "s51-50",
      "uid": "st-mwlgh3i30k97n0",
      "title": "",
      "text": "Log every freed slot: append a slot-reap@1 line per action to a data-store namespace (plugins/agent-slots/reap-log.jsonl via framework/core/data-files.mjs), plus a one-line summary to stdout; add the namespace to framework/schemas/data-store-paths.json",
@@ -326081,7 +326411,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s37-36",
+     "id": "s52-51",
      "uid": "st-mwlgh3i30l9yi2",
      "title": "",
      "text": "After a reap that freed anything, start the next queued build: call the pipeline dispatcher (apps/console-web/plugins/build-orchestrator/pipeline.mjs tick) and the agent-slots queue start, once per run, guarded so a dispatcher error is logged and never stops the reaper",
@@ -326106,7 +326436,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s38-37",
+     "id": "s53-52",
      "uid": "st-mwlgh3i30m2bi5",
      "title": "",
      "text": "VPS timer every minute: add a systemd timer + service (or cron line, matching how axf-pipeline is installed) axf-slot-reaper running agent-slots.mjs reap with flock so runs never overlap; install/uninstall through the agent-slots plugin's install.mjs/uninstall.mjs and framework/deploy/axf-deploy.sh helper",
@@ -326134,7 +326464,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s39-38",
+     "id": "s54-53",
      "uid": "st-mwlgh3i30nf1x1",
      "title": "",
      "text": "Health check: register a systems-check health@1 item 'Slot reaper' (red when the last reap is older than 3 min or the timer is missing; auto-fix reinstalls/starts the timer) so a dead timer shows in the banner",
@@ -326159,7 +326489,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s40-39",
+     "id": "s55-54",
      "uid": "st-mwlgh3i30oy17u",
      "title": "",
      "text": "Settings: add reaper settings to the Agent cap plugin (enabled, heavyMaxMin, closeFinishedSessions, dry-run) with the settings sub-tab under Settings → Plugins → Agent cap showing last reap time and the recent freed-slots log (framework controls + tokens only, TabGroup/DataGrid, settings level toolbar)",
@@ -326184,7 +326514,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s41-40",
+     "id": "s56-55",
      "uid": "st-mwlgh3i30pd3di",
      "title": "",
      "text": "API parity for the reaper: REST GET /api/plugins/agent-slots/reap/status, GET reap/log, POST reap (dry_run), settings read/write routes; MCP via plugin-commands (agent-slots_reap, agent-slots_reap_log), CLI axf slots reap|reap-log, voice/console action slots.reap; console_show deep link view:settings/tab:settings.tabs=plugins → agent-slots reaper section with data-axf-target",
@@ -326210,7 +326540,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s42-41",
+     "id": "s57-56",
      "uid": "st-mwlgh3i30q6vhs",
      "title": "",
      "text": "CI check: wire framework/spec/check-slot-reaper.mjs into the CI workflow, plus a check that the timer unit and install step exist; run check-theme, check-controls, check-console-control, plugin-lifecycle check agent-slots --after-uninstall",
@@ -326235,7 +326565,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s43-42",
+     "id": "s58-57",
      "uid": "st-mwlgh3i30r0nx9",
      "title": "",
      "text": "Live dry run on the VPS: agent-slots.mjs reap --dry-run --json against the real slots, confirm it flags the 3-day-old rhonda-ci-fix entry, finished tmux sessions and stuck builds-store verify heavies and keeps live builds; save the output to the report",
@@ -326259,7 +326589,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s44-43",
+     "id": "s59-58",
      "uid": "st-mwlgh3i30s5vfx",
      "title": "",
      "text": "UI Review: shoot the Agent cap reaper section desktop + phone, submit with 3 layout options as assets (review.mjs submit --choices), note it in the PR",
@@ -326283,7 +326613,7 @@
      "updatedAt": "2026-11-18T01:41:46.107Z"
     },
     {
-     "id": "s45-44",
+     "id": "s60-59",
      "uid": "st-mwlgh3i30tkb3c",
      "title": "",
      "text": "Tests, report (_claude/builds/reports/vps-frees-stale-build-slots-every-2.md: what was stale, how each is detected, timer, log, API routes REST/MCP/CLI/voice, deep link), THREADS row and PR",
