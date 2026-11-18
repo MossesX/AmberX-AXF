@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8750,
- "updatedAt": "2026-11-18T01:35:48.815Z",
+ "rev": 8751,
+ "updatedAt": "2026-11-18T01:35:59.781Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115888,7 +115888,6 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -137653,7 +137652,6 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -206072,7 +206070,6 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -218464,7 +218461,6 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
-   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -244400,8 +244396,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-17T23:46:05.696Z",
-   "builtAt": "2026-11-17T23:46:12.017Z",
+   "updatedAt": "2026-11-18T01:35:25.654Z",
+   "builtAt": "2026-11-18T01:35:51.435Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -244514,6 +244510,10 @@
     {
      "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-17T23:47:18.834Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); on main by squash 887cb0cfb47a; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landed)",
+     "at": "2026-11-18T01:35:25.654Z"
     }
    ],
    "approvals": [],
@@ -245110,7 +245110,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275289,8 +275289,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-17T23:55:24.737Z",
-   "builtAt": "2026-11-17T23:55:34.975Z",
+   "updatedAt": "2026-11-18T01:35:25.654Z",
+   "builtAt": "2026-11-18T01:35:51.435Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -276350,7 +276350,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 110,
+   "rev": 111,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293709,7 +293709,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-17T22:33:53.520Z",
-     "updatedAt": "2026-11-18T01:35:34.674Z"
+     "updatedAt": "2026-11-18T01:35:53.858Z"
     },
     {
      "id": "s29",
@@ -297683,7 +297683,7 @@
      "note": "",
      "rev": 4,
      "createdAt": "2026-11-17T22:55:15.780Z",
-     "updatedAt": "2026-11-18T01:35:34.674Z"
+     "updatedAt": "2026-11-18T01:35:53.858Z"
     }
    ],
    "profiles": [
@@ -319801,6 +319801,402 @@
    "steps": [
     {
      "id": "s1",
+     "uid": "st-mwlg9i6501gm0k",
+     "title": "",
+     "text": "Read the axHub repo layout for the routes: packages/server/src/*-web.ts, the auth/api router, services registry (what `axhub services add|refresh|remove` call), token and OAuth client stores, handoff store; write a short route plan (handler, store call, auth scope, audit line) in docs/console-hub-routes.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwlg9i6502fb2z",
+     "title": "",
+     "text": "Factor the CLI's services add/refresh/remove logic into a shared server-side module (services-admin.ts) the CLI and the new routes both call, no behaviour change; CLI tests still pass",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwlg9i65038ry8",
+     "title": "",
+     "text": "Add POST /auth/api/services {namespace, type, config}: owner-only, validates namespace/type, refuses duplicates (409), never echoes secrets in config back; audit log line",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwlg9i6504xte3",
+     "title": "",
+     "text": "Add POST /auth/api/services/{namespace}/reconnect (same as `services refresh`, returns new status) and DELETE /auth/api/services/{namespace} (404 unknown, refuses built-in axhub service); audit log lines",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwlg9i6505wk8b",
+     "title": "",
+     "text": "Tests for the three connector routes: add/reconnect/remove happy paths, auth refused for non-owner and console token without the admin scope, duplicate and unknown namespaces, secrets not in responses",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwlg9i6506yadk",
+     "title": "",
+     "text": "Add DELETE /auth/api/handoff/{id} (clears a handoff run, 404 unknown, owner or the run's own device only) on the existing handoff store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwlg9i65076hwv",
+     "title": "",
+     "text": "Add POST /auth/api/handoff/{id}/accept {device}: marks the run accepted by that device through the AXPP handoff state (pending → accepted, 409 when already accepted or expired); if AXPP lacks the transition, add it to the handoff store and note it in the AXPP doc",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwlg9i6508q185",
+     "title": "",
+     "text": "Tests for handoff accept and clear: state transitions, wrong device, expired run, unknown id",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwlg9i6509gvro",
+     "title": "",
+     "text": "Add POST /auth/api/auth/tokens {label, scopes[], expiresInDays}: owner-only, scopes checked against the known list, returns the secret once (only a hash stored), and DELETE /auth/api/auth/tokens/{id} revokes at once; audit log lines",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwlg9i650as0qf",
+     "title": "",
+     "text": "Add POST /auth/api/auth/clients {name, redirectUris[]} (https or localhost URIs only, returns client id + secret once) and DELETE /auth/api/auth/clients/{id} (revokes its grants); audit log lines",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwlg9i650bpi8p",
+     "title": "",
+     "text": "Tests for token and client admin: secret shown once and not in list/get, revoked token refused on /mcp, bad scopes/URIs refused, non-owner refused",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwlg9i650ch5j3",
+     "title": "",
+     "text": "Add the new routes to the hub's capabilities/discovery list (whatever the console reads to decide hub_missing) and the MCP tools list for parity (axhub.services_add/reconnect/remove, handoff_accept/clear, tokens_create/revoke, clients_add/remove) as confirm/veto tools with reasons",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwlg9i650dx3so",
+     "title": "",
+     "text": "Redirect table: map every old HTML page (/auth/admin/approvals, /auth/account, /auth/admin/users, log, passes, go-pass, handoff, apps, policy) to https://console.amberxai.com/?axf-open=hub.open:<screen>[:<id>] with 302, keeping query ids; leave /auth/api/* and /mcp untouched",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwlg9i650eq1kg",
+     "title": "",
+     "text": "Tests for the redirects: every old page → right console URL, ids carried, /auth/api/* and /mcp not redirected, unknown /auth/admin/* falls back to hub.open:home; console URL from config (HUB_CONSOLE_URL) not hard-coded",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwlg9i650f6vm1",
+     "title": "",
+     "text": "Deploy: keep the axhub-web static site for now but behind a flag (SERVE_AXHUB_WEB, default on) with a dated note to drop it after the redirect has run; document the removal step in the deploy README",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwlg9i650gyusd",
+     "title": "",
+     "text": "AmberX-AXF side: point the console's hub-console@1 actions (connectors/add|reconnect|remove, handoff/accept|clear, auth/token-create|revoke|client-add|remove) at the new routes when the hub advertises them, keep hub_missing otherwise; secret shown once in the dialog, never stored",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwlg9i650h5uin",
+     "title": "",
+     "text": "AmberX-AXF API parity for those actions: REST /api/plugins/hub-console/*, MCP plugin commands, `axf hub …` CLI and voice actions, plus console_show deep links for each hub screen; check-console-control passes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.869Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwlg9i650iu5uo",
+     "title": "",
+     "text": "Tests (axHub pnpm test, AmberX-AXF hub-console tests + check-console-control), report _claude/builds/reports/axhub-routes-for-console-hub.md (routes, redirects, how each is reached by REST/MCP/CLI/voice/deep link, what is left: dropping axhub-web), THREADS row, PRs on MossesX/axHub and AmberX-AXF",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T01:35:51.435Z",
+     "updatedAt": "2026-11-18T01:35:51.870Z"
+    },
+    {
+     "id": "s19-18",
      "uid": "st-mwlg8xql017mic",
      "title": "",
      "text": "Read the axHub repo layout for the routes: packages/server/src/*-web.ts, the auth/api router, services registry (what `axhub services add|refresh|remove` call), token and OAuth client stores, handoff store; write a short route plan (handler, store call, auth scope, audit line) in docs/console-hub-routes.md",
@@ -319822,7 +320218,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s2",
+     "id": "s20-19",
      "uid": "st-mwlg8xqm02i7y8",
      "title": "",
      "text": "Factor the CLI's services add/refresh/remove logic into a shared server-side module (services-admin.ts) the CLI and the new routes both call, no behaviour change; CLI tests still pass",
@@ -319844,7 +320240,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s3",
+     "id": "s21-20",
      "uid": "st-mwlg8xqm03wi03",
      "title": "",
      "text": "Add POST /auth/api/services {namespace, type, config}: owner-only, validates namespace/type, refuses duplicates (409), never echoes secrets in config back; audit log line",
@@ -319866,7 +320262,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s4",
+     "id": "s22-21",
      "uid": "st-mwlg8xqm04vcyd",
      "title": "",
      "text": "Add POST /auth/api/services/{namespace}/reconnect (same as `services refresh`, returns new status) and DELETE /auth/api/services/{namespace} (404 unknown, refuses built-in axhub service); audit log lines",
@@ -319888,7 +320284,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s5",
+     "id": "s23-22",
      "uid": "st-mwlg8xqm05ae5v",
      "title": "",
      "text": "Tests for the three connector routes: add/reconnect/remove happy paths, auth refused for non-owner and console token without the admin scope, duplicate and unknown namespaces, secrets not in responses",
@@ -319910,7 +320306,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s6",
+     "id": "s24-23",
      "uid": "st-mwlg8xqm066cbo",
      "title": "",
      "text": "Add DELETE /auth/api/handoff/{id} (clears a handoff run, 404 unknown, owner or the run's own device only) on the existing handoff store",
@@ -319932,7 +320328,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s7",
+     "id": "s25-24",
      "uid": "st-mwlg8xqm073sd8",
      "title": "",
      "text": "Add POST /auth/api/handoff/{id}/accept {device}: marks the run accepted by that device through the AXPP handoff state (pending → accepted, 409 when already accepted or expired); if AXPP lacks the transition, add it to the handoff store and note it in the AXPP doc",
@@ -319954,7 +320350,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s8",
+     "id": "s26-25",
      "uid": "st-mwlg8xqm08i2cd",
      "title": "",
      "text": "Tests for handoff accept and clear: state transitions, wrong device, expired run, unknown id",
@@ -319976,7 +320372,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s9",
+     "id": "s27-26",
      "uid": "st-mwlg8xqm09a197",
      "title": "",
      "text": "Add POST /auth/api/auth/tokens {label, scopes[], expiresInDays}: owner-only, scopes checked against the known list, returns the secret once (only a hash stored), and DELETE /auth/api/auth/tokens/{id} revokes at once; audit log lines",
@@ -319998,7 +320394,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s10",
+     "id": "s28-27",
      "uid": "st-mwlg8xqm0a042t",
      "title": "",
      "text": "Add POST /auth/api/auth/clients {name, redirectUris[]} (https or localhost URIs only, returns client id + secret once) and DELETE /auth/api/auth/clients/{id} (revokes its grants); audit log lines",
@@ -320020,7 +320416,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s11",
+     "id": "s29-28",
      "uid": "st-mwlg8xqm0b8j7t",
      "title": "",
      "text": "Tests for token and client admin: secret shown once and not in list/get, revoked token refused on /mcp, bad scopes/URIs refused, non-owner refused",
@@ -320042,7 +320438,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s12",
+     "id": "s30-29",
      "uid": "st-mwlg8xqm0cva03",
      "title": "",
      "text": "Add the new routes to the hub's capabilities/discovery list (whatever the console reads to decide hub_missing) and the MCP tools list for parity (axhub.services_add/reconnect/remove, handoff_accept/clear, tokens_create/revoke, clients_add/remove) as confirm/veto tools with reasons",
@@ -320064,7 +320460,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s13",
+     "id": "s31-30",
      "uid": "st-mwlg8xqm0dhisn",
      "title": "",
      "text": "Redirect table: map every old HTML page (/auth/admin/approvals, /auth/account, /auth/admin/users, log, passes, go-pass, handoff, apps, policy) to https://console.amberxai.com/?axf-open=hub.open:<screen>[:<id>] with 302, keeping query ids; leave /auth/api/* and /mcp untouched",
@@ -320086,7 +320482,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s14",
+     "id": "s32-31",
      "uid": "st-mwlg8xqm0edey6",
      "title": "",
      "text": "Tests for the redirects: every old page → right console URL, ids carried, /auth/api/* and /mcp not redirected, unknown /auth/admin/* falls back to hub.open:home; console URL from config (HUB_CONSOLE_URL) not hard-coded",
@@ -320108,7 +320504,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s15",
+     "id": "s33-32",
      "uid": "st-mwlg8xqm0f9zgc",
      "title": "",
      "text": "Deploy: keep the axhub-web static site for now but behind a flag (SERVE_AXHUB_WEB, default on) with a dated note to drop it after the redirect has run; document the removal step in the deploy README",
@@ -320130,7 +320526,7 @@
      "updatedAt": "2026-11-18T01:35:25.390Z"
     },
     {
-     "id": "s16",
+     "id": "s34-33",
      "uid": "st-mwlg8xqn0gwshu",
      "title": "",
      "text": "AmberX-AXF side: point the console's hub-console@1 actions (connectors/add|reconnect|remove, handoff/accept|clear, auth/token-create|revoke|client-add|remove) at the new routes when the hub advertises them, keep hub_missing otherwise; secret shown once in the dialog, never stored",
@@ -320152,7 +320548,7 @@
      "updatedAt": "2026-11-18T01:35:25.391Z"
     },
     {
-     "id": "s17",
+     "id": "s35-34",
      "uid": "st-mwlg8xqn0hrv21",
      "title": "",
      "text": "AmberX-AXF API parity for those actions: REST /api/plugins/hub-console/*, MCP plugin commands, `axf hub …` CLI and voice actions, plus console_show deep links for each hub screen; check-console-control passes",
@@ -320174,7 +320570,7 @@
      "updatedAt": "2026-11-18T01:35:25.391Z"
     },
     {
-     "id": "s18",
+     "id": "s36-35",
      "uid": "st-mwlg8xqn0inm4r",
      "title": "",
      "text": "Tests (axHub pnpm test, AmberX-AXF hub-console tests + check-console-control), report _claude/builds/reports/axhub-routes-for-console-hub.md (routes, redirects, how each is reached by REST/MCP/CLI/voice/deep link, what is left: dropping axhub-web), THREADS row, PRs on MossesX/axHub and AmberX-AXF",
@@ -320196,7 +320592,7 @@
      "updatedAt": "2026-11-18T01:35:25.391Z"
     },
     {
-     "id": "s19-18",
+     "id": "s37-36",
      "uid": "st-mwlg93uu01t4v8",
      "title": "",
      "text": "Read the axHub repo layout for the routes: packages/server/src/*-web.ts, the auth/api router, services registry (what `axhub services add|refresh|remove` call), token and OAuth client stores, handoff store; write a short route plan (handler, store call, auth scope, audit line) in docs/console-hub-routes.md",
@@ -320218,7 +320614,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s20-19",
+     "id": "s38-37",
      "uid": "st-mwlg93uu02i2jr",
      "title": "",
      "text": "Factor the CLI's services add/refresh/remove logic into a shared server-side module (services-admin.ts) the CLI and the new routes both call, no behaviour change; CLI tests still pass",
@@ -320240,7 +320636,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s21-20",
+     "id": "s39-38",
      "uid": "st-mwlg93uu03kvh6",
      "title": "",
      "text": "Add POST /auth/api/services {namespace, type, config}: owner-only, validates namespace/type, refuses duplicates (409), never echoes secrets in config back; audit log line",
@@ -320262,7 +320658,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s22-21",
+     "id": "s40-39",
      "uid": "st-mwlg93uu042rkb",
      "title": "",
      "text": "Add POST /auth/api/services/{namespace}/reconnect (same as `services refresh`, returns new status) and DELETE /auth/api/services/{namespace} (404 unknown, refuses built-in axhub service); audit log lines",
@@ -320284,7 +320680,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s23-22",
+     "id": "s41-40",
      "uid": "st-mwlg93uu054om6",
      "title": "",
      "text": "Tests for the three connector routes: add/reconnect/remove happy paths, auth refused for non-owner and console token without the admin scope, duplicate and unknown namespaces, secrets not in responses",
@@ -320306,7 +320702,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s24-23",
+     "id": "s42-41",
      "uid": "st-mwlg93uu06uou8",
      "title": "",
      "text": "Add DELETE /auth/api/handoff/{id} (clears a handoff run, 404 unknown, owner or the run's own device only) on the existing handoff store",
@@ -320328,7 +320724,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s25-24",
+     "id": "s43-42",
      "uid": "st-mwlg93uu07oi37",
      "title": "",
      "text": "Add POST /auth/api/handoff/{id}/accept {device}: marks the run accepted by that device through the AXPP handoff state (pending → accepted, 409 when already accepted or expired); if AXPP lacks the transition, add it to the handoff store and note it in the AXPP doc",
@@ -320350,7 +320746,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s26-25",
+     "id": "s44-43",
      "uid": "st-mwlg93uu08sakl",
      "title": "",
      "text": "Tests for handoff accept and clear: state transitions, wrong device, expired run, unknown id",
@@ -320372,7 +320768,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s27-26",
+     "id": "s45-44",
      "uid": "st-mwlg93uu09yy60",
      "title": "",
      "text": "Add POST /auth/api/auth/tokens {label, scopes[], expiresInDays}: owner-only, scopes checked against the known list, returns the secret once (only a hash stored), and DELETE /auth/api/auth/tokens/{id} revokes at once; audit log lines",
@@ -320394,7 +320790,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s28-27",
+     "id": "s46-45",
      "uid": "st-mwlg93uu0azvnx",
      "title": "",
      "text": "Add POST /auth/api/auth/clients {name, redirectUris[]} (https or localhost URIs only, returns client id + secret once) and DELETE /auth/api/auth/clients/{id} (revokes its grants); audit log lines",
@@ -320416,7 +320812,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s29-28",
+     "id": "s47-46",
      "uid": "st-mwlg93uu0bc4g7",
      "title": "",
      "text": "Tests for token and client admin: secret shown once and not in list/get, revoked token refused on /mcp, bad scopes/URIs refused, non-owner refused",
@@ -320438,7 +320834,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s30-29",
+     "id": "s48-47",
      "uid": "st-mwlg93uu0c9ki6",
      "title": "",
      "text": "Add the new routes to the hub's capabilities/discovery list (whatever the console reads to decide hub_missing) and the MCP tools list for parity (axhub.services_add/reconnect/remove, handoff_accept/clear, tokens_create/revoke, clients_add/remove) as confirm/veto tools with reasons",
@@ -320460,7 +320856,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s31-30",
+     "id": "s49-48",
      "uid": "st-mwlg93uu0dgfrk",
      "title": "",
      "text": "Redirect table: map every old HTML page (/auth/admin/approvals, /auth/account, /auth/admin/users, log, passes, go-pass, handoff, apps, policy) to https://console.amberxai.com/?axf-open=hub.open:<screen>[:<id>] with 302, keeping query ids; leave /auth/api/* and /mcp untouched",
@@ -320482,7 +320878,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s32-31",
+     "id": "s50-49",
      "uid": "st-mwlg93uu0ev8a8",
      "title": "",
      "text": "Tests for the redirects: every old page → right console URL, ids carried, /auth/api/* and /mcp not redirected, unknown /auth/admin/* falls back to hub.open:home; console URL from config (HUB_CONSOLE_URL) not hard-coded",
@@ -320504,7 +320900,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s33-32",
+     "id": "s51-50",
      "uid": "st-mwlg93uu0f0yh1",
      "title": "",
      "text": "Deploy: keep the axhub-web static site for now but behind a flag (SERVE_AXHUB_WEB, default on) with a dated note to drop it after the redirect has run; document the removal step in the deploy README",
@@ -320526,7 +320922,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s34-33",
+     "id": "s52-51",
      "uid": "st-mwlg93uu0gy7vq",
      "title": "",
      "text": "AmberX-AXF side: point the console's hub-console@1 actions (connectors/add|reconnect|remove, handoff/accept|clear, auth/token-create|revoke|client-add|remove) at the new routes when the hub advertises them, keep hub_missing otherwise; secret shown once in the dialog, never stored",
@@ -320548,7 +320944,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s35-34",
+     "id": "s53-52",
      "uid": "st-mwlg93uu0hjlf6",
      "title": "",
      "text": "AmberX-AXF API parity for those actions: REST /api/plugins/hub-console/*, MCP plugin commands, `axf hub …` CLI and voice actions, plus console_show deep links for each hub screen; check-console-control passes",
@@ -320570,7 +320966,7 @@
      "updatedAt": "2026-11-18T01:35:33.318Z"
     },
     {
-     "id": "s36-35",
+     "id": "s54-53",
      "uid": "st-mwlg93uu0i0lq4",
      "title": "",
      "text": "Tests (axHub pnpm test, AmberX-AXF hub-console tests + check-console-control), report _claude/builds/reports/axhub-routes-for-console-hub.md (routes, redirects, how each is reached by REST/MCP/CLI/voice/deep link, what is left: dropping axhub-web), THREADS row, PRs on MossesX/axHub and AmberX-AXF",
