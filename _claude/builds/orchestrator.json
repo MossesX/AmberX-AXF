@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:39:29.131Z",
+ "updatedAt": "2026-11-18T12:40:08.920Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192679,14 +192679,14 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:37:58.545Z",
+   "updatedAt": "2026-11-18T12:39:55.440Z",
    "builtAt": "",
    "notes": [
     {
@@ -192704,6 +192704,10 @@
     {
      "text": "Launch failed on mossesx-max-, hulu0241: worktree for every-app-gets-own-locked-default: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:37:58.545Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-every-app-gets-own-locked-default--sully.",
+     "at": "2026-11-18T12:39:55.440Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8935,
- "updatedAt": "2026-11-18T12:39:29.131Z",
+ "rev": 8936,
+ "updatedAt": "2026-11-18T12:40:08.920Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -318910,14 +318910,14 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:37:58.545Z",
+   "updatedAt": "2026-11-18T12:39:55.440Z",
    "builtAt": "",
    "notes": [
     {
@@ -318935,6 +318935,10 @@
     {
      "text": "Launch failed on mossesx-max-, hulu0241: worktree for every-app-gets-own-locked-default: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-18T12:37:58.545Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-every-app-gets-own-locked-default--sully.",
+     "at": "2026-11-18T12:39:55.440Z"
     }
    ],
    "approvals": [],
@@ -318942,13 +318946,13 @@
    "pipeline": {
     "queuedAt": "2026-11-18T12:27:47.559Z",
     "queuedBy": "Brett",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-every-app-gets-own-locked-default--sully",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-18T12:39:46.830Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": {
@@ -318959,9 +318963,9 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: worktree for every-app-gets-own-locked-default: fatal: not a git repository (or any of the parent directories): .git",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-18T12:39:46.830Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -318969,11 +318973,8 @@
      "at": "2026-11-18T12:32:27.437Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [
-     "mossesx-max-",
-     "hulu0241"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-18T12:39:46.830Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -319123,7 +319124,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
