@@ -25,6 +25,8 @@ import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, IconButton } from './Controls';
 import { Note, SelectField, Switch } from './Forms';
 import type { DialogMap } from './Overlays';
+import { addDerivedTargets, type ControlTargetDef } from '../controlTargets';
+import { TOOLBARS_WIDGET_STYLE_KEY, TOOLBAR_WIDGETS_KEY, TOOLBAR_WIDGET_STYLE_KEY } from '../../core/engines/toolbar-widgets';
 
 export const TOOLBAR_WIDGETS_DIALOG = 'axf.toolbar.widgets';
 
@@ -189,6 +191,8 @@ export function installToolbarWidgets(rt: AxfRuntime): void {
     if (w) rt.setToolbarWidget(p.instance, w.key, { shape: p.shape });
   }, { ...write, label: 'Cut a toolbar widget to a shape (toolbar.widget.shape:<toolbar>:<name>:<shape|inherit>)' });
   a.register('toolbar.widgets.reset', ([instance = ''], ctx) => rt.resetToolbarWidgets(instance || instanceOfPayload(ctx?.payload)), { ...write, label: 'Put a toolbar\'s widgets back (toolbar.widgets.reset:<toolbar>)' });
+  // console-control@1: every toolbar's widgets are addressable (REST, MCP, CLI, voice, Ctrl+K)
+  addDerivedTargets(rt, (hint) => toolbarWidgetTargets(rt, hint));
   rt.contextExtras.set('*:toolbar-widgets', (target, payload) => (target === 'toolbar' ? toolbarWidgetMenu(rt, instanceOfPayload(payload), rt.contextToolbarWidget) : []));
 }
 
@@ -275,3 +279,75 @@ export function ToolbarWidgetsPanel({ instance = TOOLBAR_APP_INSTANCE, initial }
 export const toolbarWidgetsDialog: DialogMap = {
   [TOOLBAR_WIDGETS_DIALOG]: { title: 'Toolbar widgets', icon: 'layers', searchable: false, render: (props) => <ToolbarWidgetsPanel instance={typeof props.instance === 'string' ? props.instance : undefined} initial={typeof props.key === 'string' ? props.key : undefined} /> },
 };
+
+/* ---------------- console-control targets (toolbar:<id>/widget:<key>) ---------------- */
+
+/** The list address of one toolbar's widgets (state = every row, open = the dialog: the console_show deep link). */
+export const toolbarWidgetsListAddress = (instance: string): string => `toolbar:${instance}/widget:all`;
+
+/** Every toolbar instance worth listing: the app's, every toolbar asset, every toolbar on screen, every one with saved widgets. */
+export function toolbarWidgetInstances(rt: AxfRuntime): string[] {
+  const out = new Set<string>([TOOLBAR_APP_INSTANCE]);
+  for (const a of rt.registry.list('toolbar') as { id: string }[]) out.add(a.id);
+  if (typeof document !== 'undefined') for (const el of Array.from(document.querySelectorAll<HTMLElement>('[role="toolbar"][data-axf-toolbar]'))) if (el.dataset.axfToolbar) out.add(el.dataset.axfToolbar);
+  for (const k of Object.keys(rt.settings.savedValues())) { const m = /^axf\.toolbar\.(.+)\.widgets$/.exec(k); if (m) out.add(m[1]!); }
+  return [...out];
+}
+
+/** The state of one toolbar's widgets: every row, the person's slots and the style defaults (what GET …/widgets answers). */
+export function toolbarWidgetsState(rt: AxfRuntime, instance: string): Record<string, unknown> {
+  return {
+    $axf: 'toolbar-widgets@1', toolbar: instance,
+    rows: toolbarWidgetRows(rt, instance),
+    slots: rt.toolbarWidgetSlots(instance),
+    style: rt.toolbarWidgetStyle(instance),
+    keys: { slots: TOOLBAR_WIDGETS_KEY(instance), style: TOOLBAR_WIDGET_STYLE_KEY(instance), all: TOOLBARS_WIDGET_STYLE_KEY },
+  };
+}
+
+/**
+ * Apply one operation to one widget of one toolbar (the value of a press / set on `toolbar:<id>/widget:<key>`):
+ * `attach[:<side>[:<size>[:<shape>]]]`, `move:<side>[:<index|prev|next>]`, `style:<field>:<value>`, `hide`, `show`, `reset`,
+ * or an object `{ op, side?, index?, size?, shape?, field?, value? }`. Detach is its own (destructive) button.
+ */
+export function applyToolbarWidgetOp(rt: AxfRuntime, instance: string, key: string, value: unknown): Record<string, unknown> {
+  const o: Record<string, unknown> = typeof value === 'string' ? (() => { const [op = '', a = '', b = '', c = ''] = value.split(':'); return op === 'style' ? { op, field: a, value: [b, c].filter(Boolean).join(':') } : op === 'move' ? { op, side: a, index: b } : { op, side: a, size: b, shape: c }; })() : (value && typeof value === 'object' ? value as Record<string, unknown> : {});
+  const op = String(o.op ?? '');
+  const str = (v: unknown) => (v === undefined || v === null ? '' : String(v));
+  if (op === 'attach') rt.dispatch(`toolbar.widget.attach:${instance}:${key}:${str(o.side) || 'end'}:${str(o.size)}:${str(o.shape)}`);
+  else if (op === 'move') rt.dispatch(`toolbar.widget.move:${instance}:${key}:${str(o.side)}:${str(o.index)}`);
+  else if (op === 'style') rt.dispatch(`toolbar.widget.style:${instance}:${key}:${str(o.field)}:${str(o.value) || 'default'}`);
+  else if (op === 'hide') rt.dispatch(`toolbar.widget.style:${instance}:${key}:hidden:true`);
+  else if (op === 'show') rt.dispatch(`toolbar.widget.style:${instance}:${key}:hidden:default`);
+  else if (op === 'reset') rt.dispatch(`toolbar.widget:${instance}:${key}:reset`);
+  else return { ok: false, message: `unknown widget op "${op}" (attach, move, style, hide, show, reset)` };
+  return { ok: true, row: toolbarWidgetRows(rt, instance).find((w) => w.key === key) ?? null };
+}
+
+/** console-control targets: per toolbar its widget list, every widget (drawn, hidden, addable) and each one's Detach button. */
+export function toolbarWidgetTargets(rt: AxfRuntime, hint?: string): ControlTargetDef[] {
+  const want = hint ? /toolbar:([^/]+)/.exec(hint)?.[1] : undefined;
+  const out: ControlTargetDef[] = [];
+  for (const instance of want ? [want] : toolbarWidgetInstances(rt)) {
+    out.push({
+      address: toolbarWidgetsListAddress(instance), kind: 'widget', label: `Widgets on toolbar ${instance}`, icon: 'layers', keywords: ['widgets', 'toolbar', 'attach'],
+      requires: 'assets.swap', can: ['open', 'state', 'list'],
+      get: () => toolbarWidgetsState(rt, instance), open: () => rt.dispatch(`toolbar.widgets:${instance}`),
+    });
+    for (const w of toolbarWidgetRows(rt, instance)) {
+      const address = `toolbar:${instance}/widget:${w.key}`;
+      const apply = (v: unknown) => applyToolbarWidgetOp(rt, instance, w.key, v);
+      out.push({
+        address, kind: 'widget', label: `${w.label} (${instance} toolbar)`, detail: w.state, icon: 'layers', keywords: [w.type, w.id, ...w.aliases],
+        requires: 'assets.swap', get: () => toolbarWidgetRows(rt, instance).find((x) => x.key === w.key) ?? null, set: apply, invoke: apply,
+        open: () => rt.dispatch(`toolbar.widgets:${instance}:${w.key}`),
+        element: () => (typeof document === 'undefined' ? null : document.querySelector(`[role="toolbar"][data-axf-toolbar="${instance}"] [data-axf-toolbar-widget="${w.key}"]`)),
+      });
+      if (w.state !== 'addable') out.push({
+        address: `${address}/button:detach`, kind: 'button', label: `Detach ${w.label} from toolbar ${instance}`, icon: 'close', destructive: true, requires: 'assets.swap',
+        invoke: () => ({ ok: detachToolbarWidget(rt, instance, w.key) }),
+      });
+    }
+  }
+  return out;
+}

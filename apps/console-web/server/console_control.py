@@ -122,7 +122,7 @@ def view_of(address: str) -> str | None:
 # ---------------------------------------------------------------------- search (no console open)
 
 KIND_LABELS = {"view": "Page", "tab": "Tab", "subtab": "Tab", "setting": "Setting", "button": "Button", "function": "Action", "plugin": "Plugin",
-               "grid": "Grid", "row": "Row", "step": "Step", "panel": "Panel", "scroll": "Pane"}
+               "grid": "Grid", "row": "Row", "step": "Step", "panel": "Panel", "scroll": "Pane", "widget": "Widget"}
 # same boosts as src/control/search.ts (the inventory source; kinds rank places before things)
 KIND_BOOST = {"view": 6, "tab": 4, "subtab": 3, "setting": 3, "plugin": 3, "row": 2, "step": 2, "panel": 1}
 SEARCH_DEFAULT_LIMIT = 20

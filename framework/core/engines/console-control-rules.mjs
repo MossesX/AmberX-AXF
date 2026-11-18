@@ -20,7 +20,7 @@ export const CONSOLE_CONTROL_PARENTS = {
   tab: [null, 'view', 'panel'],
   subtab: ['tab', 'subtab'],
   setting: [null, 'view', 'tab', 'subtab', 'panel'],
-  button: [null, 'view', 'tab', 'subtab', 'panel', 'row', 'step', 'toolbar'],
+  button: [null, 'view', 'tab', 'subtab', 'panel', 'row', 'step', 'toolbar', 'widget'],
   function: [null, 'view', 'tab', 'subtab', 'panel'],
   plugin: [null, 'view', 'tab', 'subtab'],
   grid: [null, 'view', 'tab', 'subtab', 'panel', 'row'],
@@ -87,6 +87,8 @@ export const CONSOLE_CONTROL_DEFAULT_CAN = {
   panel: ['open', 'state', 'focus', 'scroll'],
   scroll: ['state', 'scroll'],
   toolbar: ['open', 'state', 'list', 'focus'],
+  // toolbar-widgets@1: open = the widget dialog on it, state = its row, set / press = attach, move, style (value), list = its buttons
+  widget: ['open', 'state', 'set', 'press', 'focus', 'list'],
 };
 
 export const isConsoleControlKind = (k) => CONSOLE_CONTROL_KINDS.includes(k);

@@ -45,7 +45,8 @@
       "panel",
       "row",
       "step",
-      "toolbar"
+      "toolbar",
+      "widget"
     ],
     "function": [
       null,
@@ -275,6 +276,14 @@
       "state",
       "list",
       "focus"
+    ],
+    "widget": [
+      "open",
+      "state",
+      "set",
+      "press",
+      "focus",
+      "list"
     ]
   },
   "scroll": {
