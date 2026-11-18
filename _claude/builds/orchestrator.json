@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T13:55:04.631Z",
+ "updatedAt": "2026-11-18T13:56:17.608Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -185591,14 +185591,14 @@
    "title": "Settings fix part 2: blank toolbars, locked settings layout",
    "category": "",
    "detail": "Follow-up to PR #822 (fix-banner-settings-interface-tab), which finished before Brett's later notes. 1) Strip EVERY page toolbar in the console to blank: remove all buttons (New, Open, Save, Undo, Redo, Cut, Theme, etc. from PR #817); each keeps only one small gear that opens its settings. 2) Gizmo X AI Studio is the one fixed interface for every settings window: remove the settings-interface picker, the 'This settings window' fold and any way to edit the settings window's own layout or look. 3) Each toolbar's settings: Override switch next to the settings row, OFF by default (locked to Gizmo X AI Studio, greyed, sections collapsed); ON makes it editable and sections expandable; turning it OFF resets to defaults; a toolbar shows as edited in main Settings only while Override is on. 4) Console toolbars use the same shared toolbar asset axHub uses. 5) Owner must be allowed every chrome reset (fix 'Permission denied ... reset a chrome piece'). Everything token-driven. Console only. Skins must not restyle toolbars.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "mcp",
    "pendingId": "settings-fix-part-2-blank-toolbars",
    "branch": "claude/settings-fix-part-2-blank-toolbars",
    "pr": "#826",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-17T23:50:39.041Z",
+   "updatedAt": "2026-11-18T13:55:53.135Z",
    "builtAt": "",
    "notes": [
     {
@@ -185660,6 +185660,10 @@
     {
      "text": "Reconciler: PR #826; PR #826 names s1, s2 done",
      "at": "2026-11-17T23:10:19.720Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1, core/engines/toolbar-owner-rules.mjs). s3 override switch (axf.toolbar.<id>.override): the switch may only unlock look and style; route its keys through toolbarOverrideOnly / TOOLBAR_OVERRIDE_KEYS (resolvePageToolbar already filters axf.chrome.toolbar.<id>), never groups/items/widgets. s4: toolbars carry data.builtFor now (generic | view:<id> | plugin:<name>); framework/assets/toolbar must stay generic (toolbar-owner check). s6-s9 blank gear-only toolbars: every plugin's toolbar is now apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (15 migrated page toolbars + placeholders with one Settings button); strip those files instead of adding new assets, keep id/builtFor/scope, and run node framework/cli/toolbar-owner.mjs check + node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T13:55:53.135Z"
     }
    ],
    "approvals": [],
