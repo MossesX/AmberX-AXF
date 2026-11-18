@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T05:15:55.125Z",
+ "updatedAt": "2026-11-18T05:17:01.937Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -191235,12 +191235,12 @@
      "at": "2026-11-18T04:28:26.230Z"
     },
     {
-     "text": "s1 (Fable) done. Contract lives in both repos: AmberX-AXF commit c644df810 on claude/approval-pass-covers-every-call (CONTROL.md -> Coverage, control-pass.mjs covers/passCoversOf/ranUnder, control.json) and axHub PR #48 (MossesX/axHub branch claude/approval-pass-covers-every-call, worktree /root/axf-builds/approval-pass-covers-every-call.axhub: docs/veto-pass.md s1a-2d, PolicyPass.covers, passCoversOf). Steps s2-s12 continue on that axHub branch. s13 is a verbatim duplicate of s1 from the split; ticked with s1. VPS note: axHub server CLI tests need Node 22 (node:sqlite); Node 20 here, so run them in CI.",
-     "at": "2026-11-18T05:14:47.931Z"
-    },
-    {
      "text": "Reconciler: branch claude/approval-pass-covers-every-call (no PR yet)",
      "at": "2026-11-18T05:13:02.426Z"
+    },
+    {
+     "text": "s1 (Fable) done. Contract lives in both repos: AmberX-AXF commit c644df810 on claude/approval-pass-covers-every-call (CONTROL.md -> Coverage, control-pass.mjs covers/passCoversOf/ranUnder, control.json) and axHub PR #48 (MossesX/axHub branch claude/approval-pass-covers-every-call, worktree /root/axf-builds/approval-pass-covers-every-call.axhub: docs/veto-pass.md s1a-2d, PolicyPass.covers, passCoversOf). Steps s2-s12 continue on that axHub branch. s13 is a verbatim duplicate of s1 from the split; ticked with s1. VPS note: axHub server CLI tests need Node 22 (node:sqlite); Node 20 here, so run them in CI.",
+     "at": "2026-11-18T05:14:47.931Z"
     }
    ],
    "approvals": [],
