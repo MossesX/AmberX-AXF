@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9155,
- "updatedAt": "2026-11-18T23:02:37.044Z",
+ "rev": 9156,
+ "updatedAt": "2026-11-18T23:20:03.271Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321752,7 +321752,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T22:58:57.550Z",
+   "updatedAt": "2026-11-18T23:19:26.843Z",
    "builtAt": "",
    "notes": [
     {
@@ -321802,6 +321802,10 @@
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-18T22:57:27.033Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T23:19:26.843Z"
     }
    ],
    "approvals": [],
@@ -321848,17 +321852,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-18T22:58:04.327Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-urgent-all-data-to-postgres-builds-store--joey",
-     "phase": "Phase 2"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -321980,7 +321974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

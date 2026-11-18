@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T23:02:37.044Z",
+ "updatedAt": "2026-11-18T23:20:03.271Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194796,7 +194796,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T22:58:57.550Z",
+   "updatedAt": "2026-11-18T23:19:26.843Z",
    "builtAt": "",
    "notes": [
     {
@@ -194846,6 +194846,10 @@
     {
      "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-18T22:57:27.033Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T23:19:26.843Z"
     }
    ],
    "approvals": [],

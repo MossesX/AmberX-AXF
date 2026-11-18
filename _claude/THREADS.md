@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:33 UTC · `server-gate-reject-any-build-without` note (all) · orchestrator
 - 2026-11-18 12:34 UTC · `plan-studio-2-open-button-working-deep` s1 done (all) · orchestrator
 - 2026-11-18 12:37 UTC · `vps-never-gives-up-fix-land-every-build` s1 done, → running (all) · orchestrator
 - 2026-11-18 12:37 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 22:57 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · orchestrator
 - 2026-11-18 22:57 UTC · `urgent-all-data-to-postgres-builds-store` s2 done, note (all) · orchestrator
 - 2026-11-18 22:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-18 23:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 
 ## Token passes (log)
 
