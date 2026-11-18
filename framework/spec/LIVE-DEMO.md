@@ -124,7 +124,7 @@ the current act's id or `''`; `failed` lists every failed act with what failed, 
 
 ## API (all four the same, a later phase)
 
-Deep link `view:build-orchestrator/demo:<id>`; state readable at `GET /api/plugins/build-orchestrator/demo/<id>`
+Deep link `view:build-orchestrator/demo:<id>`; state readable at `GET /api/plugins/build-orchestrator/demo/<id>` <!-- axf-plugin:build-orchestrator -->
 (the record + its summary); every event an action: `begin`, `continue`, `toggle-pause`, `focused`, `start`,
 `finish`, `next`, `skip`, `stop`, `tick`, through REST, MCP (`build_orchestrator_demo_*`), `axf demo …` and voice.
 The driver fires `focused` / `start` / `finish` / `tick` itself; Brett presses Continue, Next, Pause, Skip and Stop.

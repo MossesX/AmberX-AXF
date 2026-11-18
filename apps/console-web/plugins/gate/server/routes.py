@@ -201,7 +201,7 @@ def ensure_health() -> None:
         except ImportError:
             return
         lander = health.ensure(plugin_services, _status_for_health)
-        server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))
+        server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))  # axf-not-plugin:systems-check (actor name)
         _health_on["done"] = lander and server
 
 

@@ -20,7 +20,7 @@ const PLUGINS = 'apps/console-web/plugins';
 export const REQUIREMENTS = [
   { id: 'live-engine', what: 'Real-time grids: the build-live@1 engine', for: 'rows that change on their own while you watch (steps crossed off, running, crashed)', file: 'framework/core/engines/build-live.mjs' },
   { id: 'live-grids', what: 'Real-time grids in the console', for: 'the Build manager grids following build-live events without a reload', file: 'framework/react/liveBuilds.ts' },
-  { id: 'live-routes', what: 'Live build state on the server (GET /api/plugins/build-orchestrator/live)', for: 'the VPS liveness pass reaching the console', file: `${PLUGINS}/build-orchestrator/server/routes_live.py` },
+  { id: 'live-routes', what: 'Live build state on the server (GET /api/plugins/build-orchestrator/live)', for: 'the VPS liveness pass reaching the console', file: `${PLUGINS}/build-orchestrator/server/routes_live.py` }, // axf-plugin:build-orchestrator
   { id: 'break-alert', what: 'The break alert (notify type build-live.broke)', for: 'the red "broke" pop-up when a demo build dies for good', notifyType: 'build-live.broke' },
   { id: 'broke-dialog', what: 'The "what happened" dialog of a broken build', for: 'showing what failed after the break alert', webDialog: 'build-live' },
 ];

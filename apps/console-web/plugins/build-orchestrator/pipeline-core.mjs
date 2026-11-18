@@ -36,6 +36,7 @@
 import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, normAttempts, normFailure, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { DEMO_MARK, isDemo } from '../../../../framework/core/demo-build.mjs';
+import { stepKey } from '../../../../framework/plan/builds-store-core.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
@@ -63,8 +64,10 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
+  /** A launch brief is trimmed to at most this many bytes (Claude setting builds.briefMaxBytes); his words are never cut. */
+  briefMaxBytes: 120 * 1024,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -86,6 +89,7 @@ export function normSettings(raw = {}) {
     autoQueue: o.autoQueue === true,
     apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
+    briefMaxBytes: o.briefMaxBytes === undefined ? DEFAULTS.briefMaxBytes : clamp('briefMaxBytes', o.briefMaxBytes),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
   };
 }
@@ -268,6 +272,23 @@ export function authFailureOf(text, { lines = 25 } = {}) {
  * "refused", "Not started", "failed", "exit"…), else the last non-empty line before the launcher's own footer. ''
  * when there is no log.
  */
+/**
+ * launch-retry: did this run die at launch? A non-zero end whose log shows E2BIG / "Argument list too long" / a launcher
+ * error, or a run that never wrote any stream output (it died before its first heartbeat). `tail` = the run log's end,
+ * `streamBytes` = the size of its stream file (-1 = unknown). Returns { why } or null. A clean end is never a launch crash.
+ */
+const LAUNCH_ERR = /argument list too long|\bE2BIG\b|claude-headless: .*(?:error|failed|missing|not found)|claude: (?:command )?not found|exec format error|cannot execute|no such file or directory.*claude/i;
+export function launchCrashOf({ exit = null, kind = '', tail = '', streamBytes = -1 } = {}) {
+  if (kind === 'phase-done' || kind === 'stopped' || exit === 0) return null;
+  const lines = str(tail, 400000).split('\n').map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean);
+  const hit = [...lines].reverse().find((l) => LAUNCH_ERR.test(l));
+  if (hit) return { why: str(hit, 300) };
+  if (streamBytes === 0) return { why: 'the session exited before its first output' };
+  return null;
+}
+/** Minutes to wait before launch retry n (1-based): 1, 4, 16 … capped at an hour. */
+export const launchBackoffMin = (n) => Math.min(60, 4 ** Math.max(0, n - 1));
+
 export function lastReasonOf(text, { lines = 40 } = {}) {
   const tail = str(text, 400000).split('\n').slice(-lines).map((l) => l.replace(/\x1b\[[0-9;]*m/g, '').trim()).filter(Boolean)
     .filter((l) => !/^── finished \(exit \d+\)/.test(l) && !/^#/.test(l));
@@ -358,6 +379,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     // only Queued builds take slots (Brett, Nov 12 2026): never a Pending one, whatever else the record says
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
+    { const lr = b.pipeline?.launchRetry; if (lr?.retryAt && Date.parse(lr.retryAt) > (typeof now === 'number' ? now : Date.parse(now))) { waits.push({ id: b.id, why: `launch crashed (${lr.lastError || 'no reason'}): retry ${lr.count} at ${lr.retryAt}` }); continue; } }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
@@ -599,6 +621,28 @@ const STRATEGY_TEXT = Object.freeze({
 const FAILURE_TEXT = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'the branch clashes with main', 'push-fail': 'the push or the PR failed', stalled: 'the session stalled (no sign of life)', 'fell-to-pending': 'the session stopped with steps left' });
 
 /**
+ * land-clash bounce (Nov 17 2026, Brett: "Nothing should be sitting there."): a build with every step done whose branch
+ * clashes with main gets one step to merge main in and resolve the conflicts, and goes back to the Queue so the
+ * dispatcher runs it. `clash` = { files, head } from either lander (land.json reason.files, landing-line fixRequest).
+ * The head is in the text, so a second report on the same head is the same step (never added twice) and a clash on a
+ * new head is a new step. Returns the step to append, or null (not all done, or this clash already has its step).
+ */
+export function clashBounceStep(b, { files = [], head = '' } = {}) {
+  if (!b || !allDone(b)) return null;
+  const fs = list(files).map((f) => str(f, 200).trim()).filter(Boolean).slice(0, 8);
+  const h = str(head, 64).slice(0, 7);
+  const branch = str(b.branch, 200) || `claude/${b.id}`;
+  const text = `Merge main into ${branch} and resolve conflicts in ${fs.length ? fs.join(', ') : 'the conflicting files'}${h ? ` (clash at ${h})` : ''}; keep both sides' intent, run the checks, push.`;
+  if (list(b.steps).some((x) => stepKey(x?.text) === stepKey(text))) return null;
+  return { text, model: 'Opus', estimate: '10 min', why: 'land-clash bounce', files: fs };
+}
+/** Is the auto-lander's fix agent live on this exact head (handed within attemptTimeoutMin)? Then the bounce waits for it. */
+export function landerAgentLive(land, { now = Date.now(), attemptTimeoutMin = 45 } = {}) {
+  const a = land?.agent;
+  return !!(a && a.exit === 0 && a.head && a.head === land.head && a.kind === land.reason?.kind && minsSince(a.at, now) < attemptTimeoutMin);
+}
+
+/**
  * Does the auto-lander own this failure? A PR-side failure (clash, red CI) on a build with every step done is the
  * lander's first: it merges main in and hands a fix agent once per head. It stops owning it once one of its tries for
  * that kind failed or ran past the attempt timeout (or it escalated): then the build's ladder takes over with the
@@ -704,6 +748,8 @@ function alertBody(kind, d, base) {
     case 'launch-failed': return { ...base, key: `pipeline:launch:${d.id}:${Date.now()}`, severity: 'error', title: `Couldn't start: ${str(d.title || d.id, 120)}`,
       body: str([`Build ${d.id} was picked from the Queue and failed to start.`, ...list(d.reasons).map((x) => `${x.account || '?'}: ${str(x.error, 300)}`),
         d.tries && d.maxTries ? (d.tries >= d.maxTries ? `${d.tries} failed starts this hour: it waits an hour before the next try.` : `It stays in the Queue and is tried again next tick (${d.tries}/${d.maxTries} failed starts this hour).`) : ''].filter(Boolean).join('\n'), 1500) };
+    case 'launch-crash': return { ...base, key: `pipeline:launch-crash:${d.id}`, severity: 'error', title: `Keeps crashing at launch: ${str(d.title || d.id, 120)}`,
+      body: str(`${d.id} died at launch ${d.count} times in a row and stopped retrying by itself. Last error: ${d.why || 'none printed'}. Fix the launcher error, then Retry (Build orchestrator → the build → Attempts, \`orchestrator.mjs retry ${d.id}\`, or pipeline.mjs requeue-launch ${d.id}).`, 1500) };
     case 'oauth': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'error', title: `Claude login failed: ${d.account || '?'} · ${str(d.title, 100)}`,
       body: str(`${d.error || 'sign-in refused'}\n${d.id} is held in Pending. It goes back to the Queue by itself once ${d.account || 'the account'} signs in again (checked by the account health sweep${d.everyMin ? `, every ${d.everyMin} min` : ''}). To fix it now: Claude accounts → ${d.account || 'the account'} → Sign in.`, 1500) };
     case 'oauth-ok': return { ...base, key: `pipeline:oauth:${d.id}`, severity: 'success', title: `Claude login works again: ${d.account || '?'}`, body: str(`${d.id} is back in the Queue (re-queued once, automatically).`, 1500) };

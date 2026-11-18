@@ -131,6 +131,10 @@ jobs:
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-stale-rows.mjs               # stale-row@1: the VPS watchdog's classifier (landed via merge queue / direct merge commit / build complete → complete; closed PR / dead build → remove; live session / missing facts → keep), cleanup log record + schema; fixtures/stale-rows.json
       - run: node apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs   # stale-row watchdog: table readers + apply against a temp store, merge-queue and UI Review fixtures (dry run writes nothing, running builds untouched, open PRs never completed, second run a no-op)  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs   # step-dedupe: re-split never grows a build, re-uided copies merge into one step, save guard, done copy wins, dedupe-steps cleanup  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs     # launch-retry: a launch crash is requeued with a backoff outside maxRuns, the plan waits it out, the cap stops with a banner alert  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs       # land-clash bounce: a done build that clashes gets one merge-main step and goes back to the Queue, once per head  # axf-plugin:build-orchestrator
+      - run: bash deploy/test/claude-headless-brief.test.sh                                  # the launch prompt goes on stdin (a 300 KB brief, no E2BIG; tmux part skipped without tmux), brief size cap keeps Brett's words
       - run: (git fetch -q --unshallow origin || true) && git fetch -q origin +refs/heads/main:refs/remotes/origin/main && node framework/cli/check-tracking-files.mjs   # tracking-paths@1: a PR branch never changes the builds store, orchestrator / origins / pending / queue exports or journal parts (builds-live status commits excepted); names the file
       - run: node framework/spec/check-data-store.mjs               # data-store@1: registry mirror, the client on memory + file backends (same answers), rev/etag conflicts, append-only journals, watch, count manifests, http error mapping + retries, migration map, mode transitions
       - name: axf-data service tests (CRUD, rev conflicts, append-only journals, history + restore, watch, auth refusal) and the wire contract replayed from Node
@@ -260,6 +264,8 @@ jobs:
           cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
           # a plugin made from the template records the model that built it (build-defaults@1 plugin.builtWith.*)
           sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
+          # and ships its locked settings default like every plugin (settings-iface@1: default-<folder>.json)
+          (cd ../.. && node framework/cli/settings-iface.mjs defaults --write)
           npm ci && npm run build
       - name: axhub-web — re-bake the framework into it and build it
         if: ${{ needs.scope.outputs.axhubweb == 'true' }}

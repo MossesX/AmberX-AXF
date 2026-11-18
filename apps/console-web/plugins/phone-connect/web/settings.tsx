@@ -13,7 +13,7 @@ import './phone-connect.css';
 
 const P = 'axp-phone';
 const POLL_MS = 5000;
-type Tab = 'pair' | 'phones' | 'features' | 'activity';
+type Tab = 'pair' | 'phones' | 'features' | 'activity'; // axf-not-plugin:activity (a tab of this panel)
 interface Cmd { id: string; command: string; status: string; at: string; from: { kind: string; who: string; via?: string }; result: { ok: boolean; error?: { code: string; message: string } } | null }
 
 const when = (iso: string) => (iso ? new Date(iso).toLocaleString() : 'never');
@@ -172,7 +172,7 @@ function ActivityPane() {
 /** Deep links (console actions phone.tab / phone.device, console_show row:device/<id>): which tab, which row to show. */
 const SHOW_EVENT = 'axp-phone:show';
 let pending: { tab: Tab; device?: string } | null = null;
-export const TABS: Tab[] = ['pair', 'phones', 'features', 'activity'];
+export const TABS: Tab[] = ['pair', 'phones', 'features', 'activity']; // axf-not-plugin:activity
 export function showInPanel(tab: Tab, device?: string): void {
   pending = { tab, device };
   globalThis.dispatchEvent(new CustomEvent(SHOW_EVENT));
@@ -211,15 +211,15 @@ export function PhoneConnectPanel() {
       ) : layout === 'split' ? (
         <>
           <Section title={st?.paired ? PANES.phones : PANES.pair}>{pane(st?.paired ? 'phones' : 'pair')}</Section>
-          <TabGroup<Tab> id="phone-connect.tabs" label="Phone Connect" value={tab === 'activity' ? 'activity' : 'features'} onChange={setTab}
-            tabs={[{ value: 'features', label: 'Features', icon: 'sliders' }, { value: 'activity', label: 'Activity', icon: 'activity' }]}>
-            {pane(tab === 'activity' ? 'activity' : 'features')}
+          <TabGroup<Tab> id="phone-connect.tabs" label="Phone Connect" value={tab === 'activity' ? 'activity' : 'features'} onChange={setTab} /* axf-not-plugin:activity */
+            tabs={[{ value: 'features', label: 'Features', icon: 'sliders' }, { value: 'activity', label: 'Activity', icon: 'activity' }]}> {/* axf-not-plugin:activity (a tab of this panel) */}
+            {pane(tab === 'activity' ? 'activity' : 'features')} {/* axf-not-plugin:activity (a tab of this panel) */}
           </TabGroup>
         </>
       ) : (
         <TabGroup<Tab> id="phone-connect.tabs" label="Phone Connect" value={tab} onChange={setTab}
           tabs={[{ value: 'pair', label: 'Pair', icon: 'smartphone' }, { value: 'phones', label: 'Phones', icon: 'list', badge: st?.devices ?? 0 },
-            { value: 'features', label: 'Features', icon: 'sliders' }, { value: 'activity', label: 'Activity', icon: 'activity' }]}>
+            { value: 'features', label: 'Features', icon: 'sliders' }, { value: 'activity', label: 'Activity', icon: 'activity' }]}> {/* axf-not-plugin:activity (a tab of this panel) */}
           {pane(tab)}
         </TabGroup>
       )}

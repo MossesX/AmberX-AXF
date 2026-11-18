@@ -14,7 +14,7 @@
  * fixing / escalated stay; all steps done = `landing` until the PR is merged, `landed` once merged (done-means-merged@1;
  * `complete` only through the verify runner).
  */
-import { STATUSES, normBuild, normalizeStore } from './builds-store-core.mjs';
+import { STATUSES, dedupeSteps, normBuild, normalizeStore, stepKey } from './builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { markLine } from '../core/demo-build.mjs';
 
@@ -78,10 +78,22 @@ export function mergeBuild(a, b) {
   const [win, lose] = newer(a, b) >= 0 ? [a, b] : [b, a];
   const out = clone(win);
   const other = new Map(lose.steps.map((s) => [s.uid, s]));
+  // step-dedupe: a copy that gave the same step another uid (a re-split, an export without uids) is still that step,
+  // matched by its text; without this every merge kept both and the list doubled
+  const byText = new Map(); for (const s of lose.steps) { const k = stepKey(s.text); if (k && !byText.has(k)) byText.set(k, s); }
+  const matched = new Set();
   let combined = false;
-  out.steps = win.steps.map((s) => { const o = other.get(s.uid); if (o && newer(o, s) > 0) { combined = true; return clone(o); } return clone(s); });
+  out.steps = win.steps.map((s) => {
+    const o = other.get(s.uid) ?? (() => { const t = byText.get(stepKey(s.text)); return t && !matched.has(t.uid) && !win.steps.some((w) => w.uid === t.uid) ? t : null; })();
+    if (!o) return clone(s);
+    matched.add(o.uid);
+    if (o.uid !== s.uid && o.done && !s.done) { combined = true; return { ...clone(o), id: s.id }; } // the tick survives the uid split
+    if (o.uid === s.uid && newer(o, s) > 0) { combined = true; return clone(o); }
+    return clone(s);
+  });
   const have = new Set(out.steps.map((s) => s.uid));
-  lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
+  lose.steps.forEach((s, i) => { if (!have.has(s.uid) && !matched.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
+  { const d = dedupeSteps(out.steps); if (d.dropped) { out.steps = d.steps; combined = true; } }
   for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority', 'alias']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
