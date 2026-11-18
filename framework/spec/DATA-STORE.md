@@ -7,6 +7,8 @@ Status: contract, Phase 1 of build `data-container-axf-data-holds-all` (Fable, N
 `data-store-migration.json`, `data-store-mode.json`). No Kotlin twin: this is console infrastructure, nothing an Android
 app renders (deferred gap in `PORTING.md`).
 
+Inventory of every JSON/JSONL data file and its target Postgres table: `framework/spec/DATA-INVENTORY.md` (Nov 18 2026).
+
 ## Why
 
 Brett, Nov 15 2026: "the console goes down, all the data is still available, all the notes are available, and the
