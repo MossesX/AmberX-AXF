@@ -39,6 +39,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as AL from '../../framework/core/auto-lander.mjs';
 import * as attempts from './attempts.mjs';
+import { reapFirst } from '../../framework/cli/reaper.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../..');
@@ -250,6 +251,8 @@ export async function tick({ deps = null, dry = false, only = '', log = () => {}
   const lk = takeLock();
   if (!lk.ok) return { skipped: `another tick runs (pid ${lk.holder?.pid || '?'})` };
   try {
+    // vps-reaper@1: ghosts go before a land / merge pass (the real run only, never a dry run or injected deps)
+    if (!deps && !dry) await reapFirst('auto-lander');
     const d = deps || await realDeps();
     const control = readControl();
     const policy = policyFrom(d.ruleSet(), control.settings);

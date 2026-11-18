@@ -33,7 +33,9 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| VPS reaper: the VPS kills its own ghosts (`vps-reaper-ghosts`): `framework/cli/reaper.mjs` (vps-reaper@1) every 2 min by cron (`deploy/cron/axf-reaper`) and before every dispatcher tick, launch, auto-land, auto-lander and merge-queue pass; kills finished `claude -p` still running (wrapper records a clean finish, run handed to the lander), dead tmux axf-*, ghost agent slots (host gone / pid reused / settled build), ownerless heavy locks, leftover test servers on ports, stale /tmp/axf-limit-* and leaked state tmp files; never a working build (log/meter within 20 min, background tasks up to 90 min); every kill in reaper.jsonl + AmberX Automatic fixes note + phone FYI (pipeline.reaper); first live pass cleared 27 ghosts + 326 temp files | review | `claude/vps-reaper-ghosts` | #840 | landing: CI on the PR, then the merge queue; the cron goes live with the next console deploy (install-console.sh) | 2026-11-18 |
 | Fix launcher crash: duplicate steps + brief too big (`fix-launcher-crash-duplicate-steps-brief`): steps merged by text + dedupe guard on every write (16 steps had grown to 2,682); live store cleaned (29 builds, 8,139 → 340 steps); launcher feeds the brief on stdin (no E2BIG); brief cap `builds.briefMaxBytes`; launch-crash auto-retry with backoff + systems check item; land-clash bounce (Phone Connect #787 requeued with a merge-main step); report `_claude/builds/reports/fix-launcher-crash-duplicate-steps-brief.md` | review | `claude/fix-launcher-crash-duplicate-steps-brief` | #827 | landing: CI on the PR, then merge; until it lands, writers on the old merge can re-add repeats (the guard here heals them) | 2026-11-18 |
+| VPS never gives up (`vps-never-gives-up-fix-land-every-build`, Opus): the retry ladder walks until every rung is tried (attempt caps lifted to the contract ceilings, `untilExhausted`), then the build is marked Failed in the same tick; FYI push on every attempt (`pipeline.attempt`) | in-pr | `claude/vps-never-gives-up-fix-land-every-build` | (VPS opens it) | landing: CI on the PR, then merge. Report `_claude/builds/reports/vps-never-gives-up-fix-land-every-build.md` | 2026-11-18 |
 | Fable rebuild: Plan Studio cleared out, unlimited nesting, context menus, full voice control (`fable-rebuild-plan-studio-cleared-out`): new plugin Plan Studio 2.0 (`plan-studio-2`) beside the untouched original, starts empty; layouts nav menu / tabs / IDE dockable panes (dock-layout@1); every action via REST, MCP, CLI, voice | in-pr | `claude/fable-rebuild-plan-studio-cleared-out` | (VPS opens it) | Live shots of each layout to UI Review → Screenshots; Brett decides whether the original Plan Studio retires. Report `_claude/builds/reports/fable-rebuild-plan-studio-cleared-out.md` | 2026-11-16 |
 | Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX) (`rebuild-fresh-main-phone-connect-small`) | in-pr | `claude/rebuild-fresh-main-phone-connect-small` |  |  | 2026-11-17 |
 | Land the APK CI fix (`ci-apk-clash-land`, Opus): `claude/fix-main-ci-apk` (#835) clashed with main in 25 files after #827. Merged origin/main taking main's version of every clash (plugin-lifecycle checker, systems-check actor markers, orchestrator-demo, phone-connect menu, maintenance clean-up: main skips a done build without done-means-merged proof, ours archived it — main's kept, CI template settings default via `settings-iface.mjs defaults --write`); help drafts are main's baked copies (all six identical). Kept from #835: axf-data last.json atomic write + backup status read guard + no None headers, test_data_store mirror-body race, plan-studio-2 command descriptions (glossary ratchet 388 → 384). New: main's red Android run 44272764276 was the agent-manager hub-runs check missing a run logged in the same millisecond; it now tells new runs apart by id. Supersedes #835 | review | `claude/ci-apk-clash-land` | #838 | Merge queue lands it; then APKs build on main | 2026-11-18 |
@@ -839,189 +841,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → landing (all) · foreign-write
-- 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:44 UTC · `watchdog-plugin-owns-every-vps` note (all) · orchestrator
-- 2026-11-18 01:44 UTC · `one-true-source-for-every-setting` s6 done (all) · foreign-write
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` note (all) · orchestrator
-- 2026-11-18 01:43 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete (all) · foreign-write
-- 2026-11-18 01:44 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete (all) · foreign-write
-- 2026-11-18 01:45 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:46 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 01:45 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `auto-lander-never-wait-missing-ui-review` s17 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `one-true-source-for-every-setting` s4 done, s5 done, s6 done (all) · foreign-write
-- 2026-11-18 01:45 UTC · `axhub-routes-for-console-hub` note (all) · foreign-write
-- 2026-11-18 01:45 UTC · `vps-frees-stale-build-slots-every-minute` added (56 steps) (all) · foreign-write
-- 2026-11-18 01:45 UTC · `vps-frees-stale-build-slots-every-2` added (75 steps) (all) · foreign-write
-- 2026-11-18 01:45 UTC · `watchdog-plugin-owns-every-vps` added (30 steps) (all) · foreign-write
-- 2026-11-18 01:45 UTC · `approval-pass-covers-every-call` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:46 UTC · `always-fill-every-slot-when-slots-are` note (all) · pipeline
-- 2026-11-18 01:46 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:47 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
-- 2026-11-18 01:47 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:47 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:46 UTC · `move-everything-axhub-web-console` s29 done (all) · orchestrator
-- 2026-11-18 01:42 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `move-everything-axhub-web-console` s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s23 done, s24 done, s25 done, s26 done, s27 done, s28 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `auto-lander-never-wait-missing-ui-review` s11 done, s12 done, s14 done, s15 done, s16 done, s17 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s1 done, s2 done, s3 done, s4 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `axhub-routes-for-console-hub` added (180 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `vps-frees-stale-build-slots-every-minute` added (42 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `vps-frees-stale-build-slots-every-2` added (15 steps) (all) · foreign-write
-- 2026-11-18 01:42 UTC · `watchdog-plugin-owns-every-vps` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:47 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:47 UTC · `one-true-source-for-every-setting` s5 done, s6 done (all) · foreign-write
-- 2026-11-18 01:47 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` → landing, note (all) · pipeline
-- 2026-11-18 01:48 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 01:48 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:48 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:49 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · console
-- 2026-11-18 01:49 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
-- 2026-11-18 01:49 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:49 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:49 UTC · `watchdog-plugin-owns-every-vps` note (all) · mcp
-- 2026-11-18 01:50 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:51 UTC · `watchdog-plugin-owns-every-vps` note (all) · mcp
-- 2026-11-18 01:51 UTC · `fix-ci-red-main-watchdog-test-vs-done` PR #830, note (all) · reconciler
-- 2026-11-18 01:51 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` note (all) · orchestrator
-- 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` s53 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:52 UTC · `move-everything-axhub-web-console` s29 done (all) · foreign-write
-- 2026-11-18 01:52 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 01:52 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 01:52 UTC · `one-landing-line-pull-main-merge-one` added (0 steps) (all) · foreign-write
-- 2026-11-18 01:52 UTC · `always-fill-every-slot-when-slots-are` → fixing, note (all) · pipeline
-- 2026-11-18 01:52 UTC · `one-true-source-for-every-setting` s7 done (all) · orchestrator
-- 2026-11-18 01:53 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
-- 2026-11-18 01:53 UTC · `one-landing-line-pull-main-merge-one` note (all) · foreign-write
-- 2026-11-18 01:54 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
-- 2026-11-18 01:55 UTC · `approval-pass-covers-every-call` note (all) · pipeline
-- 2026-11-18 02:02 UTC · `one-true-source-for-every-setting` s8 done (all) · orchestrator
-- 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 02:03 UTC · `always-fill-every-slot-when-slots-are` → complete, note (all) · foreign-write
-- 2026-11-18 02:03 UTC · `one-true-source-for-every-setting` s7 done (all) · foreign-write
-- 2026-11-18 02:03 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s1 undone, s1 undone, s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, note (all) · foreign-write
-- 2026-11-18 02:03 UTC · `watchdog-plugin-owns-every-vps` note (all) · foreign-write
-- 2026-11-18 02:03 UTC · `one-landing-line-pull-main-merge-one` added (40 steps) (all) · foreign-write
-- 2026-11-18 02:03 UTC · `fix-refreshing-console-jumps-back` → landing (all) · builds-live
-- 2026-11-18 02:05 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 02:04 UTC · `rebuild-fresh-main-phone-connect-small` merged, note (all) · reconciler
-- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:09 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:07 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 02:09 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 02:10 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 02:12 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 02:21 UTC · `fix-refreshing-console-jumps-back` note (all) · builds-live
-- 2026-11-18 02:34 UTC · `move-everything-axhub-web-console` → pending, note (all) · reconciler
-- 2026-11-18 02:34 UTC · `one-true-source-for-every-setting` → pending, note (all) · reconciler
-- 2026-11-18 04:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 04:23 UTC · `fix-refreshing-console-jumps-back` → complete (all) · foreign-write
-- 2026-11-18 04:23 UTC · `one-true-source-for-every-setting` s8 done (all) · foreign-write
-- 2026-11-18 04:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 04:27 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 04:27 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 04:27 UTC · `approval-pass-covers-every-call` note (all) · pipeline
-- 2026-11-18 04:28 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 04:34 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 04:34 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 04:31 UTC · `approval-pass-covers-every-call` note (all) · builds-live
-- 2026-11-18 04:58 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:00 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` branch claude/approval-pass-covers-every-call, note (all) · reconciler
-- 2026-11-18 05:13 UTC · `approval-pass-covers-every-call` s1 done, → running (all) · orchestrator
-- 2026-11-18 05:15 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:14 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 05:16 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:18 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:23 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:17 UTC · `approval-pass-covers-every-call` s1 done, → running, note (all) · foreign-write
-- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 05:21 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:23 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 05:29 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:27 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:28 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 05:30 UTC · `approval-pass-covers-every-call` → running, PR #836, note (all) · reconciler
-- 2026-11-18 05:31 UTC · `approval-pass-covers-every-call` PR #836, note (all) · builds-live
-- 2026-11-18 05:37 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 05:37 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 05:37 UTC · `approval-pass-covers-every-call` s1 done, note (all) · foreign-write
-- 2026-11-18 05:35 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:40 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:43 UTC · `approval-pass-covers-every-call` → queued, note (all) · pipeline
-- 2026-11-18 05:44 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 05:48 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
-- 2026-11-18 05:52 UTC · `approval-pass-covers-every-call` → running, note (all) · pipeline
-- 2026-11-18 05:53 UTC · `approval-pass-covers-every-call` note (all) · orchestrator
-- 2026-11-18 06:00 UTC · `approval-pass-covers-every-call` s2 done (all) · orchestrator
-- 2026-11-18 06:01 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
-- 2026-11-18 06:02 UTC · `approval-pass-covers-every-call` s2 done (all) · foreign-write
-- 2026-11-18 06:03 UTC · `approval-pass-covers-every-call` s2 done, note (all) · foreign-write
-- 2026-11-18 06:20 UTC · `approval-pass-covers-every-call` s3 done (all) · orchestrator
-- 2026-11-18 06:25 UTC · `approval-pass-covers-every-call` s4 done (all) · orchestrator
-- 2026-11-18 01:42 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `move-everything-axhub-web-console` s27 done, s28 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `auto-lander-never-wait-missing-ui-review` s15 done, s16 done, s17 done, → complete, note (all) · foreign-write
-- 2026-11-18 01:42 UTC · `one-true-source-for-every-setting` s3 done, s4 done (all) · foreign-write
-- 2026-11-18 01:42 UTC · `fix-ci-red-main-watchdog-test-vs-done` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s2 done, s3 done, s4 done, s5 done, s6 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 01:44 UTC · `one-true-source-for-every-setting` s5 done (all) · foreign-write
-- 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:29 UTC · `move-server-side-console-parts-onto-vps` s26 done, → landing (all) · orchestrator
-- 2026-11-18 06:32 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:32 UTC · `approval-pass-covers-every-call` s3 done, s4 done (all) · foreign-write
-- 2026-11-18 06:30 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:34 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:31 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · builds-live
-- 2026-11-18 06:35 UTC · `approval-pass-covers-every-call` s5 done (all) · orchestrator
-- 2026-11-18 06:31 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:36 UTC · `move-server-side-console-parts-onto-vps` → complete (all) · foreign-write
-- 2026-11-18 06:38 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 06:40 UTC · `move-server-side-console-parts-onto-vps` note (all) · pipeline
-- 2026-11-18 06:43 UTC · `approval-pass-covers-every-call` s6 done (all) · orchestrator
-- 2026-11-18 06:45 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:45 UTC · `approval-pass-covers-every-call` s2 done, s3 done, s4 done, note (all) · foreign-write
-- 2026-11-18 06:43 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 06:44 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 06:49 UTC · `approval-pass-covers-every-call` s7 done (all) · orchestrator
-- 2026-11-18 06:50 UTC · `move-server-side-console-parts-onto-vps` s26 done, → complete (all) · foreign-write
-- 2026-11-18 06:50 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
-- 2026-11-18 06:50 UTC · `move-everything-axhub-web-console` note (all) · foreign-write
-- 2026-11-18 06:50 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
-- 2026-11-18 06:50 UTC · `approval-pass-covers-every-call` s1 done, s2 done, s3 done, s4 done, note (all) · foreign-write
-- 2026-11-18 06:48 UTC · `approval-pass-covers-every-call` s6 done, → running (all) · foreign-write
-- 2026-11-18 06:52 UTC · `approval-pass-covers-every-call` s7 done, → running (all) · foreign-write
-- 2026-11-18 06:53 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 06:53 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
-- 2026-11-18 06:58 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
-- 2026-11-18 06:58 UTC · `approval-pass-covers-every-call` s5 done, s6 done, s7 done, note (all) · foreign-write
-- 2026-11-18 07:00 UTC · `approval-pass-covers-every-call` s8 done (all) · orchestrator
-- 2026-11-18 07:02 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 07:06 UTC · `approval-pass-covers-every-call` s9 done (all) · orchestrator
-- 2026-11-18 07:03 UTC · `approval-pass-covers-every-call` s8 done (all) · foreign-write
-- 2026-11-18 07:08 UTC · `approval-pass-covers-every-call` s10 done (all) · orchestrator
-- 2026-11-18 07:08 UTC · `approval-pass-covers-every-call` s9 done, → running (all) · foreign-write
-- 2026-11-18 07:11 UTC · `approval-pass-covers-every-call` s11 done (all) · orchestrator
-- 2026-11-18 07:12 UTC · `approval-pass-covers-every-call` s10 done (all) · foreign-write
-- 2026-11-18 07:15 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s7 done, s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:13 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
-- 2026-11-18 07:14 UTC · `approval-pass-covers-every-call` note (all) · watchdog
-- 2026-11-18 07:20 UTC · `approval-pass-covers-every-call` s8 done, s9 done, s10 done, s11 done, note (all) · foreign-write
-- 2026-11-18 07:16 UTC · `approval-pass-covers-every-call` s10 undone, → pending, note (all) · foreign-write
-- 2026-11-18 07:17 UTC · `approval-pass-covers-every-call` s11 done, note (all) · foreign-write
-- 2026-11-18 07:23 UTC · `approval-pass-covers-every-call` → pending, note (all) · pipeline
 - 2026-11-18 07:24 UTC · `approval-pass-covers-every-call` note (all) · watchdog
 - 2026-11-18 07:29 UTC · `approval-pass-covers-every-call` note (all) · pipeline
 - 2026-11-18 07:29 UTC · `approval-pass-covers-every-call` note (all) · watchdog
@@ -1239,6 +1058,189 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 12:33 UTC · `server-gate-reject-any-build-without` note (all) · orchestrator
 - 2026-11-18 12:34 UTC · `plan-studio-2-open-button-working-deep` s1 done (all) · orchestrator
 - 2026-11-18 12:37 UTC · `vps-never-gives-up-fix-land-every-build` s1 done, → running (all) · orchestrator
+- 2026-11-18 12:37 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-18 12:38 UTC · `one-build-time-always-split-split-id` added (0 steps) (all) · Brett
+- 2026-11-18 12:39 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
+- 2026-11-18 12:39 UTC · `every-app-gets-own-locked-default` → running, note (all) · pipeline
+- 2026-11-18 12:40 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
+- 2026-11-18 12:40 UTC · `every-app-gets-own-locked-default` → running, note (all) · foreign-write
+- 2026-11-18 12:40 UTC · `one-build-time-always-split-to-fill` added (0 steps) (all) · Brett
+- 2026-11-18 12:41 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · Brett
+- 2026-11-18 12:42 UTC · `vps-never-gives-up-fix-land-every-build` s2 done (all) · orchestrator
+- 2026-11-18 12:43 UTC · `plan-studio-2-open-button-working-deep` s2 done (all) · orchestrator
+- 2026-11-18 12:41 UTC · `every-app-gets-own-locked-default` → running, note (all) · builds-live
+- 2026-11-18 12:45 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 12:45 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 12:45 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
+- 2026-11-18 12:45 UTC · `plan-studio-2-open-button-working-deep` s3 done (all) · orchestrator
+- 2026-11-18 12:46 UTC · `vps-never-gives-up-fix-land-every-build` s3 done (all) · orchestrator
+- 2026-11-18 12:45 UTC · `every-app-gets-own-locked-default` → queued, note (all) · pipeline
+- 2026-11-18 12:46 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-18 12:46 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-18 12:47 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-18 12:47 UTC · `vps-never-gives-up-fix-land-every-build` s4 done, → landing (all) · orchestrator
+- 2026-11-18 12:48 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 12:49 UTC · `plan-studio-2-open-button-working-deep` s4 done (all) · orchestrator
+- 2026-11-18 12:50 UTC · `plan-studio-2-open-button-working-deep` s5 done (all) · orchestrator
+- 2026-11-18 12:49 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 12:49 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
+- 2026-11-18 12:50 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 12:51 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 12:52 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · voice session
+- 2026-11-18 12:53 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · foreign-write
+- 2026-11-18 12:53 UTC · `plan-studio-2-open-button-working-deep` s4 done, s5 done (all) · foreign-write
+- 2026-11-18 12:53 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-18 12:53 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 12:53 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 12:56 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 12:56 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 12:56 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 12:58 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 13:00 UTC · `plan-studio-2-open-button-working-deep` s6 done (all) · orchestrator
+- 2026-11-18 13:00 UTC · `plan-studio-2-open-button-working-deep` s7 done (all) · orchestrator
+- 2026-11-18 13:01 UTC · `plan-studio-2-open-button-working-deep` s8 done (all) · orchestrator
+- 2026-11-18 13:01 UTC · `plan-studio-2-open-button-working-deep` s6 done (all) · foreign-write
+- 2026-11-18 13:03 UTC · `plan-studio-2-open-button-working-deep` s9 done (all) · orchestrator
+- 2026-11-18 13:06 UTC · `vps-never-gives-up-fix-land-every-build` → fixing, note (all) · pipeline
+- 2026-11-18 13:12 UTC · `vps-never-gives-up-fix-land-every-build` PR #842, note (all) · reconciler
+- 2026-11-18 13:14 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
+- 2026-11-18 13:16 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 13:16 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 13:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` → running, note (all) · pipeline
+- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
+- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
+- 2026-11-18 13:18 UTC · `plan-studio-2-open-button-working-deep` s10 done (all) · orchestrator
+- 2026-11-18 13:18 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
+- 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s11 done (all) · orchestrator
+- 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s12 done (all) · orchestrator
+- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
+- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
+- 2026-11-18 13:22 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 13:23 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
+- 2026-11-18 13:23 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-18 13:23 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 13:23 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
+- 2026-11-18 13:23 UTC · `plan-studio-2-open-button-working-deep` added (15 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (4 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `vps-never-gives-up-fix-land-every-build` added (4 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `every-app-gets-own-locked-default` added (6 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `every-plugin-gets-own-default-toolbar` added (7 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `server-gate-reject-any-build-without` added (5 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
+- 2026-11-18 13:23 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
+- 2026-11-18 13:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-18 13:25 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
+- 2026-11-18 13:25 UTC · `plan-studio-2-open-button-working-deep` added (15 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (4 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `vps-never-gives-up-fix-land-every-build` added (4 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `every-app-gets-own-locked-default` added (6 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `every-plugin-gets-own-default-toolbar` added (7 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `server-gate-reject-any-build-without` added (5 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
+- 2026-11-18 13:25 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
+- 2026-11-18 13:24 UTC · `plan-studio-2-open-button-working-deep` s13 done (all) · orchestrator
+- 2026-11-18 13:25 UTC · `plan-studio-2-open-button-working-deep` s13 done (all) · foreign-write
+- 2026-11-18 13:27 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-18 13:27 UTC · `plan-studio-2-open-button-working-deep` s10 done, s11 done, s12 done, s13 done (all) · foreign-write
+- 2026-11-18 13:27 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
+- 2026-11-18 13:28 UTC · `every-plugin-gets-own-default-toolbar` s1 done, → running (all) · orchestrator
+- 2026-11-18 13:30 UTC · `every-plugin-gets-own-default-toolbar` s2 done (all) · orchestrator
+- 2026-11-18 13:38 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-18 13:38 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `plan-studio-2-open-button-working-deep` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done (all) · foreign-write
+- 2026-11-18 13:38 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-18 13:38 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
+- 2026-11-18 13:39 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-18 13:40 UTC · `every-app-gets-own-locked-default` note (all) · builds-live
+- 2026-11-18 13:40 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-18 13:41 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 13:41 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 13:41 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 13:42 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 13:43 UTC · `every-plugin-gets-own-default-toolbar` branch claude/every-plugin-gets-own-default-toolbar, note (all) · reconciler
+- 2026-11-18 13:44 UTC · `every-plugin-gets-own-default-toolbar` s3 done (all) · orchestrator
+- 2026-11-18 13:47 UTC · `every-plugin-gets-own-default-toolbar` s4 done (all) · orchestrator
+- 2026-11-18 13:46 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
+- 2026-11-18 13:48 UTC · `every-plugin-gets-own-default-toolbar` s4 done (all) · foreign-write
+- 2026-11-18 13:49 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 13:52 UTC · `every-plugin-gets-own-default-toolbar` s5 done (all) · orchestrator
+- 2026-11-18 13:50 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 13:53 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
+- 2026-11-18 13:54 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
+- 2026-11-18 13:55 UTC · `settings-fix-part-2-blank-toolbars` → running, note (all) · orchestrator
+- 2026-11-18 13:57 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · orchestrator
+- 2026-11-18 13:57 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
+- 2026-11-18 13:58 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · orchestrator
+- 2026-11-18 13:58 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · orchestrator
+- 2026-11-18 13:59 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · orchestrator
+- 2026-11-18 14:00 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · orchestrator
+- 2026-11-18 14:01 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · orchestrator
+- 2026-11-18 14:01 UTC · `attach-widgets-to-any-toolbar-banner` → running, note (all) · orchestrator
+- 2026-11-18 14:02 UTC · `one-build-time-always-split-to-fill` s1 done, → running (all) · orchestrator
+- 2026-11-18 13:59 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · foreign-write
+- 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
+- 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · pipeline
+- 2026-11-18 14:01 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
+- 2026-11-18 14:06 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
+- 2026-11-18 14:07 UTC · `every-plugin-gets-own-default-toolbar` s6 done (all) · orchestrator
+- 2026-11-18 14:06 UTC · `settings-fix-part-2-blank-toolbars` → pending (all) · foreign-write
+- 2026-11-18 14:09 UTC · `stop-push-storm-builds-live-pushes-build` added (2 steps) (all) · voice session
+- 2026-11-18 14:14 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · watchdog
+- 2026-11-18 14:15 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · foreign-write
+- 2026-11-18 14:16 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
+- 2026-11-18 14:16 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · foreign-write
+- 2026-11-18 14:18 UTC · `plan-studio-2-open-button-working-deep` s14 done (all) · orchestrator
+- 2026-11-18 14:17 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
+- 2026-11-18 14:21 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · builds-live
+- 2026-11-18 14:20 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
+- 2026-11-18 14:25 UTC · `one-build-time-always-split-to-fill` s2 done (all) · orchestrator
+- 2026-11-18 14:23 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 14:23 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 14:23 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 14:23 UTC · `vps-never-gives-up-fix-land-every-build` → landing, merged, note (all) · watchdog
+- 2026-11-18 14:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · foreign-write
+- 2026-11-18 14:24 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · foreign-write
+- 2026-11-18 14:24 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · foreign-write
+- 2026-11-18 14:24 UTC · `vps-never-gives-up-fix-land-every-build` → landing, merged, note (all) · foreign-write
+- 2026-11-18 14:27 UTC · `vps-never-gives-up-fix-land-every-build` merged, note (all) · reconciler
+- 2026-11-18 14:27 UTC · `one-build-time-always-split-to-fill` branch claude/one-build-time-always-split-to-fill, note (all) · reconciler
+- 2026-11-18 14:29 UTC · `plan-studio-2-open-button-working-deep` s15 done, → landing (all) · orchestrator
+- 2026-11-18 14:30 UTC · `one-build-time-always-split-to-fill` s3 done (all) · orchestrator
+- 2026-11-18 14:31 UTC · `plan-studio-2-open-button-working-deep` → pending, note (all) · pipeline
+- 2026-11-18 14:31 UTC · `every-plugin-gets-own-default-toolbar` s7 done, → landing (all) · orchestrator
+- 2026-11-18 14:31 UTC · `plan-studio-2-open-button-working-deep` PR #843 (all) · builds-live
+- 2026-11-18 14:32 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 14:33 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
+- 2026-11-18 14:34 UTC · `plan-studio-2-open-button-working-deep` note (all) · reconciler
+- 2026-11-18 14:36 UTC · `plan-studio-2-open-button-working-deep` note (all) · pipeline
+- 2026-11-18 14:36 UTC · `one-build-time-always-split-to-fill` s4 done (all) · orchestrator
+- 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` → running, note (all) · pipeline
+- 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
+- 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` branch claude/every-app-gets-own-locked-default (all) · pipeline
+- 2026-11-18 14:42 UTC · `stop-push-storm-builds-live-pushes-build` → queued (all) · voice session
+- 2026-11-18 14:43 UTC · `every-plugin-gets-own-default-toolbar` PR #844, note (all) · reconciler
+- 2026-11-18 14:45 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · voice session
+- 2026-11-18 14:46 UTC · `every-app-gets-own-locked-default` s1 done, → running (all) · orchestrator
+- 2026-11-18 14:47 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
+- 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · watchdog
+- 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · builds-live
+- 2026-11-18 14:51 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
+- 2026-11-18 14:52 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 14:52 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 14:52 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 14:52 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-18 14:56 UTC · `one-build-time-always-split-to-fill` s5 done (all) · orchestrator
+- 2026-11-18 14:55 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 14:59 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
+- 2026-11-18 14:59 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
 
 ## Token passes (log)
 

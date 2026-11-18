@@ -100,6 +100,7 @@ jobs:
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/spec/check-build-limit.mjs              # build-limit@1: hard limit counts what really runs, N+1 refused (claude-headless.sh end to end), Brett-only set, docker/slice caps, only Queued builds take slots
       - run: node framework/spec/check-build-lock.mjs               # build-lock@1: one live session per build: tmux axf-<id>*, claude pids in the worktree, a heartbeat lock that expires; double dispatch refused
+      - run: node framework/spec/check-reaper.mjs                   # vps-reaper@1: finished claude -p killed and handed to the lander, working builds never touched, dead tmux / ghost slots / ownerless heavy locks / leftover test servers / stale temp folders cleared, every kill logged + noted + one FYI
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
       - run: node deploy/claude-shared-login.test.mjs               # two builds on one Claude account: a forced renewal in one, the other keeps working
       - run: node deploy/claude-login-notify.test.mjs               # every Claude sign-in verified and every token refresh confirmed saved: one phone alert each, never a token

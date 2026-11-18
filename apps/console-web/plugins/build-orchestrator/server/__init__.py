@@ -381,7 +381,7 @@ def escalated_probe(rows: list[dict[str, Any]] | None = None) -> dict[str, Any]:
         return {"status": "ok", "summary": "No build is stuck: every failure is being retried or is fixed."}
     lines = [f"{x.get('id')}: {x.get('why') or x.get('kind')} Tried: {', '.join(x.get('tried') or []) or 'nothing'}. Since {x.get('since')}." for x in rows[:10]]
     names = ", ".join(str(x.get("id")) for x in rows[:5]) + ("…" if len(rows) > 5 else "")
-    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} stuck after every retry: {names}. Press Retry to start the ladder over.",
+    return {"status": "error", "summary": f"{len(rows)} build{'s' if len(rows) != 1 else ''} failed, every option used up: {names}. Press Retry to start the ladder over.",
             "details": lines, "link": f"row:{rows[0].get('id')}/tab:attempts"}
 
 

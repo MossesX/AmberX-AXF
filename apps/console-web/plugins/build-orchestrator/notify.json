@@ -17,8 +17,22 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.attempt",
+      "label": "FYI: build retry attempt",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "vps-never-gives-up: an FYI each time the server starts a new attempt on a failing build (crash, red CI, a clash, a failed push, a stall, a fall back to Pending): what broke, the strategy it tries now (retry, merge main, a fix, a fresh session, another model or account) and what is left before it is marked Failed. Nothing to do; one per attempt.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:attempt:"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
       "id": "pipeline.escalated",
-      "label": "Build stuck after every retry",
+      "label": "Build failed: every option used up",
       "group": "builds",
       "app": "console",
       "source": "Build orchestrator dispatcher",
@@ -44,6 +58,20 @@
       "setting": "notify.blocked",
       "push": true,
       "priority": "high"
+    },
+    {
+      "id": "pipeline.reaper",
+      "label": "VPS reaper cleared ghosts",
+      "group": "builds",
+      "app": "console",
+      "source": "VPS reaper (framework/cli/reaper.mjs)",
+      "description": "vps-reaper@1: the VPS killed processes nothing owns any more and says what and why: a claude -p still running after its build log ended (the run is closed and handed to the lander), a dead tmux axf-* session, an agent slot or heavy lock held by a host or process that is gone, a test server left on a port. A build that is working is never touched. One FYI per pass; every kill is also a note on AmberX's Automatic fixes list.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:reaper"
+      },
+      "push": true,
+      "priority": "normal"
     },
     {
       "id": "pipeline.launched",

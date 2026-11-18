@@ -739,8 +739,12 @@ function alertBody(kind, d, base) {
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     // done-means-merged@1: the ladder ran out. One push per escalation (key per build + escalation time), with every try
-    case 'escalated': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:escalated:${d.id}:${d.at ?? ''}`, severity: 'error', title: `Build stuck, needs you: ${str(d.title, 120)}`,
+    case 'escalated': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:escalated:${d.id}:${d.at ?? ''}`, severity: 'error', title: `Build failed, every option used up: ${str(d.title, 120)}`,
       body: str([d.why, list(d.tried).length ? `Tried: ${list(d.tried).join(', ')}.` : '', d.since ? `Failing since ${d.since}.` : '', 'Retry from the systems check banner or the build\'s Attempts tab.'].filter(Boolean).join('\n'), 1500) };
+    // vps-never-gives-up: an FYI on every attempt the ladder starts (what broke, what is tried now, what is left)
+    case 'attempt': return { ...base, link: `#/build-orchestrator?row=${encodeURIComponent(d.id ?? '')}&tab=attempts`, key: `pipeline:attempt:${d.id}:${d.n ?? ''}`, severity: 'info',
+      title: `FYI attempt ${d.n ?? '?'}: ${str(d.title, 120)}`,
+      body: str([`${d.kindWord || d.kind || 'A failure'}${d.step ? ` on ${d.step}` : ''}${d.why ? `: ${d.why}` : ''}.`, `Now trying: ${d.strategy}${d.fixStrategy ? ` (${d.fixStrategy})` : ''} on ${d.account || '?'} (${d.model || '?'}).`, list(d.left).length ? `Left after this: ${list(d.left).join(', ')}.` : 'This is the last option before it is marked Failed.', 'Nothing to do: it keeps going by itself.'].join('\n'), 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'selfcheck': return { ...base, key: 'pipeline:selfcheck', severity: list(d.problems).length ? 'warning' : 'info',
       title: `Dispatcher self-check: ${list(d.fixes).length ? `fixed ${list(d.fixes).length}` : 'nothing fixed'}${list(d.problems).length ? `, ${list(d.problems).length} account${list(d.problems).length === 1 ? '' : 's'} can't work` : ''}`,
@@ -756,4 +760,18 @@ function alertBody(kind, d, base) {
     case 'split': return { ...base, key: `pipeline:split:${d.id}`, severity: d.error ? 'warning' : 'info', title: d.error ? `Split needs a look: ${str(d.title, 120)}` : `Split into ${d.steps} steps: ${str(d.title, 120)}`, body: str(d.error || d.note, 1500) };
     default: throw new Error(`unknown alert kind ${kind}`);
   }
+}
+
+// ------------------------------------------------------------------ never gives up (vps-never-gives-up-fix-land-every-build)
+
+/**
+ * The policy the VPS walks the ladder with. With `untilExhausted` on (the default; the done-means-merged rule's setting
+ * turns it off) the per-kind and per-build attempt caps are lifted to the contract's ceilings (retry-ladder@1
+ * MAX_ATTEMPTS_RANGE / MAX_TOTAL_RANGE), so a build is only given up on once every rung of its ladder was tried (merge
+ * main, fix the clash, fix red CI, regenerate, redo the step, a fresh session, another model, every other account). The
+ * ceilings stay as the one safety stop. Pure: (policy from normPolicy, raw rule settings) → policy.
+ */
+export function exhaustPolicy(policy, settings = {}, { maxAttempts = 10, maxTotal = 30 } = {}) {
+  if (settings && settings.untilExhausted === false) return policy;
+  return { ...policy, maxAttempts: Math.max(policy.maxAttempts, maxAttempts), maxTotal: Math.max(policy.maxTotal, maxTotal), untilExhausted: true };
 }

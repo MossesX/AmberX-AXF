@@ -423,6 +423,10 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
       claude -p "$@" < "$prompt_file" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
     fi
     st=${PIPESTATUS[0]}
+    # vps-reaper@1: the reaper closed a run whose result was already in (its log ended "■ done", nothing left running):
+    # that is a clean finish, not a crash. The marker is written just before the kill; an old one never counts.
+    if (( st != 0 )) && [[ -n "$(find .axf-reaped.json -mmin -5 2>/dev/null)" ]] && grep -q '"kind":"phase-done"' .axf-reaped.json 2>/dev/null; then st=0; fi
+    rm -f .axf-reaped.json 2>/dev/null
     (( switches < max_switches )) || break
     if [[ -n "$on_worker" ]]; then   # a worker's run moves to the next worker; the console's account stays where it is
       hit="$(node "$WORKERS_JS" hit --log "$log" --exit "$st" 2>/dev/null)"
