@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8882,
- "updatedAt": "2026-11-18T07:00:31.329Z",
+ "rev": 8883,
+ "updatedAt": "2026-11-18T07:03:43.713Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -342626,7 +342626,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -342634,7 +342634,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T07:00:08.259Z",
+   "updatedAt": "2026-11-18T07:02:40.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -342720,6 +342720,10 @@
     {
      "text": "Session stopped on its own with 8 steps left: back in Pending for Brett.",
      "at": "2026-11-18T06:44:33.029Z"
+    },
+    {
+     "text": "Session stopped on its own with 5 steps left: back in Pending for Brett.",
+     "at": "2026-11-18T07:02:40.729Z"
     }
    ],
    "approvals": [
@@ -342756,7 +342760,16 @@
     "launchedAt": "",
     "runs": 0,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-18T07:02:25.641Z",
+     "exit": 0,
+     "outcome": "returned",
+     "reason": "stopped",
+     "stepsLeft": 5,
+     "account": "",
+     "session": "",
+     "phase": "Phase 2"
+    },
     "split": {
      "at": "2026-11-18T01:46:23.048Z",
      "by": "orchestrator",
@@ -342765,7 +342778,7 @@
      "note": "Split by Claude into 12 steps (1 Fable)."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit null: claude-headless: origin: approval-pass-covers-every-call ← \"Why do I keep getting approvals when I set a pass?\"",
+    "note": "Session stopped on its own with 5 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -343058,7 +343071,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
