@@ -148,7 +148,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const { readFileSync, existsSync } = await import('node:fs');
   const here = new URL('.', import.meta.url).pathname;
   const man = JSON.parse(readFileSync(`${here}axf.manifest.json`, 'utf8'));
-  const own = { banner: 'amberx-branded', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'amberx-droid', 'app-menu': 'amberx-droid' };
+  const own = { banner: 'amberx-branded', toolbar: 'amberx-droid', 'context-menu': 'amberx-droid', 'nav-menu': 'default-amberx-droid-nav', 'app-menu': 'default-amberx-droid-appmenu' };
   for (const [type, id] of Object.entries(own)) {
     eq(man.defaults[type], id, `default ${type} is ${id}`);
     ok(mine.has(`${type}/${id}`), `ships ${type}/${id}`);
@@ -189,8 +189,8 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const tb = read('toolbar', 'amberx-droid').data;
   const tbItems = tb.groups.reduce((n, g) => n + g.items.length + (g.provider ? (g.max ?? 0) : 0), 0);
   ok(tbItems <= 12, `toolbar shows at most 12 items (${tbItems})`);
-  ok(read('nav-menu', 'amberx-droid').data.sections.every((s) => typeof s.label === 'string' && s.label), 'every nav section has an eyebrow');
-  ok(read('app-menu', 'amberx-droid').data.menus.length <= 9, 'at most 9 top menus');
+  ok(read('nav-menu', 'default-amberx-droid-nav').data.sections.every((s) => typeof s.label === 'string' && s.label), 'every nav section has an eyebrow');
+  ok(read('app-menu', 'default-amberx-droid-appmenu').data.menus.length <= 9, 'at most 9 top menus');
   const sw = read('theme-switch', man.defaults['theme-switch']).data;
   ok(mine.has(`color-theme/${sw.light}`) && mine.has(`color-theme/${sw.dark}`), 'the day/night switch flips between colours the app ships');
 }
@@ -267,13 +267,14 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   const pages = new Set(['home', 'settings', ...plugViews]);
   const targets = (text) => [...text.matchAll(/"(?:view|action)": "nav:([a-z-]+)"|"view": "([a-z-]+)"|action: 'nav:([a-z-]+)'/g)].map((m) => m[1] ?? m[2] ?? m[3]);
   for (const f of ['nav-menu', 'app-menu', 'toolbar', 'context-menu']) {
-    const t = targets(readFileSync(`${here}src/assets/${f}/amberx-droid.json`, 'utf8'));
+    const own = { 'nav-menu': 'default-amberx-droid-nav', 'app-menu': 'default-amberx-droid-appmenu' }[f] ?? 'amberx-droid'; // app-menus@1
+    const t = targets(readFileSync(`${here}src/assets/${f}/${own}.json`, 'utf8'));
     for (const v of t) ok(pages.has(v), `${f} points at a page that exists (${v})`);
   }
   for (const v of targets(readFileSync(`${here}src/plugins/voice/web/index.tsx`, 'utf8'))) ok(pages.has(v), `voice command opens a page that exists (${v})`);
-  const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/amberx-droid.json`, 'utf8'));
+  const nav = JSON.parse(readFileSync(`${here}src/assets/nav-menu/default-amberx-droid-nav.json`, 'utf8'));
   eq(nav.data.sections.flatMap((s) => s.items.map((i) => i.view)), ['home', 'settings'], 'the nav menu holds Approvals and Settings (plugins add theirs)');
-  const menu = JSON.parse(readFileSync(`${here}src/assets/app-menu/amberx-droid.json`, 'utf8'));
+  const menu = JSON.parse(readFileSync(`${here}src/assets/app-menu/default-amberx-droid-appmenu.json`, 'utf8'));
   eq(menu.data.menus.map((m) => m.id), ['axhub', 'approvals', 'view', 'help'], 'application menu: AmberX, Approvals, View, Help');
   ok(!JSON.stringify(menu).includes('hub.apps'), 'no app-catalog list in the menu');
   const dialogs = readFileSync(`${here}src/dialogs.tsx`, 'utf8');

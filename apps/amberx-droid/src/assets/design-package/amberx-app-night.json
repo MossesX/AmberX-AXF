@@ -22,7 +22,7 @@
         "style-package": "amber-signature",
         "banner": "amberx-branded",
         "toolbar": "amberx-droid",
-        "nav-menu": "amberx-droid",
+        "nav-menu": "default-amberx-droid-nav",
         "tab-group": "amber-signature",
         "dialog": "amber-signature",
         "container": "amber-signature",
