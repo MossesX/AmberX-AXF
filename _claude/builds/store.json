@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9035,
- "updatedAt": "2026-11-18T14:50:46.328Z",
+ "rev": 9036,
+ "updatedAt": "2026-11-18T14:51:49.315Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -319130,14 +319130,14 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T14:46:53.518Z",
+   "updatedAt": "2026-11-18T14:50:11.420Z",
    "builtAt": "",
    "notes": [
     {
@@ -319187,6 +319187,10 @@
     {
      "text": "Started run 2 on hulu0241 (Opus, Phase 1): axf-every-app-gets-own-locked-default--lenny.",
      "at": "2026-11-18T14:41:01.745Z"
+    },
+    {
+     "text": "Watchdog gave up on Every app gets its own locked default navigation menu and application menu (step s2): mossesx-max- hit its usage limit and every usable account (hulu0241, mossesx-max-) was tried: back in Pending for Brett.",
+     "at": "2026-11-18T14:50:11.420Z"
     }
    ],
    "approvals": [],
@@ -319204,7 +319208,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-18T12:27:47.559Z",
+    "queuedAt": "",
     "queuedBy": "Brett",
     "account": "mossesx-max-",
     "session": "",
@@ -319213,15 +319217,15 @@
     "phase": "",
     "launchedAt": "2026-11-18T12:39:46.830Z",
     "runs": 1,
-    "crashes": 0,
+    "crashes": 1,
     "lastRun": {
-     "at": "2026-11-18T12:45:04.157Z",
+     "at": "2026-11-18T14:49:21.812Z",
      "exit": 1,
-     "outcome": "requeued",
-     "reason": "",
-     "stepsLeft": 6,
+     "outcome": "failed",
+     "reason": "crash-limit",
+     "stepsLeft": 5,
      "account": "mossesx-max-",
-     "session": "axf-every-app-gets-own-locked-default--sully",
+     "session": "",
      "phase": ""
     },
     "split": {
@@ -319232,7 +319236,7 @@
      "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "mossesx-max- hit its usage limit and every usable account (hulu0241, mossesx-max-) was tried: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-18T12:39:46.830Z",
     "planned": {
@@ -319243,13 +319247,30 @@
      "why": "subscription account hulu0241"
     },
     "tried": [
-     "hulu0241"
+     "hulu0241",
+     "mossesx-max-"
     ],
     "pickedAt": "2026-11-18T12:39:46.830Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
+   "recoveries": [
+    {
+     "at": "2026-11-18T14:49:21.812Z",
+     "buildId": "every-app-gets-own-locked-default",
+     "phase": "",
+     "step": "s2",
+     "cause": "usage-limit",
+     "exit": 1,
+     "action": "give-up",
+     "attempt": 1,
+     "account": "mossesx-max-",
+     "notified": "",
+     "session": "",
+     "note": "mossesx-max- hit its usage limit and every usable account (hulu0241, mossesx-max-) was tried: back in Pending for Brett."
+    }
+   ],
    "steps": [
     {
      "id": "s1",
@@ -319395,7 +319416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
