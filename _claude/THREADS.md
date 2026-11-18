@@ -832,9 +832,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-17 23:51 UTC · `dispatcher-split-builds-evenly-across` note (all) · foreign-write
-- 2026-11-17 23:51 UTC · `move-everything-axhub-web-console` s4 done, s5 done, s6 done (all) · foreign-write
-- 2026-11-17 23:51 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `one-true-source-for-every-setting` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `vps-sets-every-build-status-manifest` note (all) · foreign-write
 - 2026-11-17 23:51 UTC · `api-fully-drives-every-field-type-forms` note (all) · foreign-write
@@ -1232,6 +1229,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 01:08 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
 - 2026-11-18 01:08 UTC · `flagship-professional-skin-covering-2` note (all) · orchestrator
 - 2026-11-18 01:09 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `flagship-professional-skin-covering-2` s28 done, note (all) · foreign-write
+- 2026-11-18 01:10 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
 
 ## Token passes (log)
 
