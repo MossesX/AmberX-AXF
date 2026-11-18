@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8997,
- "updatedAt": "2026-11-18T13:59:35.638Z",
+ "rev": 8998,
+ "updatedAt": "2026-11-18T14:00:31.455Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -285428,12 +285428,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:40:41.293Z",
-   "updatedAt": "2026-11-17T20:44:19.808Z",
+   "updatedAt": "2026-11-18T14:00:06.040Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 4 steps (0 Fable).",
      "at": "2026-11-17T20:44:19.808Z"
+    },
+    {
+     "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
+     "at": "2026-11-18T14:00:06.040Z"
     }
    ],
    "approvals": [],
@@ -285604,7 +285608,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
