@@ -71,6 +71,18 @@
         "title": "Run again",
         "kind": "button",
         "text": "Opens the start overlay for a new demo run. The last run's summary stays readable with `axf demo orchestrator summary`."
+      },
+      {
+        "target": "action:orchestrator-demo.open",
+        "title": "Start the orchestrator demo",
+        "text": "Opens the demo's start overlay: Continue plays the guided run on throwaway demo builds, Pause opens it held at the first act.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:orchestrator-demo.summary",
+        "title": "Orchestrator demo summary",
+        "text": "Opens the summary of the last demo run: every act with pass, fail or skipped, and what failed.",
+        "kind": "menu-item"
       }
     ]
   }
