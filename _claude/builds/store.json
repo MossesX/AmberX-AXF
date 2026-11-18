@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 8870,
- "updatedAt": "2026-11-18T06:41:17.141Z",
+ "rev": 8871,
+ "updatedAt": "2026-11-18T06:43:12.950Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -262951,7 +262951,7 @@
    "pr": "#828",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-18T06:30:37.041Z",
+   "updatedAt": "2026-11-18T06:40:26.356Z",
    "builtAt": "2026-11-18T06:29:08.928Z",
    "notes": [
     {
@@ -263061,6 +263061,10 @@
     {
      "text": "Brief only: brief is 32335 characters (~8084 tokens), over the 24000-character budget: trim it to what this job needs",
      "at": "2026-11-18T01:22:17.133Z"
+    },
+    {
+     "text": "Session axf-move-server-side-console-parts-onto-vps--lenny on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-18T06:40:26.356Z"
     }
    ],
    "approvals": [
@@ -263100,7 +263104,7 @@
     "queuedAt": "2026-11-17T12:26:43.338Z",
     "queuedBy": "console",
     "account": "hulu0241",
-    "session": "axf-move-server-side-console-parts-onto-vps--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "Phase 3",
@@ -263108,11 +263112,11 @@
     "runs": 3,
     "crashes": 2,
     "lastRun": {
-     "at": "2026-11-18T01:18:14.066Z",
-     "exit": 143,
-     "outcome": "requeued",
-     "reason": "crash",
-     "stepsLeft": 1,
+     "at": "2026-11-18T06:38:47.141Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-move-server-side-console-parts-onto-vps--lenny",
      "phase": "Phase 3"
@@ -263853,7 +263857,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
