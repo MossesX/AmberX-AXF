@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-18T12:37:39.047Z",
+ "updatedAt": "2026-11-18T12:38:20.640Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -192686,7 +192686,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T12:28:57.431Z",
+   "updatedAt": "2026-11-18T12:37:10.621Z",
    "builtAt": "",
    "notes": [
     {
@@ -192696,6 +192696,10 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:28:57.431Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-, hulu0241: worktree for every-app-gets-own-locked-default: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-18T12:37:10.621Z"
     }
    ],
    "approvals": [],
