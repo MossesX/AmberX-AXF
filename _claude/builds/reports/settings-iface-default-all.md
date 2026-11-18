@@ -43,7 +43,17 @@ Model: Opus, one session. Branch `claude/settings-iface-default-all-2`.
   two ChromeContext entries that were missing), shared-assets check, check-theme, check-controls, check-toolbars,
   check-chrome-assets.
 
+## UI Review
+
+Waiting in UI Review: item `r-20261118-67d6cc51`, group "settings-iface-default-all - Nov 18 5:45 AM", desktop + phone
+shots of the Gate tab locked, the picker dialog and Appearance → Asset types (`apps/console-web/scripts/settings-iface-shots.mjs`).
+The shot script picks a random port and fails loudly if its preview does not start: fixed port 7099 was served by another
+session's preview and gave shots of the wrong build.
+
 ## Not done / notes
+
+- No build record exists for `settings-iface-default-all` (or `-2`) in the orchestrator, so steps could not be ticked and
+  `builds-live link` refused; PR #834 is linked here and in THREADS instead.
 
 - Android twin deferred (Android port on hold), recorded in `framework/spec/PORTING.md`.
 - apps/demo and apps/walkthrough-studio have stale baked framework copies on main (rebake status), so they did not get
