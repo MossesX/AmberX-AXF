@@ -14,6 +14,13 @@ export function DemoView() {
   const sum = state?.summary ?? null;
   return (
     <div className="axp-orchestrator-demo__page" data-axf-target="view:orchestrator-demo">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">Build orchestrator · Guided demo</p>
+          <h1>Orchestrator demo</h1>
+          <p className="fx-muted">Watch the orchestrator queue, launch, crash, retry, fix, land and fail on throwaway demo builds, one act at a time.</p>
+        </div>
+      </header>
       <div className="axp-orchestrator-demo__toolbar is-head" role="toolbar" aria-label="Orchestrator demo">
         <Button tone="primary" icon="play" disabled={isLive(state) && run?.state !== 'overlay'} onClick={() => rt.openDialog(DIALOG_START)}>Start the demo</Button>
         <Button icon="list" disabled={!run} onClick={() => rt.openDialog(DIALOG_SUMMARY)}>Summary</Button>
