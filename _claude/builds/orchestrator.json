@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:06:33.311Z",
+ "updatedAt": "2026-11-19T02:08:09.128Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195536,15 +195536,15 @@
    "title": "Postgres part C: console state, settings, alerts and plugin data dirs to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 3, 4, 5, 6, 7 and the s4 order). This build does s4.4 and s4.5 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, build-live / build-progress / build-hooks, pending, build queue, agent-slots or auto-lander (part A), and never touch plan, plan-studio, catalog, tracker, sessions or changes (part B). Register new tables in their own module files under services/axf-data (e.g. tables_console.py, tables_plugins.py) and add only additive entries to shared registries. Secrets never go in the database. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over. Branch, PR, CI, merge queue; never push to main.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T01:55:15.437Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-19T02:07:56.025Z",
+   "builtAt": "2026-11-19T02:07:56.025Z",
    "notes": [
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
@@ -195644,8 +195644,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T02:07:56.025Z",
      "note": "",
      "uid": "st-mwmsooon08uad4",
      "createdAt": "2026-11-19T00:11:19.628Z"
