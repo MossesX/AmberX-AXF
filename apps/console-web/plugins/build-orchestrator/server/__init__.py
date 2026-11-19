@@ -78,6 +78,35 @@ def state() -> dict[str, Any]:
     return _run("state")
 
 
+# ---- the one status-driven table (status-table@1, Pipeline 2.0): compact rows from the builds store on axf-data
+TABLE_CLI = Path(__file__).resolve().parent.parent / "status-table.mjs"
+TABLE_CACHE_S = 4  # every open console polls; one store read serves them all
+_table_cache: dict[str, tuple[float, dict[str, Any]]] = {}
+
+
+@router.get("/table")
+def status_table(queue: bool = False, landed: bool = False, since: int | None = None) -> dict[str, Any]:
+    """Builds as rows (status, steps done/total, model, account, slot, PR, status `at`), the merge queue with queue=1.
+    since=<rev>: { unchanged: true } while the store is still at that rev, so a poll carries nothing new."""
+    key = f"{int(queue)}{int(landed)}"
+    hit = _table_cache.get(key)
+    if hit and time.time() - hit[0] < TABLE_CACHE_S:
+        res = hit[1]
+    else:
+        args = [*(["--queue"] if queue else []), *(["--landed"] if landed else [])]
+        proc = subprocess.run(["node", str(TABLE_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+        lines = proc.stdout.strip().splitlines()
+        try:
+            res = json.loads(lines[-1]) if lines else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+        except json.JSONDecodeError:
+            res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+        if res.get("ok"):
+            _table_cache[key] = (time.time(), res)
+    if res.get("ok") and since is not None and res.get("rev") == since:
+        return {"ok": True, "unchanged": True, "rev": since}
+    return res
+
+
 # ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
 PRIORITY_CLI = ROOT / "framework" / "cli" / "build-priority.mjs"
 PRIORITY_CACHE_S = 5

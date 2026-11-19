@@ -84,7 +84,7 @@ export function stepStatus(s, build) {
 export function stepRow(s, build, b = {}) {
   const status = stepStatus(s, build);
   return {
-    id: str(s.id), title: str(s.title) || str(s.text).split('\n')[0].slice(0, 160), status, attempt: status === 'failed' ? attemptOf(s) : 0,
+    id: str(s.id), title: (str(s.title) || str(s.text).split('\n')[0]).slice(0, 100), status, attempt: status === 'failed' ? attemptOf(s) : 0,
     model: str(s.model), account: str(s.account), slot: str(s.slot), prNumber: num(s.prNumber) || (status === 'in-pr' ? prNumber(b) : 0),
     at: statusSince(s) || str(s.doneAt), by: statusBy(s),
   };
