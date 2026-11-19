@@ -45,7 +45,7 @@
  * and re-applies the change, up to 5 times. rollback = writes refused (read_only) until the local copy has caught up.
  * The cut itself: `node framework/cli/builds-data.mjs cutover --apply` (copy, verify counts, flip the keys under the lock).
  */
-import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
@@ -379,6 +379,8 @@ function writeKeepingOwner(f, text) {
  * already folded the profiles. Idempotent: a store with no retired profile left is not touched.
  */
 export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
+  // cutover: the file is no longer the store (and the profiles were merged long before the cut, which copied the result)
+  if (remoteOn()) return { changed: 0, report: null };
   const f = storeFile(); const unlock = lock(f);
   try {
     if (!existsSync(f)) return { changed: 0, report: null };
@@ -410,7 +412,8 @@ export function migrateDoneNow({ dry = true, by = 'done-means-merged', at = new 
 }
 
 /** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
-export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
+/** Regenerate the exports. cutover: from the record the tables assemble, no file lock (the store file is not the store). */
+export function exportNow() { if (remoteOn()) { exportAll(readStore()); return; } const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 
 /** Bytes a journal file may reach (AXF_BUILDS_JOURNAL_BYTES moves it for tests). */
 export const journalMax = () => Number(process.env.AXF_BUILDS_JOURNAL_BYTES) || merge.JOURNAL_PART_BYTES;
@@ -454,8 +457,11 @@ function journal(entry) {
  * only main's newer builds arriving. `journals` = { 'YYYY-MM': text } replaces those journal files (already the union).
  */
 export function adoptStore(next, { journals = {} } = {}) {
-  // cutover / rollback: axf-data is the store; main's git copy is a projection of it, never adopted back
-  if (remoteOn()) return;
+  // cutover: axf-data is the store and main's git copy a projection of it. A build main holds NEWER (per build and per
+  // step, builds-merge-core) was written by a session on code from before the cut (it still writes its own copy and
+  // publishes it to main through builds-live): those builds go into the tables as one row-level patch, so no tick made
+  // during the changeover is lost. Nothing older than the tables is ever taken back. rollback: writes wait.
+  if (remoteOn()) { if (storeMode() === 'cutover') adoptRemote(next); return; }
   const f = storeFile(); const unlock = lock(f);
   try {
     // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
@@ -472,6 +478,39 @@ export function adoptStore(next, { journals = {} } = {}) {
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
+}
+/**
+ * cutover: the console checkout's `store.json` (and its orchestrator exports) become a READ-ONLY projection of the
+ * tables, rewritten after every write that changed a build. Console screens still read the file directly (activity,
+ * crew-live, the Builds page's change watch, ref-links, projects); they keep seeing the live store until each asks the
+ * store itself, and a writer from before the cut reads fresh data. The projection goes to the main checkout (the
+ * console's, AXF_CONSOLE_ROOT) wherever the writer runs, never backwards: a file already at a newer rev is left alone.
+ * Best effort: a projection that cannot be written (another user's file) never fails the write, which is on the tables.
+ */
+export function consoleStoreFile() {
+  if (process.env.AXF_BUILDS_STORE) return storeFile();
+  const root = process.env.AXF_CONSOLE_ROOT && process.env.AXF_CONSOLE_ROOT !== 'off' ? resolve(process.env.AXF_CONSOLE_ROOT) : files.mainCheckout(REPO_ROOT);
+  return join(root, STORE_REL);
+}
+export function fileRev(f) {
+  try { const fd = openSync(f, 'r'); try { const b = Buffer.alloc(256); const n = readSync(fd, b, 0, 256, 0); const m = /"rev":\s*(\d+)/.exec(b.subarray(0, n).toString('utf8')); return m ? Number(m[1]) : -1; } finally { closeSync(fd); } }
+  catch { return -1; }
+}
+export function projectConsole(store) {
+  const f = consoleStoreFile();
+  try {
+    if (!existsSync(dirname(f)) || fileRev(f) > (store.rev ?? 0)) return false;
+    const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(store)); renameSync(tmp, f);
+    const root = dirname(dirname(dirname(f)));
+    if (!process.env.AXF_BUILDS_STORE && root !== REPO_ROOT) for (const x of orchestratorExports(store)) if (existsSync(join(root, x.rel)) || x.builds) writeFileSync(join(root, x.rel), x.text);
+    return true;
+  } catch (e) { process.stderr.write(`builds-store: console projection not written (${e.code || e.message}); the write is on the tables\n`); return false; }
+}
+/** cutover adopt: main's newer builds → the tables (withStore: row-level patch, re-read on a conflict). The ids taken. */
+export function adoptRemote(next) {
+  let taken = [];
+  withStore((s) => { const m = merge.mergeStores(s, core.normalizeStore(next)); taken = m.taken; return m.taken.length ? m.store : s; }, { by: 'builds-live', action: 'adopt', note: 'newer on main (a writer from before the cut)' });
+  return taken;
 }
 /** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */
 export function adoptedChanges(before, next) {
@@ -534,6 +573,7 @@ function withStoreOnce(fn, meta) {
   if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
   const saved = saveStore(start, next, meta);
   if (exportsOn()) exportAll(saved.store);
+  if (saved.changes.length && storeMode() === 'cutover') projectConsole(saved.store);
   return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: guarded.refused };
 }
 

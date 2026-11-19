@@ -9,6 +9,20 @@ app renders (deferred gap in `PORTING.md`).
 
 Inventory of every JSON/JSONL data file and its target Postgres table: `framework/spec/DATA-INVENTORY.md` (Nov 18 2026).
 
+## Rule: no runtime data in JSON files (no-json-data@1, Nov 18 2026)
+
+Brett: "I don't want any data stored in JSON period. Everything needs to be a Postgres table." Runtime data (state,
+queues, logs, journals, settings, records of any kind) lives in axf-data's Postgres tables and is read and written only
+through data-store@1 (`data-files.mjs`, `persist.mjs` readData/writeData, `builds-store.mjs`, `data_store.py`). A document
+gets a table (`services/axf-data/tables.py`: DocTable for a document with lists, one row per item; RecordTable for one row
+per document) and moves local → shadow → cutover per key or namespace (DATA-INVENTORY.md lists every file and its table).
+
+Enforced by `framework/spec/check-json-data-writes.mjs` (CI): a new direct JSON/JSONL write in runtime code fails the
+build. The writes that existed when the rule began are a per-file baseline (`json-data-writes.baseline.json`) that may
+only go down. Not data, and so not counted when marked `// axf-data: not data (<reason>)`: build-time generators,
+read-only exports generated from the tables (the builds projection, orchestrator exports), fixtures, the check's own
+baseline. Secrets never go in the data DB.
+
 ## Why
 
 Brett, Nov 15 2026: "the console goes down, all the data is still available, all the notes are available, and the
@@ -406,6 +420,38 @@ document from the main checkout's `.axf-console` (`data-files.mjs roots`), so a 
 Known cost: a patch still assembles the whole record once to compute its etag (about 3–4 s for 1 000 builds); an incremental
 etag is a later step. The namespace's other keys (pipeline, reconcile, shipped, reports, progress, origins, exports) are
 still files and move in their own steps (DATA-INVENTORY.md).
+
+### After the flip (s3, Nov 19 2026)
+
+- **No file lock, no file write.** In cutover `withStore` takes no `store.json.lock` (the rev check on each row is the lock),
+  `exportNow` reads the record without it, and `mergeRetiredNow` (a one-off on the raw file) stands down.
+  `builds-data.mjs clean [--apply]` removes `store.json.tmp-*` files of dead writers and an unheld lock; a successful
+  flip runs it.
+- **The file is a read-only projection.** After every write that changed a build, the console checkout's `store.json`
+  (the main checkout's, wherever the writer runs; `AXF_CONSOLE_ROOT` overrides) and its orchestrator exports are
+  rewritten from the record (`projectConsole`), never to an older rev than the file holds. Console screens that still
+  read the file (activity, crew-live, the Builds page's change watch, ref-links, projects) keep showing the live store
+  until each reads the store itself; nothing reads the file as the store, and an edit to it is overwritten.
+- **Writers from before the cut.** A session still on code from before key-level modes keeps writing its own copy and
+  publishes it to main through builds-live. Every new-code write flushes to main and pulls main back; in cutover that
+  pull (`adoptStore` → `adoptRemote`) takes only the builds main holds newer (per build and per step, builds-merge-core)
+  into the tables as one row-level patch (`by: builds-live`, `action: adopt`). Nothing older than the tables is taken, so
+  the changeover loses no tick. builds-live leaves the console checkout to the projection in cutover.
+- **The exports stay, generated from the tables.** `orchestrator.json`, `pending.json` and `build-queue.json` still have
+  readers (console views, pending.mjs, build-queue.mjs, handoff, feature matrix, …), so every write regenerates them from
+  the record the rows assemble, as before. They are read-only projections; a direct edit is absorbed into the tables.
+  They are dropped once their readers ask the store (s4/s5).
+- **Console focus** (`console-focus@1`) reads build ids through `data_store` (the tables in cutover, cached 30 s).
+
+## Agent slots on the tables (s4.1, Nov 19 2026)
+
+`console/agent-slots/state.json` is the DocTable `agent_slots` (services/axf-data/tables.py): one row per entry, its
+list (`running`, `queue`, `heavy`, `done`) as the section, the rest in `store_heads`. `agent-slots.mjs` reads and writes
+the state by the key's mode: local = the file under the mkdir lock; shadow = the file, then the same document on
+axf-data; cutover = axf-data only, the lock replaced by a rev check (get with etag, apply, put if-match, re-read on a
+conflict, 8 tries); rollback = writes refused. `agent-slots.mjs data cutover --apply` copies, reads back, compares and
+flips the key under the mkdir lock; `data local --apply` goes back. The flip waits until every checkout that runs
+`agent-slots.mjs` (each worktree runs its own copy) has this code.
 
 ## What the first phase did not do
 

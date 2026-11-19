@@ -49,16 +49,17 @@ const CHANGES_DIR = join(ROOT, 'changes');
 const HANDOFF_DIR = join(ROOT, '_claude/handoff'); // the Claude handoff kit: a generated snapshot of the docs, like the rebuild reports
 const SESSIONS_DIR = join(ROOT, 'sessions'); // the session check-in archive (session-log@1): records of past sessions, history like the changes log
 // The builds store's read-only exports (pending list + build queue, per profile) carry build notes: plans, like _claude/builds.
-// CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json): per-file counts of findings that
-// may only shrink. A removed plugin's line only lowers a count nobody can exceed, so it is not a stale reference.
-const RATCHET_BASELINE = /^framework\/spec\/chrome-baseline\.json$/;
+// CI ratchet baselines (check-chrome-assets.mjs → framework/spec/chrome-baseline.json, check-json-data-writes.mjs →
+// framework/spec/json-data-writes.baseline.json): per-file counts of findings that may only shrink. A removed plugin's
+// line only lowers a count nobody can exceed, so it is not a stale reference.
+const RATCHET_BASELINE = /^framework\/spec\/(chrome-baseline|json-data-writes\.baseline)\.json$/;
 // Generated fixtures that snapshot real data: the shipped-features manifest (files a build shipped, history) and the
 // demonstration fixture generated from a glossary entry. A plugin removed later only leaves a stale snapshot behind.
 const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo|toolbar-actions|toolbar-migrate|live-demo)\.json$/;
 // data-store@1 maps every plugin's data folder to a namespace key (the path map, its fixtures), names the SQLite files it
 // mirrors as tables (the data-store plugin, the axf data CLIs, the axf-data service), and its specs and tests seed plugin
 // data files as fixtures: a plugin removed later leaves a line that maps nothing, data, not a reference.
-const DATA_STORE_MAP = /^(framework\/schemas\/data-store(-paths)?\.json|framework\/spec\/DATA-STORE\.md|framework\/spec\/fixtures\/data-store[a-z-]*\.json|framework\/spec\/check-(data-store[a-z-]*|data-migrate|builds-store-data)\.mjs|services\/axf-data\/test_[a-z_]+\.py|apps\/console-web\/server\/test_data_store\.py|apps\/console-web\/plugins\/data-store\/.+|framework\/cli\/data(-[a-z]+)?\.mjs|services\/axf-data\/[a-z_]+\.py)$/;
+const DATA_STORE_MAP = /^(framework\/schemas\/data-store(-paths)?\.json|framework\/spec\/DATA-(STORE|INVENTORY)\.md|framework\/spec\/fixtures\/data-store[a-z-]*\.json|framework\/spec\/check-(data-store[a-z-]*|data-migrate|builds-store-data|agent-slots-data|json-data-writes)\.mjs|services\/axf-data\/test_[a-z_]+\.py|apps\/console-web\/server\/test_data_store\.py|apps\/console-web\/plugins\/data-store\/.+|framework\/cli\/data(-[a-z]+)?\.mjs|services\/axf-data\/[a-z_]+\.py)$/;
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);

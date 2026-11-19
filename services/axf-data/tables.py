@@ -759,6 +759,12 @@ CONTROL = DocTable('control_targets', 'console', 'control/inventory.json',
 SETTINGS = RecordTable('settings', 'settings', SETTINGS_COLS, 'settings documents (hub-settings@1 and friends): one row per document')
 PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (plan@1): one row per plan', r'^(plans|projects/[^/]+/plans)/[^/]+\.json$')
 NOTES = NotesTable()
+# agent-slots@1 (s4.1): the VPS-wide session and heavy-step slots; one row per entry, the list it is in is its section
+SLOT_COLS = [Col('id'), Col('name'), Col('kind'), Col('priority'), Col('build'), Col('state'), Col('host'), Col('pid', type='int'),
+             Col('session'), Col('cwd'), Col('by'), Col('seq', type='int'), Col('enqueued_at', 'enqueuedAt'), Col('started_at', 'startedAt')]
+AGENT_SLOTS = DocTable('agent_slots', 'console', 'agent-slots/state.json',
+                       {k: ListSpec('agent_slots', SLOT_COLS, k, key='id') for k in ('running', 'queue', 'heavy', 'done')},
+                       'agent slots (agent-slots@1): one row per running, waiting, heavy or recently done entry (section = its list); seq, guard trips, swap and hosts in store_heads')
 
 # s4.3: the feature catalog (status.json, id → { status, wave, module, notes }), the libraries index, the project rules
 CATALOG_FEATURES = ItemsTable('catalog_features', 'console', r'^framework/(plan/profiles/[^/]+/framework/)?catalog/status\.json$',
@@ -783,12 +789,12 @@ SESSIONS = HeadItemsTable('sessions', 'sessions', r'^archive/.+\.json$', SESSION
 CODEBASE_CHANGES = RecordTable('codebase_changes', 'changes', CHANGE_COLS, 'the codebase change log (change-log@1, changes/<yyyy>/<mm>/<id>.json): one row per change',
                                r'^\d{4}/\d{2}/[^/]+\.json$')
 
-TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES, CATALOG_FEATURES, CATALOG_LIBRARIES, PROJECT_RULES, SESSIONS, CODEBASE_CHANGES,
+TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES, AGENT_SLOTS, CATALOG_FEATURES, CATALOG_LIBRARIES, PROJECT_RULES, SESSIONS, CODEBASE_CHANGES,
                  PLAN_ITEMS, PLAN_PROFILES, PLAN_PROJECTS, PROJECTS, PLAN_MEDIA, PLANNER_HISTORY, PLANNER_CATEGORIES, PLANNER_LISTS, PLANNER_TREE]
 _BY_NAME = {t.name: t for t in TABLES}
 # Tables a key already stored elsewhere (records, blobs) moves into on connect (PgStore._backfill): the ones added after
 # the first copy. A table joins this list the release it is added; the backfill is idempotent and checks every key.
-BACKFILL = {'sessions', 'codebase_changes', 'catalog_features', 'catalog_libraries', 'project_rules', 'plan_items', 'plan_profiles', 'plan_projects', 'projects', 'plan_media', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree'}
+BACKFILL = {'agent_slots', 'sessions', 'codebase_changes', 'catalog_features', 'catalog_libraries', 'project_rules', 'plan_items', 'plan_profiles', 'plan_projects', 'projects', 'plan_media', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree'}
 
 HOLDS = {
     'keys': 'every key: kind, rev, etag, when, who, size, content type, tombstone, which table holds its body',

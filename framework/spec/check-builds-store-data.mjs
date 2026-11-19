@@ -59,11 +59,18 @@ try {
     const list = await (await fetch(`${url}/v1/builds?prefix=store.journal/`, { headers: H })).json();
     assert.equal(list.items.length, 1, 'the journal part mirrored');
   });
-  await t('cutover: axf-data only, the local copy stays as the backup', async () => {
+  await t('cutover: axf-data is the store; the file is a read-only projection of it, never moved backwards', async () => {
     setMode('cutover');
-    const before = readFileSync(process.env.AXF_BUILDS_STORE, 'utf8');
     add('b3');
-    assert.equal(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'), before);
+    const file = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'));
+    assert.deepEqual(ids(file), ['b1', 'b2', 'b3'], 'the projection follows the tables');
+    assert.equal(file.rev, (await remote('builds/store.json')).rev, 'at the rev the tables hold');
+    assert.equal(io.fileRev(process.env.AXF_BUILDS_STORE), file.rev, 'fileRev reads the head');
+    const ahead = { ...file, rev: file.rev + 50, builds: [] };
+    writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify(ahead, null, 1));
+    assert.equal(io.projectConsole(io.loadStore()), false, 'a file at a newer rev is left alone');
+    assert.equal(JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')).builds.length, 0);
+    writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify(file, null, 1));
     assert.deepEqual(ids(await remote('builds/store.json')), ['b1', 'b2', 'b3']);
     assert.deepEqual(ids(io.loadStore()), ['b1', 'b2', 'b3']);
     const month = new Date().toISOString().slice(0, 7);
@@ -119,6 +126,24 @@ try {
     const j = await (await fetch(`${url}/v1/builds/journal/${month}?since=0`, { headers: H })).json();
     assert.equal(j.entries.at(-1).entry.action, 'note', 'the journal line went with the patch');
     assert.equal(j.entries.filter((e) => e.entry.action === 'note').length, 1, 'the conflicting first try wrote nothing');
+  });
+  await t('cutover: builds main has newer (a writer from before the cut) are adopted into the tables, nothing older', async () => {
+    const cur = io.loadStore();
+    const later = new Date(Date.now() + 60000).toISOString();
+    const main = JSON.parse(JSON.stringify(cur));
+    const b2 = main.builds.find((b) => b.id === 'b2'); b2.title = 'b2 from main'; b2.updatedAt = later; b2.rev += 1;
+    const b1 = main.builds.find((b) => b.id === 'b1'); b1.title = 'b1 stale on main'; b1.updatedAt = '2020-01-01T00:00:00.000Z';
+    main.builds.push({ id: 'old-session', title: 'old-session', status: 'pending', profile: 'all', steps: [], updatedAt: later });
+    io.adoptStore(main);
+    const after = await remote('builds/store.json');
+    assert.equal(after.builds.find((b) => b.id === 'b2').title, 'b2 from main');
+    assert.equal(after.builds.find((b) => b.id === 'b1').title, 'b1 by molly', 'an older copy on main never wins');
+    assert.ok(after.builds.some((b) => b.id === 'old-session'), 'a build only main has is added');
+    assert.ok(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8').includes('b2 from main'), 'the projection carries the adopted build');
+    const month = new Date().toISOString().slice(0, 7);
+    const j = await (await fetch(`${url}/v1/builds/journal/${month}?since=0`, { headers: H })).json();
+    assert.equal(j.entries.at(-1).entry.action, 'adopt');
+    assert.deepEqual(io.adoptRemote(main), [], 'adopting the same copy again changes nothing');
   });
   await t('rollback: writes refused (read_only)', async () => {
     setMode('rollback');
