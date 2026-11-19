@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9267,
- "updatedAt": "2026-11-19T03:48:08.439Z",
+ "rev": 9268,
+ "updatedAt": "2026-11-19T03:48:40.014Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321865,7 +321865,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "complete",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -321873,8 +321873,8 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:47:53.228Z",
-   "builtAt": "2026-11-19T03:47:53.228Z",
+   "updatedAt": "2026-11-19T03:48:02.628Z",
+   "builtAt": "2026-11-19T03:48:02.628Z",
    "notes": [
     {
      "text": "Brett, Nov 18 2026 (voice), correction to the earlier write-only note: \"We're going to move the build store over to a Postgres table. We're going to still allow the orchestrator to check it in case it's going to build a feature that's going to break an already built feature, or in case that feature has already gone live through another build. We want to keep the orchestrator able to make sure we're not going to break something.\"\n\nSo: the builds history table is NOT write-only. Before launching a build, the orchestrator queries it (indexed search by feature, files, plugin, title words) for (a) the same feature already shipped by another build and (b) built features the new build could break. It pulls only matching rows, never the whole history. The pipeline's routine tick still reads only the live/active builds.",
@@ -322057,6 +322057,10 @@
      "at": "2026-11-19T03:45:30.829Z"
     },
     {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--rhonda: brief only · start 14.5K tokens ($0.04) · cost $0.91 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-19T03:48:02.628Z"
+    },
+    {
      "text": "Session axf-urgent-all-data-to-postgres-builds-store--rhonda on hulu0241 finished: every step done.",
      "at": "2026-11-19T03:47:53.228Z"
     }
@@ -322088,7 +322092,7 @@
     "queuedAt": "2026-11-19T00:33:02.230Z",
     "queuedBy": "cli",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-urgent-all-data-to-postgres-builds-store--rhonda",
     "slot": "",
     "model": "Opus",
     "phase": "",
@@ -322096,18 +322100,18 @@
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-19T03:47:33.036Z",
+     "at": "2026-11-19T02:40:46.229Z",
      "exit": 0,
-     "outcome": "finished",
+     "outcome": "requeued",
      "reason": "",
-     "stepsLeft": 0,
+     "stepsLeft": 1,
      "account": "hulu0241",
-     "session": "axf-urgent-all-data-to-postgres-builds-store--rhonda",
+     "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
      "phase": ""
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "2026-11-19T00:37:13.344Z",
     "planned": {
@@ -322123,7 +322127,17 @@
     "pickedAt": "2026-11-19T00:37:13.344Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-19T03:46:19.017Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-urgent-all-data-to-postgres-builds-store--rhonda",
+     "phase": "Phase 3"
+    }
    },
    "steps": [
     {
