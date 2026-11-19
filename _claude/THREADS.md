@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
-- 2026-11-18 13:25 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
 - 2026-11-18 13:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
 - 2026-11-18 13:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 13:25 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 - 2026-11-19 00:32 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · foreign-write
 - 2026-11-19 00:31 UTC · `urgent-all-data-to-postgres-builds-store` → pending (all) · voice session
+- 2026-11-19 00:33 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · cli
+- 2026-11-19 00:33 UTC · `queue-stall-detector-vps-spots-queued` note (all) · orchestrator
 
 ## Token passes (log)
 

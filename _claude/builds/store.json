@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9185,
- "updatedAt": "2026-11-19T00:32:58.824Z",
+ "rev": 9186,
+ "updatedAt": "2026-11-19T00:34:00.541Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321805,14 +321805,14 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T00:31:36.115Z",
+   "updatedAt": "2026-11-19T00:33:06.533Z",
    "builtAt": "",
    "notes": [
     {
@@ -321882,6 +321882,10 @@
     {
      "text": "PR #848 opened by hand (builds-live is paused, so no PR was opened after s2); merge queue lands it, then s3 cuts over.",
      "at": "2026-11-19T00:26:18.724Z"
+    },
+    {
+     "text": "Queued by cli.",
+     "at": "2026-11-19T00:33:06.533Z"
     }
    ],
    "approvals": [],
@@ -321899,8 +321903,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-19T00:33:02.230Z",
+    "queuedBy": "cli",
     "account": "",
     "session": "",
     "slot": "",
@@ -321912,14 +321916,14 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T20:58:46.207Z",
+     "at": "2026-11-19T00:32:14.633Z",
      "why": "subscription account hulu0241"
     },
     "tried": [
@@ -322050,7 +322054,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323081,7 +323085,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:16:59.516Z",
-   "updatedAt": "2026-11-19T00:19:54.421Z",
+   "updatedAt": "2026-11-19T00:33:37.916Z",
    "builtAt": "",
    "notes": [
     {
@@ -323091,6 +323095,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b9f2507e-39d1-4300-be4e-609e5c18a07a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "text": "Brett, Nov 19 2026 (voice): 'If the pipeline's running, the queue is running. Anything I put in the queue is going to run as long as a slot is open.' Today, setting status=queued through the console/control@1 did not issue a dispatch token, so builds sat queued forever with 0 waiting; the launcher refused manual starts; the pipeline refused builds left in queued/running. Fix: any build in Queued, however it got there (console, control@1, CLI, voice), gets a dispatch token and launches when a slot is free and the pipeline is on.",
+     "at": "2026-11-19T00:33:37.916Z"
     }
    ],
    "approvals": [],
@@ -323364,7 +323372,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
