@@ -515,9 +515,13 @@ class NotesTable:
 @dataclass(frozen=True)
 class ItemList:
     """One list of a document that becomes rows: `key` names the row (rid, for queries and lookups), `scalar` lists
-    (strings, numbers) keep each value in the `value` column."""
+    (strings, numbers) keep each value in the `value` column. The list named `*` is the document itself read as a map
+    (id → object, like the feature catalog): every top-level entry whose value is an object is a row, rid = its key."""
     key: str = ''
     scalar: bool = False
+
+
+MAP, MAP_KEY = '*', '\x00rid'
 
 
 def _scalar(v: Any) -> bool:
@@ -543,6 +547,8 @@ class ItemsTable:
         return all(_scalar(i) for i in items) if spec.scalar else all(isinstance(i, dict) for i in items)
 
     def _rid(self, spec: ItemList, item: Any) -> str | None:
+        if isinstance(item, dict) and MAP_KEY in item:
+            return item[MAP_KEY]
         v = item.get(spec.key) if spec.key and isinstance(item, dict) else (item if spec.scalar else None)
         if isinstance(v, bool) or v is None:
             return None
@@ -552,6 +558,13 @@ class ItemsTable:
         doc = json.loads(body.decode('utf-8'))
         head, lifted = (dict(doc), []) if isinstance(doc, dict) else (doc, [])
         for lkey, spec in self.lists.items():
+            if lkey == MAP:
+                entries = sorted(k for k, v in doc.items() if isinstance(v, dict)) if isinstance(doc, dict) else []
+                for k in entries:
+                    head.pop(k)
+                lifted.append(MAP)
+                self._write_rows(cur, ns, path, MAP, spec, [{**doc[k], MAP_KEY: k} for k in entries])
+                continue
             items = doc.get(lkey, _MISSING) if isinstance(doc, dict) else _MISSING
             if items is not _MISSING and self._fits(spec, items):
                 lifted.append(lkey)
@@ -569,7 +582,10 @@ class ItemsTable:
         sets = ''.join(f', "{c.name}"=EXCLUDED."{c.name}"' for c in self.cols)
         rows = []
         for pos, item in enumerate(items):
-            h = sha(canonical(item).encode('utf-8'))[:32]
+            rid = self._rid(spec, item)
+            if isinstance(item, dict) and MAP_KEY in item:
+                item = {k: v for k, v in item.items() if k != MAP_KEY}
+            h = sha(canonical([rid, item] if lkey == MAP else item).encode('utf-8'))[:32]
             if have.get(pos) == h:
                 continue
             if spec.scalar:
@@ -577,7 +593,7 @@ class ItemsTable:
             else:
                 vals, extra = lift(item, self.cols)
                 value = None
-            rows.append((ns, path, lkey, pos, self._rid(spec, item), value, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical), h))
+            rows.append((ns, path, lkey, pos, rid, value, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical), h))
         if rows:
             cur.executemany(f'INSERT INTO "{self.name}" (ns, path, list, pos, rid, value{names}, extra, doc_hash) VALUES (%s, %s, %s, %s, %s, %s{", %s" * len(self.cols)}, %s, %s) '
                             f'ON CONFLICT (ns, path, list, pos) DO UPDATE SET rid=EXCLUDED.rid, value=EXCLUDED.value{sets}, extra=EXCLUDED.extra, doc_hash=EXCLUDED.doc_hash', rows)
@@ -594,6 +610,10 @@ class ItemsTable:
         for lkey in r['lists']:
             spec = self.lists.get(lkey, ItemList())
             cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s ORDER BY pos', (ns, path, lkey))
+            if lkey == MAP:
+                for row in cur.fetchall():
+                    doc[row['rid']] = unlift(row, self.cols, row['extra'])
+                continue
             doc[lkey] = [row['value'] if spec.scalar else unlift(row, self.cols, row['extra']) for row in cur.fetchall()]
         return canonical(doc).encode('utf-8')
 
@@ -605,6 +625,9 @@ class ItemsTable:
         """list → the rows a document gives this table (the backfill / verify check)."""
         out = {}
         for lkey, spec in self.lists.items():
+            if lkey == MAP:
+                out[MAP] = sum(1 for v in doc.values() if isinstance(v, dict)) if isinstance(doc, dict) else 0
+                continue
             items = doc.get(lkey) if isinstance(doc, dict) else None
             if self._fits(spec, items):
                 out[lkey] = len(items)
@@ -693,12 +716,23 @@ SETTINGS = RecordTable('settings', 'settings', SETTINGS_COLS, 'settings document
 PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (plan@1): one row per plan', r'^(plans|projects/[^/]+/plans)/[^/]+\.json$')
 NOTES = NotesTable()
 
-TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES,
+# s4.3: the feature catalog (status.json, id → { status, wave, module, notes }), the libraries index, the project rules
+CATALOG_FEATURES = ItemsTable('catalog_features', 'console', r'^framework/(plan/profiles/[^/]+/framework/)?catalog/status\.json$',
+                              {MAP: ItemList()}, [Col('status'), Col('wave', type='int'), Col('module'), Col('notes'), Col('note')],
+                              'the feature catalog (framework/catalog/status.json and each profile copy): one row per feature, rid = its id; the tracker is a view over it')
+CATALOG_LIBRARIES = ItemsTable('catalog_libraries', 'console', r'^framework/(plan/profiles/[^/]+/framework/)?catalog/libraries\.json$', {'items': ItemList('id')},
+                               [Col('schema', '$axf'), Col('id'), Col('module'), Col('name'), Col('description'), Col('manifest_key', 'manifestKey')],
+                               'the libraries index (libraries@1, framework/catalog/libraries.json): one row per library')
+PROJECT_RULES = ItemsTable('project_rules', 'console', r'^framework/(plan/profiles/[^/]+/framework/)?schemas/project-rules\.json$', {'rules': ItemList('id'), 'knownKeys': ItemList(scalar=True)},
+                           [Col('id'), Col('title'), Col('description'), Col('severity'), Col('locked', type='bool')],
+                           'project manifest rules (project-rules@1): one row per rule, the known manifest keys as value rows; ops and vocabulary in store_heads')
+
+TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES, CATALOG_FEATURES, CATALOG_LIBRARIES, PROJECT_RULES,
                  PLAN_ITEMS, PLAN_PROFILES, PLAN_PROJECTS, PROJECTS, PLAN_MEDIA, PLANNER_HISTORY, PLANNER_CATEGORIES, PLANNER_LISTS, PLANNER_TREE]
 _BY_NAME = {t.name: t for t in TABLES}
 # Tables a key already stored elsewhere (records, blobs) moves into on connect (PgStore._backfill): the ones added after
 # the first copy. A table joins this list the release it is added; the backfill is idempotent and checks every key.
-BACKFILL = {'plan_items', 'plan_profiles', 'plan_projects', 'projects', 'plan_media', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree'}
+BACKFILL = {'catalog_features', 'catalog_libraries', 'project_rules', 'plan_items', 'plan_profiles', 'plan_projects', 'projects', 'plan_media', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree'}
 
 HOLDS = {
     'keys': 'every key: kind, rev, etag, when, who, size, content type, tombstone, which table holds its body',
@@ -714,6 +748,7 @@ HOLDS = {
     'build_notes': 'notes of each build (one row per note: at, text, under the build id)',
     'control_tabs': 'tabs of each tab group in the control registry',
     'mirror_runs': 'each SQLite mirror run: source, tables, row counts, result',
+    'tracker': 'view: the feature tracker (tracker@1 status board) over catalog_features; tracker.json is generated from it, not stored',
     'planner_shipped': 'view: the Plan Studio shipped log (journal planner/shipped-log), one row per line',
 }
 
@@ -781,6 +816,9 @@ CREATE OR REPLACE VIEW build_journal AS
   SELECT ns, path, seq, at, actor, entry->>'action' AS action, entry->>'note' AS note, entry->>'by' AS who, (entry->>'rev') AS store_rev, entry->'builds' AS builds, entry
   FROM journal WHERE ns = 'builds' AND path LIKE 'journal/%';
 CREATE INDEX IF NOT EXISTS plan_items_status ON plan_items (status);
+CREATE OR REPLACE VIEW tracker AS
+  SELECT path, rid AS id, status, wave, module, COALESCE(notes, note) AS notes, extra
+  FROM catalog_features WHERE ns = 'console' AND list = '*';
 CREATE OR REPLACE VIEW planner_shipped AS
   SELECT seq, at, actor, entry->>'build' AS build, entry->>'plan' AS plan, entry->>'id' AS id, (entry->>'ok')::boolean AS ok,
          entry->>'source' AS source, entry->>'why' AS why, entry
@@ -914,6 +952,10 @@ def mirror_sqlite_file(cur, prefix: str, path: str, source: str, at: str) -> dic
 
 
 def _copy_table(cur, db: sqlite3.Connection, name: str, cols: list[dict], target: str, types: dict[str, str]) -> None:
+    # TRUNCATE / ALTER need an exclusive lock; a pg_dump (backup) holds a share lock for many minutes. The mirror runs
+    # inside the store's write lock, so waiting would stall every API call (Nov 19 2026: a backup + a ledger mirror held
+    # axf-data for 10 min). Give up after a few seconds instead: the run fails, is logged, and the next upload retries.
+    cur.execute("SET LOCAL lock_timeout = '5s'")
     pk = [c['name'] for c in sorted((c for c in cols if c['pk']), key=lambda c: c['pk'])]
     ddl = ', '.join(f'"{c["name"]}" {types[c["name"]]}' for c in cols)
     cur.execute(f'CREATE TABLE IF NOT EXISTS "{target}" ({ddl}{", PRIMARY KEY (" + ", ".join(chr(34) + p + chr(34) for p in pk) + ")" if pk else ""})')

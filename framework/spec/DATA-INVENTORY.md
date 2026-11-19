@@ -28,6 +28,17 @@ axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` da
   `node framework/cli/builds-data.mjs cutover --apply`; `builds-data.mjs status` shows both sides. The file-lock path
   (`store.json.lock`, the `tmp-*` files) is no longer in use for the store; s3 removes the leftovers.
 
+- **s4.2 done (Nov 19 2026, Opus, build `postgres-part-b-plan-plan-studio-catalog`)**: `tables.py` version 3 adds
+  `ItemsTable` (a document whose lists are rows of one table keyed `(ns, path, list, pos)`, `rid` = the item's key,
+  `value` for scalar lists, the rest of the item in `extra`, the head in `store_heads`; only changed rows are rewritten)
+  and `MediaTable` (bytes in `blobs`, one metadata row). New tables: `plan_items` (plan.json and every profile copy),
+  `plan_profiles`, `plan_projects` (`framework/plan/projects.json`), `projects` (every `project.manifest.json`),
+  `plan_media`, `planner_history` (one row per saved version), `planner_categories`, `planner_lists` (deleted,
+  catalog-seen, blueprints), `planner_tree` (Plan Studio 2, now mapped `plan-studio-2/* → planner/v2/*`), view
+  `planner_shipped` over the journal. Keys written before a table existed move in on connect (`PgStore._backfill`,
+  byte-equal check per key, report in `GET /v1/_meta/tables` → `backfill`). Copy / check / cut:
+  `node framework/cli/data-tables.mjs status|backfill|cutover plan`.
+
 Row counts below are live `keys` rows in axf-data (not deleted); sizes are the stored bodies.
 
 ## Legend

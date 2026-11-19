@@ -412,6 +412,32 @@ def test_plan_tables_and_backfill():
         assert c.get('/v1/_meta/tables', headers=H()).json()['backfill']['moved'] == {'planner_history': 1, 'plan_media': 1}
 
 
+def test_catalog_tables():
+    """s4.3: the feature catalog (a map document), the libraries index and the project rules are rows; tracker is a view."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        status = {'f.a': {'status': 'built', 'wave': 1, 'module': 'kernel'}, 'f.b': {'status': 'planned', 'wave': 2, 'module': {'web': 'x'}, 'notes': 'n'}}
+        libs = {'$axf': 'libraries@1', 'generatedAt': 't', 'items': [{'$axf': 'library@1', 'id': 'lib.a', 'name': 'A', 'manifestKey': 'a', 'features': ['f.a']}]}
+        rules = json.loads((REPO / 'framework/schemas/project-rules.json').read_text())
+        for url, doc in {'/v1/console/framework/catalog/status.json': status, '/v1/console/framework/plan/profiles/all/framework/catalog/status.json': {'f.a': status['f.a']},
+                         '/v1/console/framework/catalog/libraries.json': libs, '/v1/console/framework/schemas/project-rules.json': rules}.items():
+            assert c.put(url, content=json.dumps(doc), headers=J(**{'if-none-match': '*'})).status_code == 200, url
+            assert c.get(url, headers=H()).json() == json.loads(canonical(doc)), url
+        assert st.fetchone('SELECT COUNT(*) AS n FROM catalog_features')['n'] == 3
+        assert st.fetchone("SELECT status, wave, module, extra FROM catalog_features WHERE path='framework/catalog/status.json' AND rid='f.b'") == {'status': 'planned', 'wave': 2, 'module': None, 'extra': {'module': {'web': 'x'}}}
+        assert st.fetchone("SELECT id, notes FROM tracker WHERE path='framework/catalog/status.json' AND id='f.b'") == {'id': 'f.b', 'notes': 'n'}
+        assert st.fetchone('SELECT name, manifest_key FROM catalog_libraries') == {'name': 'A', 'manifest_key': 'a'}
+        assert st.fetchone("SELECT COUNT(*) AS n FROM project_rules WHERE list='rules'")['n'] == len(rules['rules'])
+        # one feature changes: one row is rewritten, the document reads back
+        status2 = {**status, 'f.a': {**status['f.a'], 'status': 'partial'}}
+        before = {r['rid']: r['doc_hash'] for r in st.fetchall("SELECT rid, doc_hash FROM catalog_features WHERE path='framework/catalog/status.json'")}
+        et = c.get('/v1/console/framework/catalog/status.json', headers=H()).headers['etag']
+        assert c.put('/v1/console/framework/catalog/status.json', content=json.dumps(status2), headers=J(**{'if-match': et})).status_code == 200
+        after = {r['rid']: r['doc_hash'] for r in st.fetchall("SELECT rid, doc_hash FROM catalog_features WHERE path='framework/catalog/status.json'")}
+        assert before['f.b'] == after['f.b'] and before['f.a'] != after['f.a']
+        assert c.get('/v1/console/framework/catalog/status.json', headers=H()).json() == status2
+
+
 # ── SQLite mirrors ───────────────────────────────────────────────────────────────────────────────────────────────────
 
 def _ledger_like(path: Path, n: int = 3) -> None:
