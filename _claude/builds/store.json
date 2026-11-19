@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9253,
- "updatedAt": "2026-11-19T02:52:02.554Z",
+ "rev": 9254,
+ "updatedAt": "2026-11-19T02:55:16.217Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321873,7 +321873,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:43:49.249Z",
+   "updatedAt": "2026-11-19T02:54:49.824Z",
    "builtAt": "",
    "notes": [
     {
@@ -322027,6 +322027,10 @@
     {
      "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--rhonda.",
      "at": "2026-11-19T02:43:17.443Z"
+    },
+    {
+     "text": "Self-check: urgent-all-data-to-postgres-builds-store had no session on record but axf-urgent-all-data-to-postgres-builds-store--rhonda is alive: kept running and tracking it.",
+     "at": "2026-11-19T02:54:49.824Z"
     }
    ],
    "approvals": [
@@ -322056,7 +322060,7 @@
     "queuedAt": "2026-11-19T00:33:02.230Z",
     "queuedBy": "cli",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-urgent-all-data-to-postgres-builds-store--rhonda",
     "slot": "",
     "model": "Opus",
     "phase": "",
@@ -322279,7 +322283,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

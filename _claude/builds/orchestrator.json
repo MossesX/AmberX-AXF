@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:52:02.554Z",
+ "updatedAt": "2026-11-19T02:55:16.217Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194909,7 +194909,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:43:49.249Z",
+   "updatedAt": "2026-11-19T02:54:49.824Z",
    "builtAt": "",
    "notes": [
     {
@@ -195063,6 +195063,10 @@
     {
      "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--rhonda.",
      "at": "2026-11-19T02:43:17.443Z"
+    },
+    {
+     "text": "Self-check: urgent-all-data-to-postgres-builds-store had no session on record but axf-urgent-all-data-to-postgres-builds-store--rhonda is alive: kept running and tracking it.",
+     "at": "2026-11-19T02:54:49.824Z"
     }
    ],
    "approvals": [
