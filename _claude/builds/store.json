@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9284,
- "updatedAt": "2026-11-19T05:17:39.118Z",
+ "rev": 9285,
+ "updatedAt": "2026-11-19T05:23:11.513Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322053,7 +322053,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T05:15:40.630Z",
+   "updatedAt": "2026-11-19T05:22:51.428Z",
    "builtAt": "",
    "notes": [
     {
@@ -322299,6 +322299,10 @@
     {
      "text": "Update from postgres-part-b (#851 merged): before the key flips, redeploy axf-data from main (bash deploy/install-data.sh) once no pg_dump is running, so the host token can read console/framework/*; then data-tables.mjs cutover plan --apply --keys and cutover catalog --apply --keys.",
      "at": "2026-11-19T05:15:40.630Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T05:22:51.428Z"
     }
    ],
    "approvals": [
@@ -322567,7 +322571,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
