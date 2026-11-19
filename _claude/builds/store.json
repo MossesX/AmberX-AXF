@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9226,
- "updatedAt": "2026-11-19T02:13:58.443Z",
+ "rev": 9245,
+ "updatedAt": "2026-11-19T02:41:49.541Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244419,7 +244419,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244428,8 +244428,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-19T00:39:12.143Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-19T02:36:57.062Z",
+   "builtAt": "2026-11-19T02:36:57.062Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -244706,6 +244706,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-19T00:39:12.143Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-19T02:36:57.062Z"
     }
    ],
    "approvals": [],
@@ -244766,14 +244770,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "failure": {
-    "kind": "ci-red",
-    "at": "2026-11-19T00:39:12.143Z",
-    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
-    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
-    "step": "",
-    "exit": null
    },
    "landed": {
     "pr": 767,
@@ -245321,7 +245317,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -253197,7 +253193,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T17:33:10.734Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s16",
@@ -253222,7 +253218,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s17",
@@ -253248,7 +253244,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-16T22:49:23.111Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s18",
@@ -275444,8 +275440,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-19T00:36:12.343Z",
-   "builtAt": "2026-11-19T00:36:12.343Z",
+   "updatedAt": "2026-11-19T02:36:57.062Z",
+   "builtAt": "2026-11-19T02:36:57.062Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -275806,6 +275802,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-19T00:36:12.343Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-19T02:36:57.062Z"
     }
    ],
    "approvals": [
@@ -276604,7 +276604,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313844,8 +313844,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-19T00:36:12.343Z",
-   "builtAt": "2026-11-19T00:36:12.343Z",
+   "updatedAt": "2026-11-19T02:36:57.062Z",
+   "builtAt": "2026-11-19T02:36:57.062Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -313978,6 +313978,10 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-19T00:36:12.343Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-19T02:36:57.062Z"
     }
    ],
    "approvals": [],
@@ -314403,7 +314407,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -319186,8 +319190,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-19T00:36:12.343Z",
-   "builtAt": "2026-11-19T00:36:12.343Z",
+   "updatedAt": "2026-11-19T02:36:57.062Z",
+   "builtAt": "2026-11-19T02:36:57.062Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319308,6 +319312,10 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-19T00:36:12.343Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-19T02:36:57.062Z"
     }
    ],
    "approvals": [],
@@ -319475,7 +319483,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321064,7 +321072,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s12",
@@ -321089,7 +321097,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s13",
@@ -321114,7 +321122,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s14",
@@ -321139,7 +321147,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s15",
@@ -321164,7 +321172,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s16",
@@ -321189,7 +321197,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s17",
@@ -321213,7 +321221,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s18",
@@ -321238,7 +321246,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s19",
@@ -321263,7 +321271,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s20",
@@ -321287,7 +321295,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:34:15.215Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s21",
@@ -321313,7 +321321,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:44:09.439Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s22",
@@ -321338,7 +321346,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:44:09.439Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s23",
@@ -321362,7 +321370,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:49:35.220Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s24",
@@ -321386,7 +321394,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T17:49:35.220Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s25",
@@ -321412,7 +321420,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T18:06:25.332Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s26",
@@ -321437,7 +321445,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T18:06:25.332Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s27",
@@ -321462,7 +321470,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T12:46:17.539Z",
-     "updatedAt": "2026-11-18T18:11:47.316Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     }
    ],
    "profiles": [
@@ -321661,15 +321669,15 @@
    "title": "Stop the push storm: builds-live pushes at build end only, Expenses rebuilds only on its own changes",
    "category": "orchestrator",
    "detail": "Brett's words: \"We don't need it to do a update main on every fucking little thing. It needs to do it just at the end of the build.\" (about builds-live) and, about Expenses: \"Why is that shit even running? ... I just want to do what it needs to do to fucking update.\"\n\nFound on the VPS (load average 60): framework/cli/builds-live.mjs pushes a status-only [skip ci] commit to main for every store write (step, note, status), rewriting _claude/builds/store.json (over 2 MB), the orchestrator export and a THREADS.md live-log line, roughly every 30 s. apps/expenses/deploy/install.sh then builds a new expenses-axf image tagged with every new main commit (the live container is tagged with a status-only commit), so every status push also triggers a Docker build.\n\nReplaces the Nov 3 2026 'Builds go live to main' rule: store writes stay local/in the build's branch while it runs; one push to main when the build finishes (built/landed/failed). Update CLAUDE.md and _claude/builds/README.md to match.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/stop-push-storm-builds-live-pushes-build",
-   "pr": "",
+   "pr": "#850",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-19T02:13:34.737Z",
-   "builtAt": "2026-11-18T16:11:28.234Z",
+   "updatedAt": "2026-11-19T02:22:00.656Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
@@ -321698,6 +321706,14 @@
     {
      "text": "Reconciler: branch claude/stop-push-storm-builds-live-pushes-build (no PR yet)",
      "at": "2026-11-19T02:13:34.737Z"
+    },
+    {
+     "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-19T02:16:15.954Z"
+    },
+    {
+     "text": "Reconciler: PR #850; PR #850 names s1 done",
+     "at": "2026-11-19T02:22:00.656Z"
     }
    ],
    "approvals": [],
@@ -321745,6 +321761,14 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "failure": {
+    "kind": "push-fail",
+    "at": "2026-11-19T02:16:15.954Z",
+    "why": "every step is done but no PR reached GitHub after 15 min",
+    "head": "",
+    "step": "",
+    "exit": null
    },
    "steps": [
     {
@@ -321800,7 +321824,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -321829,7 +321853,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -321837,7 +321861,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:13:34.737Z",
+   "updatedAt": "2026-11-19T02:41:03.840Z",
    "builtAt": "",
    "notes": [
     {
@@ -321929,8 +321953,56 @@
      "at": "2026-11-19T01:24:15.746Z"
     },
     {
+     "text": "Phase 3 (Opus) done: s3 cut code, s4.1 agent-slots table + cut tool, s5 no-json-data@1 rule + CI ratchet. Main CI has been red since 00:25 (Plugin lifecycle: DATA-INVENTORY.md from PR #848 named plugin files); fixed on this branch (7a29d61c8), lands with this PR. Console redeployed to main (image rebuilt, healthy). The builds flip waits for this PR on main: new step s6 carries the exact command.",
+     "at": "2026-11-19T02:26:36.528Z"
+    },
+    {
      "text": "Reconciler: PR #848; PR #848 merged",
      "at": "2026-11-19T02:13:34.737Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T02:22:00.656Z"
+    },
+    {
+     "text": "Refused running → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T02:22:00.738Z"
+    },
+    {
+     "text": "When s3 flips builds/store.json (console running main with key-level modes), also run: node framework/cli/data-tables.mjs cutover plan --apply --keys && node framework/cli/data-tables.mjs cutover catalog --apply --keys (postgres-part-b: plan/catalog console keys and planner/v2 wait for the same precondition). Report: _claude/builds/reports/postgres-part-b.md",
+     "at": "2026-11-19T02:38:25.531Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--gina: brief only · start 13.9K tokens ($0.04) · cost $8.56 · 175 turns · 6 tools, MCP none",
+     "at": "2026-11-19T02:32:46.328Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-19T02:33:14.133Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:34:37.031Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T02:34:00.568Z"
+    },
+    {
+     "text": "Refused queued → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T02:34:00.569Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:35:46.432Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-19T02:40:49.753Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:41:03.840Z"
     }
    ],
    "approvals": [
@@ -321960,17 +322032,26 @@
     "queuedAt": "2026-11-19T00:33:02.230Z",
     "queuedBy": "cli",
     "account": "hulu0241",
-    "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 3",
+    "phase": "",
     "launchedAt": "2026-11-19T00:37:13.344Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-19T02:40:46.229Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "reason": "",
+     "stepsLeft": 1,
+     "account": "hulu0241",
+     "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
+     "phase": ""
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "2026-11-19T00:37:13.344Z",
     "planned": {
@@ -321980,7 +322061,9 @@
      "at": "2026-11-19T00:32:14.633Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
+    "tried": [
+     "hulu0241"
+    ],
     "pickedAt": "2026-11-19T00:37:13.344Z",
     "heldAt": "",
     "heldBy": "",
@@ -322007,7 +322090,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-19T00:22:22.020Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s2",
@@ -322029,7 +322112,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-19T00:22:22.020Z"
+     "updatedAt": "2026-11-19T02:23:41.261Z"
     },
     {
      "id": "s3",
@@ -322111,13 +322194,13 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-19T01:06:18.147Z",
-     "updatedAt": "2026-11-19T01:06:20.232Z"
+     "updatedAt": "2026-11-19T02:28:34.129Z"
     },
     {
      "id": "s10",
@@ -322133,13 +322216,35 @@
      "checks": [],
      "session": "same",
      "agent": false,
+     "skip": true,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-19T01:16:08.948Z",
+     "updatedAt": "2026-11-19T02:30:14.427Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwmxhw7h01vhee",
+     "title": "",
+     "text": "Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
      "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T01:16:08.948Z",
-     "updatedAt": "2026-11-19T01:16:11.248Z"
+     "createdAt": "2026-11-19T02:26:00.645Z",
+     "updatedAt": "2026-11-19T02:26:02.957Z"
     }
    ],
    "profiles": [
@@ -322150,7 +322255,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323089,15 +323194,15 @@
    "title": "Postgres part B: plan, Plan Studio, catalog, sessions and changes to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 2, 8 and the s4 order). This build does s4.2, s4.3 and s4.6 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, pending, build queue, agent-slots or auto-lander (part A), and never touch console state, settings, alerts, notifications, plugin data dirs (part C). Register new tables in their own module file under services/axf-data (e.g. tables_plan.py) and add only additive entries to shared registries, so merges with the other two builds stay clean. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over (key-level mode). No runtime data in JSON. Branch, PR, CI, merge queue; never push to main.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/postgres-part-b-plan-plan-studio-catalog",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T02:00:00.730Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-19T02:38:45.744Z",
+   "builtAt": "2026-11-19T02:38:45.744Z",
    "notes": [
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
@@ -323250,12 +323355,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T02:28:36.655Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-19T00:12:01.642Z",
-     "updatedAt": "2026-11-19T00:12:01.642Z"
+     "updatedAt": "2026-11-19T02:28:39.256Z"
     },
     {
      "id": "s4",
@@ -323272,12 +323377,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T02:38:45.744Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-19T00:12:01.642Z",
-     "updatedAt": "2026-11-19T00:12:01.642Z"
+     "updatedAt": "2026-11-19T02:40:34.134Z"
     }
    ],
    "profiles": [
@@ -323288,7 +323393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
