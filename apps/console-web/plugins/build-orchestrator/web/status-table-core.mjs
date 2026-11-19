@@ -90,7 +90,7 @@ export function stepRow(s, build, b = {}) {
   };
 }
 
-/** The PR number of a build (`prNumber`, or the number in `pr`: "#123", "123", or a pull URL). */
+/** The PR number of a build (`prNumber`, or the number in `pr`: a bare number, the number after a hash sign, or a pull URL). */
 export function prNumber(b) {
   if (num(b?.prNumber)) return num(b.prNumber);
   const m = /(?:^#?|\/pull\/)(\d+)\b/.exec(str(b?.pr));
@@ -119,7 +119,7 @@ export function buildRow(b) {
     model: common(steps.map((s) => s.model)) || str(pipe.model) || str(pipe.planned?.model),
     account: common(steps.map((s) => s.account)) || str(pipe.account) || str(pipe.planned?.account),
     slot: common(steps.map((s) => s.slot)) || str(pipe.slot),
-    prNumber: prNumber(b), branch: str(b.branch),
+    prNumber: prNumber(b), pr: /^https?:\/\//.test(str(b.pr)) ? str(b.pr) : '', branch: str(b.branch),
     at: statusSince(b), by: statusBy(b), createdAt: str(b.createdAt), updatedAt: str(b.updatedAt),
   };
 }

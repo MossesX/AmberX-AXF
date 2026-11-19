@@ -10,9 +10,18 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { BANNER_KEY, FOLDER, ID, VERSION, load, start } from './store';
 import { PushBanner, PushSettings } from './ui';
-import { MergeQueueView } from './queue';
+import { Slot, useSlotFilled } from '@console/axf/react';
 import { appMenu } from './menu';
 import './push-banner.css';
+
+/**
+ * The merge queue (Pipeline 2.0, Brett, Nov 18 2026): read-only, the build orchestrator's one table filtered to the
+ * merging statuses, from the same builds store. No queue state of its own here; with the orchestrator off, a note.
+ */
+function MergeQueuePanel() {
+  return useSlotFilled('builds.merge-queue') ? <Slot name="builds.merge-queue" />
+    : <div className="fx-empty">The merge queue is a view of the build orchestrator's builds table: switch the Build orchestrator plugin on to see it.</div>;
+}
 
 export const plugin: AxfWebLibrary = {
   appMenu,
@@ -34,7 +43,7 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsPanels: [
-    { id: 'push-banner.queue', tab: 'push-banner', title: 'Merge queue', icon: 'branch', order: 3, render: () => <MergeQueueView /> },
+    { id: 'push-banner.queue', tab: 'push-banner', title: 'Merge queue', icon: 'branch', order: 3, render: () => <MergeQueuePanel /> },
     { id: 'push-banner.branches', tab: 'push-banner', title: 'Branches', icon: 'branch', order: 5, render: () => <PushSettings /> },
     { id: 'push-banner.lifecycle', tab: 'push-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
