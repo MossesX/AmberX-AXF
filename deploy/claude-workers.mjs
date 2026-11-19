@@ -17,6 +17,10 @@
  *   node deploy/claude-workers.mjs route [--exclude a,b]         the account a new job would run on now ('' = none)
  *   node deploy/claude-workers.mjs test [--job '{json}' | --name n --model m --priority p --steps n --type t --profile p]
  *   node deploy/claude-workers.mjs limit <name> --kind usage|auth [--log <file>]   take an account out until it can work again
+ *   node deploy/claude-workers.mjs limit <name> --kind usage [--raw <run.jsonl>] [--until <iso|epoch>]   the real reset: the
+ *                                       message, the stream's rate_limit_event, or --until; none: 5 h (a weekly limit: a day)
+ *   node deploy/claude-workers.mjs usage <name> --raw <run.jsonl>   record the run's last rate_limit_event (usage left)
+ *   node deploy/claude-workers.mjs out <name>                   exit 0 + "out until …" when the account is out, 1 when it may run
  *   node deploy/claude-workers.mjs hit --log <file> --exit <n>  prints usage or auth when that log ended on one
  *   node deploy/claude-workers.mjs status [--json]              every account: role, kind, limit, running/queued, cost, caps
  *   node deploy/claude-workers.mjs alerts [--json]              API accounts near/over a cap or without a key
@@ -93,7 +97,7 @@ export function editConfig(fn, env = process.env, opts = {}) {
 
 const loadState = (env) => {
   const s = readJson(paths(env).state);
-  return { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {}, claims: s?.claims && typeof s.claims === 'object' ? s.claims : {} };
+  return { limits: s?.limits && typeof s.limits === 'object' ? s.limits : {}, claims: s?.claims && typeof s.claims === 'object' ? s.claims : {}, usage: s?.usage && typeof s.usage === 'object' ? s.usage : {} };
 };
 const saveState = (state, env) => atomic(paths(env).state, state);
 
@@ -112,17 +116,82 @@ export function withLock(env, fn) {
   try { return fn(); } finally { rmSync(f, { force: true }); }
 }
 
-/** "resets 3pm (UTC)", "resets Nov 10, 2:30am": when the limit ends, ms; 0 when the text doesn't say. Times are UTC. */
+/** Minutes `tz` is ahead of UTC at `utcMs` (0 for UTC or a zone this runtime does not know). */
+export function tzOffsetMin(tz, utcMs) {
+  if (!tz || /^(utc|gmt|z)$/i.test(tz)) return 0;
+  try {
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', { timeZone: tz, hourCycle: 'h23', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' }).formatToParts(new Date(utcMs)).map((p) => [p.type, p.value]));
+    const asUtc = Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), Number(parts.hour) % 24, Number(parts.minute), Number(parts.second));
+    return Math.round((asUtc - utcMs) / 60e3);
+  } catch { return 0; }
+}
+const DAYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+/** A wall-clock time in `tz` → UTC ms (the offset is taken at that moment, so a DST edge lands right). */
+const wallToUtc = (y, mo, d, h, mi, tz) => { const guess = Date.UTC(y, mo, d, h, mi); return guess - tzOffsetMin(tz, guess - tzOffsetMin(tz, guess) * 60e3) * 60e3; };
+
+/**
+ * When a usage limit ends, from the message (ms; 0 when the text doesn't say). Every shape Claude Code prints:
+ *   "resets Nov 21, 3am (UTC)" · "resets 3pm (America/New_York)" · "resets Mon 9:30am" · "resets Thursday at 9am"
+ *   "resets in 3 days" · "resets in 4h 30m" · "resets 2026-11-21T03:00:00Z" · "limit reached|1795503600" (epoch s)
+ *   "resetsAt":1795503600 (a stream-json rate_limit_event). A time without a zone is UTC.
+ */
 export function parseReset(text, now = Date.now()) {
-  const m = /resets?\s+(?:at\s+)?(?:([a-z]{3})[a-z]*\s+(\d{1,2}),?\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i.exec(String(text ?? ''));
-  if (!m) return 0;
-  const hour = (Number(m[3]) % 12) + (m[5].toLowerCase() === 'pm' ? 12 : 0);
-  const d = new Date(now);
-  const month = m[1] ? MONTHS.indexOf(m[1].toLowerCase()) : -1;
-  if (m[1] && month < 0) return 0;
-  let at = Date.UTC(d.getUTCFullYear(), m[1] ? month : d.getUTCMonth(), m[2] ? Number(m[2]) : d.getUTCDate(), hour, Number(m[4] ?? 0));
-  if (at <= now) at = m[1] ? Date.UTC(d.getUTCFullYear() + 1, month, Number(m[2]), hour, Number(m[4] ?? 0)) : at + DAY;
-  return at;
+  const t = String(text ?? '');
+  let m = /"resetsAt"\s*:\s*(\d{9,13})/.exec(t) || /limit reached\|(\d{9,13})/i.exec(t);
+  if (m) { const n = Number(m[1]); const at = n < 1e12 ? n * 1000 : n; return at > now ? at : 0; }
+  m = /resets?\s+(?:at\s+)?(\d{4}-\d{2}-\d{2}T[\d:.]+(?:Z|[+-]\d{2}:?\d{2})?)/i.exec(t);
+  if (m) { const at = Date.parse(/Z|[+-]\d{2}:?\d{2}$/.test(m[1]) ? m[1] : `${m[1]}Z`); return Number.isFinite(at) && at > now ? at : 0; }
+  m = /resets?\s+in\s+((?:\d+\s*(?:days?|d|hours?|hrs?|h|minutes?|mins?|m)\b[\s,and]*)+)/i.exec(t);
+  if (m) {
+    let ms = 0; for (const [, n, u] of m[1].matchAll(/(\d+)\s*(days?|d|hours?|hrs?|h|minutes?|mins?|m)\b/gi)) ms += Number(n) * (/^d/i.test(u) ? DAY : /^h/i.test(u) ? HOUR : 60e3);
+    return ms ? now + ms : 0;
+  }
+  const tz = /\(([A-Za-z_]+(?:\/[A-Za-z_+-]+)*)\)/.exec(t.slice(t.search(/resets?/i)))?.[1] || 'UTC';
+  m = /resets?\s+(?:at\s+|on\s+)?(?:([a-z]{3})[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?,?\s*(?:at\s+)?)?(?:(\d{1,2})(?::(\d{2}))?\s*(am|pm))?/i.exec(t);
+  if (m && (m[1] || m[3])) {
+    const month = m[1] ? MONTHS.indexOf(m[1].toLowerCase()) : -1;
+    if (m[1] && month >= 0 && m[2]) {
+      const hour = m[3] ? (Number(m[3]) % 12) + (m[5].toLowerCase() === 'pm' ? 12 : 0) : 0;
+      const y = new Date(now).getUTCFullYear();
+      let at = wallToUtc(y, month, Number(m[2]), hour, Number(m[4] ?? 0), tz);
+      if (at <= now) at = wallToUtc(y + 1, month, Number(m[2]), hour, Number(m[4] ?? 0), tz);
+      return at;
+    }
+    if (!m[1] && m[3]) {
+      const hour = (Number(m[3]) % 12) + (m[5].toLowerCase() === 'pm' ? 12 : 0);
+      const local = new Date(now + tzOffsetMin(tz, now) * 60e3);
+      let at = wallToUtc(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate(), hour, Number(m[4] ?? 0), tz);
+      if (at <= now) at += DAY;
+      return at;
+    }
+  }
+  m = /resets?\s+(?:at\s+|on\s+)?(sun|mon|tue|wed|thu|fri|sat)[a-z]*\.?,?\s+(?:at\s+)?(\d{1,2})(?::(\d{2}))?\s*(am|pm)/i.exec(t);
+  if (m) {
+    const want = DAYS.indexOf(m[1].toLowerCase());
+    const hour = (Number(m[2]) % 12) + (m[4].toLowerCase() === 'pm' ? 12 : 0);
+    const local = new Date(now + tzOffsetMin(tz, now) * 60e3);
+    const ahead = (want - local.getUTCDay() + 7) % 7;
+    let at = wallToUtc(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() + ahead, hour, Number(m[3] ?? 0), tz);
+    if (at <= now) at += 7 * DAY;
+    return at;
+  }
+  return 0;
+}
+
+/** The last rate_limit_event of a stream-json run ({ status, resetsAt (ms), window, utilization 0..1 }) or null. */
+export function rateLimitOf(text) {
+  let last = null;
+  for (const line of String(text ?? '').split('\n')) {
+    if (!line.includes('rate_limit_event')) continue;
+    try {
+      const i = JSON.parse(line).rate_limit_info; if (!i || typeof i !== 'object') continue;
+      const wins = i.unifiedWindows && typeof i.unifiedWindows === 'object' ? Object.entries(i.unifiedWindows) : [];
+      const worst = wins.map(([w, v]) => ({ window: w, utilization: Number(v?.utilization) || 0, resetsAt: Number(v?.resetsAt) || 0, status: String(v?.status || '') })).sort((a, b) => b.utilization - a.utilization)[0];
+      const resetsAt = Number(i.resetsAt) || worst?.resetsAt || 0;
+      last = { status: String(i.status || worst?.status || ''), window: String(i.rateLimitType || worst?.window || ''), utilization: Math.max(0, Math.min(1, worst?.utilization ?? (i.status === 'rejected' ? 1 : 0))), resetsAt: resetsAt ? (resetsAt < 1e12 ? resetsAt * 1000 : resetsAt) : 0 };
+    } catch { /* not JSON */ }
+  }
+  return last;
 }
 
 /** What stopped a run: 'usage', 'auth' or ''. A dead login only counts on a failed exit: a build may print those words. */
@@ -131,15 +200,40 @@ export function hitOf(text, exit = 0) {
   return exit !== 0 && AUTH_RE.test(text) ? 'auth' : '';
 }
 
-export function markLimit(name, { kind = 'usage', text = '' } = {}, env = process.env, now = Date.now()) {
+export function markLimit(name, { kind = 'usage', text = '', until: untilAt = 0 } = {}, env = process.env, now = Date.now()) {
   if (!NAME_RE.test(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
-  const until = (kind === 'usage' ? parseReset(text, now) : 0) || now + (COOLDOWN[kind] ?? COOLDOWN.usage);
+  // the real reset (the message, or the stream's rate_limit_event) benches the account until then; no reset in the
+  // message: 5 hours, or a day for a weekly limit (Nov 19 2026: a fixed 5 h kept sending builds to an account days from its reset)
+  const fromStream = kind === 'usage' ? rateLimitOf(text)?.resetsAt || 0 : 0;
+  const parsed = Number(untilAt) > now ? Number(untilAt) : kind === 'usage' ? (parseReset(text, now) || (fromStream > now ? fromStream : 0)) : 0;
+  const until = parsed || now + (kind === 'usage' && /weekly|seven_day|7-day/i.test(text) ? DAY : (COOLDOWN[kind] ?? COOLDOWN.usage));
   return withLock(env, () => {
     const state = loadState(env);
-    state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? (/credit balance|out of credits/i.test(text) ? 'out of API credit' : 'hit its limit') : 'login failed' };
+    state.limits[name] = { at: new Date(now).toISOString(), until: new Date(until).toISOString(), kind, reason: kind === 'usage' ? (/credit balance|out of credits/i.test(text) ? 'out of API credit' : /weekly|seven_day/i.test(text) ? 'hit its weekly limit' : 'hit its limit') : 'login failed', resetFrom: parsed ? 'message' : 'default' };
     saveState(state, env);
     return state.limits[name];
   });
+}
+
+/**
+ * Usage left per account (pipeline-2@1, Nov 19 2026): every run's last rate_limit_event (deploy/claude-headless.sh, at
+ * the end of each run) is kept here: { utilization 0..1 of the fullest window, window, resetsAt, status, at }. A
+ * `rejected` status benches the account until its reset at once; the router reads usageLeft = 1 - utilization
+ * (until that window resets) and never routes to an account with none left.
+ */
+export function recordUsage(name, info, env = process.env, now = Date.now()) {
+  if (!NAME_RE.test(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
+  if (!info) return null;
+  const rec = { utilization: info.utilization, window: info.window, resetsAt: info.resetsAt ? new Date(info.resetsAt).toISOString() : '', status: info.status, at: new Date(now).toISOString() };
+  withLock(env, () => { const state = loadState(env); state.usage = { ...(state.usage ?? {}), [name]: rec }; saveState(state, env); });
+  if (info.status === 'rejected') markLimit(name, { kind: 'usage', until: info.resetsAt, text: info.window }, env, now);
+  return rec;
+}
+/** 0..1 usage left on an account now (1 = unknown or its window has reset). */
+export function usageLeftOf(rec, now = Date.now()) {
+  if (!rec || typeof rec !== 'object') return 1;
+  if (rec.resetsAt && Date.parse(rec.resetsAt) <= now) return 1;
+  return Math.max(0, Math.min(1, 1 - (Number(rec.utilization) || 0)));
 }
 
 const limitOf = (state, name, now) => { const l = state.limits[name]; return l && Date.parse(l.until) > now ? l : null; };
@@ -238,12 +332,12 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
     return {
       name: a.name, kind: a.kind === 'api' ? 'api' : 'subscription', active: a.active, hasKey: a.kind === 'api' ? true : undefined,
       email: a.email || emailIn(p, a.name), plan: String(seen?.[a.name]?.plan || ''),
-      limited: limitOf(state, a.name, now), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
+      limited: limitOf(state, a.name, now), usage: state.usage?.[a.name] ?? null, usageLeft: usageLeftOf(state.usage?.[a.name], now), running, ahead, queued: queue.length, runsToday: l.runs.filter((r) => now - Date.parse(r.at) < DAY).length,
       costToday: sum(l.runs, DAY), costWeek: sum(l.runs, 7 * DAY), recent: l.runs.slice(-5).reverse(),
     };
   });
   // API worker slots set up before their key is saved still show (no key yet)
-  for (const n of Object.keys(cfg.api)) if (!base.some((a) => a.name === n)) base.push({ name: n, kind: 'api', active: false, hasKey: false, email: '', plan: '', limited: null, running: [], ahead: 0, queued: 0, runsToday: 0, costToday: 0, costWeek: 0, recent: [] });
+  for (const n of Object.keys(cfg.api)) if (!base.some((a) => a.name === n)) base.push({ name: n, kind: 'api', active: false, hasKey: false, email: '', plan: '', limited: null, usage: null, usageLeft: 1, running: [], ahead: 0, queued: 0, runsToday: 0, costToday: 0, costWeek: 0, recent: [] });
   const ro = roster(cfg, base);
   // buildPick on every row: the dispatcher reads the rows (or the host's snapshot of them), never workers.json itself
   const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why, buildAccount: ro[i].buildAccount, buildPick: cfg.buildAccount }));
@@ -267,7 +361,9 @@ export function setBuildAccount(name, env = process.env) {
 }
 
 /** Rows as the router sees them for one job: queued-ahead jobs count as running. */
-const routingRows = (s) => s.accounts.map((a) => ({ ...a, running: a.running.length + (a.ahead || 0) }));
+const routingRows = (s) => s.accounts.map((a) => ({ ...a, running: a.running.length + (a.ahead || 0),
+  // usage checked before routing: a subscription with no usage left is out until its window resets, whatever the limit list says
+  limited: a.limited || (a.kind === 'subscription' && a.usageLeft <= 0 ? { until: a.usage?.resetsAt || '', kind: 'usage', reason: `no usage left (${a.usage?.window || 'window'})` } : null) }));
 
 /** Where a job would go right now (nothing recorded). */
 export function preview(job = {}, { exclude = [], forSession = '' } = {}, env = process.env, now = Date.now()) {
@@ -414,7 +510,19 @@ const main = async () => {
       if (rest.includes('--json')) console.log(JSON.stringify(d));
       else { console.log(decisionLine(d)); for (const c of d.considered) console.log(`  ${c.match ? '✓' : '·'} ${c.name}: ${c.why}`); }
     } else if (cmd === 'hit') console.log(hitOf(tail(flag('log')), Number(flag('exit', '0'))));
-    else if (cmd === 'limit') { const kind = flag('kind', 'usage'); const l = markLimit(rest[0], { kind, text: tail(flag('log')) }); console.log(`${rest[0]} out until ${l.until} (${l.reason})`); }
+    else if (cmd === 'limit') {
+      const kind = flag('kind', 'usage'); const raw = flag('raw') ? tail(flag('raw'), 400) : '';
+      const until = flag('until') ? (/^\d+$/.test(flag('until')) ? (Number(flag('until')) < 1e12 ? Number(flag('until')) * 1000 : Number(flag('until'))) : Date.parse(flag('until'))) : 0;
+      const l = markLimit(rest[0], { kind, text: `${tail(flag('log'))}\n${raw}`, until }); console.log(`${rest[0]} out until ${l.until} (${l.reason}${l.resetFrom === 'default' ? ', no reset in the message' : ''})`);
+    } else if (cmd === 'usage') {
+      // the run's last rate_limit_event → usage left on that account (a rejected one benches it until the reset)
+      const info = rateLimitOf(tail(flag('raw'), 400)); const r = info ? recordUsage(rest[0], info) : null;
+      out(r, r ? `${rest[0]}: ${Math.round((1 - r.utilization) * 100)}% left of its ${r.window || 'window'}${r.resetsAt ? ` (resets ${r.resetsAt})` : ''}${r.status === 'rejected' ? ': out until the reset' : ''}` : `${rest[0]}: no rate_limit_event in that run`);
+    } else if (cmd === 'out') {
+      // is this account marked out (limit, or no usage left)? exit 0 + "out until …" when it is, 1 when it may run
+      const row = routingRows(status()).find((a) => a.name === rest[0]);
+      if (row?.limited) console.log(`out until ${row.limited.until || 'its reset'} (${row.limited.reason || 'limited'})`); else process.exitCode = 1;
+    }
     else if (cmd === 'status') { const s = status(); out(s, statusLines(s).join('\n')); }
     else if (cmd === 'alerts') { const a = status().alerts; out(a, a.map((x) => `${x.level} ${x.text}`).join('\n') || 'no alerts'); }
     else if (cmd === 'config' || cmd === 'rules') {
