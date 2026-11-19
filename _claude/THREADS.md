@@ -840,12 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · builds-live
-- 2026-11-18 14:51 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
-- 2026-11-18 14:52 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 14:52 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 14:52 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 14:52 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-18 14:56 UTC · `one-build-time-always-split-to-fill` s5 done (all) · orchestrator
 - 2026-11-18 14:55 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 14:59 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
@@ -1240,6 +1234,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 - 2026-11-19 02:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 - 2026-11-19 02:47 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-19 02:51 UTC · `always-fill-every-slot-when-slots-are` → complete (all) · foreign-write
+- 2026-11-19 02:51 UTC · `every-plugin-screen-gets-a-settings-gear` → complete (all) · foreign-write
+- 2026-11-19 02:51 UTC · `stop-push-storm-builds-live-pushes-build` → landing, note (all) · foreign-write
+- 2026-11-19 02:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-19 02:51 UTC · `postgres-part-c-console-state-settings` note (all) · foreign-write
+- 2026-11-19 02:51 UTC · `postgres-part-b-plan-plan-studio-catalog` s3 done, s4 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 
