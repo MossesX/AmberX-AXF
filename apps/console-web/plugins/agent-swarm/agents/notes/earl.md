@@ -1,2 +1,2 @@
-- AmberX voice code: apps/amberx-droid/src/plugins/voice, src/plugins/commands. Molly hand-off: plugins/ai.
-- Android framework code is on hold; the Capacitor shell is allowed.
+- Voice code: framework/libs/listeners (listener@1 rules) and the wake-listener, agent-voice and amberx-listeners console plugins. The AmberX app (apps/amberx-droid) was retired Nov 19 2026; its code is on the archive/amberx-droid branch.
+- Android framework code is on hold.

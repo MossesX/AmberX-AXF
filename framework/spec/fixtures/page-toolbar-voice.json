@@ -1,7 +1,7 @@
 {
   "$axf": "page-toolbar-voice@1",
   "note": "One AmberX phrase per page toolbar button and the address it reaches (framework/spec/check-page-toolbar-voice.mts --write).",
-  "count": 104,
+  "count": 97,
   "phrases": [
     {
       "phrase": "press hire on the breakroom toolbar",
@@ -506,55 +506,6 @@
       "button": "update",
       "address": "toolbar:plugin-manager/button:update",
       "asset": "plugin-manager"
-    },
-    {
-      "phrase": "press add pr to queue on the merge queue toolbar",
-      "toolbar": "push-banner.merge-queue",
-      "button": "add",
-      "address": "toolbar:push-banner.merge-queue/button:add",
-      "asset": "push-banner-merge-queue"
-    },
-    {
-      "phrase": "press move up on the merge queue toolbar",
-      "toolbar": "push-banner.merge-queue",
-      "button": "up",
-      "address": "toolbar:push-banner.merge-queue/button:up",
-      "asset": "push-banner-merge-queue"
-    },
-    {
-      "phrase": "press move down on the merge queue toolbar",
-      "toolbar": "push-banner.merge-queue",
-      "button": "down",
-      "address": "toolbar:push-banner.merge-queue/button:down",
-      "asset": "push-banner-merge-queue"
-    },
-    {
-      "phrase": "press remove on the merge queue toolbar",
-      "toolbar": "push-banner.merge-queue",
-      "button": "remove",
-      "address": "toolbar:push-banner.merge-queue/button:remove",
-      "asset": "push-banner-merge-queue"
-    },
-    {
-      "phrase": "press run queue on the merge queue toolbar",
-      "toolbar": "push-banner.merge-queue",
-      "button": "run",
-      "address": "toolbar:push-banner.merge-queue/button:run",
-      "asset": "push-banner-merge-queue"
-    },
-    {
-      "phrase": "press open ci on the merge queue toolbar",
-      "toolbar": "push-banner.merge-queue",
-      "button": "ci",
-      "address": "toolbar:push-banner.merge-queue/button:ci",
-      "asset": "push-banner-merge-queue"
-    },
-    {
-      "phrase": "press show red reason on the merge queue toolbar",
-      "toolbar": "push-banner.merge-queue",
-      "button": "red",
-      "address": "toolbar:push-banner.merge-queue/button:red",
-      "asset": "push-banner-merge-queue"
     },
     {
       "phrase": "press sync on the shipped features toolbar",

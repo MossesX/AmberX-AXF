@@ -30,7 +30,6 @@ function* files(dir, test, depth = 0) {
 /** Where each app keeps its plugins. Only the console's run here; the others are listed (their app runs them). */
 export const PLUGIN_HOMES = [
   { app: 'console-web', dir: 'apps/console-web/plugins' },
-  { app: 'amberx-droid', dir: 'apps/amberx-droid/src/plugins' },
   { app: 'axhub-web', dir: 'apps/axhub-web/src/plugins' },
 ];
 /* ------------------------------------------------------------------ reading plugins */

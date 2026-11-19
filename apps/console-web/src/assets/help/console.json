@@ -273,12 +273,6 @@
         "kind": "screen"
       },
       {
-        "target": "view:audio-extract",
-        "title": "Audio Extract",
-        "text": "Pulls the audio out of a video.",
-        "kind": "screen"
-      },
-      {
         "target": "view:brand-library",
         "title": "Brand library",
         "text": "Logos, animated marks and icon packs for your apps.",

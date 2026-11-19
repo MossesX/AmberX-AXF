@@ -115,7 +115,7 @@ client = TestClient(app)
 # ---- registry
 reg = pc.registry()
 eq(sorted(p["folder"] for p in reg["plugins"] if p["app"] == "console-web"), ["fixture-plans", "fixture-quiet", "fixture-todos"], "the console's plugins")
-ok(any(p["app"] == "amberx-droid" and p["folder"] == "fixture-notes" for p in reg["plugins"]), "and the other apps' plugins")
+ok(any(p["app"] == "axhub-web" and p["folder"] == "fixture-notes" for p in reg["plugins"]), "and the other apps' plugins")
 ok(pc.is_plugin("fixture-plans") and not pc.is_plugin("tokens.layout"), "plugin folders vs control targets")
 
 # ---- REST reads
@@ -182,7 +182,7 @@ eq(client.post("/api/control/fixture-plans/action-clear", json={}).json()["code"
 # ---- unknowns, other apps
 eq(client.get("/api/control/fixture-plans/nope").json()["code"], "not_found", "an unknown read")
 eq(client.post("/api/control/not-a-plugin/x", json={}).json()["code"], "not_found", "an unknown plugin")
-eq(pc.run({"op": "act", "target": "plugins.commands", "path": "amberx-droid:fixture-notes/action-notes-new", "action": "run"})["code"], "not_implemented", "another app's command is listed, run there")
+eq(pc.run({"op": "act", "target": "plugins.commands", "path": "axhub-web:fixture-notes/action-notes-new", "action": "run"})["code"], "not_implemented", "another app's command is listed, run there")
 
 # ---- MCP: tools follow the plugins
 s = pc.sync_mcp(force=True)

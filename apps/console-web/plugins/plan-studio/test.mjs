@@ -24,7 +24,7 @@ await t('plugin@1 manifest, lifecycle, targets, model, capabilities', () => {
   const m = JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8'));
   assert.equal(m.id, 'ai.amberx.axf.console.plan-studio');
   assert.equal(m.lifecycle.$axf, 'plugin-lifecycle@1'); assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/plan-studio');
-  assert.deepEqual(m.targets, ['axf-console', 'amberx-droid']);
+  assert.deepEqual(m.targets, ['axf-console']);
   assert.deepEqual(m.builtWith, { model: 'opus', builtAt: '2026-10-30' });
   assert.ok(m.provides.includes('service:plans@1')); assert.ok(m.optional.includes('axf.llm@1'));
   for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'plans.mjs', 'catalog.mjs', 'schema/plan.schema.json', 'server/__init__.py']) assert.ok(existsSync(join(here, f)), f);

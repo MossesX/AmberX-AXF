@@ -1,15 +1,12 @@
 /**
- * Audio Output Recorder (web part). In AmberX: one switch that records everything the phone plays into 30-minute
- * chunks sent to axHub, plus a quick-settings tile ("Record audio out") doing the same. Opt-in "Record my mic too"
- * (off by default) adds the phone's mic as a second track: left = mic, right = playback.
- * Everywhere (AmberX and the Dev Console): the recordings on axHub, to play, share (download on the console), delete,
- * or send to Audio Extract (AmberX).
+ * Audio Output Recorder (web part): the recordings the paired phone sent to axHub (Phone Connect records them), to
+ * play, download, read, search and delete. In a phone shell that provides the native seam (bridge.ts) it also shows
+ * the switch and the phone's queue. Opt-in "Record my mic too" (off by default) adds the mic as a second track.
  *
- *  - view `output-recorder` (nav → Media → Audio out): the switch and queue (AmberX), the recordings on axHub
+ *  - view `output-recorder` (nav → Media → Audio out): the switch and queue (native shell only), the recordings on axHub
  *  - Settings → Plugins → Audio Output Recorder: quality, mono/stereo, chunk length, local cap, when full, silence,
  *    hub project
  *  - actions `output-recorder.start | stop | toggle`, voice phrases for each (core.ts VOICE)
- * The work is native (OutputRecorderPlugin.java and friends, see bridge.ts).
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
@@ -30,7 +27,7 @@ const settingsOf = (rt: AxfRuntime) => readSettings((k) => rt.settings.get(k));
 const controller = (): Controller => ctl ?? (ctl = createController(null, { settings: () => DEFAULTS, hub: () => hubOf() }));
 const useStore = () => { const c = controller(); return useSyncExternalStore(c.subscribe, c.get); };
 
-/* ---------------------------------------------------------------- the switch + the phone's queue (AmberX) */
+/* ---------------------------------------------------------------- the switch + the phone's queue (native shell) */
 
 /** Re-renders every second while shown (one timer for every clock). */
 const secSubs = new Set<() => void>();
@@ -102,7 +99,7 @@ function Recorder() {
   );
 }
 
-/* ---------------------------------------------------------------- the recordings on axHub (AmberX + console) */
+/* ---------------------------------------------------------------- the recordings on axHub */
 
 function TranscriptText({ t }: { t: Transcript }) {
   if (t.silent) return <p className="fx-small fx-muted">Nothing but silence in this part.</p>;
@@ -137,7 +134,6 @@ function RecordingRow({ r, transcript }: { r: Recording; transcript?: Transcript
           ? <Button size="sm" tone="quiet" icon="x" onClick={() => c.stopPlaying()}>Close</Button>
           : <Button size="sm" tone="quiet" icon="play" disabled={!!working} onClick={() => void c.play(r)}>Play</Button>}
         <Button size="sm" tone="quiet" icon={c.native() ? 'external' : 'download'} disabled={!!working} onClick={() => void c.share(r)}>{c.native() ? 'Share' : 'Download'}</Button>
-        {c.native() && <Button size="sm" tone="quiet" icon="download" disabled={!!working} onClick={() => void c.toExtract(r)}>Audio Extract</Button>}
         <Button size="sm" tone="quiet" icon="trash" disabled={!!working} confirm={`Delete ${r.name} from axHub? This can’t be undone.`} onClick={() => void c.remove(r)}>Delete</Button>
       </div>
     </li>
@@ -201,7 +197,7 @@ function OutputRecorderView() {
           <p className="fx-muted">Everything the phone plays, recorded while it’s on and kept on axHub. Your mic only when you turn it on.</p>
         </div>
       </header>
-      {c.native() ? <Recorder /> : <Note tone="info">Recording runs in the AmberX app on Android (switch or the “Record audio out” quick-settings tile). Here you can play, download, read, search and delete what it sent to axHub.</Note>}
+      {c.native() ? <Recorder /> : <Note tone="info">Recording runs on the paired phone (Phone Connect). Here you can play, download, read, search and delete what it sent to axHub.</Note>}
       <HubList />
     </div>
   );

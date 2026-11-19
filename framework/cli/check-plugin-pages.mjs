@@ -3,7 +3,7 @@
  * Plugin page check (DESIGN-LANGUAGE §12, enterprise-branding s35): every plugin page head in the console (and the
  * AmberX app) is held to the design language.
  *
- *   node framework/cli/check-plugin-pages.mjs [--json] [plugin dirs…]   (default: apps/console-web/plugins/*, apps/amberx-droid/src/plugins/*)
+ *   node framework/cli/check-plugin-pages.mjs [--json] [plugin dirs…]   (default: apps/console-web/plugins/*)
  *
  * For every `<header className="fx-pagehead">` in a plugin's web/*.tsx:
  *  - an eyebrow (`fx-eyebrow`) that names a section, never the bare word "Plugin" (the nav says it's a plugin)
@@ -21,7 +21,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const args = process.argv.slice(2);
 const json = args.includes('--json');
 const dirs = args.filter((a) => !a.startsWith('--'));
-const roots = ['apps/console-web/plugins', 'apps/amberx-droid/src/plugins'];
+const roots = ['apps/console-web/plugins'];
 const plugins = dirs.length ? dirs.map((d) => resolve(ROOT, d)) : roots.flatMap((r) => {
   const abs = join(ROOT, r);
   return existsSync(abs) ? readdirSync(abs).filter((n) => !n.startsWith('_') && !n.startsWith('.') && statSync(join(abs, n)).isDirectory()).map((n) => join(abs, n)) : [];

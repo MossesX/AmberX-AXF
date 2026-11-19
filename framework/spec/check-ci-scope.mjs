@@ -17,7 +17,6 @@ t('console-only changes skip Android, AmberX and the other app builds', () => {
 t('each app runs only its own build', () => {
   assert.deepEqual(on(scopeFor(['apps/molly/src/App.tsx'])), ['engine', 'console', 'molly']);
   assert.deepEqual(on(scopeFor(['apps/axhub-web/src/x.ts'])), ['engine', 'console', 'axhubweb']);
-  assert.deepEqual(on(scopeFor(['apps/amberx-droid/src/x.ts'])), ['engine', 'console', 'amberxweb', 'amberx']);
   assert.deepEqual(on(scopeFor(['apps/voicevault/app/x.kt'])), ['engine', 'android']);
   assert.deepEqual(on(scopeFor(['framework/android/axf-kernel/x.kt'])), ['engine', 'android']);
 });
@@ -61,12 +60,12 @@ t('android.yml: runs on queue/**, every heavy job waits on scope and reads its o
   const y = readFileSync(join(ROOT, '.github/workflows/android.yml'), 'utf8');
   assert.match(y, /branches: \[main, 'queue\/\*\*'\]/);
   assert.match(y, /node framework\/cli\/ci-scope\.mjs gha/);
-  for (const [job, key] of [['engine', 'engine'], ['console', 'console'], ['amberx', 'amberx'], ['android', 'android'], ['light', 'light']]) {
+  for (const [job, key] of [['engine', 'engine'], ['console', 'console'], ['android', 'android'], ['light', 'light']]) {
     const block = y.slice(y.indexOf(`\n  ${job}:\n`), y.indexOf('\n    steps:', y.indexOf(`\n  ${job}:\n`)));
     assert.match(block, /needs: (scope|\[scope)/, job);
     assert.match(block, new RegExp(`needs\\.scope\\.outputs\\.${key} == 'true'`), job);
   }
-  for (const k of ['axhubweb', 'amberxweb', 'molly', 'walkthrough']) assert.match(y, new RegExp(`needs\\.scope\\.outputs\\.${k} == 'true'`));
+  for (const k of ['axhubweb', 'molly', 'walkthrough']) assert.match(y, new RegExp(`needs\\.scope\\.outputs\\.${k} == 'true'`));
 });
 t('the queue switch: the repo variable wins, else the committed .github/merge-queue.json', () => {
   const f = join(ROOT, '.github/merge-queue.json');

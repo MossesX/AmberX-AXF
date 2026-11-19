@@ -19,7 +19,7 @@ await t('plugin@1 manifest, lifecycle, commands, web part, never the old Plan St
   const m = JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8'));
   assert.equal(m.id, 'ai.amberx.axf.console.plan-studio-2');
   assert.equal(m.lifecycle.dataDir, '.axf-console/plugins/plan-studio-2');
-  assert.deepEqual(m.targets, ['axf-console', 'amberx-droid']);
+  assert.deepEqual(m.targets, ['axf-console']);
   assert.equal(m.builtWith.model, 'fable');
   assert.ok(m.provides.includes('service:plan-tree@1') && m.provides.includes('view:plan-studio-2'));
   assert.equal(m.commands.$axf, 'plugin-commands@1');

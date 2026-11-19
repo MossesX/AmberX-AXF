@@ -1,8 +1,7 @@
 /**
  * Plan Studio console plugin (ai.amberx.axf.console.plan-studio): every plan (plan@1) in one place, entered by hand,
  * filed in categories, viewed every way; a Catalog of every plugin / app / library with its features; plain-English
- * AI edits; voice planning in AmberX (the plugin targets amberx-droid too: AmberX loads it unchanged and forwards its
- * server calls to the console). Quick capture from the banner (+ Plan), Builds ▸ New plan…, the search and right-click.
+ * AI edits; voice planning (voice.ts). Quick capture from the banner (+ Plan), Builds ▸ New plan…, the search and right-click.
  */
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
