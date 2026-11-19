@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:16:55.040Z",
+ "updatedAt": "2026-11-19T02:22:23.736Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194779,9 +194779,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/stop-push-storm-builds-live-pushes-build",
-   "pr": "",
+   "pr": "#850",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-19T02:16:15.954Z",
+   "updatedAt": "2026-11-19T02:22:00.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -194815,6 +194815,10 @@
     {
      "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-19T02:16:15.954Z"
+    },
+    {
+     "text": "Reconciler: PR #850; PR #850 names s1 done",
+     "at": "2026-11-19T02:22:00.656Z"
     }
    ],
    "approvals": [],
@@ -194885,7 +194889,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:13:34.737Z",
+   "updatedAt": "2026-11-19T02:22:00.656Z",
    "builtAt": "",
    "notes": [
     {
@@ -194979,6 +194983,14 @@
     {
      "text": "Reconciler: PR #848; PR #848 merged",
      "at": "2026-11-19T02:13:34.737Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T02:22:00.656Z"
+    },
+    {
+     "text": "Refused running → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T02:22:00.738Z"
     }
    ],
    "approvals": [
