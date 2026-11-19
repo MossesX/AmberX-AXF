@@ -1,0 +1,476 @@
+{
+ "$axf": "pipeline-2-fixture@1",
+ "schema": "pipeline-2@1",
+ "buildFlow": [
+  "pending",
+  "splitting",
+  "split",
+  "pulling-main",
+  "assigning-models",
+  "ready",
+  "sending",
+  "building",
+  "build-complete",
+  "merging-pr",
+  "pr-pulling-main",
+  "running-ci",
+  "merging-main",
+  "landed"
+ ],
+ "stepFlow": [
+  "pending",
+  "pulling-main",
+  "ready",
+  "sending",
+  "building",
+  "completed",
+  "in-pr"
+ ],
+ "active": [
+  "pulling-main",
+  "assigning-models",
+  "ready",
+  "sending",
+  "building",
+  "build-complete",
+  "merging-pr",
+  "pr-pulling-main",
+  "running-ci",
+  "merging-main"
+ ],
+ "labels": {
+  "build": {
+   "pending": "Pending",
+   "splitting": "Splitting",
+   "split": "Pending",
+   "pulling-main": "Pulling in main",
+   "assigning-models": "Assigning models",
+   "ready": "Ready for build",
+   "sending": "Sending to slot",
+   "building": "Building",
+   "build-complete": "Build complete",
+   "merging-pr": "Merging to one PR",
+   "pr-pulling-main": "Pulling in main (PR)",
+   "running-ci": "Running CI",
+   "merging-main": "Merging into main",
+   "landed": "Landed",
+   "failed": "Failed"
+  },
+  "step": {
+   "pending": "Pending",
+   "pulling-main": "Pulling in main",
+   "ready": "Ready",
+   "sending": "Sending to slot",
+   "building": "Building",
+   "completed": "Completed",
+   "in-pr": "In PR",
+   "failed": "Failed"
+  },
+  "failed2": "failed, attempt 2"
+ },
+ "transitions": [
+  {
+   "kind": "build",
+   "rec": {
+    "status": "pending"
+   },
+   "to": "splitting",
+   "ok": true,
+   "status": "splitting",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "split"
+   },
+   "to": "pulling-main",
+   "ok": true,
+   "status": "pulling-main",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "ready"
+   },
+   "to": "building",
+   "ok": true,
+   "status": "building",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "building"
+   },
+   "to": "ready",
+   "ok": false,
+   "why": "forward-only: building → ready goes back"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "landed"
+   },
+   "to": "failed",
+   "ok": false,
+   "why": "landed is final: it cannot fail any more"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "landed"
+   },
+   "to": "landed",
+   "ok": true,
+   "status": "landed",
+   "attempt": null,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "building"
+   },
+   "to": "failed",
+   "ok": true,
+   "status": "failed",
+   "attempt": 1,
+   "failedFrom": "building"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 1
+   },
+   "to": "sending",
+   "ok": false,
+   "why": "a retry continues forward: build failed at building, so it cannot go back to sending"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 1
+   },
+   "to": "building",
+   "ok": true,
+   "status": "building",
+   "attempt": 2,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 2
+   },
+   "to": "build-complete",
+   "ok": true,
+   "status": "build-complete",
+   "attempt": 3,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "running"
+   },
+   "to": "building",
+   "ok": true,
+   "status": "building",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {},
+   "to": "pending",
+   "ok": true,
+   "status": "pending",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "pending"
+   },
+   "to": "queued",
+   "ok": false,
+   "why": "\"queued\" is not a build status of pipeline-2@1 (pending, splitting, split, pulling-main, assigning-models, ready, sending, building, build-complete, merging-pr, pr-pulling-main, running-ci, merging-main, landed, failed)"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "building"
+   },
+   "to": "archived",
+   "ok": true,
+   "status": "archived",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "pending"
+   },
+   "to": "pulling-main",
+   "ok": true,
+   "status": "pulling-main",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "building"
+   },
+   "to": "completed",
+   "ok": true,
+   "status": "completed",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "completed"
+   },
+   "to": "building",
+   "ok": false,
+   "why": "forward-only: completed → building goes back"
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "completed"
+   },
+   "to": "in-pr",
+   "ok": true,
+   "status": "in-pr",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "in-pr"
+   },
+   "to": "failed",
+   "ok": false,
+   "why": "in-pr is final: it cannot fail any more"
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "building"
+   },
+   "to": "failed",
+   "ok": true,
+   "status": "failed",
+   "attempt": 1,
+   "failedFrom": "building"
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 1
+   },
+   "to": "sending",
+   "ok": false,
+   "why": "a retry continues forward: step failed at building, so it cannot go back to sending"
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 1
+   },
+   "to": "building",
+   "ok": true,
+   "status": "building",
+   "attempt": 2,
+   "failedFrom": null
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "ready"
+   },
+   "to": "build-complete",
+   "ok": false,
+   "why": "\"build-complete\" is not a step status of pipeline-2@1 (pending, pulling-main, ready, sending, building, completed, in-pr, failed)"
+  }
+ ],
+ "split": [
+  {
+   "steps": [
+    {
+     "files": [
+      "a/x.mjs"
+     ]
+    },
+    {
+     "files": [
+      "b"
+     ]
+    },
+    {
+     "files": [
+      "a"
+     ]
+    },
+    {
+     "files": []
+    }
+   ],
+   "slots": 3,
+   "parts": [
+    [
+     0,
+     2
+    ],
+    [
+     1
+    ],
+    [
+     3
+    ]
+   ]
+  },
+  {
+   "steps": [
+    {
+     "files": [
+      "x"
+     ]
+    },
+    {
+     "files": [
+      "x/y"
+     ]
+    },
+    {
+     "files": [
+      "x/z"
+     ]
+    }
+   ],
+   "slots": 4,
+   "parts": [
+    [
+     0,
+     1,
+     2
+    ]
+   ]
+  },
+  {
+   "steps": [
+    {},
+    {},
+    {},
+    {},
+    {}
+   ],
+   "slots": 2,
+   "parts": [
+    [
+     0,
+     2,
+     4
+    ],
+    [
+     1,
+     3
+    ]
+   ]
+  }
+ ],
+ "models": [
+  {
+   "text": "Write the JSON schema",
+   "model": "Fable"
+  },
+  {
+   "text": "Fix the toolbar padding",
+   "model": "Opus"
+  },
+  {
+   "text": "Kernel scheduler",
+   "model": "Fable"
+  },
+  {
+   "text": "Add a button",
+   "model": "Opus"
+  }
+ ],
+ "plans": [
+  {
+   "plan": {
+    "$axf": "plan-build@1",
+    "id": "good-plan",
+    "title": "Good",
+    "steps": [
+     {
+      "text": "a",
+      "model": "Opus",
+      "minutes": 20
+     }
+    ]
+   },
+   "errors": []
+  },
+  {
+   "plan": {
+    "$axf": "plan-build@1",
+    "id": "Bad Id",
+    "title": "",
+    "steps": [
+     {
+      "text": "a",
+      "model": "Sonnet",
+      "minutes": 45
+     },
+     {
+      "text": "a",
+      "model": "Opus",
+      "minutes": 0
+     }
+    ]
+   },
+   "errors": [
+    "id",
+    "title",
+    "steps[0].model",
+    "steps[0].minutes",
+    "steps[1].minutes",
+    "steps[1].text"
+   ]
+  },
+  {
+   "plan": {
+    "$axf": "plan-build@1",
+    "id": "no-steps",
+    "title": "x",
+    "steps": []
+   },
+   "errors": [
+    "steps"
+   ]
+  }
+ ]
+}
