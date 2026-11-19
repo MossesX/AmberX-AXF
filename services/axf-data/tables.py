@@ -124,7 +124,7 @@ class ListSpec:
         return 'parent_rid' if self.key else 'parent_pos'
 
 
-TABLES_VERSION = 3   # 3 = console/plugin row families (part C): records a new table claims are moved by retable();  meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
+TABLES_VERSION = 4   # 4 = plugin documents (part C s2); 3 = console/plugin row families (part C): records a new table claims are moved by retable();  meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
 
 
 def _rid(item: dict, spec: ListSpec, pos: int) -> str:
@@ -541,24 +541,42 @@ class _PathTable:
 
 class KvTable(_PathTable):
     """A JSON object → one row per top-level key (`key`, `value` JSONB, `pos` keeps the key order). console_state,
-    plugin_settings: small single-object documents, each setting queryable on its own."""
+    plugin_settings: small single-object documents, each setting queryable on its own. With `map_key` the rows are the
+    entries of the object at that key (sections-said: `said` → one row per section) and the other fields go to store_heads."""
+
+    def __init__(self, name: str, ns: str, path_re: str, holds: str, map_key: str = ''):
+        super().__init__(name, ns, path_re, holds)
+        self.map_key = map_key
 
     def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
         return self._claims(ns, path, kind) and body.lstrip().startswith(b'{')
 
     def write(self, cur, ns: str, path: str, body: bytes) -> None:
         doc = json.loads(body.decode('utf-8'))
+        head: dict = {}
+        if self.map_key:
+            head = dict(doc)
+            m = head.pop(self.map_key, _MISSING)
+            lifted = isinstance(m, dict)
+            if not lifted and m is not _MISSING:
+                head[self.map_key] = m
+            doc = m if lifted else {}
+            head = {'head': head, 'lifted': lifted}
         cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
         rows = [(ns, path, i, k, Jsonb(v, dumps=canonical)) for i, (k, v) in enumerate(doc.items())]
         if rows:
             cur.executemany(f'INSERT INTO "{self.name}" (ns, path, pos, key, value) VALUES (%s, %s, %s, %s, %s)', rows)
-        self._head(cur, ns, path, {})
+        self._head(cur, ns, path, head)
 
     def read(self, cur, ns: str, path: str) -> bytes | None:
-        if self._head_of(cur, ns, path) is _MISSING:
+        h = self._head_of(cur, ns, path)
+        if h is _MISSING:
             return None
         cur.execute(f'SELECT key, value FROM "{self.name}" WHERE ns=%s AND path=%s ORDER BY pos', (ns, path))
-        return canonical({r['key']: r['value'] for r in cur.fetchall()}).encode('utf-8')
+        kv = {r['key']: r['value'] for r in cur.fetchall()}
+        if self.map_key:
+            return canonical({**h['head'], self.map_key: kv} if h.get('lifted') else h['head']).encode('utf-8')
+        return canonical(kv).encode('utf-8')
 
     def ddl(self) -> str:
         return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, pos INTEGER NOT NULL, key TEXT NOT NULL, '
@@ -699,6 +717,37 @@ class PathRecordTable(RecordTable):
         return kind == 'record' and ns == self.ns and bool(self.path_re and self.path_re.match(path)) and body.lstrip().startswith(b'{')
 
 
+class TextTable(_PathTable):
+    """UTF-8 text blobs (Markdown job briefs and reports) → one row per file: `text`, `size`. Binary stays a blob."""
+    kind = 'blob'
+
+    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
+        if not self._claims(ns, path, kind) or b'\x00' in body:
+            return False
+        try:
+            body.decode('utf-8')
+        except UnicodeDecodeError:
+            return False
+        return True
+
+    def write(self, cur, ns: str, path: str, body: bytes) -> None:
+        cur.execute(f'INSERT INTO "{self.name}" (ns, path, folder, name, text, size) VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (ns, path) DO UPDATE SET '
+                    'folder=EXCLUDED.folder, name=EXCLUDED.name, text=EXCLUDED.text, size=EXCLUDED.size',
+                    (ns, path, path.rpartition('/')[0], path.rpartition('/')[2], body.decode('utf-8'), len(body)))
+
+    def read(self, cur, ns: str, path: str) -> bytes | None:
+        cur.execute(f'SELECT text FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+        r = cur.fetchone()
+        return r['text'].encode('utf-8') if r else None
+
+    def delete(self, cur, ns: str, path: str) -> None:
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+
+    def ddl(self) -> str:
+        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, folder TEXT NOT NULL, name TEXT NOT NULL, '
+                f'text TEXT NOT NULL, size BIGINT NOT NULL, PRIMARY KEY (ns, path));')
+
+
 # ── the registry ─────────────────────────────────────────────────────────────────────────────────────────────────────
 
 NOTE_COLS = [Col('at'), Col('text')]
@@ -741,8 +790,42 @@ SETTINGS = RecordTable('settings', 'settings', SETTINGS_COLS, 'settings document
 PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (plan@1): one row per plan', r'^(plans|projects/[^/]+/plans)/[^/]+\.json$')
 NOTES = NotesTable()
 
+# s2 (s4.5a): the large plugin documents. Keys of the open `plugins` namespace are `<folder>/<rest>`.
+SWARM_RUN_COLS = [Col('schema', '$axf'), Col('kind'), Col('job_id', 'jobId'), Col('build_id', 'buildId'), Col('step_id', 'stepId'), Col('job_type', 'jobType'),
+                  Col('agent'), Col('model'), Col('started_at', 'startedAt'), Col('ended_at', 'endedAt'), Col('status'), Col('reason'), Col('turns', type='int')]
+SWARM_MSG_COLS = [Col('id'), Col('at'), Col('sender', 'from'), Col('kind'), Col('text'), Col('job_id', 'jobId')]
+SWARM_NOTICE_COLS = [Col('at'), Col('agent'), Col('text')]
+LAND_COLS = [Col('id'), Col('title'), Col('branch'), Col('pr', type='int'), Col('head'), Col('state'), Col('reason'), Col('since'), Col('checked_at', 'checkedAt'), Col('agent')]
+LINE_COLS = [Col('schema', '$axf'), Col('id'), Col('pr', type='int'), Col('build'), Col('branch'), Col('title'), Col('agent'), Col('priority'), Col('head'),
+             Col('state'), Col('since'), Col('added_at', 'addedAt'), Col('attempts', type='int'), Col('main_sha', 'mainSha')]
+SHOT_COLS = [Col('id'), Col('source'), Col('app'), Col('screen'), Col('viewport'), Col('session'), Col('branch'), Col('name'), Col('grp', 'group'),
+             Col('added_at', 'addedAt'), Col('submitted_by', 'submittedBy'), Col('size', type='int')]
+SWARM_RUNS = ArrayTable('swarm_runs', 'plugins', r'^agent-swarm/runs\.json$', 'agent-swarm runs (swarm-run@1): one row per run', SWARM_RUN_COLS, list_key='runs')
+SWARM_STATE = DocTable('swarm_messages', 'plugins', 'agent-swarm/state.json',
+                       {'messages': ListSpec('swarm_messages', SWARM_MSG_COLS, 'messages'), 'notices': ListSpec('swarm_notices', SWARM_NOTICE_COLS, 'notices')},
+                       'agent-swarm state: one row per crew message (swarm_messages) and notice (swarm_notices); agents, rules, cards in store_heads')
+SWARM_SAID = KvTable('swarm_sections_said', 'plugins', r'^agent-swarm/sections-said\.json$', 'crew sections already said: one row per section key (when)', map_key='said')
+SWARM_JOBS = TextTable('swarm_jobs', 'plugins', r'^agent-swarm/job-(briefs|reports)/[^/]+\.md$', 'agent-swarm job briefs and reports (Markdown): one row per file')
+LAND = DocTable('land_items', 'plugins', 'push-banner/land.json', {'items': ListSpec('land_items', LAND_COLS, 'items')},
+                'the auto-lander (push-banner land.json): one row per build it lands; order, managed, flags in store_heads')
+LANDING_LINE = DocTable('landing_line', 'plugins', 'push-banner/landing-line.json',
+                        {'entries': ListSpec('landing_line', LINE_COLS, 'entries'), 'history': ListSpec('landing_line', LINE_COLS, 'history')},
+                        'the landing line: one row per PR in line (section entries) and per PR that left it (section history)')
+MERGE_QUEUE = KvTable('merge_queue', 'plugins', r'^push-banner/merge-queue\.json$', 'the merge queue state: one row per field (depth, mode, mainSha, history…)')
+UI_SHOTS = DocTable('ui_review_screenshots', 'ui-review', 'screenshots/index.json', {'shots': ListSpec('ui_review_screenshots', SHOT_COLS, 'shots')},
+                    'UI Review screenshots index: one row per screenshot (the image is a blob); groups in store_heads')
+UI_PREDICTIONS = PathRecordTable('ui_review_predictions', 'ui-review', [Col('hash'), Col('at'), Col('item')], 'UI Review look predictions: one row per prediction',
+                                 r'^predictions/[^/]+\.json$')
+
+# The plugins' small single-object documents (config, settings, control, state files at the top of a plugin's data folder)
+# that no table above claims: one row per setting. Last in TABLES, so every specific table wins.
+PLUGIN_SETTINGS = KvTable('plugin_settings', 'plugins', r'^[a-z0-9][a-z0-9-]*/[^/]+\.json$',
+                          "plugins' small documents (settings, config, control, state at the top of a data folder): one row per top-level key")
+
 TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES,
-                CONSOLE_STATE, ALERTS, ALERTS_SEEN, NOTIFICATIONS, HOME_CARDS, AMBERX_NOTES, AMBERX_NOTE_LISTS, APP_CATALOG]
+                CONSOLE_STATE, ALERTS, ALERTS_SEEN, NOTIFICATIONS, HOME_CARDS, AMBERX_NOTES, AMBERX_NOTE_LISTS, APP_CATALOG,
+                SWARM_RUNS, SWARM_STATE, SWARM_SAID, SWARM_JOBS, LAND, LANDING_LINE, MERGE_QUEUE, UI_SHOTS, UI_PREDICTIONS,
+                PLUGIN_SETTINGS]
 _BY_NAME = {t.name: t for t in TABLES}
 
 HOLDS = {
@@ -761,6 +844,10 @@ HOLDS = {
     'mirror_runs': 'each SQLite mirror run: source, tables, row counts, result',
     'app_catalog_versions': 'each build of each app in the app catalog (version, build, file, sha256, builtAt)',
     'console_deploys': 'view: the console deploys log (console/deploys/log), one row per deploy',
+    'swarm_notices': 'agent-swarm notices (one row per notice)',
+    'ui_review_shots': 'view: every UI Review image (shots/, screenshots/files/) with its key, size and blob',
+    'chat_audio': 'view: Chat viewer audio clips (console/chat-viewer/audio/…) with their blob',
+    'land_log': 'view: the lander logs (push-banner land-runs, land-batches, gate-log), one row per line',
     'token_log': 'view: the token log (console/token-log/<yyyy>/<mm>/<dd>.jsonl), one row per turn',
 }
 
@@ -823,9 +910,15 @@ def retable(conn, only_ns: tuple[str, ...] | None = None) -> dict:
     cur = conn.cursor()
     cur.execute("SELECT k.ns, k.path, k.content_type, r.data, r.body FROM keys k JOIN records r ON r.ns = k.ns AND r.path = k.path "
                 "WHERE k.kind = 'record' AND k.table_name = '' AND NOT k.deleted AND k.ns = ANY(%s)", (names,))
-    for r in cur.fetchall():
+    rows = [dict(r, kind='record') for r in cur.fetchall()]
+    blob_ns = sorted({t.ns for t in TABLES if getattr(t, 'kind', '') == 'blob' and (not only_ns or t.ns in only_ns)})
+    if blob_ns:  # text blobs a TextTable now claims (job briefs and reports)
+        cur.execute("SELECT k.ns, k.path, k.content_type, b.bytes AS body, NULL AS data FROM keys k JOIN blobs b ON b.sha = k.blob_sha "
+                    "WHERE k.kind = 'blob' AND k.table_name = '' AND NOT k.deleted AND k.ns = ANY(%s) AND k.size < 4194304", (blob_ns,))
+        rows += [dict(r, kind='blob') for r in cur.fetchall()]
+    for r in rows:
         body = bytes(r['body']) if r['body'] is not None else canonical(r['data']).encode('utf-8')
-        t = table_for(r['ns'], r['path'], 'record', r['content_type'] or '', body)
+        t = table_for(r['ns'], r['path'], r['kind'], r['content_type'] or '', body)
         if not t:
             continue
         try:
@@ -862,6 +955,13 @@ CREATE OR REPLACE VIEW console_deploys AS
 CREATE OR REPLACE VIEW token_log AS
   SELECT path, seq, at, actor, entry->>'id' AS id, entry->>'source' AS source, entry->>'session' AS session, entry->>'model' AS model, entry
   FROM journal WHERE ns = 'console' AND path LIKE 'token-log/%';
+CREATE OR REPLACE VIEW ui_review_shots AS
+  SELECT path, size, content_type, blob_sha, at, actor FROM keys WHERE ns = 'ui-review' AND (path LIKE 'shots/%' OR path LIKE 'screenshots/files/%') AND NOT deleted;
+CREATE OR REPLACE VIEW chat_audio AS
+  SELECT path, size, content_type, blob_sha, at, actor FROM keys WHERE ns = 'console' AND path LIKE 'chat-viewer/audio/%' AND NOT deleted;
+CREATE OR REPLACE VIEW land_log AS
+  SELECT split_part(path, '/', 2) AS log, seq, at, actor, entry FROM journal WHERE ns = 'plugins' AND path IN ('push-banner/land-runs.jsonl', 'push-banner/land-batches.jsonl', 'push-banner/gate-log.jsonl');
+CREATE INDEX IF NOT EXISTS swarm_runs_status ON swarm_runs (status);
 CREATE INDEX IF NOT EXISTS alerts_severity ON alerts (severity);
 CREATE INDEX IF NOT EXISTS notifications_status ON notifications (status);
 CREATE OR REPLACE VIEW note_history AS

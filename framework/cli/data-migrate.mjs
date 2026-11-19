@@ -155,7 +155,7 @@ const nsPrefix = (nsid) => { const [head, folder] = nsid.split('/'); return { he
 const sqliteFile = (k) => /\.(sqlite|db)$/i.test(k);
 
 /** Row counts per table of a SQLite file (python3's sqlite3; null when python3 isn't there). */
-function sqliteRows(file) {
+export function sqliteRows(file) {
   try { return JSON.parse(execFileSync('python3', ['-I', '-c', 'import sqlite3,sys,json;c=sqlite3.connect("file:"+sys.argv[1]+"?mode=ro",uri=True);print(json.dumps({t:c.execute(f"SELECT COUNT(*) FROM \\"{t}\\"").fetchone()[0] for (t,) in c.execute("SELECT name FROM sqlite_master WHERE type=\'table\' AND name NOT LIKE \'sqlite_%\'")}))', file], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })); } catch { return null; }
 }
 

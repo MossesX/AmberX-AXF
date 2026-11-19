@@ -17,6 +17,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renam
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as gate from '../../../../framework/core/gate-rules.mjs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 
 export const HERE = dirname(fileURLToPath(import.meta.url));
 export const FOLDER = 'gate';
@@ -25,8 +26,10 @@ const env = (k) => (process.env[k] === undefined || process.env[k] === '' ? '' :
 const CONFIRM_TTL_MS = 5 * 60 * 1000;
 const HISTORY_FILE = 'history.jsonl';
 
-export const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}-${Date.now()}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
+// JSON documents through the data layer (framework/core/data-files.mjs): files while local, axf-data rows once cut over
+// (postgres part C: land-control.json, merge-queue-control.json); the history journal below stays a local file for now
+export const readJson = (f, d) => dataFiles.readJsonSync(f, d);
+export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); dataFiles.writeJsonSync(f, v, 1); }
 const readLines = (f) => { try { return readFileSync(f, 'utf8').split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean); } catch { return []; } };
 
 /** The console plugin that provides the merge queue (by capability, never by folder name): { dir, dataDir } or null. */

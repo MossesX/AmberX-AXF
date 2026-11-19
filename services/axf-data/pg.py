@@ -196,6 +196,10 @@ class PgStore:
         t = T.table_for(ns, path, kind, content_type, body)
         if t:
             cur.execute('DELETE FROM records WHERE ns=%s AND path=%s', (ns, path))
+            cur.execute('SELECT table_name FROM keys WHERE ns=%s AND path=%s', (ns, path))
+            was = cur.fetchone()
+            if was and was['table_name'] and was['table_name'] != t.name:
+                self._clear_tables(cur, ns, path)  # the body changed shape: its rows in the other table go
             t.write(cur, ns, path, body)
             out = t.read(cur, ns, path)
             return out if out is not None else body, t.name, None

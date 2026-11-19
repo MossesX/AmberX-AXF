@@ -31,7 +31,7 @@ for (const [id, g] of Object.entries(SPEC.groups)) {
     assert.equal(typeof e.flip, 'boolean', `${id}: ${e.key || e.prefix} says flip`);
     if (!e.flip) assert.ok(e.why, `${id}: ${e.key || e.prefix} says why it does not flip`);
     if (e.flip) assert.ok(Array.isArray(e.writers) && e.writers.length, `${id}: ${e.key || e.prefix} names its writers`);
-    if (e.table) assert.ok(TABLES.includes(`'${e.table}'`), `${id}: table ${e.table} is in services/axf-data/tables.py`);
+    if (e.table) assert.ok(e.table.endsWith('_*') ? TABLES.includes(`=${e.table.slice(0, -2)}`) : TABLES.includes(`'${e.table}'`), `${id}: table ${e.table} is in services/axf-data/tables.py (a SQLite mirror prefix in DEFAULT_MIRROR)`);
   }
 }
 ok(`schema: ${Object.keys(SPEC.groups).length} group(s), every entry a key or prefix, flips name writers, the rest say why, tables exist`);

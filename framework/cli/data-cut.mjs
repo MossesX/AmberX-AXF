@@ -23,13 +23,13 @@
  * Same verbs from the console (REST /api/plugins/data-store/cut…), MCP (data-store plugin commands `cuts`, `cut`), voice
  * ("what's left to cut over", "cut the console state over"). Exit 1 when a check fails.
  */
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { canonical, createDataStore, httpBackend, journalEtag } from '../core/data-store.mjs';
+import { LIMITS, createDataStore, httpBackend, journalEtag } from '../core/data-store.mjs';
 import * as files from '../core/data-files.mjs';
 import * as MODE from '../core/data-store-mode.mjs';
-import { copyOne, scan, sourceItem } from './data-migrate.mjs';
+import { copyOne, scan, sourceItem, sqliteRows } from './data-migrate.mjs';
 import { publish, readState, writeState } from './data-mode.mjs';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
@@ -58,6 +58,9 @@ export function localOf(group, scanned = scan()) {
   for (const s of scanned.mapped) {
     const e = group.entries.find((x) => matches(x, s.key));
     if (!e) continue;
+    // over the blob limit (chats.db): never read or snapshotted here; its rows come from mirror_sync
+    let size = 0; try { size = statSync(s.file).size; } catch { continue; }
+    if (size > LIMITS.blobBytes) { out.push({ ...s, kind: 'blob', local: `${size} bytes, over the ${LIMITS.blobBytes}-byte blob limit: stays local (rows by mirror_sync)`, notes: [], entry: entryOf(e) }); continue; }
     const it = sourceItem(s);
     if (it.vanished) continue;
     for (const x of [it, ...(it.extras || [])]) out.push({ ...x, entry: entryOf(e) });
@@ -91,7 +94,22 @@ async function tableRows(store) {
   catch (e) { if (['forbidden', 'unauthorized', 'invalid_key', 'not_found', 'invalid_body'].includes(e.code)) return null; throw e; }
 }
 
-const same = (it, r) => !!r && (it.kind === 'journal' ? r.etag === it.item.etag : r.etag === it.item.etag);
+const same = (it, r) => !!r && r.etag === it.item.etag;
+const SQLITE = /\.(sqlite|db)$/i;
+/**
+ * A SQLite file is compared by its rows, not its bytes (the plugin uploads a VACUUM INTO copy, the scan a backup-API
+ * snapshot: same rows, different pages): every table's row count in the local file against its mirrored `<prefix>_<table>`
+ * rows on axf-data (entry.table = '<prefix>_*'). Unknown (no _meta read, no python3) counts as different.
+ */
+async function sqliteSame(store, e, it) {
+  const local = sqliteRows(it.file);
+  const rows = await tableRows(store);
+  const prefix = String(e.table || '').replace(/_\*$/, '');
+  if (!local || !rows || !prefix) return { same: false, local, remote: null };
+  const remote = Object.fromEntries(Object.keys(local).map((t) => [t, rows[`${prefix}_${t.toLowerCase().replace(/[^a-z0-9_]/g, '_')}`]]));
+  const keys = Object.keys(local);
+  return { same: keys.every((t) => remote[t] === local[t]), ahead: keys.every((t) => (remote[t] ?? -1) >= local[t]) && keys.some((t) => remote[t] > local[t]), local, remote };
+}
 
 /** Compare one group: per entry, local keys, equal, differing, missing, journals behind. */
 async function compare(store, group, items) {
@@ -106,7 +124,7 @@ async function compare(store, group, items) {
       if (it.error) { rep.errors.push({ key: it.key, error: it.error }); continue; }
       const r = remote.get(it.key);
       if (!r) rep.missing.push(it.key);
-      else if (same(it, r)) rep.equal += 1;
+      else if (same(it, r) || (SQLITE.test(it.key) && (await sqliteSame(store, e, it)).same)) rep.equal += 1;
       else rep.differ.push(it.key);
       remote.delete(it.key);
     }
@@ -125,7 +143,18 @@ async function copyGroup(store, group, items, { apply, only = () => true, log = 
     for (const it of items.filter((i) => i.entry === entryOf(e) && !i.local && !i.error)) {
       const have = remote.get(it.key);
       if (same(it, have)) continue;
+      if (have && SQLITE.test(it.key)) {
+        const c = await sqliteSame(store, e, it);
+        if (c.same) continue;
+        // axf-data holds more rows than this file in every table it differs: a writer uploaded after the scan; never overwrite it
+        if (c.ahead) { done.push({ key: it.key, op: 'remote-ahead', why: 'axf-data has more rows than the local file (a newer upload): kept' }); continue; }
+      }
       if (!apply) { done.push({ key: it.key, op: have ? 'would-update' : 'would-create' }); continue; }
+      if (SQLITE.test(it.key)) {  // a blob-sqlite file: the newest copy wins whole (the plugin's own sqlite_upload does the same)
+        try { await store.put(it.key, it.bytes, { force: true, contentType: 'application/vnd.sqlite3' }); done.push({ key: it.key, op: have ? 'updated' : 'created' }); log(`  ${have ? 'updated' : 'created'}   ${it.key}`); }
+        catch (err) { done.push({ key: it.key, op: 'failed', why: `${err.code || 'error'}: ${err.message}` }); }
+        continue;
+      }
       try { const r = await copyOne(store, it, have ? { ...have, etag: have.etag } : null); done.push(r); if (r.op !== 'same') log(`  ${r.op.padEnd(9)} ${it.key}`); }
       catch (err) { done.push({ key: it.key, op: 'failed', why: `${err.code || 'error'}: ${err.message}` }); }
     }

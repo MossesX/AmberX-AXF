@@ -89,6 +89,7 @@ from fastapi import APIRouter, Body, HTTPException, Request
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, storage
+import data_store  # noqa: E402  (console server/data_store.py: the plugin's files routed by data-store-mode@1)
 
 from . import claudefix
 
@@ -211,7 +212,7 @@ class Pushes:
 
     # ---- config
     def config(self) -> dict[str, Any]:
-        raw = storage.read_json(data_dir() / "config.json", {}) or {}
+        raw = data_store.read_json(data_dir() / "config.json", {}) or {}
         repos = [r for r in raw.get("repos", []) if github.valid_repo(r)][:MAX_REPOS] if isinstance(raw.get("repos"), list) else []
         hidden = [h for h in raw.get("hidden", []) if isinstance(h, str) and len(h) <= 260][:MAX_HIDDEN] if isinstance(raw.get("hidden"), list) else []
         return {"repos": repos or list(DEFAULT_REPOS), "hidden": hidden, "defaults": list(DEFAULT_REPOS),
@@ -269,7 +270,7 @@ class Pushes:
         if "batchSize" in body and (not isinstance(body["batchSize"], int) or isinstance(body["batchSize"], bool) or not 1 <= body["batchSize"] <= BATCH_SIZE_MAX):
             raise HTTPException(400, f"batchSize is 1 to {BATCH_SIZE_MAX}")
         flags["batchSize"] = body.get("batchSize", cur["batchSize"])
-        storage.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
+        data_store.write_json(data_dir() / "config.json", {"$axf": "push-banner-config@1", "repos": repos, "hidden": hidden, **flags})
         with self._lock:
             self._cache = None
         return self.config()
@@ -374,8 +375,8 @@ class Pushes:
 
     # ---- auto-land (land/land.mjs on the VPS host writes land.json; commands write land-control.json)
     def land(self) -> dict[str, Any]:
-        st = storage.read_json(data_dir() / "land.json", {}) or {}
-        ctl = storage.read_json(data_dir() / "land-control.json", {}) or {}
+        st = data_store.read_json(data_dir() / "land.json", {}) or {}
+        ctl = data_store.read_json(data_dir() / "land-control.json", {}) or {}
         cfg = self.config()
         items = [x for x in st.get("items", []) if isinstance(x, dict)] if isinstance(st.get("items"), list) else []
         holds = ctl.get("holds") if isinstance(ctl.get("holds"), dict) else {}
@@ -411,7 +412,7 @@ class Pushes:
 
     # ---- merge queue (land/merge-queue.mjs on the VPS host writes merge-queue.json; commands write merge-queue-control.json)
     def queue(self) -> dict[str, Any]:
-        st = storage.read_json(data_dir() / "merge-queue.json", {}) or {}
+        st = data_store.read_json(data_dir() / "merge-queue.json", {}) or {}
         cfg = self.config()
         lst = lambda k: [x for x in st.get(k, []) if isinstance(x, dict)] if isinstance(st.get(k), list) else []  # noqa: E731
         items = lst("items")
@@ -663,7 +664,7 @@ class Pushes:
 
     # ---- finished entries (a successful Merge / Pull main in), until their trash can is tapped
     def done(self) -> list[dict[str, Any]]:
-        raw = storage.read_json(data_dir() / "done.json", {}) or {}
+        raw = data_store.read_json(data_dir() / "done.json", {}) or {}
         items = raw.get("items") if isinstance(raw, dict) else None
         now = self.clock()
         keep = []
@@ -676,11 +677,11 @@ class Pushes:
         with self._lock:
             items = [d for d in self.done() if d["key"] != entry["key"]]
             items.insert(0, {**entry, "at": int(self.clock() * 1000)})
-            storage.write_json(data_dir() / "done.json", {"$axf": "push-banner-done@1", "items": items[:MAX_DONE]})
+            data_store.write_json(data_dir() / "done.json", {"$axf": "push-banner-done@1", "items": items[:MAX_DONE]})
 
     # ---- failed pulls (any Pull main in / Pull all that GitHub refused), until a pull goes through or they're taken off
     def failed(self) -> list[dict[str, Any]]:
-        raw = storage.read_json(data_dir() / "failed.json", {}) or {}
+        raw = data_store.read_json(data_dir() / "failed.json", {}) or {}
         items = raw.get("items") if isinstance(raw, dict) else None
         now = self.clock()
         return [{k: d[k] for k in ("key", "at", "repo", "base", "number", "branch", "title", "error", "sha") if k in d}
@@ -692,7 +693,7 @@ class Pushes:
             items = [d for d in self.failed() if d["key"] != key]
             if entry is not None:
                 items.insert(0, {**entry, "key": key, "at": int(self.clock() * 1000)})
-            storage.write_json(data_dir() / "failed.json", {"$axf": "push-banner-failed@1", "items": items[:MAX_FAILED]})
+            data_store.write_json(data_dir() / "failed.json", {"$axf": "push-banner-failed@1", "items": items[:MAX_FAILED]})
 
     def remove_failed(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) != {"key"} or not isinstance(body["key"], str) or not valid_hidden(body["key"]) or "@" in body["key"]:
@@ -708,7 +709,7 @@ class Pushes:
             raise HTTPException(400, "sha is a commit sha")
         with self._lock:
             items = [d for d in self.done() if d["key"] != key]
-            storage.write_json(data_dir() / "done.json", {"$axf": "push-banner-done@1", "items": items})
+            data_store.write_json(data_dir() / "done.json", {"$axf": "push-banner-done@1", "items": items})
         if sha:  # still open on GitHub: off the banner until it gets a new commit
             cfg = self.config()
             hidden = [h for h in cfg["hidden"] if not h.startswith(f"{key}@")] + [f"{key}@{sha}"]
@@ -993,14 +994,14 @@ class Pushes:
             pass
         if done:
             try:
-                storage.write_json(data_dir() / "auto-merge.json", {"$axf": "push-banner-automerge@1", "at": int(self.clock() * 1000), "last": done[:50]})
+                data_store.write_json(data_dir() / "auto-merge.json", {"$axf": "push-banner-automerge@1", "at": int(self.clock() * 1000), "last": done[:50]})
             except OSError:
                 pass
         return done
 
     # ---- branch protection on the default branch (0.5.0): require a PR, branches up to date, the CI every PR runs
     def protection(self) -> dict[str, Any]:
-        raw = storage.read_json(data_dir() / "protection.json", {}) or {}
+        raw = data_store.read_json(data_dir() / "protection.json", {}) or {}
         repos = raw.get("repos") if isinstance(raw, dict) and isinstance(raw.get("repos"), dict) else {}
         watched = self.config()["repos"]
         return {"at": raw.get("at") if isinstance(raw, dict) else None, "repos": {k: v for k, v in repos.items() if k in watched and isinstance(v, dict)}}
@@ -1083,7 +1084,7 @@ class Pushes:
             except (github.GitHubError, ValueError) as e:
                 repos[repo] = {"base": "main", "state": "cannot", "error": _text(str(e), 300), "checks": []}
         out = {"$axf": "push-banner-protection@1", "at": int(now * 1000), "repos": repos}
-        storage.write_json(data_dir() / "protection.json", out)
+        data_store.write_json(data_dir() / "protection.json", out)
         return {"at": out["at"], "repos": repos}
 
     def merge_branch(self, body: Any) -> dict[str, Any]:
@@ -1395,7 +1396,7 @@ def ensure_health() -> bool:
                                        "PRs, merges and branch protection need the console's GITHUB_TOKEN (Contents, Pull requests, "
                                        "Administration: read and write); set it and tap Check now."]}, "push-banner")
         reg.register({"id": LANDER_HEALTH_ID, "label": "Lander lands the merge queue", "service": "github", "order": 15, "severity": "error",
-                      "run": lambda: lander_health(storage.read_json(data_dir() / "merge-queue.json", {}) or {}),
+                      "run": lambda: lander_health(data_store.read_json(data_dir() / "merge-queue.json", {}) or {}),
                       "breaks": "Finished builds don't land on main by themselves.",
                       "instructions": ["Rounds run from the VPS cron (/etc/cron.d, land.mjs run every 3 minutes, log /var/log/axf-auto-land.log).",
                                        "Idle: check the cron line is there and that no stale /run/axf-auto-land.lock holder hangs (ps aux | grep land.mjs).",
@@ -1482,7 +1483,7 @@ def auto_merge_now() -> dict[str, Any]:
 
 @router.get("/auto-merge")
 def auto_merge_last() -> dict[str, Any]:
-    raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
+    raw = data_store.read_json(data_dir() / "auto-merge.json", {}) or {}
     cfg = PUSHES.config()
     return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "queueMode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batchSizeMax": BATCH_SIZE_MAX, "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
             "protection": PUSHES.protection()["repos"]}

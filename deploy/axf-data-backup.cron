@@ -8,7 +8,9 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 17 3 * * * root docker exec axf-data python backup.py run >> /root/hub/data/axf-data/backups/backup.log 2>&1
 40 3 * * * root docker exec axf-data python mirror_sync.py --all >> /root/hub/data/axf-data/backups/mirror.log 2>&1
-# every 10 min: keys of the data-cut groups whose writers are still outside the data layer (deploy scripts, axHub's files
+# hourly at :25: keys of the data-cut groups whose writers are still outside the data layer (deploy scripts, axHub's files
 # API, claude-sync; framework/schemas/data-cut.json flip: false) are copied onto axf-data's rows, so the tables stay equal
 # to the files until those writers move (postgres part C). Host address from host.env, the cli token from cli.env.
-*/10 * * * * root cd /opt/axf && AXF_DATA_URL=$(sed -n 's/^AXF_DATA_URL=//p' /root/hub/data/axf-data/conf/env/host.env) AXF_DATA_TOKEN=$(sed -n 's/^AXF_DATA_TOKEN=//p' /root/hub/data/axf-data/conf/env/cli.env) node framework/cli/data-cut.mjs sync --all >> /root/hub/data/axf-data/backups/data-cut.log 2>&1
+25 * * * * root cd /opt/axf && AXF_DATA_URL=$(sed -n 's/^AXF_DATA_URL=//p' /root/hub/data/axf-data/conf/env/host.env) AXF_DATA_TOKEN=$(sed -n 's/^AXF_DATA_TOKEN=//p' /root/hub/data/axf-data/conf/env/cli.env) node framework/cli/data-cut.mjs sync --all >> /root/hub/data/axf-data/backups/data-cut.log 2>&1
+# hourly at :50: the Chat viewer db (over the blob limit, never a blob) is exploded into the chats_* rows
+50 * * * * root docker exec axf-data python mirror_sync.py plugins/chat-viewer/chats.db >> /root/hub/data/axf-data/backups/mirror.log 2>&1

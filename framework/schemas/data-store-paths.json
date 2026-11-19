@@ -28,6 +28,22 @@
         "to": "phone/{1}"
       },
       {
+        "re": "^[a-z0-9][a-z0-9-]*/.*\\.(tmp-\\d+|axf-(upload|fetch)-\\d+(-journal)?)$",
+        "to": null
+      },
+      {
+        "re": "^chat-viewer/(tts|tmp)/.*$",
+        "to": null
+      },
+      {
+        "re": "^push-banner/gh-cache\\.json$",
+        "to": null
+      },
+      {
+        "re": "^agent-swarm/job-worktrees/.*$",
+        "to": null
+      },
+      {
         "re": "^([a-z0-9][a-z0-9-]*)/(.+)$",
         "to": "plugins/{1}/{2}"
       }
@@ -199,7 +215,11 @@
     "data:alerts-secrets.json": null,
     "projects:_shared/_data/app-catalog/catalog.json": "console/shared/app-catalog/catalog.json",
     "projects:_shared/_data/app-catalog/apks/amberx-droid/a.apk": null,
-    "projects:_shared/_data/claude/views.json": "settings/claude/views.json"
+    "projects:_shared/_data/claude/views.json": "settings/claude/views.json",
+    "plugins:chat-viewer/tts/venv/bin/python": null,
+    "plugins:chat-viewer/chats.db.axf-upload-6-journal": null,
+    "plugins:push-banner/gh-cache.json": null,
+    "plugins:agent-swarm/runs.json": "plugins/agent-swarm/runs.json"
   },
   "longSegments": "A mapped key segment over 80 characters (long build ids) becomes its first characters + '--' + the first 16 hex of the SHA-256 of the whole segment + its extension (up to 8 characters after the last dot, kept so the kind stays the same), 80 characters in all: a valid, stable key, the same on every client."
 }

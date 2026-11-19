@@ -411,6 +411,60 @@ def test_console_state_tables():
         assert names['console_state']['rows'] >= 3 and 'alerts_seen' in names and 'app_catalog_versions' in names
 
 
+def test_plugin_tables_s2():
+    """Part C s2: agent-swarm runs / messages / notices / sections said / job Markdown, the lander (land items, landing line,
+    merge queue), UI Review screenshots index + predictions are rows; images stay blobs listed by a view; a body that changes
+    shape moves out of its old table; text blobs written before their table existed are moved by retable."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        put = lambda k, doc: c.put(f'/v1/{k}', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        runs = {'$axf': 'swarm-runs@1', 'runs': [{'$axf': 'swarm-run@1', 'kind': 'job', 'jobId': 'j1', 'status': 'done', 'turns': 3, 'usage': {'in': 1}}, {'jobId': 'j2', 'turns': 'x'}]}
+        state = {'$axf': 'swarm-state@1', 'agents': {'a': {}}, 'messages': [{'id': 'm1', 'from': 'amber', 'text': 'hi', 'vibe': 1}], 'notices': [{'at': 't', 'agent': 'a', 'text': 'n'}]}
+        said = {'$axf': 'crew-sections-said@1', 'said': {'s1': '2026-11-18T19:40:27Z', 's2': 't2'}}
+        land = {'$axf': 'land@1', 'on': True, 'order': ['b1'], 'items': [{'id': 'b1', 'pr': 7, 'state': 'waiting', 'pushed': True}]}
+        line = {'$axf': 'landing-line@1', 'rev': 2, 'entries': [{'id': 'e1', 'pr': 9, 'state': 'ci'}], 'history': [{'id': 'e0', 'pr': 8, 'mainSha': 'abc'}]}
+        mq = {'$axf': 'merge-queue@1', 'on': True, 'depth': 3, 'history': [17, 18]}
+        shots = {'$axf': 'ui-shots@1', 'shots': [{'id': 's1', 'app': 'console-web', 'screen': 'home', 'group': 'g', 'size': 10, 'promoted': False}], 'groups': ['g']}
+        for k, d in [('plugins/agent-swarm/runs.json', runs), ('plugins/agent-swarm/state.json', state), ('plugins/agent-swarm/sections-said.json', said),
+                     ('plugins/push-banner/land.json', land), ('plugins/push-banner/landing-line.json', line), ('plugins/push-banner/merge-queue.json', mq),
+                     ('ui-review/screenshots/index.json', shots), ('ui-review/predictions/p.json', {'hash': 'h', 'at': 't', 'item': 'i', 'spec': {'x': 1}})]:
+            put(k, d)
+            assert c.get(f'/v1/{k}', headers=H()).json() == json.loads(canonical(d)), k
+        c.put('/v1/plugins/agent-swarm/job-briefs/j1.md', content='# Brief\n\nDo it é'.encode(), headers=H(**{'content-type': 'text/markdown', 'if-none-match': '*'}))
+        c.put('/v1/ui-review/shots/r1/a.png', content=b'\x89PNG\x00\x01', headers=H(**{'content-type': 'image/png', 'if-none-match': '*'}))
+        assert c.get('/v1/plugins/agent-swarm/job-briefs/j1.md', headers=H()).content == '# Brief\n\nDo it é'.encode()
+        assert [(r['job_id'], r['status'], r['turns']) for r in st.fetchall('SELECT job_id, status, turns FROM swarm_runs ORDER BY pos')] == [('j1', 'done', 3), ('j2', None, None)]
+        assert st.fetchone('SELECT sender, text FROM swarm_messages') == {'sender': 'amber', 'text': 'hi'}
+        assert st.fetchone('SELECT agent FROM swarm_notices')['agent'] == 'a'
+        assert st.fetchone("SELECT value FROM swarm_sections_said WHERE key='s2'")['value'] == 't2'
+        assert st.fetchone("SELECT folder, name FROM swarm_jobs") == {'folder': 'agent-swarm/job-briefs', 'name': 'j1.md'}
+        assert st.fetchone('SELECT id, pr, state FROM land_items') == {'id': 'b1', 'pr': 7, 'state': 'waiting'}
+        assert {r['section']: r['pr'] for r in st.fetchall('SELECT section, pr FROM landing_line')} == {'entries': 9, 'history': 8}
+        assert st.fetchone("SELECT value FROM merge_queue WHERE key='depth'")['value'] == 3
+        assert st.fetchone('SELECT app, grp FROM ui_review_screenshots') == {'app': 'console-web', 'grp': 'g'}
+        assert st.fetchone('SELECT hash FROM ui_review_predictions')['hash'] == 'h'
+        assert st.fetchone('SELECT path, size FROM ui_review_shots') == {'path': 'shots/r1/a.png', 'size': 6}
+        put('plugins/push-banner/config.json', {'$axf': 'push-banner-config@1', 'repos': ['a'], 'autoMerge': True})
+        put('plugins/todo-manager/projects/p.json', {'id': 'p'})
+        assert st.fetchone("SELECT value FROM plugin_settings WHERE path='push-banner/config.json' AND key='autoMerge'")['value'] is True
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='todo-manager/projects/p.json'")['table_name'] == '', 'only the top of a data folder'
+        # shape change: sections-said without a map → stays in the same table as a head-only document; a list body leaves it
+        etag = c.get('/v1/plugins/agent-swarm/sections-said.json', headers=H()).headers['etag']
+        c.put('/v1/plugins/agent-swarm/sections-said.json', content='[1]', headers=J(**{'if-match': etag}))
+        assert st.fetchone('SELECT COUNT(*) AS n FROM swarm_sections_said')['n'] == 0
+        assert c.get('/v1/plugins/agent-swarm/sections-said.json', headers=H()).json() == [1]
+        # retable on a text blob stored before swarm_jobs existed
+        from tables import retable
+        st.q("UPDATE keys SET table_name='', blob_sha=%s WHERE path='agent-swarm/job-briefs/j1.md'", (st._write_blob(st.db.cursor(), '# Brief\n\nDo it é'.encode()),))
+        st.q("DELETE FROM swarm_jobs")
+        with st.lock:
+            with st.db.transaction():
+                moved = retable(st.db, ('plugins',))
+        assert moved['tables'].get('swarm_jobs') == 1, moved
+        st._assembled.clear()
+        assert c.get('/v1/plugins/agent-swarm/job-briefs/j1.md', headers=H()).content == '# Brief\n\nDo it é'.encode()
+
+
 # ── SQLite mirrors ───────────────────────────────────────────────────────────────────────────────────────────────────
 
 def _ledger_like(path: Path, n: int = 3) -> None:

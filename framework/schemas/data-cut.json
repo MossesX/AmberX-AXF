@@ -6,24 +6,310 @@
       "title": "Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, AmberX notes, app catalog",
       "step": "postgres-part-c s1 (s4.4)",
       "entries": [
-        { "key": "console/state.json", "table": "console_state", "flip": true, "writers": ["apps/console-web/server/main.py (data_store)", "framework/cli/plugin-lifecycle.mjs (data-files)"] },
-        { "key": "console/alerts.json", "table": "alerts", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
-        { "key": "console/alerts-seen.json", "table": "alerts_seen", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
-        { "key": "console/alerts-run.json", "table": "console_state", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
-        { "key": "console/alerts-config.json", "table": "console_state", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
-        { "prefix": "console/home-cards/", "table": "home_cards", "flip": true, "writers": ["apps/console-web/server/main.py /api/home/layout (data_store)"] },
-        { "key": "console/deploys/log", "table": "console_deploys", "flip": false, "why": "also appended by the deploy scripts (deploy/install-console.sh) before the console runs" },
-        { "key": "console/host-check.json", "table": "console_state", "flip": false, "why": "written by deploy/console-doctor.sh on the host" },
-        { "key": "console/nightly.json", "table": "console_state", "flip": false, "why": "written by deploy/console-nightly.mjs (host cron)" },
-        { "key": "console/update-status.json", "table": "console_state", "flip": false, "why": "written by the install scripts during an update" },
-        { "key": "console/project-wizard.json", "table": "console_state", "flip": false, "why": "written by apps/console-web/plugins/project-wizard/wizard.mjs with plain file writes" },
-        { "key": "console/control/inventory.json", "table": "control_targets", "flip": false, "why": "read from the hub file by axHub (console_open / console_show targets)" },
-        { "key": "console/shared/app-catalog/catalog.json", "table": "app_catalog", "flip": false, "why": "read from /projects/_shared/_data/app-catalog by axHub and the AmberX app" },
-        { "prefix": "settings/", "table": "settings", "flip": false, "why": "hub-settings@1 is written by every app through axHub's files API: axf-data becomes the writer's target once axHub routes /projects/_shared/_data/settings to it" },
-        { "prefix": "console/shared/notifications/", "table": "notifications", "flip": false, "why": "the inbox is written through axHub (AmberX push) and activity/server/complete.py" },
-        { "prefix": "console/token-log/", "table": "token_log", "flip": false, "why": "token-turn@1 lines are appended by axHub" },
-        { "prefix": "console/amberx-notes/", "table": "amberx_notes", "flip": false, "why": "hub-table@1 chunks written by the AmberX app through axHub" },
-        { "prefix": "notes/", "table": "notes", "flip": false, "why": "the hub copy is also written by claude-sync from every session" }
+        {
+          "key": "console/state.json",
+          "table": "console_state",
+          "flip": true,
+          "writers": [
+            "apps/console-web/server/main.py (data_store)",
+            "framework/cli/plugin-lifecycle.mjs (data-files)"
+          ]
+        },
+        {
+          "key": "console/alerts.json",
+          "table": "alerts",
+          "flip": true,
+          "writers": [
+            "apps/console-web/server/alerts.py (data_store)"
+          ]
+        },
+        {
+          "key": "console/alerts-seen.json",
+          "table": "alerts_seen",
+          "flip": true,
+          "writers": [
+            "apps/console-web/server/alerts.py (data_store)"
+          ]
+        },
+        {
+          "key": "console/alerts-run.json",
+          "table": "console_state",
+          "flip": true,
+          "writers": [
+            "apps/console-web/server/alerts.py (data_store)"
+          ]
+        },
+        {
+          "key": "console/alerts-config.json",
+          "table": "console_state",
+          "flip": true,
+          "writers": [
+            "apps/console-web/server/alerts.py (data_store)"
+          ]
+        },
+        {
+          "prefix": "console/home-cards/",
+          "table": "home_cards",
+          "flip": true,
+          "writers": [
+            "apps/console-web/server/main.py /api/home/layout (data_store)"
+          ]
+        },
+        {
+          "key": "console/deploys/log",
+          "table": "console_deploys",
+          "flip": false,
+          "why": "also appended by the deploy scripts (deploy/install-console.sh) before the console runs"
+        },
+        {
+          "key": "console/host-check.json",
+          "table": "console_state",
+          "flip": false,
+          "why": "written by deploy/console-doctor.sh on the host"
+        },
+        {
+          "key": "console/nightly.json",
+          "table": "console_state",
+          "flip": false,
+          "why": "written by deploy/console-nightly.mjs (host cron)"
+        },
+        {
+          "key": "console/update-status.json",
+          "table": "console_state",
+          "flip": false,
+          "why": "written by the install scripts during an update"
+        },
+        {
+          "key": "console/project-wizard.json",
+          "table": "console_state",
+          "flip": false,
+          "why": "written by apps/console-web/plugins/project-wizard/wizard.mjs with plain file writes"
+        },
+        {
+          "key": "console/control/inventory.json",
+          "table": "control_targets",
+          "flip": false,
+          "why": "read from the hub file by axHub (console_open / console_show targets)"
+        },
+        {
+          "key": "console/shared/app-catalog/catalog.json",
+          "table": "app_catalog",
+          "flip": false,
+          "why": "read from /projects/_shared/_data/app-catalog by axHub and the AmberX app"
+        },
+        {
+          "prefix": "settings/",
+          "table": "settings",
+          "flip": false,
+          "why": "hub-settings@1 is written by every app through axHub's files API: axf-data becomes the writer's target once axHub routes /projects/_shared/_data/settings to it"
+        },
+        {
+          "prefix": "console/shared/notifications/",
+          "table": "notifications",
+          "flip": false,
+          "why": "the inbox is written through axHub (AmberX push) and activity/server/complete.py"
+        },
+        {
+          "prefix": "console/token-log/",
+          "table": "token_log",
+          "flip": false,
+          "why": "token-turn@1 lines are appended by axHub"
+        },
+        {
+          "prefix": "console/amberx-notes/",
+          "table": "amberx_notes",
+          "flip": false,
+          "why": "hub-table@1 chunks written by the AmberX app through axHub"
+        },
+        {
+          "prefix": "notes/",
+          "table": "notes",
+          "flip": false,
+          "why": "the hub copy is also written by claude-sync from every session"
+        }
+      ]
+    },
+    "plugins-large": {
+      "title": "Large plugin data: Chat viewer, Shipped features ledger, push-banner (lander), agent-swarm, UI Review",
+      "step": "postgres-part-c s2 (s4.5a)",
+      "entries": [
+        {
+          "key": "plugins/shipped-features/ledger.sqlite",
+          "table": "ledger_*",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/shipped-features/server (data_store.sqlite_upload)",
+            "apps/console-web/plugins/shipped-features/ledger/db.mjs (data-files sqliteUpload)"
+          ],
+          "note": "every upload is exploded into the ledger_* rows on axf-data (blob-sqlite mirror); in cutover the plugin opens axf-data's copy (sqlite_hydrate)"
+        },
+        {
+          "key": "plugins/chat-viewer/chats.db",
+          "table": "chats_*",
+          "flip": false,
+          "why": "over the 256 MiB blob limit (683 MB): it never travels as a blob; mirror_sync explodes the mounted file into the chats_* rows hourly and on demand (axf data tables --sync chats)"
+        },
+        {
+          "prefix": "console/chat-viewer/audio/",
+          "table": "chat_audio",
+          "flip": false,
+          "why": "written by the Chat viewer through axHub's files API (hub _data/chat-viewer/audio)"
+        },
+        {
+          "key": "plugins/agent-swarm/runs.json",
+          "table": "swarm_runs",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/agent-swarm/swarm.mjs writeJson (data-files)"
+          ]
+        },
+        {
+          "key": "plugins/agent-swarm/state.json",
+          "table": "swarm_messages",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/agent-swarm/swarm.mjs withState / writeJson (data-files)"
+          ]
+        },
+        {
+          "key": "plugins/agent-swarm/sections-said.json",
+          "table": "swarm_sections_said",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/agent-swarm/sections.mjs via swarm.mjs writeJson (data-files)"
+          ]
+        },
+        {
+          "prefix": "plugins/agent-swarm/job-briefs/",
+          "table": "swarm_jobs",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/agent-swarm/jobs.mjs (data-files writeTextSync)"
+          ]
+        },
+        {
+          "prefix": "plugins/agent-swarm/job-reports/",
+          "table": "swarm_jobs",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/agent-swarm/jobs.mjs (data-files writeTextSync)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/land.json",
+          "table": "land_items",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/push-banner/land/land.mjs (data-files)",
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/merge-queue.json",
+          "table": "merge_queue",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/push-banner/land/merge-queue.mjs (data-files)",
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/land-control.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "gate/gate-store.mjs, land/land.mjs, land/merge-queue.mjs (data-files)",
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/merge-queue-control.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "gate/gate-store.mjs, land/merge-queue.mjs (data-files)",
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/config.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/done.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/failed.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/auto-merge.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/protection.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "push-banner server (data_store)"
+          ]
+        },
+        {
+          "key": "plugins/push-banner/landing-line.json",
+          "table": "landing_line",
+          "flip": false,
+          "why": "its writer is not in this repository's console plugins (the landing-line runner); flips once it writes through data-files"
+        },
+        {
+          "key": "plugins/push-banner/lander-control.json",
+          "table": "plugin_settings",
+          "flip": false,
+          "why": "its writer is not in this repository's console plugins"
+        },
+        {
+          "prefix": "plugins/push-banner/",
+          "table": "land_log",
+          "flip": false,
+          "why": "the remaining files: land-runs / land-batches / gate-log journals appended by gate-store.mjs and the gate runner with plain appends, settings.json"
+        },
+        {
+          "key": "ui-review/items.json",
+          "table": "ui_review_items",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/ui-review/server (data_store)",
+            "apps/console-web/plugins/ui-review/review.mjs (data-files)"
+          ]
+        },
+        {
+          "key": "ui-review/screenshots/index.json",
+          "table": "ui_review_screenshots",
+          "flip": false,
+          "why": "also written by framework/cli shot tools (axf shot) with plain file writes"
+        },
+        {
+          "prefix": "ui-review/",
+          "table": "ui_review_shots",
+          "flip": false,
+          "why": "images, option assets and predictions written by the screenshot tools and the review runner with plain file writes; the images are blobs listed by the ui_review_shots view"
+        }
       ]
     }
   }
