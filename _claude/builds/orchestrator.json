@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T03:23:40.922Z",
+ "updatedAt": "2026-11-19T03:33:17.338Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194909,7 +194909,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:23:19.717Z",
+   "updatedAt": "2026-11-19T03:32:52.213Z",
    "builtAt": "",
    "notes": [
     {
@@ -195071,6 +195071,10 @@
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T03:23:19.717Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:32:52.213Z"
     }
    ],
    "approvals": [
