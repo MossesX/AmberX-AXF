@@ -840,15 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 14:34 UTC · `plan-studio-2-open-button-working-deep` note (all) · reconciler
-- 2026-11-18 14:36 UTC · `plan-studio-2-open-button-working-deep` note (all) · pipeline
-- 2026-11-18 14:36 UTC · `one-build-time-always-split-to-fill` s4 done (all) · orchestrator
-- 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` → running, note (all) · pipeline
-- 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
-- 2026-11-18 14:41 UTC · `every-app-gets-own-locked-default` branch claude/every-app-gets-own-locked-default (all) · pipeline
-- 2026-11-18 14:42 UTC · `stop-push-storm-builds-live-pushes-build` → queued (all) · voice session
-- 2026-11-18 14:43 UTC · `every-plugin-gets-own-default-toolbar` PR #844, note (all) · reconciler
-- 2026-11-18 14:45 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · voice session
 - 2026-11-18 14:46 UTC · `every-app-gets-own-locked-default` s1 done, → running (all) · orchestrator
 - 2026-11-18 14:47 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
 - 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · watchdog
@@ -1240,6 +1231,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 - 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · pipeline
 - 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 02:43 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
+- 2026-11-19 02:43 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed (all) · foreign-write
+- 2026-11-19 02:43 UTC · `vps-never-gives-up-fix-land-every-build` → landed (all) · foreign-write
+- 2026-11-19 02:43 UTC · `stop-push-storm-builds-live-pushes-build` → landing, note (all) · foreign-write
+- 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` s3 done, s5 done, note (all) · foreign-write
+- 2026-11-19 02:43 UTC · `postgres-part-c-console-state-settings` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
+- 2026-11-19 02:43 UTC · `postgres-part-b-plan-plan-studio-catalog` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
+- 2026-11-19 02:43 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
+- 2026-11-19 02:43 UTC · `server-safe-mode-one-emergency-button` added (11 steps) (all) · foreign-write
 
 ## Token passes (log)
 
