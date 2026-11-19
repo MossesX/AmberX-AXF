@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9283,
- "updatedAt": "2026-11-19T05:16:41.907Z",
+ "rev": 9284,
+ "updatedAt": "2026-11-19T05:17:39.118Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323549,7 +323549,7 @@
    "pr": "#851",
    "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T05:16:16.620Z",
+   "updatedAt": "2026-11-19T05:17:20.124Z",
    "builtAt": "",
    "notes": [
     {
@@ -323615,6 +323615,10 @@
     {
      "text": "Merged as #851 (b348a81), main CI green. Live: planner on Postgres (cutover); plan/catalog/sessions/changes tables backfilled and verified. Follow-up once the nightly pg_dump (running since 03:17) ends: bash deploy/install-data.sh from main (host-token grants + lock timeouts), then data-tables.mjs cutover plan --apply --keys and cutover catalog --apply --keys. Fixed on the way: console update failing on vanishing files (console was down 03:18-03:57), mirror/schema DDL now time out instead of stalling axf-data behind a backup. Report: _claude/builds/reports/postgres-part-b.md",
      "at": "2026-11-19T05:15:14.719Z"
+    },
+    {
+     "text": "Headless run axf-postgres-part-b-plan-plan-studio-catalog--sully: brief only · start 14.2K tokens ($0.04) · cost $14.36 · 226 turns · 6 tools, MCP none",
+     "at": "2026-11-19T05:17:20.124Z"
     }
    ],
    "approvals": [],
@@ -323779,7 +323783,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
