@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "windows",
+  "name": "Windows",
+  "version": "1.0.0",
+  "description": "A centred dialog with a plain header; a click outside does not close it.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 480,
+    "backdrop": "dim",
+    "animation": "scale",
+    "header": "plain",
+    "closeOnBackdrop": false
+  }
+}

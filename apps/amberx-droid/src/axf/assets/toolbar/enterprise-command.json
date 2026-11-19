@@ -1,0 +1,105 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "enterprise-command",
+  "name": "Enterprise Command",
+  "version": "1.0.0",
+  "description": "File, edit and look commands with labels, a live search and the account and connection status at the end.",
+  "author": "AmberX AXF",
+  "tags": [
+    "enterprise",
+    "desktop"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search…  (Ctrl K)",
+      "maxResults": 12
+    },
+    "groups": [
+      {
+        "id": "file",
+        "items": [
+          {
+            "id": "new",
+            "icon": "plus",
+            "label": "New",
+            "action": "file.new"
+          },
+          {
+            "id": "open-file",
+            "icon": "folder",
+            "label": "Open",
+            "action": "file.open"
+          },
+          {
+            "id": "save",
+            "icon": "save",
+            "label": "Save",
+            "action": "file.save"
+          },
+          {
+            "id": "export",
+            "icon": "download",
+            "label": "Export…",
+            "action": "file.export"
+          }
+        ]
+      },
+      {
+        "id": "edit",
+        "items": [
+          {
+            "id": "undo",
+            "icon": "undo",
+            "label": "Undo",
+            "action": "edit.undo"
+          },
+          {
+            "id": "redo",
+            "icon": "redo",
+            "label": "Redo",
+            "action": "edit.redo"
+          }
+        ]
+      },
+      {
+        "id": "app",
+        "items": [
+          {
+            "id": "alerts",
+            "icon": "bell",
+            "label": "Alerts",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "end",
+        "order": 20
+      }
+    ],
+    "surface": "raised",
+    "collapsible": true
+  }
+}

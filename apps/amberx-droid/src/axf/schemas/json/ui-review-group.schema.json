@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/ui-review-group.schema.json",
+  "title": "AmberX AXF UI Review group (ui-review-group@1)",
+  "description": "Generated from framework/core/ui-review-schema.mjs. Every UI Review item belongs to exactly one group.",
+  "type": "object",
+  "required": [
+    "$axf",
+    "id",
+    "name",
+    "createdAt",
+    "source"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ui-review-group@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9:._-]{0,80}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "\\S"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "source": {
+      "enum": [
+        "claude-chat",
+        "claude-voice",
+        "claude-code",
+        "headless",
+        "agent",
+        "console",
+        "plugin",
+        "manual",
+        "watch-live"
+      ]
+    },
+    "submittedBy": {
+      "type": "object",
+      "required": [
+        "type",
+        "id"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "session",
+            "build",
+            "agent",
+            "user"
+          ]
+        },
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
+    "app": {
+      "type": "string"
+    },
+    "note": {
+      "type": "string"
+    },
+    "session": {
+      "type": "string"
+    },
+    "build": {}
+  }
+}

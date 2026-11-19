@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "soft-touch",
+  "name": "Soft Touch",
+  "version": "1.0.0",
+  "description": "Rounded 12–24 px corners, roomy targets and gentle motion for tablets and touch screens.",
+  "author": "AmberX AXF",
+  "tags": [
+    "touch",
+    "friendly"
+  ],
+  "data": {
+    "fontFamily": "'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Nunito Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'Fira Code', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 16,
+    "radius": {
+      "sm": 12,
+      "md": 18,
+      "lg": 24
+    },
+    "space": 11,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 3px var(--fx-shadow)",
+      "md": "0 8px 24px var(--fx-shadow)",
+      "lg": "0 20px 56px var(--fx-shadow)"
+    },
+    "density": "spacious",
+    "motion": 240,
+    "blur": 18,
+    "headingWeight": 700,
+    "tracking": -0.01,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.7,
+    "wrapGroups": false
+  }
+}

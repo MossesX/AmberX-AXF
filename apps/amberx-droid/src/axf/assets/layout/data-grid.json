@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "data-grid",
+  "name": "Data Grid",
+  "version": "1.0.0",
+  "description": "Narrow rail, toolbar, status bar and no inspector: every pixel for tables and grids.",
+  "author": "AmberX AXF",
+  "tags": [
+    "desktop",
+    "data"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 64,
+    "showMenubar": false,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 0
+  }
+}

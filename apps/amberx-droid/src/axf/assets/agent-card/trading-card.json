@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "agent-card",
+  "id": "trading-card",
+  "name": "Trading card",
+  "version": "1.0.0",
+  "description": "Big photo, a foil border in the theme accent, stats on the back: jobs, success rate, spend, favourite model.",
+  "author": "AmberX AXF",
+  "tags": [
+    "id-card",
+    "vertical",
+    "stats"
+  ],
+  "data": {
+    "design": "trading",
+    "orientation": "vertical",
+    "logo": "corner",
+    "surface": "surface",
+    "accent": "accent",
+    "finish": "foil",
+    "photo": "large",
+    "code": "none",
+    "front": [
+      "name",
+      "specialty",
+      "catchphrase"
+    ],
+    "back": [
+      "jobs",
+      "successRate",
+      "spend",
+      "favoriteModel",
+      "hiredAt"
+    ],
+    "labels": {}
+  }
+}

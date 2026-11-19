@@ -1,0 +1,18 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.docstore",
+  "module": "lib-docstore",
+  "name": "Document store (this device + axHub data server, big files on the device)",
+  "description": "Keeps an app's documents (projects, drafts, any JSON) with an index of them: always on this device, and when switched on also on axHub's data server (GET/PUT /data/<project>/<folder>/…, the browser's own hub session, If-Match, last save wins). A document bigger than the hub's 64 KB limit is split into a head and chunks automatically. Big binary files (videos, images) stay on the device in IndexedDB. Harvested Oct 22 2026 from Walkthrough Studio's project storage.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.docstore",
+  "params": [ { "key": "folder", "label": "Folder name", "type": "text", "default": "docs", "help": "Where documents live: a localStorage prefix on the device, a folder under the hub project." } ],
+  "parts": [
+    { "id": "device", "label": "This device", "description": "Documents and their index in localStorage (errors say when the device is full)." },
+    { "id": "hub", "label": "axHub data server", "description": "Also save to axHub's data server; the newer copy wins when loading. Needs the app's origin in AXHUB_DATA_ORIGINS.", "default": false, "params": [ { "key": "project", "label": "Hub project", "type": "text", "default": "" }, { "key": "chunk", "label": "Chunk size (bytes)", "type": "number", "min": 8000, "max": 60000, "default": 48000 } ] },
+    { "id": "blobs", "label": "Files on the device", "description": "Big binary files (screen videos, images) in IndexedDB, never sent anywhere.", "params": [ { "key": "db", "label": "Database name", "type": "text", "default": "" } ] }
+  ],
+  "ports": { "web": { "status": "compiled", "dir": "libs/docstore" } },
+  "placeholders": [ { "capability": "axf.docstore.android", "note": "Android port (KV store + lib-hub data client) — Android on hold." }, { "capability": "axf.docstore.live", "note": "Follow other devices' saves live through /data-events — not built." }, { "capability": "axf.docstore.delete", "note": "Removing a document's files on the hub (the data API has no delete for app documents yet; it leaves the index)." } ]
+}

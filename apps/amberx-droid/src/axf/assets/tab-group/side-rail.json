@@ -1,0 +1,20 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "side-rail",
+  "name": "Side rail",
+  "version": "1.0.0",
+  "description": "Icon + text pills stacked down the left of the panel: the settings page's side tabs (settings layout tabs-side).",
+  "author": "AmberX AXF",
+  "tags": ["left", "vertical", "pills", "settings"],
+  "data": {
+    "style": "pills",
+    "align": "start",
+    "position": "left",
+    "density": "regular",
+    "overflow": "scroll",
+    "display": "both",
+    "divider": true,
+    "rememberLast": false
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "material-flow",
+  "name": "Material Flow dialog",
+  "version": "1.0.0",
+  "description": "Material Flow: sheet, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "material",
+    "material"
+  ],
+  "data": {
+    "variant": "sheet",
+    "width": 600,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

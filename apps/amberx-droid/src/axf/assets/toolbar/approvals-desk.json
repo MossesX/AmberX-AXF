@@ -1,0 +1,69 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "approvals-desk",
+  "name": "Approvals Desk",
+  "version": "1.0.0",
+  "description": "Waiting approvals and unread alerts as counters, with undo, redo and save for the reviewer.",
+  "author": "AmberX AXF",
+  "tags": [
+    "review",
+    "widgets"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "review",
+        "items": [
+          {
+            "id": "undo",
+            "icon": "undo",
+            "label": "Undo",
+            "action": "edit.undo"
+          },
+          {
+            "id": "redo",
+            "icon": "redo",
+            "label": "Redo",
+            "action": "edit.redo"
+          },
+          {
+            "id": "save",
+            "icon": "save",
+            "label": "Save",
+            "action": "file.save"
+          }
+        ]
+      },
+      {
+        "id": "inbox",
+        "items": [
+          {
+            "id": "alerts",
+            "icon": "bell",
+            "label": "Alerts",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "counter",
+        "id": "approvals",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "end",
+        "order": 20
+      }
+    ]
+  }
+}

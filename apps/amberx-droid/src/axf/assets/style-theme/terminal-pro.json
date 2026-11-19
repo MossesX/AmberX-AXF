@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "terminal-pro",
+  "name": "Terminal Pro",
+  "version": "1.0.0",
+  "description": "Monospace headings, tight corners and fast motion for developer consoles and log-heavy tools.",
+  "author": "AmberX AXF",
+  "tags": [
+    "developer",
+    "mono"
+  ],
+  "data": {
+    "fontFamily": "'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'JetBrains Mono', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontMono": "'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace",
+    "fontSize": 13,
+    "radius": {
+      "sm": 2,
+      "md": 4,
+      "lg": 6
+    },
+    "space": 7,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 4px 12px var(--fx-shadow)",
+      "lg": "0 12px 32px var(--fx-shadow)"
+    },
+    "density": "compact",
+    "motion": 90,
+    "blur": 0,
+    "headingWeight": 600,
+    "tracking": 0,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.62,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.92,
+    "wrapGroups": false
+  }
+}

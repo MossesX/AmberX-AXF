@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "swiss-grid",
+  "name": "Swiss Grid slider",
+  "version": "1.0.0",
+  "description": "Swiss Grid: square thumb on a 2 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "editorial",
+    "editorial",
+    "flat"
+  ],
+  "data": {
+    "track": 2,
+    "thumb": "square",
+    "thumbSize": 14,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$axf": "asset@1",
+  "type": "divider",
+  "id": "rule",
+  "name": "Rule",
+  "version": "1.0.0",
+  "description": "A thin inset vertical rule.",
+  "author": "AmberX AXF",
+  "tags": [
+    "divider"
+  ],
+  "data": {
+    "inset": true
+  }
+}

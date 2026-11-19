@@ -1,0 +1,154 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "developer-tools",
+  "name": "Developer Tools",
+  "version": "1.0.0",
+  "description": "Build, deploy and inspect from a right-click, with the dev console one step away.",
+  "author": "AmberX AXF",
+  "tags": [
+    "developer"
+  ],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "build",
+          "label": "Build",
+          "icon": "hammer",
+          "action": "run.build",
+          "shortcut": "Ctrl+B"
+        },
+        {
+          "id": "deploy",
+          "label": "Deploy",
+          "icon": "rocket",
+          "action": "run.deploy"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "console",
+          "label": "Dev console",
+          "icon": "terminal",
+          "action": "dev.console",
+          "shortcut": "Ctrl+`"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "paste",
+          "action": "edit.paste",
+          "shortcut": "Ctrl+V"
+        },
+        {
+          "id": "s3",
+          "separator": true
+        },
+        {
+          "id": "shortcuts",
+          "label": "Keyboard shortcuts",
+          "icon": "keyboard",
+          "action": "view.shortcuts",
+          "shortcut": "Alt+K"
+        },
+        {
+          "id": "docs",
+          "label": "Documentation",
+          "icon": "help",
+          "action": "help.docs",
+          "shortcut": "F1"
+        }
+      ],
+      "asset-card": [
+        {
+          "id": "activate",
+          "label": "Use this",
+          "icon": "zap",
+          "action": "swap:{payload}",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "json",
+          "label": "View JSON",
+          "icon": "code",
+          "action": "asset.json:{payload}"
+        },
+        {
+          "id": "copy-json",
+          "label": "Copy JSON",
+          "icon": "copy",
+          "action": "asset.copy:{payload}"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "next-nav",
+          "label": "Next navigation menu",
+          "icon": "grid",
+          "action": "swap:nav-menu:next",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "toggle-nav",
+          "label": "Show or hide navigation",
+          "icon": "list",
+          "action": "slot.hide:nav-menu:toggle"
+        }
+      ]
+    }
+  }
+}

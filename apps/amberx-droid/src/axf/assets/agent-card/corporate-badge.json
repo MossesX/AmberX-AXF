@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "agent-card",
+  "id": "corporate-badge",
+  "name": "Corporate badge",
+  "version": "1.0.0",
+  "description": "Vertical lanyard ID: logo banner on top, big photo, name, role, employee ID and a barcode.",
+  "author": "AmberX AXF",
+  "tags": [
+    "id-card",
+    "vertical"
+  ],
+  "data": {
+    "design": "badge",
+    "orientation": "vertical",
+    "logo": "banner",
+    "surface": "surface",
+    "accent": "accent",
+    "finish": "flat",
+    "photo": "large",
+    "code": "barcode",
+    "front": [
+      "name",
+      "role",
+      "specialty",
+      "employeeId"
+    ],
+    "back": [
+      "email",
+      "hiredAt",
+      "status",
+      "signature"
+    ],
+    "labels": {}
+  }
+}

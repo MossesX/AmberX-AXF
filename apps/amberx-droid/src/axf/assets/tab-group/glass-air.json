@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "glass-air",
+  "name": "Glass Air tabs",
+  "version": "1.0.0",
+  "description": "Glass Air: pills tabs, center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "glass",
+    "glass"
+  ],
+  "data": {
+    "style": "pills",
+    "align": "center",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "chrome-toggles",
+  "name": "Chrome Toggles",
+  "version": "1.0.0",
+  "description": "Pressed-state toggles for every bar and menu (chrome provider), plus the spacing choices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "live",
+    "appearance"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "center",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "chrome",
+        "items": [],
+        "provider": "chrome",
+        "max": 8,
+        "label": "Bars and menus"
+      },
+      {
+        "id": "spacing",
+        "items": [
+          {
+            "id": "spacing-tight",
+            "icon": "minimize",
+            "label": "Super tight spacing",
+            "action": "spacing:tight",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "spacing-compact",
+            "icon": "list",
+            "label": "Compact spacing",
+            "action": "spacing:compact",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "spacing-regular",
+            "icon": "grid",
+            "label": "Regular spacing",
+            "action": "spacing:regular",
+            "requires": "assets.swap"
+          }
+        ]
+      }
+    ],
+    "surface": "glass"
+  }
+}

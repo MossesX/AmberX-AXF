@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "material-flow",
+  "name": "Material Flow container",
+  "version": "1.0.0",
+  "description": "Material Flow: card with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "material",
+    "material"
+  ],
+  "data": {
+    "variant": "card",
+    "header": "plain",
+    "padding": "md",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

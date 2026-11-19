@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "deep-ocean",
+  "name": "Deep Ocean",
+  "version": "1.0.0",
+  "description": "Abyssal navy with a bioluminescent cyan accent.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "cool"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0a1218",
+      "surface": "#0e1a22",
+      "surface2": "#12222d",
+      "surface3": "#182d3c",
+      "text": "#e2e9ee",
+      "muted": "#8fa1ae",
+      "border": "#1c3445",
+      "accent": "#43deef",
+      "accentText": "#092225",
+      "accentSoft": "rgba(67,222,239,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#43deef",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

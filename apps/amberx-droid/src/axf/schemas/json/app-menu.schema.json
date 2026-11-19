@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "menuItem": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "icon": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "shortcut": {
+          "type": "string"
+        },
+        "requires": {
+          "type": "string"
+        },
+        "separator": {
+          "type": "boolean"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/menuItem"
+          }
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1,
+          "description": "string — id of a registered live-list provider"
+        },
+        "badge": {
+          "type": "string",
+          "minLength": 1,
+          "description": "string — runtime counter name"
+        },
+        "checked": {
+          "type": "string",
+          "pattern": "^(setting|counter|slot|hidden):.+$",
+          "description": "string — setting:<key> | counter:<name> | slot:<type> | hidden:<type>"
+        },
+        "order": {
+          "type": "number",
+          "description": "number — placement among siblings (default 100)"
+        },
+        "before": {
+          "type": "string",
+          "minLength": 1
+        },
+        "after": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/app-menu.schema.json",
+  "title": "AmberX AXF Application menu asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "app-menu"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "menus"
+      ],
+      "properties": {
+        "menus": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "items"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "label": {
+                "type": "string"
+              },
+              "order": {
+                "type": "number"
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/menuItem"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

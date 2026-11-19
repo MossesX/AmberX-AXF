@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "gizmo-console",
+  "name": "GizmoX Console button",
+  "version": "1.0.0",
+  "description": "GizmoX Console: rounded solid buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "developer",
+    "brand",
+    "developer"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "solid",
+    "weight": 600,
+    "uppercase": false,
+    "size": "sm",
+    "elevation": false
+  }
+}

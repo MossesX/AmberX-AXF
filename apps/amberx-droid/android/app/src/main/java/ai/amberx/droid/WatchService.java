@@ -1,0 +1,1162 @@
+package ai.amberx.droid;
+
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.IBinder;
+import android.os.Looper;
+import android.speech.RecognitionListener;
+import android.speech.SpeechRecognizer;
+import android.webkit.CookieManager;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.ServiceCompat;
+import androidx.core.content.ContextCompat;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/**
+ * AmberX's background half: one foreground service that keeps watching while the app is closed or the screen is off.
+ *
+ * - **Approvals:** reads the hub's approvals feed with the phone's hub session every `intervalSec` (15–300 s; 5 min
+ *   while signed out), raises one alert per new approval (tap = its page on the hub, in [HubWebActivity]) and, when
+ *   auto-approval is on and the tool matches, approves it on the hub's own form ([HubRules#approve]).
+ * - **Hands-free listening (Oct 27 2026):** its own switch (Voice control → Hands-free, on by default), independent of
+ *   watching axHub. It listens on screen and in the background for the wake phrases, or for everything when "always
+ *   armed" is on. **Silent wake mode (Oct 29 2026, default, "make it like ActiveX"):** [WakeListener] idles on offline
+ *   Vosk (no recognizer restarts, so no system tone); only after a trigger does Google's recognizer run, for one
+ *   utterance. **Classic mode** (Voice control → Hands-free mode) is the old loop: Google's recognizer the whole time. On screen a hit goes straight to the web side; with the app closed it opens
+ *   AmberX (a full-screen alert where Android allows it). It never pauses: with hands-free on, the Speak button uses this
+ *   same listener (the app takes the next thing heard as a command) instead of a second recognizer.
+ * - **Detection overlay:** [DetectionOverlay], a floating window over other apps with the input level, dB, what was heard
+ *   and quick settings (needs "Display over other apps").
+ *
+ * The watch config is the JSON the web side sends (`monitorStart`), the voice config what it sends with `voiceSet`; both
+ * are kept in prefs so a reboot restarts them.
+ */
+public class WatchService extends Service {
+    static final String PREFS = "amberx_watch";
+    static final String ACTION_STOP = "ai.amberx.droid.STOP";
+    static final String ACTION_CHECK = "ai.amberx.droid.CHECK";
+    /** The notification's Mic off / Mic on button (extra `off`). */
+    static final String ACTION_MIC = "ai.amberx.droid.MIC";
+    static final String CH_WATCH = "watch", CH_APPROVALS = "approvals", CH_WAKE = "wake", CH_CONSOLE = "console";
+    private static final int ID_ONGOING = 1, ID_WAKE = 2;
+
+    /** Last status, read by the plugin; [listener] gets every change. */
+    static volatile JSONObject status = idle();
+    static volatile StatusListener listener;
+    /** True while MainActivity is on screen: hits go straight to the web side then. */
+    static volatile boolean inApp;
+    /** True while the Speak button's one-shot recognizer runs: hands-free pauses so they don't fight over the mic. */
+    static volatile boolean appListening;
+    /** The running service, for the plugin's live calls (overlay permission granted, …). */
+    static volatile WatchService running;
+    /** Why background listening has let go of the microphone (MicRules: call / silenced / other-app), or null. */
+    static volatile String yielded;
+
+    interface StatusListener { void changed(JSONObject status); }
+
+    private HandlerThread thread;
+    private Handler work;
+    private final Handler main = new Handler(Looper.getMainLooper());
+    private SpeechRecognizer recognizer;
+    private boolean listening;
+    private DetectionOverlay overlay;
+    /** The overlay: the always-on toolbar, its approval bar and its full-screen browser (ApprovalOverlay). */
+    private ApprovalOverlay approvalOverlay;
+    /** What waited at the last approvals read, for the approval overlay (main thread). */
+    private List<ApprovalOverlayRules.Item> waiting = new ArrayList<>();
+    private long lastLevelEvent;
+    /** The silent wake listener (wake mode); null until first used. */
+    private WakeListener wake;
+    /** What the wake engine is doing: wake | armed | listening | loading | downloading | no-model | paused | "" (classic). */
+    private String phase = "", phaseDetail = "";
+    /** After a trigger: Google's recognizer for one utterance (wake mode). */
+    private SpeechRecognizer oneShotRec;
+    private boolean oneShot;
+    private int oneShotGen;
+    /** Since when (ms) the microphone has been free while yielded; -1 = not free. */
+    private long freeSince = -1;
+    private Object recordingCallback, modeListener;
+    /** Classic loop restarts (listener@1, Nov 6 2026): quick ends in a row, when the current turn started, the cold retry. */
+    private int classicAttempts;
+    private long classicStartedAt;
+    private Runnable coldRetry;
+    /** One-shot utterances that ended at once in a row; while blocked, a wake hit is answered without Google. */
+    private int oneShotAttempts;
+    private long oneShotBlockedUntil;
+    /** Audio focus around a one-shot utterance: a loss means another app or a call wants the audio, so we let go. */
+    private AudioFocusGuard focus;
+    private volatile boolean focusLost;
+
+    static JSONObject idle() {
+        JSONObject o = new JSONObject();
+        try { o.put("running", false).put("listening", false).put("lastCheck", JSONObject.NULL).put("status", "off").put("waiting", 0); } catch (Exception ignored) {}
+        return o;
+    }
+
+    static SharedPreferences prefs(Context c) { return c.getSharedPreferences(PREFS, MODE_PRIVATE); }
+
+    static JSONObject config(Context c) {
+        try { return new JSONObject(prefs(c).getString("config", "{}")); } catch (Exception e) { return new JSONObject(); }
+    }
+
+    static void start(Context c, JSONObject config) {
+        prefs(c).edit().putString("config", config.toString()).putBoolean("on", true).apply();
+        ContextCompat.startForegroundService(c, new Intent(c, WatchService.class));
+    }
+
+    static void stop(Context c) {
+        prefs(c).edit().putBoolean("on", false).apply();
+        refresh(c); // hands-free or the overlay toolbar keep the service running on their own
+    }
+
+    /* ---------------------------------------------------------------- voice config (hands-free + overlay) */
+
+    static JSONObject voice(Context c) {
+        try { return new JSONObject(prefs(c).getString("voice", "{}")); } catch (Exception e) { return new JSONObject(); }
+    }
+
+    /** Hands-free is on by default: a missing config means on. The Listeners panel's "allowed" switch (listener@1 policy
+     * `handsfree.on`, Nov 6 2026) gates it too, so switching the listener off there stops it everywhere at once. */
+    static boolean handsFree(Context c) { return voice(c).optBoolean("handsFree", true) && ListenerRegistry.allowed(c, ListenerRules.HANDSFREE); }
+
+    /** Saves the voice config from the web side and starts or stops the service to match. */
+    static void setVoice(Context c, JSONObject cfg) {
+        String before = prefs(c).getString("voice", "{}");
+        prefs(c).edit().putString("voice", cfg.toString()).apply();
+        refresh(c);
+        WatchService w = running;
+        if (w != null && tuningChanged(before, cfg)) w.retune();
+    }
+
+    /** True when a setting that changes how the recognizer runs changed (online, beep, swears, lang). */
+    static boolean tuningChanged(String before, JSONObject after) {
+        try {
+            JSONObject b = new JSONObject(before);
+            for (String k : new String[] { "online", "beep", "swears", "lang", "mode" }) if (!String.valueOf(b.opt(k)).equals(String.valueOf(after.opt(k)))) return true;
+        } catch (Exception e) { return true; }
+        return false;
+    }
+
+    /** One quick-setting change made on the overlay (handsFree / alwaysArmed / overlay). */
+    static void setVoiceFlag(Context c, String key, boolean value) {
+        JSONObject v = voice(c);
+        try { v.put(key, value); } catch (Exception ignored) {}
+        setVoice(c, v);
+        AmberxNativePlugin.voiceChanged(v);
+    }
+
+    /**
+     * Starts the service when watching, hands-free (never while Mic off is on) or the overlay toolbar wants it, else
+     * stops it.
+     */
+    static void refresh(Context c) {
+        boolean want = prefs(c).getBoolean("on", false) || (handsFree(c) && MicGuard.mayOpen(c)) || overlayWanted(c);
+        if (want) {
+            try { ContextCompat.startForegroundService(c, new Intent(c, WatchService.class)); } catch (Exception ignored) { /* background start refused */ }
+        } else c.startService(new Intent(c, WatchService.class).setAction(ACTION_STOP));
+    }
+
+    @Override public IBinder onBind(Intent intent) { return null; }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        running = this;
+        channels(this);
+        thread = new HandlerThread("amberx-watch");
+        thread.start();
+        work = new Handler(thread.getLooper());
+        AxppLink.ensure(this); // keeps the axHub link (recorder control, axHub decision #108) up while the watch runs
+        watchMicUsers();
+    }
+
+    /** Mic off changed (MicGuard): run the start logic again, so listening, the overlay and the service follow at once. */
+    void reapply() { main.post(() -> onStartCommand(null, 0, 0)); }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null && ACTION_STOP.equals(intent.getAction())) {
+            stopListening();
+            hideOverlay();
+            hideApprovalOverlay();
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+            setStatus(idle());
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+        if (intent != null && ACTION_MIC.equals(intent.getAction())) {
+            MicGuard.set(this, intent.getBooleanExtra("off", true)); // comes back here through reapply()
+            return START_STICKY;
+        }
+        boolean watching = prefs(this).getBoolean("on", false);
+        boolean micAllowed = MicGuard.mayOpen(this);
+        if (!micAllowed) yielded = null;
+        if (!watching && !(handsFree(this) && micAllowed) && !overlayWanted(this)) {
+            // Nothing left to do (hands-free with Mic off, no toolbar): the service goes, and with it the microphone and the green dot.
+            stopListening(); hideOverlay(); hideApprovalOverlay();
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE);
+            setStatus(idle());
+            stopSelf();
+            return START_NOT_STICKY;
+        }
+        boolean wantMic = wantsMic() && micGranted() && micAllowed;
+        int type = ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE | (wantMic ? ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE : 0);
+        try {
+            ServiceCompat.startForeground(this, ID_ONGOING, ongoing(wantMic), Build.VERSION.SDK_INT >= 29 ? type : 0);
+        } catch (Exception e) {
+            // Android refused (e.g. a microphone service started from the background): run without the microphone.
+            wantMic = false;
+            try { ServiceCompat.startForeground(this, ID_ONGOING, ongoing(false), Build.VERSION.SDK_INT >= 29 ? ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE : 0); }
+            catch (Exception again) { stopSelf(); return START_NOT_STICKY; }
+        }
+        work.removeCallbacksAndMessages(null);
+        if (watching) work.post(this::check);
+        else setStatus(listeningOnly());
+        // Pending main-thread work goes (a one-shot's start, its guard, a stream restore): end any one-shot first and
+        // put back muted streams, so nothing is left stuck or silent. The classic loop mutes again on its next turn.
+        cancelOneShot();
+        main.removeCallbacksAndMessages(null);
+        SpeechTuning.loud(this);
+        if (wantMic) main.post(this::listenLoop); else stopListening();
+        main.post(this::syncOverlay);
+        main.post(this::syncApprovalOverlay);
+        return START_STICKY;
+    }
+
+    @Override
+    public void onDestroy() {
+        if (running == this) running = null;
+        unwatchMicUsers();
+        stopListening();
+        hideOverlay();
+        hideApprovalOverlay();
+        if (thread != null) thread.quitSafely();
+        super.onDestroy();
+    }
+
+    /* ---------------------------------------------------------------- approvals */
+
+    private JSONObject listeningOnly() {
+        JSONObject s = new JSONObject();
+        try { s.put("running", false).put("listening", listening).put("lastCheck", JSONObject.NULL).put("status", "off").put("waiting", 0); } catch (Exception ignored) {}
+        withPhase(s);
+        return s;
+    }
+
+    private void check() {
+        if (!prefs(this).getBoolean("on", false)) return;
+        JSONObject cfg = config(this);
+        String hub = HubRules.isHub(HubRules.HUB, cfg.optString("hub", "")) ? HubRules.HUB : null;
+        int every = Math.max(15, Math.min(300, cfg.optInt("intervalSec", 30)));
+        HubRules.Feed feed;
+        int held = 0;
+        if (hub == null) feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
+        else {
+            String cookie = CookieManager.getInstance().getCookie(hub);
+            String body = null;
+            try {
+                HubRules.Reply r = HubRules.get(hub + HubRules.FEED_PATH, cookie);
+                feed = HubRules.interpret(hub, r.status, r.body);
+                body = r.body;
+            } catch (Exception e) {
+                feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
+            }
+            if ("ok".equals(feed.status)) {
+                handleNew(hub, cookie, feed, cfg.optJSONObject("autoApprove"));
+                // Held veto calls (veto@1): their own notifications with Deny, never treated as approvals.
+                List<HubRules.Veto> vetoes = HubRules.vetoes(hub, body, System.currentTimeMillis());
+                held = vetoes.size();
+                VetoAlerts.update(this, work, muted.contains("amberx.veto") ? new ArrayList<>() : vetoes);
+                List<ApprovalOverlayRules.Item> now = ApprovalOverlayRules.items(vetoes, feed.pending);
+                main.post(() -> { waiting = now; syncApprovalOverlay(); });
+            }
+        }
+        int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts() : -1;
+        JSONObject s = new JSONObject();
+        try {
+            s.put("running", true).put("listening", listening).put("lastCheck", Instant.now().toString())
+                .put("status", feed.status).put("waiting", feed.count).put("alerts", alerts);
+        } catch (Exception ignored) {}
+        withPhase(s);
+        setStatus(s);
+        long next = "signed-out".equals(feed.status) || "not-admin".equals(feed.status) ? 300_000L : every * 1000L;
+        // While a command is held, read every 10 s so a Deny elsewhere takes its card away quickly.
+        if (held > 0) next = Math.min(next, 10_000L);
+        work.postDelayed(this::check, next);
+    }
+
+    private void withPhase(JSONObject s) {
+        try { s.put("engine", phase.isEmpty() ? "classic" : "wake").put("phase", phase).put("phaseDetail", phaseDetail); } catch (Exception ignored) {}
+    }
+
+    /** Stops the scheduled notifications of one held call (it was denied). */
+    void cancelVeto(String token) {
+        if (work != null) work.removeCallbacksAndMessages(token);
+    }
+
+    /** Device types the console's Notifications panel switched off; read with the console's alerts, empty until then. */
+    private Set<String> muted = new HashSet<>();
+
+    private void handleNew(String hub, String cookie, HubRules.Feed feed, JSONObject auto) {
+        SharedPreferences p = prefs(this);
+        Set<String> seen = new HashSet<>(p.getStringSet("seen", new HashSet<>()));
+        Set<String> now = new HashSet<>();
+        NotificationManager nm = getSystemService(NotificationManager.class);
+        for (HubRules.Approval a : feed.pending) {
+            now.add(a.id);
+            if (seen.contains(a.id)) continue;
+            boolean approve = auto != null && HubRules.autoApproves(auto.optBoolean("on"), auto.optBoolean("all"), auto.optString("tools", ""), a.tool);
+            if (approve && HubRules.approve(hub, a.id, cookie)) {
+                if (!muted.contains("amberx.auto-approved")) nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
+            } else if (!muted.contains("amberx.approval")) {
+                soundThrough();
+                nm.notify(a.id, 0, alert(CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, true));
+            }
+        }
+        for (String gone : seen) if (!now.contains(gone)) nm.cancel(gone, 0); // decided elsewhere: take its alert away
+        p.edit().putStringSet("seen", now).apply();
+    }
+
+    /**
+     * The Dev Console's open alerts (builds, CI, deploys, systems check), read with the phone's own session for the console
+     * (the hub's sign-in wall lets a signed-in admin through). Errors and warnings alert once per change; resolved or read
+     * ones are taken away. Returns how many are open, or -1 when the console can't be read (signed out, unreachable).
+     */
+    private int consoleAlerts() {
+        String cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE);
+        if (cookie == null) return -1;
+        HubRules.Alerts a;
+        try {
+            HubRules.Reply r = HubRules.get(HubRules.CONSOLE + HubRules.ALERTS_PATH, cookie);
+            a = HubRules.consoleAlerts(r.status, r.body);
+            Set<String> off = HubRules.mutedTypes(r.status, r.body);
+            if (off != null) muted = off;
+        } catch (Exception e) {
+            return -1;
+        }
+        if (a == null) return -1;
+        SharedPreferences p = prefs(this);
+        Set<String> seen = new HashSet<>(p.getStringSet("alertsSeen", new HashSet<>()));
+        Set<String> now = new HashSet<>();
+        NotificationManager nm = getSystemService(NotificationManager.class);
+        for (String key : a.closed) nm.cancel("console:" + key, 0);
+        for (HubRules.ConsoleAlert c : a.open) {
+            now.add(c.stamp);
+            if (seen.contains(c.stamp)) continue;
+            nm.notify("console:" + c.key, 0, consoleAlert(c));
+        }
+        p.edit().putStringSet("alertsSeen", now).apply();
+        return a.open.size();
+    }
+
+    /* ---------------------------------------------------------------- hands-free listening */
+
+    /** Hands-free: the voice config's phrases; else (hands-free off) the watch's own, as before. */
+    private List<String> phrases() {
+        JSONArray a = handsFree(this) ? voice(this).optJSONArray("wakePhrases") : null;
+        if (a == null && prefs(this).getBoolean("on", false)) a = config(this).optJSONArray("wakePhrases");
+        if (a == null && handsFree(this) && !voice(this).has("wakePhrases")) a = new JSONArray().put("hey amberx").put("okay amberx");
+        List<String> out = new ArrayList<>();
+        for (int i = 0; a != null && i < a.length() && out.size() < 20; i++) {
+            String s = a.optString(i, "").trim().toLowerCase(Locale.ROOT);
+            if (!s.isEmpty()) out.add(s);
+        }
+        return out;
+    }
+
+    private boolean alwaysArmed() { return handsFree(this) && voice(this).optBoolean("alwaysArmed", false); }
+
+    private boolean wantsMic() { return !phrases().isEmpty() || alwaysArmed(); }
+
+    private String lang() {
+        String l = voice(this).optString("lang", "");
+        return l.isEmpty() ? config(this).optString("lang", "en-US") : l;
+    }
+
+    private boolean micGranted() {
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /** Wake mode: hands-free on and "Hands-free mode" not switched to classic. */
+    static boolean wakeMode(Context c) { return handsFree(c) && "wake".equals(WakeRules.mode(voice(c).opt("mode"))); }
+
+    private String sensitivity() { return WakeRules.sensitivity(voice(this).opt("sensitivity")); }
+
+    private void listenLoop() {
+        boolean on = prefs(this).getBoolean("on", false) || handsFree(this);
+        if (!on || !wantsMic() || !micGranted() || !MicGuard.mayOpen(this)) { stopListening(); return; }
+        if (yielded != null) return; // another app or a call has the microphone: micCheck() brings listening back
+        if (!appListening && yieldIfBusy()) return;
+        // One owner of the microphone at a time (Nov 6 2026): while Gizmo's talk mode or the Speak button holds it,
+        // hands-free waits (and is told when it is let go: micReleased()).
+        if (!MicGuard.mayOpen(this, ListenerRules.HANDSFREE)) {
+            if (wake != null) wake.stop();
+            pauseListening();
+            setPhase("paused", "another listener has the mic");
+            main.postDelayed(this::listenLoop, 2_000);
+            return;
+        }
+        if (wakeMode(this)) wakeLoop(); else classicLoop();
+    }
+
+    /* ---- one owner of the microphone (MicGuard.acquire / releaseOwner, Nov 6 2026) */
+
+    /** `to` took the microphone from `from`: hands-free (or a Speak utterance) lets go at once. */
+    static void micTaken(String from, String to) {
+        if (ListenerRules.ONESHOT.equals(to)) return; // the command after a wake phrase is hands-free's own turn
+        if (ListenerRules.SPEAK.equals(from)) { AmberxNativePlugin.cancelListen(); return; }
+        if (!ListenerRules.HANDSFREE.equals(from) && !ListenerRules.ONESHOT.equals(from)) return;
+        WatchService w = running;
+        if (w == null) return;
+        w.main.post(() -> {
+            w.cancelOneShot();
+            if (w.wake != null) w.wake.stop();
+            w.pauseListening();
+            w.setPhase("paused", "another listener has the mic");
+            w.main.postDelayed(w::listenLoop, 1_000);
+        });
+    }
+
+    /** The microphone's holder let go: hands-free may come back now. */
+    static void micReleased() {
+        WatchService w = running;
+        if (w != null) w.main.post(w::listenLoop);
+    }
+
+    /** The hands-free listener's policy (listener@1): pause for calls / other apps, restarts, the start sound. */
+    private ListenerRules.Policy handsFreePolicy() { return ListenerRegistry.policy(this, ListenerRules.HANDSFREE); }
+
+    /** A recognizer error as plain words for the Listeners panel. */
+    static String recognizerError(int error) {
+        switch (error) {
+            case SpeechRecognizer.ERROR_AUDIO: return "no audio (another app has the microphone)";
+            case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: return "the recognizer is busy";
+            case SpeechRecognizer.ERROR_CLIENT: return "recognizer client error";
+            case SpeechRecognizer.ERROR_NETWORK: return "no network for the recognizer";
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT: return "the recognizer timed out on the network";
+            case SpeechRecognizer.ERROR_SERVER: return "the recognizer's server failed";
+            case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS: return "the microphone isn't allowed";
+            case SpeechRecognizer.ERROR_NO_MATCH: return "nothing understood";
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: return "no speech";
+            default: return "recognizer error " + error;
+        }
+    }
+
+    /** Errors after which a recognizer never restarts by itself. */
+    static boolean fatalRecognizerError(int error) {
+        return error == SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS || error == 12 /* ERROR_LANGUAGE_NOT_SUPPORTED, API 31 */ || error == 13 /* ERROR_LANGUAGE_UNAVAILABLE */;
+    }
+
+    /** Errors that mean the turn ran its course (silence): not a quick end, no backoff. */
+    static boolean quietRecognizerError(int error) { return error == SpeechRecognizer.ERROR_NO_MATCH || error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT; }
+
+    /* ---- letting go of the microphone for other apps (Nov 1 2026: a Claude voice call couldn't get the mic) */
+
+    /** Its own handler: onStartCommand clears `main`'s queue, and this check must keep running through that. */
+    private final Handler micH = new Handler(Looper.getMainLooper());
+    private final Runnable micTick = this::micCheck;
+
+    /** Until when (ms) a Google recognizer AmberX just stopped may still show as a recording (it ends a moment later). */
+    static volatile long recognizerGraceUntil;
+
+    static void recognizerEnded() { recognizerGraceUntil = System.currentTimeMillis() + MicRules.RECOGNIZER_GRACE_MS; }
+
+    /** True while one of AmberX's own Google recognizers is running, or has just stopped (it shows as another app's recording). */
+    private boolean ownRecognizer() {
+        return oneShot || appListening || (recognizer != null && listening) || System.currentTimeMillis() < recognizerGraceUntil;
+    }
+
+    /**
+     * Listens for other apps' recordings and for calls (audio mode), so hands-free lets go at once instead of on the
+     * next tick. The tick ({@link MicRules#CHECK_EVERY_MS}) is the fallback and what brings listening back.
+     */
+    private void watchMicUsers() {
+        android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am != null) {
+            try {
+                android.media.AudioManager.AudioRecordingCallback cb = new android.media.AudioManager.AudioRecordingCallback() {
+                    @Override public void onRecordingConfigChanged(List<android.media.AudioRecordingConfiguration> configs) { micH.post(WatchService.this::micCheck); }
+                };
+                am.registerAudioRecordingCallback(cb, micH);
+                recordingCallback = cb;
+            } catch (RuntimeException ignored) { /* the tick still checks */ }
+            if (Build.VERSION.SDK_INT >= 31) {
+                try {
+                    android.media.AudioManager.OnModeChangedListener ml = mode -> micH.post(this::micCheck);
+                    am.addOnModeChangedListener(ContextCompat.getMainExecutor(this), ml);
+                    modeListener = ml;
+                } catch (RuntimeException ignored) { /* the tick still checks */ }
+            }
+        }
+        micH.postDelayed(micTick, MicRules.CHECK_EVERY_MS);
+    }
+
+    private void unwatchMicUsers() {
+        micH.removeCallbacksAndMessages(null);
+        android.media.AudioManager am = (android.media.AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        if (am == null) return;
+        try { if (recordingCallback != null) am.unregisterAudioRecordingCallback((android.media.AudioManager.AudioRecordingCallback) recordingCallback); } catch (RuntimeException ignored) {}
+        if (Build.VERSION.SDK_INT >= 31) {
+            try { if (modeListener != null) am.removeOnModeChangedListener((android.media.AudioManager.OnModeChangedListener) modeListener); } catch (RuntimeException ignored) {}
+        }
+        recordingCallback = null;
+        modeListener = null;
+    }
+
+    /** Why hands-free must let go now by its own policy (listener@1: pause for calls / other apps), or null. */
+    private String yieldReasonNow(boolean ownRecognizer) {
+        return ListenerRules.yieldReason(MicGuard.off(this), MicRules.callMode(MicGuard.mode(this)), MicGuard.silenced(this),
+            MicRules.others(MicGuard.foreign(this), ownRecognizer) > 0, focusLost, handsFreePolicy());
+    }
+
+    /** Lets go now if a call or another app wants the microphone; true when it did. */
+    private boolean yieldIfBusy() {
+        if (appListening) return false; // the Speak button: listening was asked for, right now
+        String why = yieldReasonNow(ownRecognizer());
+        if (why == null || "mic-off".equals(why)) return false;
+        yielded = why;
+        freeSince = -1;
+        stopListening();
+        if (overlay != null) overlay.setHeard(MicRules.label(why), true);
+        setStatus(withYield(status));
+        AmberxNativePlugin.micChanged(MicGuard.state(this));
+        return true;
+    }
+
+    /** The tick: yield when someone needs the microphone, come back once it has stayed free for a moment. */
+    private void micCheck() {
+        micH.removeCallbacks(micTick);
+        micH.postDelayed(micTick, MicRules.CHECK_EVERY_MS);
+        boolean wanted = (prefs(this).getBoolean("on", false) || handsFree(this)) && wantsMic() && micGranted() && MicGuard.mayOpen(this);
+        if (!wanted) { if (yielded != null) { yielded = null; setStatus(withYield(status)); } return; }
+        if (yielded == null) { if (listening || oneShot) yieldIfBusy(); return; }
+        // Yielded: AmberX holds nothing now, so any recording is someone else's.
+        String why = yieldReasonNow(false);
+        long now = System.currentTimeMillis();
+        if (why != null) { freeSince = -1; if (!why.equals(yielded)) { yielded = why; setStatus(withYield(status)); } return; }
+        if (freeSince < 0) freeSince = now;
+        if (!ListenerRules.mayResume(yielded, freeSince, now)) return;
+        yielded = null;
+        freeSince = -1;
+        setStatus(withYield(status));
+        AmberxNativePlugin.micChanged(MicGuard.state(this));
+        main.post(this::listenLoop);
+    }
+
+    private static JSONObject withYield(JSONObject s) {
+        try { return new JSONObject(s.toString()); } catch (Exception e) { return new JSONObject(); }
+    }
+
+    /* ---- wake mode: silent Vosk idle */
+
+    private void wakeLoop() {
+        // Leaving classic mode: its recognizer goes, and the streams it muted come back.
+        if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; SpeechTuning.loud(this); }
+        if (oneShot) { if (appListening) cancelOneShot(); else return; } // the one utterance has the mic
+        if (appListening) { // the Speak button has the mic
+            if (wake != null) wake.stop();
+            setPhase("paused", "");
+            main.postDelayed(this::listenLoop, 1_000);
+            return;
+        }
+        if (!MicGuard.acquire(ListenerRules.HANDSFREE)) { setPhase("paused", "another listener has the mic"); main.postDelayed(this::listenLoop, 2_000); return; }
+        if (wake == null) wake = new WakeListener(this, new WakeEvents());
+        wake.start(phrases(), alwaysArmed(), sensitivity());
+        setListening(true);
+    }
+
+    /** The Speak button wants the microphone (true) or is done with it (false). */
+    static void appMic(boolean on) {
+        appListening = on;
+        if (!on) recognizerEnded();
+        WatchService w = running;
+        // Classic mode used to keep Google's recognizer running while AmberX talked, so it heard its own reply as the
+        // next command (the "nothing in Inbox" loop, Oct 31 2026): stop it now; the loop starts again once the mic is free.
+        if (w != null) w.main.post(() -> {
+            if (wakeMode(w)) w.listenLoop();
+            else if (on && w.recognizer != null) { w.pauseListening(); w.main.postDelayed(w::listenLoop, 1_000); }
+        });
+    }
+
+    private class WakeEvents implements WakeListener.Events {
+        @Override public void phase(String p, String detail) { setPhase(p, detail); }
+        @Override public void level(float db) {
+            if (overlay != null) overlay.pushLevel(db);
+            long now = System.currentTimeMillis();
+            if (now - lastLevelEvent >= 100) { lastLevelEvent = now; AmberxNativePlugin.level(db); }
+        }
+        @Override public void heard(String text, boolean last) {
+            if (overlay != null) overlay.setHeard(text, last);
+            AmberxNativePlugin.heard(text, last);
+        }
+        @Override public void trigger(String phrase, String text) { triggered(phrase, text); }
+    }
+
+    /**
+     * A wake phrase (or, always armed, a whole sentence) from the wake listener. Always armed: the sentence is the
+     * command, unless it was only the wake phrase. Otherwise Google hears the command, once.
+     */
+    private void triggered(String phrase, String text) {
+        boolean onlyWake = !phrase.isEmpty() && SpeechTuning.loosen(SpeechTuning.compact(text)).equals(SpeechTuning.loosen(SpeechTuning.compact(phrase)));
+        if (!text.isEmpty() && !onlyWake) { woke(phrase, text); return; }
+        oneShot(phrase);
+    }
+
+    /**
+     * ONE utterance on Google's recognizer after a trigger (partial results on, SpeechTuning's request), its start/stop
+     * tones muted unless "Play tone on trigger" is on; the text goes to the same pipeline as the Speak button (the web
+     * side's `wake` event, or the app opened with it), then back to silent Vosk idle.
+     */
+    private void oneShot(String phrase) {
+        if (oneShot) return;
+        if (!MicGuard.mayOpen(this)) { stopListening(); return; }
+        if (wake != null) wake.stop();
+        if (!SpeechRecognizer.isRecognitionAvailable(this)) { woke(phrase, phrase); main.postDelayed(this::listenLoop, 500); return; }
+        // Google refused the last utterances in a row (another app has the mic, the recognizer is busy): don't hammer
+        // it with a tone every time; the wake hit still goes to the page as the phrase alone, and Vosk idles on.
+        if (System.currentTimeMillis() < oneShotBlockedUntil) { woke(phrase, phrase); main.postDelayed(this::listenLoop, 300); return; }
+        if (!MicGuard.acquire(ListenerRules.ONESHOT)) { main.postDelayed(this::listenLoop, 1_000); return; }
+        oneShot = true;
+        final int gen = ++oneShotGen;
+        setPhase("listening", "");
+        if (overlay != null) { overlay.flashWake(); overlay.setHeard("", false); }
+        JSONObject v = voice(this);
+        // Silent restarts (listener@1): the tone plays only when the person turned it on, and this is a start they
+        // asked for (the wake phrase); a start forced after errors stays muted whatever the setting.
+        final boolean muted = !v.optBoolean("triggerTone", false) || oneShotAttempts > 0;
+        if (muted) SpeechTuning.quietTrigger(this, v);
+        if (focus == null) focus = new AudioFocusGuard(this, new FocusEvents());
+        focus.request();
+        boolean offline = !v.optBoolean("online", true);
+        SpeechRecognizer rec = offline && Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
+            ? SpeechRecognizer.createOnDeviceSpeechRecognizer(this) : SpeechRecognizer.createSpeechRecognizer(this);
+        oneShotRec = rec;
+        rec.setRecognitionListener(new OneShot(gen, phrase, muted, v));
+        Intent i = SpeechTuning.request(lang(), v, false);
+        // The wake listener lets go of the microphone within one 100 ms read.
+        main.postDelayed(() -> {
+            if (gen != oneShotGen || !oneShot) return;
+            try { rec.startListening(i); } catch (Exception e) { endOneShot(gen, phrase, "", muted); }
+        }, 150);
+        // Never stuck listening: 15 s and it's over.
+        main.postDelayed(() -> { if (gen == oneShotGen && oneShot) endOneShot(gen, phrase, "", muted); }, 15_000);
+    }
+
+    private class OneShot implements RecognitionListener {
+        private final int gen;
+        private final String phrase;
+        private final boolean muted;
+        private final JSONObject v;
+        OneShot(int gen, String phrase, boolean muted, JSONObject v) { this.gen = gen; this.phrase = phrase; this.muted = muted; this.v = v; }
+        private String top(Bundle b) {
+            ArrayList<String> r = b == null ? null : b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            return r == null || r.isEmpty() ? "" : SpeechTuning.clean(r.get(0), v);
+        }
+        @Override public void onPartialResults(Bundle b) {
+            String t = top(b);
+            if (t.isEmpty() || gen != oneShotGen) return;
+            if (overlay != null) overlay.setHeard(t, false);
+            AmberxNativePlugin.heard(t, false);
+        }
+        @Override public void onResults(Bundle b) { oneShotAttempts = 0; ListenerRegistry.attempts(ListenerRules.ONESHOT, 0); endOneShot(gen, phrase, top(b), muted); }
+        @Override public void onError(int error) {
+            if (gen != oneShotGen || !oneShot) return;
+            if (!quietRecognizerError(error)) {
+                // Refused (busy, no audio, no permission…): back off like every listener, give up for the cooldown.
+                ListenerRules.EndPlan plan = ListenerRules.afterEnd(oneShotAttempts, 0, handsFreePolicy(), fatalRecognizerError(error));
+                oneShotAttempts = plan.attempts;
+                ListenerRegistry.attempts(ListenerRules.ONESHOT, plan.attempts);
+                if (plan.gaveUp) {
+                    oneShotBlockedUntil = System.currentTimeMillis() + (plan.cooldownMs > 0 ? plan.cooldownMs : 86_400_000L);
+                    oneShotAttempts = 0;
+                    ListenerRegistry.error(ListenerRules.ONESHOT, recognizerError(error) + " (gave up for now)");
+                } else if (plan.delay > 0) {
+                    oneShotBlockedUntil = System.currentTimeMillis() + plan.delay;
+                    ListenerRegistry.error(ListenerRules.ONESHOT, recognizerError(error));
+                }
+            } else { oneShotAttempts = 0; ListenerRegistry.attempts(ListenerRules.ONESHOT, 0); }
+            endOneShot(gen, phrase, "", muted);
+        }
+        @Override public void onRmsChanged(float db) {
+            if (overlay != null) overlay.pushLevel(db);
+            long now = System.currentTimeMillis();
+            if (now - lastLevelEvent >= 100) { lastLevelEvent = now; AmberxNativePlugin.level(db); }
+        }
+        @Override public void onReadyForSpeech(Bundle b) {}
+        @Override public void onBeginningOfSpeech() {}
+        @Override public void onBufferReceived(byte[] b) {}
+        @Override public void onEndOfSpeech() {}
+        @Override public void onEvent(int t, Bundle b) {}
+    }
+
+    /**
+     * Audio focus around a one-shot utterance: a loss lets go only when a call or another app's recording wants the
+     * microphone ({@link FocusRules}). Google's recognizer takes transient focus itself as the one-shot opens; letting
+     * go for that (Nov 6 2026) cancelled every command after the wake phrase before it was heard (Nov 7 2026 fix).
+     */
+    private class FocusEvents implements AudioFocusGuard.Events {
+        @Override public void lost(boolean transientLoss) {
+            oneShotFocusCheck();
+            main.postDelayed(WatchService.this::oneShotFocusCheck, FocusRules.RECHECK_MS);
+        }
+        @Override public void regained() { focusLost = false; micH.post(WatchService.this::micCheck); }
+    }
+
+    private void oneShotFocusCheck() {
+        if (focus == null || !focus.lost()) return;
+        String why = FocusRules.yieldOnLoss(MicRules.callMode(MicGuard.mode(this)), MicRules.others(MicGuard.foreign(this), ownRecognizer()), handsFreePolicy());
+        if (why == null) return;
+        focusLost = true;
+        if (oneShot) cancelOneShot();
+        micH.post(this::micCheck);
+    }
+
+    /** The utterance is over: the command goes on (nothing heard = back to idle quietly), tones back, Vosk idle again. */
+    private void endOneShot(int gen, String phrase, String text, boolean muted) {
+        if (gen != oneShotGen || !oneShot) return;
+        oneShot = false;
+        oneShotGen++;
+        SpeechRecognizer rec = oneShotRec;
+        oneShotRec = null;
+        if (rec != null) { try { rec.destroy(); } catch (Exception ignored) {} recognizerEnded(); }
+        if (focus != null) focus.abandon();
+        // The focus is given back, so no `regained` will ever come: a loss must not keep hands-free yielded for good.
+        focusLost = false;
+        MicGuard.releaseOwner(ListenerRules.ONESHOT);
+        // The stop tone plays just after the result: restore a moment later, unless another utterance started.
+        if (muted) main.postDelayed(() -> { if (!oneShot) SpeechTuning.loud(this); }, 600);
+        String t = text.trim();
+        if (overlay != null) overlay.setHeard(t.isEmpty() ? "Didn't catch a command" : t, true);
+        AmberxNativePlugin.heard(t, true);
+        if (!t.isEmpty()) woke(phrase, phrase.isEmpty() ? t : phrase + " " + t);
+        main.postDelayed(this::listenLoop, 300);
+    }
+
+    private void cancelOneShot() {
+        if (!oneShot) return;
+        SpeechRecognizer rec = oneShotRec;
+        if (rec != null) { try { rec.cancel(); } catch (Exception ignored) {} }
+        endOneShot(oneShotGen, "", "", true);
+    }
+
+    private void setPhase(String p, String detail) {
+        if (p.equals(phase) && detail.equals(phaseDetail)) return;
+        phase = p;
+        phaseDetail = detail;
+        if (overlay != null) overlay.setPhase(p, detail, phrases());
+        try { JSONObject s = new JSONObject(status.toString()); s.put("engine", phase.isEmpty() ? "classic" : "wake").put("phase", p).put("phaseDetail", detail); setStatus(s); } catch (Exception ignored) {}
+        if ("no-model".equals(p)) ListenerRegistry.error(ListenerRules.HANDSFREE, "wake model not ready: " + detail);
+        ListenerRegistry.changed();
+    }
+
+    /* ---- classic mode: Google's recognizer the whole time (the old loop) */
+
+    private void classicLoop() {
+        if (wake != null) { wake.stop(); }
+        if (!phase.isEmpty()) setPhase("", "");
+        if (appListening) { pauseListening(); main.postDelayed(this::listenLoop, 1_000); return; } // the Speak button has the mic
+        if (!SpeechRecognizer.isRecognitionAvailable(this)) { stopListening(); return; }
+        if (!MicGuard.acquire(ListenerRules.HANDSFREE)) { setPhase("paused", "another listener has the mic"); main.postDelayed(this::listenLoop, 2_000); return; }
+        if (coldRetry != null) { main.removeCallbacks(coldRetry); coldRetry = null; }
+        if (recognizer == null) {
+            // The online recognizer hears far better (Brett: "misses what I say"); the on-device one only when chosen.
+            boolean offline = !voice(this).optBoolean("online", true);
+            recognizer = offline && Build.VERSION.SDK_INT >= 31 && SpeechRecognizer.isOnDeviceRecognitionAvailable(this)
+                ? SpeechRecognizer.createOnDeviceSpeechRecognizer(this) : SpeechRecognizer.createSpeechRecognizer(this);
+            recognizer.setRecognitionListener(new Listener());
+        }
+        setListening(true);
+        JSONObject v = voice(this);
+        // No start/stop tone on every turn. A restart after an error is always silent (listener@1 silent restarts),
+        // whatever the tone setting: this is the "that sound over and over" Brett heard (Nov 6 2026).
+        if (classicAttempts > 0 && "on".equals(v.optString("beep", "silence"))) SpeechTuning.quietMode(this, "silence"); else SpeechTuning.quiet(this, v);
+        Intent i = SpeechTuning.request(lang(), v, true);
+        classicStartedAt = System.currentTimeMillis();
+        try { recognizer.startListening(i); } catch (Exception e) { classicEnded(SpeechRecognizer.ERROR_CLIENT, e.getMessage()); }
+    }
+
+    /**
+     * A classic-loop turn ended on an error (listener@1 restarts, Nov 6 2026): silence (no match, timeout) restarts at
+     * once; a refusal (busy, no audio, client, network) backs off 1 s, 2 s, 4 s… and after the policy's retries stops in
+     * state error with the reason (shown in Listeners), trying once more cold after the cooldown. Permission errors
+     * never restart. No tone replays: the streams stay muted between turns.
+     */
+    private void classicEnded(int error, String detail) {
+        ListenerRules.Policy pol = handsFreePolicy();
+        if (quietRecognizerError(error)) { classicAttempts = 0; ListenerRegistry.attempts(ListenerRules.HANDSFREE, 0); main.postDelayed(this::listenLoop, 150); return; }
+        ListenerRules.EndPlan plan = ListenerRules.afterEnd(classicAttempts, 0, pol, fatalRecognizerError(error));
+        classicAttempts = plan.attempts;
+        ListenerRegistry.attempts(ListenerRules.HANDSFREE, plan.attempts);
+        String why = recognizerError(error) + (detail != null && !detail.isEmpty() ? " (" + detail + ")" : "");
+        if (plan.gaveUp) {
+            if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; recognizerEnded(); }
+            SpeechTuning.loud(this);
+            setListening(false);
+            MicGuard.releaseOwner(ListenerRules.HANDSFREE);
+            setPhase("error", why);
+            ListenerRegistry.error(ListenerRules.HANDSFREE, why + (plan.cooldownMs > 0 ? " · trying again in " + (plan.cooldownMs / 1000) + " s" : ""));
+            if (plan.cooldownMs > 0) {
+                coldRetry = () -> { coldRetry = null; classicAttempts = 0; ListenerRegistry.attempts(ListenerRules.HANDSFREE, 0); listenLoop(); };
+                main.postDelayed(coldRetry, plan.cooldownMs);
+            }
+            return;
+        }
+        ListenerRegistry.error(ListenerRules.HANDSFREE, why + " · retry " + plan.attempts + (pol.retries >= 0 ? "/" + pol.retries : ""));
+        main.postDelayed(this::listenLoop, plan.delay);
+    }
+
+    /** Lets go of the microphone for a moment (the Speak button) without tearing the overlay down. */
+    private void pauseListening() {
+        if (recognizer != null) { try { recognizer.cancel(); } catch (Exception ignored) {} }
+        setListening(false);
+        MicGuard.releaseOwner(ListenerRules.HANDSFREE);
+    }
+
+    /** An approval alert's sound gets through the beep silencer, then it's silenced again. */
+    private void soundThrough() {
+        main.post(() -> SpeechTuning.loud(this));
+        // Wake mode keeps nothing muted while idle: only the classic loop silences again.
+        main.postDelayed(() -> { if (listening && (!wakeMode(this) || oneShot)) SpeechTuning.quiet(this, voice(this)); }, 4_000);
+    }
+
+    /** Settings changed: the next turn uses them (a new recognizer for online / offline). */
+    void retune() {
+        main.post(() -> {
+            if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; }
+            SpeechTuning.loud(this);
+            listening = false;
+            listenLoop();
+        });
+    }
+
+    private void stopListening() {
+        cancelOneShot();
+        if (wake != null) wake.stop();
+        if (!phase.isEmpty()) setPhase("stopped", "");
+        SpeechTuning.loud(this);
+        setListening(false);
+        if (recognizer != null) { try { recognizer.destroy(); } catch (Exception ignored) {} recognizer = null; recognizerEnded(); }
+        if (coldRetry != null) { main.removeCallbacks(coldRetry); coldRetry = null; }
+        classicAttempts = 0;
+        MicGuard.releaseOwner(ListenerRules.HANDSFREE);
+    }
+
+    private void setListening(boolean on) {
+        if (listening == on) return;
+        listening = on;
+        if (overlay != null) overlay.setListening(on, alwaysArmed());
+        try { JSONObject s = new JSONObject(status.toString()); s.put("listening", on); setStatus(s); } catch (Exception ignored) {}
+        if (on) ListenerRegistry.error(ListenerRules.HANDSFREE, null); // listening again: the last error is history
+        ListenerRegistry.changed();
+    }
+
+    private class Listener implements RecognitionListener {
+        /** A wake phrase in what was heard: true when handled. Final results also run "always armed". */
+        private boolean heard(Bundle b, boolean last) {
+            ArrayList<String> said = b == null ? null : b.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            if (said == null || said.isEmpty()) return false;
+            JSONObject v = voice(WatchService.this);
+            String top = SpeechTuning.clean(said.get(0), v);
+            if (overlay != null) overlay.setHeard(top, last);
+            AmberxNativePlugin.heard(top, last);
+            // Act on the whole sentence only: a wake phrase caught mid-sentence used to cut the command off.
+            if (!last) return false;
+            for (String s : said) {
+                String p = SpeechTuning.wakeHit(s, phrases());
+                if (p != null) { woke(p, SpeechTuning.clean(s, v)); return true; }
+            }
+            if (alwaysArmed() && !top.trim().isEmpty()) { woke("", top); return true; }
+            return false;
+        }
+        @Override public void onPartialResults(Bundle b) { heard(b, false); }
+        @Override public void onResults(Bundle b) { heard(b, true); classicAttempts = 0; ListenerRegistry.attempts(ListenerRules.HANDSFREE, 0); main.postDelayed(WatchService.this::listenLoop, 150); }
+        @Override public void onError(int error) {
+            // Silence or nothing understood: straight back to listening. A refusal backs off and gives up (classicEnded),
+            // instead of the old fixed 800 ms / 3 s restart that replayed the tone forever when another app had the mic.
+            classicEnded(error, null);
+        }
+        @Override public void onReadyForSpeech(Bundle b) {}
+        @Override public void onBeginningOfSpeech() {}
+        @Override public void onRmsChanged(float db) {
+            if (overlay != null) overlay.pushLevel(db);
+            long now = System.currentTimeMillis();
+            if (now - lastLevelEvent >= 100) { lastLevelEvent = now; AmberxNativePlugin.level(db); }
+        }
+        @Override public void onBufferReceived(byte[] b) {}
+        @Override public void onEndOfSpeech() {}
+        @Override public void onEvent(int t, Bundle b) {}
+    }
+
+    private void woke(String phrase, String text) {
+        if (overlay != null) overlay.flashWake();
+        // On screen: straight to the web side, no alert, no activity start.
+        if (inApp && AmberxNativePlugin.wakeInApp(phrase, text)) return;
+        // Every wake hit carries an id and a time: the page runs it once, and never a stale one (no replay on open).
+        Intent open = new Intent(this, MainActivity.class)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            .putExtra(MainActivity.EXTRA_WAKE, phrase).putExtra(MainActivity.EXTRA_WAKE_TEXT, text)
+            .putExtra(MainActivity.EXTRA_WAKE_ID, AmberxNativePlugin.eventId()).putExtra(MainActivity.EXTRA_WAKE_AT, System.currentTimeMillis());
+        PendingIntent pi = PendingIntent.getActivity(this, 2, open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        boolean command = phrase.isEmpty() || !SpeechTuning.compact(text).equals(SpeechTuning.compact(phrase));
+        String what = command ? "Heard \"" + text + "\". Tap to run it." : "Heard \"" + phrase + "\". Tap to talk.";
+        Notification n = new NotificationCompat.Builder(this, CH_WAKE)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX is listening").setContentText(what)
+            .setPriority(NotificationCompat.PRIORITY_HIGH).setCategory(NotificationCompat.CATEGORY_CALL)
+            .setContentIntent(pi).setFullScreenIntent(pi, true).setAutoCancel(true).setTimeoutAfter(30_000)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE).build();
+        getSystemService(NotificationManager.class).notify(ID_WAKE, n);
+        try { startActivity(open); } catch (Exception ignored) { /* background start refused: the alert opens it */ }
+    }
+
+    /* ---------------------------------------------------------------- detection overlay */
+
+    /** Shows or hides the overlay to match the voice config (hands-free on, overlay on, permission granted). */
+    void syncOverlay() {
+        boolean want = handsFree(this) && MicGuard.mayOpen(this) && voice(this).optBoolean("overlay", true) && DetectionOverlay.canDraw(this);
+        if (want) {
+            if (overlay == null) overlay = new DetectionOverlay(this);
+            overlay.setColors(voice(this).optJSONObject("colors"));
+            overlay.setListening(listening, alwaysArmed());
+            overlay.setArmed(alwaysArmed());
+            overlay.setPhase(phase, phaseDetail, phrases());
+            overlay.show();
+        } else hideOverlay();
+    }
+
+    private void hideOverlay() {
+        if (overlay != null) { overlay.hide(); overlay = null; }
+    }
+
+    /* ---------------------------------------------------------------- the overlay (toolbar, approval bar, browser) */
+
+    /** The overlay's settings; settings saved by the older float / pages builds are moved over once (nothing is lost). */
+    static ApprovalOverlayRules.Settings approvalOverlaySettings(Context c) {
+        JSONObject saved;
+        try { saved = new JSONObject(prefs(c).getString("approvalOverlay", "{}")); } catch (Exception e) { saved = null; }
+        JSONObject moved = ApprovalOverlayRules.migrate(saved);
+        if (moved != null) prefs(c).edit().putString("approvalOverlay", moved.toString()).apply();
+        return ApprovalOverlayRules.settings(moved != null ? moved : saved);
+    }
+
+    /** True when the toolbar should be on screen: the overlay is on and "Display over other apps" is granted. */
+    static boolean overlayWanted(Context c) {
+        return approvalOverlaySettings(c).on && DetectionOverlay.canDraw(c);
+    }
+
+    /** True while the toolbar window is on screen, so AmberX may start activities from the background (AxppLink). */
+    static boolean overlayShown() {
+        WatchService w = running;
+        ApprovalOverlay o = w == null ? null : w.approvalOverlay;
+        return o != null && o.shown();
+    }
+
+    /**
+     * Changes the overlay's settings (any subset: on, edge, top, size, expand, show, idleOpacity, shrinkAfterSec), from
+     * the app, the console API, MCP, the CLI or voice, and starts or stops the service to match. Returns the saved settings.
+     */
+    static ApprovalOverlayRules.Settings setApprovalOverlay(Context c, JSONObject change) {
+        ApprovalOverlayRules.Settings before = approvalOverlaySettings(c);
+        ApprovalOverlayRules.Settings s = ApprovalOverlayRules.merge(before.toJson(), change);
+        prefs(c).edit().putString("approvalOverlay", s.toJson().toString()).apply();
+        WatchService w = running;
+        if (w != null) w.main.post(w::syncApprovalOverlay);
+        // Switched on or off: start the service for the toolbar, or let it go when nothing else needs it. A drag or a
+        // size change only redraws.
+        if (before.on != s.on || w == null) { try { refresh(c); } catch (RuntimeException ignored) { /* background start refused: next app open */ } }
+        AmberxNativePlugin.approvalOverlayChanged(approvalOverlayState(c));
+        return s;
+    }
+
+    /** The overlay's state for the API: settings, shown, expanded, the approval bar and what waits. */
+    static JSONObject approvalOverlayState(Context c) {
+        WatchService w = running;
+        JSONObject o = w != null && w.approvalOverlay != null ? w.approvalOverlay.state() : null;
+        try {
+            if (o == null) {
+                o = new JSONObject().put("settings", approvalOverlaySettings(c).toJson()).put("shown", false).put("expanded", false)
+                    .put("approvalBar", false).put("items", new JSONArray());
+            }
+            o.put("watching", prefs(c).getBoolean("on", false)).put("overlayAllowed", DetectionOverlay.canDraw(c));
+        } catch (Exception ignored) {}
+        return o;
+    }
+
+    /**
+     * One overlay command without the UI: {@code expand} (full-screen browser on the last page or the console),
+     * {@code open} ([arg] is the URL), {@code collapse} (just the toolbar again), {@code bar-open} / {@code bar-close}
+     * (the approval bar), or an approval action (approve / deny / shelve / approve-now / decline) on [arg] or the one
+     * on the bar. {@code page} and {@code close-page} are the older names of open and collapse.
+     */
+    static boolean approvalOverlayCommand(Context c, String command, String arg) {
+        String cmd = "page".equals(command) ? (arg == null || arg.isEmpty() ? "expand" : "open") : "close-page".equals(command) ? "collapse" : command;
+        if ("expand".equals(cmd)) return openOverlayPage(c, OverlayPageRules.expandUrl(lastPage()));
+        if ("open".equals(cmd)) return openOverlayPage(c, arg);
+        WatchService w = running;
+        if (w == null) return false;
+        w.main.post(() -> {
+            if (w.approvalOverlay == null) return;
+            if ("collapse".equals(cmd)) w.approvalOverlay.collapse();
+            else if ("bar-open".equals(cmd)) w.approvalOverlay.setBarOpen(true);
+            else if ("bar-close".equals(cmd)) w.approvalOverlay.setBarOpen(false);
+            else w.approvalOverlay.act(arg == null || arg.isEmpty() ? null : arg, cmd);
+        });
+        return true;
+    }
+
+    private static String lastPage() {
+        WatchService w = running;
+        return w != null && w.approvalOverlay != null ? w.approvalOverlay.lastPage() : "";
+    }
+
+    /**
+     * Expands the overlay into the full-screen browser on one of Brett's pages, from any thread (AXPP
+     * {@code browser.open}, the native bridge, voice). True when the browser is up; false when the overlay can't take it
+     * (service down, overlay off, no "Display over other apps"), so the caller opens Chrome instead. The URL must pass
+     * {@link OpenUrlRules#allowed} (throws otherwise).
+     */
+    static boolean openOverlayPage(Context c, String url) {
+        String u = OpenUrlRules.allowed(url);
+        WatchService w = running;
+        if (w == null) return false;
+        boolean[] ok = { false };
+        java.util.concurrent.CountDownLatch done = new java.util.concurrent.CountDownLatch(1);
+        w.main.post(() -> {
+            try {
+                if (w.approvalOverlay == null) w.syncApprovalOverlay();
+                ok[0] = w.approvalOverlay != null && w.approvalOverlay.open(u);
+            } catch (RuntimeException ignored) { /* the caller falls back to Chrome */ }
+            done.countDown();
+        });
+        if (android.os.Looper.myLooper() == android.os.Looper.getMainLooper()) return true; // posted; can't wait on the main thread
+        try { done.await(3, java.util.concurrent.TimeUnit.SECONDS); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+        return ok[0];
+    }
+
+    /** Whether the overlay could take a page now (service up, overlay on, "Display over other apps" granted). */
+    static boolean overlayPagesReady(Context c) {
+        return running != null && overlayWanted(c);
+    }
+
+    /** Shows the overlay to match its settings and the "Display over other apps" permission (main thread). */
+    void syncApprovalOverlay() {
+        ApprovalOverlayRules.Settings s = approvalOverlaySettings(this);
+        if (!s.on || !DetectionOverlay.canDraw(this)) { hideApprovalOverlay(); return; }
+        if (approvalOverlay == null) approvalOverlay = new ApprovalOverlay(this, this::approvalAct);
+        approvalOverlay.setColors(voice(this).optJSONObject("colors"));
+        approvalOverlay.setSettings(s);
+        approvalOverlay.update(waiting);
+    }
+
+    private void hideApprovalOverlay() {
+        if (approvalOverlay != null) { approvalOverlay.hide(); approvalOverlay = null; }
+    }
+
+    /** An approval bar button: held calls through VetoAlerts (Deny / Approve now / Shelve), approvals through the hub's decide route. */
+    private void approvalAct(ApprovalOverlayRules.Item it, String action, java.util.function.Consumer<Boolean> done) {
+        Context app = getApplicationContext();
+        new Thread(() -> {
+            boolean ok;
+            if (it.held()) {
+                int code = VetoAlerts.act(app, it.id, action);
+                ok = code == 200;
+                String event = "deny".equals(action) ? "denied" : "shelve".equals(action) ? "shelved" : "approved";
+                AmberxNativePlugin.vetoEvent(it.id, ok ? event : "failed", ok ? null : (code < 0 ? "signed out of axHub" : "the hub answered " + code));
+            } else {
+                ok = HubRules.decide(HubRules.HUB, it.id, action, CookieManager.getInstance().getCookie(HubRules.HUB));
+                if (ok) app.getSystemService(NotificationManager.class).cancel(it.id, 0);
+            }
+            done.accept(ok);
+        }, "amberx-approval-overlay").start();
+    }
+
+    /* ---------------------------------------------------------------- notifications */
+
+    static void channels(Context c) {
+        if (Build.VERSION.SDK_INT < 26) return;
+        NotificationManager nm = c.getSystemService(NotificationManager.class);
+        nm.createNotificationChannel(new NotificationChannel(CH_WATCH, "Watching axHub", NotificationManager.IMPORTANCE_LOW));
+        nm.createNotificationChannel(new NotificationChannel(CH_APPROVALS, "Approvals", NotificationManager.IMPORTANCE_HIGH));
+        nm.createNotificationChannel(new NotificationChannel(CH_WAKE, "Wake phrase", NotificationManager.IMPORTANCE_HIGH));
+        nm.createNotificationChannel(new NotificationChannel(CH_CONSOLE, "Console alerts", NotificationManager.IMPORTANCE_HIGH));
+        VetoAlerts.channels(c);
+    }
+
+    private Notification ongoing(boolean mic) {
+        PendingIntent open = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent stop = PendingIntent.getService(this, 1, new Intent(this, WatchService.class).setAction(ACTION_STOP), PendingIntent.FLAG_IMMUTABLE);
+        boolean watching = prefs(this).getBoolean("on", false);
+        String hearing = alwaysArmed() ? "listening (always armed)" : "listening for " + String.join(" / ", phrases());
+        String what = watching ? (mic ? "Watching axHub and " + hearing : "Watching axHub for approvals") : (mic ? "Hands-free: " + hearing : "Hands-free is waiting for the microphone");
+        if (MicGuard.off(this)) what = watching ? "Watching axHub · Mic off" : "Mic off";
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, CH_WATCH)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle("AmberX").setContentText(what)
+            .setOngoing(true).setContentIntent(open);
+        // Hands-free always listens: no Stop here (turn it off in Voice control). Watching axHub alone keeps its Stop.
+        if (!handsFree(this)) b.addAction(0, "Stop", stop);
+        // Mic off from the notification (Nov 1 2026): every microphone AmberX holds is let go at once.
+        boolean off = MicGuard.off(this);
+        PendingIntent micFlip = PendingIntent.getService(this, 3, new Intent(this, WatchService.class).setAction(ACTION_MIC).putExtra("off", !off),
+            PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        if (off || handsFree(this) || mic) b.addAction(0, off ? "Mic on" : "Mic off", micFlip);
+        return b.build();
+    }
+
+    private Notification alert(String channel, String title, String text, String url, boolean full) {
+        Intent open = new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP).putExtra(MainActivity.EXTRA_OPEN, url);
+        PendingIntent pi = PendingIntent.getActivity(this, url.hashCode(), open, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        NotificationCompat.Builder b = new NotificationCompat.Builder(this, channel)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(title).setContentText(text)
+            .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(pi).setAutoCancel(true)
+            // The lock screen shows only that something is waiting, never what.
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(new NotificationCompat.Builder(this, channel).setSmallIcon(R.mipmap.ic_launcher).setContentTitle("Approval waiting").build());
+        if (full) b.setCategory(NotificationCompat.CATEGORY_REMINDER);
+        if (Quiet.on(this)) b.setSilent(true); // Quiet: shown, never heard
+        return b.build();
+    }
+
+    /**
+     * A console alert: tap opens its link (UI Review on a group, the Dev Console by default) in the browser with its own
+     * sign-in, never inside the app. An update to one already showing (a new item count) replaces it without a second buzz.
+     */
+    private Notification consoleAlert(HubRules.ConsoleAlert c) {
+        Intent view = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(c.link)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pi = PendingIntent.getActivity(this, ("console:" + c.key).hashCode(), view, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        String label = c.label;
+        return new NotificationCompat.Builder(this, CH_CONSOLE)
+            .setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label + ": " + c.title).setContentText(c.body).setOnlyAlertOnce(true)
+            .setStyle(new NotificationCompat.BigTextStyle().bigText(c.body))
+            .setPriority(NotificationCompat.PRIORITY_HIGH).setContentIntent(pi).setAutoCancel(true)
+            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setPublicVersion(new NotificationCompat.Builder(this, CH_CONSOLE).setSmallIcon(R.mipmap.ic_launcher).setContentTitle(label).build())
+            .build();
+    }
+
+    private static void setStatus(JSONObject s) {
+        try { s.put("yielded", yielded == null ? JSONObject.NULL : yielded); } catch (Exception ignored) {}
+        status = s;
+        StatusListener l = listener;
+        if (l != null) l.changed(s);
+        ListenerRegistry.changed();
+    }
+}

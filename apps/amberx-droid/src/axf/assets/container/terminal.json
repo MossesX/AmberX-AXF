@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "terminal",
+  "name": "Terminal container",
+  "version": "1.0.0",
+  "description": "Terminal: outline with a divided header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "technical",
+    "developer"
+  ],
+  "data": {
+    "variant": "outline",
+    "header": "divided",
+    "padding": "sm",
+    "elevation": 0,
+    "collapsible": false
+  }
+}

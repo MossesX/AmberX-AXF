@@ -1,0 +1,51 @@
+{
+  "$rules": "project-rules@1",
+  "description": "Validation rules for project manifests (project.manifest.json, project-manifest@1). The single source for every validator: framework/core/project.ts (reference), framework/cli/project.mjs (build engine, console API), ai.amberx.axf.kernel.project (Android) and the template build guards. Managed in the Dev Console under Standards. Locked rules are always errors; other rules can be set to error, warn or off, and new rules can be added with any listed op.",
+  "manifestTag": "project-manifest@1",
+  "manifestFile": "project.manifest.json",
+  "ops": {
+    "equals": "value is exactly check.value",
+    "pattern": "value is a string matching check.pattern",
+    "notIn": "value is not one of check.values",
+    "string": "value is a string whose trimmed length is between check.min and check.max",
+    "oneOf": "value is one of vocab[check.vocab] (or check.values)",
+    "eachOneOf": "value is an array and every item is one of vocab[check.vocab] (or check.values)",
+    "boolean": "value is true or false",
+    "relativePaths": "value is an array of project-relative paths (no leading /, no .., no backslashes; folders end with /)",
+    "pathsExist": "every path in value (a string or an array) exists in the project; skipped when the validator has no file access",
+    "requiredWhen": "value is present whenever check.when.path equals check.when.equals",
+    "knownKeys": "the manifest has no top-level keys outside knownKeys (put extensions under \"x\")"
+  },
+  "vocab": {
+    "kind": ["framework", "app", "library", "plugin", "module", "template", "service", "tool", "other"],
+    "status": ["active", "planned", "dormant", "archived"],
+    "relation": ["core", "built-on", "for", "none"],
+    "visibility": ["private", "public", "internal"],
+    "host": ["github", "gitlab", "bitbucket", "other"],
+    "platform": ["web", "android", "desktop", "server", "python", "ios", "cli"]
+  },
+  "knownKeys": ["$manifest", "name", "displayName", "description", "kind", "status", "version", "platforms", "framework", "repo", "location", "deploy", "data", "owners", "created", "links", "notes", "x"],
+  "rules": [
+    { "id": "manifest-tag", "title": "Manifest format", "description": "The file says which format it is: \"$manifest\": \"project-manifest@1\".", "severity": "error", "locked": true, "check": { "op": "equals", "path": "$manifest", "value": "project-manifest@1", "required": true } },
+    { "id": "name-format", "title": "Project name", "description": "Lowercase letters, digits and dashes, starting with a letter or digit, up to 63 characters. It is the project's folder on the hub (/projects/<name>), so it never changes lightly.", "severity": "error", "locked": true, "check": { "op": "pattern", "path": "name", "pattern": "^[a-z0-9][a-z0-9-]{0,62}$", "required": true } },
+    { "id": "name-reserved", "title": "Reserved names", "description": "\"shared\" stands for /projects/_shared on the hub and can't name a project.", "severity": "error", "locked": true, "check": { "op": "notIn", "path": "name", "values": ["shared"] } },
+    { "id": "display-name", "title": "Display name", "description": "A human name, 1 to 80 characters.", "severity": "error", "locked": true, "check": { "op": "string", "path": "displayName", "min": 1, "max": 80, "required": true } },
+    { "id": "kind", "title": "Kind", "description": "What the project is: one of the kind vocabulary.", "severity": "error", "locked": true, "check": { "op": "oneOf", "path": "kind", "vocab": "kind", "required": true } },
+    { "id": "status", "title": "Status", "description": "active, planned, dormant or archived (active when left out).", "severity": "error", "locked": false, "check": { "op": "oneOf", "path": "status", "vocab": "status" } },
+    { "id": "framework-relation", "title": "Relation to AmberX AXF", "description": "framework.relation: core (the framework itself), built-on (an AXF app or library), for (made to work with AXF) or none.", "severity": "error", "locked": true, "check": { "op": "oneOf", "path": "framework.relation", "vocab": "relation", "required": true } },
+    { "id": "repo-owner", "title": "Repo owner", "description": "repo.owner: the GitHub (or other host) account, e.g. MossesX.", "severity": "error", "locked": true, "check": { "op": "pattern", "path": "repo.owner", "pattern": "^[A-Za-z0-9][A-Za-z0-9-]{0,38}$", "required": true } },
+    { "id": "repo-name", "title": "Repo name", "description": "repo.name: the project's own repository name. Required even when the repo doesn't exist yet, so it can be created with that name later.", "severity": "error", "locked": true, "check": { "op": "pattern", "path": "repo.name", "pattern": "^[A-Za-z0-9._-]{1,100}$", "required": true } },
+    { "id": "repo-exists", "title": "Repo exists?", "description": "repo.exists: true when the repository has been created, false when it is only reserved for the future.", "severity": "error", "locked": true, "check": { "op": "boolean", "path": "repo.exists", "required": true } },
+    { "id": "repo-host", "title": "Repo host", "description": "repo.host: github, gitlab, bitbucket or other (github when left out).", "severity": "error", "locked": false, "check": { "op": "oneOf", "path": "repo.host", "vocab": "host" } },
+    { "id": "repo-visibility", "title": "Repo visibility", "description": "repo.visibility: private, public or internal.", "severity": "warn", "locked": false, "check": { "op": "oneOf", "path": "repo.visibility", "vocab": "visibility" } },
+    { "id": "repo-url", "title": "Repo URL", "description": "repo.url, when given, is an https address.", "severity": "warn", "locked": false, "check": { "op": "pattern", "path": "repo.url", "pattern": "^https://" } },
+    { "id": "location-when-no-repo", "title": "Where the code lives", "description": "When the project has no repo of its own yet, location says where its code is now (location.repo + location.path).", "severity": "warn", "locked": false, "check": { "op": "requiredWhen", "path": "location", "when": { "path": "repo.exists", "equals": false } } },
+    { "id": "version", "title": "Version", "description": "version, when given, is semver (1.2.3, optionally -pre).", "severity": "warn", "locked": false, "check": { "op": "pattern", "path": "version", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(-[0-9A-Za-z.-]+)?$" } },
+    { "id": "platforms", "title": "Platforms", "description": "platforms lists where it runs, from the platform vocabulary.", "severity": "warn", "locked": false, "check": { "op": "eachOneOf", "path": "platforms", "vocab": "platform" } },
+    { "id": "created", "title": "Created date", "description": "created, when given, is a date: YYYY-MM-DD.", "severity": "warn", "locked": false, "check": { "op": "pattern", "path": "created", "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" } },
+    { "id": "data-paths", "title": "Shared data paths", "description": "data.shared lists the project's shared data as paths inside the project (folders end with /). They sync with /projects/<name>/_data/<same path>.", "severity": "error", "locked": true, "check": { "op": "relativePaths", "path": "data.shared" } },
+    { "id": "data-paths-exist", "title": "Shared data exists", "description": "Every data.shared path exists in the project.", "severity": "warn", "locked": false, "check": { "op": "pathsExist", "path": "data.shared" } },
+    { "id": "app-manifest-exists", "title": "App manifest", "description": "framework.appManifest, when given, points at the app's axf.manifest.json.", "severity": "warn", "locked": false, "check": { "op": "pathsExist", "path": "framework.appManifest" } },
+    { "id": "unknown-keys", "title": "Known fields only", "description": "No top-level fields outside the known list; extensions go under \"x\".", "severity": "warn", "locked": false, "check": { "op": "knownKeys" } }
+  ]
+}

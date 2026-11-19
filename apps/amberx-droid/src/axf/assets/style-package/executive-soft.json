@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "executive-soft",
+  "name": "Executive Soft",
+  "version": "1.0.0",
+  "description": "Soft pills, generous divided cards and blurred modals for dashboards that get presented.",
+  "author": "AmberX AXF",
+  "tags": [
+    "soft",
+    "enterprise",
+    "spacious"
+  ],
+  "data": {
+    "slots": {
+      "button": "executive-soft",
+      "container": "executive-soft",
+      "slider": "executive-soft",
+      "dialog": "executive-soft",
+      "popup": "executive-soft",
+      "tab-group": "executive-soft",
+      "gauge": "ring",
+      "meter": "gradient-soft"
+    },
+    "tone": "soft"
+  }
+}

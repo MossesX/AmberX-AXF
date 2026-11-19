@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "fresh-light",
+  "name": "Fresh Light",
+  "version": "1.0.0",
+  "description": "Neutral greys with an indigo accent: quiet surfaces, clear text, colours only where they mean something.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "neutral"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f6f7f9",
+      "surface": "#ffffff",
+      "surface2": "#fafbfc",
+      "surface3": "#e6e9ee",
+      "text": "#16181d",
+      "muted": "#5f6672",
+      "border": "#e2e5ea",
+      "accent": "#4f46e5",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(79,70,229,0.08)",
+      "danger": "#d92d20",
+      "success": "#12875a",
+      "warning": "#b54708",
+      "info": "#0b6bcb",
+      "focus": "#6366f1",
+      "shadow": "rgba(16,24,40,0.07)"
+    }
+  }
+}

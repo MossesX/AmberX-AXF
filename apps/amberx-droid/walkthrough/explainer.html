@@ -1,0 +1,93 @@
+<!doctype html>
+<!-- The explainer slides of the whole-stack walkthrough: diagrams for the parts that have no screen of their own (the
+     stack, the asset pipeline, the ports, the VPS, the request path, the veto flow). The recorder serves this file at
+     https://walkthrough.local/ and opens a slide by its #id; h.step() reveals the next piece. 1920×1080, no network. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AXF explainer</title>
+<style>
+:root {
+  --bg: #0f0d0a; --panel: #1b1712; --line: #3a3127; --text: #f4ede3; --muted: #b3a593; --accent: #ffb02e; --accent-2: #4fc3a1;
+  --font: system-ui, -apple-system, "Segoe UI", sans-serif; --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+* { box-sizing: border-box; }
+body { margin: 0; width: 100vw; height: 100vh; overflow: hidden; background: var(--bg); color: var(--text); font: 28px/1.35 var(--font); }
+.slide { position: absolute; inset: 0; padding: 80px 110px; display: none; flex-direction: column; gap: 36px; }
+.slide.on { display: flex; animation: in .5s ease; }
+@keyframes in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+.eyebrow { color: var(--accent); font-weight: 800; letter-spacing: .14em; text-transform: uppercase; font-size: 22px; }
+h1 { margin: 0; font-size: 76px; line-height: 1.05; }
+.sub { color: var(--muted); font-size: 32px; max-width: 1500px; }
+.grid { display: grid; gap: 26px; grid-template-columns: repeat(var(--cols, 3), 1fr); }
+.flow { display: flex; gap: 22px; align-items: stretch; flex-wrap: wrap; }
+.box { background: var(--panel); border: 2px solid var(--line); border-radius: 18px; padding: 24px 28px; opacity: .18; transition: opacity .45s, border-color .45s, transform .45s; }
+.box.show { opacity: 1; border-color: var(--accent); transform: translateY(-4px); }
+.box b { display: block; font-size: 32px; margin-bottom: 6px; }
+.box span { color: var(--muted); font-size: 24px; }
+.flow .box { flex: 1; min-width: 230px; }
+.arrow { align-self: center; color: var(--accent); font-size: 44px; opacity: .25; }
+.arrow.show { opacity: 1; }
+pre { margin: 0; background: #080705; border: 2px solid var(--line); border-radius: 18px; padding: 28px 32px; font: 26px/1.5 var(--mono); color: var(--accent-2); }
+pre .line { opacity: .15; transition: opacity .35s; display: block; }
+pre .line.show { opacity: 1; }
+pre .c { color: var(--muted); }
+.big { font-size: 120px; font-weight: 900; color: var(--accent); line-height: 1; }
+.foot { margin-top: auto; color: var(--muted); font-size: 22px; }
+</style>
+</head>
+<body>
+<script>
+// Each slide: id, eyebrow, title, sub, and one of: boxes (grid), flow (boxes with arrows), code (terminal lines).
+const SLIDES = [
+  { id: 'stack', eyebrow: 'AmberX AXF', title: 'One framework. Every app. Every screen.', sub: 'Six pieces that work as one machine.', cols: 3, boxes: [
+    ['AXF framework', 'Every visible thing is a hot-swappable asset'], ['Dev Console', 'Where apps, plugins and builds are made'],
+    ['AmberX', 'The pocket control room on your phone'], ['axHub', 'The hub: services, memory, approvals, one look'],
+    ['The VPS', 'Coolify, Traefik, containers, headless Claude'], ['MCP server', 'The tools Claude itself drives'] ] },
+  { id: 'assets', eyebrow: 'asset@1', title: 'Everything you see is an asset', sub: 'Themes, layouts, menus, toolbars, dialogs, buttons, sliders: one JSON format.', flow: [
+    ['Asset JSON', 'theme, style, layout, menu…'], ['Validator', 'asset-types.json is the one truth'], ['Engine', 'compiles to tokens'],
+    ['Tokens', '--fx-* variables'], ['UI', 'reads only tokens'] ] },
+  { id: 'swap', eyebrow: 'Hot swap', title: 'runtime.swap(type, id)', sub: 'Change one asset and every app restyles live, no rebuild, no redeploy.', code: [
+    '<span class="c"># swap the colour theme on a running app</span>', "rt.swap('theme', 'midnight')", "rt.swap('style', 'soft-studio')",
+    "rt.swap('layout', 'console-wide')", '<span class="c"># every button, slider, menu and dialog follows</span>' ] },
+  { id: 'ports', eyebrow: 'Two ports, one design', title: 'TypeScript and Kotlin, file for file', sub: 'Golden fixtures are the contract: both engines must give the same answers.', flow: [
+    ['framework/core', 'TS reference engines'], ['spec/fixtures', 'golden outputs'], ['axf-kernel', 'pure Kotlin twin'] ] },
+  { id: 'cli', eyebrow: 'Build engine', title: 'axf init bakes the framework in', sub: 'Every app is validated, conformance-checked and locked by hash.', code: [
+    '$ node framework/cli/axf.mjs validate --framework', '  ✓ assets valid', '$ node framework/cli/axf.mjs init apps/my-app',
+    '  ✓ manifest  ✓ baked core react ui schemas  ✓ axf.lock.json', '$ node framework/cli/check-theme.mjs', '  ✓ every colour and size comes from a token' ] },
+  { id: 'builds', eyebrow: 'Builds', title: 'One builds store, every list a view of it', sub: 'Orchestrator, pending list, build queue, Build manager: they can never drift.', flow: [
+    ['Ask', 'a build, any surface'], ['Orchestrator', 'steps ≤ 30 min, Opus or Fable'], ['builds@1 store', 'versioned journal'],
+    ['Views', 'pending · queue · manager'] ] },
+  { id: 'vps', eyebrow: 'The VPS', title: 'One box runs the whole show', sub: 'Coolify deploys it, Traefik fronts it, every app is a container.', cols: 3, boxes: [
+    ['Traefik', 'owns 80 and 443, TLS for every subdomain'], ['Coolify', 'builds and runs the containers'], ['Dev Console', 'FastAPI + React, the MCP server'],
+    ['axHub', 'the hub and its data'], ['AmberX server', 'behind the hub wall'], ['Headless Claude', 'builds in tmux, capped by agent slots'] ] },
+  { id: 'path', eyebrow: 'How a request moves', title: 'Claude to the metal, with you in the loop', sub: 'Every change that matters waits for your veto.', flow: [
+    ['Claude', 'chat, phone, Claude Code'], ['MCP', 'console tools'], ['axHub', 'holds the call'], ['AmberX', 'Deny · Approve · Shelve'], ['VPS', 'runs it'] ] },
+  { id: 'veto', eyebrow: 'Veto, not approvals', title: 'It runs unless you stop it', sub: 'A countdown, the exact command, three buttons, right on your phone.', flow: [
+    ['Notice', 'title + why'], ['Countdown', '90 seconds'], ['You', 'Deny, Approve or Shelve'], ['Runs', 'or stays stopped'] ] },
+  { id: 'mcp', eyebrow: 'MCP server', title: 'Claude drives the framework itself', sub: 'The console exposes its engine as tools Claude can call.', code: [
+    '<span class="c"># a few of the tools</span>', 'build_next     the next step of the build queue', 'build_step     tick a step done',
+    'pending_list   what is parked', 'pending_change park, edit or finish an item', '<span class="c"># default-deny: a remote caller never exceeds your local role</span>' ] },
+  { id: 'why', eyebrow: 'Why it matters', title: 'Nobody else has this', sub: 'One look everywhere. Claude-native from the ground up. Built from a phone.', cols: 3, boxes: [
+    ['Speed', 'a whole app from assets and plugins'], ['Control', 'every change is logged and vetoable'], ['Reach', 'web today, Android next, one design'] ] },
+];
+const esc = (t) => t.replace(/&(?![a-z]+;)/g, '&amp;');
+const box = ([b, s]) => `<div class="box step"><b>${esc(b)}</b><span>${esc(s)}</span></div>`;
+document.body.innerHTML = SLIDES.map((s) => `<section class="slide" id="${s.id}">
+  <div class="eyebrow">${s.eyebrow}</div><h1>${esc(s.title)}</h1><div class="sub">${esc(s.sub)}</div>
+  ${s.boxes ? `<div class="grid" style="--cols:${s.cols}">${s.boxes.map(box).join('')}</div>` : ''}
+  ${s.flow ? `<div class="flow">${s.flow.map((f, i) => (i ? '<div class="arrow step">→</div>' : '') + box(f)).join('')}</div>` : ''}
+  ${s.code ? `<pre>${s.code.map((l) => `<span class="line step">${l}</span>`).join('')}</pre>` : ''}
+  <div class="foot">AmberX AXF · the whole stack</div></section>`).join('');
+function show() {
+  const id = location.hash.slice(1) || SLIDES[0].id;
+  document.querySelectorAll('.slide').forEach((el) => el.classList.toggle('on', el.id === id));
+}
+// reveal the next hidden piece of the current slide (the recorder calls this between sentences)
+window.wtStep = () => { const n = document.querySelector('.slide.on .step:not(.show)'); if (n) n.classList.add('show'); return !!n; };
+window.wtAll = () => document.querySelectorAll('.slide.on .step').forEach((n) => n.classList.add('show'));
+addEventListener('hashchange', show);
+show();
+</script>
+</body>
+</html>

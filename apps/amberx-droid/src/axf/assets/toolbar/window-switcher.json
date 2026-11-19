@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "window-switcher",
+  "name": "Window Switcher",
+  "version": "1.0.0",
+  "description": "One button per open floating window to bring it back, beside the window and layout commands.",
+  "author": "AmberX AXF",
+  "tags": [
+    "live",
+    "windows"
+  ],
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "windows",
+        "items": [],
+        "provider": "windows",
+        "max": 8,
+        "label": "Open windows"
+      },
+      {
+        "id": "layout",
+        "items": [
+          {
+            "id": "next-layout",
+            "icon": "layout",
+            "label": "Next layout",
+            "action": "swap:layout:next",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "toggle-nav",
+            "icon": "list",
+            "label": "Show or hide navigation",
+            "action": "slot.hide:nav-menu:toggle",
+            "checked": "slot:nav-menu"
+          }
+        ]
+      }
+    ]
+  }
+}

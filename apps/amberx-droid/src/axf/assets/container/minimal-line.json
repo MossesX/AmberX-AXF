@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "minimal-line",
+  "name": "Minimal Line container",
+  "version": "1.0.0",
+  "description": "Minimal Line: outline with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "minimal",
+    "minimal"
+  ],
+  "data": {
+    "variant": "outline",
+    "header": "plain",
+    "padding": "md",
+    "elevation": 0,
+    "collapsible": false
+  }
+}

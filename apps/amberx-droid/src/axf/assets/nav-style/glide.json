@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-style",
+  "id": "glide",
+  "name": "Glide",
+  "version": "0.1.0",
+  "description": "A smooth glide with a gentle stagger, the active item filled with the accent and a tinted sub menu.",
+  "author": "AmberX AXF",
+  "tags": [
+    "navigation",
+    "smooth"
+  ],
+  "data": {
+    "colors": {
+      "active": "accentSoft",
+      "activeText": "accent",
+      "submenu": "surface2",
+      "accent": "accent"
+    },
+    "font": {
+      "weight": "500"
+    },
+    "animation": {
+      "kind": "slide",
+      "durationMs": 300,
+      "easing": "emphasized",
+      "staggerMs": 36,
+      "chevron": "rotate",
+      "reduced": "system"
+    },
+    "behavior": {
+      "single": true,
+      "openOn": "tap",
+      "autoCollapse": true,
+      "remember": true,
+      "followActive": true,
+      "swipe": true
+    }
+  }
+}

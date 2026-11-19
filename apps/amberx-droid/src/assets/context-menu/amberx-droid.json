@@ -1,0 +1,74 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "amberx-droid",
+  "name": "AmberX",
+  "version": "2.1.0",
+  "description": "AmberX's basic right-click / long-press menu: approvals, search, copy, settings, plugins. Plugins add their own items at runtime.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "approvals",
+          "label": "Approvals",
+          "icon": "shield",
+          "action": "nav:home"
+        },
+        {
+          "id": "search",
+          "label": "Search everything",
+          "icon": "search",
+          "action": "axhub.search",
+          "shortcut": "Ctrl+K"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy"
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": "app.settings"
+        },
+        {
+          "id": "plugins",
+          "label": "Plugins",
+          "icon": "package",
+          "action": "settings.open:plugins"
+        },
+        {
+          "id": "about",
+          "label": "About",
+          "icon": "info",
+          "action": "help.about"
+        }
+      ],
+      "nav-item": [
+        {
+          "id": "open",
+          "label": "Open",
+          "icon": "chevron-right",
+          "action": "nav:{payload}"
+        },
+        {
+          "id": "window",
+          "label": "Open in a window",
+          "icon": "external",
+          "action": "amberx.window:{payload}"
+        }
+      ]
+    }
+  }
+}

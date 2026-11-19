@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/screen-template.schema.json",
+  "title": "AmberX AXF Screen template asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "screen-template"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "kind",
+        "regions"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "list-detail",
+            "dashboard",
+            "wizard",
+            "settings",
+            "feed",
+            "editor",
+            "player",
+            "map",
+            "chat",
+            "profile",
+            "landing",
+            "custom"
+          ]
+        },
+        "regions": {}
+      }
+    }
+  }
+}

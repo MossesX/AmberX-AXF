@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "frosted-dock",
+  "name": "Frosted Dock pop-ups",
+  "version": "1.0.0",
+  "description": "Frosted Dock: minimal pop-ups at the bottom-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "frosted",
+    "glass"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "minimal",
+    "duration": 3800,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "plain-centered",
+  "name": "Plain centered",
+  "version": "1.0.0",
+  "description": "Text-only tabs, centered, wrapping onto more rows on small screens.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "style": "plain",
+    "align": "center",
+    "position": "top",
+    "density": "roomy",
+    "overflow": "wrap",
+    "showIcons": false,
+    "divider": false
+  }
+}

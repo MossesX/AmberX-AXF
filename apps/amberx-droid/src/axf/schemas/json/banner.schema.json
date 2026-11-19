@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/banner.schema.json",
+  "title": "AmberX AXF Banner asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "banner"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "height",
+        "surface",
+        "logo",
+        "attach"
+      ],
+      "properties": {
+        "height": {},
+        "surface": {
+          "enum": [
+            "flat",
+            "raised",
+            "accent"
+          ]
+        },
+        "logo": {
+          "type": "object",
+          "required": [
+            "show",
+            "text"
+          ]
+        },
+        "attach": {}
+      }
+    }
+  }
+}

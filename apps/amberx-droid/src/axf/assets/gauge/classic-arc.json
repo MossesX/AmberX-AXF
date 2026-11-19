@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "gauge",
+  "id": "classic-arc",
+  "name": "Classic Arc",
+  "version": "1.0.0",
+  "description": "Half-circle dial with a needle and a big readout.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "arc",
+    "thickness": 9,
+    "needle": true,
+    "ticks": 0,
+    "cap": "round",
+    "readout": "big"
+  }
+}

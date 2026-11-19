@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "neon-edge",
+  "name": "Neon Edge pop-ups",
+  "version": "1.0.0",
+  "description": "Neon Edge: outline pop-ups at the top-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "neon",
+    "vivid",
+    "dark"
+  ],
+  "data": {
+    "position": "top-right",
+    "variant": "outline",
+    "duration": 3500,
+    "showIcon": true,
+    "maxVisible": 4
+  }
+}

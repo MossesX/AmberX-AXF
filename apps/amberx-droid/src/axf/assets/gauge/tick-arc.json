@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "gauge",
+  "id": "tick-arc",
+  "name": "Tick Arc",
+  "version": "1.0.0",
+  "description": "Thin dial with five tick marks and a needle, like an instrument panel.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "arc",
+    "thickness": 5,
+    "needle": true,
+    "ticks": 5,
+    "cap": "square",
+    "readout": "small"
+  }
+}

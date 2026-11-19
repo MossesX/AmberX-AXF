@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "minimal-glass",
+  "name": "Minimal Glass",
+  "version": "1.0.0",
+  "description": "A centred frosted strip with search, alerts and settings only.",
+  "author": "AmberX AXF",
+  "tags": [
+    "glass",
+    "minimal"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "center",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search",
+      "maxResults": 8
+    },
+    "groups": [
+      {
+        "id": "app",
+        "items": [
+          {
+            "id": "alerts",
+            "icon": "bell",
+            "label": "Alerts",
+            "action": "alerts.open",
+            "badge": "alerts.unread"
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          }
+        ]
+      }
+    ],
+    "surface": "glass",
+    "divider": false
+  }
+}

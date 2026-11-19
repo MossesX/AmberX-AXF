@@ -1,0 +1,3 @@
+/* lib-hubsync settings interface: layout only (controls are framework controls, tokens only). */
+.axf-hubsync { display: grid; gap: var(--fx-dens-gap-xl); }
+.axf-hubsync__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl); }

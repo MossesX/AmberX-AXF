@@ -1,0 +1,52 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "reader-bar",
+  "name": "Reader Bar",
+  "version": "1.0.0",
+  "description": "Quiet labels for reading apps: spacing choices and the documentation link.",
+  "author": "AmberX AXF",
+  "tags": [
+    "reading",
+    "minimal"
+  ],
+  "data": {
+    "variant": "labels",
+    "align": "spread",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "spacing",
+        "items": [
+          {
+            "id": "spacing-compact",
+            "icon": "list",
+            "label": "Compact spacing",
+            "action": "spacing:compact",
+            "requires": "assets.swap"
+          },
+          {
+            "id": "spacing-regular",
+            "icon": "grid",
+            "label": "Regular spacing",
+            "action": "spacing:regular",
+            "requires": "assets.swap"
+          }
+        ]
+      },
+      {
+        "id": "help",
+        "items": [
+          {
+            "id": "docs",
+            "icon": "help",
+            "label": "Documentation",
+            "action": "help.docs"
+          }
+        ]
+      }
+    ],
+    "density": "compact",
+    "divider": false
+  }
+}

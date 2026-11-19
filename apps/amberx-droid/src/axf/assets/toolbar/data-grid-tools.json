@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "data-grid-tools",
+  "name": "Data Grid Tools",
+  "version": "1.0.0",
+  "description": "Flat, dense tools for grids: new row, copy, delete, export, and the pages provider for quick jumps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "data",
+    "compact"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "rows",
+        "items": [
+          {
+            "id": "new",
+            "icon": "plus",
+            "label": "New",
+            "action": "file.new"
+          },
+          {
+            "id": "copy",
+            "icon": "copy",
+            "label": "Copy",
+            "action": "edit.copy"
+          },
+          {
+            "id": "delete",
+            "icon": "trash",
+            "label": "Delete",
+            "action": "edit.delete"
+          },
+          {
+            "id": "export",
+            "icon": "download",
+            "label": "Export…",
+            "action": "file.export"
+          }
+        ]
+      },
+      {
+        "id": "pages",
+        "items": [],
+        "provider": "views",
+        "max": 6,
+        "label": "Pages"
+      }
+    ],
+    "density": "compact",
+    "surface": "flat"
+  }
+}

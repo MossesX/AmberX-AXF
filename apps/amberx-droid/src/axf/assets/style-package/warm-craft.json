@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "warm-craft",
+  "name": "Warm Craft",
+  "version": "1.0.0",
+  "description": "Soft rounded buttons, roomy accent cards and filled modals with a crafted, friendly warmth.",
+  "author": "AmberX AXF",
+  "tags": [
+    "warm",
+    "warm"
+  ],
+  "data": {
+    "slots": {
+      "button": "warm-craft",
+      "container": "warm-craft",
+      "slider": "warm-craft",
+      "dialog": "warm-craft",
+      "popup": "warm-craft",
+      "tab-group": "warm-craft",
+      "gauge": "classic-arc",
+      "meter": "gradient-soft"
+    },
+    "tone": "warm"
+  }
+}

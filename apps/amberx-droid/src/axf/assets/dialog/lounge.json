@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "lounge",
+  "name": "Lounge dialog",
+  "version": "1.0.0",
+  "description": "Lounge: modal, blur backdrop, fade in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "relaxed",
+    "relaxed"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 560,
+    "backdrop": "blur",
+    "animation": "fade",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

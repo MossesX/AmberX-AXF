@@ -1,0 +1,17 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "center-minimal",
+  "name": "Center Minimal",
+  "version": "1.0.0",
+  "description": "Quiet, icon-less snackbars centered at the bottom.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "position": "bottom-center",
+    "variant": "minimal",
+    "duration": 3000,
+    "showIcon": false,
+    "maxVisible": 3
+  }
+}

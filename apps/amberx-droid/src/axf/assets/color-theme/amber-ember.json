@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "amber-ember",
+  "name": "Amber Ember",
+  "version": "1.0.0",
+  "description": "Warm charcoal with an amber signal accent. The house default.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "warm"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0f0d0a",
+      "surface": "#17140f",
+      "surface2": "#1d1914",
+      "surface3": "#2a241b",
+      "text": "#f3ece2",
+      "muted": "#a39684",
+      "border": "#342c21",
+      "accent": "#f5a524",
+      "accentText": "#1a1206",
+      "accentSoft": "rgba(245,165,36,0.14)",
+      "danger": "#f0605a",
+      "success": "#4cc38a",
+      "warning": "#f5c451",
+      "info": "#ff6b3d",
+      "focus": "#f5a524",
+      "shadow": "rgba(0,0,0,0.5)"
+    }
+  }
+}

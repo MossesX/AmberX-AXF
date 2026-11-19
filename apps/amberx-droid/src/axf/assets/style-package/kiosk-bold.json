@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "kiosk-bold",
+  "name": "Kiosk Bold",
+  "version": "1.0.0",
+  "description": "Huge high-contrast buttons, chunky sliders and full-width sheets readable across a room.",
+  "author": "AmberX AXF",
+  "tags": [
+    "bold",
+    "kiosk",
+    "touch"
+  ],
+  "data": {
+    "slots": {
+      "button": "kiosk-bold",
+      "container": "kiosk-bold",
+      "slider": "kiosk-bold",
+      "dialog": "kiosk-bold",
+      "popup": "kiosk-bold",
+      "tab-group": "kiosk-bold",
+      "gauge": "level-bar",
+      "meter": "steps"
+    },
+    "tone": "bold"
+  }
+}
