@@ -14,7 +14,8 @@
  *                                                                 (data-mode rules: shadow first, no drift). --keys also flips the
  *                                                                 set's key-level overrides (data-store-mode@1 `keys`): only once
  *                                                                 every writer runs code that reads them (the console restarted
- *                                                                 on main after #848).
+ *                                                                 on main after #848). --skip <ns/path> (repeatable) leaves one
+ *                                                                 key override as it is.
  *   --url / --token override AXF_DATA_URL / AXF_DATA_TOKEN (the cli token reads `_meta/tables`). --projects <dir> names the
  *   hub volume (default AXHUB_PROJECTS_DIR or /projects).
  *
@@ -232,7 +233,7 @@ export async function check(name, { store, apply = false, projects = process.env
 }
 
 /** Backfill + verify, then flip the namespaces (and with keys, the key overrides). */
-export async function cutover(name, { store, apply = false, keys = false, by = 'svc:cli', projects, log = () => {} } = {}) {
+export async function cutover(name, { store, apply = false, keys = false, skip = [], by = 'svc:cli', projects, log = () => {} } = {}) {
   const set = SETS[name];
   const report = { ...(await check(name, { store, apply, projects, log })), $axf: 'data-tables-cutover@1', flipped: [] };
   if (apply) { const again = await check(name, { store, apply: false, projects }); report.verify = { ok: again.ok, problems: again.problems, tables: again.tables }; report.ok = again.ok; report.problems = again.problems; }
@@ -264,6 +265,7 @@ export async function cutover(name, { store, apply = false, keys = false, by = '
     const verified = { at: nowIso(), how: `data-tables cutover ${name}: every file equal on axf-data, rows per table equal`, tables: report.tables };
     for (const [ns, paths] of Object.entries(set.keys)) {
       for (const p of paths) {
+        if (skip.includes(`${ns}/${p}`)) continue;
         if (MODE.modeOf(state, ns, p.endsWith('/') ? `${p}x` : p) === 'cutover') continue;
         const r = MODE.transitionKey(state, { ns, path: p, to: 'cutover', at: nowIso(), by, verified });
         state = r.state; changes.push(...r.changes);
@@ -295,6 +297,7 @@ async function main(argv) {
   const flag = (n) => { const i = args.indexOf(n); if (i < 0) return false; args.splice(i, 1); return true; };
   const opt = (n) => { const i = args.indexOf(n); if (i < 0) return undefined; const v = args[i + 1]; args.splice(i, 2); return v; };
   const json = flag('--json'); const apply = flag('--apply'); const keys = flag('--keys');
+  const skip = []; for (let v = opt('--skip'); v; v = opt('--skip')) skip.push(v);
   const url = opt('--url'); const token = opt('--token'); const projects = opt('--projects') || process.env.AXHUB_PROJECTS_DIR || '/projects';
   const [cmd = 'sets', which = 'all'] = args;
   if (cmd === 'sets') {
@@ -306,7 +309,7 @@ async function main(argv) {
   let ok = true;
   for (const n of names) {
     const log = json ? () => {} : (m) => console.log(`  ${m}`);
-    const r = cmd === 'cutover' ? await cutover(n, { store, apply, keys, projects, log })
+    const r = cmd === 'cutover' ? await cutover(n, { store, apply, keys, skip, projects, log })
       : await check(n, { store, apply: cmd === 'backfill' && apply, projects, log });
     ok = ok && r.ok;
     if (json) console.log(JSON.stringify(r, null, 1)); else print(r);
