@@ -183,6 +183,13 @@ export async function run({ env = process.env, now = Date.now() } = {}) {
   for (const a of actions.filter((x) => x.action === 'give-up')) {
     sendAlert({ source: C.BY, key: `watchdog:gave-up:${a.build}:${a.step}`, severity: 'error', title: `Watchdog could not heal ${a.build}${a.step ? ` / ${a.step}` : ''}`, body: `${a.note}\nFix: look at the build's notes; \`node deploy/watchdog/layer2.mjs scan\` shows what the watchdog sees.`, link: 'build-orchestrator.focus:watchdog', meta: { build: a.build, step: a.step } }, env);
   }
+  // the watchers watch each other: a layer-3 heartbeat older than 10 min restarts its timer
+  const l3 = readJson(join(f.dir, 'l3-heartbeat.json'), null);
+  const l3Age = l3 ? (now - Date.parse(l3.at)) / 60000 : null;
+  if (l3 && l3Age > 10 && !dry(env)) {
+    const r = spawnSync('systemctl', ['restart', 'axf-watchdog-l3.timer'], { encoding: 'utf8', timeout: 30000 });
+    actions.push({ action: 'l3-restart', ok: r.status === 0, note: `Watchdog: layer 3 last ran ${Math.round(l3Age)} min ago: restarted its timer${r.status === 0 ? '' : ' (failed)'}.` });
+  }
   for (const a of actions) logAction(env, a);
   writeJson(f.memory, C.nextMemory(memory, issues, decisions.map((x) => x.d), now));
   writeJson(f.heartbeat, { $axf: C.SCHEMA, at: new Date().toISOString(), started, ok: true, pid: process.pid, issues: issues.length, actions: actions.length });
