@@ -45,8 +45,17 @@
       }
     ]
   },
-  "tokens": { "$axf": "token-registry@1", "uses": [], "defines": [] },
-  "builtWith": { "model": "Opus", "builtAt": "2026-11-19" },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-space"
+    ],
+    "defines": []
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-19"
+  },
   "help": "help.json",
   "opens": "main"
 }

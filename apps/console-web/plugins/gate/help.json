@@ -271,6 +271,13 @@
         "title": "Push to my phone when it gives up",
         "text": "One phone push per build the auto-lander gives up on (after the set number of failed tries). The systems check banner item shows either way.",
         "kind": "control"
+      },
+      {
+        "target": "land-by-itself",
+        "title": "Land by itself",
+        "text": "Turns “Land by itself” on or off. It takes effect straight away and is remembered. Part of Gate & rules.",
+        "kind": "toggle",
+        "draft": true
       }
     ],
     "intros": [

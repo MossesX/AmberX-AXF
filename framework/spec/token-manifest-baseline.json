@@ -8,7 +8,7 @@
     "container-access", "context-menu-designer", "crew-live", "demonstration-designer", "fable-rebuilds", "feature-assist", "feature-matrix", "follow-amber",
     "github-app", "glossary-index", "hub-sync", "main-build-status", "maintenance", "mcp-client", "md-studio", "molly-guide", "notes-browser",
     "notify-control", "output-recorder", "plan-studio", "plugin-commands", "plugin-manager", "plugin-switches", "plugin-update", "plugins-menu", "project-switcher",
-    "project-wizard", "push-banner", "ref-links", "session-checkin", "shipped-features", "snapshot-manager", "systems-check", "theme-editor", "theme-manager",
+    "project-wizard", "ref-links", "session-checkin", "shipped-features", "snapshot-manager", "systems-check", "theme-editor", "theme-manager",
     "todo-manager", "token-control", "ui-review", "voice-notes", "whats-shipped"
   ]
 }

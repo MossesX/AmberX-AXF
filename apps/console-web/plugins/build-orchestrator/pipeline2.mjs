@@ -57,7 +57,7 @@ export function bindPipeline(mod) { PL = mod; }
 /** Load pipeline.mjs when this file is used on its own (tests, the CLI). */
 export const ready = () => pl();
 const logLine = (o) => { try { const f = join(PL.pipeDir(), 'log.jsonl'); mkdirSync(dirname(f), { recursive: true }); appendFileSync(f, `${JSON.stringify({ at: nowIso(), flow: P2.FLOW, ...o })}\n`); } catch { /* the log is a courtesy */ } }; // axf-data: not data (the dispatcher's host-local event log, a courtesy; build state is in the builds store)
-const say = (who, kind, text, ref) => { try { crewSay(who, kind, text, { ref }); } catch { /* the chat is a courtesy */ } };
+const say = (who, kind, text, ref) => { try { if (who === 'dispatcher') crewSay('dispatcher', kind, text, { ref }); else crewSay('orchestrator', kind, text, { ref }); } catch { /* the chat is a courtesy */ } };
 
 /** Every live Pipeline 2.0 build. */
 export const p2Builds = (store) => store.builds.filter((b) => b.flow === P2.FLOW && !b.deleted && b.status !== P2.EXIT);

@@ -382,6 +382,20 @@
         "title": "Fresh session",
         "text": "Retries this build's failure now in a fresh session instead of waiting for the next rung of the ladder. The attempts so far stay in the log.",
         "kind": "button"
+      },
+      {
+        "target": "account",
+        "title": "Account",
+        "text": "Where you set “Account”. Change it and the app uses the new value. Part of Build orchestrator.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-landed",
+        "title": "Show landed",
+        "text": "Turns “Show landed” on or off. It takes effect straight away and is remembered. Part of Build orchestrator.",
+        "kind": "toggle",
+        "draft": true
       }
     ],
     "intros": []

@@ -34,6 +34,7 @@ import { fileURLToPath } from 'node:url';
 import * as L from './lander-core.mjs';
 import * as G from './git.mjs';
 import { makeStore, memoryStore } from './store.mjs';
+import { crewSay } from '../../framework/cli/crew-say.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../..');
@@ -73,12 +74,9 @@ export function takeLock(f) {
   } catch { return { ok: false, release: () => {} }; }
 }
 
-/** A section event in the crew's group chat (framework/cli/crew-say.mjs, child process). Never fails the tick. */
-export function crewSay(repo, event, text, ref = '') {
-  if (process.env.AXF_CREW_SAY === 'off') return false;
-  const cli = join(repo, 'framework/cli/crew-say.mjs');
-  if (!existsSync(cli)) return false;
-  return spawnSync(process.execPath, [cli, 'landing', event, str(text, 600), ...(ref ? ['--ref', ref] : [])], { cwd: repo, encoding: 'utf8', timeout: 30000 }).status === 0;
+/** A "landing" section event in the crew's group chat, posted from the checkout's crew plugin. Never fails the tick. */
+export function sayLanding(repo, event, text, ref = '') {
+  return crewSay('landing', event, str(text, 600), { ref, root: repo }).posted;
 }
 
 /**
@@ -143,7 +141,7 @@ const openedCount = (b) => { const l = L.landingOf(b); return l.merged.length + 
  * One tick. Everything injectable for tests: s (settings), git, gh, store ({ read, write }), cfg, now, agentJob,
  * buildRules, say (crew chat). → { at, build, status, actions: [text], waiting: text, error }
  */
-export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.makeGitHub(s), store, cfg = readConfig(s), now = nowIso, agentJob = defaultAgentJob(s), buildRules = defaultBuildRules(s), say = (ev, text, ref) => crewSay(s.repo, ev, text, ref), dry = false, only = '', log = () => {} } = {}) {
+export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.makeGitHub(s), store, cfg = readConfig(s), now = nowIso, agentJob = defaultAgentJob(s), buildRules = defaultBuildRules(s), say = (ev, text, ref) => sayLanding(s.repo, ev, text, ref), dry = false, only = '', log = () => {} } = {}) {
   const at = now();
   const out = { $axf: 'lander-tick@1', at, build: '', status: '', actions: [], waiting: '', error: '', others: [] };
   if (!cfg.enabled) { out.waiting = 'the lander is switched off (config enabled: false)'; return out; }

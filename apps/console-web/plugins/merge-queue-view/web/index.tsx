@@ -96,7 +96,7 @@ function OwnQueue() {
 
   return (
     <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Merge queue</h1></div></header>
+      <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Merge queue</h1><p className="fx-muted">Every build waiting to land, live from the builds store; the lander lands each one by itself.</p></div></header>
       <Container title="Landing now" icon="branch">
         <p className="fx-muted">{error ? error : !q ? 'Loading the merge queue…' : q.landing ? `${q.landing} is landing; ${Math.max(0, rows.length - 1)} more waiting. Everything here lands by itself.` : rows.length ? `${rows.length} build(s) waiting. Everything here lands by itself.` : 'Nothing waits to land.'}</p>
       </Container>
