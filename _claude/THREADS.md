@@ -836,78 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 02:23 UTC · `host-phone-connect-apk-axhub-browser` added (3 steps) (all) · foreign-write
-- 2026-11-19 02:23 UTC · `console-app-text-way-too-big-system-font` added (6 steps) (all) · foreign-write
-- 2026-11-19 02:23 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · foreign-write
-- 2026-11-19 02:23 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · foreign-write
-- 2026-11-19 02:23 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
-- 2026-11-19 02:23 UTC · `queue-stall-detector-vps-spots-queued` added (10 steps) (all) · foreign-write
-- 2026-11-19 02:23 UTC · `load-spike-alarm-vps-detects-cpu-load` added (10 steps) (all) · foreign-write
-- 2026-11-19 02:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
-- 2026-11-19 02:28 UTC · `postgres-part-b-plan-plan-studio-catalog` s3 done (all) · orchestrator
-- 2026-11-19 02:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
-- 2026-11-19 02:33 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
-- 2026-11-19 02:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
-- 2026-11-19 02:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-19 02:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-19 02:36 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-19 02:36 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-19 02:36 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-19 02:36 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
-- 2026-11-19 02:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
-- 2026-11-19 02:38 UTC · `postgres-part-b-plan-plan-studio-catalog` s4 done, → landing (all) · orchestrator
-- 2026-11-19 02:40 UTC · `postgres-part-b-plan-plan-studio-catalog` s4 done, → landing (all) · foreign-write
-- 2026-11-19 02:40 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
-- 2026-11-19 02:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-19 02:42 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
-- 2026-11-19 02:42 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed (all) · foreign-write
-- 2026-11-19 02:42 UTC · `vps-never-gives-up-fix-land-every-build` → landed (all) · foreign-write
-- 2026-11-19 02:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-19 02:42 UTC · `postgres-part-b-plan-plan-studio-catalog` s3 done, s4 done, → landing (all) · foreign-write
-- 2026-11-19 02:41 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
-- 2026-11-19 02:41 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed (all) · foreign-write
-- 2026-11-19 02:41 UTC · `vps-never-gives-up-fix-land-every-build` → landed (all) · foreign-write
-- 2026-11-19 02:41 UTC · `stop-push-storm-builds-live-pushes-build` → landing, note (all) · foreign-write
-- 2026-11-19 02:41 UTC · `urgent-all-data-to-postgres-builds-store` s3 done, s5 done, note (all) · foreign-write
-- 2026-11-19 02:41 UTC · `postgres-part-c-console-state-settings` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
-- 2026-11-19 02:41 UTC · `postgres-part-b-plan-plan-studio-catalog` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
-- 2026-11-19 02:41 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
-- 2026-11-19 02:41 UTC · `server-safe-mode-one-emergency-button` added (11 steps) (all) · foreign-write
-- 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · pipeline
-- 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
-- 2026-11-19 02:43 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
-- 2026-11-19 02:43 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed (all) · foreign-write
-- 2026-11-19 02:43 UTC · `vps-never-gives-up-fix-land-every-build` → landed (all) · foreign-write
-- 2026-11-19 02:43 UTC · `stop-push-storm-builds-live-pushes-build` → landing, note (all) · foreign-write
-- 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` s3 done, s5 done, note (all) · foreign-write
-- 2026-11-19 02:43 UTC · `postgres-part-c-console-state-settings` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
-- 2026-11-19 02:43 UTC · `postgres-part-b-plan-plan-studio-catalog` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
-- 2026-11-19 02:43 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
-- 2026-11-19 02:43 UTC · `server-safe-mode-one-emergency-button` added (11 steps) (all) · foreign-write
-- 2026-11-19 02:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-19 02:47 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-19 02:47 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
-- 2026-11-19 02:51 UTC · `always-fill-every-slot-when-slots-are` → complete (all) · foreign-write
-- 2026-11-19 02:51 UTC · `every-plugin-screen-gets-a-settings-gear` → complete (all) · foreign-write
-- 2026-11-19 02:51 UTC · `stop-push-storm-builds-live-pushes-build` → landing, note (all) · foreign-write
-- 2026-11-19 02:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-19 02:51 UTC · `postgres-part-c-console-state-settings` note (all) · foreign-write
-- 2026-11-19 02:51 UTC · `postgres-part-b-plan-plan-studio-catalog` s3 done, s4 done, → complete (all) · foreign-write
-- 2026-11-19 02:49 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · foreign-write
-- 2026-11-19 02:54 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
-- 2026-11-19 02:57 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-19 02:56 UTC · `postgres-part-b-plan-plan-studio-catalog` → fixing, note (all) · pipeline
-- 2026-11-19 03:08 UTC · `postgres-part-c-console-state-settings` note (all) · orchestrator
-- 2026-11-19 03:10 UTC · `postgres-part-c-console-state-settings` → landing, note (all) · orchestrator
-- 2026-11-19 03:11 UTC · `postgres-part-c-console-state-settings` note (all) · pipeline
-- 2026-11-19 03:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
-- 2026-11-19 03:23 UTC · `postgres-part-b-plan-plan-studio-catalog` PR #851, note (all) · reconciler
-- 2026-11-19 03:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
-- 2026-11-19 03:40 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
-- 2026-11-19 03:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
-- 2026-11-19 03:45 UTC · `urgent-all-data-to-postgres-builds-store` s8 done, note (all) · orchestrator
-- 2026-11-19 03:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 03:47 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · pipeline
 - 2026-11-19 03:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
 - 2026-11-19 03:48 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · pipeline
@@ -1236,6 +1164,78 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 14:22 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
 - 2026-11-19 14:22 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
 - 2026-11-19 14:22 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
+- 2026-11-19 14:23 UTC · `plan-blueprints` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `blueprint-notes-tasks` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `land-project-create-mcp-resolve-clash` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `skin-animations-animated-colour-swatches` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `grid-token-set-colours-hover-selected` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `orchestrator-stale-row-watchdog-vps` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `picker-dialog-plugin-replaces-all` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `axf-data-postgres-real-tables-own` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `attach-widgets-to-any-toolbar-banner` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `icon-packs-with-drag-drop-pack-designer` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `auto-lander-status-tab-rest-mcp-settings` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `gate-auto-lander-tab-and-controls` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `server-rule-done-means-merged-working` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `shrink-git-history-drop-old-builds` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `builds-keep-their-slot-across-phases` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `settings-opened-banners-nav-menu` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `edit-ui-mode-inline-edit-anything-active` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `auto-lander-drag-rows-to-set-merge-order` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `live-hot-refresh-every-grid-list-re` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `grids-layout-control-voice-controlled` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `change-asset-only-assets-built-screen` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `rebuild-fresh-main-collapsible-sections` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `nothing-saved-browser-all-console` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `merge-queue-view-every-build-s-fully` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `grid-filter-plugin-one-filter-search` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `ci-run-only-what-changed-no-second-run` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `pending-optimizer-ai-finds-pending` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `separate-settings-per-plugin-reset` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `notify-phone-when-queue-starts-building` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `rebuild-every-context-menu-toolbar-nav` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `live-build-status-real-time-grids-15` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `right-click-running-build-open-headless` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `right-click-running-build-pop-open` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `auto-lander-settings-log-placeholder` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `toolbars-1-5-build-orchestrator-incl` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `toolbars-2-5-plan-studio-ui-review` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `toolbars-3-5-settings-appearance-systems` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `toolbars-4-5-chat-viewer-codebase` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `toolbars-2-5-plan-studio-ui-review-2` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `toolbars-5-5-claude-accounts-glossary` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `fix-banner-settings-interface-tab` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `land-pr-730-reset-all-button-far-right` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `flagship-professional-skin-covering` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `remove-amberx-app-code-once-phone` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `settings-fix-part-2-blank-toolbars` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `dispatcher-split-builds-evenly-across` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `move-everything-axhub-web-console` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `one-true-source-for-every-setting` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `vps-sets-every-build-status-manifest` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `api-fully-drives-every-field-type-forms` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `active-tab-add-stop-button-per-running` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `active-tab-stop-button-grid-alignment` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `fix-ci-red-main-watchdog-test-vs-done` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `axhub-routes-for-console-hub` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `vps-frees-stale-build-slots-every-minute` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `vps-frees-stale-build-slots-every-2` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `watchdog-plugin-owns-every-vps` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `one-landing-line-pull-main-merge-one` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `land-watchdogs-pr-832-fix-two-red-ci` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `server-gate-reject-any-build-without` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `one-build-time-always-split-split-id` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `out-credits-account-failover-flag-dead` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `orchestrator-master-pause-switch-stop` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `host-phone-connect-apk-axhub-browser` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `console-app-text-way-too-big-system-font` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `deep-links-to-plugin-s-settings-don-t` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `queue-stall-detector-vps-spots-queued` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `load-spike-alarm-vps-detects-cpu-load` → failed, note (all) · watchdog
+- 2026-11-19 14:23 UTC · `server-safe-mode-one-emergency-button` → failed, note (all) · watchdog
 
 ## Token passes (log)
 
