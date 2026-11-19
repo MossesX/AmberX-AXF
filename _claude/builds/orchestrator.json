@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T01:02:36.932Z",
+ "updatedAt": "2026-11-19T01:05:31.350Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194876,7 +194876,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T00:37:52.626Z",
+   "updatedAt": "2026-11-19T01:05:20.824Z",
    "builtAt": "",
    "notes": [
     {
@@ -195038,7 +195038,7 @@
     },
     {
      "id": "s4",
-     "text": "Move the remaining data namespaces from the inventory to tables, one per step, each verified then cut over",
+     "text": "s4.1 Pending, build queue, agent-slots, auto-lander to tables (DATA-INVENTORY order 1): pending/queue are projections of the builds tables since s3; agent-slots and auto-lander state get tables; each verified (counts) then cut over",
      "model": "Opus",
      "why": "",
      "phase": "",
