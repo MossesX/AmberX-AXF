@@ -840,12 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:50 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 12:51 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 12:52 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · voice session
-- 2026-11-18 12:53 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · foreign-write
-- 2026-11-18 12:53 UTC · `plan-studio-2-open-button-working-deep` s4 done, s5 done (all) · foreign-write
-- 2026-11-18 12:53 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
 - 2026-11-18 12:53 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 12:53 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 - 2026-11-18 12:56 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
@@ -1240,6 +1234,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:15 UTC · `postgres-part-c-console-state-settings` note (all) · orchestrator
 - 2026-11-19 00:15 UTC · `postgres-part-c-console-state-settings` branch claude/postgres-part-c-console-state-settings (all) · pipeline
 - 2026-11-19 00:15 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · pipeline
+- 2026-11-19 00:16 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-19 00:16 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-19 00:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-19 00:16 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-19 00:17 UTC · `queue-stall-detector-vps-spots-queued` added (0 steps) (all) · voice session
+- 2026-11-19 00:17 UTC · `queue-stall-detector-vps-spots-queued` added (0 steps) (all) · foreign-write
 
 ## Token passes (log)
 

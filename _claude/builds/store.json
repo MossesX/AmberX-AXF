@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9173,
- "updatedAt": "2026-11-19T00:16:28.524Z",
+ "rev": 9174,
+ "updatedAt": "2026-11-19T00:17:42.421Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -244419,7 +244419,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -244428,8 +244428,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T23:42:10.836Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-19T00:16:21.534Z",
+   "builtAt": "2026-11-19T00:16:21.534Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -244690,6 +244690,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T23:42:10.836Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
     }
    ],
    "approvals": [],
@@ -244750,14 +244754,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "failure": {
-    "kind": "ci-red",
-    "at": "2026-11-18T23:42:10.836Z",
-    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
-    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
-    "step": "",
-    "exit": null
    },
    "landed": {
     "pr": 767,
@@ -245305,7 +245301,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275428,8 +275424,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T23:40:58.645Z",
-   "builtAt": "2026-11-18T23:40:58.645Z",
+   "updatedAt": "2026-11-19T00:16:21.534Z",
+   "builtAt": "2026-11-19T00:16:21.534Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -275782,6 +275778,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T23:40:58.645Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
     }
    ],
    "approvals": [
@@ -276580,7 +276580,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 128,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313820,8 +313820,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T23:40:58.645Z",
-   "builtAt": "2026-11-18T23:40:58.645Z",
+   "updatedAt": "2026-11-19T00:16:21.534Z",
+   "builtAt": "2026-11-19T00:16:21.534Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -313946,6 +313946,10 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T23:40:58.645Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
     }
    ],
    "approvals": [],
@@ -314371,7 +314375,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -319154,8 +319158,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T23:40:58.645Z",
-   "builtAt": "2026-11-18T23:40:58.645Z",
+   "updatedAt": "2026-11-19T00:16:21.534Z",
+   "builtAt": "2026-11-19T00:16:21.534Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319268,6 +319272,10 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-18T23:40:58.645Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
     }
    ],
    "approvals": [],
@@ -319435,7 +319443,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323040,6 +323048,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-19T00:12:01.642Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "queue-stall-detector-vps-spots-queued",
+   "title": "Queue stall detector: VPS spots queued builds that aren't running and fixes it itself (AI fix behind a switch, default off)",
+   "category": "Builds > Pipeline",
+   "detail": "Brett (voice, Nov 19 2026): \"There needs to be something on the VPS to detect it when things are in the queue and not running … and then fix it. On its own, without AI. Or with, if the switch is on. Default off.\" Also: \"put some chatter in the group chat asking people to do different things and give them response.\"\n\nSeen today: three Postgres builds queued, 0 of 4 slots running and 0 waiting while the pipeline cron was on; earlier launches failed on a broken worktree and on the dispatcher running claude-headless.sh from an old build folder (axf-molly-container-orchestrator-gate, HOME unbound); the reconciler kept bouncing a build back to the Queue every 20-30 min without launching it.\n\nWhat to build:\n1. Detector on the VPS (server side, no AI, no console needed): every tick, if any build is queued and free slots exist but nothing launched within N minutes, it is a stall. Record why (dispatcher not ticking, lock held, launch failed, worktree broken, wrong launcher path, account limit, slot state stale).\n2. Auto-fix ladder without AI: restart the dispatcher tick, clear a stale lock or slot row, rebuild the worktree, use the launcher from /opt/axf only, try the next account; re-check after each.\n3. AI fix switch: setting axf.pipeline.stall.aiFix, default OFF. When on and the no-AI ladder is used up, start one headless Claude session to diagnose and fix.\n4. Group chat chatter: post each stall, each fix attempt and its result in the crew group chat, assigning the steps to named agents (who checks the lock, who rebuilds the worktree, who retries the launch) with their replies, so Brett can follow it.\n5. Banner + one phone push when it can't fix it (systems check health@1 item with Auto fix).\nExtend the existing stale-row watchdog / server watchdog (orchestrator-stale-row-watchdog-vps, server-watchdog-orchestrator-auto-recovers-stuck) instead of adding another cron; check for overlap first. Full API control (REST, MCP, CLI, voice) for its status, settings and the switch.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-19T00:16:59.516Z",
+   "updatedAt": "2026-11-19T00:16:59.516Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1015
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
