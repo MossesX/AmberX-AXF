@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 17:30 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-18 17:31 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 17:33 UTC · `attach-widgets-to-any-toolbar-banner` s15 done (all) · foreign-write
 - 2026-11-18 17:33 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 06:46 UTC · `urgent-all-data-to-postgres-builds-store` s8 done, → complete, note (all) · foreign-write
 - 2026-11-19 06:46 UTC · `postgres-part-c-console-state-settings` note (all) · foreign-write
 - 2026-11-19 06:46 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · foreign-write
+- 2026-11-19 06:46 UTC · `urgent-all-data-to-postgres-builds-store` s13 done, → complete, note (all) · foreign-write
 
 ## Token passes (log)
 
