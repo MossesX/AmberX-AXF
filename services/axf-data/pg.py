@@ -117,6 +117,9 @@ class PgStore:
     def _connect(self) -> psycopg.Connection:
         conn = psycopg.connect(_dsn_with_schema(self.dsn, self.schema), autocommit=True, row_factory=dict_row)
         with conn.transaction():
+            # the schema check takes locks a running pg_dump (the nightly backup) holds for an hour: waiting would also queue
+            # every live write behind it (Nov 19 2026). Fail the start fast instead; the installer reports it and changes nothing.
+            conn.execute("SET LOCAL lock_timeout = '15s'")
             conn.execute(f'CREATE SCHEMA IF NOT EXISTS {self.schema}')
             conn.execute(T.MIGRATE_V2_SQL)
             conn.execute(SCHEMA_SQL)
