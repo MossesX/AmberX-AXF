@@ -30,10 +30,11 @@
  *
  * `<item>` is an id, or the title / words in it ("the step about deploy"): tree-core resolve().
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as tc from './web/tree-core.mjs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { projectDataDir } from '../../../../framework/cli/projects.mjs';
 
@@ -42,8 +43,10 @@ export const ROOT = resolve(HERE, '../../../..');
 export const FOLDER = 'plan-studio-2';
 export const FILE = 'tree.json';
 
-const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); }
+// Through data-files (data-store@1): the hub copy maps to planner/v2/tree.json (planner_tree rows on axf-data), so the
+// tree follows the planner namespace's mode (local file, shadow copy, or axf-data only after the cut-over).
+const readJson = (f, d = null) => { try { return dataFiles.readJsonSync(f, d); } catch { return d; } };
+const writeJson = (f, v) => dataFiles.writeJsonSync(f, v, 1);
 
 /** Where the tree lives: the hub's shared data per project, else the plugin's data folder; AXF_PLAN_TREE_DIR as given. */
 export function storeDir() {

@@ -107,6 +107,8 @@ class PgStore:
         self._assembled: dict[tuple[str, str], tuple[str, bytes]] = {}  # (ns, path) → (etag, body) of the last table-backed document
         self.hooks: list = []
         self.db: psycopg.Connection = self._connect()
+        if os.environ.get('AXF_DATA_BACKFILL', '1') != '0':
+            threading.Thread(target=self.backfill, name='axf-data-backfill', daemon=True).start()
         self.journal = PgJournal(self)
         self.hooks.append(self.journal)
         self.mirror_map = T.mirror_map()
@@ -115,12 +117,65 @@ class PgStore:
     def _connect(self) -> psycopg.Connection:
         conn = psycopg.connect(_dsn_with_schema(self.dsn, self.schema), autocommit=True, row_factory=dict_row)
         with conn.transaction():
+            # the schema check takes locks a running pg_dump (the nightly backup) holds for an hour: waiting would also queue
+            # every live write behind it (Nov 19 2026). Fail the start fast instead; the installer reports it and changes nothing.
+            conn.execute("SET LOCAL lock_timeout = '15s'")
             conn.execute(f'CREATE SCHEMA IF NOT EXISTS {self.schema}')
             conn.execute(T.MIGRATE_V2_SQL)
             conn.execute(SCHEMA_SQL)
             T.migrate_v2(conn)
             conn.execute('INSERT INTO meta (k, v) VALUES (%s, %s) ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v', ('tables_version', str(T.TABLES_VERSION)))
         return conn
+
+    def backfill(self) -> dict:
+        """Move keys a newer domain table claims (T.BACKFILL) out of `records` / plain blobs into it. Each key in its own
+        transaction under the store lock (the API keeps answering between keys; started in a thread at start-up): the body is
+        read, stored in the table, read back and compared byte for byte; on any difference the key stays where it was and
+        is listed under `failed`. rev and etag are unchanged (the body is the same). Idempotent: a key already in its table
+        is skipped. The report is kept in meta `backfill` (GET /v1/_meta/tables)."""
+        out = {'at': self.now(), 'version': T.TABLES_VERSION, 'moved': {}, 'failed': [], 'checked': 0, 'done': False}
+        try:
+            keys = self.fetchall("SELECT ns, path, kind, rev, etag, content_type, table_name, blob_sha, deleted FROM keys WHERE NOT deleted AND kind IN ('record', 'blob')")
+        except Exception as e:  # noqa: BLE001 - a start-up thread: report, never crash the service
+            out['error'] = str(e)[:300]
+            return out
+        for r in keys:
+            probe = b'{' if r['kind'] == 'record' else b''
+            t = next((x for x in T.TABLES if x.name in T.BACKFILL and x.match(r['ns'], r['path'], r['kind'], r['content_type'] or '', probe)), None)
+            if not t or r['table_name'] == t.name:
+                continue
+            out['checked'] += 1
+            try:
+                with self.tx() as cur:
+                    cur.execute('SELECT table_name, etag FROM keys WHERE ns=%s AND path=%s AND NOT deleted', (r['ns'], r['path']))
+                    now = cur.fetchone()
+                    if not now or now['etag'] != r['etag'] or now['table_name'] == t.name:
+                        continue   # written meanwhile: the write already put it where it belongs
+                    if r['kind'] == 'blob' and not r['table_name']:
+                        cur.execute('SELECT bytes FROM blobs WHERE sha=%s', (r['blob_sha'],))
+                        b = cur.fetchone()
+                        body = bytes(b['bytes']) if b else None
+                    else:
+                        body = self._read_body(cur, dict(r))
+                    if body is None:
+                        raise ValueError('no body')
+                    if not t.match(r['ns'], r['path'], r['kind'], r['content_type'] or '', body) or T.table_for(r['ns'], r['path'], r['kind'], r['content_type'] or '', body) is not t:
+                        continue
+                    stored, tname, digest = self._store_body(cur, r['ns'], r['path'], r['kind'], body, r['content_type'] or '')
+                    if stored != body:
+                        raise ValueError(f'reads back different ({len(stored)} bytes, was {len(body)})')
+                    cur.execute('UPDATE keys SET table_name=%s, blob_sha=%s WHERE ns=%s AND path=%s', (tname, digest, r['ns'], r['path']))
+                    self._assembled.pop((r['ns'], r['path']), None)
+                    out['moved'][tname] = out['moved'].get(tname, 0) + 1
+            except Exception as e:  # noqa: BLE001 - one bad key must not stop the others or the start
+                out['failed'].append({'ns': r['ns'], 'path': r['path'], 'table': t.name, 'error': str(e)[:300]})
+        out['done'], out['finishedAt'] = True, self.now()
+        if out['checked']:
+            try:
+                self.q('INSERT INTO meta (k, v) VALUES (%s, %s) ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v', ('backfill', json.dumps(out)))
+            except Exception:  # noqa: BLE001
+                pass
+        return out
 
     def _ensure(self) -> psycopg.Connection:
         if self.db.closed or self.db.broken:
@@ -191,6 +246,11 @@ class PgStore:
     def _store_body(self, cur, ns: str, path: str, kind: str, body: bytes, content_type: str) -> tuple[bytes, str, str | None]:
         """Put a body where it belongs. Returns (body as a reader gets it, table name, blob sha)."""
         t = T.table_for(ns, path, kind, content_type, body)
+        if t and getattr(t, 'keeps_blob', False):
+            self._clear_tables(cur, ns, path)
+            digest = self._write_blob(cur, body)
+            t.write_meta(cur, ns, path, digest, len(body), content_type, self.now())
+            return body, t.name, digest
         if t:
             cur.execute('DELETE FROM records WHERE ns=%s AND path=%s', (ns, path))
             t.write(cur, ns, path, body)
@@ -655,7 +715,9 @@ class PgStore:
             b = self.fetchone('SELECT pg_total_relation_size(%s) AS b', (name,))['b']
             group = 'core' if name in CORE_TABLES else ('mirror' if any(name.startswith(p + '_') for p in set(self.mirror_map.values())) else 'domain')
             rows.append({'name': name, 'rows': n, 'bytes': b, 'group': group, 'holds': T.describe(name, self.mirror_map)})
-        return {'$axf': 'data-tables@1', 'engine': 'postgres', 'tables': rows, 'mirrors': T.mirror_runs(self), 'at': self.now()}
+        bf = self.fetchone("SELECT v FROM meta WHERE k='backfill'")
+        return {'$axf': 'data-tables@1', 'engine': 'postgres', 'tables': rows, 'mirrors': T.mirror_runs(self),
+                'backfill': json.loads(bf['v']) if bf else None, 'at': self.now()}
 
     # ── import (migrate_pg.py: copy a SQLite axf-data in, metadata kept as it was) ──
     def import_key(self, r: dict, body: bytes | None, lines: list[str] | None = None) -> None:

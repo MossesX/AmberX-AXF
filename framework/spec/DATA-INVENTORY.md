@@ -28,6 +28,38 @@ axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` da
   `node framework/cli/builds-data.mjs cutover --apply`; `builds-data.mjs status` shows both sides. The file-lock path
   (`store.json.lock`, the `tmp-*` files) is no longer in use for the store; s3 removes the leftovers.
 
+- **s4.2 done (Nov 19 2026, Opus, build `postgres-part-b-plan-plan-studio-catalog`)**: `tables.py` version 3 adds
+  `ItemsTable` (a document whose lists are rows of one table keyed `(ns, path, list, pos)`, `rid` = the item's key,
+  `value` for scalar lists, the rest of the item in `extra`, the head in `store_heads`; only changed rows are rewritten)
+  and `MediaTable` (bytes in `blobs`, one metadata row). New tables: `plan_items` (plan.json and every profile copy),
+  `plan_profiles`, `plan_projects` (`framework/plan/projects.json`), `projects` (every `project.manifest.json`),
+  `plan_media`, `planner_history` (one row per saved version), `planner_categories`, `planner_lists` (deleted,
+  catalog-seen, blueprints), `planner_tree` (Plan Studio 2, now mapped `plan-studio-2/* → planner/v2/*`), view
+  `planner_shipped` over the journal. Keys written before a table existed move in on connect (`PgStore._backfill`,
+  byte-equal check per key, report in `GET /v1/_meta/tables` → `backfill`). Copy / check / cut:
+  `node framework/cli/data-tables.mjs status|backfill|cutover plan`.
+  Live Nov 19 2026 01:54 UTC: axf-data redeployed, backfill moved 301 keys (0 failed), 9 files axf-data lacked or held
+  stale were written, every table equals the files (plan_items 1 023, planner_history 893, planner_lists 388,
+  planner_categories 92, projects 22, planner_items 10, plan_media 9, plan_profiles 2, planner_tree 2, plan_projects 1),
+  and **`planner` is in cutover**. The `console` keys (plan.json, profiles, projects, media, manifests) stay on files
+  until the console runs code with key-level modes (it started before #848): then
+  `data-tables.mjs cutover plan --apply --keys`.
+
+- **s4.3 done (Nov 19 2026, Opus)**: `catalog_features` (status.json and profile copies; `ItemsTable` reads the map
+  document `id → feature` as rows, rid = the feature id), `catalog_libraries`, `project_rules` (rules + known keys);
+  view `tracker` over `catalog_features`. `tracker.json` is generated (tracker.mjs), mapped `to: null` and no longer
+  stored; its old axf-data copy was dropped at the cut. Live 02:05 UTC: 466 / 23 / 39 rows equal the files
+  (`data-tables.mjs cutover catalog --apply`). The three `console` keys flip with the plan keys (`--keys`, same reason).
+
+- **s4.6 tables done (Nov 19 2026, Opus)**: `sessions` (one row per archived session, `HeadItemsTable`: the head is a row
+  of its own table) + `session_messages` (one row per prompt), `codebase_changes` (one row per change-log@1 entry).
+  The backfill now runs in a background thread, one key per transaction under the store lock (7 641 keys moved in
+  5.5 min with the API answering; 0 failed). Live 02:25 UTC: 1 726 hub files axf-data lacked or held stale were
+  written; 7 124 / 8 057 / 2 252 rows equal the files. **Not cut over**: the change log
+  (`codebase-changes/changes-core.mjs` `ChangeStore.put`) and the session archiver write the hub files directly; in
+  cutover they would write files nobody reads. `data-tables.mjs cutover sessions` refuses the flip (`flipBlocked`)
+  until they go through `framework/core/data-files.mjs`; until then `backfill sessions --apply` keeps axf-data current.
+
 Row counts below are live `keys` rows in axf-data (not deleted); sizes are the stored bodies.
 
 ## Legend

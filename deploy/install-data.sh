@@ -81,10 +81,12 @@ docker volume inspect "$DB_VOL" >/dev/null 2>&1 || docker volume create --label 
 # ── 3. service tokens (made once; re-running keeps them) ──
 umask 077
 mkdir -p "$CONF/env"
+# orchestrator = the host token (conf/env/host.env): CLIs on the VPS itself (plan.mjs, persist.mjs, tracker.mjs, build
+# sessions) read and write the shared plan / catalog / project keys once they are cut over (postgres-part-b)
 grants_for() {
   case "$1" in
     console) printf '%s' '{"*":["read","write","append"]}' ;;
-    orchestrator) printf '%s' '{"builds":["read","write","append"],"planner":["read","write","append"],"ui-review":["read","write"],"changes":["read","write"],"console/agent-slots":["read","write"],"sessions":["append"]}' ;;
+    orchestrator) printf '%s' '{"builds":["read","write","append"],"planner":["read","write","append"],"ui-review":["read","write"],"changes":["read","write"],"console/agent-slots":["read","write"],"console/framework":["read","write"],"console/projects":["read","write"],"console/project.manifest.json":["read","write"],"sessions":["append"]}' ;;
     axhub) printf '%s' '{"notes":["read","write","append"],"builds":["read","write","append"],"settings":["read","write"],"planner":["read","write","append"],"ui-review":["read"],"changes":["read"]}' ;;
     cli) printf '%s' '{"*":["admin"]}' ;;
   esac
