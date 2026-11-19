@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T17:43:40.241Z",
+ "updatedAt": "2026-11-19T17:43:58.814Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -187302,15 +187302,15 @@
    "title": "Remove the AmberX app code once Phone Connect is paired",
    "category": "",
    "detail": "Follow-up of rebuild-fresh-main-phone-connect-small s24 (decision Nov 17 2026, _claude/memory/decisions.md → Phone Connect replaces the AmberX app). AmberX is retired in policy; its code goes only after Phone Connect is installed and paired on Brett's phone so approvals and pushes never go dark.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-main-ci-p2",
    "pr": "#853",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T17:43:34.170Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-19T17:43:42.350Z",
+   "builtAt": "2026-11-19T17:43:42.350Z",
    "notes": [
     {
      "text": "Repeated steps collapsed: 224 → 7 (step-dedupe cleanup).",
@@ -187511,8 +187511,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T17:43:42.350Z",
      "note": "",
      "uid": "st-mwlaugiyltccsk",
      "createdAt": "2026-11-17T21:58:19.850Z"
