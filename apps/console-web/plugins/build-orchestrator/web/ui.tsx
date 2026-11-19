@@ -14,7 +14,7 @@ import './orchestrator.css';
  * Build orchestrator page (Pipeline 2.0, Brett, Nov 18-19 2026): ONE table driven only by status (StatusTable.tsx).
  * No tabs: builds are rows that expand to their steps, and every former tab is a filter on the table's toolbar
  * (openTab maps the old tab ids onto filters, so deep links and voice commands keep working). The merge queue is the
- * same table filtered to merging-pr through merging-main (MergeQueueView). What used to be the non-build tabs
+ * same table filtered to merging-pr through merging-main (slot builds.merge-queue, which the merge-queue@2 view renders). What used to be the non-build tabs
  * (Accounts, Watchdog, Groups, Approvals, Rules) are panels of Settings → Plugins → Build orchestrator.
  * Deep link: nav:build-orchestrator, or action build-orchestrator.focus:<build | status | old tab id>.
  */
@@ -62,20 +62,6 @@ export function OrchestratorPage() {
         <div className="fx-row fx-row--wrap"><Slot name="builds.toolbar" props={{ page: 'build-orchestrator' }} /></div>
       </header>
       <StatusTable api={api} />
-    </div>
-  );
-}
-
-/** The merge queue (read-only): the same table and source, filtered to merging-pr through merging-main. */
-export function MergeQueueView() {
-  return (
-    <div className="fx-stack fx-stack--lg">
-      <header className="fx-pagehead"><div>
-        <p className="fx-eyebrow">Build orchestrator · read-only</p>
-        <h1>Merge queue</h1>
-        <p className="fx-muted">Builds merging to one PR, pulling main, running CI and merging into main. The same rows the Builds table shows, from the same store.</p>
-      </div></header>
-      <StatusTable api={api} mode="queue" />
     </div>
   );
 }

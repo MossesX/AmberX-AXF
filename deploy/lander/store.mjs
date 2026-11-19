@@ -7,6 +7,7 @@
  *   build  status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, note? }], attempt, failure, pr,
  *          landing { split, merged[pr], closed[pr], reruns { head, n }, rules { head, ok, failing }, ciKick { head, at } }
  *   step   status, prNumber, statusAt, statusBy, statusLog[…]
+ *          mergedAt, landed { pr, sha, mergedAt, ci, ciAt } with `landed` (done-means-merged@1 evidence); failedFrom with `failed`
  * applyChange() is pure; makeStore() binds it to the real store, memoryStore() to a list (tests, dry runs).
  */
 import * as L from './lander-core.mjs';
@@ -26,6 +27,9 @@ export function applyChange(build, ch = {}, { at = new Date().toISOString(), by 
   const log = (list, entry, max) => [...(Array.isArray(list) ? list : []), entry].slice(-max);
   if (ch.status && ch.status !== b.status) {
     if (L.canMove(b.status, ch.status, { group: ch.group === true })) {
+      // pipeline-2@1: a failed build records the status it failed in (failedFrom), so it keeps the one active place and
+      // the watchdog and the table see where; it is dropped once the build leaves failed
+      if (ch.status === 'failed') b.failedFrom = b.status; else delete b.failedFrom;
       b.status = ch.status; b.statusAt = at; b.statusBy = by;
       b.statusLog = log(b.statusLog, { status: ch.status, at, by, ...(ch.status === 'failed' ? { attempt: ch.attempt ?? b.attempt ?? 0 } : {}), ...(ch.note ? { note: str(ch.note, 300) } : {}) }, LOG_MAX);
       if (ch.status === 'landed') b.landedAt = at;
@@ -37,7 +41,9 @@ export function applyChange(build, ch = {}, { at = new Date().toISOString(), by 
   if (ch.failure !== undefined) { if (ch.failure) b.failure = clone(ch.failure); else delete b.failure; }
   if (ch.landing) b.landing = { ...(b.landing || {}), ...clone(ch.landing) };
   if (ch.pr !== undefined) b.pr = str(ch.pr, 200);
-  if (ch.note) b.notes = log(b.notes, { text: str(ch.note, 2000), at }, 500);
+  if (ch.mergedAt) b.mergedAt = str(ch.mergedAt, 40);
+  if (ch.landed) b.landed = { ...(b.landed || {}), ...clone(ch.landed) };
+  if (ch.note) b.notes = log(b.notes, { text: str(ch.note, 2000), at, by }, 500);
   for (const sc of ch.steps || []) {
     const s = (b.steps || []).find((x) => x.id === sc.id);
     if (!s) { refused.push(`${b.id}: no step ${sc.id}`); continue; }
@@ -97,9 +103,9 @@ export async function makeStore({ by = 'lander', repo } = {}) {
       let refused = []; let missing = false;
       try {
         S.withStore((x) => {
-          const b = find(x, id); if (!b) { missing = true; return x; }
-          const r = applyChange(b, ch, { by }); refused = r.refused;
-          Object.assign(b, r.build);
+          const i = (x?.builds || []).findIndex((b) => b.id === id); if (i < 0) { missing = true; return x; }
+          const r = applyChange(x.builds[i], ch, { by }); refused = r.refused;
+          x.builds[i] = r.build; // whole record: a cleared field (failure: null, failedFrom) must go, not linger
           return x;
         }, { by, action: 'lander', note: `${id}${ch.status ? ` → ${ch.status}` : ''}${ch.attempt ? ` (attempt ${ch.attempt})` : ''}` });
       } catch (e) { return { ok: false, why: `store write failed: ${str(e.message, 300)}`, refused }; }

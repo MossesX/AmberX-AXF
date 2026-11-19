@@ -56,7 +56,7 @@ export function facts(env = process.env, now = Date.now()) {
     schedules: sched,
     layer2AgeMin: ageMinOf(hb?.at, now),
     tickAgeMin: ageMinOf(tickAt, now),
-    // until the orchestrator has a `tick` command (p2-status-core) there is no tick to watch
+    // the tick is watched only while orchestrator.mjs has its `tick` command (Pipeline 2.0 layer 1)
     tickScript: (() => { try { return /['"]tick['"]/.test(readFileSync(join(REPO, cron.ORCH_TICK), 'utf8')); } catch { return false; } })(),
     layer2Procs: procs('deploy/watchdog/layer2.mjs'),
     tickProcs: procs(`${cron.ORCH_TICK} tick`),

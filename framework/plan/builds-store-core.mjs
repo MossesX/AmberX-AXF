@@ -248,14 +248,17 @@ export function normBuild(b, ctx = {}) {
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     builtAt: FINISHED.includes(o.status) ? str(o.builtAt, 40) : '',
-    notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40) })).filter((n) => n.text),
+    notes: (Array.isArray(o.notes) ? o.notes : []).map((n) => ({ text: str(n?.text, 2000), at: str(n?.at, 40), ...(str(n?.by) ? { by: str(n.by, 80) } : {}) })).filter((n) => n.text), // by: who wrote it (watchdog, lander…), when set
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval), // model-switch.mjs: who approved, how
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
     // done-means-merged@1 (framework/core/build-pipeline.mjs): every try at a failure, the open failure, the merge + verify evidence, why it stopped
     ...(Array.isArray(o.attempts) && o.attempts.length ? { attempts: normAttempts(o.attempts) } : {}),
-    ...(normFailure(o.failure) ? { failure: normFailure(o.failure) } : {}),
+    // the failure record: a Pipeline 2.0 build carries the lander's (lander@1), any other build done-means-merged's
+    ...(P2.isP2(o) ? (P2.normLandFailure(o.failure) ? { failure: P2.normLandFailure(o.failure) } : {}) : (normFailure(o.failure) ? { failure: normFailure(o.failure) } : {})),
+    ...(P2.isP2(o) && P2.normLanding(o.landing) ? { landing: P2.normLanding(o.landing) } : {}), // lander@1: the PR groups, merged / closed PRs, CI re-runs, rules per head
+    ...(P2.isP2(o) && str(o.landedAt) ? { landedAt: str(o.landedAt, 40) } : {}),
     ...(normLanded(o.landed) ? { landed: normLanded(o.landed) } : {}),
     ...(normEscalation(o.escalation) ? { escalation: normEscalation(o.escalation) } : {}),
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)

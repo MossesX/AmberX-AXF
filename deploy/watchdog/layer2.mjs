@@ -44,6 +44,8 @@ export const dirOf = (env = process.env) => env.AXF_WATCHDOG2_DIR || join(pipeDi
 export const files = (env = process.env) => { const d = dirOf(env); return { dir: d, heartbeat: join(d, 'heartbeat.json'), memory: join(d, 'memory.json'), settings: join(d, 'settings.json'), actions: join(d, 'actions.jsonl') }; };
 export const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
 export const DEFAULT_TICK = 'node apps/console-web/plugins/build-orchestrator/orchestrator.mjs tick';
+/** The lander's statuses are nudged with one lander tick for that build (deploy/lander/run.mjs, under its own lock). */
+export const DEFAULT_LANDER_TICK = 'node deploy/lander/run.mjs tick';
 
 export const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.${process.pid}.tmp`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
@@ -66,12 +68,13 @@ export function tmuxHas(name) {
   return r.status === 0;
 }
 
-/** Where a step runs: the step's own fields first (session, worktree, log), then the build-id naming the launcher uses. */
+/** Where a step runs: the step's own fields first (tmux, worktree, log), then the build-id naming the launcher uses. */
 export function placeOf(b, s, env = process.env) {
   const name = s.worktree || (s.branch ? String(s.branch).replace(/^claude\//, '') : '') || `${b.id}-${s.id}`;
   const wt = name.startsWith('/') ? name : join(worktreesRoot(env), name);
   const base = wt.split('/').pop();
-  return { session: s.session || `axf-${base}`, worktree: wt, log: s.log || join(wt, `${base}.log`), jsonl: join(wt, `${base}.jsonl`) };
+  // pipeline-2@1 keeps the tmux session name in `tmux` (`session` is the builds@1 same/new field)
+  return { session: s.tmux || `axf-${base}`, worktree: wt, log: s.log || join(wt, `${base}.log`), jsonl: join(wt, `${base}.jsonl`) };
 }
 
 /** What is alive for every `building` step: tmux, the log tail (limit text), how long the log has been silent. */
@@ -103,7 +106,10 @@ function sh(cmd, env, timeout = 300000) {
   const r = spawnSync('bash', ['-c', cmd], { cwd: REPO, env: { ...env, AXF_ACTOR: C.BY }, encoding: 'utf8', timeout });
   return { ok: r.status === 0, code: r.status, out: String(r.stdout || '').slice(-400), err: String(r.stderr || r.error?.message || '').slice(-400) };
 }
-export function nudge(build, env = process.env) { return sh(`${env.AXF_WATCHDOG2_TICK || DEFAULT_TICK} --build ${JSON.stringify(build)}`, env, 600000); }
+export function nudge(build, env = process.env, { lander = false } = {}) {
+  if (lander) return sh(`${env.AXF_WATCHDOG2_LANDER_TICK || DEFAULT_LANDER_TICK} --only ${JSON.stringify(build)}`, env, 600000);
+  return sh(`${env.AXF_WATCHDOG2_TICK || DEFAULT_TICK} --build ${JSON.stringify(build)}`, env, 600000);
+}
 function kill(session, env) { if (!session || dry(env)) return; spawnSync('tmux', ['kill-session', '-t', `=${session}`], { timeout: 10000 }); }
 async function outAccount(name, text, env) {
   if (!name || dry(env)) return;
@@ -169,7 +175,7 @@ export async function run({ env = process.env, now = Date.now() } = {}) {
   // re-run stuck transitions (layer 1 for that build), each one note on the build
   const nudged = [];
   for (const { issue, d } of acting.filter(({ d }) => d.action === 'nudge')) {
-    const r = nudge(issue.build, env);
+    const r = nudge(issue.build, env, { lander: d.lander === true });
     const note = `Watchdog: ${issue.step ? `step ${issue.step}` : 'build'} stuck at ${issue.status} (${issue.minutes} min past budget): re-ran the transition (${d.n})${r.ok ? '' : `, the tick exited ${r.code}`}.`;
     nudged.push({ build: issue.build, note });
     actions.push({ build: issue.build, step: issue.step || '', kind: issue.kind, action: 'nudge', note, ok: r.ok });

@@ -29,6 +29,13 @@ export const P2_ONLY = Object.freeze(BUILD_FLOW.filter((s) => !['pending', 'land
  * main, merges or touches main while one is (the dispatcher's gate, the lander's and the watchdog's).
  */
 export const ACTIVE = Object.freeze(BUILD_FLOW.slice(BUILD_FLOW.indexOf('pulling-main'), BUILD_FLOW.indexOf('landed')));
+/**
+ * One PR group's landing run (the lander, lander@1): over the size cap or after a split a build lands as several PRs,
+ * one at a time, and each later group runs these again from `merging-pr`.
+ */
+export const LANDING_GROUP = Object.freeze(BUILD_FLOW.slice(BUILD_FLOW.indexOf('merging-pr'), BUILD_FLOW.indexOf('landed')));
+/** Step statuses a step dies in while it is being sent or built: its relaunch re-enters at `ready` (watchdog layer 2). */
+export const RELAUNCH_FROM = Object.freeze(['ready', 'sending', 'building']);
 /** A build that failed while active still holds the one active place (its retry continues forward). */
 export const holdsActive = (b) => !!b && b.flow === FLOW && !b.deleted && (ACTIVE.includes(b.status) || (b.status === FAILED && ACTIVE.includes(b.failedFrom)));
 /** A Pipeline 2.0 build may also be archived (removed from the table); that is the one way out of the flow. */
@@ -44,7 +51,8 @@ export const STEP_LABELS = Object.freeze({
 });
 /** The fields a build or step carries for the contract. */
 export const BUILD_FIELDS = Object.freeze(['flow', 'status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog']);
-export const STEP_FIELDS = Object.freeze(['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', 'model', 'account', 'slot', 'prNumber', 'worktree', 'branch', 'tmux']);
+export const STEP_FIELDS = Object.freeze(['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', 'model', 'account', 'slot', 'prNumber', 'worktree', 'branch', 'tmux', 'tried']);
+export const TRIED_MAX = 10;
 export const LOG_MAX = 60;
 
 const str = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -66,8 +74,11 @@ export function labelOf(status, attempt = 1, kind = 'build') {
  *  - a status outside the contract is refused;
  *  - a record not yet in the contract (no status, or a builds@1 status) may enter it anywhere;
  *  - `failed` from anything but the last status of the flow;
- *  - out of `failed`: to the status it failed at or later (retry = true, attempt + 1);
- *  - otherwise forward only (skips allowed), never back.
+ *  - out of `failed`: to the status it failed at or later (retry = true, attempt + 1); two named re-entries:
+ *    a step that failed at ready / sending / building may relaunch at `ready` (RELAUNCH_FROM), and a build that failed
+ *    in a PR group's landing run may retry at any status of that run (LANDING_GROUP: re-run CI, split, pull main);
+ *  - otherwise forward only (skips allowed), never back, except that a build in a landing run may start the next PR
+ *    group at `merging-pr` (the lander's size cap and splits).
  */
 export function checkTransition(rec, to, kind = 'build') {
   const cur = str(rec?.status, 40);
@@ -78,10 +89,14 @@ export function checkTransition(rec, to, kind = 'build') {
   const flow = flowOf(kind); const last = flow[flow.length - 1];
   if (to === FAILED) return cur === last ? { ok: false, why: `${cur} is final: it cannot fail any more` } : { ok: true, why: '', retry: false };
   if (cur === FAILED) {
-    const from = rank(str(rec?.failedFrom, 40), kind);
-    if (from >= 0 && rank(to, kind) < from) return { ok: false, why: `a retry continues forward: ${kind} failed at ${rec.failedFrom}, so it cannot go back to ${to}` };
+    const ff = str(rec?.failedFrom, 40);
+    const from = rank(ff, kind);
+    const relaunch = kind === 'step' && to === 'ready' && RELAUNCH_FROM.includes(ff);
+    const regroup = kind === 'build' && LANDING_GROUP.includes(ff) && LANDING_GROUP.includes(to);
+    if (from >= 0 && rank(to, kind) < from && !relaunch && !regroup) return { ok: false, why: `a retry continues forward: ${kind} failed at ${rec.failedFrom}, so it cannot go back to ${to}` };
     return { ok: true, why: '', retry: true };
   }
+  if (kind === 'build' && to === 'merging-pr' && LANDING_GROUP.includes(cur)) return { ok: true, why: '', retry: false, group: true };
   if (rank(to, kind) < rank(cur, kind)) return { ok: false, why: `forward-only: ${cur} → ${to} goes back` };
   return { ok: true, why: '', retry: false };
 }
@@ -132,8 +147,52 @@ export function normFields(o, kind = 'build') {
     if (isStatus(x.status, 'step')) out.status = x.status;
     for (const k of ['account', 'slot', 'worktree', 'branch', 'tmux']) if (str(x[k])) out[k] = str(x[k], 300);
     if (Number.isInteger(Number(x.prNumber)) && Number(x.prNumber) > 0) out.prNumber = Number(x.prNumber);
+    // accounts this step already failed on (the watchdog's relaunch avoids them)
+    const tried = [...new Set((Array.isArray(x.tried) ? x.tried : []).map((a) => str(a, 80)).filter(Boolean))].slice(-TRIED_MAX);
+    if (tried.length) out.tried = tried;
   }
   return out;
+}
+
+/* ------------------------------------------------------------------ the lander's fields on a build (lander@1) */
+
+const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : null);
+const nums = (v, max = 50) => (Array.isArray(v) ? v.map((x) => Number(x)).filter((x) => Number.isInteger(x) && x > 0).slice(0, max) : []);
+const strs = (v, n = 120, max = 20) => (Array.isArray(v) ? v.map((x) => str(x, n)).filter(Boolean).slice(0, max) : []);
+const headAt = (v) => { const x = obj(v); return x ? { head: str(x.head, 64), at: str(x.at, 40) } : null; };
+
+/**
+ * A Pipeline 2.0 build's landing record (deploy/lander): { split, merged[pr], closed[pr], reruns { head, n },
+ * rules { head, ok, failing, fixed, skipped, at }, ciKick { head, at }, fullKick { head, at }, lastMerge { pr, sha, head,
+ * at } (the last PR merged: the evidence `landed` carries) }. A cleared part (null)
+ * is left out. → the record, or null when there is nothing to keep.
+ */
+export function normLanding(l) {
+  const x = obj(l); if (!x) return null;
+  const out = {};
+  if (x.split === true) out.split = true;
+  for (const k of ['merged', 'closed']) { const v = nums(x[k]); if (v.length) out[k] = v; }
+  const rr = obj(x.reruns); if (rr && str(rr.head)) out.reruns = { head: str(rr.head, 64), n: Math.max(0, Math.floor(Number(rr.n) || 0)) };
+  const ru = obj(x.rules); if (ru && str(ru.head)) out.rules = { head: str(ru.head, 64), ok: ru.ok === true, failing: strs(ru.failing), fixed: strs(ru.fixed), ...(ru.skipped === true ? { skipped: true } : {}), at: str(ru.at, 40) };
+  for (const k of ['ciKick', 'fullKick']) { const v = headAt(x[k]); if (v?.head) out[k] = v; }
+  const lm = obj(x.lastMerge); if (lm && str(lm.sha)) out.lastMerge = { pr: nums([lm.pr])[0] ?? 0, sha: str(lm.sha, 64), head: str(lm.head, 64), at: str(lm.at, 40) };
+  return Object.keys(out).length ? out : null;
+}
+
+/**
+ * The lander's failure record on a Pipeline 2.0 build: { kind, status (the phase it failed in), why, head, pr, at,
+ * retry, notBefore, failing?, runIds?, fix? { at, head, session, exit, why } }. builds@1 builds keep their
+ * done-means-merged failure record instead (framework/core/build-pipeline.mjs normFailure). → the record or null.
+ */
+export function normLandFailure(f) {
+  const x = obj(f); if (!x || !str(x.kind)) return null;
+  const fix = obj(x.fix);
+  return {
+    kind: str(x.kind, 40), status: isStatus(x.status, 'build') ? x.status : '', why: str(x.why, 600), head: str(x.head, 64),
+    pr: Number.isInteger(Number(x.pr)) && Number(x.pr) > 0 ? Number(x.pr) : 0, at: str(x.at, 40), retry: str(x.retry, 40), notBefore: str(x.notBefore, 40),
+    ...(strs(x.failing).length ? { failing: strs(x.failing, 120, 10) } : {}), ...(nums(x.runIds, 10).length ? { runIds: nums(x.runIds, 10) } : {}),
+    ...(fix ? { fix: { at: str(fix.at, 40), head: str(fix.head, 64), session: str(fix.session, 120), exit: Number.isInteger(fix.exit) ? fix.exit : null, why: str(fix.why, 300) } } : {}),
+  };
 }
 
 const sameStatus = (a, b) => (a?.status ?? '') === (b?.status ?? '');
@@ -224,6 +283,17 @@ export function pickAccount(accounts = [], { model = 'Opus', onBuild = {}, exclu
   const ok = accounts.filter((a) => a && a.usable !== false && !out(a) && (a.free ?? 1) > 0 && !(exclude || []).includes(a.name) && (model !== 'Fable' || a.fable !== false) && (a.usageLeft ?? 1) > 0);
   ok.sort((a, b) => (onBuild[a.name] ?? 0) - (onBuild[b.name] ?? 0) || (b.usageLeft ?? 1) - (a.usageLeft ?? 1) || (a.running?.length ?? a.running ?? 0) - (b.running?.length ?? b.running ?? 0) || a.name.localeCompare(b.name));
   return ok[0] ?? null;
+}
+
+/**
+ * The account a step is pinned to, when the pin may be used: a step at `ready` carrying `account` (the watchdog's
+ * relaunch picked it) is sent there as long as that account is not marked out and could take it now (the same test
+ * as pickAccount). Pure → the account row, or null (then the normal pickAccount chooses; never an out account).
+ */
+export function pinnedAccount(accounts = [], step = {}, { model = step?.model || 'Opus', exclude = [], now = Date.now() } = {}) {
+  const name = str(step?.account, 80);
+  if (!name || step?.status !== 'ready') return null;
+  return pickAccount((accounts || []).filter((a) => a && a.name === name), { model, exclude, now });
 }
 
 /** The one build allowed to be active, or null; `others` = every other build that also holds the place (a breach). */

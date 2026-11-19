@@ -28,6 +28,10 @@ const CASES = [
   ['step', { status: 'completed' }, 'in-pr'], ['step', { status: 'in-pr' }, 'failed'], ['step', { status: 'building' }, 'failed'],
   ['step', { status: 'failed', failedFrom: 'building', attempt: 1 }, 'sending'], ['step', { status: 'failed', failedFrom: 'building', attempt: 1 }, 'building'],
   ['step', { status: 'ready' }, 'build-complete'],
+  // the two named re-entries (watchdog relaunch at ready; the lander's PR groups)
+  ['step', { status: 'failed', failedFrom: 'building', attempt: 1 }, 'ready'], ['step', { status: 'failed', failedFrom: 'completed', attempt: 1 }, 'ready'],
+  ['build', { status: 'merging-main' }, 'merging-pr'], ['build', { status: 'merging-main' }, 'running-ci'],
+  ['build', { status: 'failed', failedFrom: 'merging-main', attempt: 1 }, 'pr-pulling-main'], ['build', { status: 'failed', failedFrom: 'running-ci', attempt: 1 }, 'building'],
 ];
 const answer = ([kind, rec, to]) => { const t = P.transition(rec, to, { kind, at: '2026-11-19T12:00:00.000Z', by: 'fixture' }); return { kind, rec, to, ok: t.ok, ...(t.ok ? { status: t.rec.status, attempt: t.rec.attempt ?? null, failedFrom: t.rec.failedFrom ?? null } : { why: t.why }) }; };
 const fixture = {
@@ -96,6 +100,11 @@ eq(P.pickAccount(accts, { now })?.name, 'c', 'pick: never out, full or empty; mo
 eq(P.pickAccount(accts, { now, onBuild: { c: 1 } })?.name, 'b', 'pick: spread steps evenly across accounts');
 eq(P.pickAccount(accts, { now, exclude: ['b', 'c'] }), null, 'pick: nothing left = null (never an out account)');
 eq(P.pickAccount([{ name: 'z', usable: true, limited: { until: '2026-11-19T11:00:00Z' } }], { now })?.name, 'z', 'pick: a limit past its reset is over');
+eq(P.pinnedAccount(accts, { status: 'ready', account: 'b' }, { now })?.name, 'b', 'pin: a ready step pinned to an account that is not out goes there');
+eq(P.pinnedAccount(accts, { status: 'ready', account: 'a' }, { now }), null, 'pin: never an account marked out (the normal pick chooses)');
+eq(P.pinnedAccount(accts, { status: 'ready', account: 'd' }, { now }), null, 'pin: a full account falls back to the normal pick');
+eq(P.pinnedAccount(accts, { status: 'failed', account: 'b' }, { now }), null, 'pin: only a step at ready is pinned');
+eq(P.normFields({ status: 'ready', tried: ['a', 'a', 'b', ''] }, 'step').tried, ['a', 'b'], 'step tried: kept, unique');
 
 // ---- schemas match the engine
 const S = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/json/pipeline-2.schema.json'), 'utf8'));

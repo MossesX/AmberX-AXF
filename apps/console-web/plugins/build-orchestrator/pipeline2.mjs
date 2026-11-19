@@ -16,11 +16,12 @@
  *   failed (attempt N)                   a launch failure or a usage-limit exit retries forward at once on another
  *                                        account as attempt N + 1; there is no bench
  *
- * Triggers (more than one, so ready can never sit): the pipeline tick (cron, every minute: pipeline.mjs tick calls
- * advance()), the store change event (build-hook@1 listener pipeline2-hook.mjs runs `advance` as soon as a Pipeline 2.0
- * build changes status or a step finishes) and a step's exit (pipeline.mjs exit → stepExit → advance).
+ * Triggers (more than one, so ready can never sit): the orchestrator tick (cron, every minute: orchestrator.mjs tick
+ * runs pipeline.mjs tick, which calls advance(); `tick --build <id>` runs advance() for one build), the store change
+ * event (build-hook@1 listener pipeline2-hook.mjs runs `advance` as soon as a Pipeline 2.0 build changes status or a
+ * step finishes) and a step's exit (pipeline.mjs exit → stepExit → advance).
  *
- *   node apps/console-web/plugins/build-orchestrator/pipeline2.mjs advance [--by who] [--json]   one pass (under the dispatcher's lock)
+ *   node apps/console-web/plugins/build-orchestrator/pipeline2.mjs advance [--build id] [--json]   one pass (under the dispatcher's lock)
  *   … status [--json]                      every Pipeline 2.0 build: status, steps, the active one
  *   … step-exit <build> <step> --exit n [--hit usage|auth] [--account a] [--session s]   a step's session ended
  *
@@ -91,8 +92,8 @@ export function partStep(part, i, { at: when, by }) {
   return P2.transition({ ...base, id: `s${i + 1}` }, 'pending', { at: when, by, kind: 'step', why: 'split' }).rec;
 }
 
-function splitAll(store, env, out) {
-  for (const b of p2Builds(store).filter((x) => at(x, 'pending', 'splitting'))) {
+function splitAll(store, env, out, only = '') {
+  for (const b of p2Builds(store).filter((x) => at(x, 'pending', 'splitting') && (!only || x.id === only))) {
     if (b.status === 'pending' && !move(b.id, 'splitting', { why: 'the orchestrator is splitting it' })) continue;
     const slots = slotCount(env);
     const parts = P2.splitParts(b.steps.filter((s) => !s.skip), slots);
@@ -237,11 +238,16 @@ function dispatch(b, env, out, { launch = launchStep } = {}) {
     if (!sendable) continue;
     const tried = [];
     // a retry goes to another account: never the one it just failed on, nor one that refused this step before
-    const avoid = new Set([...(s.status === P2.FAILED && s.account ? [s.account] : []), ...failedOn(s)]);
+    const avoid = new Set([...(s.status === P2.FAILED && s.account ? [s.account] : []), ...failedOn(s), ...(s.tried ?? [])]);
     for (;;) {
       const fresh = stepOf(loadStore().builds.find((x) => x.id === b.id), s.id);
       const onBuild = {}; for (const x of loadStore().builds.find((y) => y.id === b.id).steps) if (['sending', 'building'].includes(x.status) && x.account) onBuild[x.account] = (onBuild[x.account] ?? 0) + 1;
-      let a = P2.pickAccount(accounts, { model: fresh.model, onBuild, exclude: [...tried, ...refusedNow, ...avoid] });
+      // a step at `ready` with an `account` is pinned (the watchdog's relaunch chose it): that account, unless it is
+      // marked out, full, or refused this step in this pass; otherwise the normal pick (never an out account)
+      let a = P2.pinnedAccount(accounts, fresh, { model: fresh.model, exclude: [...tried, ...refusedNow] });
+      if (a) logLine({ event: 'pinned-account', build: b.id, step: s.id, account: a.name });
+      else if (fresh.status === 'ready' && fresh.account && !tried.includes(fresh.account)) logLine({ event: 'pin-skipped', build: b.id, step: s.id, account: fresh.account, why: 'marked out, full or refused: the normal pick chooses' });
+      a ??= P2.pickAccount(accounts, { model: fresh.model, onBuild, exclude: [...tried, ...refusedNow, ...avoid] });
       // every account was avoided for this step: give the ones it failed on before another go (never one refused this pass)
       if (!a && avoid.size) a = P2.pickAccount(accounts, { model: fresh.model, onBuild, exclude: [...tried, ...refusedNow] });
       if (!a) {
@@ -332,23 +338,27 @@ function sweepEnded(b, env, out) {
 
 /**
  * One pass over every Pipeline 2.0 build (the tick, the store-change hook and a step exit all call this, under the
- * dispatcher's lock). → { split, pulled, ready, launched, failed, ended, waits, active }
+ * dispatcher's lock). `build` limits the pass to that one build (`orchestrator.mjs tick --build <id>`, the watchdog's
+ * nudge): only it is split, it is activated only when it is the next in line, and the active-build work runs only when
+ * it is the active build. The one-active-build rule is the same either way. → { split, pulled, ready, launched,
+ * failed, ended, waits, active, build }
  */
-export function advance({ env = process.env, launch = launchStep } = {}) {
+export function advance({ env = process.env, launch = launchStep, build = '' } = {}) {
   if (!PL) throw new Error('pipeline2: pipeline.mjs is not bound (import it, or call ready() first)');
-  const out = { split: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '' };
+  const out = { split: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', ...(build ? { build } : {}) };
   let store = loadStore();
-  splitAll(store, env, out);
+  splitAll(store, env, out, build);
   store = loadStore();
   let { active, others } = P2.activeBuild(p2Builds(store));
   for (const o of others) { out.waits.push({ id: o.id, why: `one active build at a time: ${active.id} is active (this one is a breach, left for the watchdog)` }); logLine({ event: 'active-breach', build: o.id, active: active.id }); }
   if (!active) {
     const next = nextToActivate(p2Builds(store));
-    if (next && move(next.id, 'pulling-main', { why: 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
+    if (next && (!build || next.id === build) && move(next.id, 'pulling-main', { why: 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
   }
-  for (const w of p2Builds(store).filter((b) => b.status === 'split' && b.id !== active?.id)) out.waits.push({ id: w.id, why: `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
+  for (const w of p2Builds(store).filter((b) => b.status === 'split' && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
   if (!active) return out;
   out.active = active.id;
+  if (build && active.id !== build) return out;
   // worktrees, tmux and the logins are on the VPS host: elsewhere (the console's container) the pass stops after the split
   if (!env.AXF_P2_ACCOUNTS && PL.seesAccounts && !PL.seesAccounts(env)) { out.waits.push({ id: active.id, why: 'main pulls and launches run on the VPS host (the next host tick)' }); return out; }
   if (at(active, 'pulling-main', 'assigning-models')) prepare(active, env, out);
@@ -382,7 +392,7 @@ async function main(argv) {
       process.exit(r.status ?? 1);
     }
   }
-  if (cmd === 'advance') { const r = advance(); return print(r, `active ${r.active || 'none'} · split ${r.split.length} · main pulled ${r.pulled.length} · ready ${r.ready.length} · launched ${r.launched.length} · failed ${r.failed.length}${r.waits.length ? `\n${r.waits.map((w) => `  waits ${w.id}${w.step ? `/${w.step}` : ''}: ${w.why}`).join('\n')}` : ''}`); }
+  if (cmd === 'advance') { const r = advance({ build: flag('build') }); return print(r, `active ${r.active || 'none'} · split ${r.split.length} · main pulled ${r.pulled.length} · ready ${r.ready.length} · launched ${r.launched.length} · failed ${r.failed.length}${r.waits.length ? `\n${r.waits.map((w) => `  waits ${w.id}${w.step ? `/${w.step}` : ''}: ${w.why}`).join('\n')}` : ''}`); }
   if (cmd === 'step-exit') { const r = stepExit(rest[0], rest[1], { exit: Number(flag('exit', '0')), hit: flag('hit'), account: flag('account'), session: flag('session'), by: flag('by', 'headless') }); return print(r, r.why || r.status); }
   if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
   console.error('usage: pipeline2.mjs advance | status | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;

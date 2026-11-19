@@ -5,7 +5,7 @@ import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { addLoadedSource } from '@console/control/search';
-import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, MergeQueueView, OrchestratorPage, RulesPanel, SETTINGS_TABS, TABS, WatchdogStatusPanel, openTab } from './ui';
+import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, RulesPanel, SETTINGS_TABS, TABS, WatchdogStatusPanel, openTab } from './ui';
 import { StatusTable } from './StatusTable';
 import { statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
@@ -189,10 +189,10 @@ export const plugin: AxfWebLibrary = {
   },
   views: {
     'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'status', 'pending', 'splitting', 'pulling main', 'assigning models', 'ready', 'sending', 'building', 'build complete', 'merging', 'running ci', 'landed', 'failed', 'attempt', 'timer', 'account', 'slot', 'fable', 'opus', 'steps'], render: () => <OrchestratorPage /> },
-    'merge-queue': { title: 'Merge queue', icon: 'git-merge', keywords: ['merge queue', 'merging', 'one pr', 'running ci', 'merging into main', 'waiting to merge'], render: () => <MergeQueueView /> },
   },
-  nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }, { id: 'merge-queue', label: 'Merge queue', icon: 'git-merge', view: 'merge-queue' }] },
-  // the read-only merge queue for other screens (the push banner's Merge queue panel): the same table, filtered
+  nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
+  // the read-only merge queue: the same table, filtered. The Merge queue view itself (view:merge-queue) belongs to the
+  // merge-queue@2 plugin, which renders this slot when it is filled.
   slots: { 'builds.merge-queue': [{ id: 'build-orchestrator.merge-queue', order: 10, render: () => <StatusTable api={pipeApi} mode="queue" /> }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],

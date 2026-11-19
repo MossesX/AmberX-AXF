@@ -14,6 +14,8 @@
     "attempt": { "type": "integer", "minimum": 1 },
     "failedFrom": { "$ref": "#/$defs/buildStatus" },
     "statusLog": { "type": "array", "maxItems": 60, "items": { "$ref": "#/$defs/logLine" } },
+    "landing": { "type": "object", "description": "lander@1 landing record (normLanding): split, merged, closed, reruns, rules, ciKick, fullKick, lastMerge" },
+    "landedAt": { "type": "string", "format": "date-time" },
     "steps": { "type": "array", "items": { "$ref": "#/$defs/step" } }
   },
   "allOf": [
@@ -55,6 +57,7 @@
         "worktree": { "type": "string", "maxLength": 300 },
         "branch": { "type": "string", "maxLength": 300 },
         "tmux": { "type": "string", "maxLength": 300 },
+        "tried": { "type": "array", "maxItems": 10, "items": { "type": "string", "minLength": 1, "maxLength": 80 } },
         "prNumber": { "type": "integer", "minimum": 1 },
         "files": { "type": "array", "items": { "type": "string" } }
       },

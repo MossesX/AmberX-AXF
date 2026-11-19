@@ -188,7 +188,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       const g = L.groupState(b);
       if (g.inFlight) return 'pr-pulling-main';
       if (!g.waiting.length) {
-        if (!write({ status: 'landed', note: `Lander: landed (${L.landingOf(b).merged.map((n) => `#${n}`).join(', ')}).` })) return 'stop';
+        if (!write({ status: 'landed', ...L.landedEvidence(b, at), note: `Lander: landed (${L.landingOf(b).merged.map((n) => `#${n}`).join(', ')}).` })) return 'stop';
         act('landed'); if (!dry) say('done', `${b.id} landed: ${L.landingOf(b).merged.map((n) => `#${n}`).join(', ')} on main.`, b.id);
         return 'stop';
       }
@@ -288,19 +288,22 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       const head = git(['rev-parse', `${s.remote}/${branch}`]).out;
       if (dry) { out.waiting = `would merge PR #${g.inFlight.pr} at ${head.slice(0, 9)}`; return 'stop'; }
       const pr = await prOf(g.inFlight.pr);
-      if (pr?.merged_at || pr?.merged) { /* merged already (a tick that died after the merge) */ }
+      let mergeSha = '';
+      if (pr?.merged_at || pr?.merged) { mergeSha = String(pr.merge_commit_sha || ''); /* merged already (a tick that died after the merge) */ }
       else if (pr?.state === 'closed') return fail('merge', { why: `PR #${g.inFlight.pr} was closed without merging`, head, pr: g.inFlight.pr });
       else {
-        try { await gh('PUT', `/repos/${s.slug}/pulls/${g.inFlight.pr}/merge`, { merge_method: cfg.mergeMethod, sha: head, commit_title: `Merge pull request #${g.inFlight.pr} from ${branch} (lander: ${b.id})`.slice(0, 250) }); }
+        try { const m = await gh('PUT', `/repos/${s.slug}/pulls/${g.inFlight.pr}/merge`, { merge_method: cfg.mergeMethod, sha: head, commit_title: `Merge pull request #${g.inFlight.pr} from ${branch} (lander: ${b.id})`.slice(0, 250) }); mergeSha = String(m?.sha || ''); }
         catch (e) { return fail(e.status === 405 || e.status === 409 ? 'merge' : 'infra', { why: `merging PR #${g.inFlight.pr}: ${e.message}`, head, pr: g.inFlight.pr }); }
       }
       const merged = [...L.landingOf(b).merged, g.inFlight.pr];
-      if (!write({ landing: { merged, reruns: null, rules: null, ciKick: null, fullKick: null }, failure: null })) return 'stop';
+      // the merge evidence done-means-merged@1 asks of `landed`: the PR, its merge commit and CI green on the head it merged (sha pinned)
+      const lastMerge = { pr: g.inFlight.pr, sha: mergeSha || head, head, at };
+      if (!write({ landing: { merged, lastMerge, reruns: null, rules: null, ciKick: null, fullKick: null }, failure: null })) return 'stop';
       act(`PR #${g.inFlight.pr} merged into main`);
       git(['push', '-q', s.remote, '--delete', branch]);
       const left = L.groupState(b).waiting.length;
       if (!left) {
-        if (!write({ status: 'landed', note: `Lander: landed (${merged.map((n) => `#${n}`).join(', ')}).` })) return 'stop';
+        if (!write({ status: 'landed', ...L.landedEvidence(b, at), note: `Lander: landed (${merged.map((n) => `#${n}`).join(', ')}).` })) return 'stop';
         act('landed'); say('done', `${b.id} landed: ${merged.map((n) => `#${n}`).join(', ')} on main.`, b.id);
         return 'stop';
       }

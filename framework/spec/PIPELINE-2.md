@@ -40,7 +40,13 @@ statuses (`queued`, `running`, …) and the old dispatcher path; nothing migrate
 
 `pending` → `pulling-main` → `ready` → `sending` → `building` → `completed` → `in-pr` (with `prNumber`), plus `failed`
 (attempt N). Each step carries `model` (Fable | Opus), `account`, `slot`, and once cut `worktree` and `branch`
-(`claude/<build>--<step>`); `tmux` (the session name) while building. `done` mirrors `completed` / `in-pr` for older readers.
+(`claude/<build>--<step>`); `tmux` (the session name) while building; `tried` (accounts it failed on, last 10). `done`
+mirrors `completed` / `in-pr` for older readers.
+
+The lander's build fields (lander@1, kept by the store on Pipeline 2.0 builds): `landing` (`normLanding`: split,
+merged / closed PRs, CI re-runs, rules per head, CI kicks, `lastMerge`), `failure` (`normLandFailure`: kind, the
+status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged's record), `landedAt`, and with
+`landed` the done-means-merged evidence `mergedAt` + `landed { pr, sha, mergedAt, ci: success }`. Notes keep `by`.
 
 ## Rules
 
@@ -50,6 +56,14 @@ statuses (`queued`, `running`, …) and the old dispatcher path; nothing migrate
 2. **failed / attempt N.** `failed` may be entered from any status except the last (`landed` / `in-pr`). It keeps the
    attempt it failed on and records `failedFrom`. A retry leaves `failed` to `failedFrom` or later, never earlier, as
    attempt N + 1. There is no bench: a failed launch or a usage-limit exit retries at once on another account.
+   Two named re-entries (Pipeline 2.0 integration, Nov 19 2026):
+   - **Relaunch.** A step that failed at `ready`, `sending` or `building` may re-enter at `ready` (`RELAUNCH_FROM`):
+     watchdog layer 2 puts it there with a pinned `account` (and `tried`, the accounts it already failed on).
+   - **PR groups.** A build in a landing run (`LANDING_GROUP`: `merging-pr` … `merging-main`) may start the next PR
+     group at `merging-pr` (the lander's size cap and splits), and a build that failed in a landing run may retry at any
+     status of that run (re-run CI, split, pull main again).
+7. **Pinned account.** A step at `ready` with `account` set is sent to that account when it is not marked out and can
+   take it (`pinnedAccount`, the same test as `pickAccount`); otherwise `pickAccount` chooses, never an out account.
 3. **at / by.** Every status change records `statusAt`, `statusBy`, and one `statusLog` line
    `{ status, at, by, attempt, why? }` (last 60). A writer that changes `status` by hand gets them stamped by the store.
 4. **One active build.** Active = `pulling-main` … `merging-main`, or `failed` from one of those. Only one build may be
@@ -69,7 +83,8 @@ statuses (`queued`, `running`, …) and the old dispatcher path; nothing migrate
   `ready`. Worktrees are cut **before** launch, never at launch.
 - `assigning-models`: `modelFor` (Fable for schemas, asset types, contracts, engines / kernel, cross-app protocols, or a
   step pinned to Fable; Opus otherwise). Never Sonnet or Haiku. A step is never launched above its pinned model.
-- `ready` → `sending`: started automatically by two triggers: the pipeline tick (cron, every minute) and the store
+- `ready` → `sending`: started automatically by two triggers: the orchestrator tick (`orchestrator.mjs tick`, cron every
+  minute; `tick --build <id>` is one build, the watchdog's nudge) and the store
   change event (build-hook@1 listener `pipeline2-hook.mjs`, which runs one advance as soon as a build reaches `ready`
   or a step ends).
 - Dispatch: one step at a time to each free slot (never waiting for every slot). Account = `pickAccount`: never an

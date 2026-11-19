@@ -59,7 +59,7 @@ test('layer 2 run on a plain JSON store: limit → failed, then retried on anoth
   const run = () => spawnSync('node', [join(HERE, 'layer2.mjs'), 'run'], { env, encoding: 'utf8' });
   assert.equal(run().status, 0);
   let s = JSON.parse(readFileSync(store, 'utf8')).builds[0].steps[0];
-  assert.deepEqual([s.status, s.failedAt], ['failed', 'building']);
+  assert.deepEqual([s.status, s.failedFrom], ['failed', 'building']);
   // make the failure old enough to retry
   const j = JSON.parse(readFileSync(store, 'utf8')); j.builds[0].steps[0].statusAt = old; writeFileSync(store, JSON.stringify(j));
   assert.equal(run().status, 0);

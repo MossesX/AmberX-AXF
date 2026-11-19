@@ -101,5 +101,40 @@ console.log('the store change event: a second trigger');
   ok(!H.onBuildEvents([{ event: 'status', to: 'queued' }], { env, run: (a) => ran.push(a) }).woke, 'a builds@1 status does not');
   ok(!H.onBuildEvents([{ event: 'status', to: 'ready' }], { env: { ...env, AXF_P2_HOOK: 'off' }, run: (a) => ran.push(a) }).woke, 'AXF_P2_HOOK=off'); }
 
+console.log('integration: orchestrator.mjs tick [--build] (layer 1) and the watchdog\'s pinned relaunch');
+{ const { spawnSync } = await import('node:child_process');
+  const ORCH = join(HERE, '..', 'orchestrator.mjs');
+  const env = { ...process.env, AXF_PIPELINE_LOCK: join(tmp, 'pipeline.lock'), AXF_CLAUDE_ACCOUNTS: tmp, AXF_PIPELINE_LOCKED: '' };
+  const tick = (...a) => { const r = spawnSync(process.execPath, [ORCH, 'tick', ...a, '--json'], { encoding: 'utf8', env, timeout: 120e3 }); let j = null; try { j = JSON.parse(r.stdout.trim().split('\n').pop()); } catch { /* shown below */ } if (!j) console.error(r.stdout, r.stderr); return j; };
+  // alpha leaves the table (archived): beta is next in line
+  BS.setFlowStatus('alpha', 'archived', { by: 'test' });
+  let t = tick('--build', 'nope');
+  ok(t?.ok && t.build === 'nope' && t.launched.length === 0, 'tick --build <unknown>: one pass for that build only, nothing launched');
+  t = tick('--build', 'beta');
+  eq([t?.active, get('beta').status, get('beta').steps[0].status], ['beta', 'building', 'building'], 'tick --build beta: beta is activated and its step goes out (the same advance())');
+  const first = get('beta').steps[0].account;
+  F.stepExit('beta', 's1', { exit: 1, account: first });
+  // watchdog layer 2's relaunch: failed (from building) → ready, attempt N + 1, a pinned account, the one it failed on in tried
+  const pin = ['a', 'b'].find((x) => x !== first);
+  BS.withStore((x) => { const st = x.builds.find((b) => b.id === 'beta').steps[0]; Object.assign(st, { status: 'ready', statusAt: new Date().toISOString(), statusBy: 'watchdog', attempt: (st.attempt || 1) + 1, account: pin, tried: [first], tmux: '', slot: '' }); return x; }, { by: 'watchdog' });
+  eq([get('beta').steps[0].status, get('beta').steps[0].account], ['ready', pin], 'the store takes the relaunch at ready with its pinned account');
+  const tries = () => readFileSync(join(tmp, 'launches'), 'utf8').trim().split('\n').filter((l) => l.startsWith('beta--s1 '));
+  const before = tries().length;
+  t = tick('--build', 'beta');
+  eq([get('beta').steps[0].status, get('beta').steps[0].account], ['building', pin], `the orchestrator honours the pin (${pin})`);
+  eq(tries().slice(before).map((l) => l.split(' ')[1]), [pin], 'straight to the pinned account: its own pick (bad, most usage left) is never tried');
+  F.stepExit('beta', 's1', { exit: 1, account: pin });
+  BS.withStore((x) => { const st = x.builds.find((b) => b.id === 'beta').steps[0]; Object.assign(st, { status: 'ready', statusAt: new Date().toISOString(), statusBy: 'watchdog', attempt: (st.attempt || 1) + 1, account: 'out', tried: [first, pin], tmux: '', slot: '' }); return x; }, { by: 'watchdog' });
+  tick('--build', 'beta');
+  const fb = get('beta').steps[0];
+  ok(fb.status === 'building' && !['out', 'empty', 'bad'].includes(fb.account), `a pin on an account marked out falls back to the normal pick (${fb.account}), never an out account`);
+  t = tick();
+  const hb = (() => { try { return JSON.parse(readFileSync(join(tmp, 'pipe', 'orchestrator-tick.json'), 'utf8')); } catch { return null; } })();
+  ok(t?.ok && hb && Date.now() - Date.parse(hb.at) < 120e3, 'tick (no --build): the full dispatcher round writes the heartbeat layer 3 reads');
+  const L3 = await import('../../../../../deploy/watchdog/layer3.mjs');
+  const f = L3.facts({ ...env, AXF_ORCH_TICK_HEARTBEAT: '' });
+  ok(f.tickScript === true && f.tickAgeMin != null && f.tickAgeMin < 2, `layer 3 sees the tick command and a fresh tick (${f.tickAgeMin?.toFixed?.(2)} min)`);
+  ok(!L3.problems(f).some((p) => p.id === 'tick'), 'layer 3: no tick problem'); }
+
 console.log(`${failed ? 'FAIL' : 'ok'} p2-flow: ${n - failed}/${n}`);
 process.exit(failed ? 1 : 0);

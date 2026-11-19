@@ -4,9 +4,11 @@
  * orchestrator reads from. No separate state of its own."). One row a build (`grid:merge-queue/row:<build>`): its status
  * (failed shows the attempt) with how long it has been in it, its PRs, and its steps under the row ("added to PR #N").
  * No toolbar and no actions: the lander (deploy/lander/run.mjs) lands everything by itself.
+ * With the Build orchestrator on, the view shows its builds table filtered to the merging statuses (slot
+ * `builds.merge-queue`), so the queue is the same rows as the Builds table; without it, this plugin's own grid.
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Chip, Container, useControlTargets, type ControlTargetDef } from '@console/axf/react';
+import { Chip, Container, Slot, useControlTargets, useSlotFilled, type ControlTargetDef } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import { pluginFetch } from '@console/plugins';
@@ -59,7 +61,8 @@ function useNow(ms = 30000): number {
   return now;
 }
 
-function MergeQueueView() {
+/** This plugin's own grid, from its read-only `queue` route. */
+function OwnQueue() {
   const { q, error } = useQueue();
   const now = useNow();
   const [expanded, setExpanded] = useState<string[]>([]);
@@ -105,6 +108,11 @@ function MergeQueueView() {
       />
     </div>
   );
+}
+
+/** The orchestrator's merging-statuses table when it is on (one table, one source), else the plugin's own grid. */
+function MergeQueueView() {
+  return useSlotFilled('builds.merge-queue') ? <Slot name="builds.merge-queue" /> : <OwnQueue />;
 }
 
 export const plugin: AxfWebLibrary = {

@@ -144,6 +144,20 @@ export function landingOf(b) {
 }
 
 /**
+ * The evidence the builds store's done-means-merged@1 guard asks of `landed` (framework/core/build-pipeline.mjs
+ * guardStatus): the PR, mergedAt, the merge commit (landed.sha) and CI green (landed.ci). The lander merges only a PR
+ * whose head passed CI and the gate's rules, pinned to that head, so CI green on the merged head is what it records.
+ * → { mergedAt, landed } for the `landed` write ({} when no merge is recorded: the guard then refuses, never silently).
+ */
+export function landedEvidence(b, at = new Date().toISOString()) {
+  const m = obj(obj(b?.landing).lastMerge);
+  const pr = num(m?.pr) || landingOf(b).merged.slice(-1)[0] || num(String(b?.pr || '').replace(/^#/, ''));
+  if (!pr || !str(m.sha)) return {};
+  const when = str(m.at, 40) || at;
+  return { mergedAt: when, landed: { pr, sha: str(m.sha, 64), mergedAt: when, ci: 'success', ciAt: when } };
+}
+
+/**
  * Where the build's PRs stand, from the steps (no state of the lander's own):
  *   merged   steps whose PR merged          inFlight  { pr, steps } the open group (in-pr, PR not merged / closed)
  *   waiting  steps not in a PR yet (completed, or in a closed PR after a split)

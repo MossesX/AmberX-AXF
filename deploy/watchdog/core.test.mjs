@@ -62,7 +62,7 @@ test('usage limit: step fails, retry relaunches through ready on another account
   assert.equal(d.action, 'fail-limit');
   C.applyDecision(store, issue, d, { now: NOW });
   const step = store.builds[0].steps[0];
-  assert.equal(step.status, 'failed'); assert.equal(step.failedAt, 'building'); assert.deepEqual(step.tried, ['acc1']);
+  assert.equal(step.status, 'failed'); assert.equal(step.failedFrom, 'building'); assert.deepEqual(step.tried, ['acc1']);
   assert.equal(store.builds[0].notes.at(-1).by, 'watchdog');
 
   const later = NOW + 2 * 60_000;
@@ -73,23 +73,23 @@ test('usage limit: step fails, retry relaunches through ready on another account
   assert.deepEqual([r.action, r.to, r.account, r.attempt], ['retry', 'ready', 'acc3', 2]);
   C.applyDecision(store, f, r, { now: later });
   assert.deepEqual([step.status, step.attempt, step.account, step.statusBy], ['ready', 2, 'acc3', 'watchdog']);
-  assert.equal(step.history.at(-1).by, 'watchdog');
+  assert.equal(step.statusLog.at(-1).by, 'watchdog');
 });
 
 test('no account with usage left: the retry waits instead of relaunching on a dead account', () => {
-  const issue = { kind: 'step-failed', build: 'b', step: 's', status: 'failed', failedAt: 'building', attempt: 1, account: 'acc1', minutes: 5 };
+  const issue = { kind: 'step-failed', build: 'b', step: 's', status: 'failed', failedFrom: 'building', attempt: 1, account: 'acc1', minutes: 5 };
   assert.equal(C.plan(issue, { now: NOW, accounts: [{ name: 'acc1', usable: false }] }).action, 'wait');
 });
 
-test('failed build retries forward at failedAt; at maxAttempts it gives up once', () => {
-  const store = { builds: [{ id: 'b', status: 'failed', failedAt: 'running-ci', attempt: 2, statusAt: ago(5), notes: [] }] };
+test('failed build retries forward at failedFrom; at maxAttempts it gives up once', () => {
+  const store = { builds: [{ id: 'b', status: 'failed', failedFrom: 'building', attempt: 2, statusAt: ago(5), notes: [] }] };
   const [i] = C.findIssues(store, { now: NOW });
   const d = C.plan(i, { now: NOW, store });
-  assert.deepEqual([d.action, d.to, d.attempt], ['retry', 'running-ci', 3]);
+  assert.deepEqual([d.action, d.to, d.attempt], ['retry', 'building', 3]);
   C.applyDecision(store, i, d, { now: NOW });
-  assert.equal(store.builds[0].status, 'running-ci');
+  assert.equal(store.builds[0].status, 'building');
 
-  const done = { kind: 'build-failed', build: 'z', status: 'failed', failedAt: 'merging-main', attempt: 5, minutes: 10 };
+  const done = { kind: 'build-failed', build: 'z', status: 'failed', failedFrom: 'merging-main', attempt: 5, minutes: 10 };
   const g = C.plan(done, { now: NOW });
   assert.equal(g.action, 'give-up');
   const mem = C.nextMemory({}, [done], [g], NOW);
@@ -97,9 +97,26 @@ test('failed build retries forward at failedAt; at maxAttempts it gives up once'
 });
 
 test('a failed active build waits while another build holds the box', () => {
-  const store = { builds: [{ id: 'a', status: 'failed', failedAt: 'merging-pr', attempt: 1, statusAt: ago(5) }, { id: 'b', status: 'running-ci', statusAt: ago(1) }] };
+  const store = { builds: [{ id: 'a', status: 'failed', failedFrom: 'sending', attempt: 1, statusAt: ago(5) }, { id: 'b', status: 'running-ci', statusAt: ago(1) }] };
   const i = C.findIssues(store, { now: NOW }).find((x) => x.build === 'a');
   assert.equal(C.plan(i, { now: NOW, store }).action, 'wait');
+});
+
+test('the lander owns its statuses: a landing failure is left to it, a stuck one is nudged with a lander tick, never failed', () => {
+  const store = { builds: [
+    { id: 'f', status: 'failed', failedFrom: 'running-ci', attempt: 4, statusAt: ago(30) },
+    { id: 's', status: 'running-ci', statusAt: ago(200) },
+  ] };
+  const issues = C.findIssues(store, { now: NOW });
+  assert.equal(issues.find((x) => x.build === 'f'), undefined);
+  const i = issues.find((x) => x.build === 's');
+  assert.equal(i.lander, true);
+  let mem = {};
+  for (let n = 1; n <= 4; n += 1) {
+    const d = C.plan(i, { now: NOW + n * 10 * 60_000, memory: mem });
+    assert.deepEqual([d.action, d.lander], ['nudge', true]);
+    mem = C.nextMemory(mem, [i], [d], NOW + n * 10 * 60_000);
+  }
 });
 
 test('a record that moved since the scan is left alone', () => {

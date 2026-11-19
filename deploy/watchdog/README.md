@@ -20,7 +20,7 @@ and removes the retired `axf-pipeline`, `axf-auto-land` and `axf-watchdog` crons
 | A `building` step whose tmux session is gone | `failed` at `building`, then relaunched through `ready` as attempt N+1 |
 | A `building` step whose log shows "You've hit your weekly limit" or any usage limit | Account marked out (`claude-workers.mjs markLimit`), session killed, `failed`, relaunched on the account with usage left as attempt N+1 |
 | A `building` step over budget with a silent log | Session killed, `failed`, relaunched |
-| A `failed` build or step under `maxAttempts` | Retried forward: back into the status it failed in (`failedAt`), attempt N+1 |
+| A `failed` build or step under `maxAttempts` | Retried forward: back into the status it failed in (`failedFrom`), attempt N+1 |
 | Attempts used up | Stays `failed`, ONE alert to Brett |
 
 Waiting is not stuck: a `split` build waits while another build is active (one active build at a time), and a `ready`

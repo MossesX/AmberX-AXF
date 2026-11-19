@@ -313,6 +313,74 @@
    "to": "build-complete",
    "ok": false,
    "why": "\"build-complete\" is not a step status of pipeline-2@1 (pending, pulling-main, ready, sending, building, completed, in-pr, failed)"
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 1
+   },
+   "to": "ready",
+   "ok": true,
+   "status": "ready",
+   "attempt": 2,
+   "failedFrom": null
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "completed",
+    "attempt": 1
+   },
+   "to": "ready",
+   "ok": false,
+   "why": "a retry continues forward: step failed at completed, so it cannot go back to ready"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "merging-main"
+   },
+   "to": "merging-pr",
+   "ok": true,
+   "status": "merging-pr",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "merging-main"
+   },
+   "to": "running-ci",
+   "ok": false,
+   "why": "forward-only: merging-main → running-ci goes back"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "merging-main",
+    "attempt": 1
+   },
+   "to": "pr-pulling-main",
+   "ok": true,
+   "status": "pr-pulling-main",
+   "attempt": 2,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "running-ci",
+    "attempt": 1
+   },
+   "to": "building",
+   "ok": false,
+   "why": "a retry continues forward: build failed at running-ci, so it cannot go back to building"
   }
  ],
  "split": [

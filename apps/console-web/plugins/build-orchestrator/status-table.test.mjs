@@ -6,6 +6,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import * as T from './web/status-table-core.mjs';
+import * as P2 from '../../../../framework/core/pipeline-status.mjs';
 
 const NOW = Date.parse('2026-11-19T12:00:00Z');
 const at = (min) => new Date(NOW - min * 60_000).toISOString();
@@ -14,6 +15,12 @@ test('the contract: 15 build statuses, 8 step statuses, merge queue merging-pr t
   assert.deepEqual(T.BUILD_STATUSES, ['pending', 'splitting', 'split', 'pulling-main', 'assigning-models', 'ready', 'sending', 'building', 'build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed', 'failed']);
   assert.deepEqual(T.STEP_STATUSES, ['pending', 'pulling-main', 'ready', 'sending', 'building', 'completed', 'in-pr', 'failed']);
   assert.deepEqual(T.MERGE_QUEUE, ['merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main']);
+});
+
+test('the UI copy of the contract equals the reference engine (framework/core/pipeline-status.mjs)', () => {
+  assert.deepEqual(T.BUILD_STATUSES, [...P2.BUILD_STATUSES]);
+  assert.deepEqual(T.STEP_STATUSES, [...P2.STEP_STATUSES]);
+  assert.deepEqual(T.MERGE_QUEUE, [...P2.LANDING_GROUP]);
 });
 
 test('labels: split shows Pending, failed shows its attempt', () => {
