@@ -58,6 +58,10 @@
  *                                  claude/<alias> at its branch, so vps.build_land takes the alias. Branch and PR stay as they are.
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
  *
+ * Pipeline 2.0 (pipeline-2@1, Nov 19 2026, framework/spec/PIPELINE-2.md): builds with `flow: pipeline-2` (sent from Plan
+ * Studio) never take this path: every tick runs pipeline2.mjs advance() (split, one active build, main into each step's
+ * worktree, models, steps to free slots, retries as attempt N + 1), and `exit … --step s` ends one step. While a Pipeline 2.0
+ * build is active, nothing here launches. Launch failures are never benched (the old 3-per-hour wait is gone).
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
  * launcher for a build. It issues a one-build dispatch token (framework/cli/dispatch-gate.mjs) and passes it in
  * AXF_DISPATCH_TOKEN; claude-headless.sh refuses a build launch without one.
@@ -1598,7 +1602,7 @@ export function health({ env = process.env, by = 'dispatcher' } = {}) {
 // ------------------------------------------------------------------ CLI
 
 // pipeline2.mjs uses these (bound here: it is imported by this file, so it can't import them at load time)
-P2F.bindPipeline({ pipeDir, slotsNow, accountsRead, loadSettings, ensureWorktree, pipelineLock });
+P2F.bindPipeline({ pipeDir, slotsNow, accountsRead, loadSettings, ensureWorktree, pipelineLock, seesAccounts });
 
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json' && a !== '--expect-fail');

@@ -349,6 +349,8 @@ export function advance({ env = process.env, launch = launchStep } = {}) {
   for (const w of p2Builds(store).filter((b) => b.status === 'split' && b.id !== active?.id)) out.waits.push({ id: w.id, why: `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
   if (!active) return out;
   out.active = active.id;
+  // worktrees, tmux and the logins are on the VPS host: elsewhere (the console's container) the pass stops after the split
+  if (!env.AXF_P2_ACCOUNTS && PL.seesAccounts && !PL.seesAccounts(env)) { out.waits.push({ id: active.id, why: 'main pulls and launches run on the VPS host (the next host tick)' }); return out; }
   if (at(active, 'pulling-main', 'assigning-models')) prepare(active, env, out);
   active = loadStore().builds.find((x) => x.id === active.id);
   sweepEnded(active, env, out);
