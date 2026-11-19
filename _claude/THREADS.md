@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 15:07 UTC · `every-app-gets-own-locked-default` → pending, note (all) · pipeline
-- 2026-11-18 15:08 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · pipeline
-- 2026-11-18 15:08 UTC · `every-app-gets-own-locked-default` PR #845 (all) · builds-live
 - 2026-11-18 15:08 UTC · `one-build-time-always-split-to-fill` PR #846 (all) · builds-live
 - 2026-11-18 15:08 UTC · `one-build-time-always-split-to-fill` note (all) · watchdog
 - 2026-11-18 15:10 UTC · `one-build-time-always-split-to-fill` note (all) · builds-live
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 03:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 03:47 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · pipeline
 - 2026-11-19 03:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 03:48 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · pipeline
+- 2026-11-19 03:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-19 03:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 
 ## Token passes (log)
 
