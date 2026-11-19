@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T01:21:55.549Z",
+ "updatedAt": "2026-11-19T01:24:03.156Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195530,7 +195530,7 @@
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T00:50:05.824Z",
+   "updatedAt": "2026-11-19T01:23:35.556Z",
    "builtAt": "",
    "notes": [
     {
@@ -195593,8 +195593,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T01:23:35.556Z",
      "note": "",
      "uid": "st-mwmsooon06e740",
      "createdAt": "2026-11-19T00:11:19.628Z"
