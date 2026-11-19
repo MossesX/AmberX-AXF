@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T05:14:03.429Z",
+ "updatedAt": "2026-11-19T05:15:30.715Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -196069,7 +196069,7 @@
    "pr": "#851",
    "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T04:52:44.638Z",
+   "updatedAt": "2026-11-19T05:15:14.719Z",
    "builtAt": "",
    "notes": [
     {
@@ -196131,6 +196131,10 @@
     {
      "text": "Reconciler: PR #851 merged",
      "at": "2026-11-19T04:52:44.638Z"
+    },
+    {
+     "text": "Merged as #851 (b348a81), main CI green. Live: planner on Postgres (cutover); plan/catalog/sessions/changes tables backfilled and verified. Follow-up once the nightly pg_dump (running since 03:17) ends: bash deploy/install-data.sh from main (host-token grants + lock timeouts), then data-tables.mjs cutover plan --apply --keys and cutover catalog --apply --keys. Fixed on the way: console update failing on vanishing files (console was down 03:18-03:57), mirror/schema DDL now time out instead of stalling axf-data behind a backup. Report: _claude/builds/reports/postgres-part-b.md",
+     "at": "2026-11-19T05:15:14.719Z"
     }
    ],
    "approvals": [],
