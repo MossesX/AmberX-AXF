@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9208,
- "updatedAt": "2026-11-19T01:16:25.246Z",
+ "rev": 9209,
+ "updatedAt": "2026-11-19T01:17:15.642Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321832,7 +321832,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:15:30.250Z",
+   "updatedAt": "2026-11-19T01:16:08.947Z",
    "builtAt": "",
    "notes": [
     {
@@ -322162,6 +322162,28 @@
      "rev": 1,
      "createdAt": "2026-11-19T01:15:30.323Z",
      "updatedAt": "2026-11-19T01:15:32.154Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwmv01v4013a6f",
+     "title": "",
+     "text": "s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T01:16:08.948Z",
+     "updatedAt": "2026-11-19T01:16:11.248Z"
     }
    ],
    "profiles": [
@@ -322172,7 +322194,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
