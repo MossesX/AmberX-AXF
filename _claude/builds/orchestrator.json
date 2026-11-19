@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:43:11.049Z",
+ "updatedAt": "2026-11-19T02:43:34.039Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195130,7 +195130,7 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-19T01:41:01.880Z",
-     "note": "Cut code on the branch (dab6d1fe5, 6acb5345f): no file lock/writes in cutover, main-newer builds adopted into the tables, store.json + orchestrator exports a read-only projection of the tables, builds-data clean, console focus via data_store. /opt/axf deployed to main (git; image rebuild queued behind the heavy slots). The key flip (builds-data cutover --apply --store /opt/axf/_claude/builds/store.json) runs once this PR is on main and /opt/axf runs it: main lacks the projection, so a flip now would freeze the file-reading console screens.",
+     "note": "",
      "uid": "st-mwm8h2vi086tbx",
      "createdAt": "2026-11-18T14:45:31.829Z"
     },
@@ -195168,7 +195168,7 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-19T02:06:19.217Z",
-     "note": "7a9f91350: no-json-data@1 rule in CLAUDE.md + DATA-STORE.md; framework/spec/check-json-data-writes.mjs in CI (228 existing writes in 123 files are a baseline that may only go down; a probe with one new write fails).",
+     "note": "",
      "uid": "st-mwm8h2vj0a7ucv",
      "createdAt": "2026-11-18T14:45:31.829Z"
     },
