@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 18:21 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
 - 2026-11-18 18:21 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-18 18:48 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · reconciler
 - 2026-11-18 18:50 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 09:28 UTC · `urgent-all-data-to-postgres-builds-store` → landed (all) · foreign-write
 - 2026-11-19 09:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 09:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-19 09:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 
 ## Token passes (log)
 
