@@ -124,7 +124,7 @@ class ListSpec:
         return 'parent_rid' if self.key else 'parent_pos'
 
 
-TABLES_VERSION = 5   # 5 = remaining plugin folders, plugin_docs, phone (part C s3); 4 = plugin documents (part C s2); 3 = console/plugin row families (part C): records a new table claims are moved by retable();  meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
+TABLES_VERSION = 5   # 3–5 = the console and plugin row families (part C: tables_console.py, tables_plugins.py), moved in by retable(); meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
 
 
 def _rid(item: dict, spec: ListSpec, pos: int) -> str:
@@ -509,274 +509,9 @@ class NotesTable:
         return 'CREATE TABLE IF NOT EXISTS notes (path TEXT PRIMARY KEY, folder TEXT NOT NULL, name TEXT NOT NULL, text TEXT NOT NULL, size BIGINT NOT NULL);'
 
 
-# ── generic row shapes for the console's and the plugins' small documents (postgres part C, Nov 19 2026) ───────────
-#
-# Each is one family of rows keyed by (ns, path, …), so one table holds every document of its kind (console_state holds
-# state.json, host-check.json, nightly.json…; plugin_settings holds every plugin's settings.json). A body whose shape does
-# not fit (an object where a list was expected) is not claimed and stays in `records`: nothing is coerced.
-
-class _PathTable:
-    kind = 'record'
-
-    def __init__(self, name: str, ns: str, path_re: str, holds: str, cols: list[Col] | None = None):
-        self.name, self.ns, self.holds, self.cols = name, ns, holds, list(cols or [])
-        self.path_re = re.compile(path_re)
-
-    def _claims(self, ns: str, path: str, kind: str) -> bool:
-        return kind == self.kind and ns == self.ns and bool(self.path_re.match(path))
-
-    def delete(self, cur, ns: str, path: str) -> None:
-        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
-        cur.execute('DELETE FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
-
-    def _head(self, cur, ns: str, path: str, head: Any) -> None:
-        cur.execute('INSERT INTO store_heads (ns, path, head, lists) VALUES (%s, %s, %s, %s) ON CONFLICT (ns, path) DO UPDATE SET head=EXCLUDED.head, lists=EXCLUDED.lists',
-                    (ns, path, Jsonb(head, dumps=canonical), Jsonb([self.name])))
-
-    def _head_of(self, cur, ns: str, path: str):
-        cur.execute('SELECT head FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
-        r = cur.fetchone()
-        return r['head'] if r else _MISSING
-
-
-class KvTable(_PathTable):
-    """A JSON object → one row per top-level key (`key`, `value` JSONB, `pos` keeps the key order). console_state,
-    plugin_settings: small single-object documents, each setting queryable on its own. With `map_key` the rows are the
-    entries of the object at that key (sections-said: `said` → one row per section) and the other fields go to store_heads."""
-
-    def __init__(self, name: str, ns: str, path_re: str, holds: str, map_key: str = ''):
-        super().__init__(name, ns, path_re, holds)
-        self.map_key = map_key
-
-    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
-        return self._claims(ns, path, kind) and body.lstrip().startswith(b'{')
-
-    def write(self, cur, ns: str, path: str, body: bytes) -> None:
-        doc = json.loads(body.decode('utf-8'))
-        head: dict = {}
-        if self.map_key:
-            head = dict(doc)
-            m = head.pop(self.map_key, _MISSING)
-            lifted = isinstance(m, dict)
-            if not lifted and m is not _MISSING:
-                head[self.map_key] = m
-            doc = m if lifted else {}
-            head = {'head': head, 'lifted': lifted}
-        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
-        rows = [(ns, path, i, k, Jsonb(v, dumps=canonical)) for i, (k, v) in enumerate(doc.items())]
-        if rows:
-            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, pos, key, value) VALUES (%s, %s, %s, %s, %s)', rows)
-        self._head(cur, ns, path, head)
-
-    def read(self, cur, ns: str, path: str) -> bytes | None:
-        h = self._head_of(cur, ns, path)
-        if h is _MISSING:
-            return None
-        cur.execute(f'SELECT key, value FROM "{self.name}" WHERE ns=%s AND path=%s ORDER BY pos', (ns, path))
-        kv = {r['key']: r['value'] for r in cur.fetchall()}
-        if self.map_key:
-            return canonical({**h['head'], self.map_key: kv} if h.get('lifted') else h['head']).encode('utf-8')
-        return canonical(kv).encode('utf-8')
-
-    def ddl(self) -> str:
-        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, pos INTEGER NOT NULL, key TEXT NOT NULL, '
-                f'value JSONB, PRIMARY KEY (ns, path, key));')
-
-
-class ArrayTable(_PathTable):
-    """A JSON array → one row per item (`pos` keeps the order). Object items lift `cols` and keep the rest in `extra`;
-    scalar items (alerts-seen run ids) sit in `value`. A body `{ <listKey>: [...], ... }` is claimed too when `list_key`
-    is set: the list becomes rows and the other fields go to store_heads (app catalog)."""
-
-    def __init__(self, name: str, ns: str, path_re: str, holds: str, cols: list[Col] | None = None, list_key: str = '',
-                 child: tuple[str, str, list[Col]] | None = None):
-        super().__init__(name, ns, path_re, holds, cols)
-        self.list_key, self.child = list_key, child
-
-    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
-        if not self._claims(ns, path, kind):
-            return False
-        b = body.lstrip()
-        return b.startswith(b'{') if self.list_key else b.startswith(b'[')
-
-    def _items(self, doc: Any) -> tuple[list, Any]:
-        if self.list_key:
-            if not isinstance(doc, dict) or not isinstance(doc.get(self.list_key), list):
-                return [], doc
-            head = dict(doc)
-            return head.pop(self.list_key), head
-        return doc, None
-
-    def write(self, cur, ns: str, path: str, body: bytes) -> None:
-        doc = json.loads(body.decode('utf-8'))
-        items, head = self._items(doc)
-        lifted = self.list_key == '' or isinstance(doc, dict) and isinstance(doc.get(self.list_key), list)
-        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
-        if self.child:
-            cur.execute(f'DELETE FROM "{self.child[1]}" WHERE ns=%s AND path=%s', (ns, path))
-        names = ''.join(f', "{c.name}"' for c in self.cols)
-        rows, kids = [], []
-        for pos, it in enumerate(items):
-            if isinstance(it, dict):
-                vals, extra = lift(it, self.cols)
-                has_kids = False
-                if self.child and isinstance(extra.get(self.child[0]), list) and all(isinstance(k, dict) for k in extra[self.child[0]]):
-                    for cpos, kid in enumerate(extra.pop(self.child[0])):
-                        cv, cx = lift(kid, self.child[2])
-                        kids.append((ns, path, pos, cpos, *[cv[c.name] for c in self.child[2]], Jsonb(cx, dumps=canonical)))
-                    has_kids = True
-                rows.append((ns, path, pos, True, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical), has_kids))
-            else:
-                rows.append((ns, path, pos, False, *[None for _ in self.cols], Jsonb(it, dumps=canonical), False))
-        if rows:
-            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, pos, is_obj{names}, extra, has_kids) VALUES (%s, %s, %s, %s{", %s" * len(self.cols)}, %s, %s)', rows)
-        if kids:
-            cnames = ''.join(f', "{c.name}"' for c in self.child[2])
-            cur.executemany(f'INSERT INTO "{self.child[1]}" (ns, path, parent_pos, pos{cnames}, extra) VALUES (%s, %s, %s, %s{", %s" * len(self.child[2])}, %s)', kids)
-        self._head(cur, ns, path, {'head': head, 'lifted': lifted} if self.list_key else {})
-
-    def read(self, cur, ns: str, path: str) -> bytes | None:
-        h = self._head_of(cur, ns, path)
-        if h is _MISSING:
-            return None
-        if self.list_key and not h.get('lifted'):
-            return canonical(h.get('head')).encode('utf-8')
-        kids: dict[int, list] = {}
-        if self.child:
-            cur.execute(f'SELECT * FROM "{self.child[1]}" WHERE ns=%s AND path=%s ORDER BY parent_pos, pos', (ns, path))
-            for r in cur.fetchall():
-                kids.setdefault(r['parent_pos'], []).append(unlift(r, self.child[2], r['extra']))
-        cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s ORDER BY pos', (ns, path))
-        items = []
-        for r in cur.fetchall():
-            if not r['is_obj']:
-                items.append(r['extra'])
-                continue
-            it = unlift(r, self.cols, r['extra'])
-            if r['has_kids']:
-                it[self.child[0]] = kids.get(r['pos'], [])
-            items.append(it)
-        if self.list_key:
-            return canonical({**h['head'], self.list_key: items}).encode('utf-8')
-        return canonical(items).encode('utf-8')
-
-    def delete(self, cur, ns: str, path: str) -> None:
-        if self.child:
-            cur.execute(f'DELETE FROM "{self.child[1]}" WHERE ns=%s AND path=%s', (ns, path))
-        super().delete(cur, ns, path)
-
-    def ddl(self) -> str:
-        out = [f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, pos INTEGER NOT NULL, is_obj BOOLEAN NOT NULL{_ddl_cols(self.cols)}, '
-               f'extra JSONB, has_kids BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY (ns, path, pos));']
-        if self.child:
-            out.append(f'CREATE TABLE IF NOT EXISTS "{self.child[1]}" (ns TEXT NOT NULL, path TEXT NOT NULL, parent_pos INTEGER NOT NULL, pos INTEGER NOT NULL{_ddl_cols(self.child[2])}, '
-                       f'extra JSONB NOT NULL DEFAULT \'{{}}\', PRIMARY KEY (ns, path, parent_pos, pos));')
-        return '\n'.join(out)
-
-
-class MapTable(_PathTable):
-    """A JSON object of id → object (a hub-table@1 chunk: `rows-<n>.json`) → one row per id, `cols` lifted, the rest in
-    `extra`. A chunk with a non-object value is not claimed."""
-
-    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
-        if not self._claims(ns, path, kind) or not body.lstrip().startswith(b'{'):
-            return False
-        try:
-            doc = json.loads(body.decode('utf-8'))
-        except ValueError:
-            return False
-        return isinstance(doc, dict) and all(isinstance(v, dict) for v in doc.values())
-
-    def write(self, cur, ns: str, path: str, body: bytes) -> None:
-        doc = json.loads(body.decode('utf-8'))
-        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
-        names = ''.join(f', "{c.name}"' for c in self.cols)
-        rows = []
-        for pos, (rid, it) in enumerate(doc.items()):
-            vals, extra = lift(it, self.cols)
-            rows.append((ns, path, rid, pos, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical)))
-        if rows:
-            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, rid, pos{names}, extra) VALUES (%s, %s, %s, %s{", %s" * len(self.cols)}, %s)', rows)
-        self._head(cur, ns, path, {})
-
-    def read(self, cur, ns: str, path: str) -> bytes | None:
-        if self._head_of(cur, ns, path) is _MISSING:
-            return None
-        cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s ORDER BY pos', (ns, path))
-        return canonical({r['rid']: unlift(r, self.cols, r['extra']) for r in cur.fetchall()}).encode('utf-8')
-
-    def ddl(self) -> str:
-        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, rid TEXT NOT NULL, pos INTEGER NOT NULL{_ddl_cols(self.cols)}, '
-                f'extra JSONB NOT NULL DEFAULT \'{{}}\', PRIMARY KEY (ns, path, rid));')
-
-
-class PathRecordTable(RecordTable):
-    """RecordTable for one path family inside a shared namespace (console/home-cards/*, console/shared/notifications/*)."""
-
-    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
-        return kind == 'record' and ns == self.ns and bool(self.path_re and self.path_re.match(path)) and body.lstrip().startswith(b'{')
-
-
-class TextTable(_PathTable):
-    """UTF-8 text blobs (Markdown job briefs and reports) → one row per file: `text`, `size`. Binary stays a blob."""
-    kind = 'blob'
-
-    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
-        if not self._claims(ns, path, kind) or b'\x00' in body:
-            return False
-        try:
-            body.decode('utf-8')
-        except UnicodeDecodeError:
-            return False
-        return True
-
-    def write(self, cur, ns: str, path: str, body: bytes) -> None:
-        cur.execute(f'INSERT INTO "{self.name}" (ns, path, folder, name, text, size) VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (ns, path) DO UPDATE SET '
-                    'folder=EXCLUDED.folder, name=EXCLUDED.name, text=EXCLUDED.text, size=EXCLUDED.size',
-                    (ns, path, path.rpartition('/')[0], path.rpartition('/')[2], body.decode('utf-8'), len(body)))
-
-    def read(self, cur, ns: str, path: str) -> bytes | None:
-        cur.execute(f'SELECT text FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
-        r = cur.fetchone()
-        return r['text'].encode('utf-8') if r else None
-
-    def delete(self, cur, ns: str, path: str) -> None:
-        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
-
-    def ddl(self) -> str:
-        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, folder TEXT NOT NULL, name TEXT NOT NULL, '
-                f'text TEXT NOT NULL, size BIGINT NOT NULL, PRIMARY KEY (ns, path));')
-
-
 # ── the registry ─────────────────────────────────────────────────────────────────────────────────────────────────────
 
 NOTE_COLS = [Col('at'), Col('text')]
-ALERT_COLS = [Col('id'), Col('key'), Col('source'), Col('severity'), Col('title'), Col('first_at', 'firstAt', 'int'),
-              Col('last_at', 'lastAt', 'int'), Col('count', type='int'), Col('ack', type='bool'), Col('resolved', type='bool'),
-              Col('resolved_at', 'resolvedAt', 'int')]
-NOTIFY_COLS = [Col('schema', '$axf'), Col('id'), Col('kind'), Col('source'), Col('title'), Col('at'), Col('status'), Col('severity')]
-HOME_COLS = [Col('schema', '$axf'), Col('owner'), Col('updated_at', 'updatedAt')]
-AMBERX_NOTE_COLS = [Col('id'), Col('kind'), Col('list'), Col('title'), Col('status'), Col('created_at', 'createdAt'), Col('updated_at', 'updatedAt')]
-APP_COLS = [Col('project'), Col('name'), Col('platform'), Col('app_id', 'appId')]
-APP_VERSION_COLS = [Col('version'), Col('build', type='int'), Col('version_code', 'versionCode', 'int'), Col('file'), Col('size', type='int'),
-                    Col('sha256'), Col('built_at', 'builtAt'), Col('commit')]
-
-# console/ paths that are the console's own small state documents (one KvTable family). Plugin data, journals and the
-# documents with their own table (alerts, control inventory, home cards, shared/*) are not in it.
-CONSOLE_STATE_RE = r'^(state|host-check|nightly|update-status|project-wizard|alerts-run|alerts-config)\.json$|^(main-gate|wall|github-app)/[^/]+\.json$'
-CONSOLE_STATE = KvTable('console_state', 'console', CONSOLE_STATE_RE,
-                        "the console's own state documents (state.json, host-check, nightly, update-status, project-wizard, main-gate…): one row per top-level key")
-ALERTS = ArrayTable('alerts', 'console', r'^alerts\.json$', 'the alert hub (alerts@1): one row per alert, severity / ack / resolved lifted', ALERT_COLS)
-ALERTS_SEEN = ArrayTable('alerts_seen', 'console', r'^alerts-seen\.json$', 'CI run ids the alert hub has already reported: one row per id')
-NOTIFICATIONS = PathRecordTable('notifications', 'console', NOTIFY_COLS, 'the shared notifications inbox: one row per notification',
-                                r'^shared/notifications/.+\.json$')
-HOME_CARDS = PathRecordTable('home_cards', 'console', HOME_COLS, 'each owner\'s Home cards layout (home-layout@1): one row per owner',
-                             r'^home-cards/[^/]+\.json$')
-AMBERX_NOTES = MapTable('amberx_notes', 'console', r'^amberx-notes/items/rows-\d+\.json$', 'AmberX notes and tasks (hub-table@1 chunks): one row per item', AMBERX_NOTE_COLS)
-AMBERX_NOTE_LISTS = MapTable('amberx_note_lists', 'console', r'^amberx-notes/lists/rows-\d+\.json$', 'AmberX note lists (hub-table@1 chunks): one row per list',
-                             [Col('id'), Col('title'), Col('kind')])
-APP_CATALOG = ArrayTable('app_catalog', 'console', r'^shared/app-catalog/catalog\.json$', 'the app catalog (app-catalog@1): one row per app, its builds in app_catalog_versions',
-                         APP_COLS, list_key='apps', child=('versions', 'app_catalog_versions', APP_VERSION_COLS))
 BUILDS = DocTable('builds', 'builds', 'store.json',
                   {'builds': ListSpec('builds', BUILD_COLS, 'builds', key='id', children=(('steps', 'build_steps', STEP_COLS), ('notes', 'build_notes', NOTE_COLS)))},
                   'the builds store (builds@1): one row per build keyed by its id, steps in build_steps, notes in build_notes, the rest of the document in store_heads')
@@ -790,100 +525,14 @@ SETTINGS = RecordTable('settings', 'settings', SETTINGS_COLS, 'settings document
 PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (plan@1): one row per plan', r'^(plans|projects/[^/]+/plans)/[^/]+\.json$')
 NOTES = NotesTable()
 
-# s2 (s4.5a): the large plugin documents. Keys of the open `plugins` namespace are `<folder>/<rest>`.
-SWARM_RUN_COLS = [Col('schema', '$axf'), Col('kind'), Col('job_id', 'jobId'), Col('build_id', 'buildId'), Col('step_id', 'stepId'), Col('job_type', 'jobType'),
-                  Col('agent'), Col('model'), Col('started_at', 'startedAt'), Col('ended_at', 'endedAt'), Col('status'), Col('reason'), Col('turns', type='int')]
-SWARM_MSG_COLS = [Col('id'), Col('at'), Col('sender', 'from'), Col('kind'), Col('text'), Col('job_id', 'jobId')]
-SWARM_NOTICE_COLS = [Col('at'), Col('agent'), Col('text')]
-LAND_COLS = [Col('id'), Col('title'), Col('branch'), Col('pr', type='int'), Col('head'), Col('state'), Col('reason'), Col('since'), Col('checked_at', 'checkedAt'), Col('agent')]
-LINE_COLS = [Col('schema', '$axf'), Col('id'), Col('pr', type='int'), Col('build'), Col('branch'), Col('title'), Col('agent'), Col('priority'), Col('head'),
-             Col('state'), Col('since'), Col('added_at', 'addedAt'), Col('attempts', type='int'), Col('main_sha', 'mainSha')]
-SHOT_COLS = [Col('id'), Col('source'), Col('app'), Col('screen'), Col('viewport'), Col('session'), Col('branch'), Col('name'), Col('grp', 'group'),
-             Col('added_at', 'addedAt'), Col('submitted_by', 'submittedBy'), Col('size', type='int')]
-SWARM_RUNS = ArrayTable('swarm_runs', 'plugins', r'^agent-swarm/runs\.json$', 'agent-swarm runs (swarm-run@1): one row per run', SWARM_RUN_COLS, list_key='runs')
-SWARM_STATE = DocTable('swarm_messages', 'plugins', 'agent-swarm/state.json',
-                       {'messages': ListSpec('swarm_messages', SWARM_MSG_COLS, 'messages'), 'notices': ListSpec('swarm_notices', SWARM_NOTICE_COLS, 'notices')},
-                       'agent-swarm state: one row per crew message (swarm_messages) and notice (swarm_notices); agents, rules, cards in store_heads')
-SWARM_SAID = KvTable('swarm_sections_said', 'plugins', r'^agent-swarm/sections-said\.json$', 'crew sections already said: one row per section key (when)', map_key='said')
-SWARM_JOBS = TextTable('swarm_jobs', 'plugins', r'^agent-swarm/job-(briefs|reports)/[^/]+\.md$', 'agent-swarm job briefs and reports (Markdown): one row per file')
-LAND = DocTable('land_items', 'plugins', 'push-banner/land.json', {'items': ListSpec('land_items', LAND_COLS, 'items')},
-                'the auto-lander (push-banner land.json): one row per build it lands; order, managed, flags in store_heads')
-LANDING_LINE = DocTable('landing_line', 'plugins', 'push-banner/landing-line.json',
-                        {'entries': ListSpec('landing_line', LINE_COLS, 'entries'), 'history': ListSpec('landing_line', LINE_COLS, 'history')},
-                        'the landing line: one row per PR in line (section entries) and per PR that left it (section history)')
-MERGE_QUEUE = KvTable('merge_queue', 'plugins', r'^push-banner/merge-queue\.json$', 'the merge queue state: one row per field (depth, mode, mainSha, history…)')
-UI_SHOTS = DocTable('ui_review_screenshots', 'ui-review', 'screenshots/index.json', {'shots': ListSpec('ui_review_screenshots', SHOT_COLS, 'shots')},
-                    'UI Review screenshots index: one row per screenshot (the image is a blob); groups in store_heads')
-UI_PREDICTIONS = PathRecordTable('ui_review_predictions', 'ui-review', [Col('hash'), Col('at'), Col('item')], 'UI Review look predictions: one row per prediction',
-                                 r'^predictions/[^/]+\.json$')
+TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES]
+# Part C (postgres-part-c-console-state-settings): the console's and the plugins' documents, in their own modules (shapes
+# in tables_shapes.py). Appended after the domain tables so those always win; catch-alls are last in PLUGIN_TABLES.
+from tables_console import CONSOLE_HOLDS, CONSOLE_SQL, CONSOLE_TABLES  # noqa: E402
+from tables_plugins import PLUGIN_HOLDS, PLUGIN_SQL, PLUGIN_TABLES  # noqa: E402
+from tables_shapes import retable  # noqa: E402,F401  (pg.py: T.retable)
 
-# s3 (s4.5b): the remaining plugin data folders (framework/spec/DATA-INVENTORY.md §4).
-class PluginDocTable(RecordTable):
-    """Every JSON document below a plugin's top folder (conversations/, whatsnew/, memory/, plans/, reports/…) that no
-    table above claims: one row per document, with the plugin and its sub-folder lifted so a plugin's documents are one
-    query (`WHERE plugin = 'ai-assistant' AND folder = 'conversations'`)."""
-
-    def __init__(self):
-        super().__init__('plugin_docs', 'plugins', [Col('schema', '$axf'), Col('id'), Col('title'), Col('name'), Col('kind'), Col('status')],
-                         "plugins' documents in sub-folders (conversations, whatsnew, memory, plans, reports…): one row per document",
-                         r'^[a-z0-9][a-z0-9-]*/.+/[^/]+\.json$')
-
-    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
-        return kind == 'record' and ns == self.ns and bool(self.path_re.match(path)) and body.lstrip().startswith(b'{')
-
-    def write(self, cur, ns: str, path: str, body: bytes) -> None:
-        doc = json.loads(body.decode('utf-8'))
-        vals, extra = lift(doc, self.cols)
-        plugin, _, rest = path.partition('/')
-        names = ''.join(f', "{c.name}"' for c in self.cols)
-        sets = ', '.join(f'"{c.name}"=EXCLUDED."{c.name}"' for c in self.cols)
-        cur.execute(f'INSERT INTO "{self.name}" (ns, path, plugin, folder{names}, extra) VALUES (%s, %s, %s, %s{", %s" * len(self.cols)}, %s) '
-                    f'ON CONFLICT (ns, path) DO UPDATE SET plugin=EXCLUDED.plugin, folder=EXCLUDED.folder, {sets}, extra=EXCLUDED.extra',
-                    (ns, path, plugin, rest.rpartition('/')[0], *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical)))
-
-    def ddl(self) -> str:
-        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, plugin TEXT NOT NULL, folder TEXT NOT NULL{_ddl_cols(self.cols)}, '
-                f'extra JSONB NOT NULL DEFAULT \'{{}}\', PRIMARY KEY (ns, path));\n'
-                f'CREATE INDEX IF NOT EXISTS plugin_docs_plugin ON plugin_docs (plugin, folder);')
-
-
-AGENT_RUNS = ArrayTable('agent_runs', 'plugins', r'^agent-manager/runs\.json$', 'Agent Manager runs: one row per run',
-                        [Col('id'), Col('agent'), Col('status'), Col('at'), Col('model')], list_key='items')
-AGENT_HUB_RUNS = ArrayTable('agent_hub_runs', 'plugins', r'^agent-manager/hub-runs\.json$', 'Agent Manager runs on axHub: one row per run',
-                            [Col('id'), Col('agent'), Col('status'), Col('at')])
-TODO = DocTable('todo_items', 'plugins', 'todo-manager/store.json',
-                {'entries': ListSpec('todo_items', [Col('id'), Col('list'), Col('title'), Col('status'), Col('type'), Col('due')], 'entries'),
-                 'lists': ListSpec('todo_lists', [Col('id'), Col('title'), Col('kind')], 'lists')},
-                'To-do manager: one row per entry (todo_items) and per list (todo_lists); types in store_heads')
-HEALTH_CHECKS = KvTable('health_checks', 'plugins', r'^systems-check/health-state\.json$', 'the systems check health@1 state: one row per check (its last result)', map_key='checks')
-WORKERS = ArrayTable('worker_accounts', 'plugins', r'^claude-accounts/workers\.json$', 'Claude worker accounts: one row per worker; limits and routing in store_heads',
-                     [Col('id'), Col('name'), Col('account'), Col('kind')], list_key='workers')
-TERMINAL_FEEDS = KvTable('terminal_feeds', 'plugins', r'^console-terminal/feeds\.json$', 'console terminal feeds: one row per feed', map_key='feeds')
-ASSISTANT_USAGE = KvTable('assistant_usage', 'plugins', r'^ai-assistant/usage\.json$', 'AI assistant usage: one row per day', map_key='days')
-GLOSSARY = ArrayTable('glossary_terms', 'plugins', r'^glossary-index/catalog\.json$', 'the glossary index: one row per term',
-                      [Col('id'), Col('kind'), Col('name'), Col('title')], list_key='entries')
-SHIPPED_FEED = ArrayTable('shipped_feed', 'plugins', r'^whats-shipped/feed\.json$', "What's shipped feed: one row per item",
-                          [Col('id'), Col('title'), Col('at'), Col('pr', type='int'), Col('build')], list_key='items')
-COMMAND_CATALOG = ArrayTable('command_catalog', 'plugins', r'^console-commands/catalog-owner\.json$', 'the console command catalog: one row per command',
-                             [Col('id'), Col('title'), Col('plugin'), Col('kind')], list_key='items')
-PHONE_DEVICES = PathRecordTable('phone_devices', 'phone', [Col('schema', '$axf'), Col('device_id', 'deviceId'), Col('name'), Col('app'), Col('platform'), Col('state')],
-                                'Phone Connect devices: one row per device', r'^devices/[^/]+\.json$')
-PHONE_PAIRINGS = PathRecordTable('phone_pairings', 'phone', [Col('schema', '$axf'), Col('id'), Col('device_id', 'deviceId'), Col('state')],
-                                 'Phone Connect pairings: one row per pairing', r'^pairings/[^/]+\.json$')
-PHONE_COMMANDS = PathRecordTable('phone_commands', 'phone', [Col('schema', '$axf'), Col('id'), Col('device_id', 'deviceId'), Col('state'), Col('kind')],
-                                 'Phone Connect commands: one row per command', r'^commands/.+\.json$')
-PLUGIN_DOCS = PluginDocTable()
-
-# The plugins' small single-object documents (config, settings, control, state files at the top of a plugin's data folder)
-# that no table above claims: one row per setting. Last in TABLES, so every specific table wins.
-PLUGIN_SETTINGS = KvTable('plugin_settings', 'plugins', r'^[a-z0-9][a-z0-9-]*/[^/]+\.json$',
-                          "plugins' small documents (settings, config, control, state at the top of a data folder): one row per top-level key")
-
-TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES,
-                CONSOLE_STATE, ALERTS, ALERTS_SEEN, NOTIFICATIONS, HOME_CARDS, AMBERX_NOTES, AMBERX_NOTE_LISTS, APP_CATALOG,
-                SWARM_RUNS, SWARM_STATE, SWARM_SAID, SWARM_JOBS, LAND, LANDING_LINE, MERGE_QUEUE, UI_SHOTS, UI_PREDICTIONS,
-                AGENT_RUNS, AGENT_HUB_RUNS, TODO, HEALTH_CHECKS, WORKERS, TERMINAL_FEEDS, ASSISTANT_USAGE, GLOSSARY, SHIPPED_FEED, COMMAND_CATALOG,
-                PHONE_DEVICES, PHONE_PAIRINGS, PHONE_COMMANDS, PLUGIN_SETTINGS, PLUGIN_DOCS]
+TABLES += CONSOLE_TABLES + PLUGIN_TABLES
 _BY_NAME = {t.name: t for t in TABLES}
 
 HOLDS = {
@@ -900,17 +549,9 @@ HOLDS = {
     'build_notes': 'notes of each build (one row per note: at, text, under the build id)',
     'control_tabs': 'tabs of each tab group in the control registry',
     'mirror_runs': 'each SQLite mirror run: source, tables, row counts, result',
-    'app_catalog_versions': 'each build of each app in the app catalog (version, build, file, sha256, builtAt)',
-    'console_deploys': 'view: the console deploys log (console/deploys/log), one row per deploy',
-    'todo_lists': 'To-do manager lists (one row per list)',
-    'plugin_audit': "view: every plugin journal line (audit.jsonl, history, logs) with its plugin and action",
-    'phone_log': 'view: the Phone Connect log, one row per line',
-    'swarm_notices': 'agent-swarm notices (one row per notice)',
-    'ui_review_shots': 'view: every UI Review image (shots/, screenshots/files/) with its key, size and blob',
-    'chat_audio': 'view: Chat viewer audio clips (console/chat-viewer/audio/…) with their blob',
-    'land_log': 'view: the lander logs (push-banner land-runs, land-batches, gate-log), one row per line',
-    'token_log': 'view: the token log (console/token-log/<yyyy>/<mm>/<dd>.jsonl), one row per turn',
 }
+HOLDS.update(CONSOLE_HOLDS)
+HOLDS.update(PLUGIN_HOLDS)
 
 # Run before SCHEMA_SQL on a database made by an earlier version (pg.py PgStore._connect): the builds rows move from
 # position-keyed (section, pos) to id-keyed (section, rid) with steps and notes under the id, and every list table gets
@@ -962,41 +603,6 @@ def migrate_v2(conn) -> dict:
     return out
 
 
-def retable(conn, only_ns: tuple[str, ...] | None = None) -> dict:
-    """Move records a domain table now claims out of `records` into their rows (a database made before the table existed:
-    console/state.json, alerts.json… were copied on Nov 17 as JSONB records). A key moves only when the rows read back
-    byte-equal to the stored body, so its etag is unchanged; anything else stays where it is and is counted. Idempotent."""
-    out = {'moved': 0, 'kept': 0, 'tables': {}}
-    names = sorted({t.ns for t in TABLES if not only_ns or t.ns in only_ns})
-    cur = conn.cursor()
-    cur.execute("SELECT k.ns, k.path, k.content_type, r.data, r.body FROM keys k JOIN records r ON r.ns = k.ns AND r.path = k.path "
-                "WHERE k.kind = 'record' AND k.table_name = '' AND NOT k.deleted AND k.ns = ANY(%s)", (names,))
-    rows = [dict(r, kind='record') for r in cur.fetchall()]
-    blob_ns = sorted({t.ns for t in TABLES if getattr(t, 'kind', '') == 'blob' and (not only_ns or t.ns in only_ns)})
-    if blob_ns:  # text blobs a TextTable now claims (job briefs and reports)
-        cur.execute("SELECT k.ns, k.path, k.content_type, b.bytes AS body, NULL AS data FROM keys k JOIN blobs b ON b.sha = k.blob_sha "
-                    "WHERE k.kind = 'blob' AND k.table_name = '' AND NOT k.deleted AND k.ns = ANY(%s) AND k.size < 4194304", (blob_ns,))
-        rows += [dict(r, kind='blob') for r in cur.fetchall()]
-    for r in rows:
-        body = bytes(r['body']) if r['body'] is not None else canonical(r['data']).encode('utf-8')
-        t = table_for(r['ns'], r['path'], r['kind'], r['content_type'] or '', body)
-        if not t:
-            continue
-        try:
-            with conn.transaction():
-                c2 = conn.cursor()
-                t.write(c2, r['ns'], r['path'], body)
-                if t.read(c2, r['ns'], r['path']) != body:
-                    raise ValueError('rows do not read back equal')
-                c2.execute('DELETE FROM records WHERE ns=%s AND path=%s', (r['ns'], r['path']))
-                c2.execute('UPDATE keys SET table_name=%s WHERE ns=%s AND path=%s', (t.name, r['ns'], r['path']))
-            out['moved'] += 1
-            out['tables'][t.name] = out['tables'].get(t.name, 0) + 1
-        except Exception:  # noqa: BLE001 — the record stays a record; the next put places it
-            out['kept'] += 1
-    return out
-
-
 SCHEMA_SQL = '\n'.join(t.ddl() for t in TABLES) + """
 CREATE TABLE IF NOT EXISTS store_heads (ns TEXT NOT NULL, path TEXT NOT NULL, head JSONB NOT NULL, lists JSONB NOT NULL, PRIMARY KEY (ns, path));
 CREATE TABLE IF NOT EXISTS mirror_runs (id BIGSERIAL PRIMARY KEY, prefix TEXT NOT NULL, source TEXT NOT NULL, at TEXT NOT NULL, tables JSONB NOT NULL, ok BOOLEAN NOT NULL, error TEXT NOT NULL DEFAULT '');
@@ -1010,29 +616,10 @@ CREATE INDEX IF NOT EXISTS planner_items_status ON planner_items (status);
 CREATE OR REPLACE VIEW build_journal AS
   SELECT ns, path, seq, at, actor, entry->>'action' AS action, entry->>'note' AS note, entry->>'by' AS who, (entry->>'rev') AS store_rev, entry->'builds' AS builds, entry
   FROM journal WHERE ns = 'builds' AND path LIKE 'journal/%';
-CREATE OR REPLACE VIEW console_deploys AS
-  SELECT seq, at, actor, entry->>'sha' AS sha, entry->>'result' AS result, entry->>'by' AS who, entry
-  FROM journal WHERE ns = 'console' AND path = 'deploys/log';
-CREATE OR REPLACE VIEW token_log AS
-  SELECT path, seq, at, actor, entry->>'id' AS id, entry->>'source' AS source, entry->>'session' AS session, entry->>'model' AS model, entry
-  FROM journal WHERE ns = 'console' AND path LIKE 'token-log/%';
-CREATE OR REPLACE VIEW ui_review_shots AS
-  SELECT path, size, content_type, blob_sha, at, actor FROM keys WHERE ns = 'ui-review' AND (path LIKE 'shots/%' OR path LIKE 'screenshots/files/%') AND NOT deleted;
-CREATE OR REPLACE VIEW chat_audio AS
-  SELECT path, size, content_type, blob_sha, at, actor FROM keys WHERE ns = 'console' AND path LIKE 'chat-viewer/audio/%' AND NOT deleted;
-CREATE OR REPLACE VIEW land_log AS
-  SELECT split_part(path, '/', 2) AS log, seq, at, actor, entry FROM journal WHERE ns = 'plugins' AND path IN ('push-banner/land-runs.jsonl', 'push-banner/land-batches.jsonl', 'push-banner/gate-log.jsonl');
-CREATE OR REPLACE VIEW plugin_audit AS
-  SELECT split_part(path, '/', 1) AS plugin, path, seq, at, actor, entry->>'action' AS action, COALESCE(entry->>'by', actor) AS who, entry
-  FROM journal WHERE ns = 'plugins';
-CREATE OR REPLACE VIEW phone_log AS
-  SELECT seq, at, actor, entry->>'kind' AS kind, entry->>'device' AS device, entry FROM journal WHERE ns = 'phone' AND path = 'log';
-CREATE INDEX IF NOT EXISTS swarm_runs_status ON swarm_runs (status);
-CREATE INDEX IF NOT EXISTS alerts_severity ON alerts (severity);
-CREATE INDEX IF NOT EXISTS notifications_status ON notifications (status);
 CREATE OR REPLACE VIEW note_history AS
   SELECT ns, path, seq, at, actor, entry FROM journal WHERE ns = 'notes' AND path LIKE '_history/%';
 """
+SCHEMA_SQL += CONSOLE_SQL + PLUGIN_SQL
 
 
 def table_for(ns: str, path: str, kind: str, content_type: str, body: bytes):

@@ -12,7 +12,9 @@ its key-level modes and its tables version 2. Whichever lands first, the other m
 
 - **35 new tables and 7 new views** on axf-data's Postgres (tables version 5): every console and plugin document the
   inventory names has rows, not a JSONB blob (`services/axf-data/tables.py`; the views sit over the journal and keys
-  rows).
+  rows). Per the build's instructions they live in their own modules: `tables_shapes.py` (the generic shapes and
+  `retable`), `tables_console.py`, `tables_plugins.py`; `tables.py` only appends them to `TABLES`, `HOLDS` and
+  `SCHEMA_SQL` (additive, so part B's tables do not collide).
 - **One tool for every move**: `framework/cli/data-cut.mjs` with the groups in `framework/schemas/data-cut.json`:
   backfill (`copy`), verify, key-level cut-over of the entries whose writers all go through the data layer, `sync` for the
   rest, `local` to go back. Same verbs over REST, MCP, CLI and voice.
