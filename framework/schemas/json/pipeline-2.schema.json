@@ -54,7 +54,7 @@
         "slot": { "type": "string", "maxLength": 300 },
         "worktree": { "type": "string", "maxLength": 300 },
         "branch": { "type": "string", "maxLength": 300 },
-        "session": { "type": "string", "maxLength": 300 },
+        "tmux": { "type": "string", "maxLength": 300 },
         "prNumber": { "type": "integer", "minimum": 1 },
         "files": { "type": "array", "items": { "type": "string" } }
       },

@@ -106,5 +106,29 @@ eq(PS.properties.steps.items.properties.minutes.maximum, P.STEP_MAX_MINUTES, 'pl
 eq(PS.properties.steps.items.properties.model.enum, [...P.PLAN_MODELS], 'plan schema models = engine');
 eq(PS.properties.id.pattern, P.PLAN_ID_RE.source, 'plan schema id = build-id@1');
 
+// ---- the store layer end to end (a scratch store): forward-only enforced on every write, refusals logged
+{
+  const { mkdtempSync } = await import('node:fs'); const { tmpdir } = await import('node:os');
+  const dir = mkdtempSync(join(tmpdir(), 'axf-p2-'));
+  Object.assign(process.env, { AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0' });
+  const BS = await import('../cli/builds-store.mjs');
+  const core = await import('../plan/builds-store-core.mjs');
+  BS.withStore((s) => { s.builds.push(core.normBuild({ id: 'p2-demo', title: 'P2', flow: 'pipeline-2', status: 'pending', steps: [{ id: 's1', text: 'one' }] })); return s; }, { by: 'check' });
+  let r = BS.setFlowStatus('p2-demo', 'splitting', { by: 'check' });
+  eq([r.build.status, r.build.statusBy, r.build.statusLog.length], ['splitting', 'check', 2], 'store: flow status written with by and log');
+  let threw = null; try { BS.setFlowStatus('p2-demo', 'pending', { by: 'check' }); } catch (e) { threw = e; }
+  eq([threw?.code, BS.loadStore().builds.find((b) => b.id === 'p2-demo').status], ['backward', 'splitting'], 'store: setFlowStatus refuses a backward move and writes nothing');
+  const w = BS.withStore((s) => { s.builds.find((b) => b.id === 'p2-demo').status = 'pending'; return s; }, { by: 'raw-writer' });
+  eq([w.refused.length, BS.loadStore().builds.find((b) => b.id === 'p2-demo').status], [1, 'splitting'], 'store: a raw backward write is refused by withStore');
+  r = BS.setFlowStatus('p2-demo', 'pulling-main', { step: 's1', by: 'check', extra: { worktree: '/w/p2-demo--s1', account: 'acc1', slot: 'hl-1' } });
+  eq([r.step.status, r.step.worktree, r.step.account, r.step.slot], ['pulling-main', '/w/p2-demo--s1', 'acc1', 'hl-1'], 'store: step fields survive normalisation');
+  BS.setFlowStatus('p2-demo', 'failed', { step: 's1', by: 'check' });
+  r = BS.setFlowStatus('p2-demo', 'ready', { step: 's1', by: 'check' });
+  eq([r.step.status, r.step.attempt], ['ready', 2], 'store: retry forward is attempt 2');
+  r = BS.setFlowStatus('p2-demo', 'in-pr', { step: 's1', by: 'check', extra: { prNumber: 42 } });
+  eq([r.step.done, r.step.prNumber], [true, 42], 'store: in-pr step done with its PR');
+  { const v = core.validateStore(BS.loadStore()); ok(v.ok !== false && !(v.errors ?? []).length, `store: still valid builds@1: ${JSON.stringify(v.errors)}`); }
+}
+
 console.log(`${failed ? 'FAIL' : 'ok'} pipeline-2@1: ${n - failed}/${n}`);
 process.exit(failed ? 1 : 0);

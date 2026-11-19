@@ -40,7 +40,7 @@ statuses (`queued`, `running`, …) and the old dispatcher path; nothing migrate
 
 `pending` → `pulling-main` → `ready` → `sending` → `building` → `completed` → `in-pr` (with `prNumber`), plus `failed`
 (attempt N). Each step carries `model` (Fable | Opus), `account`, `slot`, and once cut `worktree` and `branch`
-(`claude/<build>--<step>`); `session` while building. `done` mirrors `completed` / `in-pr` for older readers.
+(`claude/<build>--<step>`); `tmux` (the session name) while building. `done` mirrors `completed` / `in-pr` for older readers.
 
 ## Rules
 

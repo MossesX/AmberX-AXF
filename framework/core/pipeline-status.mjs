@@ -44,7 +44,7 @@ export const STEP_LABELS = Object.freeze({
 });
 /** The fields a build or step carries for the contract. */
 export const BUILD_FIELDS = Object.freeze(['flow', 'status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog']);
-export const STEP_FIELDS = Object.freeze(['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', 'model', 'account', 'slot', 'prNumber', 'worktree', 'branch', 'session']);
+export const STEP_FIELDS = Object.freeze(['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', 'model', 'account', 'slot', 'prNumber', 'worktree', 'branch', 'tmux']);
 export const LOG_MAX = 60;
 
 const str = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -130,7 +130,7 @@ export function normFields(o, kind = 'build') {
   if (log.length) out.statusLog = log;
   if (kind === 'step') {
     if (isStatus(x.status, 'step')) out.status = x.status;
-    for (const k of ['account', 'slot', 'worktree', 'branch', 'session']) if (str(x[k])) out[k] = str(x[k], 300);
+    for (const k of ['account', 'slot', 'worktree', 'branch', 'tmux']) if (str(x[k])) out[k] = str(x[k], 300);
     if (Number.isInteger(Number(x.prNumber)) && Number(x.prNumber) > 0) out.prNumber = Number(x.prNumber);
   }
   return out;

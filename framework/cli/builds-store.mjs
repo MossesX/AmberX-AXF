@@ -19,6 +19,8 @@
  *   … fail <build> --kind k --why "…" [--head sha]        record a failure found outside the dispatcher: status fixing
  *   … set-status <build> <status> [--by who] [--demo]    set a status through the done-means-merged@1 guard: landed / built /
  *                                                        complete without merge + green CI + verify are refused (a note says why)
+ *   … flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n]   pipeline-2@1: one status
+ *                                                        change through the contract (forward-only; exit 1 = refused)
  *   … demo <build>                                        demo-build@1 check, exit 1 if not demo (--demo above: a demo action)
  *   … dedupe-steps [--dry-run|--apply] [--from f] [b…]            step-dedupe: collapse repeated steps (done copy wins, collision
  *                                                        ids tidied), one journal revision per build; dry run by default
@@ -60,6 +62,7 @@ import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, journalHome, jou
 import * as files from '../core/data-files.mjs';
 import { DataStoreError } from '../core/data-store.mjs';
 import { DemoGuardError, demoGuard } from '../core/demo-build.mjs';
+import * as P2 from '../core/pipeline-status.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
 /**
@@ -567,14 +570,56 @@ function withStoreOnce(fn, meta) {
   const start = foreign.length ? readStore() : before;
   const r = fn(core.normalizeStore(JSON.parse(JSON.stringify(start))));
   const guarded = core.enforceDoneGuard(start, r && r.$axf ? r : r.store, { by: meta.by || 'cli' });
-  const next = guarded.store;
+  // pipeline-2@1 (framework/spec/PIPELINE-2.md): forward-only for every Pipeline 2.0 build and step; a backward move is
+  // refused (the old status stays), logged here and in the journal line; a hand-made forward move gets its at / by
+  const flowed = P2.enforceFlow(start, guarded.store, { by: meta.by || 'cli' });
+  const next = flowed.store;
+  if (flowed.refused.length) {
+    const text = flowed.refused.map((x) => `refused ${x.id}${x.step ? `/${x.step}` : ''} ${x.from || '(none)'} → ${x.to || '(none)'}: ${x.why}`);
+    process.stderr.write(text.map((t) => `builds-store: ${t}\n`).join(''));
+    meta = { ...meta, note: [meta.note, ...text].filter(Boolean).join(' · ').slice(0, 2000) };
+  }
   // demo-build@1: a demo write (meta.demo, the live demo's acts) may touch demo builds only; anything else is refused whole
   if (meta.demo === true) { const bad = core.demoViolations(start, next); if (bad.length) throw new DemoGuardError(`demo action refused: ${bad.map((x) => x.id).join(', ')} ${bad.length === 1 ? 'is' : 'are'} not demo build(s) (id prefix ${core.DEMO_PREFIX}, tag demo: true)`, { builds: bad.map((x) => x.id), action: meta.action || '' }); }
   if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
   const saved = saveStore(start, next, meta);
   if (exportsOn()) exportAll(saved.store);
   if (saved.changes.length && storeMode() === 'cutover') projectConsole(saved.store);
-  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: guarded.refused };
+  return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: [...guarded.refused, ...flowed.refused] };
+}
+
+// ------------------------------------------------------------------ pipeline-2@1: one status change, forward-only
+
+export class FlowRefused extends Error { constructor(m, d = {}) { super(m); this.code = 'backward'; Object.assign(this, d); } }
+/**
+ * Move a Pipeline 2.0 build (or one of its steps, `step` = id or uid) to `to` through the contract, under the store
+ * lock: at / by / attempt / log recorded, `extra` merged on success (account, slot, prNumber, worktree…). A move the
+ * contract refuses throws FlowRefused (code 'backward') and writes nothing; the refusal is logged on stderr.
+ * `mutate(build, store)` may change more of the build in the same write. → { build, step, rev }
+ */
+export function setFlowStatus(id, to, { step = '', by = 'pipeline', why = '', extra = null, mutate = null, action = 'flow-status' } = {}) {
+  let out = null;
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 'not_found' });
+    const at = new Date().toISOString();
+    if (step) {
+      const i = b.steps.findIndex((x) => x.id === step || x.uid === step);
+      if (i < 0) throw Object.assign(new Error(`no step "${step}" in ${id}`), { code: 'not_found' });
+      const t = P2.transition(b.steps[i], to, { at, by, why, kind: 'step', extra });
+      if (!t.ok) { process.stderr.write(`builds-store: refused ${id}/${step} ${b.steps[i].status || '(none)'} → ${to}: ${t.why}\n`); throw new FlowRefused(`${id}/${step}: ${t.why}`, { id, step, from: b.steps[i].status, to }); }
+      b.steps[i] = { ...t.rec, ...(t.rec.done && !b.steps[i].doneAt ? { doneAt: at } : {}), updatedAt: at, rev: (b.steps[i].rev ?? 1) + (t.same ? 0 : 1) };
+    } else {
+      const t = P2.transition(b, to, { at, by, why, kind: 'build', extra });
+      if (!t.ok) { process.stderr.write(`builds-store: refused ${id} ${b.status || '(none)'} → ${to}: ${t.why}\n`); throw new FlowRefused(`${id}: ${t.why}`, { id, from: b.status, to }); }
+      Object.assign(b, t.rec);
+    }
+    if (mutate) mutate(b, s);
+    b.updatedAt = at;
+    return s;
+  }, { by, action, note: `${id}${step ? `/${step}` : ''} → ${to}${why ? `: ${why}` : ''}`.slice(0, 500) });
+  const b = core.findBuild(r.store, id);
+  out = { build: b, step: step ? b.steps.find((x) => x.id === step || x.uid === step) : null, rev: r.rev };
+  return out;
 }
 
 // ------------------------------------------------------------------ migration sources
@@ -829,6 +874,18 @@ async function main(argv) {
     const r = dedupeStepsNow({ apply: rest.includes('--apply'), from, ids: rest.filter((a, i) => !a.startsWith('--') && !(fi >= 0 && i === fi + 1)), by: process.env.AXF_ACTOR || 'dedupe-steps' });
     const rows = r.builds.map((b) => `${b.id.padEnd(48)} ${String(b.before).padStart(5)} → ${String(b.after).padStart(3)}${b.renamed ? ` (${b.renamed} ids tidied)` : ''}`);
     return out({ ok: true, ...r }, `${r.apply ? 'deduped' : 'dry run (--apply writes)'}: ${r.builds.length} build(s) with repeated steps, ${r.total.before} → ${r.total.after} steps\n${rows.join('\n')}`);
+  }
+  if (cmd === 'flow') {
+    // pipeline-2@1: flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n] [--worktree d]
+    const [id, to] = rest; const gi = (k) => { const i = rest.indexOf(k); return i >= 0 ? rest[i + 1] ?? '' : ''; };
+    if (!id || !to) { process.exitCode = 2; return out({ ok: false, error: 'usage: flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n] [--worktree d]' }, 'usage: flow <build> <status> [--step s] [--by who] [--why w] [--account a] [--slot s] [--pr n]'); }
+    const extra = {}; for (const k of ['account', 'slot', 'worktree', 'branch', 'tmux']) if (gi(`--${k}`)) extra[k] = gi(`--${k}`);
+    if (gi('--pr')) extra.prNumber = Number(gi('--pr'));
+    try {
+      const r = setFlowStatus(id, to, { step: gi('--step'), by: gi('--by') || 'cli', why: gi('--why'), extra: Object.keys(extra).length ? extra : null });
+      const x = r.step ?? r.build;
+      return out({ ok: true, id, step: r.step?.id ?? '', status: x.status, attempt: x.attempt ?? 1, label: P2.labelOf(x.status, x.attempt, r.step ? 'step' : 'build'), rev: r.rev }, `${id}${r.step ? `/${r.step.id}` : ''}: ${P2.labelOf(x.status, x.attempt, r.step ? 'step' : 'build')}`);
+    } catch (e) { process.exitCode = e.code === 'backward' ? 1 : 2; return out({ ok: false, error: e.message, code: e.code || '' }, `refused: ${e.message}`); }
   }
   if (cmd === 'set-status') {
     const [id, to] = rest; const bi = rest.indexOf('--by'); const by = (bi >= 0 && rest[bi + 1]) || 'cli';
