@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9169,
- "updatedAt": "2026-11-19T00:13:17.337Z",
+ "rev": 9170,
+ "updatedAt": "2026-11-19T00:13:44.622Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322705,9 +322705,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T00:12:32.331Z",
+   "updatedAt": "2026-11-19T00:13:31.430Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:13:31.430Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
@@ -322724,7 +322729,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -322734,7 +322739,9 @@
      "at": "2026-11-19T00:12:06.139Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
+    "tried": [
+     "hulu0241"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -322838,7 +322845,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322861,9 +322868,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T00:13:11.216Z",
+   "updatedAt": "2026-11-19T00:13:37.013Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:13:37.013Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
@@ -322880,7 +322892,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -322890,7 +322902,9 @@
      "at": "2026-11-19T00:12:29.213Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
+    "tried": [
+     "hulu0241"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -322994,7 +323008,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
