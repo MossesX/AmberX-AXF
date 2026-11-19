@@ -536,7 +536,20 @@ class ItemsTable:
 
     def __init__(self, name: str, ns: str, path_re: str, lists: dict[str, ItemList], cols: list[Col], holds: str):
         self.name, self.ns, self.lists, self.cols, self.holds = name, ns, lists, cols, holds
+        self.rows = name                    # the table the list items go to (HeadItemsTable: a second table)
         self.path_re = re.compile(path_re)
+
+    # the head (every field that is not a row): store_heads here, a row of its own table in HeadItemsTable
+    def _put_head(self, cur, ns: str, path: str, head: Any, lifted: list) -> None:
+        cur.execute('INSERT INTO store_heads (ns, path, head, lists) VALUES (%s, %s, %s, %s) ON CONFLICT (ns, path) DO UPDATE SET head=EXCLUDED.head, lists=EXCLUDED.lists',
+                    (ns, path, Jsonb(head, dumps=canonical), Jsonb(lifted)))
+
+    def _get_head(self, cur, ns: str, path: str) -> dict | None:
+        cur.execute('SELECT head, lists FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+        return cur.fetchone()
+
+    def _del_head(self, cur, ns: str, path: str) -> None:
+        cur.execute('DELETE FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
 
     def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
         return kind == 'record' and ns == self.ns and bool(self.path_re.match(path)) and body.startswith(b'{')
@@ -571,12 +584,11 @@ class ItemsTable:
                 head.pop(lkey)
                 self._write_rows(cur, ns, path, lkey, spec, items)
             else:
-                cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s', (ns, path, lkey))
-        cur.execute('INSERT INTO store_heads (ns, path, head, lists) VALUES (%s, %s, %s, %s) ON CONFLICT (ns, path) DO UPDATE SET head=EXCLUDED.head, lists=EXCLUDED.lists',
-                    (ns, path, Jsonb(head, dumps=canonical), Jsonb(lifted)))
+                cur.execute(f'DELETE FROM "{self.rows}" WHERE ns=%s AND path=%s AND list=%s', (ns, path, lkey))
+        self._put_head(cur, ns, path, head, lifted)
 
     def _write_rows(self, cur, ns: str, path: str, lkey: str, spec: ItemList, items: list) -> None:
-        cur.execute(f'SELECT pos, doc_hash FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s', (ns, path, lkey))
+        cur.execute(f'SELECT pos, doc_hash FROM "{self.rows}" WHERE ns=%s AND path=%s AND list=%s', (ns, path, lkey))
         have = {r['pos']: r['doc_hash'] for r in cur.fetchall()}
         names = ''.join(f', "{c.name}"' for c in self.cols)
         sets = ''.join(f', "{c.name}"=EXCLUDED."{c.name}"' for c in self.cols)
@@ -595,13 +607,12 @@ class ItemsTable:
                 value = None
             rows.append((ns, path, lkey, pos, rid, value, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical), h))
         if rows:
-            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, list, pos, rid, value{names}, extra, doc_hash) VALUES (%s, %s, %s, %s, %s, %s{", %s" * len(self.cols)}, %s, %s) '
+            cur.executemany(f'INSERT INTO "{self.rows}" (ns, path, list, pos, rid, value{names}, extra, doc_hash) VALUES (%s, %s, %s, %s, %s, %s{", %s" * len(self.cols)}, %s, %s) '
                             f'ON CONFLICT (ns, path, list, pos) DO UPDATE SET rid=EXCLUDED.rid, value=EXCLUDED.value{sets}, extra=EXCLUDED.extra, doc_hash=EXCLUDED.doc_hash', rows)
-        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s AND pos >= %s', (ns, path, lkey, len(items)))
+        cur.execute(f'DELETE FROM "{self.rows}" WHERE ns=%s AND path=%s AND list=%s AND pos >= %s', (ns, path, lkey, len(items)))
 
     def read(self, cur, ns: str, path: str) -> bytes | None:
-        cur.execute('SELECT head, lists FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
-        r = cur.fetchone()
+        r = self._get_head(cur, ns, path)
         if not r:
             return None
         doc = r['head']
@@ -609,7 +620,7 @@ class ItemsTable:
             return canonical(doc).encode('utf-8')
         for lkey in r['lists']:
             spec = self.lists.get(lkey, ItemList())
-            cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s ORDER BY pos', (ns, path, lkey))
+            cur.execute(f'SELECT * FROM "{self.rows}" WHERE ns=%s AND path=%s AND list=%s ORDER BY pos', (ns, path, lkey))
             if lkey == MAP:
                 for row in cur.fetchall():
                     doc[row['rid']] = unlift(row, self.cols, row['extra'])
@@ -618,8 +629,8 @@ class ItemsTable:
         return canonical(doc).encode('utf-8')
 
     def delete(self, cur, ns: str, path: str) -> None:
-        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
-        cur.execute('DELETE FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+        cur.execute(f'DELETE FROM "{self.rows}" WHERE ns=%s AND path=%s', (ns, path))
+        self._del_head(cur, ns, path)
 
     def counts(self, doc: Any) -> dict[str, int]:
         """list → the rows a document gives this table (the backfill / verify check)."""
@@ -634,9 +645,42 @@ class ItemsTable:
         return out
 
     def ddl(self) -> str:
-        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, list TEXT NOT NULL, pos INTEGER NOT NULL, rid TEXT, value JSONB{_ddl_cols(self.cols)}, '
+        return (f'CREATE TABLE IF NOT EXISTS "{self.rows}" (ns TEXT NOT NULL, path TEXT NOT NULL, list TEXT NOT NULL, pos INTEGER NOT NULL, rid TEXT, value JSONB{_ddl_cols(self.cols)}, '
                 f'extra JSONB NOT NULL DEFAULT \'{{}}\', doc_hash TEXT NOT NULL, PRIMARY KEY (ns, path, list, pos));\n'
-                f'CREATE INDEX IF NOT EXISTS "{self.name}_rid" ON "{self.name}" (rid);')
+                f'CREATE INDEX IF NOT EXISTS "{self.rows}_rid" ON "{self.rows}" (rid);')
+
+
+class HeadItemsTable(ItemsTable):
+    """An ItemsTable whose document head is a row of its own table (lifted columns + extra) instead of a store_heads
+    entry: one row per document in `name` (sessions), one row per list item in `rows` (session_messages)."""
+
+    def __init__(self, name: str, ns: str, path_re: str, head_cols: list[Col], rows: str, lists: dict[str, ItemList], cols: list[Col], holds: str):
+        super().__init__(name, ns, path_re, lists, cols, holds)
+        self.rows, self.head_cols = rows, head_cols
+
+    def _put_head(self, cur, ns: str, path: str, head: Any, lifted: list) -> None:
+        vals, extra = lift(head, self.head_cols) if isinstance(head, dict) else ({c.name: None for c in self.head_cols}, {'\x00head': head})
+        names = ''.join(f', "{c.name}"' for c in self.head_cols)
+        sets = ''.join(f', "{c.name}"=EXCLUDED."{c.name}"' for c in self.head_cols)
+        cur.execute(f'INSERT INTO "{self.name}" (ns, path{names}, extra, lists) VALUES (%s, %s{", %s" * len(self.head_cols)}, %s, %s) '
+                    f'ON CONFLICT (ns, path) DO UPDATE SET extra=EXCLUDED.extra, lists=EXCLUDED.lists{sets}',
+                    (ns, path, *[vals[c.name] for c in self.head_cols], Jsonb(extra, dumps=canonical), Jsonb(lifted)))
+
+    def _get_head(self, cur, ns: str, path: str) -> dict | None:
+        cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+        r = cur.fetchone()
+        if not r:
+            return None
+        if '\x00head' in (r['extra'] or {}):
+            return {'head': r['extra']['\x00head'], 'lists': []}
+        return {'head': unlift(r, self.head_cols, r['extra']), 'lists': r['lists']}
+
+    def _del_head(self, cur, ns: str, path: str) -> None:
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+
+    def ddl(self) -> str:
+        return (super().ddl() + '\n' + f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL{_ddl_cols(self.head_cols)}, '
+                f'extra JSONB NOT NULL DEFAULT \'{{}}\', lists JSONB NOT NULL DEFAULT \'[]\', PRIMARY KEY (ns, path));')
 
 
 # ── MediaTable ───────────────────────────────────────────────────────────────────────────────────────────────────────
@@ -727,12 +771,24 @@ PROJECT_RULES = ItemsTable('project_rules', 'console', r'^framework/(plan/profil
                            [Col('id'), Col('title'), Col('description'), Col('severity'), Col('locked', type='bool')],
                            'project manifest rules (project-rules@1): one row per rule, the known manifest keys as value rows; ops and vocabulary in store_heads')
 
-TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES, CATALOG_FEATURES, CATALOG_LIBRARIES, PROJECT_RULES,
+# s4.6: the session archive (session-archive@1: one row per session, one per prompt) and the codebase change log
+SESSION_COLS = [Col('schema', '$axf'), Col('id'), Col('source'), Col('session_id', 'sessionId'), Col('project'), Col('title'), Col('started_at', 'startedAt'),
+                Col('ended_at', 'endedAt'), Col('minutes', type='num'), Col('user'), Col('cost_source', 'costSource'), Col('ingested_at', 'ingestedAt')]
+MESSAGE_COLS = [Col('i', type='int'), Col('at'), Col('kind'), Col('text'), Col('model'), Col('cost_usd', 'costUsd', 'num'), Col('cost_estimated', 'costEstimated', 'bool'),
+                Col('seconds', type='num'), Col('commands', type='int'), Col('output')]
+CHANGE_COLS = [Col('schema', '$axf'), Col('id'), Col('kind'), Col('title'), Col('asked'), Col('model'), Col('state'), Col('status'), Col('surface'),
+               Col('created_at', 'createdAt'), Col('updated_at', 'updatedAt'), Col('started_at', 'startedAt'), Col('finished_at', 'finishedAt'), Col('progress', type='num')]
+SESSIONS = HeadItemsTable('sessions', 'sessions', r'^archive/.+\.json$', SESSION_COLS, 'session_messages', {'prompts': ItemList('i')}, MESSAGE_COLS,
+                          'the session archive (session-archive@1, sessions/archive/<yyyy>/<mm>/<id>.json): one row per session; its prompts in session_messages')
+CODEBASE_CHANGES = RecordTable('codebase_changes', 'changes', CHANGE_COLS, 'the codebase change log (change-log@1, changes/<yyyy>/<mm>/<id>.json): one row per change',
+                               r'^\d{4}/\d{2}/[^/]+\.json$')
+
+TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES, CATALOG_FEATURES, CATALOG_LIBRARIES, PROJECT_RULES, SESSIONS, CODEBASE_CHANGES,
                  PLAN_ITEMS, PLAN_PROFILES, PLAN_PROJECTS, PROJECTS, PLAN_MEDIA, PLANNER_HISTORY, PLANNER_CATEGORIES, PLANNER_LISTS, PLANNER_TREE]
 _BY_NAME = {t.name: t for t in TABLES}
 # Tables a key already stored elsewhere (records, blobs) moves into on connect (PgStore._backfill): the ones added after
 # the first copy. A table joins this list the release it is added; the backfill is idempotent and checks every key.
-BACKFILL = {'catalog_features', 'catalog_libraries', 'project_rules', 'plan_items', 'plan_profiles', 'plan_projects', 'projects', 'plan_media', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree'}
+BACKFILL = {'sessions', 'codebase_changes', 'catalog_features', 'catalog_libraries', 'project_rules', 'plan_items', 'plan_profiles', 'plan_projects', 'projects', 'plan_media', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree'}
 
 HOLDS = {
     'keys': 'every key: kind, rev, etag, when, who, size, content type, tombstone, which table holds its body',
@@ -748,6 +804,7 @@ HOLDS = {
     'build_notes': 'notes of each build (one row per note: at, text, under the build id)',
     'control_tabs': 'tabs of each tab group in the control registry',
     'mirror_runs': 'each SQLite mirror run: source, tables, row counts, result',
+    'session_messages': 'prompts of each archived session (one row per prompt, under the session key)',
     'tracker': 'view: the feature tracker (tracker@1 status board) over catalog_features; tracker.json is generated from it, not stored',
     'planner_shipped': 'view: the Plan Studio shipped log (journal planner/shipped-log), one row per line',
 }
@@ -816,6 +873,8 @@ CREATE OR REPLACE VIEW build_journal AS
   SELECT ns, path, seq, at, actor, entry->>'action' AS action, entry->>'note' AS note, entry->>'by' AS who, (entry->>'rev') AS store_rev, entry->'builds' AS builds, entry
   FROM journal WHERE ns = 'builds' AND path LIKE 'journal/%';
 CREATE INDEX IF NOT EXISTS plan_items_status ON plan_items (status);
+CREATE INDEX IF NOT EXISTS sessions_started ON sessions (started_at);
+CREATE INDEX IF NOT EXISTS codebase_changes_created ON codebase_changes (created_at);
 CREATE OR REPLACE VIEW tracker AS
   SELECT path, rid AS id, status, wave, module, COALESCE(notes, note) AS notes, extra
   FROM catalog_features WHERE ns = 'console' AND list = '*';

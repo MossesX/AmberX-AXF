@@ -26,6 +26,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 os.environ['AXF_DATA_NO_APP'] = '1'
+os.environ['AXF_DATA_BACKFILL'] = '0'   # tests call store.backfill() themselves
 DSN = os.environ.get('AXF_DATA_TEST_DSN', '')
 
 import test_store as T  # noqa: E402  (the contract suite; its Env / make_client are swapped for Postgres below)
@@ -398,8 +399,7 @@ def test_plan_tables_and_backfill():
         st.q("INSERT INTO keys (ns, path, kind, rev, etag, at, actor, size, content_type, deleted, entries, table_name) VALUES ('planner', 'history/old.json', 'record', 4, 'e4', 't', 'x', 1, 'application/json', false, 0, '')")
         st.q("INSERT INTO blobs (sha, bytes, size, at) VALUES ('s1', %s, 3, 't')", (b'abc',))
         st.q("INSERT INTO keys (ns, path, kind, rev, etag, at, actor, size, content_type, deleted, entries, table_name, blob_sha) VALUES ('console', 'framework/plan/media/b.jpg', 'blob', 2, 'e2', 't', 'x', 3, 'image/jpeg', false, 0, '', 's1')")
-        st.db.close()
-        st._ensure()
+        st.backfill()
         rep = c.get('/v1/_meta/tables', headers=H()).json()['backfill']
         assert rep['moved'] == {'planner_history': 1, 'plan_media': 1} and rep['failed'] == [], rep
         assert st.fetchone("SELECT COUNT(*) AS n FROM records WHERE path='history/old.json'")['n'] == 0
@@ -407,9 +407,8 @@ def test_plan_tables_and_backfill():
         assert r.json() == {'id': 'old', 'versions': [{'v': 1}]}, r.json()
         assert r.headers['etag'] in ('e4', '"e4"'), r.headers
         assert c.get('/v1/console/framework/plan/media/b.jpg', headers=H()).content == b'abc'
-        st.db.close()
-        st._ensure()   # idempotent: nothing left to move
-        assert c.get('/v1/_meta/tables', headers=H()).json()['backfill']['moved'] == {'planner_history': 1, 'plan_media': 1}
+        again = st.backfill()   # idempotent: nothing left to move
+        assert again['checked'] == 0 and again['moved'] == {}
 
 
 def test_catalog_tables():
@@ -436,6 +435,31 @@ def test_catalog_tables():
         after = {r['rid']: r['doc_hash'] for r in st.fetchall("SELECT rid, doc_hash FROM catalog_features WHERE path='framework/catalog/status.json'")}
         assert before['f.b'] == after['f.b'] and before['f.a'] != after['f.a']
         assert c.get('/v1/console/framework/catalog/status.json', headers=H()).json() == status2
+
+
+def test_session_and_change_tables():
+    """s4.6: an archived session is a sessions row with its prompts in session_messages; a change is a codebase_changes row."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        sess = {'$axf': 'session-archive@1', 'id': 'cc-1', 'source': 'claude-code', 'sessionId': '1', 'project': 'amberx-axf', 'title': 'Hi', 'startedAt': 't0',
+                'minutes': 2, 'user': 'Brett', 'system': {'host': 'vps'}, 'totals': {'prompts': 2},
+                'prompts': [{'i': 0, 'at': 't1', 'kind': 'prompt', 'text': 'do it', 'model': 'opus', 'costUsd': 0.5, 'costEstimated': True, 'tools': {'Bash': 1}, 'files': ['a']},
+                            {'i': 1, 'at': 't2', 'kind': 'prompt', 'text': 'more', 'costUsd': 1}]}
+        url = '/v1/sessions/archive/2026/11/cc-1.json'
+        assert c.put(url, content=json.dumps(sess), headers=J(**{'if-none-match': '*'})).status_code == 200
+        assert c.get(url, headers=H()).json() == json.loads(canonical(sess))
+        assert st.fetchone('SELECT id, title, "user", minutes, extra FROM sessions') == {'id': 'cc-1', 'title': 'Hi', 'user': 'Brett', 'minutes': 2.0, 'extra': {'system': {'host': 'vps'}, 'totals': {'prompts': 2}}}
+        assert [(r['rid'], r['text'], r['cost_usd']) for r in st.fetchall('SELECT rid, text, cost_usd FROM session_messages ORDER BY pos')] == [('0', 'do it', 0.5), ('1', 'more', 1.0)]
+        assert st.fetchone("SELECT COUNT(*) AS n FROM store_heads WHERE ns='sessions'")['n'] == 0
+        c.put('/v1/sessions/archive/2026/11/odd.json', content='{"prompts":"none"}', headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/sessions/archive/2026/11/odd.json', headers=H()).json() == {'prompts': 'none'}
+        et = c.get(url, headers=H()).headers['etag']
+        assert c.delete(url, headers=H(**{'if-match': et})).status_code == 200
+        assert st.fetchone("SELECT COUNT(*) AS n FROM session_messages WHERE path='archive/2026/11/cc-1.json'")['n'] == 0
+        chg = {'$axf': 'change-log@1', 'id': 'chg-1', 'kind': 'fix', 'title': 'T', 'state': 'done', 'createdAt': 't', 'progress': 1, 'steps': [], 'result': {'state': 'ok'}}
+        assert c.put('/v1/changes/2026/11/chg-1.json', content=json.dumps(chg), headers=J(**{'if-none-match': '*'})).status_code == 200
+        assert c.get('/v1/changes/2026/11/chg-1.json', headers=H()).json() == json.loads(canonical(chg))
+        assert st.fetchone('SELECT id, kind, progress, extra FROM codebase_changes') == {'id': 'chg-1', 'kind': 'fix', 'progress': 1.0, 'extra': {'steps': [], 'result': {'state': 'ok'}}}
 
 
 # ── SQLite mirrors ───────────────────────────────────────────────────────────────────────────────────────────────────

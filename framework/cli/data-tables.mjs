@@ -98,6 +98,25 @@ export const SETS = {
     // generated documents: not data, rebuilt from the tables (tracker.mjs); the old copy on axf-data is dropped at the cut
     drop: ['console/tracker.json'],
   },
+  sessions: {
+    step: 's4.6',
+    title: 'session archive (sessions + session_messages) and the codebase change log (codebase_changes)',
+    files(P) {
+      const out = [];
+      for (const d of ['sessions', 'changes']) out.push(...walk(join(P, 'amberx-axf/_data', d)).map((f) => join(P, 'amberx-axf/_data', d, f)));
+      return out;
+    },
+    tables: {
+      sessions: (k) => (/^sessions\/archive\/.+\.json$/.test(k) ? 1 : 0),
+      session_messages: (k, d) => (/^sessions\/archive\/.+\.json$/.test(k) && dicts(d.prompts) ? len(d.prompts) : 0),
+      codebase_changes: (k) => (/^changes\/\d{4}\/\d{2}\/[^/]+\.json$/.test(k) ? 1 : 0),
+    },
+    namespaces: ['sessions', 'changes'],
+    keys: {},
+    // the writers still write the hub files themselves (codebase-changes changes-core.mjs ChangeStore.put, the chat
+    // archiver); in cutover they would keep writing files nobody reads. They move to data-files first.
+    flipBlocked: 'the change log (apps/console-web/plugins/codebase-changes/changes-core.mjs) and the session archiver write the hub files directly, not through framework/core/data-files.mjs: move them first, then cut',
+  },
 };
 
 function remote(opts) {
@@ -214,6 +233,7 @@ export async function cutover(name, { store, apply = false, keys = false, by = '
   const report = { ...(await check(name, { store, apply, projects, log })), $axf: 'data-tables-cutover@1', flipped: [] };
   if (apply) { const again = await check(name, { store, apply: false, projects }); report.verify = { ok: again.ok, problems: again.problems, tables: again.tables }; report.ok = again.ok; report.problems = again.problems; }
   if (!apply || !report.ok) return report;
+  if (set.flipBlocked) { report.ok = false; report.problems.push(`not flipped: ${set.flipBlocked}`); return report; }
   for (const key of set.drop || []) {
     const rec = await store.get(key).catch(() => null);
     if (rec) { await store.delete(key, { ifMatch: rec.etag }); (report.dropped ||= []).push(key); log(`${key}: dropped (generated, not data)`); }
