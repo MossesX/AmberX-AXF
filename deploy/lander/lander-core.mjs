@@ -246,7 +246,7 @@ export function failure(b, kind, ctx = {}, cfg = DEFAULTS) {
   const wait = retry === 'rerun' && attempt === 1 ? 0 : backoffMinutes(attempt, c);
   return {
     attempt,
-    failure: { kind: k, status: str(ctx.status, 40) || failedIn(b), why: str(ctx.why, 600), head: str(ctx.head, 64), pr: num(ctx.pr) || 0, at, retry, notBefore: plusMin(at, wait), ...(ctx.failing?.length ? { failing: ctx.failing.slice(0, 10).map((x) => str(x, 120)) } : {}) },
+    failure: { kind: k, status: str(ctx.status, 40) || failedIn(b), why: str(ctx.why, 600), head: str(ctx.head, 64), pr: num(ctx.pr) || 0, at, retry, notBefore: plusMin(at, wait), ...(ctx.failing?.length ? { failing: ctx.failing.slice(0, 10).map((x) => str(x, 120)) } : {}), ...(ctx.runIds?.length ? { runIds: ctx.runIds.slice(0, 10).map((x) => num(x)).filter(Boolean) } : {}) },
   };
 }
 
