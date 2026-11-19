@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9242,
- "updatedAt": "2026-11-19T02:37:48.043Z",
+ "rev": 9243,
+ "updatedAt": "2026-11-19T02:38:40.153Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321861,7 +321861,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:35:46.432Z",
+   "updatedAt": "2026-11-19T02:38:25.531Z",
    "builtAt": "",
    "notes": [
     {
@@ -321969,6 +321969,10 @@
      "at": "2026-11-19T02:22:00.738Z"
     },
     {
+     "text": "When s3 flips builds/store.json (console running main with key-level modes), also run: node framework/cli/data-tables.mjs cutover plan --apply --keys && node framework/cli/data-tables.mjs cutover catalog --apply --keys (postgres-part-b: plan/catalog console keys and planner/v2 wait for the same precondition). Report: _claude/builds/reports/postgres-part-b.md",
+     "at": "2026-11-19T02:38:25.531Z"
+    },
+    {
      "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--gina: brief only · start 13.9K tokens ($0.04) · cost $8.56 · 175 turns · 6 tools, MCP none",
      "at": "2026-11-19T02:32:46.328Z"
     },
@@ -322020,26 +322024,17 @@
     "queuedAt": "2026-11-19T00:33:02.230Z",
     "queuedBy": "cli",
     "account": "hulu0241",
-    "session": "",
+    "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
     "slot": "",
     "model": "Opus",
-    "phase": "",
+    "phase": "Phase 3",
     "launchedAt": "2026-11-19T00:37:13.344Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-19T02:33:08.543Z",
-     "exit": 0,
-     "outcome": "requeued",
-     "reason": "",
-     "stepsLeft": 1,
-     "account": "hulu0241",
-     "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
-     "phase": ""
-    },
+    "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-19T00:37:13.344Z",
     "planned": {
@@ -322049,9 +322044,7 @@
      "at": "2026-11-19T00:32:14.633Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
+    "tried": [],
     "pickedAt": "2026-11-19T00:37:13.344Z",
     "heldAt": "",
     "heldBy": "",
