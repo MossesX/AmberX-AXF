@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9371,
- "updatedAt": "2026-11-19T16:37:43.560Z",
+ "rev": 9372,
+ "updatedAt": "2026-11-19T16:38:05.384Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -293243,14 +293243,14 @@
    "title": "Remove the AmberX app code once Phone Connect is paired",
    "category": "",
    "detail": "Follow-up of rebuild-fresh-main-phone-connect-small s24 (decision Nov 17 2026, _claude/memory/decisions.md → Phone Connect replaces the AmberX app). AmberX is retired in policy; its code goes only after Phone Connect is installed and paired on Brett's phone so approvals and pushes never go dark.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T16:37:37.068Z",
+   "updatedAt": "2026-11-19T16:37:53.884Z",
    "builtAt": "",
    "notes": [
     {
@@ -293358,12 +293358,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T16:37:46.146Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:58:19.850Z",
-     "updatedAt": "2026-11-17T23:04:11.462Z"
+     "updatedAt": "2026-11-19T16:37:46.726Z"
     },
     {
      "id": "s2",
@@ -293380,12 +293380,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T16:37:53.884Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:58:19.850Z",
-     "updatedAt": "2026-11-17T23:04:11.462Z"
+     "updatedAt": "2026-11-19T16:37:54.475Z"
     },
     {
      "id": "s3",
@@ -293506,7 +293506,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
