@@ -13,6 +13,9 @@ builds keep running. That's what I need."
   POST tables/sync {source}     mirror a SQLite file the console writes (chats.db, ledger.sqlite) into rows now
   GET  engine                   data-engine@1: sqlite | shadow | postgres, drift, counts on both sides, the next move
   POST engine {mode, acceptDrift?}   move the store engine (sqlite → shadow → postgres; back; roll back to shadow)
+  GET  cuts?group=              data-cut-report@1: each group of keys moving onto Postgres rows (framework/schemas/data-cut.json),
+                                per entry its mode, local keys, how many are equal on axf-data, its table and rows
+  POST cut {group, action, apply?, noFlip?}   action = copy | verify | cutover | sync | local (framework/cli/data-cut.mjs)
   POST voice {phrase, confirm?}  AmberX: a spoken phrase → one of the above (a move needs confirm: true)
 
 The same calls are plugin commands (MCP), `axf data …` on the CLI and voice actions; Settings → Plugins → Data store
@@ -36,6 +39,8 @@ import data_store
 router = APIRouter()
 ROOT = Path(__file__).resolve().parents[5]
 MODE_CLI = ROOT / "framework" / "cli" / "data-mode.mjs"
+CUT_CLI = ROOT / "framework" / "cli" / "data-cut.mjs"
+CUT_ACTIONS = ("copy", "verify", "cutover", "sync", "local")
 MODES = ("shadow", "cutover", "rollback", "local")
 _cache: dict[str, Any] = {"at": 0.0, "status": None}
 
@@ -184,6 +189,50 @@ def engine_set(body: EngineBody) -> dict[str, Any]:
     return _remote("POST", "_meta/engine", {"mode": body.mode, "acceptDrift": body.acceptDrift})
 
 
+# ── data-cut: groups of keys onto the Postgres rows (postgres part C) ────────────────────────────────────────────────
+def _cut(*args: str, timeout: int = 900) -> dict[str, Any]:
+    p = subprocess.run(["node", str(CUT_CLI), *args, "--json"], cwd=str(ROOT), capture_output=True, text=True, timeout=timeout, env={**os.environ})
+    try:
+        return json.loads(p.stdout)
+    except ValueError:
+        raise HTTPException(502, (p.stderr or p.stdout or "data-cut answered nothing").strip()[-300:]) from None
+
+
+def _cut_groups() -> list[str]:
+    return list(json.loads((ROOT / "framework" / "schemas" / "data-cut.json").read_text("utf-8"))["groups"])
+
+
+@router.get("/cuts")
+def cuts(group: str = "") -> dict[str, Any]:
+    """data-cut-report@1 (status): per group and entry, mode, local keys, equal on axf-data, table rows."""
+    if group and group not in _cut_groups():
+        raise HTTPException(404, f"no cut group {group!r} ({', '.join(_cut_groups())})")
+    return _cut("status", *([group] if group else ["--all"]))
+
+
+class CutBody(BaseModel):
+    group: str
+    action: str
+    apply: bool = False
+    noFlip: bool = False
+
+
+@router.post("/cut")
+def cut(body: CutBody) -> dict[str, Any]:
+    if body.action not in CUT_ACTIONS:
+        raise HTTPException(400, f"action must be one of {', '.join(CUT_ACTIONS)}")
+    if body.group not in _cut_groups():
+        raise HTTPException(404, f"no cut group {body.group!r} ({', '.join(_cut_groups())})")
+    args = [body.action, body.group, "--by", "svc:console"]
+    if body.apply:
+        args.append("--apply")
+    if body.noFlip:
+        args.append("--no-flip")
+    r = _cut(*args)
+    _cache["status"] = None
+    return r
+
+
 # ── voice (AmberX): a phrase → one of the routes above ───────────────────────────────────────────────────────────────
 _NS_WORDS = {"settings": "settings", "setting": "settings", "changes": "changes", "change log": "changes", "notes": "notes", "note": "notes",
              "planner": "planner", "plans": "planner", "plan studio": "planner", "ui review": "ui-review", "reviews": "ui-review",  # namespace words, not plugins: axf-not-plugin:ui-review
@@ -195,6 +244,12 @@ _MOVES = (("roll back", "rollback"), ("rollback", "rollback"), ("cut over", "cut
 def parse_phrase(phrase: str) -> dict[str, Any]:
     """Pure: what a phrase asks for ({action, ns?, to?}); tests call it directly."""
     p = " ".join(phrase.lower().replace("-", " ").split())
+    if any(w in p for w in ("left to cut", "cut status", "what's cut", "whats cut", "cut groups")):
+        return {"action": "cuts"}
+    grp = next((g for g in _cut_groups() if f"{g} group" in p or f"the {g} state" in p or f"{g} keys" in p), "")
+    if grp and any(w in p for w in ("cut", "backfill", "copy", "sync", "verify", "back to the files")):
+        act = "verify" if "verify" in p else "copy" if ("backfill" in p or "copy" in p) else "sync" if "sync" in p else "local" if "back to the files" in p else "cutover"
+        return {"action": "cut", "group": grp, "do": act}
     if any(w in p for w in ("verify", "check the backup", "is the backup good")):
         return {"action": "verify"}
     if "back up" in p or "backup" in p.replace("backups", "") and "roll" not in p:
@@ -233,6 +288,17 @@ class VoiceBody(BaseModel):
 @router.post("/voice")
 def voice(body: VoiceBody) -> dict[str, Any]:
     a = parse_phrase(body.phrase)
+    if a["action"] == "cuts":
+        r = cuts()
+        rows = [e for g in r.get("groups", []) for e in g.get("entries", [])]
+        cut_n = sum(1 for e in rows if e.get("mode") == "cutover")
+        left = [e["entry"] for e in rows if e.get("flip") and e.get("mode") != "cutover"]
+        return {"did": "cuts", "report": r, "say": f"{cut_n} of {len(rows)} entries are on the Postgres rows. " + (f"Ready to flip: {', '.join(left[:4])}." if left else "Nothing left to flip.") + f" {sum(1 for e in rows if not e.get('flip'))} stay mirrored until their writers move."}
+    if a["action"] == "cut":
+        if a["do"] in ("cutover", "local", "copy") and not body.confirm:
+            return {"did": "ask", "would": a, "say": f"That runs {a['do']} on the {a['group']} group. Say yes to go ahead."}
+        r = cut(CutBody(group=a["group"], action=a["do"], apply=a["do"] in ("cutover", "local", "copy")))
+        return {"did": "cut", "report": r, "say": f"{a['do'].capitalize()} on {a['group']}: " + ("done" if r.get("ok") else f"not done, {len(r.get('problems', []))} problem(s): {'; '.join(r.get('problems', [])[:2])}") + "."}
     if a["action"] == "backup":
         backup()
         return {"did": "backup", "say": "Backup started on axf-data. I'll have the result in the data store state."}

@@ -52,11 +52,16 @@ cases = {"back up the data": {"action": "backup"}, "verify the backup": {"action
          "what tables are there": {"action": "tables"}, "which engine is the data on": {"action": "engine"},
          "cut over to postgres": {"action": "engine", "to": "postgres"}, "shadow the engine on postgres": {"action": "engine", "to": "shadow"},
          "go back to sqlite": {"action": "engine", "to": "sqlite"}, "sync the chats": {"action": "sync", "source": "plugins/chat-viewer/chats.db"},
-         "mirror the shipped features ledger": {"action": "sync", "source": "plugins/shipped-features/ledger.sqlite"}}
+         "mirror the shipped features ledger": {"action": "sync", "source": "plugins/shipped-features/ledger.sqlite"},
+         "what's left to cut over": {"action": "cuts"}, "cut the console state over": {"action": "cut", "group": "console", "do": "cutover"},
+         "backfill the console group": {"action": "cut", "group": "console", "do": "copy"}, "verify the console keys": {"action": "cut", "group": "console", "do": "verify"}}
 for phrase, want in cases.items():
     check(R.parse_phrase(phrase) == want, f"{phrase!r} → {want}")
 r = R.voice(R.VoiceBody(phrase="cut settings over"))
 check(r["did"] == "ask" and "Say yes" in r["say"], "a move asks before it runs")
+r = R.voice(R.VoiceBody(phrase="cut the console state over"))
+check(r["did"] == "ask" and "console" in r["say"], "a data cut asks before it runs")
+check(set(R.CUT_ACTIONS) == {"copy", "verify", "cutover", "sync", "local"}, "cut actions match data-cut.mjs")
 r = R.voice(R.VoiceBody(phrase="cut over to postgres"))
 check(r["did"] == "ask" and r["would"] == {"action": "engine", "to": "postgres"}, "an engine move asks before it runs")
 r = R.voice(R.VoiceBody(phrase="sync the chats"))

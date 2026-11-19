@@ -252,7 +252,7 @@ def test_tables_v1_rows_are_rekeyed_on_connect():
         st.q("INSERT INTO control_targets (section, pos, address, extra, doc_hash, child_lifted) VALUES ('tabGroups', 0, 'a', '{}', 'h', true), ('views', 0, 'v', '{}', 'h', NULL)")
         st.q("DELETE FROM meta WHERE k='tables_version'")
         st2 = pg_store(Path(st.dir).parent, st.schema)
-        assert st2.meta_get('tables_version') == '2'
+        assert st2.meta_get('tables_version') == str(T.TABLES_VERSION)
         assert st2.fetchall('SELECT rid, pos FROM builds ORDER BY pos') == [{'rid': 'x', 'pos': 0}, {'rid': 'y', 'pos': 1}]
         assert st2.fetchall('SELECT parent_rid, id FROM build_steps') == [{'parent_rid': 'x', 'id': 's1'}]
         assert st2.fetchall('SELECT parent_rid, text FROM build_notes') == [{'parent_rid': 'x', 'text': 'n1'}]
@@ -342,6 +342,73 @@ def test_other_domain_tables():
         assert tables['engine'] == 'postgres' and names['builds']['group'] == 'domain' and names['keys']['group'] == 'core'
         assert names['notes']['rows'] == 1 and names['planner_items']['rows'] == 2 and names['ui_review_items']['rows'] == 2
         assert code(c.get('/v1/_meta/tables', headers=H('console'))) == 'forbidden'
+
+
+def test_console_state_tables():
+    """Part C s1: the console's own documents are rows (console_state, alerts, alerts_seen, notifications, home_cards,
+    amberx_notes, app_catalog + versions), journals have views (console_deploys, token_log), every body reads back equal,
+    and a record stored before its table existed is moved into rows on connect (retable) with its etag unchanged."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        put = lambda k, doc: c.put(f'/v1/{k}', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        state = {'project': 'axf', 'terminal': [{'t': 1, 'line': 'x'}], 'plugins': {'a': {'on': True}}, 'n': None}
+        put('console/state.json', state)
+        put('console/host-check.json', {'$axf': 'host-check@1', 'at': 't', 'checks': [{'id': 'disk', 'ok': True}]})
+        alerts = [{'id': 'a1', 'key': 'ci', 'source': 'ci', 'severity': 'error', 'title': 'CI red', 'body': '', 'link': '', 'meta': {}, 'firstAt': 1, 'lastAt': 2,
+                   'count': 3, 'ack': False, 'resolved': False, 'resolvedAt': None}, {'id': 'a2', 'key': 'odd', 'severity': 'info', 'count': True}]
+        put('console/alerts.json', alerts)
+        put('console/alerts-seen.json', [39186205287, 39186205307, 'x'])
+        put('console/shared/notifications/inbox/2026/11/n1.json', {'id': 'n1', 'title': 'Hi', 'status': 'unread', 'extra': [1]})
+        put('console/home-cards/owner.json', {'$axf': 'home-layout@1', 'cards': [{'id': 'c1'}]})
+        put('console/amberx-notes/items/rows-0.json', {'t-1': {'id': 't-1', 'kind': 'task', 'title': 'Do', 'tags': ['a']}, 't-2': {'id': 't-2', 'kind': 'note'}})
+        put('console/amberx-notes/items/head.json', {'$axf': 'hub-table@1', 'table': 'items', 'count': 2, 'chunks': 1})
+        cat = {'$axf': 'app-catalog@1', 'updatedAt': 't', 'apps': [{'project': 'amberx-droid', 'name': 'AmberX', 'platform': 'android', 'appId': 'ai.amberx',
+               'versions': [{'version': '0.1.0', 'build': 3, 'file': 'apks/a.apk', 'size': 10, 'sha256': 'ab'}, {'version': '0.1.1', 'build': 'x'}]}]}
+        put('console/shared/app-catalog/catalog.json', cat)
+        for k, doc in [('console/state.json', state), ('console/alerts.json', alerts), ('console/alerts-seen.json', [39186205287, 39186205307, 'x']),
+                       ('console/shared/app-catalog/catalog.json', cat), ('console/amberx-notes/items/rows-0.json', None)]:
+            got = c.get(f'/v1/{k}', headers=H()).json()
+            if doc is not None:
+                assert got == json.loads(canonical(doc)), k
+        assert st.fetchone("SELECT value FROM console_state WHERE path='state.json' AND key='plugins'")['value'] == {'a': {'on': True}}
+        assert st.fetchone("SELECT COUNT(*) AS n FROM console_state WHERE path='host-check.json'")['n'] == 3
+        assert [(r['id'], r['severity'], r['count']) for r in st.fetchall('SELECT id, severity, count FROM alerts ORDER BY pos')] == [('a1', 'error', 3), ('a2', 'info', None)]
+        assert st.fetchone('SELECT COUNT(*) AS n FROM alerts_seen')['n'] == 3
+        assert st.fetchone('SELECT id, status FROM notifications') == {'id': 'n1', 'status': 'unread'}
+        assert st.fetchone('SELECT owner, schema FROM home_cards') == {'owner': None, 'schema': 'home-layout@1'}
+        assert [r['rid'] for r in st.fetchall('SELECT rid FROM amberx_notes ORDER BY pos')] == ['t-1', 't-2']
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='amberx-notes/items/head.json'")['table_name'] == ''
+        assert st.fetchone('SELECT app_id FROM app_catalog')['app_id'] == 'ai.amberx'
+        assert [(r['version'], r['build']) for r in st.fetchall('SELECT version, build FROM app_catalog_versions ORDER BY pos')] == [('0.1.0', 3), ('0.1.1', None)]
+        # journals: deploys log and token log as views over journal rows
+        c.post('/v1/console/deploys/log:append', content=json.dumps({'entries': [{'sha': 'abc', 'result': 'ok', 'at': 't'}]}), headers=J())
+        c.post('/v1/console/token-log/2026/11/06.jsonl:append', content=json.dumps({'entries': [{'$axf': 'token-turn@1', 'id': 'x', 'source': 'headless'}]}), headers=J())
+        assert st.fetchone('SELECT sha, result FROM console_deploys') == {'sha': 'abc', 'result': 'ok'}
+        assert st.fetchone('SELECT id, source FROM token_log') == {'id': 'x', 'source': 'headless'}
+        # a shape the table does not take stays a record
+        put('console/alerts-run.json', [1, 2])
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='alerts-run.json'")['table_name'] == ''
+        # replace + delete clear the rows
+        c.put('/v1/console/alerts.json', content=json.dumps(alerts[:1]), headers=J(**{'if-match': c.get('/v1/console/alerts.json', headers=H()).headers['etag']}))
+        assert st.fetchone('SELECT COUNT(*) AS n FROM alerts')['n'] == 1
+        c.delete('/v1/console/alerts.json', headers=H(**{'if-match': c.get('/v1/console/alerts.json', headers=H()).headers['etag']}))
+        assert st.fetchone('SELECT COUNT(*) AS n FROM alerts')['n'] == 0
+        # retable: a record written before the table existed (simulated) moves into rows on connect, etag unchanged
+        from tables import retable
+        st.q("UPDATE keys SET table_name='' WHERE path='state.json'")
+        st.q("DELETE FROM console_state WHERE path='state.json'")
+        st.q("INSERT INTO records (ns, path, data) VALUES ('console', 'state.json', %s)", (__import__('psycopg.types.json', fromlist=['Jsonb']).Jsonb(json.loads(canonical(state))),))
+        before = c.get('/v1/console/state.json', headers=H()).headers['etag']
+        with st.lock:
+            with st.db.transaction():
+                moved = retable(st.db, ('console',))
+        assert moved['moved'] >= 1 and moved['tables'].get('console_state') == 1, moved
+        assert st.fetchone("SELECT COUNT(*) AS n FROM records WHERE path='state.json'")['n'] == 0
+        st._assembled.clear()
+        r = c.get('/v1/console/state.json', headers=H())
+        assert r.headers['etag'] == before and r.json() == json.loads(canonical(state))
+        names = {t['name']: t for t in c.get('/v1/_meta/tables', headers=H()).json()['tables']}
+        assert names['console_state']['rows'] >= 3 and 'alerts_seen' in names and 'app_catalog_versions' in names
 
 
 # ── SQLite mirrors ───────────────────────────────────────────────────────────────────────────────────────────────────

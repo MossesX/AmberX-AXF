@@ -31,6 +31,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { gitAuthEnv, scrub } from './github.mjs';
 import { applyToPluginFile } from './build-defaults.mjs';
 import { installClash } from './plugin-instances.mjs';
+import { readJsonSync as dataReadJson, writeJsonSync as dataWriteJson } from '../core/data-files.mjs';
 import { coverage as commandCoverage } from './plugin-commands.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
@@ -102,14 +103,17 @@ function sizeOf(path) {
   return { files, bytes };
 }
 
+// state.json through the data layer (data-files.mjs): the file while console/state.json is local, the console_state rows
+// on axf-data once it is cut over (postgres part C); the console server writes the same key through data_store.py
 function readState() {
-  try { return JSON.parse(readFileSync(STATE, 'utf8')); } catch { return {}; }
+  const s = dataReadJson(STATE, {});
+  return s && typeof s === 'object' && !Array.isArray(s) ? s : {};
 }
 function writeState(mut) {
   const s = readState();
   mut(s);
   mkdirSync(dirname(STATE), { recursive: true });
-  writeFileSync(STATE, JSON.stringify(s, null, 2));
+  dataWriteJson(STATE, s, 2);
 }
 
 /* ------------------------------------------------------------------ stale reference scan */

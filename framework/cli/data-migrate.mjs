@@ -56,10 +56,12 @@ function walk(dir, out = [], top = true) {
   }
   return out;
 }
+// the console's own small documents next to state.json (postgres part C: console_state, alerts, alerts_seen rows)
+const DATA_FILES = ['alerts.json', 'alerts-seen.json', 'alerts-run.json', 'alerts-config.json', 'host-check.json', 'nightly.json', 'update-status.json', 'project-wizard.json'];
 /** Where to walk under each root (the repo holds only _claude/builds; the rest of the checkout maps to nothing). */
 function startDirs(r) {
   const projects = existsSync(r.projects) ? readdirSync(r.projects).filter((p) => !p.startsWith('.')).flatMap((p) => [join(r.projects, p, '_data'), ...(p === '_shared' ? [join(r.projects, p, '_claude')] : [])]) : [];
-  return { plugins: [r.plugins], data: [join(r.data, 'state.json'), join(r.data, 'deploys')], repo: [join(r.repo, '_claude/builds')], projects };
+  return { plugins: [r.plugins], data: [join(r.data, 'state.json'), join(r.data, 'deploys'), ...DATA_FILES.map((f) => join(r.data, f))], repo: [join(r.repo, '_claude/builds')], projects };
 }
 /** Every source file → { file, root, rel, key, ns } or listed as unmapped / skipped. */
 export function scan(env = process.env) {
@@ -98,7 +100,7 @@ function sqliteSnapshot(file) {
   } catch { return readFileSync(file); } finally { rmSync(dir, { recursive: true, force: true }); }
 }
 /** One source file as it will be stored: kind, the body to send, and its rev-1 manifest item. */
-function sourceItem(src) {
+export function sourceItem(src) {
   // ns = the registry namespace (plugins, builds, …); nsid = the migration unit (plugins/<folder> for open namespaces).
   // Manifest paths are relative to the nsid, as on the axf-data side (remoteItems strips the same prefix).
   const ns = src.key.split('/')[0];
@@ -182,7 +184,7 @@ export function plan(scanned, only = []) {
 }
 
 // ── target: M1 over axf-data, the same way ────────────────────────────────────────────────────────────────────────────
-async function remoteItems(store, nsid) {
+export async function remoteItems(store, nsid) {
   const { head, prefix } = nsPrefix(nsid);
   const out = []; let after = '';
   for (;;) {
@@ -202,7 +204,7 @@ async function remoteItems(store, nsid) {
 export async function manifestRemote(store, nsid) { return manifestOf((await remoteItems(store, nsid)).map(({ list, ...i }) => i)); }
 
 // ── copy ──────────────────────────────────────────────────────────────────────────────────────────────────────────────
-async function copyOne(store, it, have) {
+export async function copyOne(store, it, have) {
   const key = it.key;
   if (it.kind === 'journal') {
     const cur = have?.list || [];

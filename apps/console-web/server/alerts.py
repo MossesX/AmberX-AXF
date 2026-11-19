@@ -33,6 +33,7 @@ from pydantic import BaseModel, Field
 import axf_framework  # noqa: F401 — framework/python on sys.path
 import plugin_services
 from axf_server import github, http as axf_http, storage
+import data_store  # noqa: E402  (server/data_store.py)
 
 # ---------------------------------------------------------------- engine (mirror of core/engines/alerts.ts)
 
@@ -191,12 +192,14 @@ def _valid_alert(a: Any) -> bool:
 
 
 def _read_json(p: Path, default: Any) -> Any:
-    return storage.read_json(p, default)
+    # data_store: storage.* routed by data-store-mode@1 (alerts.json, alerts-seen.json… → the alerts / alerts_seen rows on
+    # axf-data once cut over); files no rule maps (alerts-secrets.json, alerts-push.json) always stay local
+    return data_store.read_json(p, default)
 
 
 def _write_private(p: Path, data: Any) -> None:
     """Atomic, 0600 (axf_server.storage). The data folder (.axf-console) keeps its mode when it exists."""
-    storage.write_json(p, data, dir_mode=None if p.parent.is_dir() else storage.PRIVATE_DIR)
+    data_store.write_json(p, data, dir_mode=None if p.parent.is_dir() else storage.PRIVATE_DIR)
 
 
 def _valid_rules(r: Any) -> dict[str, Any]:

@@ -48,6 +48,7 @@ import hmac as _hmac  # noqa: E402
 import axf_framework  # noqa: E402,F401  (framework/python on sys.path: axf_server, axf_libs)
 import wall  # noqa: E402  (server/wall.py: who is calling behind axHub's sign-in wall, on axf_server.wall)
 from axf_server import github, storage  # noqa: E402
+import data_store  # noqa: E402  (server/data_store.py: storage.* routed by data-store-mode@1; state.json, home cards → axf-data rows)
 from axf_server.console_client import TokenFile  # noqa: E402
 import readcache  # noqa: E402  (server/readcache.py: one shared cache per read source + a cap on node spawns)
 
@@ -147,14 +148,14 @@ _subscribers: set[asyncio.Queue[dict[str, Any]]] = set()
 
 
 def _load_state() -> None:
-    saved = storage.read_json(STATE, {})
+    saved = data_store.read_json(STATE, {})
     if isinstance(saved, dict):
         _state.update(saved)
 
 
 def _save_state() -> None:
-    # atomic + 0600 (axf_server.storage); the folder keeps its mode (.axf-console is made by the installer)
-    storage.write_json(STATE, {"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, dir_mode=None if STATE.parent.is_dir() else storage.PRIVATE_DIR)
+    # atomic + 0600 (axf_server.storage) while local; console_state rows on axf-data once console/state.json is cut over
+    data_store.write_json(STATE, {"project": _state["project"], "terminal": _state["terminal"][-500:], "plugins": _state.get("plugins", {})}, dir_mode=None if STATE.parent.is_dir() else storage.PRIVATE_DIR)
 
 
 def log(channel: str, text: str, level: str = "info") -> None:
@@ -696,11 +697,7 @@ def _home_user(request: Request) -> str:
 def home_layout_get(request: Request) -> dict[str, Any]:
     d, where = _home_dir()
     user = _home_user(request)
-    f = d / f"{user}.json"
-    try:
-        layout = json.loads(f.read_text()) if f.is_file() else None
-    except (OSError, ValueError):
-        layout = None
+    layout = data_store.read_json(d / f"{user}.json", None)
     return {"layout": layout if isinstance(layout, dict) else None, "user": user, "where": where}
 
 
@@ -718,10 +715,8 @@ async def home_layout_put(request: Request) -> dict[str, Any]:
         raise HTTPException(400, "layout must be a home-layout@1 object")
     d, where = _home_dir()
     user = _home_user(request)
-    d.mkdir(parents=True, exist_ok=True)
-    tmp = d / f".{user}.json.tmp"
-    tmp.write_text(json.dumps({**layout, "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1))
-    tmp.replace(d / f"{user}.json")
+    # atomic while local (axf_server.storage, shared with axHub: 0664); home_cards rows on axf-data once cut over
+    data_store.write_json(d / f"{user}.json", {**layout, "savedAt": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}, indent=1, mode=0o664, dir_mode=None)
     return {"ok": True, "user": user, "where": where}
 
 

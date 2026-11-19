@@ -124,7 +124,7 @@ class ListSpec:
         return 'parent_rid' if self.key else 'parent_pos'
 
 
-TABLES_VERSION = 2   # meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
+TABLES_VERSION = 3   # 3 = console/plugin row families (part C): records a new table claims are moved by retable();  meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
 
 
 def _rid(item: dict, spec: ListSpec, pos: int) -> str:
@@ -509,9 +509,225 @@ class NotesTable:
         return 'CREATE TABLE IF NOT EXISTS notes (path TEXT PRIMARY KEY, folder TEXT NOT NULL, name TEXT NOT NULL, text TEXT NOT NULL, size BIGINT NOT NULL);'
 
 
+# ── generic row shapes for the console's and the plugins' small documents (postgres part C, Nov 19 2026) ───────────
+#
+# Each is one family of rows keyed by (ns, path, …), so one table holds every document of its kind (console_state holds
+# state.json, host-check.json, nightly.json…; plugin_settings holds every plugin's settings.json). A body whose shape does
+# not fit (an object where a list was expected) is not claimed and stays in `records`: nothing is coerced.
+
+class _PathTable:
+    kind = 'record'
+
+    def __init__(self, name: str, ns: str, path_re: str, holds: str, cols: list[Col] | None = None):
+        self.name, self.ns, self.holds, self.cols = name, ns, holds, list(cols or [])
+        self.path_re = re.compile(path_re)
+
+    def _claims(self, ns: str, path: str, kind: str) -> bool:
+        return kind == self.kind and ns == self.ns and bool(self.path_re.match(path))
+
+    def delete(self, cur, ns: str, path: str) -> None:
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+        cur.execute('DELETE FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+
+    def _head(self, cur, ns: str, path: str, head: Any) -> None:
+        cur.execute('INSERT INTO store_heads (ns, path, head, lists) VALUES (%s, %s, %s, %s) ON CONFLICT (ns, path) DO UPDATE SET head=EXCLUDED.head, lists=EXCLUDED.lists',
+                    (ns, path, Jsonb(head, dumps=canonical), Jsonb([self.name])))
+
+    def _head_of(self, cur, ns: str, path: str):
+        cur.execute('SELECT head FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+        r = cur.fetchone()
+        return r['head'] if r else _MISSING
+
+
+class KvTable(_PathTable):
+    """A JSON object → one row per top-level key (`key`, `value` JSONB, `pos` keeps the key order). console_state,
+    plugin_settings: small single-object documents, each setting queryable on its own."""
+
+    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
+        return self._claims(ns, path, kind) and body.lstrip().startswith(b'{')
+
+    def write(self, cur, ns: str, path: str, body: bytes) -> None:
+        doc = json.loads(body.decode('utf-8'))
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+        rows = [(ns, path, i, k, Jsonb(v, dumps=canonical)) for i, (k, v) in enumerate(doc.items())]
+        if rows:
+            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, pos, key, value) VALUES (%s, %s, %s, %s, %s)', rows)
+        self._head(cur, ns, path, {})
+
+    def read(self, cur, ns: str, path: str) -> bytes | None:
+        if self._head_of(cur, ns, path) is _MISSING:
+            return None
+        cur.execute(f'SELECT key, value FROM "{self.name}" WHERE ns=%s AND path=%s ORDER BY pos', (ns, path))
+        return canonical({r['key']: r['value'] for r in cur.fetchall()}).encode('utf-8')
+
+    def ddl(self) -> str:
+        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, pos INTEGER NOT NULL, key TEXT NOT NULL, '
+                f'value JSONB, PRIMARY KEY (ns, path, key));')
+
+
+class ArrayTable(_PathTable):
+    """A JSON array → one row per item (`pos` keeps the order). Object items lift `cols` and keep the rest in `extra`;
+    scalar items (alerts-seen run ids) sit in `value`. A body `{ <listKey>: [...], ... }` is claimed too when `list_key`
+    is set: the list becomes rows and the other fields go to store_heads (app catalog)."""
+
+    def __init__(self, name: str, ns: str, path_re: str, holds: str, cols: list[Col] | None = None, list_key: str = '',
+                 child: tuple[str, str, list[Col]] | None = None):
+        super().__init__(name, ns, path_re, holds, cols)
+        self.list_key, self.child = list_key, child
+
+    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
+        if not self._claims(ns, path, kind):
+            return False
+        b = body.lstrip()
+        return b.startswith(b'{') if self.list_key else b.startswith(b'[')
+
+    def _items(self, doc: Any) -> tuple[list, Any]:
+        if self.list_key:
+            if not isinstance(doc, dict) or not isinstance(doc.get(self.list_key), list):
+                return [], doc
+            head = dict(doc)
+            return head.pop(self.list_key), head
+        return doc, None
+
+    def write(self, cur, ns: str, path: str, body: bytes) -> None:
+        doc = json.loads(body.decode('utf-8'))
+        items, head = self._items(doc)
+        lifted = self.list_key == '' or isinstance(doc, dict) and isinstance(doc.get(self.list_key), list)
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+        if self.child:
+            cur.execute(f'DELETE FROM "{self.child[1]}" WHERE ns=%s AND path=%s', (ns, path))
+        names = ''.join(f', "{c.name}"' for c in self.cols)
+        rows, kids = [], []
+        for pos, it in enumerate(items):
+            if isinstance(it, dict):
+                vals, extra = lift(it, self.cols)
+                has_kids = False
+                if self.child and isinstance(extra.get(self.child[0]), list) and all(isinstance(k, dict) for k in extra[self.child[0]]):
+                    for cpos, kid in enumerate(extra.pop(self.child[0])):
+                        cv, cx = lift(kid, self.child[2])
+                        kids.append((ns, path, pos, cpos, *[cv[c.name] for c in self.child[2]], Jsonb(cx, dumps=canonical)))
+                    has_kids = True
+                rows.append((ns, path, pos, True, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical), has_kids))
+            else:
+                rows.append((ns, path, pos, False, *[None for _ in self.cols], Jsonb(it, dumps=canonical), False))
+        if rows:
+            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, pos, is_obj{names}, extra, has_kids) VALUES (%s, %s, %s, %s{", %s" * len(self.cols)}, %s, %s)', rows)
+        if kids:
+            cnames = ''.join(f', "{c.name}"' for c in self.child[2])
+            cur.executemany(f'INSERT INTO "{self.child[1]}" (ns, path, parent_pos, pos{cnames}, extra) VALUES (%s, %s, %s, %s{", %s" * len(self.child[2])}, %s)', kids)
+        self._head(cur, ns, path, {'head': head, 'lifted': lifted} if self.list_key else {})
+
+    def read(self, cur, ns: str, path: str) -> bytes | None:
+        h = self._head_of(cur, ns, path)
+        if h is _MISSING:
+            return None
+        if self.list_key and not h.get('lifted'):
+            return canonical(h.get('head')).encode('utf-8')
+        kids: dict[int, list] = {}
+        if self.child:
+            cur.execute(f'SELECT * FROM "{self.child[1]}" WHERE ns=%s AND path=%s ORDER BY parent_pos, pos', (ns, path))
+            for r in cur.fetchall():
+                kids.setdefault(r['parent_pos'], []).append(unlift(r, self.child[2], r['extra']))
+        cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s ORDER BY pos', (ns, path))
+        items = []
+        for r in cur.fetchall():
+            if not r['is_obj']:
+                items.append(r['extra'])
+                continue
+            it = unlift(r, self.cols, r['extra'])
+            if r['has_kids']:
+                it[self.child[0]] = kids.get(r['pos'], [])
+            items.append(it)
+        if self.list_key:
+            return canonical({**h['head'], self.list_key: items}).encode('utf-8')
+        return canonical(items).encode('utf-8')
+
+    def delete(self, cur, ns: str, path: str) -> None:
+        if self.child:
+            cur.execute(f'DELETE FROM "{self.child[1]}" WHERE ns=%s AND path=%s', (ns, path))
+        super().delete(cur, ns, path)
+
+    def ddl(self) -> str:
+        out = [f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, pos INTEGER NOT NULL, is_obj BOOLEAN NOT NULL{_ddl_cols(self.cols)}, '
+               f'extra JSONB, has_kids BOOLEAN NOT NULL DEFAULT FALSE, PRIMARY KEY (ns, path, pos));']
+        if self.child:
+            out.append(f'CREATE TABLE IF NOT EXISTS "{self.child[1]}" (ns TEXT NOT NULL, path TEXT NOT NULL, parent_pos INTEGER NOT NULL, pos INTEGER NOT NULL{_ddl_cols(self.child[2])}, '
+                       f'extra JSONB NOT NULL DEFAULT \'{{}}\', PRIMARY KEY (ns, path, parent_pos, pos));')
+        return '\n'.join(out)
+
+
+class MapTable(_PathTable):
+    """A JSON object of id → object (a hub-table@1 chunk: `rows-<n>.json`) → one row per id, `cols` lifted, the rest in
+    `extra`. A chunk with a non-object value is not claimed."""
+
+    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
+        if not self._claims(ns, path, kind) or not body.lstrip().startswith(b'{'):
+            return False
+        try:
+            doc = json.loads(body.decode('utf-8'))
+        except ValueError:
+            return False
+        return isinstance(doc, dict) and all(isinstance(v, dict) for v in doc.values())
+
+    def write(self, cur, ns: str, path: str, body: bytes) -> None:
+        doc = json.loads(body.decode('utf-8'))
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+        names = ''.join(f', "{c.name}"' for c in self.cols)
+        rows = []
+        for pos, (rid, it) in enumerate(doc.items()):
+            vals, extra = lift(it, self.cols)
+            rows.append((ns, path, rid, pos, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical)))
+        if rows:
+            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, rid, pos{names}, extra) VALUES (%s, %s, %s, %s{", %s" * len(self.cols)}, %s)', rows)
+        self._head(cur, ns, path, {})
+
+    def read(self, cur, ns: str, path: str) -> bytes | None:
+        if self._head_of(cur, ns, path) is _MISSING:
+            return None
+        cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s ORDER BY pos', (ns, path))
+        return canonical({r['rid']: unlift(r, self.cols, r['extra']) for r in cur.fetchall()}).encode('utf-8')
+
+    def ddl(self) -> str:
+        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, rid TEXT NOT NULL, pos INTEGER NOT NULL{_ddl_cols(self.cols)}, '
+                f'extra JSONB NOT NULL DEFAULT \'{{}}\', PRIMARY KEY (ns, path, rid));')
+
+
+class PathRecordTable(RecordTable):
+    """RecordTable for one path family inside a shared namespace (console/home-cards/*, console/shared/notifications/*)."""
+
+    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
+        return kind == 'record' and ns == self.ns and bool(self.path_re and self.path_re.match(path)) and body.lstrip().startswith(b'{')
+
+
 # ── the registry ─────────────────────────────────────────────────────────────────────────────────────────────────────
 
 NOTE_COLS = [Col('at'), Col('text')]
+ALERT_COLS = [Col('id'), Col('key'), Col('source'), Col('severity'), Col('title'), Col('first_at', 'firstAt', 'int'),
+              Col('last_at', 'lastAt', 'int'), Col('count', type='int'), Col('ack', type='bool'), Col('resolved', type='bool'),
+              Col('resolved_at', 'resolvedAt', 'int')]
+NOTIFY_COLS = [Col('schema', '$axf'), Col('id'), Col('kind'), Col('source'), Col('title'), Col('at'), Col('status'), Col('severity')]
+HOME_COLS = [Col('schema', '$axf'), Col('owner'), Col('updated_at', 'updatedAt')]
+AMBERX_NOTE_COLS = [Col('id'), Col('kind'), Col('list'), Col('title'), Col('status'), Col('created_at', 'createdAt'), Col('updated_at', 'updatedAt')]
+APP_COLS = [Col('project'), Col('name'), Col('platform'), Col('app_id', 'appId')]
+APP_VERSION_COLS = [Col('version'), Col('build', type='int'), Col('version_code', 'versionCode', 'int'), Col('file'), Col('size', type='int'),
+                    Col('sha256'), Col('built_at', 'builtAt'), Col('commit')]
+
+# console/ paths that are the console's own small state documents (one KvTable family). Plugin data, journals and the
+# documents with their own table (alerts, control inventory, home cards, shared/*) are not in it.
+CONSOLE_STATE_RE = r'^(state|host-check|nightly|update-status|project-wizard|alerts-run|alerts-config)\.json$|^(main-gate|wall|github-app)/[^/]+\.json$'
+CONSOLE_STATE = KvTable('console_state', 'console', CONSOLE_STATE_RE,
+                        "the console's own state documents (state.json, host-check, nightly, update-status, project-wizard, main-gate…): one row per top-level key")
+ALERTS = ArrayTable('alerts', 'console', r'^alerts\.json$', 'the alert hub (alerts@1): one row per alert, severity / ack / resolved lifted', ALERT_COLS)
+ALERTS_SEEN = ArrayTable('alerts_seen', 'console', r'^alerts-seen\.json$', 'CI run ids the alert hub has already reported: one row per id')
+NOTIFICATIONS = PathRecordTable('notifications', 'console', NOTIFY_COLS, 'the shared notifications inbox: one row per notification',
+                                r'^shared/notifications/.+\.json$')
+HOME_CARDS = PathRecordTable('home_cards', 'console', HOME_COLS, 'each owner\'s Home cards layout (home-layout@1): one row per owner',
+                             r'^home-cards/[^/]+\.json$')
+AMBERX_NOTES = MapTable('amberx_notes', 'console', r'^amberx-notes/items/rows-\d+\.json$', 'AmberX notes and tasks (hub-table@1 chunks): one row per item', AMBERX_NOTE_COLS)
+AMBERX_NOTE_LISTS = MapTable('amberx_note_lists', 'console', r'^amberx-notes/lists/rows-\d+\.json$', 'AmberX note lists (hub-table@1 chunks): one row per list',
+                             [Col('id'), Col('title'), Col('kind')])
+APP_CATALOG = ArrayTable('app_catalog', 'console', r'^shared/app-catalog/catalog\.json$', 'the app catalog (app-catalog@1): one row per app, its builds in app_catalog_versions',
+                         APP_COLS, list_key='apps', child=('versions', 'app_catalog_versions', APP_VERSION_COLS))
 BUILDS = DocTable('builds', 'builds', 'store.json',
                   {'builds': ListSpec('builds', BUILD_COLS, 'builds', key='id', children=(('steps', 'build_steps', STEP_COLS), ('notes', 'build_notes', NOTE_COLS)))},
                   'the builds store (builds@1): one row per build keyed by its id, steps in build_steps, notes in build_notes, the rest of the document in store_heads')
@@ -525,7 +741,8 @@ SETTINGS = RecordTable('settings', 'settings', SETTINGS_COLS, 'settings document
 PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (plan@1): one row per plan', r'^(plans|projects/[^/]+/plans)/[^/]+\.json$')
 NOTES = NotesTable()
 
-TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES]
+TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES,
+                CONSOLE_STATE, ALERTS, ALERTS_SEEN, NOTIFICATIONS, HOME_CARDS, AMBERX_NOTES, AMBERX_NOTE_LISTS, APP_CATALOG]
 _BY_NAME = {t.name: t for t in TABLES}
 
 HOLDS = {
@@ -542,6 +759,9 @@ HOLDS = {
     'build_notes': 'notes of each build (one row per note: at, text, under the build id)',
     'control_tabs': 'tabs of each tab group in the control registry',
     'mirror_runs': 'each SQLite mirror run: source, tables, row counts, result',
+    'app_catalog_versions': 'each build of each app in the app catalog (version, build, file, sha256, builtAt)',
+    'console_deploys': 'view: the console deploys log (console/deploys/log), one row per deploy',
+    'token_log': 'view: the token log (console/token-log/<yyyy>/<mm>/<dd>.jsonl), one row per turn',
 }
 
 # Run before SCHEMA_SQL on a database made by an earlier version (pg.py PgStore._connect): the builds rows move from
@@ -594,6 +814,35 @@ def migrate_v2(conn) -> dict:
     return out
 
 
+def retable(conn, only_ns: tuple[str, ...] | None = None) -> dict:
+    """Move records a domain table now claims out of `records` into their rows (a database made before the table existed:
+    console/state.json, alerts.json… were copied on Nov 17 as JSONB records). A key moves only when the rows read back
+    byte-equal to the stored body, so its etag is unchanged; anything else stays where it is and is counted. Idempotent."""
+    out = {'moved': 0, 'kept': 0, 'tables': {}}
+    names = sorted({t.ns for t in TABLES if not only_ns or t.ns in only_ns})
+    cur = conn.cursor()
+    cur.execute("SELECT k.ns, k.path, k.content_type, r.data, r.body FROM keys k JOIN records r ON r.ns = k.ns AND r.path = k.path "
+                "WHERE k.kind = 'record' AND k.table_name = '' AND NOT k.deleted AND k.ns = ANY(%s)", (names,))
+    for r in cur.fetchall():
+        body = bytes(r['body']) if r['body'] is not None else canonical(r['data']).encode('utf-8')
+        t = table_for(r['ns'], r['path'], 'record', r['content_type'] or '', body)
+        if not t:
+            continue
+        try:
+            with conn.transaction():
+                c2 = conn.cursor()
+                t.write(c2, r['ns'], r['path'], body)
+                if t.read(c2, r['ns'], r['path']) != body:
+                    raise ValueError('rows do not read back equal')
+                c2.execute('DELETE FROM records WHERE ns=%s AND path=%s', (r['ns'], r['path']))
+                c2.execute('UPDATE keys SET table_name=%s WHERE ns=%s AND path=%s', (t.name, r['ns'], r['path']))
+            out['moved'] += 1
+            out['tables'][t.name] = out['tables'].get(t.name, 0) + 1
+        except Exception:  # noqa: BLE001 — the record stays a record; the next put places it
+            out['kept'] += 1
+    return out
+
+
 SCHEMA_SQL = '\n'.join(t.ddl() for t in TABLES) + """
 CREATE TABLE IF NOT EXISTS store_heads (ns TEXT NOT NULL, path TEXT NOT NULL, head JSONB NOT NULL, lists JSONB NOT NULL, PRIMARY KEY (ns, path));
 CREATE TABLE IF NOT EXISTS mirror_runs (id BIGSERIAL PRIMARY KEY, prefix TEXT NOT NULL, source TEXT NOT NULL, at TEXT NOT NULL, tables JSONB NOT NULL, ok BOOLEAN NOT NULL, error TEXT NOT NULL DEFAULT '');
@@ -607,6 +856,14 @@ CREATE INDEX IF NOT EXISTS planner_items_status ON planner_items (status);
 CREATE OR REPLACE VIEW build_journal AS
   SELECT ns, path, seq, at, actor, entry->>'action' AS action, entry->>'note' AS note, entry->>'by' AS who, (entry->>'rev') AS store_rev, entry->'builds' AS builds, entry
   FROM journal WHERE ns = 'builds' AND path LIKE 'journal/%';
+CREATE OR REPLACE VIEW console_deploys AS
+  SELECT seq, at, actor, entry->>'sha' AS sha, entry->>'result' AS result, entry->>'by' AS who, entry
+  FROM journal WHERE ns = 'console' AND path = 'deploys/log';
+CREATE OR REPLACE VIEW token_log AS
+  SELECT path, seq, at, actor, entry->>'id' AS id, entry->>'source' AS source, entry->>'session' AS session, entry->>'model' AS model, entry
+  FROM journal WHERE ns = 'console' AND path LIKE 'token-log/%';
+CREATE INDEX IF NOT EXISTS alerts_severity ON alerts (severity);
+CREATE INDEX IF NOT EXISTS notifications_status ON notifications (status);
 CREATE OR REPLACE VIEW note_history AS
   SELECT ns, path, seq, at, actor, entry FROM journal WHERE ns = 'notes' AND path LIKE '_history/%';
 """

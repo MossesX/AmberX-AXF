@@ -42,6 +42,10 @@
         "to": "console/deploys/log"
       },
       {
+        "re": "^(alerts|alerts-seen|alerts-run|alerts-config|host-check|nightly|update-status|project-wizard)\\.json$",
+        "to": "console/{1}.json"
+      },
+      {
         "re": "^data-store/.*$",
         "to": null
       }
@@ -98,12 +102,20 @@
         "to": "settings/claude/settings.json"
       },
       {
+        "re": "^_shared/_data/claude/views\\.json$",
+        "to": "settings/claude/views.json"
+      },
+      {
         "re": "^_shared/_data/(handoff|notifications|dns)/(.+)$",
         "to": "console/shared/{1}/{2}"
       },
       {
         "re": "^_shared/_data/quick-docs\\.md$",
         "to": "console/shared/quick-docs.md"
+      },
+      {
+        "re": "^_shared/_data/app-catalog/catalog\\.json$",
+        "to": "console/shared/app-catalog/catalog.json"
       },
       {
         "re": "^_shared/_data/(app-catalog|plugin-catalog)/.*$",
@@ -180,7 +192,14 @@
     "projects:amberx-axf/_data/pipeline/run 1.json": null,
     "repo:_claude/builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less.md": "builds/reports/10-minute-steps-the-splitter-cuts-every-build-into-steps-of--cb101e72623838cc.md",
     "projects:amberx-axf/_data/changes/README.md": null,
-    "projects:amberx-axf/_data/plan-studio/history/approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc.json": "planner/history/approvals-no-window-spam-on-approve-veto-only-for-vps-wri--6d3ac999cb491573.json"
+    "projects:amberx-axf/_data/plan-studio/history/approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc.json": "planner/history/approvals-no-window-spam-on-approve-veto-only-for-vps-wri--6d3ac999cb491573.json",
+    "data:alerts.json": "console/alerts.json",
+    "data:alerts-seen.json": "console/alerts-seen.json",
+    "data:host-check.json": "console/host-check.json",
+    "data:alerts-secrets.json": null,
+    "projects:_shared/_data/app-catalog/catalog.json": "console/shared/app-catalog/catalog.json",
+    "projects:_shared/_data/app-catalog/apks/amberx-droid/a.apk": null,
+    "projects:_shared/_data/claude/views.json": "settings/claude/views.json"
   },
   "longSegments": "A mapped key segment over 80 characters (long build ids) becomes its first characters + '--' + the first 16 hex of the SHA-256 of the whole segment + its extension (up to 8 characters after the last dot, kept so the kind stays the same), 80 characters in all: a valid, stable key, the same on every client."
 }

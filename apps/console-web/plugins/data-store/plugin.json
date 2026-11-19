@@ -204,6 +204,62 @@
           ],
           "additionalProperties": false
         }
+      },
+      {
+        "id": "cuts",
+        "route": "GET /cuts",
+        "title": "Data cut groups (onto the Postgres rows)",
+        "description": "data-cut-report@1: each group of keys moving onto axf-data's Postgres rows (framework/schemas/data-cut.json): per entry its mode (local / cutover), local keys, how many are equal on axf-data, its table and row count, and why an entry stays mirrored.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "group": {
+              "type": "string",
+              "description": "a group id from framework/schemas/data-cut.json (console, …); empty = all"
+            }
+          },
+          "additionalProperties": false
+        },
+        "output": "data-cut-report@1",
+        "readOnly": true
+      },
+      {
+        "id": "cut",
+        "route": "POST /cut",
+        "title": "Backfill, verify or cut over a data group",
+        "description": "Runs framework/cli/data-cut.mjs on one group: copy (backfill; apply writes), verify (every key equal, read back from its rows), cutover (copy + verify + flip the flip: true entries to key-level cutover; refuses on any difference; noFlip copies and verifies only), sync (keep the mirrored entries equal), local (axf-data bodies back to the files, overrides back to local).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "group": {
+              "type": "string"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "copy",
+                "verify",
+                "cutover",
+                "sync",
+                "local"
+              ]
+            },
+            "apply": {
+              "type": "boolean"
+            },
+            "noFlip": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "group",
+            "action"
+          ],
+          "additionalProperties": false
+        },
+        "output": "data-cut-report@1",
+        "destructive": true,
+        "confirm": "Run this data cut step on axf-data?"
       }
     ]
   },

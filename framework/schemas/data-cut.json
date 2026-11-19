@@ -1,0 +1,30 @@
+{
+  "$axf": "data-cut@1",
+  "note": "Which data-store@1 keys move onto axf-data's Postgres rows, group by group (framework/spec/DATA-INVENTORY.md, build postgres-part-c-console-state-settings). Run by framework/cli/data-cut.mjs: copy (backfill) → verify (every key's content equal on both sides, read back from its rows; row counts per table) → cutover (flip the entries with flip: true to key-level cutover, data-store-mode@1 keys). An entry is one key (`key`) or every key under a prefix (`prefix`, ends in '/'). `flip: false` = a writer outside the data layer still writes the file (a shell installer, axHub's files API, claude-sync): the key is kept equal on axf-data by `data-cut sync` (cron) and named in `why`, and flips once that writer goes through the data layer. `writers` lists every writer the flip depends on. `table` is the Postgres table (services/axf-data/tables.py) the rows land in.",
+  "groups": {
+    "console": {
+      "title": "Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, AmberX notes, app catalog",
+      "step": "postgres-part-c s1 (s4.4)",
+      "entries": [
+        { "key": "console/state.json", "table": "console_state", "flip": true, "writers": ["apps/console-web/server/main.py (data_store)", "framework/cli/plugin-lifecycle.mjs (data-files)"] },
+        { "key": "console/alerts.json", "table": "alerts", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
+        { "key": "console/alerts-seen.json", "table": "alerts_seen", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
+        { "key": "console/alerts-run.json", "table": "console_state", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
+        { "key": "console/alerts-config.json", "table": "console_state", "flip": true, "writers": ["apps/console-web/server/alerts.py (data_store)"] },
+        { "prefix": "console/home-cards/", "table": "home_cards", "flip": true, "writers": ["apps/console-web/server/main.py /api/home/layout (data_store)"] },
+        { "key": "console/deploys/log", "table": "console_deploys", "flip": false, "why": "also appended by the deploy scripts (deploy/install-console.sh) before the console runs" },
+        { "key": "console/host-check.json", "table": "console_state", "flip": false, "why": "written by deploy/console-doctor.sh on the host" },
+        { "key": "console/nightly.json", "table": "console_state", "flip": false, "why": "written by deploy/console-nightly.mjs (host cron)" },
+        { "key": "console/update-status.json", "table": "console_state", "flip": false, "why": "written by the install scripts during an update" },
+        { "key": "console/project-wizard.json", "table": "console_state", "flip": false, "why": "written by apps/console-web/plugins/project-wizard/wizard.mjs with plain file writes" },
+        { "key": "console/control/inventory.json", "table": "control_targets", "flip": false, "why": "read from the hub file by axHub (console_open / console_show targets)" },
+        { "key": "console/shared/app-catalog/catalog.json", "table": "app_catalog", "flip": false, "why": "read from /projects/_shared/_data/app-catalog by axHub and the AmberX app" },
+        { "prefix": "settings/", "table": "settings", "flip": false, "why": "hub-settings@1 is written by every app through axHub's files API: axf-data becomes the writer's target once axHub routes /projects/_shared/_data/settings to it" },
+        { "prefix": "console/shared/notifications/", "table": "notifications", "flip": false, "why": "the inbox is written through axHub (AmberX push) and activity/server/complete.py" },
+        { "prefix": "console/token-log/", "table": "token_log", "flip": false, "why": "token-turn@1 lines are appended by axHub" },
+        { "prefix": "console/amberx-notes/", "table": "amberx_notes", "flip": false, "why": "hub-table@1 chunks written by the AmberX app through axHub" },
+        { "prefix": "notes/", "table": "notes", "flip": false, "why": "the hub copy is also written by claude-sync from every session" }
+      ]
+    }
+  }
+}
