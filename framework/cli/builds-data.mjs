@@ -16,6 +16,8 @@
  *   node framework/cli/builds-data.mjs local [--apply]        back to the files: the remote store is written to the local file
  *                                                             and the remote journal lines the hub lacks are appended, then the
  *                                                             two keys go back to local (the namespace is untouched).
+ *   node framework/cli/builds-data.mjs clean [--apply]        the store file's leftovers: `store.json.tmp-*` of dead writers and an
+ *                                                             unheld lock (a successful flip runs it by itself).
  *   --json on any command. --url / --token override AXF_DATA_URL / AXF_DATA_TOKEN (the cut needs the cli token: it reads
  *   `_meta/tables` for the row counts and publishes the mode document). --store <file> names the store file to copy and
  *   lock (default: this checkout's; on the VPS the console's live file is /opt/axf/_claude/builds/store.json).
@@ -30,7 +32,7 @@
  *   journal  for every part: remote entries ≥ local lines, and every local line equals the remote entry at its position
  *            (oversized entries are compared through their builds/journal-large record)
  */
-import { appendFileSync, mkdirSync, readFileSync, renameSync, utimesSync, writeFileSync } from 'node:fs';
+import { appendFileSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, utimesSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
@@ -207,7 +209,28 @@ export async function cutover({ store = files.remoteStore(), apply = false, flip
   // file's mtime is refreshed while held (builds-store treats a lock older than 30 s as a dead writer's and removes it).
   const keep = setInterval(() => { try { const now = new Date(); utimesSync(`${file}.lock`, now, now); } catch { /* lock gone */ } }, 10000);
   try { await withStoreLock(() => run(), 60000, file); } finally { clearInterval(keep); }
+  if (report.flipped.length) report.cleaned = clean({ file, apply: true }).removed;
   return report;
+}
+
+/**
+ * The file path's leftovers once the store is on the tables: `store.json.tmp-<pid>` files a writer killed between write
+ * and rename left behind (never one a live process still owns), and a lock nobody holds (older than 30 s, as builds-store
+ * itself judges a dead writer's). The store file itself stays: it is the last local copy (`local` writes it back).
+ */
+export function clean({ file = storeFile(), apply = false } = {}) {
+  const dir = dirname(file); const base = file.slice(dir.length + 1);
+  const alive = (pid) => { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } };
+  const removed = [];
+  let names = []; try { names = readdirSync(dir); } catch { return { removed }; }
+  for (const n of names) {
+    const tmp = n.startsWith(`${base}.tmp-`) ? Number(n.slice(base.length + 5)) : NaN;
+    const stale = n === `${base}.lock` ? Date.now() - statSync(join(dir, n)).mtimeMs > 30000 : Number.isInteger(tmp) && !alive(tmp);
+    if (!stale) continue;
+    if (apply) rmSync(join(dir, n), { force: true });
+    removed.push(n);
+  }
+  return { removed };
 }
 
 /** Back to the files: remote → local file and hub journal, then the keys go local. */
@@ -248,7 +271,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const args = process.argv.slice(2);
   const flag = (k) => { const i = args.indexOf(`--${k}`); if (i < 0) return undefined; const v = args[i + 1]; args.splice(i, v && !v.startsWith('--') ? 2 : 1); return v && !v.startsWith('--') ? v : true; };
   const json = !!flag('json'); const apply = !!flag('apply'); const noFlip = !!flag('no-flip'); const url = flag('url'); const token = flag('token'); const by = flag('by'); const storeArg = flag('store'); const file = typeof storeArg === 'string' ? resolve(storeArg) : storeFile();
-  const cmd = ['status', 'cutover', 'local'].includes(args[0]) ? args.shift() : 'status';
+  const cmd = ['status', 'cutover', 'local', 'clean'].includes(args[0]) ? args.shift() : 'status';
+  if (cmd === 'clean') {
+    const r = clean({ file, apply });
+    if (json) console.log(JSON.stringify({ $axf: 'builds-data-clean@1', apply, file, ...r }, null, 1));
+    else console.log(`${r.removed.length} leftover(s) ${apply ? 'removed' : 'to remove (--apply)'} next to ${file}${r.removed.length ? `: ${r.removed.slice(0, 5).join(', ')}${r.removed.length > 5 ? ' …' : ''}` : ''}`);
+    process.exit(0);
+  }
   const store = typeof url === 'string' ? createDataStore({ backend: httpBackend({ url, token: typeof token === 'string' ? token : process.env.AXF_DATA_TOKEN || '' }), by: 'svc:cli' }) : files.remoteStore();
   const log = json ? () => {} : (m) => console.error(m);
   try {
@@ -266,6 +295,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       if (r.counts) console.log(`counts: local ${JSON.stringify(r.counts.local)}${r.counts.remote ? ` remote ${JSON.stringify(r.counts.remote)}` : ''}${r.tables ? ` rows ${JSON.stringify(r.tables)}` : ''}`);
       for (const p of r.problems) console.log(`✗ ${p}`);
       for (const f of r.flipped) console.log(`→ ${f}`);
+      if (r.cleaned?.length) console.log(`cleaned ${r.cleaned.length} leftover(s) next to the store file`);
       if (r.publishError) console.log(`(mode document not published to axf-data: ${r.publishError}; the local mode file is what every client reads)`);
     }
     process.exit(r.ok ? 0 : 1);

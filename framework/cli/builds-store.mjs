@@ -379,6 +379,8 @@ function writeKeepingOwner(f, text) {
  * already folded the profiles. Idempotent: a store with no retired profile left is not touched.
  */
 export function mergeRetiredNow({ by = 'profiles-merge' } = {}) {
+  // cutover: the file is no longer the store (and the profiles were merged long before the cut, which copied the result)
+  if (remoteOn()) return { changed: 0, report: null };
   const f = storeFile(); const unlock = lock(f);
   try {
     if (!existsSync(f)) return { changed: 0, report: null };
@@ -410,7 +412,8 @@ export function migrateDoneNow({ dry = true, by = 'done-means-merged', at = new 
 }
 
 /** Write every export now (after the migration, or by hand: `builds-store.mjs export`). */
-export function exportNow() { const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
+/** Regenerate the exports. cutover: from the record the tables assemble, no file lock (the store file is not the store). */
+export function exportNow() { if (remoteOn()) { exportAll(readStore()); return; } const f = storeFile(); const unlock = lock(f); try { exportAll(readStore()); } finally { unlock(); } }
 
 /** Bytes a journal file may reach (AXF_BUILDS_JOURNAL_BYTES moves it for tests). */
 export const journalMax = () => Number(process.env.AXF_BUILDS_JOURNAL_BYTES) || merge.JOURNAL_PART_BYTES;
@@ -454,8 +457,11 @@ function journal(entry) {
  * only main's newer builds arriving. `journals` = { 'YYYY-MM': text } replaces those journal files (already the union).
  */
 export function adoptStore(next, { journals = {} } = {}) {
-  // cutover / rollback: axf-data is the store; main's git copy is a projection of it, never adopted back
-  if (remoteOn()) return;
+  // cutover: axf-data is the store and main's git copy a projection of it. A build main holds NEWER (per build and per
+  // step, builds-merge-core) was written by a session on code from before the cut (it still writes its own copy and
+  // publishes it to main through builds-live): those builds go into the tables as one row-level patch, so no tick made
+  // during the changeover is lost. Nothing older than the tables is ever taken back. rollback: writes wait.
+  if (remoteOn()) { if (storeMode() === 'cutover') adoptRemote(next); return; }
   const f = storeFile(); const unlock = lock(f);
   try {
     // build-hook@1: builds changed in another checkout (a build session's worktree) arrive here, not through saveStore;
@@ -472,6 +478,12 @@ export function adoptStore(next, { journals = {} } = {}) {
     for (const [m, text] of Object.entries(journals)) writeFileSync(join(d, `${m}.jsonl`), text);
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
+}
+/** cutover adopt: main's newer builds → the tables (withStore: row-level patch, re-read on a conflict). The ids taken. */
+export function adoptRemote(next) {
+  let taken = [];
+  withStore((s) => { const m = merge.mergeStores(s, core.normalizeStore(next)); taken = m.taken; return m.taken.length ? m.store : s; }, { by: 'builds-live', action: 'adopt', note: 'newer on main (a writer from before the cut)' });
+  return taken;
 }
 /** The builds that differ between the store on disk and one taken from elsewhere, as diffStores changes (nothing mutated). */
 export function adoptedChanges(before, next) {
