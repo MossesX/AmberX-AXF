@@ -9,6 +9,20 @@ app renders (deferred gap in `PORTING.md`).
 
 Inventory of every JSON/JSONL data file and its target Postgres table: `framework/spec/DATA-INVENTORY.md` (Nov 18 2026).
 
+## Rule: no runtime data in JSON files (no-json-data@1, Nov 18 2026)
+
+Brett: "I don't want any data stored in JSON period. Everything needs to be a Postgres table." Runtime data (state,
+queues, logs, journals, settings, records of any kind) lives in axf-data's Postgres tables and is read and written only
+through data-store@1 (`data-files.mjs`, `persist.mjs` readData/writeData, `builds-store.mjs`, `data_store.py`). A document
+gets a table (`services/axf-data/tables.py`: DocTable for a document with lists, one row per item; RecordTable for one row
+per document) and moves local → shadow → cutover per key or namespace (DATA-INVENTORY.md lists every file and its table).
+
+Enforced by `framework/spec/check-json-data-writes.mjs` (CI): a new direct JSON/JSONL write in runtime code fails the
+build. The writes that existed when the rule began are a per-file baseline (`json-data-writes.baseline.json`) that may
+only go down. Not data, and so not counted when marked `// axf-data: not data (<reason>)`: build-time generators,
+read-only exports generated from the tables (the builds projection, orchestrator exports), fixtures, the check's own
+baseline. Secrets never go in the data DB.
+
 ## Why
 
 Brett, Nov 15 2026: "the console goes down, all the data is still available, all the notes are available, and the
