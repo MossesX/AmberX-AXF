@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:09:26.311Z",
+ "updatedAt": "2026-11-19T02:13:58.443Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194774,14 +194774,14 @@
    "title": "Stop the push storm: builds-live pushes at build end only, Expenses rebuilds only on its own changes",
    "category": "orchestrator",
    "detail": "Brett's words: \"We don't need it to do a update main on every fucking little thing. It needs to do it just at the end of the build.\" (about builds-live) and, about Expenses: \"Why is that shit even running? ... I just want to do what it needs to do to fucking update.\"\n\nFound on the VPS (load average 60): framework/cli/builds-live.mjs pushes a status-only [skip ci] commit to main for every store write (step, note, status), rewriting _claude/builds/store.json (over 2 MB), the orchestrator export and a THREADS.md live-log line, roughly every 30 s. apps/expenses/deploy/install.sh then builds a new expenses-axf image tagged with every new main commit (the live container is tagged with a status-only commit), so every status push also triggers a Docker build.\n\nReplaces the Nov 3 2026 'Builds go live to main' rule: store writes stay local/in the build's branch while it runs; one push to main when the build finishes (built/landed/failed). Update CLAUDE.md and _claude/builds/README.md to match.",
-   "status": "complete",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/stop-push-storm-builds-live-pushes-build",
    "pr": "",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-18T17:27:53.468Z",
+   "updatedAt": "2026-11-19T02:13:34.737Z",
    "builtAt": "2026-11-18T16:11:28.234Z",
    "notes": [
     {
@@ -194807,6 +194807,10 @@
     {
      "text": "Reconciler: branch claude/stop-push-storm-builds-live-pushes-build (no PR yet)",
      "at": "2026-11-18T17:27:53.468Z"
+    },
+    {
+     "text": "Reconciler: branch claude/stop-push-storm-builds-live-pushes-build (no PR yet)",
+     "at": "2026-11-19T02:13:34.737Z"
     }
    ],
    "approvals": [],
@@ -194874,9 +194878,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
-   "pr": "",
+   "pr": "#848",
+   "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:06:19.217Z",
+   "updatedAt": "2026-11-19T02:13:34.737Z",
    "builtAt": "",
    "notes": [
     {
@@ -194966,6 +194971,10 @@
     {
      "text": "s4 split: s4 is s4.1 only (pending, build queue, agent-slots, auto-lander). s4.2/s4.3/s4.6 are build postgres-part-b-plan-plan-studio-catalog, s4.4/s4.5 are postgres-part-c-console-state-settings; extra sub-steps added here by mistake were removed so nothing is built twice.",
      "at": "2026-11-19T01:24:15.746Z"
+    },
+    {
+     "text": "Reconciler: PR #848; PR #848 merged",
+     "at": "2026-11-19T02:13:34.737Z"
     }
    ],
    "approvals": [
@@ -195541,9 +195550,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/postgres-part-c-console-state-settings",
-   "pr": "",
+   "pr": "#849",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T02:07:56.025Z",
+   "updatedAt": "2026-11-19T02:13:34.737Z",
    "builtAt": "2026-11-19T02:07:56.025Z",
    "notes": [
     {
@@ -195557,6 +195566,10 @@
     {
      "text": "Claude account: hulu0241 (axf-postgres-part-c-console-state-settings--paulie, shared account login)",
      "at": "2026-11-19T00:14:59.615Z"
+    },
+    {
+     "text": "Reconciler: PR #849; PR #849 names s1, s2, s4 done",
+     "at": "2026-11-19T02:13:34.737Z"
     }
    ],
    "approvals": [],

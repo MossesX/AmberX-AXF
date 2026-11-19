@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:42 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
-- 2026-11-18 13:43 UTC · `every-plugin-gets-own-default-toolbar` branch claude/every-plugin-gets-own-default-toolbar, note (all) · reconciler
-- 2026-11-18 13:44 UTC · `every-plugin-gets-own-default-toolbar` s3 done (all) · orchestrator
 - 2026-11-18 13:47 UTC · `every-plugin-gets-own-default-toolbar` s4 done (all) · orchestrator
 - 2026-11-18 13:46 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
 - 2026-11-18 13:48 UTC · `every-plugin-gets-own-default-toolbar` s4 done (all) · foreign-write
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:03 UTC · `urgent-all-data-to-postgres-builds-store` s4 done (all) · orchestrator
 - 2026-11-19 02:06 UTC · `urgent-all-data-to-postgres-builds-store` s5 done (all) · orchestrator
 - 2026-11-19 02:07 UTC · `postgres-part-c-console-state-settings` s4 done, → landing (all) · orchestrator
+- 2026-11-19 02:13 UTC · `stop-push-storm-builds-live-pushes-build` → landing, branch claude/stop-push-storm-builds-live-pushes-build, note (all) · reconciler
+- 2026-11-19 02:13 UTC · `urgent-all-data-to-postgres-builds-store` PR #848, merged, note (all) · reconciler
+- 2026-11-19 02:13 UTC · `postgres-part-c-console-state-settings` PR #849, note (all) · reconciler
 
 ## Token passes (log)
 
