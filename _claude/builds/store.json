@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9296,
- "updatedAt": "2026-11-19T06:53:24.323Z",
+ "rev": 9297,
+ "updatedAt": "2026-11-19T07:03:13.327Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322053,8 +322053,8 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T06:52:56.341Z",
-   "builtAt": "2026-11-19T06:52:56.341Z",
+   "updatedAt": "2026-11-19T07:02:50.426Z",
+   "builtAt": "2026-11-19T07:02:50.426Z",
    "notes": [
     {
      "text": "Brett, Nov 18 2026 (voice), correction to the earlier write-only note: \"We're going to move the build store over to a Postgres table. We're going to still allow the orchestrator to check it in case it's going to build a feature that's going to break an already built feature, or in case that feature has already gone live through another build. We want to keep the orchestrator able to make sure we're not going to break something.\"\n\nSo: the builds history table is NOT write-only. Before launching a build, the orchestrator queries it (indexed search by feature, files, plugin, title words) for (a) the same feature already shipped by another build and (b) built features the new build could break. It pulls only matching rows, never the whole history. The pipeline's routine tick still reads only the live/active builds.",
@@ -322339,6 +322339,10 @@
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T06:52:56.341Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T07:02:50.426Z"
     }
    ],
    "approvals": [
@@ -322607,7 +322611,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
