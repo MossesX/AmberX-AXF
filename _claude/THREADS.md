@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
 - 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · pipeline
 - 2026-11-18 14:01 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
 - 2026-11-18 14:06 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:23 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
 - 2026-11-19 02:23 UTC · `queue-stall-detector-vps-spots-queued` added (10 steps) (all) · foreign-write
 - 2026-11-19 02:23 UTC · `load-spike-alarm-vps-detects-cpu-load` added (10 steps) (all) · foreign-write
+- 2026-11-19 02:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
 
 ## Token passes (log)
 
