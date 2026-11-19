@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 14:46 UTC · `every-app-gets-own-locked-default` s1 done, → running (all) · orchestrator
 - 2026-11-18 14:47 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · pipeline
 - 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · watchdog
 - 2026-11-18 14:50 UTC · `every-app-gets-own-locked-default` → pending, note (all) · builds-live
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:43 UTC · `postgres-part-b-plan-plan-studio-catalog` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
 - 2026-11-19 02:43 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
 - 2026-11-19 02:43 UTC · `server-safe-mode-one-emergency-button` added (11 steps) (all) · foreign-write
+- 2026-11-19 02:44 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 
 ## Token passes (log)
 
