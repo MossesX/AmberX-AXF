@@ -45,6 +45,12 @@ axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` da
   until the console runs code with key-level modes (it started before #848): then
   `data-tables.mjs cutover plan --apply --keys`.
 
+- **s4.3 done (Nov 19 2026, Opus)**: `catalog_features` (status.json and profile copies; `ItemsTable` reads the map
+  document `id → feature` as rows, rid = the feature id), `catalog_libraries`, `project_rules` (rules + known keys);
+  view `tracker` over `catalog_features`. `tracker.json` is generated (tracker.mjs), mapped `to: null` and no longer
+  stored; its old axf-data copy was dropped at the cut. Live 02:05 UTC: 466 / 23 / 39 rows equal the files
+  (`data-tables.mjs cutover catalog --apply`). The three `console` keys flip with the plan keys (`--keys`, same reason).
+
 Row counts below are live `keys` rows in axf-data (not deleted); sizes are the stored bodies.
 
 ## Legend

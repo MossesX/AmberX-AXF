@@ -79,6 +79,25 @@ export const SETS = {
     namespaces: ['planner'],
     keys: { console: ['framework/plan/plan.json', 'framework/plan/profiles.json', 'framework/plan/projects.json', 'framework/plan/media/', 'project.manifest.json', 'projects/'] },
   },
+  catalog: {
+    step: 's4.3',
+    title: 'feature catalog, libraries index, project rules (tracker.json is generated from catalog_features, not stored)',
+    files(P) {
+      const fw = join(P, 'amberx-axf/_data/framework');
+      const out = ['catalog/status.json', 'catalog/libraries.json', 'schemas/project-rules.json'].map((f) => join(fw, f)).filter(existsSync);
+      out.push(...walk(join(fw, 'plan/profiles')).filter((f) => /\/framework\/(catalog\/(status|libraries)|schemas\/project-rules)\.json$/.test(f)).map((f) => join(fw, 'plan/profiles', f)));
+      return out;
+    },
+    tables: {
+      catalog_features: (k, d) => (/^console\/framework\/(plan\/profiles\/[^/]+\/framework\/)?catalog\/status\.json$/.test(k) && d && typeof d === 'object' && !Array.isArray(d) ? Object.values(d).filter((v) => v && typeof v === 'object' && !Array.isArray(v)).length : 0),
+      catalog_libraries: (k, d) => (/^console\/framework\/(plan\/profiles\/[^/]+\/framework\/)?catalog\/libraries\.json$/.test(k) && dicts(d.items) ? len(d.items) : 0),
+      project_rules: (k, d) => (/^console\/framework\/(plan\/profiles\/[^/]+\/framework\/)?schemas\/project-rules\.json$/.test(k) ? (dicts(d.rules) ? len(d.rules) : 0) + (scalars(d.knownKeys) ? len(d.knownKeys) : 0) : 0),
+    },
+    namespaces: [],
+    keys: { console: ['framework/catalog/status.json', 'framework/catalog/libraries.json', 'framework/schemas/project-rules.json'] },
+    // generated documents: not data, rebuilt from the tables (tracker.mjs); the old copy on axf-data is dropped at the cut
+    drop: ['console/tracker.json'],
+  },
 };
 
 function remote(opts) {
@@ -195,6 +214,10 @@ export async function cutover(name, { store, apply = false, keys = false, by = '
   const report = { ...(await check(name, { store, apply, projects, log })), $axf: 'data-tables-cutover@1', flipped: [] };
   if (apply) { const again = await check(name, { store, apply: false, projects }); report.verify = { ok: again.ok, problems: again.problems, tables: again.tables }; report.ok = again.ok; report.problems = again.problems; }
   if (!apply || !report.ok) return report;
+  for (const key of set.drop || []) {
+    const rec = await store.get(key).catch(() => null);
+    if (rec) { await store.delete(key, { ifMatch: rec.etag }); (report.dropped ||= []).push(key); log(`${key}: dropped (generated, not data)`); }
+  }
   const dm = await import('./data-mode.mjs');
   // namespaces: data-mode's own cut (manifests over the local files vs axf-data, drift, quiet window, snapshot)
   for (const ns of set.namespaces) {
@@ -229,6 +252,7 @@ function print(r) {
   for (const j of r.journals) console.log(`  journal ${j.key}: ${j.local} line(s) local, ${j.remote} on axf-data${j.appended ? `, ${j.appended} appended` : ''}`);
   if (r.extraRemote.length) console.log(`  only on axf-data: ${r.extraRemote.slice(0, 8).join(', ')}${r.extraRemote.length > 8 ? ' …' : ''}`);
   if (r.flipped?.length) console.log(`  flipped: ${r.flipped.join('; ')}`);
+  if (r.dropped?.length) console.log(`  dropped: ${r.dropped.join(', ')}`);
   for (const p of r.problems) console.log(`  ✗ ${p}`);
   console.log(r.ok ? '  ✓ ok' : '  ✗ not ok');
 }
@@ -241,7 +265,7 @@ async function main(argv) {
   const url = opt('--url'); const token = opt('--token'); const projects = opt('--projects') || process.env.AXHUB_PROJECTS_DIR || '/projects';
   const [cmd = 'sets', which = 'all'] = args;
   if (cmd === 'sets') {
-    for (const [n, s] of Object.entries(SETS)) console.log(`${n.padEnd(8)} ${s.step}  ${s.title}\n         tables: ${Object.keys(s.tables).join(', ')}\n         namespaces: ${s.namespaces.join(', ') || '—'} · keys: ${Object.entries(s.keys).map(([ns, ps]) => ps.map((p) => `${ns}/${p}`).join(', ')).join(', ') || '—'}`);
+    for (const [n, s] of Object.entries(SETS)) console.log(`${n.padEnd(8)} ${s.step}  ${s.title}\n         tables: ${Object.keys(s.tables).join(', ')}\n         namespaces: ${s.namespaces.join(', ') || '—'} · keys: ${Object.entries(s.keys).map(([ns, ps]) => ps.map((p) => `${ns}/${p}`).join(', ')).join(', ') || '—'}${s.drop ? ` · generated (dropped at the cut): ${s.drop.join(', ')}` : ''}`);
     return 0;
   }
   const store = remote({ url, token });
