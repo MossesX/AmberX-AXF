@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 16:08 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · foreign-write
 - 2026-11-18 16:08 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
 - 2026-11-18 16:09 UTC · `attach-widgets-to-any-toolbar-banner` s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, note (all) · foreign-write
 - 2026-11-18 16:09 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 05:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 05:13 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 05:15 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · orchestrator
+- 2026-11-19 05:15 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
 
 ## Token passes (log)
 
