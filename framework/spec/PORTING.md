@@ -388,3 +388,12 @@ statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the stor
 (checker `framework/spec/check-pipeline-2.mjs`); spec `framework/spec/PIPELINE-2.md`. **Kotlin twin deferred** (no new
 Android work): AmberX reads build rows through the console's REST and shows the status string it is given; a Kotlin
 `PipelineStatus.kt` answering the fixture's transitions is needed only once an Android surface writes build statuses.
+
+## Deferred: status-table@1 (Nov 19 2026)
+
+Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules in
+`apps/console-web/plugins/build-orchestrator/web/status-table-core.mjs` (contract build and step statuses, labels with
+"failed, attempt N", the older-status mapping, steps done/total, model / account / slot roll-up, toolbar filters, the
+merge-queue filter, client-side timers) and the console's reader of the builds store `apps/console-web/server/builds_store.py`.
+Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web
+view; a native Builds table would port status-table-core.mjs as is (pure, no IO) and read GET /table.

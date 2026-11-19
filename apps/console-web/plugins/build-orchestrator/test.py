@@ -55,6 +55,34 @@ try:
 except srv.HTTPException as e:
     check(e.status_code == 404, "an unknown build is a 404")
 check("map" in srv.priority_list(), "the tag list answers through the real CLI")
+# ---- the one status table (status-table@1, Pipeline 2.0): a test store, compact rows, the merge queue, since=<rev>
+import os  # noqa: E402
+check(srv.TABLE_CLI.is_file(), "status-table.mjs is where the server looks for it")
+with tempfile.TemporaryDirectory() as d:
+    store = Path(d) / "store.json"
+    b = lambda i, st, **kw: {"id": i, "title": i.upper(), "status": st, "profiles": ["all"], "createdAt": iso(now - 600), "updatedAt": iso(now - 60), **kw}  # noqa: E731
+    store.write_text(json.dumps({"$axf": "builds@1", "rev": 7, "updatedAt": iso(now), "builds": [
+        b("t-build", "building", steps=[{"id": "s1", "text": "one", "done": True}, {"id": "s2", "text": "two"}]),
+        b("t-ci", "landing", pr="https://github.com/o/r/pull/12"), b("t-landed", "landed"), b("t-old", "archived")]}))
+    keep = {k: os.environ.get(k) for k in ("AXF_BUILDS_STORE", "AXF_BUILDS_EXPORT", "AXF_BUILDS_LIVE")}
+    os.environ.update(AXF_BUILDS_STORE=str(store), AXF_BUILDS_EXPORT="0", AXF_BUILDS_LIVE="0")
+    try:
+        srv._table_cache.clear()
+        t = srv.status_table()
+        rows = {r["id"]: r for r in t.get("rows", [])}
+        check(t["ok"] and set(rows) == {"t-build", "t-ci"}, f"GET /table: open builds only, landed and archived left out ({sorted(rows)})")
+        check(rows["t-build"]["done"] == 1 and rows["t-build"]["total"] == 2 and rows["t-ci"]["prNumber"] == 12 and rows["t-ci"]["status"] == "merging-pr", "a row carries steps done/total, its PR number and the contract status (landing reads as merging-pr)")
+        check([r["id"] for r in srv.status_table(queue=True)["rows"]] == ["t-ci"], "GET /table?queue=1: the merge queue only")
+        check("t-landed" in [r["id"] for r in srv.status_table(landed=True)["rows"]], "GET /table?landed=1: landed builds too")
+        check(srv.status_table(since=7) == {"ok": True, "unchanged": True, "rev": 7}, "since=<rev> at the same rev: nothing new")
+    finally:
+        srv._table_cache.clear()
+        for k, v in keep.items():
+            if v is None:
+                os.environ.pop(k, None)
+            else:
+                os.environ[k] = v
+
 # ---- the build pipeline routes (Nov 8 2026): the CLI is where the server looks, ids are checked, errors map to codes
 check(srv.PIPELINE_CLI.is_file(), "pipeline.mjs is where the server looks for it")
 for bad in ("", "../x", "A B", "x" * 90):

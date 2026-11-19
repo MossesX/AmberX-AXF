@@ -2313,6 +2313,12 @@
     "module": "app-console",
     "notes": "build-groups@1 (the build orchestrator plugin: groups-core.mjs rules, groups.mjs CLI): groups per project in <pipeline dir>/groups.json; hand-picked members (drag, select, voice, API) plus smart rules (title contains, more than N behind main, filed in the last N days, states, priorities); state order partial, pending, queued, running, failed, done, landed with counts, sort and filter; a group pinned as a tab sits next to its stage tab (group:<id>); group actions queue, land (Urgent in the merge queue), archive, priority. REST /groups, plugin commands groups-* (MCP, CLI axf build-orchestrator, control@1 plugins.commands), console actions build-orchestrator.groups / group-add / group-remove / group-action. Kotlin twin deferred."
   },
+  "cx.buildengine.statustable": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "status-table@1 (Pipeline 2.0, Nov 19 2026; build orchestrator plugin: web/status-table-core.mjs rules, status-table.mjs CLI, web/StatusTable.tsx): the orchestrator page is one table driven only by the contract statuses (pending, splitting, split shown Pending, pulling-main, assigning-models, ready, sending, building, build-complete, merging-pr, pr-pulling-main, running-ci, merging-main, landed; failed shows its attempt), no tabs; columns Build, Status, Steps, Model, Account, Slot, Timer, PR; filters status, account, model, date, words, show landed; timers tick client-side from the status at; rows poll GET /table (since=<rev> answers unchanged). Merge queue = the same table filtered to merging-pr..merging-main (view merge-queue, slot builds.merge-queue in the push banner). Readers ask the builds store (Postgres), never a store.json projection. REST /table, plugin command status-table (MCP, CLI), console actions build-orchestrator.open:<status|build>, build-orchestrator.merge-queue. Kotlin twin deferred."
+  },
   "f.tokenregistry": {
     "status": "built",
     "wave": 1,

@@ -414,7 +414,8 @@ export async function jobFor({ name = '', brief = '', model = '', priority = '',
   const job = { name, model, priority, jobType: jobType || env.AXF_JOB_TYPE || (env.AXF_SURFACE === 'agent-job' ? 'agent-job' : 'build'), profile: profile || env.AXF_BUILD_PROFILE || 'all' };
   try {
     const { resolveBuild } = await import('../framework/core/build-priority.mjs');
-    const store = readJson(join(HERE, '..', '_claude', 'builds', 'store.json'));
+    // the builds store itself (builds-store.mjs: the axf-data tables once cut over; Pipeline 2.0, no store.json)
+    const store = (await import('../framework/cli/builds-store.mjs')).loadStore();
     let text = ''; try { text = readFileSync(brief, 'utf8'); } catch { /* no brief */ }
     const id = /^\s*(?:build|id)\s*[:=]\s*`?([a-z0-9][a-z0-9-]+)/im.exec(text)?.[1];
     const b = resolveBuild(store?.builds ?? [], id || name.replace(/^axf-/, '').replace(/--.*$/, ''));
