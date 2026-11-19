@@ -500,5 +500,76 @@ eq((awake_got[-1]["target"], awake_got[-1].get("focus"), j.get("focus")), ("buil
 j = svc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open", "input": {"focus": "queue"}}, ["*"], "mcp")
 eq(awake_got[-1].get("focus"), "queue", "input.focus")
 
+# ---- screenshots (console.nav act screenshot): the console uploads a PNG, the answer carries it once with the screen state
+cc.SHOT_DIR = Path(tempfile.mkdtemp()) / "shots"
+PNG = b"\x89PNG\r\n\x1a\n" + b"\0" * 32
+STATE = {"screen": "settings", "screenLabel": "Settings", "tabs": {"view:settings/tab:settings.tabs": "appearance"}, "dialog": "asset-json", "selection": "grid:queue/row:b1", "scroll": {"top": 120, "fraction": 0.25}}
+shot_got: list[dict] = []
+shot_mode = {"upload": True}
+
+
+def shot_console(cid: str) -> None:
+    """A console tab that answers screenshot commands: upload the PNG first, then ack with the screen state."""
+    def loop() -> None:
+        with client.stream("GET", f"/api/console/stream?client={cid}") as st:
+            for line in st.iter_lines():
+                if not line.startswith("data: "):
+                    continue
+                m = json.loads(line[6:])
+                if m.get("$axf") == "console-hello@1":
+                    client.post("/api/console/hello", json={"client": cid, "catalog": CATALOG})
+                    continue
+                shot_got.append(m)
+                if m["op"] == "screenshot" and shot_mode["upload"]:
+                    up = client.post(f"/api/console/shot?client={cid}&id={m['id']}", content=PNG, headers={"content-type": "image/png"})
+                    shot_mode["upload_status"] = up.status_code
+                client.post("/api/console/ack", json={"client": cid, "id": m["id"], "ok": True, "message": "captured the screen (800×600)",
+                                                      "result": {"shot": True, "width": 800, "height": 600, "scale": 1, "capture": m.get("address") or m.get("selector") or "page", "state": STATE}})
+    threading.Thread(target=loop, daemon=True).start()
+
+
+client.post("/api/console/hello", json={"client": "shot-0001", "catalog": CATALOG, "used": True})
+shot_console("shot-0001")
+wait_for(lambda: stream_open("shot-0001"))
+j = client.post("/api/console/screenshot", json={"address": "view:settings"}).json()
+eq(shot_got[-1]["op"], "screenshot", "the console gets a screenshot command")
+eq(shot_got[-1].get("address"), "view:settings", "with the address to capture")
+eq(shot_mode.get("upload_status"), 200, "the console's upload is taken while the command is waited for")
+eq(j.get("status"), "delivered", f"a screenshot that came back is delivered ({j.get('message')})")
+import base64  # noqa: E402
+eq(base64.b64decode(j["images"][0]["data"]), PNG, "the answer carries the PNG")
+eq((j["images"][0]["client"], j["images"][0]["width"], j["images"][0]["mime"]), ("shot-0001", 800, "image/png"), "with its console, size and type")
+eq(j["state"], STATE, "and the screen state: screen, tabs, dialog, selection, scroll")
+eq(list(cc.SHOT_DIR.glob("*")), [], "the upload is deleted once the answer has read it")
+r = client.post("/api/console/screenshot", json={"address": "view:settings", "selector": "#main"})
+eq(r.status_code, 422, "a selector and an address together are refused")
+j = svc.run({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": {"selector": ".fx-dialog"}}, ["control.console.read"], "mcp")
+ok(j["ok"] and shot_got[-1].get("selector") == ".fx-dialog" and j["images"], "a screenshot needs only control.console.read (read-only)")
+j = svc.run({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot"}, ["control.console.navigate"], "mcp")
+eq(j.get("code"), "denied", "but it does need read: it shows what is on screen")
+shot_mode["upload"] = False
+j = client.post("/api/console/screenshot", json={}).json()
+eq((j.get("status"), j.get("images")), ("failed", []), "an ack without an uploaded image is failed, not delivered")
+shot_mode["upload"] = True
+eq(client.post("/api/console/shot?client=shot-0001&id=cc-nobody", content=PNG).status_code, 409, "an upload nobody waits for is refused")
+eq(client.post("/api/console/shot?client=nobody-001&id=cc-1", content=PNG).status_code, 404, "an upload from an unknown console is refused")
+eq(client.post("/api/console/shot?client=shot-0001&id=cc-1", content=PNG, headers={"x-user": "sam"}).status_code, 404, "someone else can't upload for Brett's console")
+try:
+    cc.save_shot("cc-x", "shot-0001", b"GIF89a")
+    ok(False, "a non-PNG upload raises")
+except cc.HTTPException as e:
+    eq(e.status_code, 415, "a screenshot must be a PNG")
+try:
+    cc.save_shot("cc-x", "shot-0001", PNG + b"\0" * cc.SHOT_MAX_BYTES)
+    ok(False, "an oversized upload raises")
+except cc.HTTPException as e:
+    eq(e.status_code, 413, "a screenshot over the byte limit is refused")
+eq(cc.save_shot("cc-old", "shot-0001", PNG), len(PNG), "an upload is kept until read")
+old_f = cc._shot_file("cc-old", "shot-0001")
+os.utime(old_f, (time.time() - cc.SHOT_TTL_S - 5,) * 2)
+eq(cc.sweep_shots(), 1, "an upload nobody read is swept after the TTL")
+ok(not old_f.exists(), "and is gone")
+ok(oct(cc.SHOT_DIR.stat().st_mode & 0o777) == "0o700", "the temp folder is private to the server")
+
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

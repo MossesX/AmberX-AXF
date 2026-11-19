@@ -16,9 +16,13 @@
  *            `console.settings` opens it (its tab, scrolled to it), lists and reads it; `settings.set:<key>:<value>` sets it.
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
  *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
- *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, by, at }
+ *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh|screenshot, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?,
+ *            selector?, address?, by, at }
  *            focus = what to bring forward on the opened screen (a tab or an item: a build id on the Build orchestrator);
  *            the console runs the screen's own `<screen>.focus:<focus>` action when it has one.
+ *            op screenshot: the console captures what it shows (the whole page, or the element a console-control@1 `address`
+ *            or a CSS `selector` names) as a PNG no wider than CONSOLE_SHOT_MAX_WIDTH, uploads it, and acks with the screen
+ *            state (consoleShotState); the server hands the image to the caller once and deletes it.
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
@@ -46,7 +50,12 @@ export const CONSOLE_HEARTBEAT_MS = 15_000;
 /** A command a console receives later than this after it was sent live is skipped (it went to a tab that was asleep). */
 export const CONSOLE_LATE_MS = 30_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
-export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh'];
+export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh', 'console_screenshot'];
+/** Console screenshots (op screenshot): the widest image a console sends, the largest upload the server takes, how long it keeps one. */
+export const CONSOLE_SHOT_MAX_WIDTH = 1600;
+export const CONSOLE_SHOT_MAX_BYTES = 4_000_000;
+export const CONSOLE_SHOT_TTL_MS = 120_000;
+export const CONSOLE_SHOT_MIME = 'image/png';
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
 const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
@@ -98,11 +107,20 @@ export function normalizeConsoleCatalog(raw) {
   return { $axf: CONSOLE_CATALOG_FRAME, app: str(r.app, 60) || 'console-web', items, here: normalizeHere(r.here) };
 }
 
-/** Where a console is: the screen, an open dialog, the settings tab when Settings shows. */
+/**
+ * Where a console is: the screen, an open dialog, the settings tab when Settings shows, the open tab of each tab row on
+ * the screen (row address → tab) and the selection (the focused row or target), as of the console's last beat.
+ */
 export function normalizeHere(raw) {
   const r = isObj(raw) ? raw : {};
   const out = {};
   for (const k of ['screen', 'screenLabel', 'dialog', 'settings']) { const v = str(r[k], 160); if (v) out[k] = v; }
+  if (isObj(r.tabs)) {
+    const tabs = Object.fromEntries(Object.entries(r.tabs).filter(([k, v]) => k && typeof v === 'string' && v).slice(0, 20).map(([k, v]) => [k.slice(0, 200), v.slice(0, 160)]));
+    if (Object.keys(tabs).length) out.tabs = tabs;
+  }
+  const sel = str(r.selection, 300);
+  if (sel) out.selection = sel;
   return out;
 }
 
@@ -332,7 +350,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
   if (fields.hard === true) m.hard = true;
-  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'focus']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
+  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'focus', 'selector', 'address']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
   return m;
@@ -342,7 +360,8 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!['open', 'run', 'back', 'home', 'close', 'refresh', 'control'].includes(m.op)) errors.push('op must be open, run, back, home, close, refresh or control');
+  if (!['open', 'run', 'back', 'home', 'close', 'refresh', 'screenshot', 'control'].includes(m.op)) errors.push('op must be open, run, back, home, close, refresh, screenshot or control');
+  if (m.op === 'screenshot' && m.selector && m.address) errors.push('screenshot takes a selector or an address, not both');
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
   // a console-control@1 command (spec/CONSOLE-CONTROL.md); the console's executor validates the command itself
@@ -394,6 +413,12 @@ export function runConsoleCommand(c, ctx = {}) {
 
   if (c.target === 'console.nav') {
     if (c.op === 'get') return { ok: true, data: { value: normalizeHere(targets[0].here), client: consoleClientSummary(targets[0]) } };
+    if (c.action === 'screenshot') {
+      const selector = str(input.selector, 300);
+      const address = str(input.address, 300);
+      if (selector && address) return fail(CONTROL_WIRE.VALIDATION, 'a screenshot takes input.selector (CSS) or input.address (console-control@1), not both');
+      return send({ op: 'screenshot', selector, address, label: address || selector || 'the whole console' });
+    }
     return send(c.action === 'refresh' ? { op: 'refresh', hard: input.hard === true } : { op: c.action });
   }
   const kind = CONSOLE_KINDS[c.target];
@@ -452,6 +477,26 @@ export function runConsoleCommand(c, ctx = {}) {
   }
   const focus = kind === 'screen' ? str(input.focus, 200) || r.focus || '' : '';
   return send({ op: 'open', kind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400), focus }, { item, ...(focus ? { focus } : {}) });
+}
+
+/**
+ * The screen state a screenshot answer carries, from the console-control@1 live snapshot (`state`) and the console's
+ * `here`: screen id and label, open tab of each tab row, open dialog, selection (the focused row or target), scroll of
+ * the main pane, the settings tab when Settings shows, and what was captured.
+ */
+export function consoleShotState(state, here, extra = {}) {
+  const s = isObj(state) ? state : {};
+  const h = normalizeHere(here);
+  const out = { screen: str(s.screen, 160) || h.screen || '', screenLabel: str(s.screenLabel, 160) || h.screenLabel || '' };
+  if (isObj(s.tabs)) { const tabs = Object.fromEntries(Object.entries(s.tabs).filter(([k, v]) => typeof v === 'string' && k).slice(0, 40).map(([k, v]) => [k.slice(0, 200), v.slice(0, 160)])); if (Object.keys(tabs).length) out.tabs = tabs; }
+  const dialog = str(s.dialog, 160) || h.dialog;
+  if (dialog) out.dialog = dialog;
+  if (h.settings) out.settings = h.settings;
+  const selection = str(s.focusedRow, 300) || str(s.focused, 300);
+  if (selection) out.selection = selection;
+  if (isObj(s.scroll)) out.scroll = Object.fromEntries(Object.entries(s.scroll).filter(([, v]) => typeof v === 'number' || typeof v === 'string' || typeof v === 'boolean'));
+  for (const k of ['capture', 'width', 'height', 'scale']) if (extra[k] !== undefined && extra[k] !== '') out[k] = extra[k];
+  return out;
 }
 
 /** The confirm token a destructive console action needs (what the CLI prints, the check uses). */

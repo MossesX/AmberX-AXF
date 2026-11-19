@@ -36,7 +36,8 @@
       "refresh": "navigate",
       "back": "navigate",
       "home": "navigate",
-      "close": "navigate"
+      "close": "navigate",
+      "screenshot": "read"
     },
     "plugins.commands": {
       "run": "write"
@@ -2492,15 +2493,17 @@
         "back": {},
         "home": {},
         "close": {},
-        "refresh": {}
+        "refresh": {},
+        "screenshot": {}
       },
       "actEffect": {
         "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
-        "close": "navigate"
+        "close": "navigate",
+        "screenshot": "read"
       },
-      "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+      "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog), refresh (reload the page). act screenshot captures what the console shows as a PNG (the whole page, or the element input.address or input.selector names; at most 1600 px wide) and answers with the image and the screen state (screen, tabs, dialog, selection, scroll); read-only. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
     "console.clients": {
       "domain": "console",
@@ -4896,7 +4899,7 @@
         "paths": "host"
       },
       "console.nav": {
-        "description": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "description": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog), refresh (reload the page). act screenshot captures what the console shows as a PNG (the whole page, or the element input.address or input.selector names; at most 1600 px wide) and answers with the image and the screen state (screen, tabs, dialog, selection, scroll); read-only. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
         "ops": [
           "get",
           "act"
@@ -4905,7 +4908,8 @@
           "back": {},
           "home": {},
           "close": {},
-          "refresh": {}
+          "refresh": {},
+          "screenshot": {}
         },
         "paths": [
           "here"

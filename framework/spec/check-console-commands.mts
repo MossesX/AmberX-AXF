@@ -9,7 +9,8 @@ import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
   CONSOLE_CLIENT_STALE_MS, CONSOLE_LATE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleFieldValue, consoleMessage, consoleMessageErrors,
-  consoleMessageLate, consolePickClients, consoleResolve, consoleSearch, consoleSplitFocus, normalizeConsoleCatalog, runConsoleCommand,
+  consoleMessageLate, consolePickClients, consoleResolve, consoleSearch, consoleShotState, consoleSplitFocus, normalizeConsoleCatalog, runConsoleCommand,
+  CONSOLE_SHOT_MAX_WIDTH,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -160,7 +161,7 @@ ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action',
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
-eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
+eq(CONSOLE_TOOLS.length, 10, 'ten MCP shortcut tools');
 
 /* ---- focus on a screen (console-commands-reliable, Nov 11 2026): a tab or an item after the screen's name ---- */
 {
@@ -209,6 +210,33 @@ eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
   ok(consoleFieldValue({ type: 'action' }, 'x').error, 'an action row has no value');
   const s1 = runConsoleCommand({ op: 'act', target: 'console.actions', path: 'settings.set', action: 'run', input: { args: ['axf.help.mode', 'on'] } }, { ...ctx, clients: [{ ...clients[0], catalog: consoleCatalogFrom(entries, [...actions, { id: 'settings.set', meta: { label: 'Change one setting', params: true, effect: 'write' } }]) }] });
   ok(s1.ok && s1.deliver!.message.spec === 'settings.set:axf.help.mode:on', 'settings.set runs through console.actions');
+}
+
+/* ---- screenshots (console.nav act screenshot) ---- */
+{
+  ok(CONSOLE_TOOLS.includes('console_screenshot'), 'console_screenshot is a console MCP tool');
+  ok(CONSOLE_SHOT_MAX_WIDTH <= 1600, 'screenshots stay small');
+  const shot = (input?: Record<string, unknown>) => runConsoleCommand({ op: 'act', target: 'console.nav', path: 'here', action: 'screenshot', ...(input ? { input } : {}) }, ctx);
+  const w = shot();
+  ok(w.ok && w.deliver!.message.op === 'screenshot' && !w.deliver!.message.selector && !w.deliver!.message.address, 'a whole-page screenshot');
+  eq(consoleMessageErrors(w.ok ? w.deliver!.message : null), [], 'the screenshot message is valid');
+  const a = shot({ address: 'view:settings/panel:appearance' });
+  ok(a.ok && a.deliver!.message.address === 'view:settings/panel:appearance', 'one panel by console-control address');
+  const sel = shot({ selector: '.fx-dialog', to: 'all' });
+  ok(sel.ok && sel.deliver!.message.selector === '.fx-dialog' && sel.deliver!.to.length === 2, 'by CSS selector, to every open console');
+  const both = shot({ selector: '#x', address: 'view:home' });
+  ok(!both.ok && both.code === 'validation', 'a selector and an address together are refused');
+  ok(consoleMessageErrors({ $axf: 'console-command@1', id: 'x', op: 'screenshot', selector: 'a', address: 'b', by: '', at: '' }).length === 1, 'the console refuses both too');
+  ok(gated({ op: 'act', target: 'console.nav', path: 'here', action: 'screenshot' }, ['control.console.read']).ok, 'a screenshot is a read');
+  ok(!gated({ op: 'act', target: 'console.nav', path: 'here', action: 'screenshot' }, ['control.console.navigate']).ok, 'navigate alone does not show what is on screen');
+  eq(consoleShotState(
+    { screen: 'build-orchestrator', screenLabel: 'Build orchestrator', tabs: { 'view:build-orchestrator/tab:bo.tabs': 'pending', bad: 3 }, dialog: 'asset-json', focused: 'grid:queue', focusedRow: 'grid:queue/row:b1', scroll: { top: 40, fraction: 0.5, nested: {} } },
+    { screen: 'ignored', settings: 'appearance' }, { capture: 'page', width: 1600, height: 900, scale: 1 }),
+  { screen: 'build-orchestrator', screenLabel: 'Build orchestrator', tabs: { 'view:build-orchestrator/tab:bo.tabs': 'pending' }, dialog: 'asset-json', settings: 'appearance', selection: 'grid:queue/row:b1', scroll: { top: 40, fraction: 0.5 }, capture: 'page', width: 1600, height: 900, scale: 1 },
+  'the screen state: screen, tabs, dialog, settings tab, selection (the focused row first), scroll, what was captured');
+  eq(consoleShotState(null, { screen: 'home', screenLabel: 'Home' }), { screen: 'home', screenLabel: 'Home' }, 'without a live snapshot: where the console is');
+  eq(normalizeConsoleCatalog({ items: [], here: { screen: 'builds', tabs: { 'view:builds/tab:b.tabs': 'pending', x: 1 }, selection: 'grid:queue/row:b1', scroll: 3 } }).here,
+    { screen: 'builds', tabs: { 'view:builds/tab:b.tabs': 'pending' }, selection: 'grid:queue/row:b1' }, 'where a console is carries its open tabs and selection too');
 }
 
 /* ---- liveness + late commands ---- */
