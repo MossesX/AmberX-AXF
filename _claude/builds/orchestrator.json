@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T01:05:31.350Z",
+ "updatedAt": "2026-11-19T01:06:33.152Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194876,7 +194876,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:05:20.824Z",
+   "updatedAt": "2026-11-19T01:06:18.146Z",
    "builtAt": "",
    "notes": [
     {
@@ -195073,6 +195073,25 @@
      "note": "",
      "uid": "st-mwm8h2vj0a7ucv",
      "createdAt": "2026-11-18T14:45:31.829Z"
+    },
+    {
+     "id": "s6",
+     "text": "s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmundu001dg92",
+     "createdAt": "2026-11-19T01:06:18.147Z"
     }
    ]
   },
