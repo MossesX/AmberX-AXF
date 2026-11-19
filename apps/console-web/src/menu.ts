@@ -1,7 +1,7 @@
 /*
  * The console's own application-menu contributions (pure data, no React, no CSS), shared by the console menu library
  * (src/menuLibrary.tsx) and the reachability check (scripts/menu-reach.mts). The static menus live in the app-menu
- * asset `console` (src/assets/app-menu/console.json); plugins add their own entries from `plugins/<folder>/web/menu.ts`.
+ * asset `default-console-web-appmenu` (src/assets/app-menu/default-console-web-appmenu.json, app-menus@1); plugins add their own entries from `plugins/<folder>/web/menu.ts`.
  *
  * Live lists the console registers (filled when their submenu opens, capped with "More…" opening the full view):
  *   console.pending       open pending builds            → Pending builds (row flashed)

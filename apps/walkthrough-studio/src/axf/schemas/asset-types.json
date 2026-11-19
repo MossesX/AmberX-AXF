@@ -16,7 +16,7 @@
       "description": "string",
       "author": "string",
       "tags": "string[]",
-      "roll": "boolean — whether a randomize roll may pick this asset. Default: the type's roll.asset (true unless the type says otherwise). Runtime overrides (settings) win over this."
+      "roll": "boolean \u2014 whether a randomize roll may pick this asset. Default: the type's roll.asset (true unless the type says otherwise). Runtime overrides (settings) win over this."
     }
   },
   "types": {
@@ -94,7 +94,10 @@
         ]
       },
       "optional_fields": {
-        "wrapGroups": "boolean, default false — every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)"
+        "scrollbar": "'thin' \u2014 thin themed scrollbars (--fx-scrollbar-width, --fx-scrollbar-color); unset = the browser's own",
+        "wrapGroups": "boolean, default false \u2014 every section / group (Container) is collapsible with a toggle in its top-right corner (build option --wrap-groups; compiles to --fx-wrap-groups 1|0)",
+        "grid": "object, optional \u2014 component-tokens@1 grid family (core/engines/component-tokens.mjs): { headerBg, headerText, hoverBg, selectedBg, lineColor, radius, opacity, \u2026 } \u2192 --fx-grid-*; a colour-theme token name, a CSS colour / length, or a number. Left out = today's look (the :root defaults in axf.css point at the general tokens)",
+        "tabs": "object, optional \u2014 component-tokens@1 tab-group family: { barBg, barBorder, text, hoverText, activeText, indicator, indicatorSize, pillsActiveBg, radiusPills, opacity, \u2026 } \u2192 --fx-tab-*; same values as grid. Left out = today's look"
       }
     },
     "layout": {
@@ -164,13 +167,13 @@
       },
       "optional_fields": {
         "statusHeight": "status bar height, px (default 26)",
-        "regionGap": "gap between the grid's regions, × --fx-space (default 0)",
-        "mainPadTop": "main area padding top on desktop, × --fx-space (default 2.4)",
-        "mainPadX": "main area padding left/right on desktop, × --fx-space (default 4)",
-        "mainPadBottom": "main area padding bottom on desktop, × --fx-space (default 6)",
-        "phoneMainPadTop": "main area padding top on a phone, × --fx-space (default 1.6)",
-        "phoneMainPadX": "main area padding left/right on a phone, × --fx-space (default 1.6)",
-        "phoneMainPadBottom": "main area padding bottom on a phone, × --fx-space (default 4)",
+        "regionGap": "gap between the grid's regions, \u00d7 --fx-space (default 0)",
+        "mainPadTop": "main area padding top on desktop, \u00d7 --fx-space (default 2.4)",
+        "mainPadX": "main area padding left/right on desktop, \u00d7 --fx-space (default 4)",
+        "mainPadBottom": "main area padding bottom on desktop, \u00d7 --fx-space (default 6)",
+        "phoneMainPadTop": "main area padding top on a phone, \u00d7 --fx-space (default 1.6)",
+        "phoneMainPadX": "main area padding left/right on a phone, \u00d7 --fx-space (default 1.6)",
+        "phoneMainPadBottom": "main area padding bottom on a phone, \u00d7 --fx-space (default 4)",
         "phoneNavItemMin": "least width of a nav item in the phone's bottom strip, px (default 64)",
         "phoneEdge": "inset of dropdowns and toasts from the phone's edges, px (default 8)",
         "tinyMaxWidth": "viewport cut-off, px (default 480): at or under it the root carries data-fx-tiny",
@@ -178,7 +181,7 @@
         "phoneMaxWidth": "viewport cut-off, px (default 760): data-fx-narrow, the single-column phone grid",
         "mediumMaxWidth": "viewport cut-off, px (default 900): data-fx-medium",
         "largeMaxWidth": "viewport cut-off, px (default 1200): data-fx-large",
-        "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types.",
+        "slots": "region \u2192 list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types.",
         "repeat": "list of repeating slots (engine core/engines/repeat.ts): { id, dataSet, region? (a slot region, default main), style? (`repeat.styles`, default stacked), columns? (1-12, grid/cards; default grid 3, cards 2), max? (0 = all), fallback? { type?, id?, label? } }. The slot draws one item per entry of the data set the page declares under `dataSet`; when the page declares none or it is empty, the fallback slot draws instead."
       },
       "repeat": {
@@ -195,13 +198,24 @@
       "tokens": {
         "prefix": "layout",
         "rules": "core/engines/layout-rules.mjs",
-        "note": "Every field below compiles to --fx-layout-<field in kebab-case>: numbers as px or × --fx-space, enums as their word, switches as 1 / 0. The compiled grid (fixture layout.json → compiled) keeps px numbers for native ports; the web grid vars read the tokens."
+        "note": "Every field below compiles to --fx-layout-<field in kebab-case>: numbers as px or \u00d7 --fx-space, enums as their word, switches as 1 / 0. The compiled grid (fixture layout.json \u2192 compiled) keeps px numbers for native ports; the web grid vars read the tokens."
       }
     },
     "app-menu": {
       "label": "Application menu",
       "group": "Navigation",
       "icon": "menu",
+      "skinConfig": {
+        "limits": {
+          "depth": {
+            "label": "Menu levels the AI may build (1 = flat menus)",
+            "measure": "depth",
+            "min": 1,
+            "max": 4,
+            "default": 2
+          }
+        }
+      },
       "required": [
         "menus"
       ],
@@ -218,9 +232,9 @@
         ]
       },
       "optional_fields": {
-        "density": "compact | regular (default) | roomy — menubar height",
+        "density": "compact | regular (default) | roomy \u2014 menubar height",
         "surface": "flat (default) | raised | glass",
-        "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
+        "menus[].order": "number \u2014 placement of a menu created by a contribution (default 100; asset menus keep their order)",
         "items[].provider|badge|checked|order|before|after": "see menuItems"
       },
       "hideable": true
@@ -229,6 +243,17 @@
       "label": "Toolbar",
       "group": "Navigation",
       "icon": "sliders",
+      "skinConfig": {
+        "limits": {
+          "groups": {
+            "label": "Toolbar groups the AI may build",
+            "measure": "count:groups",
+            "min": 1,
+            "max": 8,
+            "default": 4
+          }
+        }
+      },
       "required": [
         "variant",
         "align",
@@ -259,17 +284,33 @@
       },
       "optional_fields": {
         "window": "id or kind of the window this toolbar is attached to (`main` by default); the window-settings icon renders only when the toolbar is inside a floating window",
-        "density": "compact | regular (default) | roomy — toolbar padding and button height",
+        "density": "compact | regular (default) | roomy \u2014 toolbar padding and button height",
         "surface": "flat (default) | raised | glass",
-        "divider": "boolean, default true — rule between item groups",
-        "search": "object — live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
-        "groups[].items[].badge": "string — name of a runtime counter (runtime.setBadge) shown as a small badge on the button, e.g. `alerts.unread`; hidden at 0",
-        "widgets": "[{type, id, at: start|end, order?}] — widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
-        "collapsible": "boolean, default false — a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
-        "groups[].provider": "string — live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
-        "groups[].max": "number 1–24, default 8 — cap on provider buttons",
-        "groups[].label": "string — group name for screen readers",
-        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)"
+        "divider": "boolean, default true \u2014 rule between item groups",
+        "search": "object \u2014 live search: { live: boolean (dropdown that updates on every keystroke), placeholder?: string, maxResults?: number (default 12), kinds?: string[] (limit to result kinds: view, action, setting, settings-tab, dialog, asset, window, text) }. Without it (or live:false) the search box is the classic submit-to-jump box.",
+        "groups[].items[].badge": "string \u2014 a runtime counter name (runtime.setBadge, e.g. `alerts.unread`), counter:<name>, or state:<key> (a number or short text from the page state); shown as a small badge on the button, hidden at 0",
+        "widgets": "[{type, id, at: start|end, order?}] \u2014 widget assets (clock, search bar, logo, action button, label, status, counter, progress, avatar, link, theme switch, spacer, divider) placed at the toolbar's start or end. Runtime widgets (rt.attachToToolbar) with the same type+id replace these.",
+        "collapsible": "boolean, default false \u2014 a chevron at the toolbar's end folds it to a thin handle (and back); the fold is remembered per device (setting axf.toolbar.collapsed)",
+        "groups[].provider": "string \u2014 live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
+        "groups[].max": "number 1\u201324, default 8 \u2014 cap on provider buttons",
+        "groups[].label": "string \u2014 group name for screen readers",
+        "groups[].items[].checked": "string \u2014 toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked) | state:<key> (the page state)",
+        "scope": "string \u2014 app (default: the frame toolbar) | view:<view id> | plugin:<plugin id>: the page this toolbar is made for; the page renders it through usePageToolbar(viewId) and the engine resolves its buttons against that page's functions and state",
+        "overflow": "auto (default) | never | always, or { when, keep?: number (items that always stay on the bar), label?: string (default More) } \u2014 what happens when the bar is too narrow: auto folds the lowest-priority items into a More menu, never folds nothing (the bar scrolls), always keeps only `keep` items on the bar",
+        "groups[].items[].action": "string \u2014 the button's function: a console action id (as before), action:<id>, command:<plugin>/<command> (plugin-commands@1: the same call as REST / MCP / CLI), control:<address> (a console-control@1 target pressed or opened) or handler:<id> (a handler the page registers with registerToolbarHandler)",
+        "groups[].items[].args": "object \u2014 arguments passed with the action ref (a command's input, an action's params)",
+        "groups[].items[].enabledWhen": "when \u2014 the button is enabled only while every term holds over the page state (key, !key, key=value, key!=value, key>n, key<n; up to 8 terms)",
+        "groups[].items[].visibleWhen": "when \u2014 the button is drawn only while every term holds (same grammar)",
+        "groups[].items[].destructive": "boolean \u2014 drawn in the danger tone; pressing it through the API (console-control press) needs confirm",
+        "groups[].items[].confirm": "true | string \u2014 ask before running: the default question, or the question itself (up to 200 characters)",
+        "groups[].items[].priority": "number 0\u20131000, default 100 \u2014 overflow order: lower goes into More first",
+        "groups[].items[].overflow": "auto (default) | never (always on the bar) | always (only in More)",
+        "groups[].items[].shortcut": "string \u2014 keyboard shortcut shown in the tip (reserved for the shortcut engine)",
+        "groups[].enabledWhen": "when \u2014 gates the whole group",
+        "groups[].visibleWhen": "when \u2014 shows or hides the whole group",
+        "groups[].priority": "number \u2014 default priority for the group's items",
+        "groups[].overflow": "auto | never | always \u2014 default for the group's items",
+        "slot": "string \u2014 the place on its page this toolbar fills when a page has several (`main` by default; a tab's toolbar names the tab: `auto-lander`). Its settings id is <scope id>.<slot> (`gate.auto-lander`), `<scope id>` alone for main; the page asks usePageToolbar(viewId, slot)"
       },
       "hideable": true,
       "widgets": {
@@ -278,12 +319,91 @@
           "start",
           "end"
         ]
+      },
+      "description": "page-toolbar@1 (rules core/engines/toolbar-rules.mjs): a toolbar asset can be bound to one page or plugin (data.scope: view:<id> | plugin:<id>; absent or app = the frame toolbar, the old shape) and each button to a real function of that page through an action ref (action:<id>, command:<plugin>/<command>, control:<address>, handler:<id>; a bare id is a console action as before), gated by the page's state (enabledWhen / visibleWhen), with a badge from a counter or the page state, a destructive flag, an optional confirm, a priority and an overflow rule. Old toolbar assets stay valid and draw the same; toolbar-migrate.mjs lifts them onto the new shape.",
+      "pageToolbar": {
+        "_doc": "page-toolbar@1 \u2014 every list is append-only. scope binds the asset to a page (view:<view id>) or a plugin (plugin:<plugin id>); the frame toolbar is app. An item's action is an action ref: <kind>:<id> with kind one of actionKinds, else a console action id (the old shape; nav:home, settings.open:x, swap:layout:next keep working). enabledWhen / visibleWhen are a when term or a list of terms that must all hold over the page state the page provides (dotted keys): key, !key, key=value, key!=value, key>n, key<n. badge is a counter name (old), counter:<name> or state:<key>. checked adds state:<key> to the app-menu bindings. priority (default 100) orders the overflow: lower goes into More first; overflow auto | never | always on the toolbar, a group or an item. destructive draws the danger tone and makes the API press need confirm; confirm asks first (true = the default question, or the question). Every toolbar and button is a console-control target (toolbar:<settings id>, toolbar:<settings id>/button:<item id>).",
+        "contract": "page-toolbar@1",
+        "scopeKinds": [
+          "app",
+          "view",
+          "plugin"
+        ],
+        "actionKinds": [
+          "action",
+          "command",
+          "control",
+          "handler"
+        ],
+        "badgeKinds": [
+          "counter",
+          "state"
+        ],
+        "checkedKinds": [
+          "setting",
+          "counter",
+          "slot",
+          "hidden",
+          "state"
+        ],
+        "overflow": [
+          "auto",
+          "never",
+          "always"
+        ],
+        "whenOperators": [
+          "!=",
+          ">=",
+          "<=",
+          "=",
+          ">",
+          "<"
+        ],
+        "limits": {
+          "whenTerms": 8,
+          "keyLength": 80,
+          "confirmLength": 200,
+          "groups": 24,
+          "items": 48,
+          "priority": [
+            0,
+            1000
+          ]
+        },
+        "defaults": {
+          "scope": "app",
+          "priority": 100,
+          "overflow": {
+            "when": "auto",
+            "keep": 0,
+            "label": "More"
+          },
+          "confirmText": "Are you sure?",
+          "slot": "main"
+        },
+        "controlTargets": {
+          "toolbar": "toolbar:<settings id>",
+          "button": "toolbar:<settings id>/button:<item id>",
+          "settingsId": "<scope id>[.<slot>] (main slot: <scope id> alone; the frame toolbar: app)"
+        },
+        "slotPattern": "^[a-z0-9][a-z0-9-]{0,47}$"
       }
     },
     "nav-menu": {
       "label": "Navigation menu",
       "group": "Navigation",
       "icon": "grid",
+      "skinConfig": {
+        "limits": {
+          "depth": {
+            "label": "Sub-menu levels the AI may build (1 = no sub menus)",
+            "measure": "depth",
+            "min": 1,
+            "max": 4,
+            "default": 2
+          }
+        }
+      },
       "required": [
         "style",
         "sections"
@@ -307,9 +427,11 @@
         ]
       },
       "optional_fields": {
-        "density": "compact | regular (default) | roomy — item padding",
-        "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
-        "showIcons": "boolean, default true"
+        "density": "compact | regular (default) | roomy \u2014 item padding",
+        "indicator": "auto (default, per style) | bar | fill | none \u2014 active-item marker",
+        "showIcons": "boolean, default true",
+        "navStyle": "boolean, default false \u2014 opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
+        "items": "per item: items?: [NavItem] \u2014 children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
       },
       "hideable": true
     },
@@ -317,6 +439,18 @@
       "label": "Context menu",
       "group": "Navigation",
       "icon": "chevron-right",
+      "skinConfig": {
+        "limits": {
+          "depth": {
+            "label": "Context-menu levels the AI may build (1 = no sub menus)",
+            "measure": "depth",
+            "root": "targets",
+            "min": 1,
+            "max": 4,
+            "default": 2
+          }
+        }
+      },
       "required": [
         "variant",
         "showIcons",
@@ -341,14 +475,14 @@
       },
       "hideable": true,
       "optional_fields": {
-        "contributions": "boolean — false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+        "contributions": "boolean \u2014 false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
       }
     },
     "tab-group": {
       "label": "Tab group",
       "group": "Navigation",
       "icon": "layers",
-      "description": "How every tab row looks: page tabs (.fx-tabs) and the tab bars of floating-window tab groups. Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen.",
+      "description": "tab-group@1: how every tab row looks and behaves \u2014 page tabs, section switchers, settings tab bars and the tab bars of window tab groups (every tab row is a tab-group asset, Brett Nov 4 2026; the framework TabGroup component draws them and gives each one the chrome context menu: Settings / Change tab style / Move). Engine tabGroupStyle in core/engines/components.ts; Hidden (hideable) leaves only the active tab of each row on screen. Its settings interface is the settings asset chrome-tab-group (chrome-settings@1).",
       "required": [
         "style",
         "align"
@@ -359,7 +493,8 @@
           "pills",
           "boxed",
           "segmented",
-          "plain"
+          "plain",
+          "chips"
         ],
         "align": [
           "start",
@@ -369,7 +504,9 @@
         ],
         "position": [
           "top",
-          "bottom"
+          "bottom",
+          "left",
+          "right"
         ],
         "density": [
           "compact",
@@ -378,15 +515,29 @@
         ],
         "overflow": [
           "scroll",
-          "wrap"
+          "wrap",
+          "more",
+          "dropdown"
+        ],
+        "display": [
+          "both",
+          "text",
+          "icons"
         ]
       },
       "optional_fields": {
-        "position": "top (default) | bottom — where a window tab group's bar sits",
-        "density": "compact | regular (default) | roomy — tab padding",
-        "overflow": "scroll (default) | wrap — what a row does when its tabs don't fit",
-        "showIcons": "boolean, default true",
-        "divider": "boolean, default true — the rule under the row"
+        "position": "top (default) | bottom | left | right \u2014 where the row sits against its panel (left / right = a vertical rail)",
+        "density": "compact | regular (default) | roomy \u2014 tab padding (size)",
+        "overflow": "scroll (default) | wrap | more (tabs that don't fit go under a More menu) | dropdown (one button opens the list)",
+        "display": "both (default: icons + text) | text | icons (text becomes the tooltip)",
+        "showIcons": "boolean, default true \u2014 older form of display: false = text only",
+        "divider": "boolean, default true \u2014 the rule under the row",
+        "sticky": "boolean, default false \u2014 the row stays at the top of its scrolling panel",
+        "collapsible": "boolean, default false \u2014 a fold button leaves only the active tab (per device)",
+        "closable": "boolean, default true \u2014 tabs get a close button where the host allows closing (false hides it)",
+        "reorderable": "boolean, default true \u2014 tabs can be dragged into another order where the host allows it (false turns it off)",
+        "badges": "boolean, default true \u2014 count badges on tabs",
+        "rememberLast": "boolean, default false \u2014 the row reopens on the tab it was on last time (per device)"
       },
       "hideable": true,
       "optional": true
@@ -611,7 +762,7 @@
       "label": "Banner",
       "group": "Chrome",
       "icon": "menu",
-      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, …) on its left, center or right; plugins attach more at run time.",
+      "description": "Thin permanent bar across the top of the screen (above the layout). Shows the app logo (logo.text \"{app}\" = the app's own name) and holds attached assets (badges and widgets: clock, search bar, logo, buttons, counters, \u2026) on its left, center or right; plugins attach more at run time.",
       "required": [
         "height",
         "surface",
@@ -642,8 +793,8 @@
         ]
       },
       "optional_fields": {
-        "divider": "boolean — line under the banner (default true)",
-        "height": "number — px, 16 to 48 (thin = 24)"
+        "divider": "boolean \u2014 line under the banner (default true)",
+        "height": "number \u2014 px, 16 to 48 (thin = 24)"
       }
     },
     "clock": {
@@ -674,8 +825,8 @@
         "asset": false
       },
       "optional_fields": {
-        "timezone": "string — IANA zone (e.g. America/New_York); default the device's",
-        "mono": "boolean — monospace digits (default true)"
+        "timezone": "string \u2014 IANA zone (e.g. America/New_York); default the device's",
+        "mono": "boolean \u2014 monospace digits (default true)"
       },
       "widget": true
     },
@@ -704,8 +855,8 @@
         "asset": false
       },
       "optional_fields": {
-        "kinds": "string[] — only these result kinds (default: all)",
-        "shortcut": "boolean — Ctrl/Cmd+K and / focus it (default true)"
+        "kinds": "string[] \u2014 only these result kinds (default: all)",
+        "shortcut": "boolean \u2014 Ctrl/Cmd+K and / focus it (default true)"
       }
     },
     "action-button": {
@@ -773,10 +924,10 @@
         "asset": false
       },
       "optional_fields": {
-        "image": "string — image URL or app path (https:, data:, or a path the app serves) when kind is image",
-        "icon": "string — icon name when kind is icon (falls back to the text when the icon is unknown)",
-        "link": "string — action spec run on tap (e.g. app.settings, view.open:home)",
-        "bold": "boolean — bold wordmark (default true)",
+        "image": "string \u2014 image URL or app path (https:, data:, or a path the app serves) when kind is image",
+        "icon": "string \u2014 icon name when kind is icon (falls back to the text when the icon is unknown)",
+        "link": "string \u2014 action spec run on tap (e.g. app.settings, view.open:home)",
+        "bold": "boolean \u2014 bold wordmark (default true)",
         "tooltip": "string"
       }
     },
@@ -808,7 +959,7 @@
       },
       "optional_fields": {
         "bold": "boolean (default false)",
-        "mono": "boolean — monospace (default false)",
+        "mono": "boolean \u2014 monospace (default false)",
         "tooltip": "string"
       }
     },
@@ -850,8 +1001,8 @@
         "asset": false
       },
       "optional_fields": {
-        "link": "string — action spec run on tap",
-        "dot": "boolean — show the dot (default true)"
+        "link": "string \u2014 action spec run on tap",
+        "dot": "boolean \u2014 show the dot (default true)"
       }
     },
     "counter": {
@@ -882,10 +1033,10 @@
         "asset": false
       },
       "optional_fields": {
-        "icon": "string — icon before the number",
-        "label": "string — text after the number",
-        "link": "string — action spec run on tap",
-        "max": "number — cap shown as max+ (default 99)"
+        "icon": "string \u2014 icon before the number",
+        "label": "string \u2014 text after the number",
+        "link": "string \u2014 action spec run on tap",
+        "max": "number \u2014 cap shown as max+ (default 99)"
       }
     },
     "progress": {
@@ -921,9 +1072,9 @@
         "asset": false
       },
       "optional_fields": {
-        "label": "string — text before the bar",
-        "tone": "neutral | success | … (default accent)",
-        "showValue": "boolean — percent after the bar (default false)"
+        "label": "string \u2014 text before the bar",
+        "tone": "neutral | success | \u2026 (default accent)",
+        "showValue": "boolean \u2014 percent after the bar (default false)"
       }
     },
     "avatar": {
@@ -960,9 +1111,9 @@
         "asset": false
       },
       "optional_fields": {
-        "text": "string — initials or a name (initials are derived) when source is text, and the fallback when no account is bound",
-        "image": "string — image URL or app path when source is image",
-        "link": "string — action spec run on tap (e.g. settings.open:account)",
+        "text": "string \u2014 initials or a name (initials are derived) when source is text, and the fallback when no account is bound",
+        "image": "string \u2014 image URL or app path when source is image",
+        "link": "string \u2014 action spec run on tap (e.g. settings.open:account)",
         "tooltip": "string"
       }
     },
@@ -984,9 +1135,9 @@
         "asset": false
       },
       "optional_fields": {
-        "icon": "string — icon before the label",
+        "icon": "string \u2014 icon before the label",
         "tooltip": "string",
-        "external": "boolean — open in a new tab / outside the app (default true)"
+        "external": "boolean \u2014 open in a new tab / outside the app (default true)"
       }
     },
     "theme-switch": {
@@ -1059,7 +1210,7 @@
         "asset": false
       },
       "optional_fields": {
-        "inset": "boolean — shorter than the host (default true)"
+        "inset": "boolean \u2014 shorter than the host (default true)"
       }
     },
     "badge": {
@@ -1095,27 +1246,30 @@
         "asset": false
       },
       "optional_fields": {
-        "tooltip": "string — shown on hover/long-press",
-        "link": "string — action spec run on tap (e.g. settings.open:x)"
+        "tooltip": "string \u2014 shown on hover/long-press",
+        "link": "string \u2014 action spec run on tap (e.g. settings.open:x)"
       }
     },
     "settings": {
       "label": "Settings interface",
       "group": "System",
       "icon": "settings",
-      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts.",
+      "description": "The settings page as an asset, so several apps share one settings interface with the same options: layout (tabs on top, at the side, or a list), header, search, descriptions, which tabs show in which order and with which labels, what is left out (tab, group, panel or setting ids), and extra groups of data-only options (toggle, text, number, slider, choice, multi_choice, color, link, section) the app gets while the asset is active, and the page's own toolbar (a toolbar asset by id). Engine core/engines/settingsui.ts. builtFor (required, settings-iface@1, core/engines/settings-iface-rules.mjs): who the interface is built for: app (the Settings page), asset:<type>, plugin:<name> or chrome:<type>; every asset type and plugin has a locked default-<name> and its picker lists only interfaces built for it.",
       "optional_fields": {
+        "for": "chrome-settings@1: the chrome type this settings asset is the settings interface of (tab-group | toolbar | banner | nav-menu | app-menu | context-menu); the shared default is chrome-<type>, an app's custom copy chrome-<type>-<app> (core/engines/chrome-settings-rules.mjs)",
+        "extends": "inherit@1: id of the settings asset this one extends; fields it does not set come from that one (an app's custom chrome copy extends the shared default until edited)",
         "toolbar": "id of a toolbar asset drawn at the top of the settings page (its items + the settings search when it has showSearch)",
         "levels": "true = the level toolbar (Simple / Basic / Developer / Administrator) is on and every tab, group, panel and setting shows from its level up; Administrator shows all",
         "defaultLevel": "level of anything levelOf doesn't name (simple | basic | developer | administrator; older pro = administrator, advanced = developer)",
-        "levelOf": "tab, group, panel or setting id → its level",
+        "levelOf": "tab, group, panel or setting id \u2192 its level",
         "visible": "per-level visible sets over the rank rule: { <level>: { show: [ids], hide: [ids] } } (never administrator)"
       },
       "required": [
         "layout",
         "header",
         "search",
-        "descriptions"
+        "descriptions",
+        "builtFor"
       ],
       "enums": {
         "layout": [
@@ -1145,7 +1299,7 @@
         "tree"
       ],
       "optional_fields": {
-        "tree": "{ kind: leaf, pane: 1..n } | { kind: split, vertical: boolean, children: [tree…], weights: [number…] } — every pane number 1..n once; n ≤ 12",
+        "tree": "{ kind: leaf, pane: 1..n } | { kind: split, vertical: boolean, children: [tree\u2026], weights: [number\u2026] } \u2014 every pane number 1..n once; n \u2264 12",
         "hint": "one line for pickers (`Editor with a terminal below`)",
         "main": "the pane a new tab opens in when none is picked (1-based; default 1)"
       },
@@ -1159,21 +1313,41 @@
       "label": "xLayout",
       "group": "System",
       "icon": "layout",
-      "description": "Molly as one app (xlayout@1, engine core/engines/xlayout.ts): the host-side layout that frames several apps (AmberX, axHub web, the Dev Console) and makes them look like one — which apps, how each kind of chrome is handled (host = only the host's, merged = one bar merged from every app's with the guests hiding theirs and sending them as data, guest = each app keeps its own), the IDE switch (pane limit, dock-layout@1 preset in force, presets offered, an optional inline preset tree) and up to three plugin toolbar slots (visible, location, items opening in the main area, a floating window or a pane). Host-only: standalone apps never load one (not shared). The chrome merge is chrome@1 (core/engines/chrome.ts), the pane tree dock@1.",
+      "description": "Molly as one app (xlayout@1, engine core/engines/xlayout.ts): the host-side layout that frames several apps (AmberX, axHub web, the Dev Console) and makes them look like one \u2014 which apps, how each kind of chrome is handled (host = only the host's, merged = one bar merged from every app's with the guests hiding theirs and sending them as data, guest = each app keeps its own), the IDE switch (pane limit, dock-layout@1 preset in force, presets offered, an optional inline preset tree) and up to three plugin toolbar slots (visible, location, items opening in the main area, a floating window or a pane). Host-only: standalone apps never load one (not shared). The chrome merge is chrome@1 (core/engines/chrome.ts), the pane tree dock@1.",
       "required": [
         "apps"
       ],
       "optional_fields": {
-        "apps": "[{ id: [a-z0-9-], label, url: https…, icon? }] — the apps the host frames, ≤ 12; id is the namespace prefix of every item the app sends (`<app>:<id>`)",
-        "merge": "{ banner | app-menu | nav-menu | context-menu | toolbar | widgets: host | merged | guest } — defaults: banner host, the rest merged",
+        "apps": "[{ id: [a-z0-9-], label, url: https\u2026, icon? }] \u2014 the apps the host frames, \u2264 12; id is the namespace prefix of every item the app sends (`<app>:<id>`)",
+        "merge": "{ banner | app-menu | nav-menu | context-menu | toolbar | widgets: host | merged | guest } \u2014 defaults: banner host, the rest merged",
         "ide": "{ on: boolean, paneLimit 1..64 (default 6), preset: dock-layout id (default ide), presets: [dock-layout ids] (default the ten starters), tree?: preset tree }",
-        "toolbars": "[{ slot 1..3, visible, location: top | bottom | left | right, label?, items: [{ id, label, icon?, app?, action, open: main | floating | pane }] }] — missing slots get defaults (1 top visible, 2 bottom hidden, 3 right hidden)"
+        "toolbars": "[{ slot 1..3, visible, location: top | bottom | left | right, label?, items: [{ id, label, icon?, app?, action, open: main | floating | pane }] }] \u2014 missing slots get defaults (1 top visible, 2 bottom hidden, 3 right hidden)"
       },
       "roll": {
         "slot": false,
         "asset": false
       },
       "shared": false,
+      "optional": true
+    },
+    "nav-style": {
+      "label": "Navigation style",
+      "group": "Navigation",
+      "icon": "menu",
+      "description": "How a navigation menu with sub menus looks and behaves (nav-style@1, engine core/engines/navstyle.ts, fields in navstyle-rules.mjs): colours (colour-theme token ids, never literal colours), fonts (style-theme family, typography scale step, weight), icons, density and indent, width (size, min, max, resizable, collapsible to icons), the sub-menu animation (slide, accordion, fade, push, none; duration, easing, stagger, chevron, reduced motion) and behaviour (one or many sub menus open, open on tap or hover, auto-collapse, remember, follow the active page, swipe to open on a phone), plus pinned, hidden and reordered top-level items and per-item accents. Every field has a default and theme leaves it to the stylesheet, so the standard preset draws a nav as it was. Only a nav-menu asset with navStyle: true reads it. Settings: the Navigation settings interface (framework/react/components/NavStyleSettings.tsx); control@1 target tokens.nav.",
+      "required": [],
+      "optional_fields": {
+        "colors": "{ background, text, hover, active, activeText, submenu, accent: theme | colour token }",
+        "font": "{ family: theme | body | display | mono, size: theme | 2xs | xs | sm | md | lg, weight: theme | 400..800 }",
+        "icons": "{ show: boolean, size: sm | md | lg }",
+        "layout": "{ density: theme | compact | regular | roomy, indent: 0..6 (\u00d7 space) }",
+        "width": "{ size: 0 (the layout asset) | 0..480 px, min 48..320, max 160..640, resizable, collapsible }",
+        "animation": "{ kind: slide | accordion | fade | push | none, durationMs 0..1200 (0 = the theme motion), easing: theme | standard | emphasized | linear | spring | bounce, staggerMs 0..150, chevron: rotate | flip | none, reduced: system | always | never }",
+        "behavior": "{ single, openOn: tap | hover, autoCollapse, remember, followActive, swipe }",
+        "items": "{ order, hidden, pinned: comma-separated top-level item ids }",
+        "accents": "{ <item id>: colour token }"
+      },
+      "hideable": false,
       "optional": true
     },
     "behavior-theme": {
@@ -1188,10 +1362,10 @@
         "feedback"
       ],
       "optional_fields": {
-        "motion": "{ speed: theme | instant | fast | normal | slow | relaxed, easing: standard | emphasized | linear | spring | bounce, reduced: system | always | never, entrance: theme | none | fade | rise | scale }",
-        "interaction": "{ hover: theme | none | tint | lift | glow | underline, press: theme | none | shrink | darken | ripple, focusRing: auto | always | never, cursor: auto | pointer, longPressMs 250–1500, doubleTapMs 150–700, dragThreshold 0–24 }",
-        "windows": "{ dialogOpen: asset | none | fade | scale | slide-up | slide-down, backdrop: asset | dim | blur | none, popupOpen: asset | none | fade | scale | slide, drawerOpen: asset | slide | fade | none, snap, snapGrid 0–48, stack: cascade | center | remember, minimize: cursor | dock | none, closeOnBackdrop, closeOnEscape }",
-        "feedback": "{ toastPosition: asset | top | bottom | top-right | bottom-right | top-left | bottom-left, toastMs 0–20000 (0 = the pop-up asset's time), sound: off | subtle | full, vibration: off | light | strong, confirmDelete: always | risky | never, busyCursor }"
+        "motion": "{ speed: theme | instant | fast | normal | slow | relaxed, easing: standard | emphasized | linear | spring | bounce, reduced: system | always | never, entrance: theme | none | fade | rise | scale, swatches: wave | ripple | pop | off, skinSwitch: ripple | sweep | fade | off, picker: fan | pop | off, animSpeed: 25..400 (percent), animIntensity: 0..100 }",
+        "interaction": "{ hover: theme | none | tint | lift | glow | underline, press: theme | none | shrink | darken | ripple, focusRing: auto | always | never, cursor: auto | pointer, longPressMs 250\u20131500, doubleTapMs 150\u2013700, dragThreshold 0\u201324 }",
+        "windows": "{ dialogOpen: asset | none | fade | scale | slide-up | slide-down, backdrop: asset | dim | blur | none, popupOpen: asset | none | fade | scale | slide, drawerOpen: asset | slide | fade | none, snap, snapGrid 0\u201348, stack: cascade | center | remember, minimize: cursor | dock | none, closeOnBackdrop, closeOnEscape }",
+        "feedback": "{ toastPosition: asset | top | bottom | top-right | bottom-right | top-left | bottom-left, toastMs 0\u201320000 (0 = the pop-up asset's time), sound: off | subtle | full, vibration: off | light | strong, confirmDelete: always | risky | never, busyCursor }"
       },
       "optional": true
     },
@@ -1199,7 +1373,7 @@
       "label": "AmberX Design Package",
       "group": "System",
       "icon": "palette",
-      "description": "An AmberX Design Package (design-package@1, engine core/engines/designpackage.ts) wraps the four themes of a whole look and feel: a style theme, a colour theme, a layout and a behaviour theme. Picking one in Settings → Appearance swaps all four at once. Optional extras carry everything else a saved look holds (the other slots, spacing, chrome shown / hidden, other appearance settings); it replaced the appearance package on Oct 27 2026.",
+      "description": "An AmberX Design Package (design-package@1, engine core/engines/designpackage.ts) wraps the four themes of a whole look and feel: a style theme, a colour theme, a layout and a behaviour theme. Picking one in Settings \u2192 Appearance swaps all four at once. Optional extras carry everything else a saved look holds (the other slots, spacing, chrome shown / hidden, other appearance settings); it replaced the appearance package on Oct 27 2026.",
       "required": [
         "style-theme",
         "color-theme",
@@ -1207,19 +1381,51 @@
         "behavior-theme"
       ],
       "optional_fields": {
-        "extras": "{ slots: asset type → asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }"
+        "extras": "{ slots: asset type \u2192 asset id (not the four themes, never the policy), spacing: tight | compact | regular, hidden: asset type \u2192 true / false, settings: appearance settings key \u2192 value }"
       },
       "roll": {
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A design package is a whole look that reads as a skin (skinFromDesignPackage)."
+      }
+    },
+    "skin": {
+      "label": "Skin",
+      "group": "System",
+      "icon": "palette",
+      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings \u2192 Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin \u2192 ui \u2192 app \u2192 global \u2192 default, the child overrides the parent). The `default` level is the hub default skin (`defaultSkin` on the shared appearance@1 document, Nov 14 2026): every app stands on it without opting in, and an app's own picks are the edits drawn over it. How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "required": [
+        "layoutTheme",
+        "colorTheme",
+        "styleTheme",
+        "assets"
+      ],
+      "optional_fields": {
+        "preview": "{ caption, image }: what the picker shows",
+        "extras": "{ spacing: tight | compact | regular, hidden: asset type \u2192 true / false, settings: appearance settings key \u2192 value }",
+        "iconPack": "icon-pack asset id \u2014 the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
+        "parts": "{ <asset type>: { <customize token>: value } } \u2014 style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin",
+        "chrome": "{ <chrome kind>: { interface?: settings asset id, instances?: { <instance>: { <field>: value } } } } \u2014 chrome settings per chrome-settings@1 kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu): the settings interface its dialog renders through (axf.chrome.settings.<kind>) and field overrides per instance (axf.chrome.<kind>.<instance>, the kind's CHROME_FIELDS only); lands in the composed look's settings after extras.settings"
+      },
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A skin is the whole look; it never contains another skin."
+      }
     },
     "style-package": {
       "label": "Style package",
       "group": "Themes",
       "icon": "package",
-      "description": "A Style Package (style-package@1, engine core/engines/stylepackage.ts) is one matched set of control assets — buttons, containers, sliders, dialogs, pop-ups, tab groups, gauges and meters — applied in one go. The style theme sets the shared tokens; the style package decides how each kind of control is built on them. Picking one swaps every control it names.",
+      "description": "A Style Package (style-package@1, engine core/engines/stylepackage.ts) is one matched set of control assets \u2014 buttons, containers, sliders, dialogs, pop-ups, tab groups, gauges and meters \u2014 applied in one go. The style theme sets the shared tokens; the style package decides how each kind of control is built on them. Picking one swaps every control it names.",
       "required": [
         "slots"
       ],
@@ -1234,28 +1440,32 @@
         "meter"
       ],
       "optional_fields": {
-        "tone": "one lowercase word describing the package's character (crisp, soft, glass, …) for pickers and the interface roller"
+        "tone": "one lowercase word describing the package's character (crisp, soft, glass, \u2026) for pickers and the interface roller"
       },
       "roll": {
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "A style package is one matched set of styles; a skin picks its themes and assets itself."
+      }
     },
     "interface": {
       "label": "Interface",
       "group": "System",
       "icon": "layout",
-      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a design package (style, colour, layout, behaviour), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance → Assets (Settings → Appearance → Interface applies one).",
+      "description": "A whole interface in one asset (interface@1, engine core/engines/interface.ts): a design package (style, colour, layout, behaviour), a branding package, and every other slot (chrome, controls, widgets, settings interface) as an open list, plus spacing, shown / hidden chrome and appearance settings. The same app can be drawn under several interfaces at once (scopes: GizmoX's interface tabs), and the interface roller makes new ones. Never rolled; never picked in Appearance \u2192 Assets (Settings \u2192 Appearance \u2192 Interface applies one).",
       "required": [
         "design"
       ],
       "optional_fields": {
         "branding": "a branding asset id",
-        "slots": "asset type → asset id for every other slot (never the themes, the policy or a package)",
+        "slots": "asset type \u2192 asset id for every other slot (never the themes, the policy or a package)",
         "spacing": "tight | compact | regular",
-        "hidden": "asset type → true / false",
-        "settings": "appearance settings key → value",
+        "hidden": "asset type \u2192 true / false",
+        "settings": "appearance settings key \u2192 value",
         "tab": "{ label, icon } for a host showing interfaces as tabs",
         "tagline": "one line under the tab label"
       },
@@ -1263,13 +1473,17 @@
         "slot": false,
         "asset": false
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "bundle",
+        "why": "An interface wraps a design package plus slots: a whole look, like a skin."
+      }
     },
     "logo-mark": {
       "label": "Logo mark",
       "group": "Brand",
       "icon": "star",
-      "description": "A brand mark as safe vector data (logo-mark@1, engine core/engines/brand.ts; rules in brand-rules.mjs): form mark / wordmark / lockup, a viewBox, paths (path commands only, no script, links or raster), an optional wordmark text, colours as theme tokens (currentColor, text, accent, brand1-3 …) or the mark's own #hex palette. Branding packages and the brand library reference it; it is never picked as a slot.",
+      "description": "A brand mark as safe vector data (logo-mark@1, engine core/engines/brand.ts; rules in brand-rules.mjs): form mark / wordmark / lockup, a viewBox, paths (path commands only, no script, links or raster), an optional wordmark text, colours as theme tokens (currentColor, text, accent, brand1-3 \u2026) or the mark's own #hex palette. Branding packages and the brand library reference it; it is never picked as a slot.",
       "required": [
         "form",
         "paths"
@@ -1293,6 +1507,11 @@
         "safeArea": "number 0-1 (default 0.25): clear space as a fraction of the height",
         "minSize": "number px (default 16)",
         "brand": "string: the brand this mark belongs to"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "branding",
+        "why": "Logo marks are named by the branding asset the skin picks."
       }
     },
     "animated-logo": {
@@ -1327,13 +1546,18 @@
         "loop": "true (default) | false | \"hover\"",
         "still": "first | last: which frame shows when it does not move",
         "intensity": "number 0.1-1 (default 0.6)"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "branding",
+        "why": "Animated logos are named by the branding asset the skin picks."
       }
     },
     "icon-pack": {
       "label": "Icon pack",
       "group": "Brand",
       "icon": "grid",
-      "description": "A named set of glyphs on one grid (icon-pack@1): style outline / filled / duotone / sharp / rounded, grid 16-48, stroke, linecap, glyphs name → path (commands only). Any name the pack lacks falls back to the framework glyph set. The branding package picks the active pack; the Icon component reads it.",
+      "description": "A named set of glyphs on one grid (icon-pack@1): style outline / filled / duotone / sharp / rounded, grid 16-48, stroke, linecap, glyphs name \u2192 path (commands only). Any name the pack lacks falls back to the framework glyph set. The branding package picks the active pack; the Icon component reads it.",
       "required": [
         "style",
         "grid",
@@ -1357,6 +1581,11 @@
         "stroke": "number 0.5-4 (default 1.75)",
         "linecap": "round | square | butt",
         "fallback": "framework (default) | none"
+      },
+      "skin": {
+        "by": "reference",
+        "via": "iconPack",
+        "why": "A skin may name the icon pack it draws its icons from (data.iconPack)."
       }
     },
     "branding": {
@@ -1384,12 +1613,12 @@
       "label": "Typography",
       "group": "Themes",
       "icon": "type",
-      "description": "Text sizes everywhere (typography@1, engine core/engines/scale.ts): a size scale (xs–xl) and headings h1–h4 in em of the style theme's font size, weights, line heights, the eyebrow (size, weight, tracking, case) and mono text. Every field has a default equal to the framework's own look, so an asset may set only what it changes; the stylesheet and the components read only the compiled --fx-type-* tokens. One of the three scale assets (typography, density, sizing) that make \"change it in one place, changes it everywhere\" (Brett, Oct 30 2026). Rules: core/engines/scale-rules.mjs.",
+      "description": "Text sizes everywhere (typography@1, engine core/engines/scale.ts): a size scale (xs\u2013xl) and headings h1\u2013h4 in em of the style theme's font size, weights, line heights, the eyebrow (size, weight, tracking, case) and mono text. Every field has a default equal to the framework's own look, so an asset may set only what it changes; the stylesheet and the components read only the compiled --fx-type-* tokens. One of the three scale assets (typography, density, sizing) that make \"change it in one place, changes it everywhere\" (Brett, Oct 30 2026). Rules: core/engines/scale-rules.mjs.",
       "required": [],
       "optional_fields": {
         "scale": "{ xs, sm, md, lg, xl } em of the font size",
         "headings": "{ h1, h2, h3, h4 } em; tracking em",
-        "weights": "{ body, medium, strong } 300–900",
+        "weights": "{ body, medium, strong } 300\u2013900",
         "line": "{ tight, normal, loose } line heights",
         "eyebrow": "{ size em, weight, tracking em, case: upper | normal }",
         "mono": "{ size em }"
@@ -1400,12 +1629,12 @@
       "label": "Density",
       "group": "Themes",
       "icon": "sliders",
-      "description": "Spacing everywhere (density@1, engine core/engines/scale.ts): gaps (xs–xl) and paddings (control, card, page, row, cell) as multiples of the style theme's space unit, row heights (list, table, menu, control) as multiples of the font size. Compact vs roomy is one pick. Defaults = the framework's own look; compiles to --fx-dens-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
+      "description": "Spacing everywhere (density@1, engine core/engines/scale.ts): gaps (xs\u2013xl) and paddings (control, card, page, row, cell) as multiples of the style theme's space unit, row heights (list, table, menu, control) as multiples of the font size. Compact vs roomy is one pick. Defaults = the framework's own look; compiles to --fx-dens-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
       "required": [],
       "optional_fields": {
-        "gap": "{ xs, sm, md, lg, xl } × --fx-space",
-        "pad": "{ control, card, page, row, cell } × --fx-space",
-        "row": "{ list, table, menu, control } × --fx-font-size"
+        "gap": "{ xs, sm, md, lg, xl } \u00d7 --fx-space",
+        "pad": "{ control, card, page, row, cell } \u00d7 --fx-space",
+        "row": "{ list, table, menu, control } \u00d7 --fx-font-size"
       },
       "optional": true
     },
@@ -1413,20 +1642,20 @@
       "label": "Component sizing",
       "group": "Themes",
       "icon": "grid",
-      "description": "How big each kind of piece is (sizing@1, engine core/engines/scale.ts): buttons, icon buttons, chips, fields, tabs, segmented controls, cards, list rows, count strips, tables and page heads — heights × the font size, paddings × the space unit, fonts in em, radii as sm | md | lg | pill. Defaults = the framework's own look; compiles to --fx-size-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
+      "description": "How big each kind of piece is (sizing@1, engine core/engines/scale.ts): buttons, icon buttons, chips, fields, tabs, segmented controls, cards, list rows, count strips, tables and page heads \u2014 heights \u00d7 the font size, paddings \u00d7 the space unit, fonts in em, radii as sm | md | lg | pill. Defaults = the framework's own look; compiles to --fx-size-* tokens. One of the three scale assets. Rules: core/engines/scale-rules.mjs.",
       "required": [],
       "optional_fields": {
-        "button": "{ height ×font, padX ×space, font em, icon em }",
-        "iconButton": "{ size ×font }",
-        "chip": "{ height ×font, padX ×space, font em, radius: sm | md | pill }",
-        "field": "{ height ×font, padX ×space, font em }",
-        "tab": "{ padY ×space, padX ×space, font em }",
-        "segment": "{ padY, padX ×space, font em }",
-        "card": "{ pad ×space, headFont em, radius: sm | md | lg }",
-        "listRow": "{ minHeight ×font, padX ×space, metaFont em }",
-        "countStrip": "{ number em, label em, pad ×space }",
-        "table": "{ padY, padX ×space, font em }",
-        "pageHead": "{ descriptionFont em, descriptionLines 1–6 }"
+        "button": "{ height \u00d7font, padX \u00d7space, font em, icon em }",
+        "iconButton": "{ size \u00d7font }",
+        "chip": "{ height \u00d7font, padX \u00d7space, font em, radius: sm | md | pill }",
+        "field": "{ height \u00d7font, padX \u00d7space, font em }",
+        "tab": "{ padY \u00d7space, padX \u00d7space, font em }",
+        "segment": "{ padY, padX \u00d7space, font em }",
+        "card": "{ pad \u00d7space, headFont em, radius: sm | md | lg }",
+        "listRow": "{ minHeight \u00d7font, padX \u00d7space, metaFont em }",
+        "countStrip": "{ number em, label em, pad \u00d7space }",
+        "table": "{ padY, padX \u00d7space, font em }",
+        "pageHead": "{ descriptionFont em, descriptionLines 1\u20136 }"
       },
       "optional": true
     },
@@ -1535,21 +1764,236 @@
         "inputs": "[{ id, label, required?, default?, about? }] filled into the brief",
         "command": "a command the job runs (e.g. a re-record command), shown in the brief",
         "outputs": "{ report: path template, uiReviewGroup: name template with {{when}}, uiReviewApp }"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A job type is recurring work for a hired agent, not UI."
+      }
+    },
+    "card": {
+      "label": "Card",
+      "group": "Widgets",
+      "icon": "chart",
+      "shared": false,
+      "description": "A Home card (card@1, rules core/engines/card-rules.mjs): a data binding, not a design. It names the read it draws (any plugin read command from the plugin-commands@1 registry, served by control@1 as REST, MCP and CLI, or a read the host app provides), its args, a path into the result, an optional filter (where) and reduction, the view (auto or number, list, meter, chart, feed, table, status, plus views a host registers in the open registry), the refresh (live from the console's live feed, every N seconds, or by hand), title, icon and size. Not themed itself: every colour and size comes from the active theme through the view's tokens. Users make cards on Home (Add card, drag a read onto Home, Suggested cards) with no code and no tokens; an app's own starter cards ship as assets.",
+      "required": [
+        "source"
+      ],
+      "enums": {
+        "size": [
+          "s",
+          "m",
+          "l",
+          "wide"
+        ],
+        "chart": [
+          "line",
+          "bar",
+          "spark"
+        ],
+        "reduce": [
+          "none",
+          "count",
+          "sum",
+          "avg",
+          "min",
+          "max",
+          "first",
+          "last"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "title": "shown on the card (up to 60)",
+        "icon": "icon name",
+        "args": "the read command's input",
+        "path": "dotted path into the result; * maps over a list or object",
+        "where": "{ field: value } keeps matching items",
+        "reduce": "fold a list: count, sum, avg, min, max, first, last",
+        "fields": "{ role: field } for the view",
+        "refresh": "{ kind: live | every | manual, every: seconds, channels: [live-feed channels] }",
+        "limit": "items shown (1-200)",
+        "unit": "after a number (USD, ms)",
+        "view": "auto (picked from the data's shape) or a registered view: number, list, meter, chart, feed, table, status, panel (the host's own renderer for a host read), plus views a host registers"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A Home card is a data binding, not a design: the card UI takes the container and typography the skin sets."
       }
     },
     "help": {
       "label": "Help",
       "group": "System",
       "icon": "help",
-      "description": "Plain-English help for Help mode (help@1, rules core/engines/help-rules.mjs, engine core/engines/help.ts): a pack of entries, each explaining one control or screen by its help id (target: action:<spec>, view:<id>, banner:<id>, menu:<id>, column:<slug> or the label slug; <screen>/<id> overrides on one screen) with a title, text (what it does, when to use it, what happens if you tap it), an optional longer `more` for the What is this? panel, a `tryIt` step, a `link` and `related` ids; plus short screen intros (2–4 steps, walkthrough@1 step shape). Not a slot you pick: every help asset an app has is in force at once (framework, app, each plugin's help.json), later packs win, a written entry always beats a draft. Shown only while Help mode is on (setting axf.help.mode, per device).",
+      "description": "Plain-English help for Help mode (help@1, rules core/engines/help-rules.mjs, engine core/engines/help.ts): a pack of entries, each explaining one control or screen by its help id (target: action:<spec>, view:<id>, banner:<id>, menu:<id>, column:<slug> or the label slug; <screen>/<id> overrides on one screen) with a title, text (what it does, when to use it, what happens if you tap it), an optional longer `more` for the What is this? panel, a `tryIt` step, a `link` and `related` ids; plus short screen intros (2\u20134 steps, walkthrough@1 step shape). Not a slot you pick: every help asset an app has is in force at once (framework, app, each plugin's help.json), later packs win, a written entry always beats a draft. Shown only while Help mode is on (setting axf.help.mode, per device).",
       "required": [],
       "collection": true,
       "optional_fields": {
-        "scope": "string — where the pack belongs (framework, an app id, plugin:<folder>)",
+        "scope": "string \u2014 where the pack belongs (framework, an app id, plugin:<folder>)",
         "entries": "[{ id?, target, title, text, more?, tryIt?, link?: path | https URL | { label, href }, related?: [help ids], kind?, draft? }]",
-        "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1–6) }]"
+        "intros": "[{ screen: view id, title?, steps: [{ say, target?, do?, title? }] (1\u20136) }]"
       },
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "none",
+        "why": "Help text has no look of its own: the Help UI that shows it is drawn with parts a skin styles."
+      }
+    },
+    "demonstration": {
+      "label": "Demonstration",
+      "group": "Demos",
+      "icon": "play",
+      "shared": false,
+      "description": "A narrated demonstration of one glossary entry (demonstration@1, rules core/engines/demo-rules.mjs), built on the walkthrough engine: steps of walkthrough@1 shape (say = the narration, do = a console action such as nav:builds or settings.open:plugins, target = the data-axf-id, view id or selector to highlight, plus a highlight label, a wait and a title), the surface it runs on (the live UI, a preview, the recorder), a voice (narrator, speed), demonstrations chained after it into a tour, the entry it is about and the entries it covers, auto-tagged keywords and where it was generated from (the glossary's Generate demonstration button, by hand, a book, a help intro, the recorder). Editable, replayable and voice-controlled in the Demonstration Designer; Molly's guide plays it as walkthrough@1; the recorder films it into a clip. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "steps"
+      ],
+      "enums": {
+        "surface": [
+          "live",
+          "preview",
+          "recorder"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "about": "the glossary entry id it demonstrates (plugin:build-orchestrator, concept:asset, control:console-web:ui-review:approve)",
+        "entries": "glossary entry ids it covers (the about entry is always one)",
+        "app": "the app it runs in (console, axhub-web, amberx-droid); default console",
+        "voice": "{ narrator: a voice id or '' for the browser's, speed: 0.5\u20132 }",
+        "chain": "demonstration ids played after this one (a tour)",
+        "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
+        "generated": "{ from: glossary | manual | book | help-intro | recorder, at: ISO time, build: the build that made it }",
+        "editable": "false = a generated demo that is rebuilt from its entry (edits are lost); default true"
+      }
+    },
+    "book": {
+      "label": "Book",
+      "group": "Demos",
+      "icon": "file",
+      "shared": false,
+      "description": "A book written from the glossary (book@1, rules core/engines/demo-rules.mjs): the wizard's plan (total minutes, minutes per chapter, style: quickstart, tutorial, tour, reference or deep-dive, the design package to show, narrator voice and speed), its chapters (id, title, minutes or a share of the total, an intro line, and items: a glossary entry id, demonstration/<id>, clip/<id> or book/<id>#<chapter>, each with its own minutes and a note; items are dragged in from the glossary and index and moved by drag, context menu or the column icons), the documentation to generate with it (enabled, depth light / standard / deep / extreme, format markdown / html / interactive-html-ts, how interactive: none, examples or live components) and its outputs (the walkthrough video, one clip per chapter). The Book Builder previews a book as one walkthrough and hands it to the recorder; what comes back is clip assets and a docs asset. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "plan",
+        "chapters"
+      ],
+      "nested": {
+        "plan": [
+          "chapterMinutes"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "about": "what the book is about (up to 600)",
+        "docs": "{ enabled, depth, format, interactive, includeApi, includeScreens } \u2014 the documentation generated alongside the book",
+        "outputs": "{ video: the narrated walkthrough video, chapterClips: one clip asset per chapter }",
+        "keywords": "words for search (up to 200)"
+      }
+    },
+    "clip": {
+      "label": "Clip",
+      "group": "Demos",
+      "icon": "monitor",
+      "shared": false,
+      "description": "A generated clip (clip@1, rules core/engines/demo-rules.mjs): every clip, demo, chapter, walkthrough or video the demonstration system makes is one of these, a first-class registry asset. It names its kind and source (the demonstration, book chapter, walkthrough or entry it came from), its media (video, poster, captions, audio: paths in the data folder or https URLs, seconds, size), how it was recorded (when, app, URL, viewport, the design package shown, the voice), a transcript (seconds + words), clips chained after it, the glossary entries it shows and a large auto-extracted keyword set (the entries' terms, kinds, categories and keywords, every action and target, every word of the narration, the app, the look, the voice), so it is searchable, filterable and sortable like everything else and can be dropped into books. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "source",
+        "media"
+      ],
+      "enums": {
+        "kind": [
+          "clip",
+          "demo",
+          "chapter",
+          "walkthrough",
+          "video"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ],
+        "media": [
+          "seconds"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "recorded": "{ at: ISO time, app, url, viewport: { width, height }, designPackage, voice }",
+        "transcript": "[{ at: seconds, say }] (up to 2000 lines)",
+        "chain": "clip ids played after this one",
+        "entries": "glossary entry ids shown in the clip",
+        "keywords": "the auto-extracted tag set (up to 200)"
+      }
+    },
+    "docs": {
+      "label": "Documentation",
+      "group": "Demos",
+      "icon": "code",
+      "shared": false,
+      "description": "Generated documentation (docs@1, rules core/engines/demo-rules.mjs): made alongside a book (or from one demonstration, or a list of glossary entries) from the same sources (glossary, index, registry, the sandbox) and kept in sync by a hash of them. Depth: light (one page), standard (an index plus a page per chapter), deep (plus a page per item with its full API, links and demonstration steps) or extreme (plus runnable API examples, live components embedded from the real app, a search index and the TypeScript sources). Format: markdown, html or interactive-html-ts (real, runnable, interactive examples and live components throughout: the real deal, not static pages); interactive: none, examples or live. Lists the files it is made of (index, pages, scripts, styles, data, media), when it was generated and the build. Not drawn: it carries no colours or sizes.",
+      "required": [
+        "source",
+        "depth",
+        "format",
+        "files"
+      ],
+      "enums": {
+        "depth": [
+          "light",
+          "standard",
+          "deep",
+          "extreme"
+        ],
+        "format": [
+          "markdown",
+          "html",
+          "interactive-html-ts"
+        ],
+        "interactive": [
+          "none",
+          "examples",
+          "live"
+        ]
+      },
+      "nested": {
+        "source": [
+          "kind"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "interactive": "none | examples | live (live needs format interactive-html-ts); default none",
+        "generatedAt": "ISO time",
+        "sourceHash": "hash of the sources it was generated from (a different hash = out of sync)",
+        "build": "the build that generated it",
+        "keywords": "words for search (up to 200)"
+      }
     },
     "uac-policy": {
       "label": "User account control",
@@ -1566,6 +2010,10 @@
           "hide",
           "disable"
         ]
+      },
+      "skin": {
+        "by": "none",
+        "why": "An access policy decides who may do what; it has no look."
       }
     }
   },
@@ -1579,21 +2027,33 @@
     ]
   },
   "hideDefaults": {
-    "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings → Appearance → Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
+    "_doc": "Hidden slots. A type with \"hideable\": true gets a Hidden choice in Settings \u2192 Appearance \u2192 Assets; while hidden its chrome is not drawn (the layout drops its region; a hidden context menu leaves the platform's own menu) and rolls skip it. Only chrome types: hiding a theme, layout, control or policy would leave nothing to draw with. Runtime overrides: settings axf.hide.<type> (Kotlin: KV <key>:hide)."
   },
   "attachDefaults": {
-    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
+    "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance \u2192 Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
+  },
+  "skinConfig": {
+    "_doc": "skin-config@1 (core/engines/skin-config-rules.mjs): the permission tree Brett sets before the AI makes a skin (category > group > option, each allow / lock / ask). Categories are every registered type a skin can reach (skin-coverage@1) in the order above, plus this one category for the look's extras. A type declares `skinConfig.limits` on its own entry when the AI must be held to a size (`depth` = the deepest `items` nesting it may build, 1 = flat, with `root` naming the field whose lists are the first level; `count:<field>` = how many entries an array field may hold); nothing else is named by hand.",
+    "extras": {
+      "label": "Look extras",
+      "section": "Look",
+      "groupLabel": "The look as a whole",
+      "options": {
+        "spacing": "Spacing (tight, compact or regular)",
+        "settings": "Look settings and token overrides (axf.tokens.*) the skin carries"
+      }
+    }
   },
   "menuItems": {
-    "_doc": "Menu items (app-menu menus[].items, context-menu targets.*, nested `items`) take these optional fields on top of id/label/icon/action/shortcut/requires/items/separator. `provider` names a live-list provider registered at run time (runtime.registerAppMenuProvider): the item becomes a submenu whose entries are asked for on open, capped at providerMax with a More… entry. `badge` names a runtime counter shown as a badge (hidden at 0), like toolbar items. `checked` binds a check mark: setting:<key> (truthy value), counter:<name> (> 0), slot:<type> (chrome slot shown), hidden:<type> (chrome slot hidden). `order` / `before` / `after` place a contributed item among its siblings (engines/appmenu.ts; fixture spec/fixtures/app-menu.json; Android twin deferred, port on hold Oct 21 2026).",
+    "_doc": "Menu items (app-menu menus[].items, context-menu targets.*, nested `items`) take these optional fields on top of id/label/icon/action/shortcut/requires/items/separator. `provider` names a live-list provider registered at run time (runtime.registerAppMenuProvider): the item becomes a submenu whose entries are asked for on open, capped at providerMax with a More\u2026 entry. `badge` names a runtime counter shown as a badge (hidden at 0), like toolbar items. `checked` binds a check mark: setting:<key> (truthy value), counter:<name> (> 0), slot:<type> (chrome slot shown), hidden:<type> (chrome slot hidden). `order` / `before` / `after` place a contributed item among its siblings (engines/appmenu.ts; fixture spec/fixtures/app-menu.json; Android twin deferred, port on hold Oct 21 2026).",
     "optional_fields": {
-      "provider": "string — id of a registered live-list provider",
-      "badge": "string — runtime counter name",
-      "checked": "string — setting:<key> | counter:<name> | slot:<type> | hidden:<type>",
-      "order": "number — placement among siblings (default 100)",
-      "before": "string — sibling id to go before",
-      "after": "string — sibling id to go after",
-      "spacer": "boolean — with separator: true, an empty gap instead of a rule"
+      "provider": "string \u2014 id of a registered live-list provider",
+      "badge": "string \u2014 runtime counter name",
+      "checked": "string \u2014 setting:<key> | counter:<name> | slot:<type> | hidden:<type>",
+      "order": "number \u2014 placement among siblings (default 100)",
+      "before": "string \u2014 sibling id to go before",
+      "after": "string \u2014 sibling id to go after",
+      "spacer": "boolean \u2014 with separator: true, an empty gap instead of a rule"
     },
     "checkedKinds": [
       "setting",

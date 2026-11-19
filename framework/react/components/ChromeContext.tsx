@@ -150,9 +150,14 @@ export function moveChrome(rt: AxfRuntime, type: ChromeType, instance: string, p
   return false;
 }
 
+/** The assets a chrome kind may switch to: every one, but for nav-menu / app-menu only those built for this app (app-menus@1). */
+function chromeList(rt: AxfRuntime, type: ChromeType) {
+  return rt.registry.list(type as AssetType).filter((a) => rt.slotOk(type as AssetType, a.id));
+}
+
 /** Use another asset: a tab group picks for itself, every other kind swaps the app's slot. `next` cycles. */
 export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, asset: string): boolean {
-  const list = rt.registry.list(type as AssetType);
+  const list = chromeList(rt, type);
   if (!list.length) return false;
   let id = asset;
   if (asset === 'next' || asset === 'prev') {
@@ -317,7 +322,7 @@ export function chromeSettingTargets(rt: AxfRuntime, hint?: string): ControlTarg
         state: () => ({ type: f.kind, chrome: type, instance, field: f.key, key: CHROME_INSTANCE_KEY(type, instance), overridden: f.key in normalizeInstanceOverride(type, rt.settings.get(CHROME_INSTANCE_KEY(type, instance))), ...(f.options ? { options: f.options } : {}), ...(f.min !== undefined ? { min: f.min } : {}), ...(f.max !== undefined ? { max: f.max } : {}) }),
       });
     }
-    const list = () => rt.registry.list(type as AssetType).map((a) => a.id);
+    const list = () => chromeList(rt, type).map((a) => a.id);
     out.push({
       address: `setting:${chromeSettingTargetId(type, instance, 'asset')}`, kind: 'setting', label: `${name} · Asset`, detail, icon: CHROME_ICONS[type],
       keywords: [type, instance, 'asset', 'style', 'interface', 'chrome'], requires: 'assets.swap', can: ['open', 'state', 'focus', 'set'], open, element,
@@ -413,7 +418,7 @@ export function ChromeAssetPicker({ type, instance }: { type: ChromeType; instan
   const rt = useRuntime();
   useAxfState();
   useSettingsTick(rt, [CHROME_INSTANCE_ASSET_KEY(type, instance)]);
-  const list = rt.registry.list(type as AssetType);
+  const list = chromeList(rt, type);
   const own = type === 'tab-group' ? (rt.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance)) as string) || '' : '';
   const active = type === 'tab-group' ? own || 'default' : rt.getState().active[type as AssetType] ?? '';
   const choices = [
@@ -443,7 +448,7 @@ export function InstanceInterfaceTab({ type, instance, show = () => true, descri
   useAxfState();
   useSettingsTick(rt, [CHROME_INSTANCE_KEY(type, instance), CHROME_INSTANCE_ASSET_KEY(type, instance)]);
   const label = chromeLabel(type).toLowerCase();
-  const list = rt.registry.list(type as AssetType);
+  const list = chromeList(rt, type);
   const own = type === 'tab-group' ? (rt.settings.get(CHROME_INSTANCE_ASSET_KEY(type, instance)) as string) || '' : '';
   const asset = type === 'tab-group' ? own || 'default' : rt.getState().active[type as AssetType] ?? '';
   const assetOptions = [

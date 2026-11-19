@@ -10,7 +10,7 @@ import type { RepeatFallback } from '../../core/types';
 import type { SlotRegion } from '../../core/engines/layout';
 import { useAsset } from '../AxfProvider';
 import { Container } from './Controls';
-import { Icon } from './Icon';
+import { TabGroup } from './TabGroup';
 
 const DataSetsCtx = createContext<DataSets>({});
 
@@ -66,15 +66,7 @@ export function RepeatView({ slot, onSelect, renderItem, renderFallback }: { slo
     if (!current) return null;
     return (
       <div className="fx-repeat fx-repeat--tabs" {...attrs}>
-        <div className="fx-tabs" role="tablist">
-          {slot.items.map((it) => (
-            <button key={it.key} type="button" role="tab" aria-selected={it.key === current.key} className={`fx-tab ${it.key === current.key ? 'is-active' : ''}`} onClick={() => onSelect?.(it.key)}>
-              {it.icon && <Icon name={it.icon} size={14} />}
-              {it.label}
-            </button>
-          ))}
-          {more}
-        </div>
+        <TabGroup id={`repeat.${slot.id}`} label={slot.id} value={current.key} onChange={(k) => onSelect?.(k)} extra={more} tabs={slot.items.map((it) => ({ value: it.key, label: it.label, icon: it.icon ?? undefined }))} />
         <div className="fx-repeat__panel" role="tabpanel">{item(current)}</div>
       </div>
     );

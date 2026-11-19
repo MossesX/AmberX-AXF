@@ -1,10 +1,14 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
-import { MenuList } from './MenuList';
+import { MenuList, MenuScroll } from './MenuList';
+import { useMenuFit } from './menuFit';
+import { dialogSurface } from '../../core/engines/settingsopen';
+import { CONTEXT_LEAD_PREFIX, withContextLead, type MenuEntry } from '../../core/engines/windows';
+import { chromeInstanceSlug } from '../../core/engines/chrome-settings-rules.mjs';
 
 export interface DialogDef {
   title: string;
@@ -12,6 +16,10 @@ export interface DialogDef {
   render: (props: Record<string, unknown>, close: () => void) => ReactNode;
   /** false keeps it out of search (dialogs that only make sense with props, e.g. asset-json) */
   searchable?: boolean;
+  /** glass = see-through surface (--fx-opacity-glass + --fx-blur); every settings dialog gets it by default (dialogSurface) */
+  surface?: 'glass';
+  /** wide = room for a settings interface (two thirds of the screen, up to the page width) */
+  size?: 'wide';
 }
 export type DialogMap = Record<string, DialogDef>;
 
@@ -31,6 +39,42 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
     if (def) panelRef.current?.focus();
   }, [def]);
 
+  // Android back (and the browser's back) closes the dialog: one history entry while any dialog is open here. Keyed on
+  // open / shut, not the id, so going from one dialog straight to another keeps the one entry.
+  const isOpen = !!def;
+  useEffect(() => {
+    if (!isOpen) return;
+    history.pushState({ axfDialog: true }, '');
+    let popped = false;
+    const onPop = () => { popped = true; rt.closeDialog(); };
+    addEventListener('popstate', onPop);
+    return () => {
+      removeEventListener('popstate', onPop);
+      // shut some other way (X, outside tap, Escape, swipe, a console command): drop the entry it pushed
+      if (!popped && (history.state as { axfDialog?: boolean } | null)?.axfDialog) history.back();
+    };
+  }, [isOpen, rt]);
+
+  // Swipe down on the title bar (touch) closes it: the dialog follows the finger, and past a quarter of its height it goes.
+  const [pull, setPull] = useState(0);
+  const swipe = useRef<{ id: number; y: number } | null>(null);
+  const onHeadDown = (e: ReactPointerEvent<HTMLElement>) => {
+    if (e.pointerType !== 'touch' || (e.target as Element).closest('button')) return;
+    swipe.current = { id: e.pointerId, y: e.clientY };
+    e.currentTarget.setPointerCapture?.(e.pointerId);
+  };
+  const onHeadMove = (e: ReactPointerEvent<HTMLElement>) => {
+    if (swipe.current?.id === e.pointerId) setPull(Math.max(0, e.clientY - swipe.current.y));
+  };
+  const onHeadUp = (e: ReactPointerEvent<HTMLElement>) => {
+    if (swipe.current?.id !== e.pointerId) return;
+    const h = panelRef.current?.offsetHeight ?? 400;
+    const go = e.type === 'pointerup' && Math.max(0, e.clientY - swipe.current.y) > Math.max(rt.behavior().interaction.dragThreshold * 4, h / 4);
+    swipe.current = null;
+    setPull(0);
+    if (go) rt.closeDialog();
+  };
+
   if (!state.dialog || !mine) return null;
   if (!def) {
     queueMicrotask(() => {
@@ -44,8 +88,8 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const brandHost = brandHostProps(brand);
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
-      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
-        <header className="fx-dialog__head">
+      <div className={`fx-dialog ${brandHost.className}`.trim()} data-fx-dialog-surface={dialogSurface(state.dialog.id, def)} data-fx-dialog-size={def.size} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
+        <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}
           <h2>{def.title}</h2>
@@ -91,18 +135,28 @@ export function ToastHost() {
 export function ContextMenuHost() {
   const rt = useRuntime();
   const state = useAxfState();
-  const cm = useAsset('context-menu').data;
+  // chrome-settings@1: the context menu's settings-dialog overrides (instance `app`) over its asset
+  const cmAsset = useAsset('context-menu').data;
+  const cm = rt.chromeData('context-menu', 'app', cmAsset) ?? cmAsset;
   const ref = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
   const scope = useScopeId();
 
   useEffect(() => {
     const open = (target: Element | null, x: number, y: number) => {
       // one host per interface scope: only the host of the scope the pointer is in opens the menu
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
-      const el = target?.closest('[data-fx-ctx-target]');
-      const name = el?.getAttribute('data-fx-ctx-target') ?? 'default';
-      rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined);
+      // which banner widget was hit: its menu offers Widget settings for that one
+      rt.contextBannerWidget = target?.closest('[data-axf-banner-item]')?.getAttribute('data-axf-banner-item') ?? null;
+      // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
+      // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
+      const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');
+      const own = el?.getAttribute('data-fx-ctx-target');
+      const name = own ?? (el?.getAttribute('role') === 'toolbar' ? 'toolbar' : el?.getAttribute('role') === 'tablist' ? 'tab-group' : el?.tagName === 'NAV' && el.getAttribute('data-axf-not-nav') === null ? 'nav' : 'default');
+      if (own) { rt.openContext(x, y, name, el?.getAttribute('data-fx-ctx-payload') ?? undefined); return; }
+      // an implicit target's instance id: its settings id, else its accessible name as a slug
+      const label = name === 'toolbar' ? el?.getAttribute('data-axf-toolbar') ?? el?.getAttribute('data-axf-toolbar-asset') ?? el?.getAttribute('aria-label') : name === 'tab-group' ? el?.getAttribute('data-axf-tab-group') ?? el?.getAttribute('aria-label') : name === 'nav' ? el?.getAttribute('data-axf-nav') ?? el?.getAttribute('aria-label') : null;
+      const slug = chromeInstanceSlug(label);
+      rt.openContext(x, y, name, slug || undefined);
     };
     const onCtx = (e: MouseEvent) => {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
@@ -157,14 +211,8 @@ export function ContextMenuHost() {
     };
   }, [rt, scope]);
 
-  // Clamp inside the viewport once measured
-  useLayoutEffect(() => {
-    if (!state.context || !ref.current) return setPos(null);
-    const r = ref.current.getBoundingClientRect();
-    const x = Math.min(state.context.x, window.innerWidth - r.width - 8);
-    const y = Math.min(state.context.y, window.innerHeight - r.height - 8);
-    setPos({ x: Math.max(8, x), y: Math.max(8, y) });
-  }, [state.context]);
+  // On screen: below-right of the pointer, flipped or shifted to fit, scrolling inside when taller than the room (menu-fit@1)
+  useMenuFit(ref, 'point', () => state.context && { left: state.context.x, right: state.context.x, top: state.context.y, bottom: state.context.y }, {}, [state.context]);
 
   if (!state.context || (state.context.scope ?? '') !== scope) return null;
   const ctx = state.context;
@@ -172,28 +220,38 @@ export function ContextMenuHost() {
   const own = cm.contributions === false && !!(cm.targets[ctx.target] ?? (!ctx.target || ctx.target === 'default' ? cm.targets.default : undefined));
   const contributed = own ? [] : rt.contributedContext(ctx.target);
   const extra = own ? [] : [...(rt.contextExtras.get(ctx.target)?.(ctx.target, ctx.payload) ?? []), ...contributed];
-  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => k === '*' || k.startsWith('*:')).flatMap(([, f]) => f(ctx.target, ctx.payload));
-  const base = cm.targets[ctx.target] ?? (extra.length ? [] : cm.targets.default ?? []);
+  // chrome-settings@1: the shared Settings / Change / Move block of a tab group, toolbar, banner, nav or menu bar is
+  // that element's own menu (right after the kind's items), never a tail item under the whole default menu
+  const chrome = own ? [] : rt.contextExtras.get('*:chrome')?.(ctx.target, ctx.payload) ?? [];
+  const everywhere = own ? [] : [...rt.contextExtras.entries()].filter(([k]) => (k === '*' || k.startsWith('*:')) && k !== '*:chrome').flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const base = cm.targets[ctx.target] ?? (extra.length || chrome.length ? [] : cm.targets.default ?? []);
   // An element naming a target the asset doesn't know still gets the default menu's contributions (e.g. a plugin link).
-  const fallback = !own && !cm.targets[ctx.target] && !extra.length ? rt.contributedContext('default') : [];
-  const more = [...extra, ...fallback] as unknown as typeof base;
+  const fallback = !own && !cm.targets[ctx.target] && !extra.length && !chrome.length ? rt.contributedContext('default') : [];
+  const chromeSep = extra.length && chrome.length ? [{ id: 'chrome-sep', separator: true }] : [];
+  const more = [...extra, ...chromeSep, ...chrome, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
-  const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  // context-lead@1: entries every menu starts with (e.g. the console's Console settings), above a separator, on any
+  // target, even one whose asset turns contributions off
+  const lead = [...rt.contextExtras.entries()].filter(([k]) => k.startsWith(CONTEXT_LEAD_PREFIX)).flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const rest = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  const items = withContextLead(lead as unknown as MenuEntry[], rest as unknown as MenuEntry[]) as unknown as typeof base;
   return (
     <div
       ref={ref}
       className="fx-ctx fx-popover"
-      style={{ left: pos?.x ?? state.context.x, top: pos?.y ?? state.context.y, visibility: pos ? 'visible' : 'hidden' }}
+      style={{ left: state.context.x, top: state.context.y }}
       onContextMenu={(e) => e.preventDefault()}
     >
-      <MenuList
-        items={items}
-        payload={state.context.payload}
-        onDone={() => rt.closeContext()}
-        showIcons={cm.showIcons}
-        showShortcuts={cm.showShortcuts}
-      />
+      <MenuScroll box={ref}>
+        <MenuList
+          items={items}
+          payload={state.context.payload}
+          onDone={() => rt.closeContext()}
+          showIcons={cm.showIcons}
+          showShortcuts={cm.showShortcuts}
+        />
+      </MenuScroll>
     </div>
   );
 }
