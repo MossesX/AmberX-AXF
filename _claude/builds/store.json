@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9272,
- "updatedAt": "2026-11-19T04:04:18.634Z",
+ "rev": 9273,
+ "updatedAt": "2026-11-19T04:19:01.218Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -146722,7 +146722,7 @@
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-17T23:45:42.762Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -146848,6 +146848,10 @@
     {
      "text": "Repeated steps collapsed: 11 → 10 (step-dedupe cleanup).",
      "at": "2026-11-17T23:45:42.762Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 681 → Remove: The build was cancelled (PR #681 open; not on main; build pass-approval-hook-deep-link-amberx-notification: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -147180,18 +147184,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 130,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-10T17:10:29.492Z",
     "builtAt": "",
+    "createdAt": "2026-11-10T17:10:29.492Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwb00qda6gus4d": "2026-11-10T18:03:26.974Z",
      "st-mwb00qda6hyvsp": "2026-11-10T18:03:26.974Z",
@@ -173521,7 +173525,7 @@
    "branch": "claude/rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou",
    "pr": "#768",
    "createdAt": "2026-11-12T23:25:43.887Z",
-   "updatedAt": "2026-11-17T15:09:16.157Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-17T01:01:11.971Z",
    "notes": [
     {
@@ -173555,6 +173559,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:16.157Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 782 → Remove: The build was cancelled (PR #782 open; not on main; build rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -173686,18 +173694,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-12T23:25:43.887Z",
     "builtAt": "2026-11-17T01:01:11.971Z",
+    "createdAt": "2026-11-12T23:25:43.887Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwe6g65p05lxo2": "2026-11-12T23:26:43.501Z",
      "st-mwe6g65p0602wo": "2026-11-12T23:26:43.501Z",
@@ -175976,7 +175984,7 @@
    "pr": "#762",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-17T15:09:34.581Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-16T23:37:25.374Z",
    "notes": [
     {
@@ -176046,6 +176054,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:34.581Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 783 → Remove: The build was cancelled (PR #783 open; not on main; build remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -176374,18 +176386,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-13T07:10:15.600Z",
     "builtAt": "2026-11-16T23:37:25.374Z",
+    "createdAt": "2026-11-13T07:10:15.600Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwen2rfk01nf0l": "2026-11-13T07:12:11.360Z",
      "st-mwen2rfl027yzz": "2026-11-13T07:12:11.360Z",
@@ -183884,7 +183896,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-19T02:09:18.322Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -184074,6 +184086,14 @@
     {
      "text": "Fixing: the push failed (pushing its branch failed (claude/always-fill-every-slot-when-slots-are has commits here and on GitHub that differ).). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T01:52:14.951Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 582 → Remove: The build was cancelled (PR #582 open; not on main; build always-fill-every-slot-when-slots-are: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261114-c507a643 → Remove: The build was cancelled (PR #582 open; not on main; build always-fill-every-slot-when-slots-are: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -184832,18 +184852,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-13T06:57:42.497Z",
     "builtAt": "",
+    "createdAt": "2026-11-13T06:57:42.497Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwemm4yg01fic4": "2026-11-13T06:59:15.736Z",
      "st-mwemm4yg021510": "2026-11-13T06:59:15.736Z",
@@ -192989,7 +193009,7 @@
    "branch": "claude/projects-own-everything-per-project",
    "pr": "#605",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-17T15:12:32.306Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-15T01:39:19.969Z",
    "notes": [
     {
@@ -193067,6 +193087,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:12:32.306Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 605 → Remove: The build was cancelled (PR #605 open; not on main; build projects-own-everything-per-project: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -193244,24 +193268,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-12T20:35:05.081Z",
     "builtAt": "2026-11-15T01:39:19.969Z",
+    "createdAt": "2026-11-12T20:35:05.081Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwe0bg2h05a63i": "2026-11-12T20:35:05.083Z",
      "st-mwe0bg2h06lcme": "2026-11-12T20:35:05.083Z",
      "st-mwe0bg2h07zd81": "2026-11-12T20:35:05.083Z",
-     "st-mwe0dij401sv9s": "2026-11-12T20:36:41.741Z",
-     "st-mwe0bg2h08kquu": "2026-11-12T20:35:05.083Z"
+     "st-mwe0bg2h08kquu": "2026-11-12T20:35:05.083Z",
+     "st-mwe0dij401sv9s": "2026-11-12T20:36:41.741Z"
     }
    },
    "queue": null,
@@ -199023,7 +199047,7 @@
    "pr": "#698",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-17T15:11:46.911Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-15T01:09:09.454Z",
    "notes": [
     {
@@ -199065,6 +199089,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:11:46.911Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 788 → Remove: The build was cancelled (PR #788 open; not on main; build quick-settings-pinned-collapsible-pane: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -199337,18 +199365,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-13T18:07:49.026Z",
     "builtAt": "2026-11-15T01:09:09.454Z",
+    "createdAt": "2026-11-13T18:07:49.026Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwfaj14w01jmxw": "2026-11-13T18:08:41.600Z",
      "st-mwfaj14w02v93y": "2026-11-13T18:08:41.600Z",
@@ -199381,7 +199409,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-17T15:12:23.916Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-15T01:05:23.539Z",
    "notes": [
     {
@@ -199439,6 +199467,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:12:23.916Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 630 → Remove: The build was cancelled (PR #630 open; not on main; build new-asset-type-animated-expanding-row: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -199764,18 +199796,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-13T18:13:23.703Z",
     "builtAt": "2026-11-15T01:05:23.539Z",
+    "createdAt": "2026-11-13T18:13:23.703Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwfaqxlj01xop2": "2026-11-13T18:14:50.263Z",
      "st-mwfaqxlj02wafk": "2026-11-13T18:14:50.263Z",
@@ -202850,7 +202882,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-17T23:45:52.379Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -202964,6 +202996,14 @@
     {
      "text": "Repeated steps collapsed: 10 → 9 (step-dedupe cleanup).",
      "at": "2026-11-17T23:45:52.379Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 636 → Remove: The build was cancelled (PR #636 open; not on main; build orchestrator-settings-collapsible-split: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261113-090a7bf0 → Remove: The build was cancelled (PR #636 open; not on main; build orchestrator-settings-collapsible-split: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -203244,18 +203284,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-13T18:41:12.834Z",
     "builtAt": "",
+    "createdAt": "2026-11-13T18:41:12.834Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwfbqn7f016rdh": "2026-11-13T18:42:36.411Z",
      "st-mwfbqn7f02oog4": "2026-11-13T18:42:36.411Z",
@@ -207348,7 +207388,7 @@
    "branch": "claude/land-per-instance-settings-picker",
    "pr": "#766",
    "createdAt": "2026-11-13T19:35:42.374Z",
-   "updatedAt": "2026-11-17T15:09:23.120Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-17T00:53:13.094Z",
    "notes": [
     {
@@ -207386,6 +207426,10 @@
     {
      "text": "Brett: land after orchestrator-runs-long-builds-across",
      "at": "2026-11-17T15:09:23.120Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 789 → Remove: The build was cancelled (PR #789 open; not on main; build land-per-instance-settings-picker: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -207526,18 +207570,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-13T19:35:42.374Z",
     "builtAt": "2026-11-17T00:53:13.094Z",
+    "createdAt": "2026-11-13T19:35:42.374Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwfdp9pe01qo1a": "2026-11-13T19:37:31.490Z",
      "st-mwfdp9pe024v20": "2026-11-13T19:37:31.490Z",
@@ -211696,7 +211740,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-17T23:46:11.276Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -211814,6 +211858,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Build engine sweep (Node), Web Dev Console (React/TS) + Python API). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T23:46:11.276Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 659 → Remove: The build was cancelled (PR #659 open; not on main; build context-menus-plugin-one-true-source: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -212103,18 +212151,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-13T20:14:18.034Z",
     "builtAt": "",
+    "createdAt": "2026-11-13T20:14:18.034Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwff2uh6010l12": "2026-11-13T20:16:04.552Z",
      "st-mwff2uh6021g3q": "2026-11-13T20:16:04.552Z",
@@ -219398,7 +219446,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-17T23:46:01.191Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -219496,6 +219544,10 @@
     {
      "text": "Repeated steps collapsed: 6 → 5 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:01.191Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 671 → Remove: The build was cancelled (PR #671 open; not on main; build group-chat-audio-hear-agents-talk-while: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -219679,18 +219731,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-14T04:20:23.886Z",
     "builtAt": "",
+    "createdAt": "2026-11-14T04:20:23.886Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwfwdp4y04a733": "2026-11-14T04:20:23.888Z",
      "st-mwfwdp4y056wfy": "2026-11-14T04:20:23.888Z",
@@ -221288,7 +221340,7 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-17T22:28:15.534Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -221346,6 +221398,14 @@
     {
      "text": "Fixing: CI is red (CI is red (Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T22:28:15.534Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 676 → Remove: The build was cancelled (PR #676 open; not on main; build picker-dialog-plugin-replaces-all: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261115-d87ad27e → Remove: The build was cancelled (PR #676 open; not on main; build picker-dialog-plugin-replaces-all: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -221978,18 +222038,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-14T18:13:15.368Z",
     "builtAt": "",
+    "createdAt": "2026-11-14T18:13:15.368Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwgq79uk01ntsv": "2026-11-14T18:15:13.052Z",
      "st-mwgq79uk02j9vb": "2026-11-14T18:15:13.052Z",
@@ -257517,7 +257577,7 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-17T23:03:41.339Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-17T23:03:41.339Z",
    "notes": [
     {
@@ -257607,6 +257667,14 @@
     {
      "text": "Session axf-banner-widget-shapes-plus-change-icon--paulie on hulu0241 ended (exit 0); the build was already complete.",
      "at": "2026-11-17T23:03:41.339Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 821 → Remove: The build was cancelled (PR #821 open; not on main; build banner-widget-shapes-plus-change-icon: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-e3w9v01 → Remove: The build was cancelled (PR #821 open; not on main; build banner-widget-shapes-plus-change-icon: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -258169,18 +258237,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-16T22:59:51.546Z",
     "builtAt": "2026-11-17T23:03:16.256Z",
+    "createdAt": "2026-11-16T22:59:51.546Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwjveb4r0wu6j1": "2026-11-16T23:03:57.915Z",
      "st-mwjveb4r0xnxaa": "2026-11-16T23:03:57.915Z",
@@ -263197,7 +263265,7 @@
    "pr": "#828",
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
-   "updatedAt": "2026-11-18T06:40:26.356Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T06:29:08.928Z",
    "notes": [
     {
@@ -263311,6 +263379,14 @@
     {
      "text": "Session axf-move-server-side-console-parts-onto-vps--lenny on hulu0241 ended (exit 0); the build was already landing.",
      "at": "2026-11-18T06:40:26.356Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 828 → Remove: The build was cancelled (PR #828 open; not on main; build move-server-side-console-parts-onto-vps: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261118-38820c16 → Remove: The build was cancelled (PR #828 open; not on main; build move-server-side-console-parts-onto-vps: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -264103,18 +264179,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T12:26:40.644Z",
     "builtAt": "2026-11-18T06:29:08.928Z",
+    "createdAt": "2026-11-17T12:26:40.644Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwko4z4v01irua": "2026-11-17T12:28:31.327Z",
      "st-mwko4z4v02idvd": "2026-11-17T12:28:31.327Z",
@@ -264608,7 +264684,7 @@
    "pr": "#824",
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
-   "updatedAt": "2026-11-17T22:20:39.518Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-17T22:20:39.518Z",
    "notes": [
     {
@@ -264666,6 +264742,10 @@
     {
      "text": "Reconciler: PR #824; PR #824 names s1, s11, s12, s13, s14, s15, s16 done",
      "at": "2026-11-17T22:20:39.518Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 824 → Remove: The build was cancelled (PR #824 open; not on main; build rebuild-fresh-main-hide-any-asset: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -265160,18 +265240,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T14:50:33.375Z",
     "builtAt": "2026-11-17T22:10:18.088Z",
+    "createdAt": "2026-11-17T14:50:33.375Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwkt948601b3h4": "2026-11-17T14:51:42.630Z",
      "st-mwkt9486020kba": "2026-11-17T14:51:42.630Z",
@@ -274737,7 +274817,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-17T20:57:47.020Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -274859,6 +274939,14 @@
     {
      "text": "Headless run axf-separate-settings-per-plugin-reset--paulie: brief only · start 19.6K tokens ($0.07) · cost $17.44 · 253 turns · 6 tools, MCP none",
      "at": "2026-11-17T20:57:47.020Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 814 → Remove: The build was cancelled (PR #814 open; not on main; build separate-settings-per-plugin-reset: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-cirmv01 → Remove: The build was cancelled (PR #814 open; not on main; build separate-settings-per-plugin-reset: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -275398,18 +275486,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T18:56:36.706Z",
     "builtAt": "2026-11-17T22:26:09.371Z",
+    "createdAt": "2026-11-17T18:56:36.706Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwl21pwf01vv9a": "2026-11-17T18:57:54.015Z",
      "st-mwl21pwf023858": "2026-11-17T18:57:54.015Z",
@@ -277219,7 +277307,7 @@
    "pr": "#815",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-17T20:29:47.294Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -277285,6 +277373,10 @@
     {
      "text": "Watchdog fixed Live build status: real-time grids, 15-second VPS liveness check, animated runni (step s5): session ended clean (exit 0) but the build stayed marked running: back in the Queue at its place.",
      "at": "2026-11-17T20:18:21.816Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 815 → Remove: The build was cancelled (PR #815 open; not on main; build live-build-status-real-time-grids-15: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -277925,18 +278017,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T19:30:44.328Z",
     "builtAt": "",
+    "createdAt": "2026-11-17T19:30:44.328Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwl3hvyb01zgnb": "2026-11-17T19:38:27.971Z",
      "st-mwl3hvyb02cxbs": "2026-11-17T19:38:27.971Z",
@@ -279934,7 +280026,7 @@
    "pr": "#819",
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
-   "updatedAt": "2026-11-18T00:17:54.575Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T00:17:10.973Z",
    "notes": [
     {
@@ -280008,6 +280100,14 @@
     {
      "text": "CI fix (s365): merged main; fixed token manifests (orchestrator-demo, plan-studio-2), watchdog merge evidence (landing, not refused landed), orchestrator-demo PageToolbar + menu.ts + nav, voice inventory, help coverage + re-bake. All red checks pass locally. console-commands reconnect test is timing-flaky under VPS load (unrelated, untouched).",
      "at": "2026-11-18T00:17:27.369Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 819 → Remove: The build was cancelled (PR #819 open; not on main; build terminal-main-tab-streaming-console-s: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-fyfeb01 → Remove: The build was cancelled (PR #819 open; not on main; build terminal-main-tab-streaming-console-s: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -280435,18 +280535,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T19:34:48.701Z",
     "builtAt": "2026-11-18T00:17:10.973Z",
+    "createdAt": "2026-11-17T19:34:48.701Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwlaugimcko7go": "2026-11-17T19:44:46.822Z",
      "st-mwlaugimcl0qf7": "2026-11-17T19:44:46.822Z",
@@ -286347,7 +286447,7 @@
    "pr": "#820",
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
-   "updatedAt": "2026-11-17T23:33:07.209Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-17T23:31:47.269Z",
    "notes": [
     {
@@ -286433,6 +286533,14 @@
     {
      "text": "Session axf-icon-picker-every-banner-settings-widget--joey on hulu0241 ended (exit 0); the build was already complete.",
      "at": "2026-11-17T23:32:52.319Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 820 → Remove: The build was cancelled (PR #820 open; not on main; build icon-picker-every-banner-settings-widget: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261117-pgqu401 → Remove: The build was cancelled (PR #820 open; not on main; build icon-picker-every-banner-settings-widget: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -286827,18 +286935,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T21:20:30.021Z",
     "builtAt": "2026-11-17T23:31:47.269Z",
+    "createdAt": "2026-11-17T21:20:30.021Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwl76ubk01w860": "2026-11-17T21:21:51.104Z",
      "st-mwl76ubl02wc67": "2026-11-17T21:21:51.104Z",
@@ -286874,7 +286982,7 @@
    "pr": "#823",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-17T22:09:56.591Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -286976,6 +287084,10 @@
     {
      "text": "Reconciler: PR #823; PR #823 names s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11, s12, s13 done",
      "at": "2026-11-17T22:09:56.591Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 823 → Remove: The build was cancelled (PR #823 open; not on main; build fix-banner-settings-interface-tab: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -287373,18 +287485,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T21:23:34.872Z",
     "builtAt": "2026-11-17T22:07:59.785Z",
+    "createdAt": "2026-11-17T21:23:34.872Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwl7aplq017nxs": "2026-11-17T21:24:51.614Z",
      "st-mwl7aplq021vht": "2026-11-17T21:24:51.614Z",
@@ -288608,7 +288720,7 @@
    "pr": "#829",
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
-   "updatedAt": "2026-11-18T01:20:17.836Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T01:10:42.989Z",
    "notes": [
     {
@@ -288814,6 +288926,14 @@
     {
      "text": "Session axf-flagship-professional-skin-covering-2--sully on mossesx-max- ended (exit 0); the build was already landing.",
      "at": "2026-11-18T01:20:17.836Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 829 → Remove: The build was cancelled (PR #829 open; not on main; build flagship-professional-skin-covering-2: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261118-e0399043 → Remove: The build was cancelled (PR #829 open; not on main; build flagship-professional-skin-covering-2: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -289637,18 +289757,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T21:30:30.893Z",
     "builtAt": "2026-11-18T01:10:42.989Z",
+    "createdAt": "2026-11-17T21:30:30.893Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwl7mosm01los3": "2026-11-17T21:34:10.438Z",
      "st-mwl7mosm02xva7": "2026-11-17T21:34:10.438Z",
@@ -289700,7 +289820,7 @@
    "pr": "#825",
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
-   "updatedAt": "2026-11-18T02:03:51.047Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T02:03:51.047Z",
    "notes": [
     {
@@ -289738,6 +289858,10 @@
     {
      "text": "Refused landing → complete (asked by builds-live): complete needs the PR merged to main: mergedAt is empty. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-18T02:15:29.848Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 825 → Remove: The build was cancelled (PR #825 open; not on main; build fix-refreshing-console-jumps-back: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -290091,18 +290215,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T21:36:54.206Z",
     "builtAt": "2026-11-17T22:15:44.447Z",
+    "createdAt": "2026-11-17T21:36:54.206Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwl7sdev01k0v1": "2026-11-17T21:38:35.623Z",
      "st-mwl7sdev0219vc": "2026-11-17T21:38:35.623Z",
@@ -290397,7 +290521,7 @@
    "branch": "claude/settings-fix-part-2-blank-toolbars",
    "pr": "#826",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-18T14:06:36.923Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -290475,6 +290599,10 @@
     {
      "text": "Self-check: settings-fix-part-2-blank-toolbars was marked running on hulu0241 with no session: released and back in the Queue.",
      "at": "2026-11-18T13:59:57.222Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 826 → Remove: The build was cancelled (PR #826 open; not on main; build settings-fix-part-2-blank-toolbars: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -291008,18 +291136,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "mcp",
-    "planId": "",
-    "createdAt": "2026-11-17T22:26:09.371Z",
     "builtAt": "",
+    "createdAt": "2026-11-17T22:26:09.371Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": false,
+    "source": "mcp",
+    "status": "pending",
     "stepAt": {
      "st-mwl9wsjg01c7a2": "2026-11-17T22:28:13.190Z",
      "st-mwl9wsjg024fbk": "2026-11-17T22:28:13.190Z",
@@ -297444,7 +297572,7 @@
    "branch": "claude/auto-lander-never-wait-missing-ui-review",
    "pr": "#831",
    "createdAt": "2026-11-17T22:35:36.950Z",
-   "updatedAt": "2026-11-18T01:39:25.872Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T01:35:30.472Z",
    "notes": [
     {
@@ -297514,6 +297642,10 @@
     {
      "text": "Reconciler: PR #831",
      "at": "2026-11-18T01:39:25.872Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 831 → Remove: The build was cancelled (PR #831 open; not on main; build auto-lander-never-wait-missing-ui-review: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -297959,18 +298091,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "mcp",
-    "planId": "",
-    "createdAt": "2026-11-17T22:35:36.950Z",
     "builtAt": "2026-11-18T01:35:30.472Z",
+    "createdAt": "2026-11-17T22:35:36.950Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": false,
+    "source": "mcp",
+    "status": "complete",
     "stepAt": {
      "st-mwlaizmt014x75": "2026-11-17T22:55:15.780Z",
      "st-mwlaizmt029i4t": "2026-11-17T22:55:15.780Z",
@@ -315253,7 +315385,7 @@
    "pr": "#830",
    "priority": "P1",
    "createdAt": "2026-11-18T00:32:34.912Z",
-   "updatedAt": "2026-11-18T01:51:12.745Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -315291,6 +315423,10 @@
     {
      "text": "Reconciler: PR #830",
      "at": "2026-11-18T01:31:08.118Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 830 → Remove: The build was cancelled (PR #830 open; not on main; build fix-ci-red-main-watchdog-test-vs-done: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -315611,18 +315747,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "fix-launcher-crash-duplicate-steps-brief",
-    "planId": "",
-    "createdAt": "2026-11-18T00:32:34.912Z",
     "builtAt": "",
+    "createdAt": "2026-11-18T00:32:34.912Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "fix-launcher-crash-duplicate-steps-brief",
+    "status": "pending",
     "stepAt": {
      "st-mwlfgrl13m281n": "2026-11-18T00:34:08.301Z",
      "st-mwlfgrl13nbajz": "2026-11-18T00:34:08.301Z",
@@ -317465,7 +317601,7 @@
    "pr": "#836",
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
-   "updatedAt": "2026-11-18T08:07:51.338Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T07:55:44.837Z",
    "notes": [
     {
@@ -317595,6 +317731,22 @@
     {
      "text": "UI Review upload hung from the VPS session (review.mjs submit --console and shot.mjs --console, both console.amberxai.com and 172.16.7.4:7090 answer 200 but the CLI never returns). Shots are in _claude/builds/reports/approval-pass-covers-every-call/; resubmit: node apps/console-web/plugins/ui-review/review.mjs submit --app axhub-web --screen passes --shots <those 6 files> --single-option ... --console",
      "at": "2026-11-18T08:05:13.633Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 836 → Remove: The build was cancelled (PR #836 open; not on main; build approval-pass-covers-every-call: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261118-d333e579 → Remove: The build was cancelled (PR #836 open; not on main; build approval-pass-covers-every-call: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261118-c0736525 → Remove: The build was cancelled (PR #836 open; not on main; build approval-pass-covers-every-call: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261118-3421b3f6 → Remove: The build was cancelled (PR #836 open; not on main; build approval-pass-covers-every-call: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -317943,18 +318095,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-18T01:41:28.108Z",
     "builtAt": "",
+    "createdAt": "2026-11-18T01:41:28.108Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwlgr9vm01j4ye": "2026-11-18T01:49:40.384Z",
      "st-mwlgr9vm021izx": "2026-11-18T01:49:40.384Z",
@@ -318521,7 +318673,7 @@
    "branch": "claude/plan-studio-2-open-button-working-deep",
    "pr": "#843",
    "createdAt": "2026-11-18T12:20:46.628Z",
-   "updatedAt": "2026-11-18T14:36:33.837Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T14:29:07.628Z",
    "notes": [
     {
@@ -318567,6 +318719,14 @@
     {
      "text": "Session axf-plan-studio-2-open-button-working-deep--joey on hulu0241 ended (exit 0); the build was already landing.",
      "at": "2026-11-18T14:36:33.837Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 843 → Remove: The build was cancelled (PR #843 open; not on main; build plan-studio-2-open-button-working-deep: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261118-36485ece → Remove: The build was cancelled (PR #843 open; not on main; build plan-studio-2-open-button-working-deep: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -319008,7 +319168,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319518,7 +319678,7 @@
    "branch": "claude/every-app-gets-own-locked-default",
    "pr": "#845",
    "createdAt": "2026-11-18T12:27:40.646Z",
-   "updatedAt": "2026-11-18T15:08:00.526Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T15:05:21.420Z",
    "notes": [
     {
@@ -319580,6 +319740,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 2 steps left: back in Pending for Brett.",
      "at": "2026-11-18T15:07:09.923Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 845 → Remove: The build was cancelled (PR #845 open; not on main; build every-app-gets-own-locked-default: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -319788,7 +319952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319811,7 +319975,7 @@
    "branch": "claude/every-plugin-gets-own-default-toolbar",
    "pr": "#844",
    "createdAt": "2026-11-18T12:30:23.226Z",
-   "updatedAt": "2026-11-18T14:43:04.234Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T14:33:04.937Z",
    "notes": [
     {
@@ -319853,6 +320017,10 @@
     {
      "text": "Reconciler: PR #844",
      "at": "2026-11-18T14:43:04.234Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 844 → Remove: The build was cancelled (PR #844 open; not on main; build every-plugin-gets-own-default-toolbar: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -320074,18 +320242,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "Brett",
-    "planId": "",
-    "createdAt": "2026-11-18T12:30:23.226Z",
     "builtAt": "",
+    "createdAt": "2026-11-18T12:30:23.226Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "Brett",
+    "status": "pending",
     "stepAt": {
      "st-mwm3pj1301peo9": "2026-11-18T12:32:10.647Z",
      "st-mwm3pj1302oacx": "2026-11-18T12:32:10.647Z",
@@ -320614,7 +320782,7 @@
    "pr": "#846",
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
-   "updatedAt": "2026-11-18T18:12:03.610Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-18T18:10:34.719Z",
    "notes": [
     {
@@ -320732,6 +320900,14 @@
     {
      "text": "Headless run axf-one-build-time-always-split-to-fill--gina: brief only · start 18.4K tokens ($0.17) · cost $23.40 · 298 turns · 6 tools, MCP none",
      "at": "2026-11-18T18:12:03.610Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 846 → Remove: The build was cancelled (PR #846 open; not on main; build one-build-time-always-split-to-fill: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261118-81428f6f → Remove: The build was cancelled (PR #846 open; not on main; build one-build-time-always-split-to-fill: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [
@@ -321493,18 +321669,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "Brett",
-    "planId": "",
-    "createdAt": "2026-11-18T12:40:40.117Z",
     "builtAt": "2026-11-18T18:10:34.719Z",
+    "createdAt": "2026-11-18T12:40:40.117Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "Brett",
+    "status": "complete",
     "stepAt": {
      "st-mwm47ohv01anqh": "2026-11-18T12:46:17.539Z",
      "st-mwm47ohv02ikii": "2026-11-18T12:46:17.539Z",
@@ -321688,7 +321864,7 @@
    "branch": "claude/stop-push-storm-builds-live-pushes-build",
    "pr": "#850",
    "createdAt": "2026-11-18T14:09:32.821Z",
-   "updatedAt": "2026-11-19T02:22:00.656Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -321726,6 +321902,10 @@
     {
      "text": "Reconciler: PR #850; PR #850 names s1 done",
      "at": "2026-11-19T02:22:00.656Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 850 → Remove: The build was cancelled (PR #850 open; not on main; build stop-push-storm-builds-live-pushes-build: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -321836,18 +322016,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-18T14:09:32.821Z",
     "builtAt": "2026-11-18T16:11:28.234Z",
+    "createdAt": "2026-11-18T14:09:32.821Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwm76ti603mf5u": "2026-11-18T14:09:32.825Z",
      "st-mwm76ti604oj61": "2026-11-18T14:09:32.825Z"
@@ -323116,7 +323296,7 @@
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "#849",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T03:11:50.515Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "2026-11-19T03:10:17.211Z",
    "notes": [
     {
@@ -323146,6 +323326,10 @@
     {
      "text": "Session axf-postgres-part-c-console-state-settings--paulie on hulu0241 ended (exit 0); the build was already landing.",
      "at": "2026-11-19T03:11:50.515Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 849 → Remove: The build was cancelled (PR #849 open; not on main; build postgres-part-c-console-state-settings: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -323309,7 +323493,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323332,7 +323516,7 @@
    "branch": "claude/postgres-part-b-plan-plan-studio-catalog",
    "pr": "#851",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T03:23:19.717Z",
+   "updatedAt": "2026-11-19T04:18:33.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -323386,6 +323570,10 @@
     {
      "text": "Reconciler: PR #851; PR #851 names s4 done",
      "at": "2026-11-19T03:23:19.717Z"
+    },
+    {
+     "text": "Watchdog: Merge queue entry 851 → Remove: The build was cancelled (PR #851 open; not on main; build postgres-part-b-plan-plan-studio-catalog: deleted)",
+     "at": "2026-11-19T04:18:33.129Z"
     }
    ],
    "approvals": [],
@@ -323540,7 +323728,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

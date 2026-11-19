@@ -840,39 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 15:13 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 15:16 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
-- 2026-11-18 15:16 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
-- 2026-11-18 15:16 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
-- 2026-11-18 15:17 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
-- 2026-11-18 15:18 UTC · `attach-widgets-to-any-toolbar-banner` → running, note (all) · pipeline
-- 2026-11-18 15:19 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · orchestrator
-- 2026-11-18 15:20 UTC · `one-build-time-always-split-to-fill` s6 done (all) · orchestrator
-- 2026-11-18 15:22 UTC · `one-build-time-always-split-to-fill` s6 done (all) · foreign-write
-- 2026-11-18 15:24 UTC · `attach-widgets-to-any-toolbar-banner` s6 done, → running (all) · orchestrator
-- 2026-11-18 15:28 UTC · `one-build-time-always-split-to-fill` s7 done (all) · orchestrator
-- 2026-11-18 15:31 UTC · `attach-widgets-to-any-toolbar-banner` s7 done (all) · orchestrator
-- 2026-11-18 15:33 UTC · `attach-widgets-to-any-toolbar-banner` s8 done (all) · orchestrator
-- 2026-11-18 15:35 UTC · `one-build-time-always-split-to-fill` s8 done (all) · orchestrator
-- 2026-11-18 15:36 UTC · `one-build-time-always-split-to-fill` s9 done (all) · orchestrator
-- 2026-11-18 15:37 UTC · `attach-widgets-to-any-toolbar-banner` s9 done (all) · orchestrator
-- 2026-11-18 15:38 UTC · `one-build-time-always-split-to-fill` s10 done (all) · orchestrator
-- 2026-11-18 15:44 UTC · `attach-widgets-to-any-toolbar-banner` s10 done (all) · orchestrator
-- 2026-11-18 15:48 UTC · `attach-widgets-to-any-toolbar-banner` s11 done (all) · orchestrator
-- 2026-11-18 15:53 UTC · `attach-widgets-to-any-toolbar-banner` s12 done (all) · orchestrator
-- 2026-11-18 16:00 UTC · `attach-widgets-to-any-toolbar-banner` s13 done (all) · orchestrator
-- 2026-11-18 16:03 UTC · `stop-push-storm-builds-live-pushes-build` s1 done, → running (all) · orchestrator
-- 2026-11-18 16:05 UTC · `attach-widgets-to-any-toolbar-banner` s14 done (all) · orchestrator
-- 2026-11-18 16:06 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-18 16:06 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
-- 2026-11-18 16:08 UTC · `attach-widgets-to-any-toolbar-banner` s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done, s13 done, s14 done, note (all) · foreign-write
-- 2026-11-18 16:08 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
-- 2026-11-18 16:08 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · foreign-write
-- 2026-11-18 16:08 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · foreign-write
-- 2026-11-18 16:08 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · foreign-write
-- 2026-11-18 16:08 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · foreign-write
-- 2026-11-18 16:08 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · foreign-write
-- 2026-11-18 16:08 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · foreign-write
 - 2026-11-18 16:08 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · foreign-write
 - 2026-11-18 16:08 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
 - 2026-11-18 16:08 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed (all) · foreign-write
@@ -1240,6 +1207,39 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 03:50 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 - 2026-11-19 03:55 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 04:03 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 04:18 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `always-fill-every-slot-when-slots-are` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `projects-own-everything-per-project` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `quick-settings-pinned-collapsible-pane` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `new-asset-type-animated-expanding-row` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `orchestrator-settings-collapsible-split` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `land-per-instance-settings-picker` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `context-menus-plugin-one-true-source` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `picker-dialog-plugin-replaces-all` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `banner-widget-shapes-plus-change-icon` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `move-server-side-console-parts-onto-vps` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `terminal-main-tab-streaming-console-s` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `icon-picker-every-banner-settings-widget` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `fix-banner-settings-interface-tab` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `flagship-professional-skin-covering-2` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `fix-refreshing-console-jumps-back` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `approval-pass-covers-every-call` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `plan-studio-2-open-button-working-deep` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `every-app-gets-own-locked-default` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `every-plugin-gets-own-default-toolbar` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `one-build-time-always-split-to-fill` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `postgres-part-c-console-state-settings` note (all) · watchdog
+- 2026-11-19 04:18 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · watchdog
 
 ## Token passes (log)
 
