@@ -253,17 +253,20 @@ axf_cron_file axf-stale-watchdog "*/5 * * * * root cd $DIR && flock -n /tmp/axf-
 # dead tmux axf-* sessions, ghost agent slots, ownerless heavy locks, leftover test servers and stale temp folders go.
 # One source for the line: the template deploy/cron/axf-reaper.
 axf_cron_file axf-reaper "$(grep -v '^#' "$DIR/deploy/cron/axf-reaper" | sed "s#__DIR__#$DIR#g")"
-# The build pipeline's dispatcher (Brett, Nov 8 2026): every minute, split new builds, watch the Queue, the Claude accounts
-# and the agent slots, and start a headless session for the next Queue build when a slot is free (never two at once).
-axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator
-# Build watchdog (Brett, Nov 13 2026: "Never wait for Brett to notice"): every minute, builds marked running with no live
-# session are reset, requeued or retried, idle slots are filled and the phone gets an FYI per fix. One source for the
-# cron line: watchdog.mjs install-cron (/etc/cron.d/axf-watchdog, flock /run/axf-watchdog.lock, removes itself with the plugin).
-WD_JS="$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs"  # axf-plugin:build-orchestrator
-[ -f "$WD_JS" ] && { (cd "$DIR" && node "$WD_JS" install-cron --dir "$DIR") | sed 's/^/[axf] /' || say "watchdog cron not installed"; }  # axf-plugin:build-orchestrator
-# Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
-# builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
-axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
+# Pipeline 2.0 (Brett, Nov 19 2026: fully autonomous, zero human intervention). One source for every line:
+# deploy/watchdog/cron.mjs install. It writes the orchestrator tick (layer 1, every minute; replaces the old axf-pipeline
+# dispatcher tick), the layer-2 watchdog (every minute: stuck statuses, dead sessions, usage limits, retried forward),
+# the store audits (:17 and :47, one at a time, nice 19, main checkout only) and layer 3 (systemd timer, every 2 minutes:
+# keeps the tick and layer 2 alive, alerts only when it cannot heal). It also removes the retired crons on every deploy
+# so none comes back: axf-pipeline (old dispatcher), axf-auto-land (old push-banner lander) and axf-watchdog (old
+# recovery watchdog, whose slot filling ran the old pipeline tick).
+WD2_JS="$DIR/deploy/watchdog/cron.mjs"
+rm -f /etc/cron.d/axf-pipeline /etc/cron.d/axf-auto-land /etc/cron.d/axf-watchdog
+if [ -f "$WD2_JS" ]; then
+  (cd "$DIR" && node "$WD2_JS" install --dir "$DIR") | sed 's/^/[axf] /' || say "watchdog schedules not installed: node $WD2_JS install --dir $DIR"
+  # the store audits run in the watchdog, not before every dispatch: point their build rules there (idempotent)
+  (cd "$DIR" && node deploy/watchdog/audits.mjs handoff) >/dev/null 2>&1 || say "build rules not handed to the watchdog yet: node $DIR/deploy/watchdog/audits.mjs handoff"
+fi
 # The server auto-lander (auto-lander@1, Brett Nov 16 2026: "Make the server do it automatically without the console"):
 # a systemd service + timer, every minute: merges main into clashing builds, starts fix sessions for red CI, hands green
 # PRs to the merge queue, escalates to the systems check after maxAttempts. Status: node deploy/auto-lander/auto-lander.mjs status
