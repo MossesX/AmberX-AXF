@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:29:53.155Z",
+ "updatedAt": "2026-11-19T02:30:34.255Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194889,7 +194889,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:29:22.831Z",
+   "updatedAt": "2026-11-19T02:30:10.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -195137,7 +195137,7 @@
     },
     {
      "id": "s10",
-     "text": "Duplicate, not built here: this namespace group is built by postgres-part-c-console-state-settings (its s1). Skipped.",
+     "text": "s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over",
      "model": "Opus",
      "why": "",
      "phase": "",

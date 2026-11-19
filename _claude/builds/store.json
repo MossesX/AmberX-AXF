@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9235,
- "updatedAt": "2026-11-19T02:29:53.155Z",
+ "rev": 9236,
+ "updatedAt": "2026-11-19T02:30:34.255Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321853,7 +321853,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:29:22.831Z",
+   "updatedAt": "2026-11-19T02:30:10.029Z",
    "builtAt": "",
    "notes": [
     {
@@ -322151,7 +322151,7 @@
      "id": "s10",
      "uid": "st-mwmv01v4013a6f",
      "title": "",
-     "text": "Duplicate, not built here: this namespace group is built by postgres-part-c-console-state-settings (its s1). Skipped.",
+     "text": "s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -322167,7 +322167,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-19T01:16:08.948Z",
-     "updatedAt": "2026-11-19T02:29:25.249Z"
+     "updatedAt": "2026-11-19T02:30:14.427Z"
     },
     {
      "id": "s8",
