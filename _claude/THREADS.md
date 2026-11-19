@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 14:23 UTC · `toolbars-4-5-chat-viewer-codebase` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `toolbars-2-5-plan-studio-ui-review-2` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `toolbars-5-5-claude-accounts-glossary` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `fix-banner-settings-interface-tab` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 16:38 UTC · `remove-amberx-app-code-once-phone` s5 done (all) · orchestrator
 - 2026-11-19 16:38 UTC · `remove-amberx-app-code-once-phone` s6 done (all) · orchestrator
 - 2026-11-19 16:38 UTC · `remove-amberx-app-code-once-phone` branch claude/fix-main-ci-p2, PR #853 (all) · builds-live
+- 2026-11-19 17:08 UTC · `remove-amberx-app-code-once-phone` note (all) · reconciler
 
 ## Token passes (log)
 

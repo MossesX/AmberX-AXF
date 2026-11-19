@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9374,
- "updatedAt": "2026-11-19T16:38:42.016Z",
+ "rev": 9375,
+ "updatedAt": "2026-11-19T17:08:28.644Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -293250,7 +293250,7 @@
    "branch": "claude/fix-main-ci-p2",
    "pr": "#853",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T16:38:37.818Z",
+   "updatedAt": "2026-11-19T17:08:24.654Z",
    "builtAt": "",
    "notes": [
     {
@@ -293296,6 +293296,10 @@
     {
      "text": "s1 gate: Brett asked for the removal directly (Nov 19 2026), so the Phone Connect pairing gate was not re-checked; work went on the PR #853 branch claude/fix-main-ci-p2 as asked. s4: notify channel id 'amberx' kept as the phone push channel.",
      "at": "2026-11-19T16:37:37.067Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-19T17:08:24.654Z"
     }
    ],
    "approvals": [],
@@ -293506,7 +293510,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293533,40 +293537,7 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": [],
-   "statusAt": "2026-11-19T14:45:02.399Z",
-   "statusBy": "watchdog",
-   "attempt": 3,
-   "statusLog": [
-    {
-     "status": "failed",
-     "at": "2026-11-19T14:23:01.277Z",
-     "by": "watchdog",
-     "attempt": 1,
-     "why": "pending did not move after 2 re-run(s) of the transition (2227 min past its budget)"
-    },
-    {
-     "status": "pending",
-     "at": "2026-11-19T14:24:01.548Z",
-     "by": "watchdog",
-     "attempt": 2,
-     "why": "retry forward at pending, attempt 2"
-    },
-    {
-     "status": "failed",
-     "at": "2026-11-19T14:44:01.143Z",
-     "by": "watchdog",
-     "attempt": 2,
-     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
-    },
-    {
-     "status": "pending",
-     "at": "2026-11-19T14:45:02.399Z",
-     "by": "watchdog",
-     "attempt": 3,
-     "why": "retry forward at pending, attempt 3"
-    }
-   ]
+   "copies": []
   },
   {
    "id": "settings-fix-part-2-blank-toolbars",
