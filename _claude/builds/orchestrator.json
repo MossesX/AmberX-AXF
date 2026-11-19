@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T00:43:19.123Z",
+ "updatedAt": "2026-11-19T00:43:49.121Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -196171,9 +196171,13 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:42:04.028Z",
-   "updatedAt": "2026-11-19T00:42:43.036Z",
+   "updatedAt": "2026-11-19T00:43:33.836Z",
    "builtAt": "",
    "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:43:33.836Z"
+    },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:42:43.036Z"
@@ -196198,8 +196202,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bg01zjdx",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik01hdrd",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s2",
@@ -196217,8 +196221,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bg02ogzw",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik02i3qr",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s3",
@@ -196236,8 +196240,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bg03tzw2",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik03mdde",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s4",
@@ -196255,8 +196259,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bg04tx6p",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik04ll5j",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s5",
@@ -196274,8 +196278,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bg053tv9",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik05dq2k",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s6",
@@ -196293,8 +196297,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bg06iagw",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik06a6e6",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s7",
@@ -196312,8 +196316,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bn07hmob",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik0739h0",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s8",
@@ -196331,8 +196335,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bn080tzn",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik08o4d4",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s9",
@@ -196350,8 +196354,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bn09do6b",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik09k5rt",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s10",
@@ -196369,8 +196373,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0bn0abzvt",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik0a05bm",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s11",
@@ -196391,8 +196395,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmtt0e10bg0vo",
-     "createdAt": "2026-11-19T00:42:43.036Z"
+     "uid": "st-mwmtu3ik0b6xfp",
+     "createdAt": "2026-11-19T00:43:33.836Z"
     }
    ]
   }

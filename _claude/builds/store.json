@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9192,
- "updatedAt": "2026-11-19T00:43:19.123Z",
+ "rev": 9193,
+ "updatedAt": "2026-11-19T00:43:49.121Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323732,9 +323732,13 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:42:04.028Z",
-   "updatedAt": "2026-11-19T00:42:43.036Z",
+   "updatedAt": "2026-11-19T00:43:33.836Z",
    "builtAt": "",
    "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:43:33.836Z"
+    },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:42:43.036Z"
@@ -323755,7 +323759,7 @@
     "crashes": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-19T00:42:43.036Z",
+     "at": "2026-11-19T00:43:33.836Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 11,
@@ -323765,13 +323769,7 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-19T00:42:55.330Z",
-     "why": "subscription account hulu0241"
-    },
+    "planned": null,
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -323781,7 +323779,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwmtt0bg01zjdx",
+     "uid": "st-mwmtu3ik01hdrd",
      "title": "",
      "text": "Brett (voice, Nov 19 2026): \"I need an emergency button … like a safe mode button. I hit it, boom, and immediately the server shuts a whole bunch of shit down.\"",
      "model": "Opus",
@@ -323798,12 +323796,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwmtt0bg02ogzw",
+     "uid": "st-mwmtu3ik02i3qr",
      "title": "",
      "text": "Seen today: load 60 this morning, 13-42 several times tonight (push storm, cron pile-ups, builds-store verify jobs re-reading the 14 MB store, Coolify at 400%). Everything timed out, including the console and the phone app.",
      "model": "Opus",
@@ -323820,12 +323818,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwmtt0bg03tzw2",
+     "uid": "st-mwmtu3ik03mdde",
      "title": "",
      "text": "What to build:",
      "model": "Opus",
@@ -323842,12 +323840,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwmtt0bg04tx6p",
+     "uid": "st-mwmtu3ik04ll5j",
      "title": "",
      "text": "One Safe mode switch, reachable from a big button in the console banner, the phone (Phone Connect / console app, works even when the console is slow because it talks to a tiny always-on endpoint), voice and the CLI/MCP. Confirm once.",
      "model": "Opus",
@@ -323864,12 +323862,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwmtt0bg053tv9",
+     "uid": "st-mwmtu3ik05dq2k",
      "title": "",
      "text": "On: moves the non-essential crons aside (console-nightly, doctor, maintenance, watchdogs, auto-land, updaters), holds the pipeline (no new launches), pauses heavy steps (builds-store verify, model-gate audit, typechecks, vite/esbuild), optionally pauses running build sessions, and stops non-essential containers. Configurable list of what goes down and what stays.",
      "model": "Opus",
@@ -323886,12 +323884,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwmtt0bg06iagw",
+     "uid": "st-mwmtu3ik06a6e6",
      "title": "",
      "text": "Always stays up: axHub, the console server, axf-data / Postgres, Phone Connect link, SSH.",
      "model": "Opus",
@@ -323908,12 +323906,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwmtt0bn07hmob",
+     "uid": "st-mwmtu3ik0739h0",
      "title": "",
      "text": "Off: puts back exactly what it took down, in order, and reports.",
      "model": "Opus",
@@ -323930,12 +323928,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwmtt0bn080tzn",
+     "uid": "st-mwmtu3ik08o4d4",
      "title": "",
      "text": "Shows the live picture while on: load, CPU per container, memory, swap, disk, what it stopped.",
      "model": "Opus",
@@ -323952,12 +323950,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwmtt0bn09do6b",
+     "uid": "st-mwmtu3ik09k5rt",
      "title": "",
      "text": "Hooks into the load spike alarm build: optional auto safe mode when load passes a set level.",
      "model": "Opus",
@@ -323974,12 +323972,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwmtt0bn0abzvt",
+     "uid": "st-mwmtu3ik0a05bm",
      "title": "",
      "text": "Full API control (REST, MCP, CLI, voice).",
      "model": "Opus",
@@ -323996,12 +323994,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwmtt0e10bg0vo",
+     "uid": "st-mwmtu3ik0b6xfp",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/server-safe-mode-one-emergency-button.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -324021,8 +324019,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:42:43.036Z",
-     "updatedAt": "2026-11-19T00:42:43.036Z"
+     "createdAt": "2026-11-19T00:43:33.836Z",
+     "updatedAt": "2026-11-19T00:43:33.836Z"
     }
    ],
    "profiles": [
@@ -324038,7 +324036,7 @@
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-19T00:42:43.036Z",
+   "defaultAt": "2026-11-19T00:43:33.836Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
