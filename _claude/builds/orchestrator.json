@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T00:37:05.714Z",
+ "updatedAt": "2026-11-19T00:38:15.638Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194865,14 +194865,14 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T00:36:36.334Z",
+   "updatedAt": "2026-11-19T00:37:52.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -194950,6 +194950,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-19T00:35:58.320Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--gina.",
+     "at": "2026-11-19T00:37:18.137Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--gina, shared account login)",
+     "at": "2026-11-19T00:37:52.626Z"
     }
    ],
    "approvals": [],
