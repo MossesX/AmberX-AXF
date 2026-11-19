@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9207,
- "updatedAt": "2026-11-19T01:15:44.824Z",
+ "rev": 9208,
+ "updatedAt": "2026-11-19T01:16:25.246Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323032,7 +323032,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T01:13:44.828Z",
+   "updatedAt": "2026-11-19T01:14:57.854Z",
    "builtAt": "",
    "notes": [
     {
@@ -323066,6 +323066,10 @@
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-19T01:13:44.828Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T01:14:57.854Z"
     }
    ],
    "approvals": [],
@@ -323084,7 +323088,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -323200,7 +323204,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
