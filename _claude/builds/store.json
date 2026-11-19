@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9172,
- "updatedAt": "2026-11-19T00:15:32.638Z",
+ "rev": 9173,
+ "updatedAt": "2026-11-19T00:16:28.524Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322886,7 +322886,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T00:14:30.325Z",
+   "updatedAt": "2026-11-19T00:15:35.430Z",
    "builtAt": "",
    "notes": [
     {
@@ -322896,6 +322896,10 @@
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-19T00:14:30.325Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:15:35.430Z"
     }
    ],
    "approvals": [],
@@ -323030,7 +323034,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
