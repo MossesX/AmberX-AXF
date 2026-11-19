@@ -524,8 +524,14 @@ CONTROL = DocTable('control_targets', 'console', 'control/inventory.json',
 SETTINGS = RecordTable('settings', 'settings', SETTINGS_COLS, 'settings documents (hub-settings@1 and friends): one row per document')
 PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (plan@1): one row per plan', r'^(plans|projects/[^/]+/plans)/[^/]+\.json$')
 NOTES = NotesTable()
+# agent-slots@1 (s4.1): the VPS-wide session and heavy-step slots; one row per entry, the list it is in is its section
+SLOT_COLS = [Col('id'), Col('name'), Col('kind'), Col('priority'), Col('build'), Col('state'), Col('host'), Col('pid', type='int'),
+             Col('session'), Col('cwd'), Col('by'), Col('seq', type='int'), Col('enqueued_at', 'enqueuedAt'), Col('started_at', 'startedAt')]
+AGENT_SLOTS = DocTable('agent_slots', 'console', 'agent-slots/state.json',
+                       {k: ListSpec('agent_slots', SLOT_COLS, k, key='id') for k in ('running', 'queue', 'heavy', 'done')},
+                       'agent slots (agent-slots@1): one row per running, waiting, heavy or recently done entry (section = its list); seq, guard trips, swap and hosts in store_heads')
 
-TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES]
+TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES, AGENT_SLOTS]
 _BY_NAME = {t.name: t for t in TABLES}
 
 HOLDS = {

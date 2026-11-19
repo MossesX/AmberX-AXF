@@ -429,6 +429,16 @@ still files and move in their own steps (DATA-INVENTORY.md).
   They are dropped once their readers ask the store (s4/s5).
 - **Console focus** (`console-focus@1`) reads build ids through `data_store` (the tables in cutover, cached 30 s).
 
+## Agent slots on the tables (s4.1, Nov 19 2026)
+
+`console/agent-slots/state.json` is the DocTable `agent_slots` (services/axf-data/tables.py): one row per entry, its
+list (`running`, `queue`, `heavy`, `done`) as the section, the rest in `store_heads`. `agent-slots.mjs` reads and writes
+the state by the key's mode: local = the file under the mkdir lock; shadow = the file, then the same document on
+axf-data; cutover = axf-data only, the lock replaced by a rev check (get with etag, apply, put if-match, re-read on a
+conflict, 8 tries); rollback = writes refused. `agent-slots.mjs data cutover --apply` copies, reads back, compares and
+flips the key under the mkdir lock; `data local --apply` goes back. The flip waits until every checkout that runs
+`agent-slots.mjs` (each worktree runs its own copy) has this code.
+
 ## What the first phase did not do
 
 Phase 1 of `data-container-axf-data-holds-all` was the contract, the reference client with a local-file backend, the

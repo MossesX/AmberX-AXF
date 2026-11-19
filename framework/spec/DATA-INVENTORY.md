@@ -168,6 +168,25 @@ Every other project (20) holds only `project.manifest.json` → `projects` table
 catch-all rule `^<project>/_data/(.+)$ → console/projects/{1}/{2}` stays until a project adds data, which then gets a
 table through the same rule.
 
+## s3 and s4.1 (Nov 19 2026, Opus)
+
+- **s3**: the cut code is in (`DATA-STORE.md` → "After the flip"): no file lock or file write on the store in cutover,
+  builds main holds newer are adopted into the tables (writers from before the cut), the console checkout's `store.json`
+  and orchestrator exports are a read-only projection of the tables, `builds-data.mjs clean` for the leftovers (the 106
+  `tmp-*` files were already gone on Nov 19). `pending.json` / `build-queue.json` stay as exports of the builds record
+  (still read by pending.mjs, build-queue.mjs, console views), so the pending list and the queue live in the builds tables
+  with the store. The flip itself (`builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json`) runs
+  once this code is on main and `/opt/axf` runs it: main's copy has no projection yet.
+- **s4.1**: agent-slots → table `agent_slots` (one row per entry, section = `running` / `queue` / `heavy` / `done`;
+  `seq`, guard trips, swap and hosts in `store_heads`). `agent-slots.mjs` follows the key mode of
+  `console/agent-slots/state.json`: cutover replaces the mkdir lock with a rev check (read with etag, change, put
+  if-match, re-read on conflict). The cut: `agent-slots.mjs data status | cutover [--apply] | local [--apply]`, under the
+  mkdir lock. Check: `framework/spec/check-agent-slots-data.mjs`. The flip waits until every worktree that runs
+  `agent-slots.mjs` has this code (each runs its own copy; an older one would keep the file and split the throttle).
+  `settings.json`, `live.json`, `build-limit*.json`, `runs/`, the reaper logs: next, same pattern.
+- **auto-lander** (`_data/auto-lander/*`) is not a data-store@1 path yet (`keyFor` → null): it needs a path rule in
+  `framework/schemas/data-store.json` before it can move. Left for the contract step (Fable), with Part C's plugin dirs.
+
 ## Order for s4 (one namespace per sub-step, each: create table, backfill, verify counts + manifest hash, cut over)
 
 1. **s4.1** pending, build queue, agent-slots, auto-lander (contended by every launch; same lock problem as builds).

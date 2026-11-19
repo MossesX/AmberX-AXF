@@ -151,6 +151,7 @@ jobs:
           docker rm -f axf-pg
       - run: node framework/spec/check-data-migrate.mjs             # data-migrate on a seeded copy of real data: dry run by default, backup first, copy, verify M0 = M1, roll back from the backup, idempotent re-run, forced mismatches fail
       - run: node framework/spec/check-builds-store-data.mjs        # builds store on data-store@1: local, shadow (mirrored store + journal), cutover (axf-data only, lock = rev check, history from the remote journal), rollback refused
+      - run: node framework/spec/check-agent-slots-data.mjs         # agent-slots on data-store@1: local, the cut (copy, verify, flip the key), cutover writes (rev check instead of the mkdir lock), back to local
       - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
       - run: node framework/spec/check-landing-line.mjs              # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
       - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / molly-owned rules), lander-state@1 from the merge queue, schema snapshots

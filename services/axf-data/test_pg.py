@@ -333,6 +333,13 @@ def test_other_domain_tables():
             assert per == {k: len(inv[k]) for k in ('views', 'nav', 'tabGroups', 'settingsTabs', 'settings', 'functions', 'buttons', 'plugins')}
             assert st.fetchone('SELECT COUNT(*) AS n FROM control_tabs')['n'] == sum(len(g['tabs']) for g in inv['tabGroups'])
             assert st.fetchone("SELECT COUNT(*) AS n FROM control_targets WHERE address LIKE 'view:%'")['n'] >= len(inv['views'])
+        # agent slots (s4.1): one row per entry, its list is its section; the same id may sit in two lists
+        slots = {'$axf': 'agent-slots@1', 'seq': 7, 'guard': {'trips': [1]}, 'swap': {'since': None, 'mb': 0}, 'hosts': {'h': {'at': 1}},
+                 'running': [{'id': 'a', 'name': 'b1', 'kind': 'headless', 'state': 'running', 'pid': 12, 'seq': 3, 'extra': {'x': 1}}],
+                 'queue': [{'id': 'q', 'name': 'b2', 'state': 'waiting', 'priority': 'urgent', 'seq': 5}], 'heavy': [], 'done': [{'id': 'a', 'state': 'done'}]}
+        c.put('/v1/console/agent-slots/state.json', content=json.dumps(slots), headers=J(**{'if-none-match': '*'}))
+        assert c.get('/v1/console/agent-slots/state.json', headers=H()).json() == json.loads(canonical(slots))
+        assert [(x['section'], x['id'], x['state'], x['pid']) for x in st.fetchall('SELECT section, id, state, pid FROM agent_slots ORDER BY section, pos')] == [('done', 'a', 'done', None), ('queue', 'q', 'waiting', None), ('running', 'a', 'running', 12)]
         # a record with \u0000 cannot be jsonb: kept byte-exact instead
         c.put('/v1/builds/odd.json', content=json.dumps({'s': 'a\u0000b'}), headers=J(**{'if-none-match': '*'}))
         assert c.get('/v1/builds/odd.json', headers=H()).json() == {'s': 'a\u0000b'}
