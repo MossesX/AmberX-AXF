@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9219,
- "updatedAt": "2026-11-19T01:55:29.932Z",
+ "rev": 9220,
+ "updatedAt": "2026-11-19T01:57:41.614Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323083,7 +323083,7 @@
    "branch": "claude/postgres-part-b-plan-plan-studio-catalog",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T01:19:15.249Z",
+   "updatedAt": "2026-11-19T01:57:25.127Z",
    "builtAt": "",
    "notes": [
     {
@@ -323148,20 +323148,20 @@
    "pipeline": {
     "queuedAt": "2026-11-19T00:56:16.431Z",
     "queuedBy": "cli",
-    "account": "hulu0241",
-    "session": "axf-postgres-part-b-plan-plan-studio-catalog--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "phase": "Phase 1",
-    "launchedAt": "2026-11-19T01:17:49.246Z",
-    "runs": 1,
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-19T01:17:49.246Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -323169,8 +323169,10 @@
      "at": "2026-11-19T00:12:29.213Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
-    "pickedAt": "2026-11-19T01:17:49.246Z",
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -323191,12 +323193,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T01:57:25.127Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-19T00:12:01.642Z",
-     "updatedAt": "2026-11-19T00:12:01.642Z"
+     "updatedAt": "2026-11-19T01:57:26.919Z"
     },
     {
      "id": "s2",
