@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T11:55:44.128Z",
+ "updatedAt": "2026-11-19T11:56:35.927Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195499,6 +195499,10 @@
     {
      "text": "Reconciler: PR #848 merged: complete",
      "at": "2026-11-19T11:54:49.641Z"
+    },
+    {
+     "text": "Refused running → complete (asked by builds-live): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T11:56:25.550Z"
     }
    ],
    "approvals": [

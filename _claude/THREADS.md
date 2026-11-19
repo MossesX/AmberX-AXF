@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 19:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-18 19:49 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 - 2026-11-18 19:51 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
 - 2026-11-18 19:51 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 11:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 11:48 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 11:54 UTC · `urgent-all-data-to-postgres-builds-store` → complete, note (all) · reconciler
+- 2026-11-19 11:56 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · builds-live
 
 ## Token passes (log)
 
