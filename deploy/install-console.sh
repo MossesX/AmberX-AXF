@@ -112,10 +112,12 @@ if [ -n "$VOL" ]; then
         { cp -a --update=none /old/. /projects/amberx-axf/_data/ 2>/dev/null || cp -a -n /old/. /projects/amberx-axf/_data/; } && touch /projects/amberx-axf/_data/.legacy-copied && echo "copied the legacy data folder in"
       fi
       node /axf/framework/cli/persist.mjs push | sed "s/^/  /"
-      chown -R "$HUB_UID:$HUB_UID" /projects/amberx-axf /projects/_shared
+      # files come and go while this runs (lock files, *.tmp of live writers): one that vanishes between the scan and
+      # the chmod must not fail the update (Nov 19 2026: a removed agent-slots/state.lock stopped the console)
+      chown -R "$HUB_UID:$HUB_UID" /projects/amberx-axf /projects/_shared 2>/dev/null || echo "some files changed while setting owners (skipped)"
       chown "$HUB_UID:$HUB_UID" /projects
-      find /projects/amberx-axf /projects/_shared -type d -exec chmod 2775 {} +
-      find /projects/amberx-axf /projects/_shared -type f -exec chmod ug+rw {} +
+      find /projects/amberx-axf /projects/_shared -type d -exec chmod 2775 {} + 2>/dev/null || echo "some folders changed while setting modes (skipped)"
+      find /projects/amberx-axf /projects/_shared -type f -exec chmod ug+rw {} + 2>/dev/null || echo "some files changed while setting modes (skipped)"
     ' | sed 's/^/[axf] /'
   # Once copied, the legacy folder is renamed so nothing keeps writing a second, diverging copy (kept, not deleted).
   if [ -d "$LEGACY" ] && "${HELPER[@]}" --entrypoint sh "$NAME:latest" -c 'test -e /projects/amberx-axf/_data/.legacy-copied'; then
