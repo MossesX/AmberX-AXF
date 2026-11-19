@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9336,
- "updatedAt": "2026-11-19T09:15:52.546Z",
+ "rev": 9337,
+ "updatedAt": "2026-11-19T09:16:39.949Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179462,7 +179462,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -180035,7 +180035,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 129,
+   "rev": 131,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206020,7 +206020,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -206108,7 +206108,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208418,7 +208418,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -208616,7 +208616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210050,7 +210050,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -210138,7 +210138,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -220690,7 +220690,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -221281,7 +221281,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 107,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -238625,7 +238625,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -238713,7 +238713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -252877,7 +252877,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [
@@ -253377,7 +253377,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -256721,7 +256721,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -257511,7 +257511,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -260514,7 +260514,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.953Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -260863,7 +260863,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -260984,7 +260984,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -261450,7 +261450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261618,7 +261618,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -262058,7 +262058,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262159,7 +262159,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -262547,7 +262547,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262666,7 +262666,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -263057,7 +263057,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264313,7 +264313,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -264637,7 +264637,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265368,7 +265368,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [
@@ -265910,7 +265910,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266039,7 +266039,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -266433,7 +266433,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266552,7 +266552,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -267081,7 +267081,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267632,7 +267632,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -268344,7 +268344,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 178,
+   "rev": 180,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270377,7 +270377,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -271216,7 +271216,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271337,7 +271337,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -271864,7 +271864,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271968,7 +271968,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -272423,7 +272423,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272528,7 +272528,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -273010,7 +273010,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273120,7 +273120,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -273512,7 +273512,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273615,7 +273615,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -273660,7 +273660,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273753,7 +273753,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -274124,7 +274124,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274238,7 +274238,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -274762,7 +274762,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276816,7 +276816,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -277083,7 +277083,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277181,7 +277181,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -277269,7 +277269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277438,7 +277438,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -278017,7 +278017,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278394,7 +278394,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -279007,7 +279007,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 148,
+   "rev": 150,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279115,7 +279115,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -279510,7 +279510,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279608,7 +279608,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -279977,7 +279977,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284844,7 +284844,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -285061,7 +285061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285195,7 +285195,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -285319,7 +285319,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285410,7 +285410,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -285533,7 +285533,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285625,7 +285625,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -285752,7 +285752,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285844,7 +285844,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -285971,7 +285971,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286063,7 +286063,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -286189,7 +286189,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286281,7 +286281,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -286408,7 +286408,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 57,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287950,7 +287950,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -288658,7 +288658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290307,7 +290307,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -290480,7 +290480,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290655,7 +290655,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -291136,7 +291136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293038,7 +293038,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -293343,7 +293343,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293457,7 +293457,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -294158,7 +294158,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -312497,7 +312497,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -312956,7 +312956,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313065,7 +313065,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -313414,7 +313414,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313548,7 +313548,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.238Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -313963,7 +313963,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -314651,7 +314651,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -315001,7 +315001,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -315078,7 +315078,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -315361,7 +315361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -315464,7 +315464,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -315747,7 +315747,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -315866,7 +315866,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -316281,7 +316281,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -316364,7 +316364,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -316691,7 +316691,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -316763,7 +316763,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -317112,7 +317112,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -317218,7 +317218,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -317567,7 +317567,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -318191,7 +318191,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -318650,7 +318650,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319228,7 +319228,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -319338,7 +319338,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -320325,7 +320325,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -320457,7 +320457,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320538,7 +320538,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -320758,7 +320758,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321756,7 +321756,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -321841,7 +321841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322802,7 +322802,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -322865,7 +322865,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322914,7 +322914,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -322999,7 +322999,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323059,7 +323059,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -323213,7 +323213,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323277,7 +323277,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -323409,7 +323409,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323955,7 +323955,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -324197,7 +324197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -324261,7 +324261,7 @@
      "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -324500,7 +324500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -324564,7 +324564,7 @@
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-19T09:10:20.239Z",
+     "at": "2026-11-19T09:15:30.954Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -324828,7 +324828,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
