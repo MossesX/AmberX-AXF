@@ -840,9 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 14:21 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · builds-live
-- 2026-11-18 14:20 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
-- 2026-11-18 14:25 UTC · `one-build-time-always-split-to-fill` s2 done (all) · orchestrator
 - 2026-11-18 14:23 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
 - 2026-11-18 14:23 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 14:23 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
@@ -1240,6 +1237,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:36 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-19 02:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
 - 2026-11-19 02:38 UTC · `postgres-part-b-plan-plan-studio-catalog` s4 done, → landing (all) · orchestrator
+- 2026-11-19 02:40 UTC · `postgres-part-b-plan-plan-studio-catalog` s4 done, → landing (all) · foreign-write
+- 2026-11-19 02:40 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
+- 2026-11-19 02:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
 
 ## Token passes (log)
 

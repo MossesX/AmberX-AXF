@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9244,
- "updatedAt": "2026-11-19T02:39:46.153Z",
+ "rev": 9245,
+ "updatedAt": "2026-11-19T02:41:49.541Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321853,7 +321853,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -321861,7 +321861,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:38:25.531Z",
+   "updatedAt": "2026-11-19T02:41:03.840Z",
    "builtAt": "",
    "notes": [
     {
@@ -321995,6 +321995,14 @@
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-19T02:35:46.432Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 0) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-19T02:40:49.753Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T02:41:03.840Z"
     }
    ],
    "approvals": [
@@ -322024,17 +322032,26 @@
     "queuedAt": "2026-11-19T00:33:02.230Z",
     "queuedBy": "cli",
     "account": "hulu0241",
-    "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 3",
+    "phase": "",
     "launchedAt": "2026-11-19T00:37:13.344Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-19T02:40:46.229Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "reason": "",
+     "stepsLeft": 1,
+     "account": "hulu0241",
+     "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
+     "phase": ""
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
     "dispatchedAt": "2026-11-19T00:37:13.344Z",
     "planned": {
@@ -322044,7 +322061,9 @@
      "at": "2026-11-19T00:32:14.633Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [],
+    "tried": [
+     "hulu0241"
+    ],
     "pickedAt": "2026-11-19T00:37:13.344Z",
     "heldAt": "",
     "heldBy": "",
@@ -322236,7 +322255,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 54,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323363,7 +323382,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-19T00:12:01.642Z",
-     "updatedAt": "2026-11-19T02:38:48.352Z"
+     "updatedAt": "2026-11-19T02:40:34.134Z"
     }
    ],
    "profiles": [
