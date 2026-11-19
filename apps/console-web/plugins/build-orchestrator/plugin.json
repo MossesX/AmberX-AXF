@@ -1164,5 +1164,6 @@
   "opens": "main",
   "cli": {
     "recovery-watchdog": "recovery-watchdog.mjs"
-  }
+  },
+  "buildHooks": "pipeline2-hook.mjs"
 }
