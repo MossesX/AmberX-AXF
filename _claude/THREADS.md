@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 15:03 UTC · `every-app-gets-own-locked-default` s3 done (all) · orchestrator
-- 2026-11-18 15:04 UTC · `every-app-gets-own-locked-default` s4 done (all) · orchestrator
 - 2026-11-18 15:05 UTC · `every-app-gets-own-locked-default` s5 done (all) · orchestrator
 - 2026-11-18 15:05 UTC · `every-app-gets-own-locked-default` s6 done (all) · orchestrator
 - 2026-11-18 15:06 UTC · `every-app-gets-own-locked-default` s3 done, s4 done (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 03:08 UTC · `postgres-part-c-console-state-settings` note (all) · orchestrator
 - 2026-11-19 03:10 UTC · `postgres-part-c-console-state-settings` → landing, note (all) · orchestrator
 - 2026-11-19 03:11 UTC · `postgres-part-c-console-state-settings` note (all) · pipeline
+- 2026-11-19 03:23 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 03:23 UTC · `postgres-part-b-plan-plan-studio-catalog` PR #851, note (all) · reconciler
 
 ## Token passes (log)
 

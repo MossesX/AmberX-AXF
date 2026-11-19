@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9261,
- "updatedAt": "2026-11-19T03:12:21.919Z",
+ "rev": 9262,
+ "updatedAt": "2026-11-19T03:23:40.922Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321873,7 +321873,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:54:49.824Z",
+   "updatedAt": "2026-11-19T03:23:19.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -322031,6 +322031,10 @@
     {
      "text": "Self-check: urgent-all-data-to-postgres-builds-store had no session on record but axf-urgent-all-data-to-postgres-builds-store--rhonda is alive: kept running and tracking it.",
      "at": "2026-11-19T02:54:49.824Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:23:19.717Z"
     }
    ],
    "approvals": [
@@ -322283,7 +322287,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323258,9 +323262,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/postgres-part-b-plan-plan-studio-catalog",
-   "pr": "",
+   "pr": "#851",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T02:56:37.034Z",
+   "updatedAt": "2026-11-19T03:23:19.717Z",
    "builtAt": "",
    "notes": [
     {
@@ -323310,6 +323314,10 @@
     {
      "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-19T02:56:37.034Z"
+    },
+    {
+     "text": "Reconciler: PR #851; PR #851 names s4 done",
+     "at": "2026-11-19T03:23:19.717Z"
     }
    ],
    "approvals": [],
@@ -323464,7 +323472,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
