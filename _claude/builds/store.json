@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9258,
- "updatedAt": "2026-11-19T03:09:05.418Z",
+ "rev": 9259,
+ "updatedAt": "2026-11-19T03:09:55.016Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323044,8 +323044,8 @@
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "#849",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T03:08:47.031Z",
-   "builtAt": "2026-11-19T02:07:56.025Z",
+   "updatedAt": "2026-11-19T03:09:36.133Z",
+   "builtAt": "2026-11-19T03:09:36.133Z",
    "notes": [
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
@@ -323089,7 +323089,7 @@
     "session": "axf-postgres-part-c-console-state-settings--paulie",
     "slot": "",
     "model": "Opus",
-    "phase": "Phase 1",
+    "phase": "",
     "launchedAt": "2026-11-19T00:14:28.826Z",
     "runs": 1,
     "crashes": 0,
@@ -323110,7 +323110,17 @@
     "pickedAt": "2026-11-19T00:14:28.826Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-19T03:09:36.133Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-postgres-part-c-console-state-settings--paulie",
+     "phase": "Phase 1"
+    }
    },
    "steps": [
     {
