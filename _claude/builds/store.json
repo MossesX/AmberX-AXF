@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9338,
- "updatedAt": "2026-11-19T09:17:44.424Z",
+ "rev": 9339,
+ "updatedAt": "2026-11-19T09:22:15.745Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322053,7 +322053,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T09:12:23.253Z",
+   "updatedAt": "2026-11-19T09:21:59.036Z",
    "builtAt": "",
    "notes": [
     {
@@ -322403,6 +322403,10 @@
     {
      "text": "Refused complete → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-19T06:46:55.619Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T09:21:59.036Z"
     }
    ],
    "approvals": [
@@ -322671,7 +322675,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
