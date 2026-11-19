@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:23:54.550Z",
+ "updatedAt": "2026-11-19T02:26:16.931Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194889,7 +194889,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:22:00.656Z",
+   "updatedAt": "2026-11-19T02:26:00.642Z",
    "builtAt": "",
    "notes": [
     {
@@ -195149,6 +195149,25 @@
      "note": "",
      "uid": "st-mwmv01v4013a6f",
      "createdAt": "2026-11-19T01:16:08.948Z"
+    },
+    {
+     "id": "s8",
+     "text": "Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmxhw7h01vhee",
+     "createdAt": "2026-11-19T02:26:00.645Z"
     }
    ]
   },
