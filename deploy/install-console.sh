@@ -256,9 +256,9 @@ axf_cron_file axf-reaper "$(grep -v '^#' "$DIR/deploy/cron/axf-reaper" | sed "s#
 axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build-orchestrator/pipeline.mjs; [ -f \$P ] && cd $DIR && flock -n /run/axf-pipeline.lock timeout 600 node \$P tick >> /var/log/axf-pipeline.log 2>&1"  # axf-plugin:build-orchestrator
 # Build watchdog (Brett, Nov 13 2026: "Never wait for Brett to notice"): every minute, builds marked running with no live
 # session are reset, requeued or retried, idle slots are filled and the phone gets an FYI per fix. One source for the
-# cron line: watchdog.mjs install-cron (/etc/cron.d/axf-watchdog, flock /run/axf-watchdog.lock, removes itself with the plugin).
-WD_JS="$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs"  # axf-plugin:build-orchestrator
-[ -f "$WD_JS" ] && { (cd "$DIR" && node "$WD_JS" install-cron --dir "$DIR") | sed 's/^/[axf] /' || say "watchdog cron not installed"; }  # axf-plugin:build-orchestrator
+# cron line: recovery-watchdog.mjs install-cron (/etc/cron.d/axf-watchdog, flock /run/axf-watchdog.lock, removes itself with the plugin).
+WD_JS="$DIR/apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs"  # axf-plugin:build-orchestrator
+[ -f "$WD_JS" ] && { (cd "$DIR" && node "$WD_JS" install-cron --dir "$DIR") | sed 's/^/[axf] /' || say "recovery watchdog cron not installed"; }  # axf-plugin:build-orchestrator
 # Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
 # builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
 axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
