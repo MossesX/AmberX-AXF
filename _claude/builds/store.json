@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9182,
- "updatedAt": "2026-11-19T00:26:29.716Z",
+ "rev": 9183,
+ "updatedAt": "2026-11-19T00:26:58.433Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323387,12 +323387,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:22:02.009Z",
-   "updatedAt": "2026-11-19T00:25:26.122Z",
+   "updatedAt": "2026-11-19T00:26:48.230Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:25:26.122Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"9cab585b-144f-44f9-b01c-fc3522439147\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:26:48.230Z"
     }
    ],
    "approvals": [],
@@ -323410,17 +323414,23 @@
     "crashes": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-19T00:25:26.122Z",
+     "at": "2026-11-19T00:26:48.230Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 10,
-     "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"9cab585b-144f-44f9-b01c-fc3522439147\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T00:26:14.925Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -323430,7 +323440,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwmt6s8a01xhe9",
+     "uid": "st-mwmt8jl2015jpz",
      "title": "",
      "text": "Uses the systems check health@1 registry; flashing look comes from asset tokens. Full API control (REST, MCP, CLI, voice) for status, settings, test alarm and acknowledge.",
      "model": "Fable",
@@ -323447,12 +323457,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwmt6s8a02rosm",
+     "uid": "st-mwmt8jl20224ru",
      "title": "",
      "text": "Brett (voice, Nov 19 2026): \"I need the VPS to detect spikes like that and get an audible alarm to the phone. And an alert in one of the banners that pops open automatically to show the flashing alert.\"",
      "model": "Opus",
@@ -323469,12 +323479,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwmt6s8a039564",
+     "uid": "st-mwmt8jl20364ek",
      "title": "",
      "text": "Seen today: load average 60 this morning, then 13-22 on an 8-core KVM 8 (srv1837178) several times; cause each time was something different (builds-live push storm, cron-spawned node scripts piling up, Coolify at 400% CPU). Everything timed out while it lasted.",
      "model": "Opus",
@@ -323491,12 +323501,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwmt6s8a04wb79",
+     "uid": "st-mwmt8jl2046cb7",
      "title": "",
      "text": "What to build:",
      "model": "Opus",
@@ -323513,12 +323523,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwmt6s8a054rs5",
+     "uid": "st-mwmt8jl205i0bg",
      "title": "",
      "text": "Detector on the VPS, server side, no console or AI needed: samples load average, CPU per container and top processes every 30-60 s. A spike = load above a threshold relative to core count (default: over 1.5x cores for 2 minutes; settings for threshold, duration, cool-down). Records the top offenders (process, container, cron that started it).",
      "model": "Opus",
@@ -323535,12 +323545,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwmt6s8a06l8wy",
+     "uid": "st-mwmt8jl2063po3",
      "title": "",
      "text": "Audible alarm on the phone through Phone Connect (AmberX app is retired): a loud alarm-type notification that plays sound even on silent/DND where Android allows it, with the cause in the text and a tap that opens the console alert.",
      "model": "Opus",
@@ -323557,12 +323567,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwmt6s8a07aucv",
+     "uid": "st-mwmt8jl207d0tr",
      "title": "",
      "text": "Banner alert: the systems check banner (or alerts banner) gets a flashing, high-priority item, and the banner pops open on its own to show it. The item says what spiked, how high, since when and the top offenders, with Fix actions (kill the offending process, pause the cron, restart the container) that need a confirm.",
      "model": "Opus",
@@ -323579,12 +323589,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwmt6s8a08d3wd",
+     "uid": "st-mwmt8jl208kl3q",
      "title": "",
      "text": "Clears itself and says so when load is back to normal.",
      "model": "Opus",
@@ -323601,12 +323611,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwmt6s8a09ba1v",
+     "uid": "st-mwmt8jl2099bc6",
      "title": "",
      "text": "Check overlap with the Maintenance plugin (already reads os.getloadavg) and the queue stall detector build; reuse, don't duplicate.",
      "model": "Opus",
@@ -323623,12 +323633,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwmt6s8a0aw43h",
+     "uid": "st-mwmt8jl20ap0yr",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/load-spike-alarm-vps-detects-cpu-load.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -323648,8 +323658,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:25:26.122Z",
-     "updatedAt": "2026-11-19T00:25:26.122Z"
+     "createdAt": "2026-11-19T00:26:48.230Z",
+     "updatedAt": "2026-11-19T00:26:48.230Z"
     }
    ],
    "profiles": [
@@ -323660,12 +323670,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-19T00:25:26.122Z",
+   "defaultAt": "2026-11-19T00:26:48.230Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
