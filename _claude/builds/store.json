@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9180,
- "updatedAt": "2026-11-19T00:22:37.215Z",
+ "rev": 9181,
+ "updatedAt": "2026-11-19T00:23:04.326Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27478,10 +27478,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -89749,10 +89746,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -96800,10 +96794,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -105611,10 +105602,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -118507,10 +118495,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -118792,10 +118777,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -119192,10 +119174,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -132910,10 +132889,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -135495,10 +135471,7 @@
     "pickedAt": "2026-11-14T22:45:32.880Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -135931,10 +135904,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -141945,10 +141915,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142387,10 +142354,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -142974,10 +142938,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144382,10 +144343,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146722,10 +146680,7 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -146955,10 +146910,7 @@
     "pickedAt": "2026-11-17T19:06:31.477Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "failure": {
     "kind": "ci-red",
@@ -148766,10 +148718,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150978,10 +150927,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151198,10 +151144,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -151768,10 +151711,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -151967,10 +151907,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152187,10 +152124,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152411,10 +152345,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152634,10 +152565,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152862,10 +152790,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153094,10 +153019,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153333,10 +153255,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153569,10 +153488,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153813,10 +153729,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154066,10 +153979,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154727,10 +154637,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155544,10 +155451,7 @@
     "pickedAt": "2026-11-15T01:24:21.442Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-molly-gap-axhub-cors",
@@ -155790,10 +155694,7 @@
     "pickedAt": "2026-11-16T16:47:14.644Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156032,10 +155933,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156287,10 +156185,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156476,10 +156371,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156682,10 +156574,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156969,10 +156858,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157166,10 +157052,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157376,10 +157259,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157577,10 +157457,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158023,10 +157900,7 @@
     "pickedAt": "2026-11-14T23:56:20.868Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-fix-axhub-36-pull-main-in-failed",
@@ -158819,10 +158693,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159022,10 +158893,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159251,10 +159119,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159600,10 +159465,7 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -159786,10 +159648,7 @@
     "pickedAt": "2026-11-13T10:43:09.520Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -159933,10 +159792,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -160038,10 +159894,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160187,10 +160040,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160385,10 +160235,7 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -160519,10 +160366,7 @@
     "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160691,10 +160535,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160867,10 +160708,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -160984,10 +160822,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -168757,10 +168592,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -168937,10 +168769,7 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169054,10 +168883,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169175,10 +169001,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169331,10 +169154,7 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169492,10 +169312,7 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169578,10 +169395,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169785,10 +169599,7 @@
     "pickedAt": "2026-11-13T00:46:14.486Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
@@ -169978,10 +169789,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
@@ -170284,10 +170092,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -170360,10 +170165,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170655,10 +170457,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
@@ -170863,10 +170662,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171113,10 +170909,7 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171220,10 +171013,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171365,10 +171155,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171523,10 +171310,7 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171692,10 +171476,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171878,10 +171659,7 @@
     "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
@@ -172086,10 +171864,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
@@ -172359,10 +172134,7 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -172524,10 +172296,7 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -172715,10 +172484,7 @@
     "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
@@ -172896,10 +172662,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -173004,10 +172767,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -173141,10 +172901,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -173259,10 +173016,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
@@ -173458,10 +173212,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173628,10 +173379,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173857,10 +173605,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -174054,10 +173799,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -174237,10 +173979,7 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -174398,10 +174137,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
@@ -174615,10 +174351,7 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -174734,10 +174467,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
@@ -174977,10 +174707,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
@@ -175184,10 +174911,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
@@ -175495,10 +175219,7 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -175686,10 +175407,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -175874,10 +175592,7 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -176025,10 +175740,7 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -176228,10 +175940,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -176396,10 +176105,7 @@
     "pickedAt": "2026-11-16T23:25:51.201Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -176879,10 +176585,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
@@ -177830,10 +177533,7 @@
     "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -177944,10 +177644,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -178119,10 +177816,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -178250,10 +177944,7 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -178373,10 +178064,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-android-approval-overlay-a-small-always-on-float",
@@ -178627,10 +178315,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -179352,10 +179037,7 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -179500,10 +179182,7 @@
     "pickedAt": "2026-11-13T11:37:09.309Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-overlay-opens-pages-the-floating-toolbar-expands",
@@ -179778,10 +179457,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-server-watchdog-orchestrator-auto-recovers-stuck",
@@ -180528,10 +180204,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -181065,10 +180738,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -181799,10 +181469,7 @@
     "pickedAt": "2026-11-13T12:17:15.710Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182327,10 +181994,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182610,10 +182274,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -182708,10 +182369,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182936,10 +182594,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -183160,10 +182815,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -183325,10 +182977,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -183600,10 +183249,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -183889,10 +183535,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -184125,10 +183768,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -184502,10 +184142,7 @@
     "pickedAt": "2026-11-17T19:08:15.640Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "failure": {
     "kind": "push-fail",
@@ -185356,10 +184993,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -185677,10 +185311,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -185900,10 +185531,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -186112,10 +185740,7 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -186363,10 +185988,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -186596,10 +186218,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -186876,10 +186495,7 @@
     "pickedAt": "2026-11-14T23:10:32.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -187170,10 +186786,7 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -187835,10 +187448,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-every-skin-ships-light-dark-colour-theme",
@@ -188105,10 +187715,7 @@
     "pickedAt": "2026-11-16T13:12:13.730Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-fix-build-whose-session-finishes-phase-e",
@@ -188574,10 +188181,7 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -188794,10 +188398,7 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -188974,10 +188575,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -189251,10 +188849,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -189501,10 +189096,7 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -189919,10 +189511,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -190524,10 +190113,7 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -191051,10 +190637,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -191449,10 +191032,7 @@
     "pickedAt": "2026-11-14T23:08:13.680Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -191668,10 +191248,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -191902,10 +191479,7 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -192201,10 +191775,7 @@
     "pickedAt": "2026-11-14T23:06:12.490Z",
     "heldAt": "2026-11-16T18:30:25.768Z",
     "heldBy": "cli",
-    "heldWhy": "Brett review Nov 16: on hold",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": "Brett review Nov 16: on hold"
    },
    "shipped": {
     "id": "sm-owner-recognized-everywhere-veto",
@@ -192403,10 +191974,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -192645,10 +192213,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -192917,10 +192482,7 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -193560,10 +193122,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -193798,10 +193357,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -194055,10 +193611,7 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -194272,10 +193825,7 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -194761,10 +194311,7 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195018,10 +194565,7 @@
     "pickedAt": "2026-11-14T23:04:23.303Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195319,10 +194863,7 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195609,10 +195150,7 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-skin-configuration-panel-before-ai-makes",
@@ -196068,10 +195606,7 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-skins-plugin-own-removable-console",
@@ -197342,10 +196877,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -197577,10 +197109,7 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -197786,10 +197315,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -197985,10 +197511,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -198306,10 +197829,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -198562,10 +198082,7 @@
     "pickedAt": "2026-11-13T17:49:19.495Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-per-instance-settings-window-picker",
@@ -198775,10 +198292,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-tab-groups-choose-how-many-rows-tabs",
@@ -199008,10 +198522,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -199364,10 +198875,7 @@
     "pickedAt": "2026-11-16T18:36:18.505Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-all-settings-interfaces-open-floating",
@@ -199616,10 +199124,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -200002,10 +199507,7 @@
     "pickedAt": "2026-11-15T00:27:21.094Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -200386,10 +199888,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -200771,10 +200270,7 @@
     "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -201160,10 +200656,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -201509,10 +201002,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -201857,10 +201347,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -202114,10 +201601,7 @@
     "pickedAt": "2026-11-13T18:36:14.104Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-transparency-token-works-every-dialog",
@@ -202533,10 +202017,7 @@
     "pickedAt": "2026-11-16T13:23:15.243Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -203089,10 +202570,7 @@
     "pickedAt": "2026-11-13T19:19:07.577Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -203545,10 +203023,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "failure": {
     "kind": "ci-red",
@@ -204051,10 +203526,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-console-app-part-2-native-floating",
@@ -204421,10 +203893,7 @@
     "pickedAt": "2026-11-13T19:29:11.351Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -204723,10 +204192,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -205050,10 +204516,7 @@
     "pickedAt": "2026-11-13T19:30:50.870Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -205376,10 +204839,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -205767,10 +205227,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-orchestrator-custom-groups-custom-tabs",
@@ -206202,10 +205659,7 @@
     "pickedAt": "2026-11-15T01:03:18.277Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-skin-axhub-override-switch-greyed-out",
@@ -206533,10 +205987,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -206732,10 +206183,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -207114,10 +206562,7 @@
     "pickedAt": "2026-11-14T23:15:54.090Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -207366,10 +206811,7 @@
     "pickedAt": "2026-11-13T19:53:15.999Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -207585,10 +207027,7 @@
     "pickedAt": "2026-11-13T19:35:33.966Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -207791,10 +207230,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -208009,10 +207445,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -208229,10 +207662,7 @@
     "pickedAt": "2026-11-13T19:43:15.087Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-per-instance-settings-picker-merge-main",
@@ -208507,10 +207937,7 @@
     "pickedAt": "2026-11-14T23:35:28.763Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-skin-config-panel-merge-main-and-land",
@@ -208741,10 +208168,7 @@
     "pickedAt": "2026-11-13T19:56:14.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-skins-plugin-merge-main-and-land",
@@ -208957,10 +208381,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -209299,10 +208720,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-skin-animations-swatches-skin-switch",
@@ -209635,10 +209053,7 @@
     "pickedAt": "2026-11-13T19:59:07.053Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -209937,10 +209352,7 @@
     "pickedAt": "2026-11-14T03:35:14.704Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -210260,10 +209672,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -210604,10 +210013,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -210868,10 +210274,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-own-token-sets-for-grids-and-tab-groups",
@@ -211199,10 +210602,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-token-registry-skin-editor-live-sandbox",
@@ -211598,10 +210998,7 @@
     "pickedAt": "2026-11-13T20:18:14.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-dispatcher-gate-never-launch-build",
@@ -211857,10 +211254,7 @@
     "pickedAt": "2026-11-14T23:17:21.049Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-per-toolbar-settings-fix-failing-chrome",
@@ -212045,10 +211439,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -212491,10 +211882,7 @@
     "pickedAt": "2026-11-17T19:08:26.677Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "failure": {
     "kind": "ci-red",
@@ -212839,10 +212227,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -213210,10 +212595,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -213419,10 +212801,7 @@
     "pickedAt": "2026-11-13T20:50:31.267Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -213600,10 +212979,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -213861,10 +213237,7 @@
     "pickedAt": "2026-11-14T23:23:17.794Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-lander-regenerates-generated-files-clash",
@@ -214119,10 +213492,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-hotfix-desktop-console-draws-app-menu",
@@ -214320,10 +213690,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-main-ci-red-test-sandbox-profile-export",
@@ -214512,10 +213879,7 @@
     "pickedAt": "2026-11-13T23:41:19.408Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -214917,10 +214281,7 @@
     "pickedAt": "2026-11-14T23:23:43.044Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-land-batch-merge-main-each-finished",
@@ -215618,10 +214979,7 @@
     "pickedAt": "2026-11-14T23:28:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -216221,10 +215579,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-voice-listener-use-claude-when-connected",
@@ -216704,10 +216059,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -217601,10 +216953,7 @@
     "pickedAt": "2026-11-14T12:28:09.521Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-hotfix-get-main-ci-green-theme-swap",
@@ -217862,10 +217211,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -218780,10 +218126,7 @@
     "pickedAt": "2026-11-14T03:51:29.271Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -219039,10 +218382,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -219432,10 +218772,7 @@
     "pickedAt": "2026-11-16T13:24:57.284Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -220212,10 +219549,7 @@
     "pickedAt": "2026-11-16T13:13:13.711Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "failure": {
     "kind": "push-fail",
@@ -220511,10 +219845,7 @@
     "pickedAt": "2026-11-14T16:46:23.975Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-builds-share-one-claude-login-write",
@@ -220791,10 +220122,7 @@
     "pickedAt": "2026-11-14T16:51:21.042Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -221016,10 +220344,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-hotfix-toolbar-settings-still-change",
@@ -221320,10 +220645,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -222083,10 +221405,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -222841,10 +222160,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -223802,10 +223118,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-land-all-skin-builds",
@@ -224601,10 +223914,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-replace-merge-queue-one-time-landing",
@@ -225401,10 +224711,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -226397,10 +225704,7 @@
     "pickedAt": "2026-11-16T13:24:18.129Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -227048,10 +226352,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -227408,10 +226709,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-merge-main-land-change-to-move-amberx",
@@ -227750,10 +227048,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -228118,10 +227413,7 @@
     "pickedAt": "2026-11-14T23:46:40.547Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -228477,10 +227769,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -228817,10 +228106,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -229182,10 +228468,7 @@
     "pickedAt": "2026-11-15T00:15:47.364Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -229546,10 +228829,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-merge-main-land-voice-listener-use",
@@ -229939,10 +229219,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-merge-main-land-console-axhub-retry",
@@ -230358,10 +229635,7 @@
     "pickedAt": "2026-11-15T19:57:09.845Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -230973,10 +230247,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -232145,10 +231416,7 @@
     "pickedAt": "2026-11-16T23:31:13.598Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -233039,10 +232307,7 @@
     "pickedAt": "2026-11-15T11:54:29.199Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -233550,10 +232815,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -234359,10 +233621,7 @@
     "pickedAt": "2026-11-15T11:58:22.439Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-gate-rules-plugin-in-the-console",
@@ -235111,10 +234370,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -235391,10 +234647,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -235975,10 +235228,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -236197,10 +235447,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -236784,10 +236031,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-build-rules-tab-gate-rules-vps-owns",
@@ -237709,10 +236953,7 @@
     "pickedAt": "2026-11-16T16:26:37.487Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -238776,10 +238017,7 @@
     "pickedAt": "2026-11-15T14:57:29.625Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -239334,10 +238572,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -239540,10 +238775,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -240163,10 +239395,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -241833,10 +241062,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -242465,10 +241691,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -243132,10 +242355,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -243875,10 +243095,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -244313,10 +243530,7 @@
     "pickedAt": "2026-11-17T12:28:43.007Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -244577,10 +243791,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -244849,10 +244060,7 @@
     "pickedAt": "2026-11-16T23:17:52.842Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-axhub-veto-countdown-setting-read-only",
@@ -245549,10 +244757,7 @@
     "pickedAt": "2026-11-17T19:08:43.298Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "failure": {
     "kind": "ci-red",
@@ -246344,10 +245549,7 @@
     "pickedAt": "2026-11-16T18:34:01.102Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -247213,10 +246415,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -247710,10 +246909,7 @@
     "pickedAt": "2026-11-16T23:17:18.218Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -248290,10 +247486,7 @@
     "pickedAt": "2026-11-16T19:05:58.434Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -248746,10 +247939,7 @@
     "pickedAt": "2026-11-16T19:16:48.399Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -248948,10 +248138,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -249203,10 +248390,7 @@
     "pickedAt": "2026-11-17T12:28:56.306Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -249467,10 +248651,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -249694,10 +248875,7 @@
     "pickedAt": "2026-11-16T19:46:04.279Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -249895,10 +249073,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -250099,10 +249274,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -250334,10 +249506,7 @@
     "pickedAt": "2026-11-16T20:24:12.031Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -250539,10 +249708,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -251362,10 +250528,7 @@
     "pickedAt": "2026-11-16T20:29:03.156Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -251554,10 +250717,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -251694,10 +250854,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -251802,10 +250959,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -252438,10 +251592,7 @@
     "pickedAt": "2026-11-16T22:49:42.023Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -252973,10 +252124,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -253662,10 +252810,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -254270,10 +253415,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -255219,10 +254361,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -256151,10 +255290,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -256980,10 +256116,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -257519,10 +256652,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -258529,10 +257659,7 @@
     "pickedAt": "2026-11-17T22:10:38.850Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -259225,10 +258352,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -260044,10 +259168,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -260811,10 +259932,7 @@
     "pickedAt": "2026-11-17T12:38:16.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-stop-auto-lander-committing-tracking",
@@ -261319,10 +260437,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -261792,10 +260907,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -262429,10 +261541,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -262973,10 +262082,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -263483,10 +262589,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -264008,10 +263111,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -264274,9 +263374,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:27:13.513Z",
      "exit": 0,
@@ -265131,10 +264228,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -265624,10 +264718,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -266190,10 +265281,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -266862,10 +265950,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -267378,10 +266463,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -268461,10 +267543,7 @@
     "pickedAt": "2026-11-18T00:34:47.468Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -269299,10 +268378,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -269801,10 +268877,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -270384,10 +269457,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -271218,10 +270288,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -272181,10 +271248,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -272815,10 +271879,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -273378,10 +272439,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -273973,10 +273031,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -274471,10 +273526,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -274612,10 +273664,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -275100,10 +274149,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -275865,10 +274911,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -276819,10 +275862,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "landed": {
     "pr": 817,
@@ -277671,10 +276711,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -278039,10 +277076,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -278295,10 +277329,7 @@
     "pickedAt": "2026-11-17T20:16:29.639Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -279254,10 +278285,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -279978,10 +279006,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -280474,10 +279499,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -281022,9 +280044,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-18T00:17:54.575Z",
      "exit": 0,
@@ -285708,10 +284727,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -286062,10 +285078,7 @@
     "pickedAt": "2026-11-17T20:55:33.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -286280,10 +285293,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -286498,10 +285508,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -286720,10 +285727,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -286942,10 +285946,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -287163,10 +286164,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -287480,9 +286478,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-17T23:32:12.309Z",
      "exit": 0,
@@ -288007,10 +287002,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -288504,10 +287496,7 @@
     "pickedAt": "2026-11-17T21:27:56.788Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -288832,10 +287821,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -289872,10 +288858,7 @@
     "pickedAt": "2026-11-18T01:08:11.137Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "recoveries": [
     {
@@ -290790,10 +289773,7 @@
     "pickedAt": "2026-11-17T21:43:26.212Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -291186,10 +290166,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -291533,10 +290510,7 @@
     "pickedAt": "2026-11-17T22:28:58.757Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -293919,10 +292893,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -294341,10 +293312,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -298581,10 +297549,7 @@
     "pickedAt": "2026-11-18T00:19:41.557Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -313383,10 +312348,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -313954,10 +312916,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -314440,10 +313399,7 @@
     "pickedAt": "",
     "heldAt": "2026-11-17T22:53:22.354Z",
     "heldBy": "console",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -315056,10 +314012,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "landed": {
     "pr": 827,
@@ -315541,10 +314494,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -315971,10 +314921,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -316356,10 +315303,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -316761,10 +315705,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -317262,10 +316203,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -317664,10 +316602,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -318122,10 +317057,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -318694,9 +317626,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-18T08:06:49.748Z",
      "exit": 0,
@@ -319085,10 +318014,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -319656,10 +318582,7 @@
     "pickedAt": "2026-11-18T12:28:07.147Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -320120,10 +319043,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -320421,10 +319341,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "landed": {
     "pr": 842,
@@ -320684,10 +319601,7 @@
     "pickedAt": "2026-11-18T12:39:46.830Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -320951,10 +319865,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -321213,10 +320124,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -321429,10 +320337,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -321856,9 +320761,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0,
     "runEnd": {
      "at": "2026-11-18T18:11:05.041Z",
      "exit": 0,
@@ -322645,10 +321547,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -322821,10 +321720,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -323028,10 +321924,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -323209,10 +322102,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -323324,10 +322214,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -323395,138 +322282,6 @@
      "rev": 1,
      "createdAt": "2026-11-18T20:03:01.846Z",
      "updatedAt": "2026-11-19T00:22:15.315Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwmt2pxz04764j",
-     "title": "",
-     "text": "Find how the other APKs are hosted on axHub and reuse that path and naming for phone-connect-debug.apk",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-19T00:22:15.315Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mwmt2pxz052jl8",
-     "title": "",
-     "text": "Pull the latest phone-connect-debug.apk from the newest green main run and publish it there; add it to the CI publish step so every green main build refreshes it",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-19T00:22:15.315Z"
-    },
-    {
-     "id": "s6",
-     "uid": "st-mwmt2pxz06ybgd",
-     "title": "",
-     "text": "Verify the direct link downloads in a phone browser and post the link to Brett",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "5 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-19T00:22:15.315Z"
-    },
-    {
-     "id": "s7-6",
-     "uid": "st-mwmsx25v017ahg",
-     "title": "",
-     "text": "Find how the other APKs are hosted on axHub and reuse that path and naming for phone-connect-debug.apk",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-19T00:17:51.109Z"
-    },
-    {
-     "id": "s8-7",
-     "uid": "st-mwmsx25v02gtby",
-     "title": "",
-     "text": "Pull the latest phone-connect-debug.apk from the newest green main run and publish it there; add it to the CI publish step so every green main build refreshes it",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-19T00:17:51.109Z"
-    },
-    {
-     "id": "s9-8",
-     "uid": "st-mwmsx25v03phtn",
-     "title": "",
-     "text": "Verify the direct link downloads in a phone browser and post the link to Brett",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "5 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-19T00:17:51.109Z"
     }
    ],
    "profiles": [
@@ -323604,10 +322359,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -323825,10 +322577,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -324034,10 +322783,7 @@
     "pickedAt": "2026-11-19T00:14:28.826Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -324208,10 +322954,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -324382,10 +323125,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -324626,6 +323366,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-19T00:19:54.421Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "load-spike-alarm-vps-detects-cpu-load",
+   "title": "Load spike alarm: VPS detects CPU/load spikes, rings the phone, flashing banner alert that pops open",
+   "category": "Ops > Alerts",
+   "detail": "Brett (voice, Nov 19 2026): \"I need the VPS to detect spikes like that and get an audible alarm to the phone. And an alert in one of the banners that pops open automatically to show the flashing alert.\"\n\nSeen today: load average 60 this morning, then 13-22 on an 8-core KVM 8 (srv1837178) several times; cause each time was something different (builds-live push storm, cron-spawned node scripts piling up, Coolify at 400% CPU). Everything timed out while it lasted.\n\nWhat to build:\n1. Detector on the VPS, server side, no console or AI needed: samples load average, CPU per container and top processes every 30-60 s. A spike = load above a threshold relative to core count (default: over 1.5x cores for 2 minutes; settings for threshold, duration, cool-down). Records the top offenders (process, container, cron that started it).\n2. Audible alarm on the phone through Phone Connect (AmberX app is retired): a loud alarm-type notification that plays sound even on silent/DND where Android allows it, with the cause in the text and a tap that opens the console alert.\n3. Banner alert: the systems check banner (or alerts banner) gets a flashing, high-priority item, and the banner pops open on its own to show it. The item says what spiked, how high, since when and the top offenders, with Fix actions (kill the offending process, pause the cron, restart the container) that need a confirm.\n4. Clears itself and says so when load is back to normal.\n5. Uses the systems check health@1 registry; flashing look comes from asset tokens. Full API control (REST, MCP, CLI, voice) for status, settings, test alarm and acknowledge.\nCheck overlap with the Maintenance plugin (already reads os.getloadavg) and the queue stall detector build; reuse, don't duplicate.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-19T00:22:02.009Z",
+   "updatedAt": "2026-11-19T00:22:02.009Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1016
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
