@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T09:16:39.949Z",
+ "updatedAt": "2026-11-19T09:17:44.424Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195081,7 +195081,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "landed",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -195090,7 +195090,7 @@
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
    "updatedAt": "2026-11-19T09:12:23.253Z",
-   "builtAt": "2026-11-19T09:12:23.253Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett, Nov 18 2026 (voice), correction to the earlier write-only note: \"We're going to move the build store over to a Postgres table. We're going to still allow the orchestrator to check it in case it's going to build a feature that's going to break an already built feature, or in case that feature has already gone live through another build. We want to keep the orchestrator able to make sure we're not going to break something.\"\n\nSo: the builds history table is NOT write-only. Before launching a build, the orchestrator queries it (indexed search by feature, files, plugin, title words) for (a) the same feature already shipped by another build and (b) built features the new build could break. It pulls only matching rows, never the whole history. The pipeline's routine tick still reads only the live/active builds.",
