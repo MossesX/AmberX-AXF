@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:25 UTC · `server-gate-reject-any-build-without` added (5 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:37 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · pipeline
 - 2026-11-19 00:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
 - 2026-11-19 00:39 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-19 00:42 UTC · `server-safe-mode-one-emergency-button` added (0 steps) (all) · voice session
 
 ## Token passes (log)
 

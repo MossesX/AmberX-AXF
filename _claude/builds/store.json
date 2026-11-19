@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9190,
- "updatedAt": "2026-11-19T00:39:28.222Z",
+ "rev": 9191,
+ "updatedAt": "2026-11-19T00:42:17.826Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323711,6 +323711,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-19T00:26:48.230Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "server-safe-mode-one-emergency-button",
+   "title": "Server safe mode: one emergency button that instantly sheds load on the VPS",
+   "category": "Ops > Emergency",
+   "detail": "Brett (voice, Nov 19 2026): \"I need an emergency button … like a safe mode button. I hit it, boom, and immediately the server shuts a whole bunch of shit down.\"\n\nSeen today: load 60 this morning, 13-42 several times tonight (push storm, cron pile-ups, builds-store verify jobs re-reading the 14 MB store, Coolify at 400%). Everything timed out, including the console and the phone app.\n\nWhat to build:\n1. One Safe mode switch, reachable from a big button in the console banner, the phone (Phone Connect / console app, works even when the console is slow because it talks to a tiny always-on endpoint), voice and the CLI/MCP. Confirm once.\n2. On: moves the non-essential crons aside (console-nightly, doctor, maintenance, watchdogs, auto-land, updaters), holds the pipeline (no new launches), pauses heavy steps (builds-store verify, model-gate audit, typechecks, vite/esbuild), optionally pauses running build sessions, and stops non-essential containers. Configurable list of what goes down and what stays.\n3. Always stays up: axHub, the console server, axf-data / Postgres, Phone Connect link, SSH.\n4. Off: puts back exactly what it took down, in order, and reports.\n5. Shows the live picture while on: load, CPU per container, memory, swap, disk, what it stopped.\n6. Hooks into the load spike alarm build: optional auto safe mode when load passes a set level.\nFull API control (REST, MCP, CLI, voice).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-19T00:42:04.028Z",
+   "updatedAt": "2026-11-19T00:42:04.028Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1017
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
