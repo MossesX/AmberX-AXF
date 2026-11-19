@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9269,
- "updatedAt": "2026-11-19T03:49:29.623Z",
+ "rev": 9270,
+ "updatedAt": "2026-11-19T03:50:55.723Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321873,7 +321873,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:48:50.327Z",
+   "updatedAt": "2026-11-19T03:49:14Z",
    "builtAt": "",
    "notes": [
     {
@@ -322075,6 +322075,10 @@
     {
      "text": "Refused running → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-19T03:49:14.332Z"
+    },
+    {
+     "text": "Shipped manifest sm-urgent-all-data-to-postgres-builds-store rev 1 sent to Shipped features (orchestrator): landed 212fb1f83, 33 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-19T03:49:14Z"
     }
    ],
    "approvals": [
@@ -322150,6 +322154,12 @@
      "session": "axf-urgent-all-data-to-postgres-builds-store--rhonda",
      "phase": "Phase 3"
     }
+   },
+   "shipped": {
+    "id": "sm-urgent-all-data-to-postgres-builds-store",
+    "rev": 1,
+    "at": "2026-11-19T03:49:14Z",
+    "landedCommit": "212fb1f83d476ba2a4e1558a44a9be90297e812d"
    },
    "steps": [
     {
@@ -322337,7 +322347,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
