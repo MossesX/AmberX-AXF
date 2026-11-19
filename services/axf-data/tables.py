@@ -124,7 +124,8 @@ class ListSpec:
         return 'parent_rid' if self.key else 'parent_pos'
 
 
-TABLES_VERSION = 2   # meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
+TABLES_VERSION = 3   # meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes;
+                     # 3 = ItemsTable / MediaTable: plan, profiles, projects, plan media, Plan Studio (backfilled on connect)
 
 
 def _rid(item: dict, spec: ListSpec, pos: int) -> str:
@@ -509,9 +510,176 @@ class NotesTable:
         return 'CREATE TABLE IF NOT EXISTS notes (path TEXT PRIMARY KEY, folder TEXT NOT NULL, name TEXT NOT NULL, text TEXT NOT NULL, size BIGINT NOT NULL);'
 
 
+# ── ItemsTable ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+@dataclass(frozen=True)
+class ItemList:
+    """One list of a document that becomes rows: `key` names the row (rid, for queries and lookups), `scalar` lists
+    (strings, numbers) keep each value in the `value` column."""
+    key: str = ''
+    scalar: bool = False
+
+
+def _scalar(v: Any) -> bool:
+    return v is None or isinstance(v, (str, int, float, bool))
+
+
+class ItemsTable:
+    """Documents (any key whose path matches) whose lists are rows of one table: (ns, path, list, pos) → lifted columns,
+    `rid` (the item's key), `value` (scalar lists), `extra` (the rest of the item). The fields that are not rows sit in
+    `store_heads`. A list that does not have the expected shape stays in the head: the document always reads back as it
+    went in. Rows are rewritten only where their hash changed (a 500-item plan with one edit writes one row)."""
+
+    def __init__(self, name: str, ns: str, path_re: str, lists: dict[str, ItemList], cols: list[Col], holds: str):
+        self.name, self.ns, self.lists, self.cols, self.holds = name, ns, lists, cols, holds
+        self.path_re = re.compile(path_re)
+
+    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
+        return kind == 'record' and ns == self.ns and bool(self.path_re.match(path)) and body.startswith(b'{')
+
+    def _fits(self, spec: ItemList, items: Any) -> bool:
+        if not isinstance(items, list):
+            return False
+        return all(_scalar(i) for i in items) if spec.scalar else all(isinstance(i, dict) for i in items)
+
+    def _rid(self, spec: ItemList, item: Any) -> str | None:
+        v = item.get(spec.key) if spec.key and isinstance(item, dict) else (item if spec.scalar else None)
+        if isinstance(v, bool) or v is None:
+            return None
+        return str(v) if isinstance(v, (str, int)) else None
+
+    def write(self, cur, ns: str, path: str, body: bytes) -> None:
+        doc = json.loads(body.decode('utf-8'))
+        head, lifted = (dict(doc), []) if isinstance(doc, dict) else (doc, [])
+        for lkey, spec in self.lists.items():
+            items = doc.get(lkey, _MISSING) if isinstance(doc, dict) else _MISSING
+            if items is not _MISSING and self._fits(spec, items):
+                lifted.append(lkey)
+                head.pop(lkey)
+                self._write_rows(cur, ns, path, lkey, spec, items)
+            else:
+                cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s', (ns, path, lkey))
+        cur.execute('INSERT INTO store_heads (ns, path, head, lists) VALUES (%s, %s, %s, %s) ON CONFLICT (ns, path) DO UPDATE SET head=EXCLUDED.head, lists=EXCLUDED.lists',
+                    (ns, path, Jsonb(head, dumps=canonical), Jsonb(lifted)))
+
+    def _write_rows(self, cur, ns: str, path: str, lkey: str, spec: ItemList, items: list) -> None:
+        cur.execute(f'SELECT pos, doc_hash FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s', (ns, path, lkey))
+        have = {r['pos']: r['doc_hash'] for r in cur.fetchall()}
+        names = ''.join(f', "{c.name}"' for c in self.cols)
+        sets = ''.join(f', "{c.name}"=EXCLUDED."{c.name}"' for c in self.cols)
+        rows = []
+        for pos, item in enumerate(items):
+            h = sha(canonical(item).encode('utf-8'))[:32]
+            if have.get(pos) == h:
+                continue
+            if spec.scalar:
+                vals, extra, value = {c.name: None for c in self.cols}, {}, Jsonb(item, dumps=canonical)
+            else:
+                vals, extra = lift(item, self.cols)
+                value = None
+            rows.append((ns, path, lkey, pos, self._rid(spec, item), value, *[vals[c.name] for c in self.cols], Jsonb(extra, dumps=canonical), h))
+        if rows:
+            cur.executemany(f'INSERT INTO "{self.name}" (ns, path, list, pos, rid, value{names}, extra, doc_hash) VALUES (%s, %s, %s, %s, %s, %s{", %s" * len(self.cols)}, %s, %s) '
+                            f'ON CONFLICT (ns, path, list, pos) DO UPDATE SET rid=EXCLUDED.rid, value=EXCLUDED.value{sets}, extra=EXCLUDED.extra, doc_hash=EXCLUDED.doc_hash', rows)
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s AND pos >= %s', (ns, path, lkey, len(items)))
+
+    def read(self, cur, ns: str, path: str) -> bytes | None:
+        cur.execute('SELECT head, lists FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+        r = cur.fetchone()
+        if not r:
+            return None
+        doc = r['head']
+        if not isinstance(doc, dict):
+            return canonical(doc).encode('utf-8')
+        for lkey in r['lists']:
+            spec = self.lists.get(lkey, ItemList())
+            cur.execute(f'SELECT * FROM "{self.name}" WHERE ns=%s AND path=%s AND list=%s ORDER BY pos', (ns, path, lkey))
+            doc[lkey] = [row['value'] if spec.scalar else unlift(row, self.cols, row['extra']) for row in cur.fetchall()]
+        return canonical(doc).encode('utf-8')
+
+    def delete(self, cur, ns: str, path: str) -> None:
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+        cur.execute('DELETE FROM store_heads WHERE ns=%s AND path=%s', (ns, path))
+
+    def counts(self, doc: Any) -> dict[str, int]:
+        """list → the rows a document gives this table (the backfill / verify check)."""
+        out = {}
+        for lkey, spec in self.lists.items():
+            items = doc.get(lkey) if isinstance(doc, dict) else None
+            if self._fits(spec, items):
+                out[lkey] = len(items)
+        return out
+
+    def ddl(self) -> str:
+        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, list TEXT NOT NULL, pos INTEGER NOT NULL, rid TEXT, value JSONB{_ddl_cols(self.cols)}, '
+                f'extra JSONB NOT NULL DEFAULT \'{{}}\', doc_hash TEXT NOT NULL, PRIMARY KEY (ns, path, list, pos));\n'
+                f'CREATE INDEX IF NOT EXISTS "{self.name}_rid" ON "{self.name}" (rid);')
+
+
+# ── MediaTable ───────────────────────────────────────────────────────────────────────────────────────────────────────
+
+class MediaTable:
+    """Binary media: the bytes in `blobs` (content-addressed, like every blob), one metadata row per file here."""
+    keeps_blob = True
+
+    def __init__(self, name: str, ns: str, path_re: str, holds: str):
+        self.name, self.ns, self.holds = name, ns, holds
+        self.path_re = re.compile(path_re)
+
+    def match(self, ns: str, path: str, kind: str, content_type: str, body: bytes) -> bool:
+        return kind == 'blob' and ns == self.ns and bool(self.path_re.match(path))
+
+    def write_meta(self, cur, ns: str, path: str, digest: str, size: int, content_type: str, at: str) -> None:
+        name = path.rpartition('/')[2]
+        ext = name.rpartition('.')[2].lower() if '.' in name else ''
+        cur.execute(f'INSERT INTO "{self.name}" (ns, path, name, ext, sha, size, content_type, at) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) '
+                    'ON CONFLICT (ns, path) DO UPDATE SET name=EXCLUDED.name, ext=EXCLUDED.ext, sha=EXCLUDED.sha, size=EXCLUDED.size, content_type=EXCLUDED.content_type, at=EXCLUDED.at',
+                    (ns, path, name, ext, digest, size, content_type, at))
+
+    def read(self, cur, ns: str, path: str) -> bytes | None:
+        cur.execute(f'SELECT b.bytes FROM "{self.name}" m JOIN blobs b ON b.sha = m.sha WHERE m.ns=%s AND m.path=%s', (ns, path))
+        r = cur.fetchone()
+        return bytes(r['bytes']) if r else None
+
+    def delete(self, cur, ns: str, path: str) -> None:
+        cur.execute(f'DELETE FROM "{self.name}" WHERE ns=%s AND path=%s', (ns, path))
+
+    def ddl(self) -> str:
+        return (f'CREATE TABLE IF NOT EXISTS "{self.name}" (ns TEXT NOT NULL, path TEXT NOT NULL, name TEXT NOT NULL, ext TEXT NOT NULL, sha TEXT NOT NULL, '
+                f'size BIGINT NOT NULL, content_type TEXT NOT NULL, at TEXT NOT NULL, PRIMARY KEY (ns, path));')
+
+
 # ── the registry ─────────────────────────────────────────────────────────────────────────────────────────────────────
 
 NOTE_COLS = [Col('at'), Col('text')]
+# plan@1 features (framework/plan/plan.json and each profile's copy): one row per feature
+PLAN_ITEM_COLS = [Col('id'), Col('title'), Col('area'), Col('kind'), Col('status'), Col('priority'), Col('wave'), Col('grp', 'group'),
+                  Col('epic'), Col('parent'), Col('model'), Col('source')]
+PROFILE_COLS = [Col('id'), Col('name'), Col('description'), Col('created_at', 'createdAt'), Col('updated_at', 'updatedAt')]
+PLAN_PROJECT_COLS = [Col('id'), Col('name'), Col('description'), Col('profile'), Col('status'), Col('created_at', 'createdAt'), Col('updated_at', 'updatedAt')]
+PROJECT_COLS = [Col('schema', '$manifest'), Col('name'), Col('display_name', 'displayName'), Col('kind'), Col('status'), Col('version'),
+                Col('description'), Col('created')]
+HISTORY_COLS = [Col('v', type='int'), Col('at'), Col('by'), Col('kind'), Col('note')]
+PLANNER_NODE_COLS = [Col('id'), Col('title'), Col('kind'), Col('parent'), Col('status'), Col('name'), Col('created_at', 'createdAt'), Col('updated_at', 'updatedAt')]
+_PLAN_DOC = r'^framework/plan/(profiles/[^/]+/framework/plan/)?'
+PLAN_ITEMS = ItemsTable('plan_items', 'console', _PLAN_DOC + r'plan\.json$', {'features': ItemList('id'), 'statuses': ItemList(scalar=True)}, PLAN_ITEM_COLS,
+                        'the plan (plan@1, framework/plan/plan.json and each profile copy): one row per feature, the statuses list as value rows')
+PLAN_PROFILES = ItemsTable('plan_profiles', 'console', r'^framework/plan/profiles\.json$', {'profiles': ItemList('id')}, PROFILE_COLS,
+                           'build profiles (build-profiles@1, framework/plan/profiles.json): one row per profile')
+PLAN_PROJECTS = ItemsTable('plan_projects', 'console', r'^framework/plan/projects\.json$', {'projects': ItemList('id')}, PLAN_PROJECT_COLS,
+                           'the plan project list (projects@1, framework/plan/projects.json): one row per project')
+PROJECTS = RecordTable('projects', 'console', PROJECT_COLS, 'project manifests (project-manifest@1): one row per project (this repo and every /projects/<name>)',
+                       r'^(project\.manifest\.json|projects/[^/]+/project\.manifest\.json)$')
+PLAN_MEDIA = MediaTable('plan_media', 'console', r'^framework/plan/media/.+$', 'plan media (framework/plan/media): one row per file, the bytes in blobs')
+PLANNER_HISTORY = ItemsTable('planner_history', 'planner', r'^(projects/[^/]+/)?history/[^/]+\.json$', {'versions': ItemList('v')}, HISTORY_COLS,
+                             'Plan Studio history (plan-history@1): one row per saved version of a plan, the plan snapshot in extra')
+PLANNER_CATEGORIES = ItemsTable('planner_categories', 'planner', r'^(projects/[^/]+/)?categories\.json$', {'paths': ItemList(scalar=True)}, [],
+                                'Plan Studio categories (plan-categories@1): one row per category path')
+PLANNER_LISTS = ItemsTable('planner_lists', 'planner', r'^(projects/[^/]+/)?(deleted|catalog-seen|blueprints)\.json$',
+                           {'ids': ItemList(scalar=True), 'keys': ItemList(scalar=True), 'items': ItemList('id')}, [Col('id'), Col('name'), Col('description')],
+                           'Plan Studio lists: deleted plan ids, catalog items seen, blueprints (one row per entry)')
+PLANNER_TREE = ItemsTable('planner_tree', 'planner', r'^v2/tree\.json$', {'items': ItemList('id'), 'trash': ItemList('id')}, PLANNER_NODE_COLS,
+                          'Plan Studio 2 tree (plan-tree@1): one row per node, trashed nodes in list trash')
 BUILDS = DocTable('builds', 'builds', 'store.json',
                   {'builds': ListSpec('builds', BUILD_COLS, 'builds', key='id', children=(('steps', 'build_steps', STEP_COLS), ('notes', 'build_notes', NOTE_COLS)))},
                   'the builds store (builds@1): one row per build keyed by its id, steps in build_steps, notes in build_notes, the rest of the document in store_heads')
@@ -525,8 +693,12 @@ SETTINGS = RecordTable('settings', 'settings', SETTINGS_COLS, 'settings document
 PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (plan@1): one row per plan', r'^(plans|projects/[^/]+/plans)/[^/]+\.json$')
 NOTES = NotesTable()
 
-TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES]
+TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES,
+                 PLAN_ITEMS, PLAN_PROFILES, PLAN_PROJECTS, PROJECTS, PLAN_MEDIA, PLANNER_HISTORY, PLANNER_CATEGORIES, PLANNER_LISTS, PLANNER_TREE]
 _BY_NAME = {t.name: t for t in TABLES}
+# Tables a key already stored elsewhere (records, blobs) moves into on connect (PgStore._backfill): the ones added after
+# the first copy. A table joins this list the release it is added; the backfill is idempotent and checks every key.
+BACKFILL = {'plan_items', 'plan_profiles', 'plan_projects', 'projects', 'plan_media', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree'}
 
 HOLDS = {
     'keys': 'every key: kind, rev, etag, when, who, size, content type, tombstone, which table holds its body',
@@ -542,6 +714,7 @@ HOLDS = {
     'build_notes': 'notes of each build (one row per note: at, text, under the build id)',
     'control_tabs': 'tabs of each tab group in the control registry',
     'mirror_runs': 'each SQLite mirror run: source, tables, row counts, result',
+    'planner_shipped': 'view: the Plan Studio shipped log (journal planner/shipped-log), one row per line',
 }
 
 # Run before SCHEMA_SQL on a database made by an earlier version (pg.py PgStore._connect): the builds rows move from
@@ -607,6 +780,11 @@ CREATE INDEX IF NOT EXISTS planner_items_status ON planner_items (status);
 CREATE OR REPLACE VIEW build_journal AS
   SELECT ns, path, seq, at, actor, entry->>'action' AS action, entry->>'note' AS note, entry->>'by' AS who, (entry->>'rev') AS store_rev, entry->'builds' AS builds, entry
   FROM journal WHERE ns = 'builds' AND path LIKE 'journal/%';
+CREATE INDEX IF NOT EXISTS plan_items_status ON plan_items (status);
+CREATE OR REPLACE VIEW planner_shipped AS
+  SELECT seq, at, actor, entry->>'build' AS build, entry->>'plan' AS plan, entry->>'id' AS id, (entry->>'ok')::boolean AS ok,
+         entry->>'source' AS source, entry->>'why' AS why, entry
+  FROM journal WHERE ns = 'planner' AND path = 'shipped-log';
 CREATE OR REPLACE VIEW note_history AS
   SELECT ns, path, seq, at, actor, entry FROM journal WHERE ns = 'notes' AND path LIKE '_history/%';
 """

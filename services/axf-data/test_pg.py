@@ -252,7 +252,7 @@ def test_tables_v1_rows_are_rekeyed_on_connect():
         st.q("INSERT INTO control_targets (section, pos, address, extra, doc_hash, child_lifted) VALUES ('tabGroups', 0, 'a', '{}', 'h', true), ('views', 0, 'v', '{}', 'h', NULL)")
         st.q("DELETE FROM meta WHERE k='tables_version'")
         st2 = pg_store(Path(st.dir).parent, st.schema)
-        assert st2.meta_get('tables_version') == '2'
+        assert st2.meta_get('tables_version') == str(__import__('tables').TABLES_VERSION)
         assert st2.fetchall('SELECT rid, pos FROM builds ORDER BY pos') == [{'rid': 'x', 'pos': 0}, {'rid': 'y', 'pos': 1}]
         assert st2.fetchall('SELECT parent_rid, id FROM build_steps') == [{'parent_rid': 'x', 'id': 's1'}]
         assert st2.fetchall('SELECT parent_rid, text FROM build_notes') == [{'parent_rid': 'x', 'text': 'n1'}]
@@ -312,7 +312,8 @@ def test_other_domain_tables():
         assert c.get('/v1/planner/plans/p1.json', headers=H()).json() == json.loads(canonical(plan))
         assert [(x['id'], x['project'], x['status']) for x in st.fetchall('SELECT id, project, status FROM planner_items ORDER BY id')] == [('p1', None, 'idea'), ('p2', 'sand', 'idea')]
         assert st.fetchone("SELECT extra FROM planner_items WHERE id='p1'")['extra'] == {'steps': [{'t': 1}], 'cost': {'usd': 1.5}}
-        assert st.fetchone("SELECT data FROM records WHERE ns='planner' AND path='deleted.json'")['data'] == {'ids': ['x']}
+        assert c.get('/v1/planner/deleted.json', headers=H()).json() == {'ids': ['x']}
+        assert st.fetchone("SELECT value FROM planner_lists WHERE path='deleted.json'")['value'] == 'x'
         # settings documents
         c.put('/v1/settings/apps/axf-console.json', content='{"$axf":"app-settings@1","theme":"dark"}', headers=J(**{'if-none-match': '*'}))
         assert st.fetchone('SELECT schema, extra FROM settings') == {'schema': 'app-settings@1', 'extra': {'theme': 'dark'}}
@@ -342,6 +343,73 @@ def test_other_domain_tables():
         assert tables['engine'] == 'postgres' and names['builds']['group'] == 'domain' and names['keys']['group'] == 'core'
         assert names['notes']['rows'] == 1 and names['planner_items']['rows'] == 2 and names['ui_review_items']['rows'] == 2
         assert code(c.get('/v1/_meta/tables', headers=H('console'))) == 'forbidden'
+
+
+def test_plan_tables_and_backfill():
+    """s4.2: plan, profiles, projects, plan media and Plan Studio documents are rows; keys stored before the tables
+    existed (records, plain blobs) move in on connect with rev and etag unchanged."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        plan = {'$axf': 'plan@1', 'generatedAt': 't', 'statuses': ['built', 'planned'], 'features': [
+            {'id': 'f1', 'title': 'One', 'status': 'built', 'group': 'g', 'files': ['a'], 'effort': {'m': 1}},
+            {'id': 'f2', 'title': 'Two', 'status': 'planned', 'priority': 3}]}
+        docs = {
+            '/v1/console/framework/plan/plan.json': plan,
+            '/v1/console/framework/plan/profiles/all/framework/plan/plan.json': {**plan, 'features': plan['features'][:1]},
+            '/v1/console/framework/plan/profiles.json': {'$axf': 'build-profiles@1', 'active': 'all', 'profiles': [{'id': 'all', 'name': 'All'}]},
+            '/v1/console/framework/plan/projects.json': {'$axf': 'projects@1', 'projects': [{'id': 'p', 'name': 'P', 'profile': 'all'}]},
+            '/v1/console/projects/garden/project.manifest.json': {'$manifest': 'project-manifest@1', 'name': 'garden', 'data': {'shared': []}},
+            '/v1/console/project.manifest.json': {'$manifest': 'project-manifest@1', 'name': 'amberx-axf'},
+            '/v1/planner/history/x.work.json': {'$axf': 'plan-history@1', 'id': 'x.work', 'versions': [{'v': 1, 'at': 't', 'plan': {'id': 'x.work'}}, {'v': 2, 'at': 'u', 'plan': {}}]},
+            '/v1/planner/categories.json': {'$axf': 'plan-categories@1', 'paths': ['AmberX', 'AmberX/Voice']},
+            '/v1/planner/catalog-seen.json': {'keys': ['app:a', 'app:b']},
+            '/v1/planner/blueprints.json': {'$axf': 'plan-blueprints@1', 'active': 'e', 'items': [{'id': 'e', 'name': 'Existing', 'plans': []}]},
+            '/v1/planner/v2/tree.json': {'$axf': 'plan-tree@1', 'rev': 0, 'items': [{'id': 'n1', 'title': 'Root', 'kids': []}], 'trash': []},
+            '/v1/planner/projects/sand/history/h.json': {'$axf': 'plan-history@1', 'id': 'h', 'versions': 'not a list'},
+        }
+        for url, doc in docs.items():
+            assert c.put(url, content=json.dumps(doc), headers=J(**{'if-none-match': '*'})).status_code == 200, url
+            assert c.get(url, headers=H()).json() == json.loads(canonical(doc)), url
+        rows = {t: st.fetchone(f'SELECT COUNT(*) AS n FROM {t}')['n'] for t in ('plan_items', 'plan_profiles', 'plan_projects', 'projects', 'planner_history', 'planner_categories', 'planner_lists', 'planner_tree')}
+        assert rows == {'plan_items': 2 + 2 + 1 + 2, 'plan_profiles': 1, 'plan_projects': 1, 'projects': 2, 'planner_history': 2, 'planner_categories': 2, 'planner_lists': 3, 'planner_tree': 1}
+        assert st.fetchone("SELECT title, grp, extra FROM plan_items WHERE path='framework/plan/plan.json' AND rid='f1'") == {'title': 'One', 'grp': 'g', 'extra': {'files': ['a'], 'effort': {'m': 1}}}
+        assert st.fetchone("SELECT priority, extra FROM plan_items WHERE rid='f2'") == {'priority': None, 'extra': {'priority': 3}}  # an int priority stays in extra
+        assert st.fetchone("SELECT name, display_name FROM projects WHERE path='projects/garden/project.manifest.json'") == {'name': 'garden', 'display_name': None}
+        # one edit rewrites one row
+        plan2 = json.loads(canonical(plan))
+        plan2['features'][1]['title'] = 'Two!'
+        before = {r['rid']: r['doc_hash'] for r in st.fetchall("SELECT rid, doc_hash FROM plan_items WHERE path='framework/plan/plan.json' AND list='features'")}
+        et = c.get('/v1/console/framework/plan/plan.json', headers=H()).headers['etag']
+        assert c.put('/v1/console/framework/plan/plan.json', content=json.dumps(plan2), headers=J(**{'if-match': et})).status_code == 200
+        after = {r['rid']: r['doc_hash'] for r in st.fetchall("SELECT rid, doc_hash FROM plan_items WHERE path='framework/plan/plan.json' AND list='features'")}
+        assert before['f1'] == after['f1'] and before['f2'] != after['f2']
+        assert c.get('/v1/console/framework/plan/plan.json', headers=H()).json() == plan2
+        # plan media: bytes in blobs, a metadata row
+        png = b'\x89PNG\r\n\x1a\n' + bytes(range(256))
+        assert c.put('/v1/console/framework/plan/media/a.png', content=png, headers=H(**{'content-type': 'image/png', 'if-none-match': '*'})).status_code == 200
+        assert c.get('/v1/console/framework/plan/media/a.png', headers=H()).content == png
+        assert st.fetchone('SELECT name, ext, size, content_type FROM plan_media') == {'name': 'a.png', 'ext': 'png', 'size': len(png), 'content_type': 'image/png'}
+        # the shipped log is a view over the journal
+        c.post('/v1/planner/shipped-log:append', json={'entries': [{'build': 'b', 'plan': 'p', 'id': 'sm-b', 'ok': True, 'source': 'cli'}]}, headers=H())
+        assert st.fetchone('SELECT build, plan, ok FROM planner_shipped') == {'build': 'b', 'plan': 'p', 'ok': True}
+
+        # backfill: keys written as plain records / blobs before the tables existed move in on the next connect
+        st.q("INSERT INTO records (ns, path, data) VALUES ('planner', 'history/old.json', %s)", (json.dumps({'id': 'old', 'versions': [{'v': 1}]}),))
+        st.q("INSERT INTO keys (ns, path, kind, rev, etag, at, actor, size, content_type, deleted, entries, table_name) VALUES ('planner', 'history/old.json', 'record', 4, 'e4', 't', 'x', 1, 'application/json', false, 0, '')")
+        st.q("INSERT INTO blobs (sha, bytes, size, at) VALUES ('s1', %s, 3, 't')", (b'abc',))
+        st.q("INSERT INTO keys (ns, path, kind, rev, etag, at, actor, size, content_type, deleted, entries, table_name, blob_sha) VALUES ('console', 'framework/plan/media/b.jpg', 'blob', 2, 'e2', 't', 'x', 3, 'image/jpeg', false, 0, '', 's1')")
+        st.db.close()
+        st._ensure()
+        rep = c.get('/v1/_meta/tables', headers=H()).json()['backfill']
+        assert rep['moved'] == {'planner_history': 1, 'plan_media': 1} and rep['failed'] == [], rep
+        assert st.fetchone("SELECT COUNT(*) AS n FROM records WHERE path='history/old.json'")['n'] == 0
+        r = c.get('/v1/planner/history/old.json', headers=H())
+        assert r.json() == {'id': 'old', 'versions': [{'v': 1}]}, r.json()
+        assert r.headers['etag'] in ('e4', '"e4"'), r.headers
+        assert c.get('/v1/console/framework/plan/media/b.jpg', headers=H()).content == b'abc'
+        st.db.close()
+        st._ensure()   # idempotent: nothing left to move
+        assert c.get('/v1/_meta/tables', headers=H()).json()['backfill']['moved'] == {'planner_history': 1, 'plan_media': 1}
 
 
 # ── SQLite mirrors ───────────────────────────────────────────────────────────────────────────────────────────────────

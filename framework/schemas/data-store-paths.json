@@ -118,6 +118,10 @@
         "to": "planner/{1}"
       },
       {
+        "re": "^amberx-axf/_data/plan-studio-2/(.+)$",
+        "to": "planner/v2/{1}"
+      },
+      {
         "re": "^amberx-axf/_data/sessions/(.+)$",
         "to": "sessions/{1}"
       },
@@ -171,6 +175,7 @@
     "projects:_shared/_data/app-catalog/x.apk": null,
     "projects:amberx-axf/_data/plan-studio/plans/p1.json": "planner/plans/p1.json",
     "projects:amberx-axf/_data/plan-studio/shipped-log.jsonl": "planner/shipped-log",
+    "projects:amberx-axf/_data/plan-studio-2/tree.json": "planner/v2/tree.json",
     "projects:amberx-axf/_data/changes/2026/11/c1.json": "changes/2026/11/c1.json",
     "projects:amberx-axf/_data/home-cards/brett.json": "console/home-cards/brett.json",
     "projects:amberx-axf/_data/tracker.json": "console/tracker.json",
