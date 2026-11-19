@@ -83,6 +83,7 @@ test_jws_tokens = T.test_jws_tokens
 test_read_only_in_rollback = T.test_read_only_in_rollback
 test_backup_routes = T.test_backup_routes
 test_mcp_tools = T.test_mcp_tools
+test_patch_document = T.test_patch_document
 
 
 def test_journal_append_only():
@@ -131,13 +132,15 @@ def test_builds_store_is_rows():
         r = c.put('/v1/builds/store.json', content=json.dumps(doc), headers=J(**{'if-none-match': '*'})).json()
         assert r['etag'] == etag_of(1, canonical(doc).encode()), 'the etag is the canonical document, as on SQLite'
         assert c.get('/v1/builds/store.json', headers=H()).json() == json.loads(canonical(doc))
-        rows = st.fetchall('SELECT pos, id, title, status, pr, ord, deleted, extra, child_lifted FROM builds ORDER BY pos')
-        assert [(x['id'], x['status'], x['pr'], x['ord'], x['deleted'], x['child_lifted']) for x in rows] == [('one', 'queued', '', 3, False, True), ('two', 'done', None, None, None, True), ('three', 'draft', None, None, None, None)]
+        rows = st.fetchall('SELECT rid, pos, id, title, status, pr, ord, deleted, extra, children_lifted FROM builds ORDER BY pos')
+        assert [(x['rid'], x['pos'], x['status'], x['pr'], x['ord'], x['deleted'], x['children_lifted']) for x in rows] == [
+            ('one', 0, 'queued', '', 3, False, {'steps': True, 'notes': True}), ('two', 1, 'done', None, None, None, {'steps': True}), ('three', 2, 'draft', None, None, None, None)]
         assert rows[1]['extra'] == {'pr': 705, 'pending': None}, 'a value that does not fit its column stays in extra'
-        assert rows[0]['extra'] == {'notes': [{'text': 'n'}]}
-        steps = st.fetchall('SELECT parent_pos, pos, id, done, estimate, extra FROM build_steps ORDER BY parent_pos, pos')
-        assert [(s['parent_pos'], s['id'], s['done'], s['estimate']) for s in steps] == [(0, 's1', True, 10), (0, 's2', False, 5)]
+        assert rows[0]['extra'] == {}, 'notes are rows now (build_notes), not extra'
+        steps = st.fetchall('SELECT parent_rid, pos, id, done, estimate, extra FROM build_steps ORDER BY parent_rid, pos')
+        assert [(s['parent_rid'], s['id'], s['done'], s['estimate']) for s in steps] == [('one', 's1', True, 10), ('one', 's2', False, 5)]
         assert steps[0]['extra'] == {'checks': []}
+        assert st.fetchall('SELECT parent_rid, pos, text FROM build_notes') == [{'parent_rid': 'one', 'pos': 0, 'text': 'n'}]
         head = st.fetchone("SELECT head, lists FROM store_heads WHERE ns='builds' AND path='store.json'")
         assert head['lists'] == ['builds'] and head['head']['rev'] == 5 and 'builds' not in head['head']
         # a second write touches only the changed rows (hash per row)
@@ -147,21 +150,116 @@ def test_builds_store_is_rows():
         assert c.get('/v1/builds/store.json', headers=H()).json() == json.loads(canonical(doc))
         assert st.fetchone("SELECT status FROM builds WHERE id='two'")['status'] == 'live'
         assert st.fetchone('SELECT COUNT(*) AS n FROM builds')['n'] == 4 and st.fetchone('SELECT COUNT(*) AS n FROM build_steps')['n'] == 3
-        # shrink: rows past the end go
-        doc['builds'] = doc['builds'][:1]
+        # reorder: the same rows, new positions, nothing rewritten but pos
+        doc['builds'] = [doc['builds'][3], *doc['builds'][:3]]
         c.put('/v1/builds/store.json', content=json.dumps(doc), headers=J(**{'if-match': '2'}))
-        assert st.fetchone('SELECT COUNT(*) AS n FROM builds')['n'] == 1 and st.fetchone('SELECT COUNT(*) AS n FROM build_steps')['n'] == 2
+        assert c.get('/v1/builds/store.json', headers=H()).json() == json.loads(canonical(doc))
+        assert st.fetchone("SELECT pos FROM builds WHERE rid='four'")['pos'] == 0
+        # shrink: rows no longer in the list go (with their children)
+        doc['builds'] = doc['builds'][1:2]
+        c.put('/v1/builds/store.json', content=json.dumps(doc), headers=J(**{'if-match': '3'}))
+        assert st.fetchone('SELECT COUNT(*) AS n FROM builds')['n'] == 1 and st.fetchone('SELECT COUNT(*) AS n FROM build_steps')['n'] == 2 and st.fetchone('SELECT COUNT(*) AS n FROM build_notes')['n'] == 1
         assert c.get('/v1/builds/store.json', headers=H()).json() == json.loads(canonical(doc))
         # a document without a builds list, or not an object, still round-trips
         for odd in ({'rev': 1, 'builds': 'not a list'}, [1, 2, 3], {'builds': [{'a': 1}, 'mixed']}):
             c.put('/v1/builds/store.json', content=json.dumps(odd), headers=J(**{'if-match': c.get('/v1/builds/store.json?meta=1', headers=H()).json()['etag']}))
             assert c.get('/v1/builds/store.json', headers=H()).json() == odd
         # history keeps earlier revs, delete clears the rows
-        assert [x['rev'] for x in c.get('/v1/builds/store.json:history', headers=H()).json()['revs']][:2] == [6, 5]
-        c.delete('/v1/builds/store.json', headers=H(**{'if-match': '6'}))
+        assert [x['rev'] for x in c.get('/v1/builds/store.json:history', headers=H()).json()['revs']][:2] == [7, 6]
+        c.delete('/v1/builds/store.json', headers=H(**{'if-match': '7'}))
         assert st.fetchone('SELECT COUNT(*) AS n FROM builds')['n'] == 0 and st.fetchone('SELECT COUNT(*) AS n FROM store_heads')['n'] == 0
-        assert c.post('/v1/builds/store.json:restore', json={'rev': 2}, headers=H()).json()['rev'] == 8
+        assert c.post('/v1/builds/store.json:restore', json={'rev': 2}, headers=H()).json()['rev'] == 9
         assert st.fetchone('SELECT COUNT(*) AS n FROM builds')['n'] == 4 and st.fetchone("SELECT status FROM builds WHERE id='two'")['status'] == 'live'
+
+
+def test_patch_locks_only_the_rows_it_changes():
+    """data-patch@1 on Postgres: changed builds, head fields and the journal line in one transaction; `ifRev` per build;
+    only the named rows are locked (another connection updates a different build meanwhile)."""
+    import threading
+    import psycopg
+    from psycopg.rows import dict_row
+    from pg import _dsn_with_schema
+    with PgEnv() as c:
+        st = c.app.state.store
+        doc = {'$axf': 'builds@1', 'rev': 1, 'updatedAt': 't0', 'meta': {}, 'rules': {}, 'drafts': {},
+               'builds': [{'id': 'a', 'title': 'A', 'status': 'pending', 'rev': 1, 'steps': [{'id': 's1', 'done': False}], 'notes': []},
+                          {'id': 'b', 'title': 'B', 'status': 'pending', 'rev': 1, 'steps': [], 'notes': []}]}
+        r0 = c.put('/v1/builds/store.json', content=json.dumps(doc), headers=J(**{'if-none-match': '*'})).json()
+        a2 = {**doc['builds'][0], 'rev': 2, 'status': 'running', 'steps': [{'id': 's1', 'done': True}], 'notes': [{'at': 't1', 'text': 'started'}]}
+        body = {'head': {'rev': 2, 'updatedAt': 't1'}, 'lists': {'builds': [{'key': 'a', 'ifRev': 1, 'item': a2}]},
+                'journal': {'path': 'journal/2026-11', 'entry': {'rev': 2, 'at': 't1', 'by': 'test', 'action': 'tick', 'builds': [{'id': 'a', 'op': 'change'}]}, 'idem': 'rev-2-t1'}}
+        p = c.post('/v1/builds/store.json:patch', json=body, headers=H()).json()
+        assert p['$axf'] == 'data-patch@1' and p['applied'] == 1 and p['added'] == 0 and p['record']['rev'] == 2 and p['journal']['first'] == 1
+        got = c.get('/v1/builds/store.json', headers=H()).json()
+        assert got['rev'] == 2 and got['updatedAt'] == 't1' and got['builds'][0] == json.loads(canonical(a2)) and got['builds'][1] == doc['builds'][1]
+        assert c.get('/v1/builds/store.json?meta=1', headers=H()).json()['etag'] == etag_of(2, canonical(got).encode()), 'the etag is of the assembled record, as a put'
+        assert st.fetchone("SELECT COUNT(*) AS n FROM build_notes WHERE parent_rid='a'")['n'] == 1
+        assert c.get('/v1/builds/journal/2026-11?since=0', headers=H()).json()['entries'][0]['entry']['action'] == 'tick'
+        # a stale ifRev is a conflict naming the build; nothing written (not the head, not the journal)
+        stale = c.post('/v1/builds/store.json:patch', json={'head': {'rev': 3}, 'lists': {'builds': [{'key': 'a', 'ifRev': 1, 'item': {**a2, 'rev': 3}}]},
+                                                          'journal': {'path': 'journal/2026-11', 'entry': {'rev': 3}}}, headers=H())
+        assert stale.status_code == 409 and stale.json()['code'] == 'conflict' and 'a' in stale.json()['message']
+        assert c.get('/v1/builds/store.json', headers=H()).json()['rev'] == 2
+        assert len(c.get('/v1/builds/journal/2026-11?since=0', headers=H()).json()['entries']) == 1
+        # a new build passes ifRev null; an existing one with null is a conflict
+        p2 = c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'c', 'ifRev': None, 'item': {'id': 'c', 'title': 'C', 'rev': 1}}]}}, headers=H()).json()
+        assert p2['added'] == 1 and [b['id'] for b in c.get('/v1/builds/store.json', headers=H()).json()['builds']] == ['a', 'b', 'c']
+        assert code(c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'c', 'ifRev': None, 'item': {'id': 'c'}}]}}, headers=H())) == 'conflict'
+        # row-level: while this connection holds build `a` FOR UPDATE, a patch of build `b` goes through at once
+        dsn = _dsn_with_schema(st.dsn, st.schema)
+        other = psycopg.connect(dsn, row_factory=dict_row)
+        other.execute("SELECT 1 FROM builds WHERE section='builds' AND rid='a' FOR UPDATE")
+        done = {}
+
+        def patch_b():
+            r = c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'b', 'ifRev': 1, 'item': {**doc['builds'][1], 'rev': 2, 'status': 'queued'}}]}}, headers=H())
+            done['b'] = r.status_code
+
+        t = threading.Thread(target=patch_b)
+        t.start()
+        t.join(timeout=5)
+        assert done.get('b') == 200, f'patching b waited on the lock of a ({done})'
+        other.rollback()
+        other.close()
+        assert c.get('/v1/builds/store.json', headers=H()).json()['builds'][1]['status'] == 'queued'
+        # shape errors are invalid_body; a record no table claims cannot be patched
+        assert code(c.post('/v1/builds/store.json:patch', json={'lists': {'steps': []}}, headers=H())) == 'invalid_body'
+        assert code(c.post('/v1/builds/store.json:patch', json={'lists': {'builds': [{'key': 'a', 'item': {'id': 'zz'}}]}}, headers=H())) == 'invalid_body'
+        c.put('/v1/builds/other.json', content='{"builds":[]}', headers=J(**{'if-none-match': '*'}))
+        assert code(c.post('/v1/builds/other.json:patch', json={'lists': {'builds': []}}, headers=H())) == 'invalid_body'
+        # the orchestrator's grant (write + append) is enough; a reader is refused
+        assert code(c.post('/v1/builds/store.json:patch', json={'head': {'rev': 9}}, headers=H('reader'))) == 'forbidden'
+
+
+def test_tables_v1_rows_are_rekeyed_on_connect():
+    """A database made by tables version 1 (builds keyed by position) comes up as version 2: same document, rows keyed by id."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        doc = {'rev': 1, 'builds': [{'id': 'x', 'title': 'X', 'notes': [{'text': 'n1'}], 'steps': [{'id': 's1'}]}, {'id': 'y', 'title': 'Y'}]}
+        c.put('/v1/builds/store.json', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        # the version-1 shape (rows keyed by position, notes inside extra, one child flag), as the Nov 15 release made it
+        from psycopg.types.json import Jsonb
+        import tables as T
+        st.q('DROP TABLE build_notes, build_steps, builds')
+        st.q(f'CREATE TABLE builds (section TEXT NOT NULL, pos INTEGER NOT NULL{T._ddl_cols(T.BUILD_COLS)}, extra JSONB NOT NULL DEFAULT \'{{}}\', doc_hash TEXT NOT NULL, child_lifted BOOLEAN, PRIMARY KEY (section, pos))')  # noqa: SLF001
+        st.q(f'CREATE TABLE build_steps (section TEXT NOT NULL, parent_pos INTEGER NOT NULL, pos INTEGER NOT NULL{T._ddl_cols(T.STEP_COLS)}, extra JSONB NOT NULL DEFAULT \'{{}}\', PRIMARY KEY (section, parent_pos, pos))')  # noqa: SLF001
+        st.q("INSERT INTO builds (section, pos, id, title, extra, doc_hash, child_lifted) VALUES ('builds', 0, 'x', 'X', %s, 'h1', true), ('builds', 1, 'y', 'Y', '{}', 'h2', NULL)",
+             (Jsonb({'notes': [{'text': 'n1'}]}),))
+        st.q("INSERT INTO build_steps (section, parent_pos, pos, id, extra) VALUES ('builds', 0, 0, 's1', '{}')")
+        # the other list tables carried one BOOLEAN child flag in version 1
+        st.q('ALTER TABLE control_targets DROP COLUMN children_lifted')
+        st.q('ALTER TABLE control_targets ADD COLUMN child_lifted BOOLEAN')
+        st.q("INSERT INTO control_targets (section, pos, address, extra, doc_hash, child_lifted) VALUES ('tabGroups', 0, 'a', '{}', 'h', true), ('views', 0, 'v', '{}', 'h', NULL)")
+        st.q("DELETE FROM meta WHERE k='tables_version'")
+        st2 = pg_store(Path(st.dir).parent, st.schema)
+        assert st2.meta_get('tables_version') == '2'
+        assert st2.fetchall('SELECT rid, pos FROM builds ORDER BY pos') == [{'rid': 'x', 'pos': 0}, {'rid': 'y', 'pos': 1}]
+        assert st2.fetchall('SELECT parent_rid, id FROM build_steps') == [{'parent_rid': 'x', 'id': 's1'}]
+        assert st2.fetchall('SELECT parent_rid, text FROM build_notes') == [{'parent_rid': 'x', 'text': 'n1'}]
+        assert st2.fetchall('SELECT section, children_lifted FROM control_targets ORDER BY section') == [{'section': 'tabGroups', 'children_lifted': {'tabs': True}}, {'section': 'views', 'children_lifted': None}]
+        r, body = st2.get('builds', 'store.json')
+        assert json.loads(body) == json.loads(canonical(doc))
+        assert st2.fetchone("SELECT to_regclass('builds_v1') AS t")['t'] is None
 
 
 def test_live_builds_store_round_trips():

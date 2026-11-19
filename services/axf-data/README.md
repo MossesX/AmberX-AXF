@@ -36,7 +36,10 @@ written here.
   unless-stopped`), connects the console and axHub, installs the backup + mirror cron and logs the deploy (deploy-log@1
   target `axf-data`). A volume that already holds a SQLite store is migrated first (backup, copy, counts + manifests) and
   the service starts in `shadow`; `axf data engine postgres` cuts over. Re-run the console installer afterwards: it passes
-  `conf/env/console.env` (AXF_DATA_URL, AXF_DATA_TOKEN) into the console.
+  `conf/env/console.env` (AXF_DATA_URL, AXF_DATA_TOKEN) into the console. The container sits at a fixed address on the
+  internal network (`<subnet>.250`) and the installer writes `conf/env/host.env` (that address, the orchestrator's token)
+  for processes on the VPS host itself (build sessions in worktrees, the gate runner, cron): `framework/core/data-files.mjs`
+  reads it when `AXF_DATA_URL` is unset.
 - **Locally**: `AXF_DATA_DSN=postgresql://user:pw@localhost:5432/axfdata AXF_DATA_DIR=/tmp/axfd AXF_DATA_TOKENS_FILE=tokens.json python3 -m uvicorn main:app --port 7700`
   (without `AXF_DATA_DSN` the SQLite engine runs).
 
@@ -44,11 +47,17 @@ written here.
 
 `GET /v1/_meta/tables` (`axf data tables`, the Data store plugin's `tables` command, "what tables are there") lists every
 table with rows, bytes and what it holds. The documents the console keeps are rows, not JSON copies: one row per build
-(`builds`) and per step (`build_steps`), per UI Review item, per plan, per settings document, per note (Markdown text),
-per control target; the fields of a document that are not rows (`rev`, `rules`, `groups`, `counts`…) sit in
-`store_heads`. Journal lines are rows with `entry JSONB` (view `build_journal` lifts action / note / builds). Lifted
-columns are typed; a value that does not fit stays in the row's `extra` JSONB with the column NULL, so every document
-comes back exactly as it went in (same canonical etag as the SQLite engine).
+(`builds`, keyed by the build id), per step (`build_steps`) and per note (`build_notes`) under that id, per UI Review item,
+per plan, per settings document, per note (Markdown text), per control target; the fields of a document that are not rows
+(`rev`, `rules`, `groups`, `counts`…) sit in `store_heads`. Journal lines are rows with `entry JSONB` (view
+`build_journal` lifts action / note / builds). Lifted columns are typed; a value that does not fit stays in the row's
+`extra` JSONB with the column NULL, so every document comes back exactly as it went in (same canonical etag as the SQLite
+engine).
+
+`POST /v1/<key>:patch` (data-patch@1) writes some rows of such a record without the rest: the builds a session changed,
+each checked against the rev it was read at, the head fields given and one journal line, in one transaction that locks
+only those rows (`SELECT … FOR UPDATE`). It is how `framework/cli/builds-store.mjs` writes the builds store after the cut
+(`node framework/cli/builds-data.mjs cutover --apply`). The SQLite engine answers the same patch on the document.
 
 The two SQLite files the console still writes are mirrored table for table: the Shipped features ledger on every upload
 (`ledger_features`, `ledger_edits`, `ledger_manifests`…), the Chat viewer db nightly from the mounted file
