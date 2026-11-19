@@ -840,22 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:49 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 13:52 UTC · `every-plugin-gets-own-default-toolbar` s5 done (all) · orchestrator
-- 2026-11-18 13:50 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 13:53 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
-- 2026-11-18 13:54 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 13:55 UTC · `settings-fix-part-2-blank-toolbars` → running, note (all) · orchestrator
-- 2026-11-18 13:57 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · orchestrator
-- 2026-11-18 13:57 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
-- 2026-11-18 13:58 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · orchestrator
-- 2026-11-18 13:58 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · orchestrator
-- 2026-11-18 13:59 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · orchestrator
-- 2026-11-18 14:00 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · orchestrator
-- 2026-11-18 14:01 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · orchestrator
-- 2026-11-18 14:01 UTC · `attach-widgets-to-any-toolbar-banner` → running, note (all) · orchestrator
-- 2026-11-18 14:02 UTC · `one-build-time-always-split-to-fill` s1 done, → running (all) · orchestrator
-- 2026-11-18 13:59 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · foreign-write
 - 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
 - 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · pipeline
 - 2026-11-18 14:01 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
@@ -1240,6 +1224,22 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:16 UTC · `stop-push-storm-builds-live-pushes-build` → fixing, note (all) · pipeline
 - 2026-11-19 02:22 UTC · `stop-push-storm-builds-live-pushes-build` PR #850, note (all) · reconciler
 - 2026-11-19 02:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 02:23 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `attach-widgets-to-any-toolbar-banner` s15 done, s16 done, s17 done, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, → complete, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `urgent-all-data-to-postgres-builds-store` s1 done, s2 done, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `host-phone-connect-apk-axhub-browser` added (3 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `console-app-text-way-too-big-system-font` added (6 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `queue-stall-detector-vps-spots-queued` added (10 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `load-spike-alarm-vps-detects-cpu-load` added (10 steps) (all) · foreign-write
 
 ## Token passes (log)
 
