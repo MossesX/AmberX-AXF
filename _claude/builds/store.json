@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9345,
- "updatedAt": "2026-11-19T10:22:31.752Z",
+ "rev": 9346,
+ "updatedAt": "2026-11-19T10:32:43.028Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322053,7 +322053,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T10:22:20.539Z",
+   "updatedAt": "2026-11-19T10:32:29.752Z",
    "builtAt": "",
    "notes": [
     {
@@ -322431,6 +322431,10 @@
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T10:22:20.539Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T10:32:29.752Z"
     }
    ],
    "approvals": [
@@ -322699,7 +322703,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 114,
+   "rev": 115,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
