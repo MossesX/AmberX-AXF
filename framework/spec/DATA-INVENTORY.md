@@ -51,6 +51,15 @@ axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` da
   stored; its old axf-data copy was dropped at the cut. Live 02:05 UTC: 466 / 23 / 39 rows equal the files
   (`data-tables.mjs cutover catalog --apply`). The three `console` keys flip with the plan keys (`--keys`, same reason).
 
+- **s4.6 tables done (Nov 19 2026, Opus)**: `sessions` (one row per archived session, `HeadItemsTable`: the head is a row
+  of its own table) + `session_messages` (one row per prompt), `codebase_changes` (one row per change-log@1 entry).
+  The backfill now runs in a background thread, one key per transaction under the store lock (7 641 keys moved in
+  5.5 min with the API answering; 0 failed). Live 02:25 UTC: 1 726 hub files axf-data lacked or held stale were
+  written; 7 124 / 8 057 / 2 252 rows equal the files. **Not cut over**: the change log
+  (`codebase-changes/changes-core.mjs` `ChangeStore.put`) and the session archiver write the hub files directly; in
+  cutover they would write files nobody reads. `data-tables.mjs cutover sessions` refuses the flip (`flipBlocked`)
+  until they go through `framework/core/data-files.mjs`; until then `backfill sessions --apply` keeps axf-data current.
+
 Row counts below are live `keys` rows in axf-data (not deleted); sizes are the stored bodies.
 
 ## Legend
