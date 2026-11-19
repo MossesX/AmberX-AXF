@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T03:09:55.016Z",
+ "updatedAt": "2026-11-19T03:10:43.919Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195663,8 +195663,8 @@
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "#849",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T03:09:36.133Z",
-   "builtAt": "2026-11-19T03:09:36.133Z",
+   "updatedAt": "2026-11-19T03:10:17.133Z",
+   "builtAt": "2026-11-19T03:10:17.211Z",
    "notes": [
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
@@ -195681,6 +195681,10 @@
     {
      "text": "Reconciler: PR #849; PR #849 names s1, s2, s4 done",
      "at": "2026-11-19T02:13:34.737Z"
+    },
+    {
+     "text": "Headless run axf-postgres-part-c-console-state-settings--paulie: brief only · start 14.3K tokens ($0.05) · cost $17.69 · 227 turns · 6 tools, MCP none",
+     "at": "2026-11-19T03:10:17.133Z"
     },
     {
      "text": "All 4 steps done, PR #849 CI green (run 44446258602). 35 tables + 7 views (services/axf-data/tables_shapes.py, tables_console.py, tables_plugins.py; tables v5), data-cut tool + groups (framework/schemas/data-cut.json), writers moved onto the data layer, live backfill of 2 844 keys (2 814 equal at the last read). Flips NOT run yet on purpose: after the merge, redeploy axf-data (deploy/install-data.sh: creates the tables, retable moves records, installs the hourly sync cron) and the console, then: node framework/cli/data-cut.mjs cutover console --apply; then plugins-large; then plugins-rest (cli token, AXF_DATA_URL from host.env). Report: _claude/builds/reports/postgres-part-c.md.",
