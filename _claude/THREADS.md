@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:14 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
 - 2026-11-18 13:16 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
 - 2026-11-18 13:16 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
 - 2026-11-18 13:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:18 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · foreign-write
 - 2026-11-19 00:18 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
 - 2026-11-19 00:18 UTC · `queue-stall-detector-vps-spots-queued` added (0 steps) (all) · foreign-write
+- 2026-11-19 00:19 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
 
 ## Token passes (log)
 
