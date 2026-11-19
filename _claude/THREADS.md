@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 14:23 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 14:23 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 14:23 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 14:23 UTC · `vps-never-gives-up-fix-land-every-build` → landing, merged, note (all) · watchdog
-- 2026-11-18 14:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `vps-never-gives-up-fix-land-every-build` → landing, merged, note (all) · foreign-write
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:40 UTC · `postgres-part-b-plan-plan-studio-catalog` s4 done, → landing (all) · foreign-write
 - 2026-11-19 02:40 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
 - 2026-11-19 02:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-19 02:42 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
+- 2026-11-19 02:42 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed (all) · foreign-write
+- 2026-11-19 02:42 UTC · `vps-never-gives-up-fix-land-every-build` → landed (all) · foreign-write
+- 2026-11-19 02:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-19 02:42 UTC · `postgres-part-b-plan-plan-studio-catalog` s3 done, s4 done, → landing (all) · foreign-write
 
 ## Token passes (log)
 

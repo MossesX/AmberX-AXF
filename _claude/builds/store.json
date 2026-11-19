@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9245,
- "updatedAt": "2026-11-19T02:41:49.541Z",
+ "rev": 9246,
+ "updatedAt": "2026-11-19T02:42:21.034Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321853,7 +321853,7 @@
    "title": "URGENT — All data to Postgres: builds store first, then every JSON data file",
    "category": "data",
    "detail": "Priority: Urgent (Brett).\n\nBrett's words: \"I don't want any data stored in JSON period. Everything needs to be a Postgres table. Everything, dude. Not a single piece of data should be stored in JSON.\"\n\nFound Nov 18 2026: _claude/builds/store.json (2 MB+) is still a file with a lockfile (/axf/_claude/builds/store.json.lock); console writes fail with 'builds store is locked'. data-store-paths.json maps builds/* but the namespace was never cut over. axf-data-db (postgres:16) is running.\n\nGoal: every piece of runtime data (builds store + journal, pending, queue, plans, notes, settings, plugin data dirs, agent-slots, worker accounts...) lives in real Postgres tables through axf-data, not JSON blobs or files. Builds first (biggest, most contended). Repo code/config that is source (asset@1 assets, schemas, plugin.json manifests) stays in the repo. Any JSON in the repo that is data becomes a read-only export or goes away. Update CLAUDE.md and the data-store doc to the new rule.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -322200,7 +322200,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-19T01:06:18.147Z",
-     "updatedAt": "2026-11-19T02:28:34.129Z"
+     "updatedAt": "2026-11-19T02:42:01.659Z"
     },
     {
      "id": "s10",
@@ -322222,7 +322222,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-19T01:16:08.948Z",
-     "updatedAt": "2026-11-19T02:30:14.427Z"
+     "updatedAt": "2026-11-19T02:42:01.659Z"
     },
     {
      "id": "s8",
@@ -323360,7 +323360,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-19T00:12:01.642Z",
-     "updatedAt": "2026-11-19T02:28:39.256Z"
+     "updatedAt": "2026-11-19T02:42:01.659Z"
     },
     {
      "id": "s4",
@@ -323382,7 +323382,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-19T00:12:01.642Z",
-     "updatedAt": "2026-11-19T02:40:34.134Z"
+     "updatedAt": "2026-11-19T02:42:01.659Z"
     }
    ],
    "profiles": [
