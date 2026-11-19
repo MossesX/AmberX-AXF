@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:27:43.545Z",
+ "updatedAt": "2026-11-19T02:28:22.531Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194889,7 +194889,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:26:36.528Z",
+   "updatedAt": "2026-11-19T02:28:06.139Z",
    "builtAt": "",
    "notes": [
     {
@@ -194981,10 +194981,6 @@
      "at": "2026-11-19T01:24:15.746Z"
     },
     {
-     "text": "Phase 3 (Opus) done: s3 cut code, s4.1 agent-slots table + cut tool, s5 no-json-data@1 rule + CI ratchet. Main CI has been red since 00:25 (Plugin lifecycle: DATA-INVENTORY.md from PR #848 named plugin files); fixed on this branch (7a29d61c8), lands with this PR. Console redeployed to main (image rebuilt, healthy). The builds flip waits for this PR on main: new step s6 carries the exact command.",
-     "at": "2026-11-19T02:26:36.528Z"
-    },
-    {
      "text": "Reconciler: PR #848; PR #848 merged",
      "at": "2026-11-19T02:13:34.737Z"
     },
@@ -194995,6 +194991,10 @@
     {
      "text": "Refused running → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-19T02:22:00.738Z"
+    },
+    {
+     "text": "Phase 3 (Opus) done: s3 cut code, s4.1 agent-slots table + cut tool, s5 no-json-data@1 rule + CI ratchet. Main CI has been red since 00:25 (Plugin lifecycle: DATA-INVENTORY.md from PR #848 named plugin files); fixed on this branch (7a29d61c8), lands with this PR. Console redeployed to main (image rebuilt, healthy). The builds flip waits for this PR on main: new step s6 carries the exact command.",
+     "at": "2026-11-19T02:26:36.528Z"
     }
    ],
    "approvals": [
@@ -195118,7 +195118,7 @@
     },
     {
      "id": "s6",
-     "text": "s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over",
+     "text": "Duplicate, not built here: this namespace group is built by postgres-part-b-plan-plan-studio-catalog (its s2). Skipped.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -195128,7 +195128,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": "",
