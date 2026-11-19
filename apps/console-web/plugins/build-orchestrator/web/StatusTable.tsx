@@ -77,8 +77,9 @@ const toggleIn = (list: readonly string[], v: string, on?: boolean) => { const h
 const nextSort = (cur: GridSort, col: string | null): GridSort => (!col ? null : cur?.col === col ? (cur.dir === 1 ? { col, dir: -1 } : null) : { col, dir: 1 });
 const TONE: Record<string, string> = { failed: 'danger', landed: 'success', building: 'accent', 'build-complete': 'success', pending: 'muted', split: 'muted' };
 const tone = (s: string) => TONE[s] ?? (T.MERGE_QUEUE.includes(s as never) ? 'warning' : 'info');
-/** On a phone these move into the expanded row. */
-const PHONE_HIDDEN = ['model', 'account', 'slot'];
+/** On a phone the grid is one Build column: its cell carries status, steps, timer and PR; the rest is in the expanded row. */
+const PHONE_HIDDEN = ['status', 'steps', 'model', 'account', 'slot', 'timer', 'pr'];
+const PHONE_STEP_HIDDEN = ['id', 'status', 'model', 'account', 'slot', 'timer', 'pr'];
 
 /** The rows, polled from GET /table while the page is visible (landed ones only when a filter asks for them). */
 function useTableRows(api: Api, landed: boolean) {
@@ -166,10 +167,16 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
   const statusOpts = (queue ? T.MERGE_QUEUE : T.BUILD_STATUSES).map((s) => ({ value: s, label: `${T.statusLabel(s)}${s === 'split' ? ' (split)' : ''} (${opts.counts[s] ?? 0})` }));
   const filtered = Object.entries(f).some(([k, v]) => k !== 'landed' && v);
   const cols: GridColumn<TableRow>[] = [
-    { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 12), 3fr)', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
-      render: (r) => <span className="oc-cell-title" title={r.title}><strong>{r.title}</strong><span className="fx-small fx-muted fx-mono">{r.id}</span></span> },
+    { id: 'title', label: 'Build', width: phone ? 'calc(var(--fx-font-size) * 20)' : 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 26))', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(),
+      render: (r) => (
+        <span className="oc-cell-title" title={r.title}>
+          <strong>{r.title}</strong>
+          {phone ? <span className="st-meta"><StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
+            : <span className="fx-small fx-muted fx-mono">{r.id}</span>}
+        </span>
+      ) },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (r) => T.BUILD_STATUSES.indexOf(r.status), render: (r) => <StatusBadge status={r.status} attempt={r.attempt} /> },
-    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end', sortable: true, sortValue: (r) => (r.total ? r.done / r.total : -1), render: (r) => <span className="fx-small fx-mono">{r.done}/{r.total}</span> },
+    { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 4)', sortable: true, sortValue: (r) => (r.total ? r.done / r.total : -1), render: (r) => <span className="fx-small fx-mono">{r.done}/{r.total}</span> },
     { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (r) => r.model, render: (r) => (r.model && r.model !== 'mixed' ? <span className={`oc-model is-${r.model.toLowerCase()}`}>{r.model}</span> : <span className="fx-small fx-muted">{dash(r.model)}</span>) },
     { id: 'account', label: 'Account', width: 'calc(var(--fx-font-size) * 7)', sortable: true, sortValue: (r) => r.account, render: (r) => <span className="fx-small">{dash(r.account)}</span> },
     { id: 'slot', label: 'Slot', width: 'calc(var(--fx-font-size) * 3.5)', sortable: true, sortValue: (r) => r.slot, render: (r) => <span className="fx-small fx-mono">{dash(r.slot)}</span> },
@@ -203,7 +210,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
             onRowClick={(r) => { setPicked(r.id); setOpen((o) => toggleIn(o, r.id)); }}
             rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })} rowRef={(r) => ({ kind: 'orchestrator', id: r.id })}
             empty={<div className="fx-empty">{filtered ? 'No builds match these filters.' : queue ? 'Nothing is waiting to merge.' : 'No builds yet. Plan Studio sends them here.'}</div>}
-            renderDetail={(r) => <BuildDetail r={r} phone={phone} />} />
+            renderDetail={(r) => <BuildDetail r={r} phone={phone} />} key={phone ? 'phone' : 'wide'} />
         </div>
       )}
     </div>
@@ -214,7 +221,13 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
 function BuildDetail({ r, phone }: { r: TableRow; phone: boolean }) {
   const cols: GridColumn<StepRow>[] = [
     { id: 'id', label: '#', width: 'calc(var(--fx-font-size) * 3)', render: (s) => <span className="fx-small fx-mono">{s.id}</span> },
-    { id: 'title', label: 'Step', width: 'minmax(calc(var(--fx-font-size) * 10), 3fr)', fixed: true, render: (s) => <span className="oc-cell-title" title={s.title}>{s.title || s.id}</span> },
+    { id: 'title', label: 'Step', width: phone ? 'calc(var(--fx-font-size) * 18)' : 'minmax(calc(var(--fx-font-size) * 12), calc(var(--fx-font-size) * 22))', fixed: true,
+      render: (s) => (
+        <span className="oc-cell-title" title={s.title}>
+          <span>{phone ? `${s.id} · ` : ''}{s.title || s.id}</span>
+          {phone && <span className="st-meta"><StatusBadge status={s.status} attempt={s.attempt} />{s.model && <span className={`oc-model is-${s.model.toLowerCase()}`}>{s.model}</span>}{s.account && <span className="fx-small">{s.account}{s.slot ? ` · slot ${s.slot}` : ''}</span>}<StepTimer s={s} /></span>}
+        </span>
+      ) },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 8)', render: (s) => <StatusBadge status={s.status} attempt={s.attempt} /> },
     { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 4.5)', render: (s) => (s.model ? <span className={`oc-model is-${s.model.toLowerCase()}`}>{s.model}</span> : <span className="fx-muted">—</span>) },
     { id: 'account', label: 'Account', width: 'calc(var(--fx-font-size) * 7)', render: (s) => <span className="fx-small">{dash(s.account)}</span> },
@@ -235,7 +248,7 @@ function BuildDetail({ r, phone }: { r: TableRow; phone: boolean }) {
           <DataGrid id={`orch-status-steps-${r.id.replace(/[^a-z0-9-]/gi, '-')}`} rowKind="step" label={`Steps of ${r.title}`} compact dataset={false}
             groups={[{ id: 'steps', title: `Steps ${r.done}/${r.total}`, icon: 'list', rows, groups: [], fixed: true }]} columns={cols}
             rowId={(s) => s.id} rowLabel={(s) => s.title} rowTone={(s) => tone(s.status === 'completed' || s.status === 'in-pr' ? 'landed' : s.status)}
-            hidden={phone ? ['id', 'account', 'slot'] : []} />
+            hidden={phone ? PHONE_STEP_HIDDEN : []} />
         </div>
       ) : <p className="fx-small fx-muted">No steps yet: the build is split into steps in its splitting status.</p>}
     </div>

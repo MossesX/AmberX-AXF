@@ -32,3 +32,5 @@
 .st-facts { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); margin: 0 }
 .st-facts dt { color: var(--fx-muted) }
 .st-facts dd { margin: 0; overflow-wrap: anywhere }
+.st-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); white-space: normal }
+.oc-cell-title > .st-meta { overflow: visible }
