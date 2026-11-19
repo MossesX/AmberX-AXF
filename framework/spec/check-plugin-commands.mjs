@@ -138,10 +138,10 @@ const off = derivePluginCommands({ folder: 'demo', manifest: { commands: { auto:
 eq(off.commands.map((c) => c.id), ['state', 'info'], 'auto: false = only what is declared (and info)');
 
 /* ---- registry, resolve, requests, inputs */
-const reg = pluginCommandRegistry([{ folder: 'demo', app: 'console-web', manifest, routes, unread: [], actions: acts, hasData: true }, { folder: 'notes', app: 'amberx-droid', manifest: { name: 'Notes' }, routes: [], actions: [{ id: 'notes.new', label: 'New' }] }]);
-eq(reg.plugins.map((p) => `${p.app}:${p.folder}`), ['console-web:demo', 'amberx-droid:notes'], 'the console\'s plugins first, then by app and folder');
+const reg = pluginCommandRegistry([{ folder: 'demo', app: 'console-web', manifest, routes, unread: [], actions: acts, hasData: true }, { folder: 'notes', app: 'axhub-web', manifest: { name: 'Notes' }, routes: [], actions: [{ id: 'notes.new', label: 'New' }] }]);
+eq(reg.plugins.map((p) => `${p.app}:${p.folder}`), ['console-web:demo', 'axhub-web:notes'], 'the console\'s plugins first, then by app and folder');
 eq(resolvePluginCommand(reg, 'demo/state').command.id, 'state', 'resolve <plugin>/<command>');
-eq(resolvePluginCommand(reg, 'amberx-droid:notes/action-new').plugin.app, 'amberx-droid', 'app-qualified paths');
+eq(resolvePluginCommand(reg, 'axhub-web:notes/action-new').plugin.app, 'axhub-web', 'app-qualified paths');
 eq(resolvePluginCommand(reg, 'demo/nope'), null, 'unknown');
 const cmd = resolvePluginCommand(reg, 'demo/plans-by-pid').command;
 eq(pluginRouteRequest('demo', cmd, { pid: 'a b', full: true, limit: 5 }), { method: 'GET', path: '/api/plugins/demo/plans/a%20b', query: { full: 'true', limit: '5' }, body: null }, 'a GET with path + query');
@@ -185,7 +185,7 @@ const bad = real.filter((c) => !c.ok);
 ok(real.length >= 40, `the console's plugins (${real.length})`);
 eq(bad.map((c) => `${c.folder}: ${c.errors.join('; ')}`), [], 'every console plugin exposes every command and read');
 const all = registry();
-ok(all.plugins.some((p) => p.app === 'amberx-droid'), 'AmberX\'s plugins are listed too');
+ok(all.plugins.every((p) => ['console-web', 'axhub-web'].includes(p.app)), 'every app\'s plugins are listed');
 ok(all.plugins.every((p) => p.declared), 'every plugin (every app) has a commands block');
 
 console.log(`✓ plugin commands — ${n} checks, ${real.length} console plugins, ${all.plugins.reduce((s, p) => s + p.commands.length, 0)} commands and reads`);

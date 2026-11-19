@@ -1627,10 +1627,9 @@ def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
 # ---- App plugins (plugin-catalog kinds with `into`, e.g. axhub → apps/axhub-web/src/plugins): the console holds the
 # repo, so it installs another app's web plugins for it and commits just that folder; the app's own 5-minute update
 # rebuilds with it. Console token; never on MCP.
-_APP_PLUGIN_KINDS = {"axhub", "amberx"}
-# What happens once the change is on GitHub. AmberX is an APK: CI builds it and the app catalog offers the new build.
-_APP_PLUGIN_AFTER = {"amberx": ("CI builds a new AmberX APK with it; the app catalog offers it after that run.",
-                                "CI builds a new AmberX APK without it; the app catalog offers it after that run.")}
+_APP_PLUGIN_KINDS = {"axhub"}
+# What happens once the change is on GitHub, per kind (default: the app's own 5-minute update rebuilds it).
+_APP_PLUGIN_AFTER: dict[str, tuple[str, str]] = {}
 
 
 def _app_kind(kind: str) -> None:

@@ -1872,7 +1872,7 @@
       "optional_fields": {
         "about": "the glossary entry id it demonstrates (plugin:build-orchestrator, concept:asset, control:console-web:ui-review:approve)",
         "entries": "glossary entry ids it covers (the about entry is always one)",
-        "app": "the app it runs in (console, axhub-web, amberx-droid); default console",
+        "app": "the app it runs in (console, axhub-web); default console",
         "voice": "{ narrator: a voice id or '' for the browser's, speed: 0.5\u20132 }",
         "chain": "demonstration ids played after this one (a tour)",
         "keywords": "auto-tagged words for search and the clip tagger (up to 200)",

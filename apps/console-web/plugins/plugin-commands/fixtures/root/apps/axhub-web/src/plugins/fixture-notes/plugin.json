@@ -1,0 +1,1 @@
+{ "$axf": "axhub-plugin@1", "id": "ai.amberx.axhub.fixture-notes", "name": "Fixture notes", "version": "0.1.0", "commands": { "$axf": "plugin-commands@1", "auto": true } }

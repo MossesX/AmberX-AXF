@@ -1,6 +1,6 @@
 /**
  * AmberX targets of control@1 (amberx.items, amberx.lists): every note, to-do, task and list, through the AmberX
- * notes core's own rules (lib/amberx-core.gen.mjs = apps/amberx-droid/src/plugins/notes/web/core.ts, types stripped).
+ * notes core's own rules (lib/amberx-core.mjs).
  *
  * Where: the hub tables the AmberX app and every device read (lib-hubstore, hub project `amberx-axf`, folder
  * `amberx-notes/`, tables `lists` and `items`): `/projects/amberx-axf/_data/amberx-notes/<table>/head.json` (+ rows-N.json
@@ -10,7 +10,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import * as core from './amberx-core.gen.mjs';
+import * as core from './amberx-core.mjs';
 import { DATA_DIR, ControlError } from './common.mjs';
 
 const TABLE_FORMAT = 'hub-table@1';

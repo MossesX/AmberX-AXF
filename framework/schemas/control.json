@@ -2181,7 +2181,7 @@
       "irreversible": [
         "remove"
       ],
-      "doc": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
+      "doc": "amberx-notes@1 items (the AmberX notes store on axHub): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist."
     },
     "amberx.lists": {
       "domain": "amberx",
@@ -4238,7 +4238,7 @@
         "paths": "host"
       },
       "amberx.items": {
-        "description": "amberx-notes@1 items (apps/amberx-droid notes core): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.",
+        "description": "amberx-notes@1 items (the AmberX notes store on axHub): every note, to-do and task on every device. kind picks the shape; a task may have subtasks (parent) and a checklist.",
         "ops": [
           "list",
           "get",

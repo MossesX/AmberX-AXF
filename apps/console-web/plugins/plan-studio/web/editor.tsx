@@ -200,7 +200,7 @@ function TouchesField({ plan, onChange }: { plan: Plan; onChange: (t: Plan['touc
       <div className="fx-row fx-row--wrap">
         {plan.touches.map((t) => <span key={t.key} className="axp-plan-studio__tchip"><Chip>{t.name || t.key}</Chip><IconButton icon="x" label={`Remove ${t.key}`} onClick={() => onChange(plan.touches.filter((x) => x.key !== t.key))} /></span>)}
         <form onSubmit={(e) => { e.preventDefault(); if (text.trim()) { onChange([...plan.touches, { key: text.trim() }]); setText(''); } }} className="axp-plan-studio__tadd">
-          <label className="fx-search"><Icon name="plus" size={12} /><input value={text} onChange={(e) => setText(e.target.value)} placeholder="plugin:build-breaker · app:amberx-droid" aria-label="Add a catalog key" /></label>
+          <label className="fx-search"><Icon name="plus" size={12} /><input value={text} onChange={(e) => setText(e.target.value)} placeholder="plugin:build-breaker · app:axhub-web" aria-label="Add a catalog key" /></label>
         </form>
       </div>
       <p className="fx-muted axp-plan-studio__hint">Pick them from the Catalog tab (“Add to a plan”) or type a catalog key.</p>

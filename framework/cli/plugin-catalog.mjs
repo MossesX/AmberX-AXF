@@ -23,7 +23,7 @@
  *  - installing never overwrites a different plugin (same folder, other id) and never a folder that is a symlink
  *
  *   node framework/cli/plugin-catalog.mjs where
- *   node framework/cli/plugin-catalog.mjs list [--kind console|axhub|amberx]
+ *   node framework/cli/plugin-catalog.mjs list [--kind console|axhub]
  *   node framework/cli/plugin-catalog.mjs show <kind> <folder>
  *   node framework/cli/plugin-catalog.mjs pack <dir> --kind <kind> [--out file.json]
  *   node framework/cli/plugin-catalog.mjs publish <dir> --kind <kind> [--from "who/where"] [--console https://console.amberxai.com]
@@ -64,8 +64,6 @@ export const KINDS = {
   console: { label: 'Dev Console plugin', manifest: 'plugin@1', allow: null, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/ },
   // axHub's web app (apps/axhub-web, static files the hub only hosts: decision #93, the hub server never runs them).
   axhub: { label: 'axHub web plugin', manifest: 'axhub-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/, into: 'apps/axhub-web/src/plugins' },
-  // AmberX (apps/amberx-droid): the voice + monitoring Android app (web in a Capacitor shell); web files only.
-  amberx: { label: 'AmberX plugin', manifest: 'amberx-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/, into: 'apps/amberx-droid/src/plugins' },
 };
 
 export const LIMITS = { files: 600, fileBytes: 2 * 1024 * 1024, totalBytes: 8 * 1024 * 1024, pathChars: 200 };

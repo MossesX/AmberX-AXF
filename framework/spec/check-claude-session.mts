@@ -16,7 +16,7 @@ const check = (cond: unknown, msg: string) => { if (!cond) { console.error(`FAIL
 console.log('claude-session');
 // ---- the Terminal reads the library's copy (one implementation, no behaviour change)
 for (const k of ['modelName', 'money', 'statusOf', 'steps', 'advance', 'PACE'] as const) check((term as Record<string, unknown>)[k] === (baked as Record<string, unknown>)[k], `Terminal's ${k} is the library's`);
-for (const app of ['console-web', 'amberx-droid']) {
+for (const app of ['console-web']) {
   const src = (p: string) => readFileSync(new URL(p, import.meta.url), 'utf8');
   check(src(`../../apps/${app}/src/axf/libs/claude-session/core.ts`) === src('../libs/claude-session/core.ts'), `${app} bakes the current library`);
 }

@@ -55,7 +55,7 @@ last edit) or `restore-hub` (drop the instance's values so it follows the shared
 density, width, the sub-menu animation, behaviour, pinned / hidden / ordered items and `accents.<item id>`; only navs that opt in
 (nav-menu `navStyle: true`) read it.
 
-**AmberX** (`amberx.items`, `amberx.lists`): amberx-notes@1 records (apps/amberx-droid notes core; one store for notes, to-dos and
+**AmberX** (`amberx.items`, `amberx.lists`): amberx-notes@1 records (the AmberX notes core, token-control `lib/amberx-core.mjs`; one store for notes, to-dos and
 tasks on every device). Fields, filters and verbs are the notes core's own (`done`, `move`, `merge`, `pin`, `star`, `check` on items;
 `move`, `reorder`, `rename` on lists). System lists (`inbox`, `plugins`, `voice-notes`) can't be removed.
 

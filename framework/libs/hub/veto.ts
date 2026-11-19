@@ -321,7 +321,7 @@ export async function denyVeto(base: string, id: string, opts: { fetch?: HubFetc
 export type VetoAlarmConfig = Record<string, unknown>;
 
 /**
- * What an app with a native side lends the veto banner plugin (the AmberX phone shell, `apps/amberx-droid/src/native.ts`).
+ * What an app with a native side lends the veto banner plugin (a phone shell).
  * Every member is optional; without a host the plugin works from the browser alone.
  */
 export interface VetoHost {

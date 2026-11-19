@@ -38,7 +38,6 @@ export const SESSION_RE = /^[A-Za-z0-9._-]{1,64}$/;
 export const TARGETS = [
   { app: 'console-web', label: 'Dev Console', match: /^apps\/console-web\//, kind: 'vite', dir: 'apps/console-web', liveFramework: true },
   { app: 'axhub-web', label: 'axHub web', match: /^apps\/axhub-web\//, kind: 'vite', dir: 'apps/axhub-web' },
-  { app: 'amberx-droid', label: 'AmberX (web layer)', match: /^apps\/amberx-droid\/(?!android\/)/, kind: 'vite', dir: 'apps/amberx-droid', note: 'Native (Capacitor) code shows in the next APK.' },
   { app: 'walkthrough-studio', label: 'Walkthrough Studio', match: /^apps\/walkthrough-studio\//, kind: 'vite', dir: 'apps/walkthrough-studio' },
   { app: 'demo', label: 'Demo', match: /^apps\/demo\//, kind: 'vite', dir: 'apps/demo', liveFramework: true },
   { app: 'framework', label: 'Framework (assets, engines, controls, templates)', match: /^framework\/(assets|core|react|ui|schemas|templates|boilerplates)\//, kind: 'shell', dir: 'apps/demo', assets: { framework: true }, liveFramework: true },
