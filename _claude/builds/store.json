@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9376,
- "updatedAt": "2026-11-19T17:39:37.859Z",
+ "rev": 9377,
+ "updatedAt": "2026-11-19T17:43:40.241Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -293250,7 +293250,7 @@
    "branch": "claude/fix-main-ci-p2",
    "pr": "#853",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T17:38:24.681Z",
+   "updatedAt": "2026-11-19T17:43:34.170Z",
    "builtAt": "",
    "notes": [
     {
@@ -293304,6 +293304,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-19T17:38:24.681Z"
+    },
+    {
+     "text": "PR #853 CI run 44575424837 green on d30881983 (scope, engine sweep, web console, Gradle). Not merged: the merge queue lands it.",
+     "at": "2026-11-19T17:43:34.170Z"
     }
    ],
    "approvals": [],
@@ -293514,7 +293518,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T17:39:37.859Z",
+ "updatedAt": "2026-11-19T17:43:40.241Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -187309,7 +187309,7 @@
    "branch": "claude/fix-main-ci-p2",
    "pr": "#853",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T17:38:24.681Z",
+   "updatedAt": "2026-11-19T17:43:34.170Z",
    "builtAt": "",
    "notes": [
     {
@@ -187363,6 +187363,10 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-19T17:38:24.681Z"
+    },
+    {
+     "text": "PR #853 CI run 44575424837 green on d30881983 (scope, engine sweep, web console, Gradle). Not merged: the merge queue lands it.",
+     "at": "2026-11-19T17:43:34.170Z"
     }
    ],
    "approvals": [],
