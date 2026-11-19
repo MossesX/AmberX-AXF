@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:23 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
 - 2026-11-18 13:23 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
 - 2026-11-18 13:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
 - 2026-11-18 13:25 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:28 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
 - 2026-11-19 00:28 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
 - 2026-11-19 00:29 UTC · `load-spike-alarm-vps-detects-cpu-load` added (0 steps) (all) · foreign-write
+- 2026-11-19 00:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-19 00:32 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · foreign-write
 
 ## Token passes (log)
 
