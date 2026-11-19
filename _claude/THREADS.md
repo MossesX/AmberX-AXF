@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 16:09 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · foreign-write
 - 2026-11-18 16:09 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · foreign-write
 - 2026-11-18 16:09 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
 - 2026-11-18 16:09 UTC · `plan-studio-2-open-button-working-deep` s13 done, s14 done, s15 done, → complete, note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 05:52 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 06:02 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 06:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 06:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 
 ## Token passes (log)
 
