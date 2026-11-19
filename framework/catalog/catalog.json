@@ -2542,6 +2542,10 @@
                   "title": "Custom groups and custom tabs on the builds board: user-made and smart groups sorted by state (partial to landed) with counts, pinned as tabs next to Pending and the other stages, group actions, saved per project"
                 },
                 {
+                  "id": "cx.buildengine.statustable",
+                  "title": "One status-driven builds table (Pipeline 2.0): no tabs, builds as rows expandable to their steps, filters on the toolbar, one colour per status, live timers, a read-only merge queue view of the same rows"
+                },
+                {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
                 }

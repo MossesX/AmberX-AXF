@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Build orchestrator CLI. The orchestrator owns the one builds store (builds@1, `_claude/builds/store.json`, see
- * framework/cli/builds-store.mjs): a repo file, so any session on any machine or account reads it and carries the build
- * on (it syncs with the hub through claude-sync). Each build profile (build-profiles@1) is a field on the builds, and
+ * Build orchestrator CLI. The orchestrator owns the one builds store (builds@1, framework/cli/builds-store.mjs): on
+ * the axf-data Postgres tables once cut over (Pipeline 2.0: no store.json projection), so any session on any machine or
+ * account reads it and carries the build on. Each build profile (build-profiles@1) is a field on the builds, and
  * this CLI reads and writes the active profile's view of the store (orchestrator@1). Every write is versioned in
  * `_claude/builds/journal/`. The per-profile orchestrator.json files are the read-only pre-migration snapshots.
  * AXF_ORCH_FILE points at a plain orchestrator@1 file instead (old-style tests).
@@ -27,11 +27,17 @@
  *   … attempts <id>                   done-means-merged@1: every attempt, the open failure, the evidence, the ladder's next rung
  *   … retry <id> [strategy] [--why w] Retry by hand: the ladder starts over (a strategy given runs at once, never above the pin)
  *   … where                           the tracker file in use
+ *   … tick [--build <id>]             Pipeline 2.0 layer 1 (the cron every minute, deploy/watchdog/cron.mjs): one
+ *                                     dispatcher round, under the dispatcher's lock. Without --build: the full round
+ *                                     (pipeline.mjs tick: builds@1 work, then pipeline2.mjs advance() for every
+ *                                     Pipeline 2.0 build), and the heartbeat <pipeline dir>/orchestrator-tick.json
+ *                                     ({ at }) that watchdog layer 3 checks. With --build: advance() for that one build
+ *                                     only (the layer-2 watchdog's nudge); no heartbeat.
  * Any <id> may be a build's alias (build-id@1): a build whose id is over 40 characters answers to a short one too.
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
@@ -116,10 +122,41 @@ function line(b, rules) {
   return `${b.id.padEnd(34)} ${priorityLabel(effectivePriority(b)).padEnd(7)} ${core.STATUS_LABEL[b.status].padEnd(15)} ${String(p.done).padStart(2)}/${p.total} steps · ${core.formatMinutes(p.minutesLeft) || '0 min'} left · next: ${next}`;
 }
 
+/**
+ * Pipeline 2.0 layer 1: `tick [--build <id>]` (see the header). Re-execs under the dispatcher's lock (pipeline.mjs
+ * pipelineLock, the same one step exits and pipeline2.mjs advance take) unless already inside it.
+ */
+async function tickCmd(given, out) {
+  const bi = given.indexOf('--build');
+  const raw = bi >= 0 ? String(given[bi + 1] ?? '').trim() : '';
+  if (bi >= 0 && (!raw || raw.startsWith('--'))) throw new Error('tick [--build <id>]');
+  const pl = await import('./pipeline.mjs');
+  const { spawnSync } = await import('node:child_process');
+  if (process.env.AXF_PIPELINE_LOCKED !== '1' && spawnSync('flock', ['-V'], { encoding: 'utf8' }).status === 0) {
+    const lock = pl.pipelineLock();
+    try { mkdirSync(dirname(lock), { recursive: true }); } catch { /* flock reports it */ }
+    const r = spawnSync('flock', ['-w', '120', lock, process.execPath, fileURLToPath(import.meta.url), ...process.argv.slice(2)], { stdio: 'inherit', env: { ...process.env, AXF_PIPELINE_LOCKED: '1' } });
+    process.exitCode = r.status ?? 1; return undefined;
+  }
+  if (raw) {
+    const id = legacy() ? raw : resolveId(loadStore(), raw);
+    const P2F = await import('./pipeline2.mjs');
+    const r = P2F.advance({ build: id });
+    return out({ ok: true, build: id, ...r }, `tick ${id}: ${r.active === id ? 'active' : `not active (active: ${r.active || 'none'})`} · split ${r.split.length} · launched ${r.launched.length} · failed ${r.failed.length}${r.waits.length ? `\n${r.waits.map((w) => `  waits ${w.id}${w.step ? `/${w.step}` : ''}: ${w.why}`).join('\n')}` : ''}`);
+  }
+  const r = pl.tick();
+  const at = new Date().toISOString();
+  try { const f = join(pl.pipeDir(), 'orchestrator-tick.json'); mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify({ at, by: 'orchestrator.mjs tick' })}\n`); renameSync(tmp, f); } // axf-data: not data (the tick heartbeat watchdog layer 3 reads; host-local, not build state)
+  catch (e) { process.stderr.write(`orchestrator: tick heartbeat not written: ${e.message}\n`); }
+  const p2 = r.p2 ?? null;
+  return out({ ok: true, at, tick: r }, `tick ${at} · launched ${(r.launched ?? []).length}${r.failed?.length ? ` · launch failed ${r.failed.length}` : ''}${p2 ? (p2.error ? ` · pipeline 2.0 failed: ${p2.error}` : ` · pipeline 2.0: active ${p2.active || 'none'}, launched ${p2.launched.length}`) : ''}`);
+}
+
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const [cmd = 'list', ...given] = args;
+  if (cmd === 'tick') return tickCmd(given, out);
   const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
   const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());

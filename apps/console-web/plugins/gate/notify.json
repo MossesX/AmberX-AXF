@@ -26,7 +26,7 @@
       "group": "builds",
       "app": "console",
       "source": "Gate & rules",
-      "description": "The server auto-lander tried to fix and land a build maxAttempts times and stopped: what broke, since when and the last attempt's log, with a Fix (reset and start a fix session). Sent once per escalated build by the VPS runner (deploy/auto-lander/escalate.mjs); resolved when it lands or is reset.",
+      "description": "The server auto-lander tried to fix and land a build maxAttempts times and stopped: what broke, since when and the last attempt's log, with a Fix (reset and start a fix session). Retired with the auto-lander@1 runner (Nov 19 2026): the lander (deploy/lander/run.mjs) never gives up and never escalates, so this is no longer sent; repeated failures show on the systems check instead.",
       "match": { "source": "gate", "keyPrefix": "gate:auto-lander-escalated:" },
       "priority": "high"
     }

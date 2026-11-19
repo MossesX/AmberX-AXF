@@ -238,7 +238,6 @@ Every write carries `by` and `reason: { title, description }` and is a journalle
 
 - `auto-lander@1` (AUTO-LANDER.md): the PR side; its attempt and escalation records are reused as above. Its code lives
   in `framework/core/auto-lander.mjs`, the gate plugin (`apps/console-web/plugins/gate/lander.mjs`) and the push banner's <!-- axf-plugin:gate -->
-  lander (`apps/console-web/plugins/push-banner/land/`); there is no `plugins/auto-lander/` folder. <!-- axf-plugin:push-banner -->
 - `build-pipeline@1`: the exit transition. `all-done` now lands in `landing`, not `built`; `crash-limit` is a
   `fell-to-pending` failure for the ladder, not an end.
 - `build-rules@1` (BUILD-RULES.md): the `done-means-merged` rule and its brief block.

@@ -81,11 +81,11 @@ export const SEED_DEFAULTS = Object.freeze({
   'editor-sync': { ...PLUGIN }, 'plugin-manager-engine': { ...PLUGIN },
   // vps rules: before dispatch
   'claude-settings-first': { phase: 'before' }, 'models-opus-fable-only': { phase: 'before', check: 'node framework/spec/check-model-policy.mjs' },
-  'model-per-step': { phase: 'before' }, 'model-upgrade-approval': { phase: 'before', check: 'node framework/cli/model-gate.mjs audit' },
-  'fable-auto-upgrade': { phase: 'before', check: 'node framework/cli/model-gate.mjs audit' }, 'build-origin-verbatim': { phase: 'before', check: 'node framework/cli/build-origin.mjs missing' },
+  'model-per-step': { phase: 'before' }, 'model-upgrade-approval': { phase: 'before', check: 'watchdog:model-gate' },
+  'fable-auto-upgrade': { phase: 'before', check: 'watchdog:model-gate' }, 'build-origin-verbatim': { phase: 'before', check: 'watchdog:build-origin' },
   'small-steps': { phase: 'before', check: 'node framework/spec/check-build-steps.mjs' }, 'build-pipeline': { phase: 'before' }, 'build-profiles': { phase: 'before' },
   'hard-build-limit': { phase: 'before', check: 'store:build-limit' }, 'agent-cap': { phase: 'before', check: 'store:agent-slots' }, 'worker-accounts': { phase: 'before' },
-  'one-builds-store': { phase: 'before', check: 'node framework/cli/builds-store.mjs verify' }, 'build-priority-tag': { phase: 'before' }, 'load-rules-go-pass': { phase: 'before' },
+  'one-builds-store': { phase: 'before', check: 'watchdog:verify' }, 'build-priority-tag': { phase: 'before' }, 'load-rules-go-pass': { phase: 'before' },
   'project-manifest': { phase: 'before', check: 'node framework/cli/project.mjs validate --all' }, 'no-fable-rebuilds': { phase: 'before' },
   // vps rules: at dispatch (brief + launch context)
   'rules-brief-only': { phase: 'dispatch' }, 'headless-context': { phase: 'dispatch' }, 'assigned-agent': { phase: 'dispatch' }, 'github-app-tokens': { phase: 'dispatch' },

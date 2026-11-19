@@ -378,3 +378,22 @@ Android app renders them.
 Build stop-auto-lander-committing-tracking adds `framework/core/tracking-paths.mjs` (tracking-paths@1: the files a build
 branch never commits) and the builds journal's hub home (builds-journal@1). Build tooling only (lander, CI, CLI): no
 Kotlin twin, none needed; the baked copies ride along unused.
+
+## Deferred: pipeline-2@1 status contract (Nov 19 2026)
+
+Build p2-status-core (Pipeline 2.0 part 1) adds `framework/core/pipeline-status.mjs` (pipeline-2@1: build and step
+statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the store guard), `splitParts`, `modelFor`,
+`pickAccount`, `activeBuild`, and plan-build@1 `normPlan` / `validatePlan`); schemas
+`framework/schemas/json/pipeline-2.schema.json`, `plan-build.schema.json`; fixture `framework/spec/fixtures/pipeline-2.json`
+(checker `framework/spec/check-pipeline-2.mjs`); spec `framework/spec/PIPELINE-2.md`. **Kotlin twin deferred** (no new
+Android work): AmberX reads build rows through the console's REST and shows the status string it is given; a Kotlin
+`PipelineStatus.kt` answering the fixture's transitions is needed only once an Android surface writes build statuses.
+
+## Deferred: status-table@1 (Nov 19 2026)
+
+Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules in
+`apps/console-web/plugins/build-orchestrator/web/status-table-core.mjs` (contract build and step statuses, labels with <!-- axf-plugin:build-orchestrator -->
+"failed, attempt N", the older-status mapping, steps done/total, model / account / slot roll-up, toolbar filters, the
+merge-queue filter, client-side timers) and the console's reader of the builds store `apps/console-web/server/builds_store.py`.
+Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web
+view; a native Builds table would port status-table-core.mjs as is (pure, no IO) and read GET /table.

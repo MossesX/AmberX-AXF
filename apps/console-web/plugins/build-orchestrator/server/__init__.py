@@ -78,6 +78,35 @@ def state() -> dict[str, Any]:
     return _run("state")
 
 
+# ---- the one status-driven table (status-table@1, Pipeline 2.0): compact rows from the builds store on axf-data
+TABLE_CLI = Path(__file__).resolve().parent.parent / "status-table.mjs"
+TABLE_CACHE_S = 4  # every open console polls; one store read serves them all
+_table_cache: dict[str, tuple[float, dict[str, Any]]] = {}
+
+
+@router.get("/table")
+def status_table(queue: bool = False, landed: bool = False, since: int | None = None) -> dict[str, Any]:
+    """Builds as rows (status, steps done/total, model, account, slot, PR, status `at`), the merge queue with queue=1.
+    since=<rev>: { unchanged: true } while the store is still at that rev, so a poll carries nothing new."""
+    key = f"{int(queue)}{int(landed)}"
+    hit = _table_cache.get(key)
+    if hit and time.time() - hit[0] < TABLE_CACHE_S:
+        res = hit[1]
+    else:
+        args = [*(["--queue"] if queue else []), *(["--landed"] if landed else [])]
+        proc = subprocess.run(["node", str(TABLE_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60)
+        lines = proc.stdout.strip().splitlines()
+        try:
+            res = json.loads(lines[-1]) if lines else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+        except json.JSONDecodeError:
+            res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+        if res.get("ok"):
+            _table_cache[key] = (time.time(), res)
+    if res.get("ok") and since is not None and res.get("rev") == since:
+        return {"ok": True, "unchanged": True, "rev": since}
+    return res
+
+
 # ---- priority tags (framework/core/build-priority.mjs, framework/cli/build-priority.mjs)
 PRIORITY_CLI = ROOT / "framework" / "cli" / "build-priority.mjs"
 PRIORITY_CACHE_S = 5
@@ -994,32 +1023,16 @@ class ConsoleFocus:
         self._mtime = -1.0
         self._ids: set[str] = set()
 
-    def store(self) -> Path:
-        return ROOT / "_claude" / "builds" / "store.json"
-
     REMOTE_TTL_S = 30.0
 
     def ids(self) -> set[str]:
-        # data-store@1: in cutover the store is axf-data's tables (the file is a stale backup); the ids are read through
-        # data_store (the record the rows assemble) at most every REMOTE_TTL_S seconds. Local: the file, by its mtime.
-        import data_store
-        if data_store.remote_mode(self.store()):
-            if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
-                return self._ids
-            doc = data_store.read_json(self.store(), {})
-            self._ids = {str(b.get("id")) for b in (doc.get("builds", []) if isinstance(doc, dict) else []) if isinstance(b, dict) and b.get("id")}
-            self._mtime = time.monotonic()
+        # the builds store itself (server/builds_store.py: the axf-data tables once cut over, never a store.json
+        # projection), at most every REMOTE_TTL_S seconds
+        import builds_store
+        if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
             return self._ids
-        try:
-            mt = self.store().stat().st_mtime
-        except OSError:
-            return set()
-        if mt != self._mtime:
-            try:
-                self._ids = {str(b.get("id")) for b in json.loads(self.store().read_text()).get("builds", []) if isinstance(b, dict) and b.get("id")}
-            except (OSError, ValueError):
-                self._ids = set()
-            self._mtime = mt
+        self._ids = {str(b.get("id")) for b in builds_store.builds() if b.get("id")}
+        self._mtime = time.monotonic()
         return self._ids
 
     def resolve(self, path: str) -> dict[str, Any] | None:

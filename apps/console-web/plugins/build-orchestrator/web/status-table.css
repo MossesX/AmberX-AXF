@@ -1,0 +1,36 @@
+/* The one builds table (status-table@1, Pipeline 2.0): layout plus one colour per status, every value a theme token. */
+
+/* one colour per contract status (build and step), mixed from the theme's own colours */
+.st-badge { --st-c: var(--fx-muted); color: var(--st-c); border-color: var(--st-c); white-space: nowrap }
+.st-badge.is-pending { --st-c: var(--fx-muted) }
+.st-badge.is-splitting { --st-c: var(--fx-brand-1) }
+.st-badge.is-split { --st-c: color-mix(in srgb, var(--fx-muted), var(--fx-info)) }
+.st-badge.is-pulling-main { --st-c: var(--fx-info) }
+.st-badge.is-assigning-models { --st-c: var(--fx-brand-2) }
+.st-badge.is-ready { --st-c: color-mix(in srgb, var(--fx-info), var(--fx-success)) }
+.st-badge.is-sending { --st-c: var(--fx-brand-3) }
+.st-badge.is-building { --st-c: var(--fx-accent) }
+.st-badge.is-build-complete, .st-badge.is-completed { --st-c: color-mix(in srgb, var(--fx-accent), var(--fx-success)) }
+.st-badge.is-merging-pr, .st-badge.is-in-pr { --st-c: var(--fx-warning) }
+.st-badge.is-pr-pulling-main { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-info)) }
+.st-badge.is-running-ci { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-accent)) }
+.st-badge.is-merging-main { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-success)) }
+.st-badge.is-landed { --st-c: var(--fx-success) }
+.st-badge.is-failed { --st-c: var(--fx-danger) }
+
+/* phone first: the filters wrap two to a row, the find field takes a whole row; wider screens put them on one line */
+.st-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.st-toolbar > .st-pick { flex: 1 1 calc(var(--fx-font-size) * 9); min-width: 0; margin: 0 }
+.st-toolbar > .st-find { flex: 1 1 100%; min-width: 0; margin: 0 }
+.st-toolbar > .st-landed { flex: 0 0 auto }
+@container st-page (min-width: 760px) { .st-toolbar > .st-pick { flex: 0 1 calc(var(--fx-font-size) * 11) } .st-toolbar > .st-find { flex: 1 1 calc(var(--fx-font-size) * 12) } }
+.st-page { container: st-page / inline-size }
+
+.st-timer { display: inline-flex; gap: var(--fx-dens-gap-2xs); white-space: nowrap }
+.st-live { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); margin: 0 }
+.st-live__dot { inline-size: var(--fx-dens-gap-md); block-size: var(--fx-dens-gap-md); border-radius: var(--fx-radius-lg); background: var(--fx-success) }
+.st-facts { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); margin: 0 }
+.st-facts dt { color: var(--fx-muted) }
+.st-facts dd { margin: 0; overflow-wrap: anywhere }
+.st-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); white-space: normal }
+.oc-cell-title > .st-meta { overflow: visible }

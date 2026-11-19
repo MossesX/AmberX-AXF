@@ -200,7 +200,7 @@ await t('voice: every spoken form parses to one command', () => {
 
 // ---------------------------------------------------------------- CLI + store on a scratch folder
 const dir = mkdtempSync(join(tmpdir(), 'ps2-'));
-const env = { ...process.env, AXF_PLAN_TREE_DIR: dir, AXF_ORCH_FILE: join(dir, 'orch.json') };
+const env = { ...process.env, AXF_PLAN_TREE_DIR: dir, AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0' };
 const cli = (...a) => execFileSync('node', [join(here, 'tree.mjs'), ...a], { env, encoding: 'utf8' }).trim();
 const cliJson = (...a) => JSON.parse(cli(...a, '--json'));
 const cliFails = (...a) => { try { cli(...a); throw new Error('expected a refusal'); } catch (e) { if (!e.stdout) throw e; return JSON.parse(String(e.stdout).trim().split('\n').pop()); } };
@@ -209,6 +209,10 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.match(cli('tree'), /empty/);
   cli('add', 'plan', 'Launch', '--priority', 'P1');
   cli('add', 'step', 'Deploy', '--in', 'Launch', '--model', 'Opus', '--minutes', '30');
+  cli('add', 'step', 'Too long', '--in', 'Launch', '--model', 'Opus', '--minutes', '45');
+  const bad = cliFails('validate', 'Launch', '--json'); assert.equal(bad.ok, false); assert.ok(bad.errors.some((e) => /30 minutes or less/.test(e.why)), 'plan-build@1: a step over 30 min is refused');
+  assert.throws(() => cli('build', 'Launch'), /does not pass plan-build@1/);
+  cli('delete', 'Too long');
   assert.equal(cliJson('say', 'add a step Test it to Launch').understood, true);
   assert.equal(cliJson('say', 'mark Test it done').item.done, true);
   assert.match(cli('find', 'deploy'), /plan-studio-2\.focus:/);
@@ -216,10 +220,12 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.equal(st.$axf, 'plan-tree@1'); assert.equal(st.items.length, 3);
   const pv = cliJson('build', 'Launch', '--preview'); assert.equal(pv.preview, true); assert.equal(pv.change.steps.length, 1);
   const b = cliJson('build', 'Launch', '--said', 'ship it'); assert.equal(b.build.id, 'launch'); assert.equal(b.steps, 1);
-  const orch = JSON.parse(readFileSync(join(dir, 'orch.json'), 'utf8'));
-  assert.equal(orch.builds[0].source, 'plan-studio-2'); assert.equal(orch.builds[0].steps[0].model, 'opus'); assert.equal(orch.builds[0].origin.said[0].text, 'ship it');
+  const orch = JSON.parse(readFileSync(join(dir, 'store.json'), 'utf8'));
+  const sent = orch.builds.find((x) => x.id === 'launch');
+  assert.equal(sent.source, 'plan-studio-2'); assert.equal(sent.steps[0].model, 'Opus'); assert.equal(sent.origin.said, 'ship it');
+  assert.equal(sent.flow, 'pipeline-2'); assert.equal(sent.status, 'pending'); assert.equal(sent.steps[0].status, 'pending'); assert.ok(sent.statusAt && sent.statusBy, 'pipeline-2@1: at / by recorded');
   assert.ok(cliJson('show', 'Launch').item.links.some((l) => l.type === 'build' && l.ref.endsWith(':launch')));
-  assert.throws(() => cli('build', 'Launch', '--id', 'launch'), /already in/);
+  assert.throws(() => cli('build', 'Launch', '--id', 'launch'), /already a build/);
   const del = cliJson('delete', 'Deploy'); assert.equal(del.removed, 1);
   assert.match(cli('trash'), /Deploy/);
   assert.equal(cliJson('undo').item.title, 'Deploy');

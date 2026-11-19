@@ -16,7 +16,7 @@
  *   gate.auto-lander.run                    ask the service for a tick now
  *   gate.auto-lander.retry:<build> · gate.auto-lander.fix:<build>   reset a build (fix = and start a fix session)
  *   gate.auto-lander.pause · gate.auto-lander.resume
- *   gate.auto-lander.set:<key>:<value>      one setting (enabled, maxAttempts, backoffBaseMin, …, pushOnEscalation)
+ *   gate.auto-lander.set:<key>:<value>      one setting (enabled, sizeCapLines, flakyReruns, backoffBaseMin, …, notifyAfterAttempts)
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { confirmed, gateCall, isTab, showTab, type BuildRule, type BuildRuleList, type GateRule, type LanderStatus } from './api';
@@ -76,10 +76,11 @@ export function registerGateActions(rt: AxfRuntime): void {
   const AL = 'Auto-lander';
   rt.actions.register('gate.auto-lander.status', () => {
     void gateCall<AutoLanderStatus>(autoLanderPath()).then((s) => {
-      const esc = s.escalations.length ? ` ${s.escalations.length} gave up: ${s.escalations.map((e) => e.build).join(', ')}.` : '';
-      rt.toast(`The server auto-lander is ${s.service.paused ? 'paused' : s.service.up ? 'up' : 'down'}${s.current ? `, working on ${s.current}` : ''}; ${s.builds.length} builds tracked.${esc}`, s.escalations.length || !s.service.up ? 'warning' : 'info', AL);
+      const up = !!s.service.lastTick && Date.now() - Date.parse(s.service.lastTick) < 5 * 60000;
+      const failing = s.failing.length ? ` ${s.failing.length} failing (it retries by itself): ${s.failing.map((f) => `${f.build}, attempt ${f.attempt}`).join('; ')}.` : '';
+      rt.toast(`The lander is ${s.service.paused ? 'paused' : up ? 'up' : 'down'}${s.current ? `, landing ${s.current}` : ''}; ${s.builds.length} waiting to land.${failing}`, s.failing.length || !up ? 'warning' : 'info', AL);
     }, fail(rt));
-  }, { label: 'What the server auto-lander is doing', effect: 'read' });
+  }, { label: 'What the lander is doing', effect: 'read' });
   rt.actions.register('gate.auto-lander.open', ([build = '']) => { rt.navigate('gate'); showTab('auto-lander'); if (build) showAutoLanderBuild(build); }, { label: 'Open the server auto-lander', params: true, effect: 'navigate' });
   rt.actions.register('gate.auto-lander.run', () => {
     void gateCall(autoLanderPath('run'), 'POST', { by: 'voice' }).then(() => rt.toast('The auto-lander runs within a minute.', 'success', AL), fail(rt));
@@ -97,7 +98,7 @@ export function registerGateActions(rt: AxfRuntime): void {
     void gateCall(autoLanderPath('resume'), 'POST', { by: 'voice' }).then(() => rt.toast('The server auto-lander is back on.', 'success', AL), fail(rt));
   }, { label: 'Resume the server auto-lander', effect: 'write' });
   rt.actions.register('gate.auto-lander.set', ([key = '', value = '']) => {
-    if (!key || !value) { rt.toast('Say a setting and a value, for example gate.auto-lander.set:maxAttempts:5.', 'warning', AL); return; }
+    if (!key || !value) { rt.toast('Say a setting and a value, for example gate.auto-lander.set:sizeCapLines:3000.', 'warning', AL); return; }
     void gateCall<{ settings: Record<string, unknown> }>(autoLanderPath('settings'), 'POST', { key, value, by: 'voice' }).then((r) => rt.toast(`${key} is ${String(r.settings[key])}.`, 'success', AL), fail(rt));
   }, { label: 'Change a server auto-lander setting', params: true, effect: 'write' });
 }

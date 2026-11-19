@@ -22,7 +22,7 @@
   "enabledByDefault": true,
   "optional": [
     "service:axf.agent-slots@1",
-    "service:axf.merge-queue@1",
+    "service:axf.merge-queue@2",
     "service:plans@1",
     "service:ui-review@1"
   ],
@@ -60,7 +60,10 @@
       "deploy/auto-lander/fix-session.mjs",
       "deploy/test/claude-headless-brief.test.sh",
       "framework/spec/LIVE-DEMO.md",
-      "framework/spec/check-landing-line.mjs"
+      "framework/spec/check-landing-line.mjs",
+      "deploy/watchdog/cron.mjs",
+      "deploy/watchdog/layer2.mjs",
+      "apps/console-web/scripts/status-table-shots.mjs"
     ]
   },
   "commands": {
@@ -252,6 +255,14 @@
           ]
         },
         "output": "{ id, origin }"
+      },
+      {
+        "id": "status-table",
+        "route": "GET /table",
+        "title": "Builds table (by status)",
+        "description": "Pipeline 2.0's one builds table, driven only by status: every build with its status (pending, splitting, pulling main, assigning models, ready, sending, building, build complete, merging to one PR, PR pulling main, running CI, merging into main, landed, or failed with its attempt), steps done of total, model, account, slot, PR and when it entered its status. queue=true is the merge queue (merging-pr through merging-main); landed=true includes landed builds. Read from the builds store on Postgres. Say 'what's building', 'what's in the merge queue'.",
+        "readOnly": true,
+        "output": "{ rev, updatedAt, profile, rows: [{ id, title, status, attempt, done, total, model, account, slot, prNumber, at, by, steps: [{ id, title, status, attempt, model, account, slot, prNumber, at, by }] }] } or { unchanged, rev } with since=<rev>"
       },
       {
         "id": "pipeline-status",
@@ -1164,5 +1175,6 @@
   "opens": "main",
   "cli": {
     "recovery-watchdog": "recovery-watchdog.mjs"
-  }
+  },
+  "buildHooks": "pipeline2-hook.mjs"
 }

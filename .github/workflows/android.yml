@@ -105,6 +105,7 @@ jobs:
       - run: node deploy/claude-shared-login.test.mjs               # two builds on one Claude account: a forced renewal in one, the other keeps working
       - run: node deploy/claude-login-notify.test.mjs               # every Claude sign-in verified and every token refresh confirmed saved: one phone alert each, never a token
       - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
+      - run: node --test 'deploy/watchdog/*.test.mjs'              # pipeline-watchdog@2: stuck statuses, dead tmux, usage limits → failed + retried forward on another account; layer 3 heals and alerts once; schedules retire the old crons
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
@@ -187,8 +188,10 @@ jobs:
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
-      - name: Server auto-lander (attempt log, clash resolver on a temp repo, red-CI reader, fix-session launcher, reconcile, the whole loop with a fake GitHub and claude-headless)
-        run: node --test 'deploy/auto-lander/test/*.test.mjs'
+      - name: Merge queue view (read-only projection of the builds store; no state, no actions)  # axf-plugin:merge-queue-view
+        run: node apps/console-web/plugins/merge-queue-view/test.mjs  # axf-plugin:merge-queue-view
+      - name: Lander (one PR per build, size-cap groups, flaky re-run, split, fix session, forward-only statuses; real git, fake GitHub, in-memory store)  # axf-plugin:gate
+        run: node --test 'deploy/lander/test/*.test.mjs'
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
       - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
@@ -215,12 +218,6 @@ jobs:
         run: node apps/console-web/plugins/amberx-listeners/test.mjs  # axf-plugin:amberx-listeners
       - name: Notes & tasks plugin (notes-tasks@1 schema — one item type nested to any depth, 10+ and 1 000 levels; amberx-notes@1 and first-design documents stay valid)  # axf-plugin:notes-tasks
         run: node apps/console-web/plugins/notes-tasks/test.mjs  # axf-plugin:notes-tasks
-      - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
-        run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
-      - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
-        run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs  # axf-plugin:push-banner
-      - name: Tracking files (push banner) — reset before land, tracking conflicts take main, generated files regenerate, code conflicts stop, CI guard; real git  # axf-plugin:push-banner
-        run: node apps/console-web/plugins/push-banner/land/tracking.test.mjs  # axf-plugin:push-banner
       - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
         run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them

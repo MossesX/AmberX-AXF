@@ -17,20 +17,22 @@ const KEYS: { key: keyof GateSettings; label: string; parse: (v: unknown) => unk
   { key: 'defaultTab', label: 'Gate: tab it opens on', parse: (v) => (isTab(v) ? v : String(v)) },
 ];
 
-// the server auto-lander's settings (deploy/auto-lander, POST auto-lander/settings): the same call as MCP, CLI and voice
+// the lander's settings (deploy/lander/run.mjs, POST auto-lander/settings): the same call as MCP, CLI and voice
 let alCache: AutoLanderSettings | null = null;
 export async function loadAutoLanderSettings(): Promise<AutoLanderSettings> { alCache = (await gateCall<{ settings: AutoLanderSettings }>(autoLanderPath('settings'))).settings; return alCache; }
 export async function saveAutoLanderSettings(patch: Partial<Record<keyof AutoLanderSettings, unknown>>): Promise<AutoLanderSettings> { alCache = (await gateCall<{ settings: AutoLanderSettings }>(autoLanderPath('settings'), 'POST', patch)).settings; return alCache; }
 const onOff = (v: unknown) => v === true || v === 'on' || v === 'true' || v === '1';
 const AL_KEYS: { key: keyof AutoLanderSettings; label: string; parse: (v: unknown) => unknown }[] = [
-  { key: 'enabled', label: 'Auto-lander: fix and land by itself', parse: onOff },
-  { key: 'maxAttempts', label: 'Auto-lander: tries before it asks for a hand', parse: (v) => Number(v) },
-  { key: 'backoffBaseMin', label: 'Auto-lander: first wait (minutes)', parse: (v) => Number(v) },
-  { key: 'backoffFactor', label: 'Auto-lander: wait grows by', parse: (v) => Number(v) },
-  { key: 'backoffMaxMin', label: 'Auto-lander: longest wait (minutes)', parse: (v) => Number(v) },
-  { key: 'attemptTimeoutMin', label: 'Auto-lander: a try times out after (minutes)', parse: (v) => Number(v) },
-  { key: 'pushOnEscalation', label: 'Auto-lander: push when it gives up', parse: onOff },
-];
+  { key: 'enabled', label: 'Lander: land by itself', parse: onOff },
+  { key: 'sizeCapLines', label: 'Lander: lines one PR may carry (size cap)', parse: (v) => Number(v) },
+  { key: 'flakyReruns', label: 'Lander: re-runs of a red CI before it counts', parse: (v) => Number(v) },
+  { key: 'backoffBaseMin', label: 'Lander: first wait (minutes)', parse: (v) => Number(v) },
+  { key: 'backoffFactor', label: 'Lander: wait grows by', parse: (v) => Number(v) },
+  { key: 'backoffMaxMin', label: 'Lander: longest wait (minutes)', parse: (v) => Number(v) },
+  { key: 'ciTimeoutMin', label: 'Lander: CI times out after (minutes)', parse: (v) => Number(v) },
+  { key: 'fixTimeoutMin', label: 'Lander: a fix session times out after (minutes)', parse: (v) => Number(v) },
+  { key: 'notifyAfterAttempts', label: 'Lander: post every attempt from', parse: (v) => Number(v) },
+]
 
 export function registerSettingTargets(rt: AxfRuntime): void {
   const reg = controlRegistry(rt);

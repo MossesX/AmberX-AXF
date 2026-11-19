@@ -358,12 +358,25 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     build_note "Asked for $account, ran on $build_pick (the one build account)"
     account=""
   fi
-  if [[ -z "$account" ]]; then
-    wait_for_worker ""
-    if [[ -n "$worker" ]]; then on_worker=1 account="$worker" tried_workers="$worker"
+  # Never an account marked out (pipeline-2@1, Nov 19 2026: the router kept sending builds to an account at its weekly
+  # limit and they died in seconds): an asked-for account that is out (limit, or no usage left) is skipped for the next
+  # one with usage, and the one build account that is out starts nothing (the dispatcher retries on another account).
+  no_account=""
+  if [[ -n "$account" && "$account" != active && "$account" != live && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
+    if out_line="$(node "$WORKERS_JS" out "$account" 2>/dev/null)"; then
+      if [[ -n "$build_pick" && "$account" == "$build_pick" ]]; then no_account="the one build account $account is $out_line"
+      else build_note "Asked for $account, but it is $out_line: picking another account with usage left"; tried_workers="$account"; account=""; fi
+    else on_worker=1 tried_workers="$account"   # an asked-for worker that hits a limit moves to the next worker too
+    fi
+  fi
+  if [[ -z "$account" && -z "$no_account" ]]; then
+    wait_for_worker "$tried_workers"
+    if [[ -n "$worker" ]]; then on_worker=1 account="$worker" tried_workers="${tried_workers:+$tried_workers,}$worker"
       [[ "$worker_kind" == api ]] && build_note "Routed to API account $worker (billed per token) by a routing rule"
-    elif [[ -n "$build_pick" ]]; then account="$build_pick"
-      build_note "The one build account $build_pick can't take more now (out or its queue full): this run uses it anyway"
+    elif [[ -n "$build_pick" ]] && ! node "$WORKERS_JS" out "$build_pick" >/dev/null 2>&1; then account="$build_pick"
+      build_note "The one build account $build_pick can't take more now (its queue is full): this run uses it anyway"
+    elif [[ -n "$build_pick" ]]; then no_account="the one build account $build_pick is out"
+    elif [[ -n "$tried_workers" ]]; then no_account="every Claude account is out or full (asked for ${tried_workers%%,*})"
     elif [[ "${AXF_WORKERS:-on}" != off && "${AXF_OWN_LOGIN:-on}" != off && -f "$WORKERS_JS" ]] && command -v node >/dev/null; then
       build_note "No Claude account free (every one out or its queue full): this run uses the console's account"
     fi
@@ -394,6 +407,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   # the hard limit, right before claude starts: wait for a place whatever the queue says (never N+1 at once)
   # (exit 3 = still full after a day: not started; any other failure is a broken gate: say so and start, the enforcer still counts)
   gate_ok=1 st=0
+  if [[ -n "$no_account" ]]; then gate_ok="" st=75; printf 'Not started: %s.\n' "$no_account" | tee "$log"; build_note "Not started: $no_account"; fi
   if [[ -z "$inner_skip_still" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then   # waited in a queue: is its build still Queued?
     # by name / brief only: a tmux server keeps the AXF_BUILD_ID of whichever launch started it in its global env
     still_line="$(env -u AXF_BUILD_ID node "$DISPATCH" still --name "$name" --brief "$brief" 2>&1)"
@@ -427,13 +441,20 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     # that is a clean finish, not a crash. The marker is written just before the kill; an old one never counts.
     if (( st != 0 )) && [[ -n "$(find .axf-reaped.json -mmin -5 2>/dev/null)" ]] && grep -q '"kind":"phase-done"' .axf-reaped.json 2>/dev/null; then st=0; fi
     rm -f .axf-reaped.json 2>/dev/null
+    # usage left on this account (the run's last rate_limit_event) and, on a limit or a dead login, the account is
+    # marked out until its real reset, whichever path launched it (an asked-for account included)
+    hit="" limit_line=""
+    if [[ -f "$WORKERS_JS" && -n "${login_account:-}" ]] && command -v node >/dev/null; then
+      [[ -f "$raw" ]] && node "$WORKERS_JS" usage "$login_account" --raw "$raw" >/dev/null 2>&1
+      hit="$(node "$WORKERS_JS" hit --log "$log" --exit "$st" 2>/dev/null)"
+      [[ -n "$hit" ]] && limit_line="$(node "$WORKERS_JS" limit "$login_account" --kind "$hit" --log "$log" ${raw:+--raw "$raw"} 2>&1)"
+    fi
     (( switches < max_switches )) || break
     if [[ -n "$on_worker" ]]; then   # a worker's run moves to the next worker; the console's account stays where it is
-      hit="$(node "$WORKERS_JS" hit --log "$log" --exit "$st" 2>/dev/null)"
       [[ -n "$hit" ]] || break
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
       gone="$login_account"
-      printf '\n\033[1m── worker %s: %s ──\033[0m\n' "$gone" "$(node "$WORKERS_JS" limit "$gone" --kind "$hit" --log "$log" 2>&1)"
+      printf '\n\033[1m── worker %s: %s ──\033[0m\n' "$gone" "$limit_line"
       event session-part "$ses"
       wait_for_worker "$tried_workers"
       if [[ -z "$worker" ]]; then
@@ -501,7 +522,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     pexit_env=(PATH="$PATH" HOME="$HOME")
     for v in AXF_PIPELINE_LOCK AXF_HEADLESS_DIR AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_WORKERS AXF_SLOTS_DIR AXF_BUILD_PROFILE; do [[ -n "${!v:-}" ]] && pexit_env+=("$v=${!v}"); done
     pexit_log="${AXF_PIPELINE_EXIT_LOG:-/var/log/axf-pipeline.log}"; [[ -w "$(dirname "$pexit_log")" ]] || pexit_log="$HDIR/pipeline-exit.log"
-    ( cd "$HERE/.." && setsid env -i "${pexit_env[@]}" node "$PIPE_JS" exit "$AXF_BUILD_ID" --session "$end_session" --exit "$st" --kind "$exit_kind" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} --by headless >> "$pexit_log" 2>&1 < /dev/null & )
+    ( cd "$HERE/.." && setsid env -i "${pexit_env[@]}" node "$PIPE_JS" exit "$AXF_BUILD_ID" --session "$end_session" --exit "$st" --kind "$exit_kind" ${AXF_BUILD_PHASE:+--phase "$AXF_BUILD_PHASE"} ${AXF_BUILD_STEP:+--step "$AXF_BUILD_STEP"} ${hit:+--hit "$hit"} ${login_account:+--account "$login_account"} --by headless >> "$pexit_log" 2>&1 < /dev/null & )
   fi
   if (( close > 0 )); then
     if (( clients > 0 )); then read -r -t "$close" -p "Enter closes it (waits up to ${close}s). " _ || true
