@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9177,
- "updatedAt": "2026-11-19T00:19:51.119Z",
+ "rev": 9178,
+ "updatedAt": "2026-11-19T00:20:41.916Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -115888,6 +115888,7 @@
    "detail": "Sandboxes for interactive investor walkthroughs. Each sandbox = small throwaway container of the app with demo data, served via browser link from the VPS. Walkthroughs are pre-generated (no live Claude in sandbox). Sandbox settings panel: max simultaneous sandboxes; queue when full showing 'You are number N in the queue, waiting for a sandbox slot' (live updates); session time limit; idle timeout; per-sandbox reset; nuke-all (force stop, clear caches, reset all). Spin up on link open, destroy on leave/timeout.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "",
@@ -137652,6 +137653,7 @@
    "detail": "Demo Designer was launched directly (build id demo-designer) and has no orchestrator record, so it never resumed. Adopt it: resume in /root/axf-builds/demo-designer on its existing branch and PR. Read demo-designer.log and its report. Phase 1 (s1) is done and its UI Review items are waiting. Do phase 2 (s2, s3) exactly as planned in its report. Coordinate with walkthrough-player-ide-layout-setting-collapsibl, which merges Demo Designer with the Demonstration manager: don't duplicate, and share the code. Tests, screenshots to UI Review, report, PR.",
    "status": "complete",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-designer-finish-phase-2-s2-s3-resuming-from",
@@ -206098,6 +206100,7 @@
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-pipelines-guided-walkthrough-live",
@@ -218489,6 +218492,7 @@
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
    "status": "archived",
    "hidden": false,
+   "demo": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
@@ -322266,72 +322270,6 @@
      "rev": 1,
      "createdAt": "2026-11-18T20:03:01.846Z",
      "updatedAt": "2026-11-19T00:17:51.109Z"
-    },
-    {
-     "id": "s4-3",
-     "uid": "st-mwmjtcmy045gvh",
-     "title": "",
-     "text": "Find how the other APKs are hosted on axHub and reuse that path and naming for phone-connect-debug.apk",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-18T20:03:01.846Z"
-    },
-    {
-     "id": "s5-4",
-     "uid": "st-mwmjtcmy05vaqs",
-     "title": "",
-     "text": "Pull the latest phone-connect-debug.apk from the newest green main run and publish it there; add it to the CI publish step so every green main build refreshes it",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-18T20:03:01.846Z"
-    },
-    {
-     "id": "s6-5",
-     "uid": "st-mwmjtcmy06ntnw",
-     "title": "",
-     "text": "Verify the direct link downloads in a phone browser and post the link to Brett",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "5 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-18T20:03:01.846Z"
     }
    ],
    "profiles": [
@@ -323127,12 +323065,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:16:59.516Z",
-   "updatedAt": "2026-11-19T00:17:38.713Z",
+   "updatedAt": "2026-11-19T00:19:54.421Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:17:38.713Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b9f2507e-39d1-4300-be4e-609e5c18a07a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:19:54.421Z"
     }
    ],
    "approvals": [],
@@ -323150,11 +323092,11 @@
     "crashes": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-19T00:17:38.713Z",
+     "at": "2026-11-19T00:19:54.421Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 10,
-     "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b9f2507e-39d1-4300-be4e-609e5c18a07a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
     "note": "steps made by rules: review them",
@@ -323176,7 +323118,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwmswrkp01qkfj",
+     "uid": "st-mwmszoae011qq0",
      "title": "",
      "text": "Brett (voice, Nov 19 2026): \"There needs to be something on the VPS to detect it when things are in the queue and not running … and then fix it. On its own, without AI. Or with, if the switch is on. Default off.\" Also: \"put some chatter in the group chat asking people to do different things and give them response.\"",
      "model": "Opus",
@@ -323193,12 +323135,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwmswrkq0243mu",
+     "uid": "st-mwmszoae026960",
      "title": "",
      "text": "Seen today: three Postgres builds queued, 0 of 4 slots running and 0 waiting while the pipeline cron was on; earlier launches failed on a broken worktree and on the dispatcher running claude-headless.sh from an old build folder (axf-molly-container-orchestrator-gate, HOME unbound); the reconciler kept bouncing a build back to the Queue every 20-30 min without launching it.",
      "model": "Opus",
@@ -323215,12 +323157,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwmswrkq0318id",
+     "uid": "st-mwmszoae03zjlh",
      "title": "",
      "text": "What to build:",
      "model": "Opus",
@@ -323237,12 +323179,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwmswrkq04qxfk",
+     "uid": "st-mwmszoae04u77o",
      "title": "",
      "text": "Detector on the VPS (server side, no AI, no console needed): every tick, if any build is queued and free slots exist but nothing launched within N minutes, it is a stall. Record why (dispatcher not ticking, lock held, launch failed, worktree broken, wrong launcher path, account limit, slot state stale).",
      "model": "Opus",
@@ -323259,12 +323201,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwmswrkq05josj",
+     "uid": "st-mwmszoae052ijc",
      "title": "",
      "text": "Auto-fix ladder without AI: restart the dispatcher tick, clear a stale lock or slot row, rebuild the worktree, use the launcher from /opt/axf only, try the next account; re-check after each.",
      "model": "Opus",
@@ -323281,12 +323223,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwmswrkq0616cm",
+     "uid": "st-mwmszoae067mp0",
      "title": "",
      "text": "AI fix switch: setting axf.pipeline.stall.aiFix, default OFF. When on and the no-AI ladder is used up, start one headless Claude session to diagnose and fix.",
      "model": "Opus",
@@ -323303,12 +323245,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwmswrkq07625u",
+     "uid": "st-mwmszoae07hc99",
      "title": "",
      "text": "Group chat chatter: post each stall, each fix attempt and its result in the crew group chat, assigning the steps to named agents (who checks the lock, who rebuilds the worktree, who retries the launch) with their replies, so Brett can follow it.",
      "model": "Opus",
@@ -323325,12 +323267,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwmswrkq08km2n",
+     "uid": "st-mwmszoae08leo3",
      "title": "",
      "text": "Banner + one phone push when it can't fix it (systems check health@1 item with Auto fix).",
      "model": "Opus",
@@ -323347,12 +323289,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwmswrkq09swmh",
+     "uid": "st-mwmszoae09rr01",
      "title": "",
      "text": "Extend the existing stale-row watchdog / server watchdog (orchestrator-stale-row-watchdog-vps, server-watchdog-orchestrator-auto-recovers-stuck) instead of adding another cron; check for overlap first. Full API control (REST, MCP, CLI, voice) for its status, settings and the switch.",
      "model": "Opus",
@@ -323369,12 +323311,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwmswrkr0a5wdd",
+     "uid": "st-mwmszoae0a7m9e",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/queue-stall-detector-vps-spots-queued.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -323394,8 +323336,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T00:17:38.713Z",
-     "updatedAt": "2026-11-19T00:17:38.713Z"
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
     }
    ],
    "profiles": [
@@ -323406,12 +323348,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-19T00:17:38.713Z",
+   "defaultAt": "2026-11-19T00:19:54.421Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

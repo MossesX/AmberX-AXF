@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T00:19:51.119Z",
+ "updatedAt": "2026-11-19T00:20:41.916Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195678,12 +195678,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:16:59.516Z",
-   "updatedAt": "2026-11-19T00:17:38.713Z",
+   "updatedAt": "2026-11-19T00:19:54.421Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:17:38.713Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b9f2507e-39d1-4300-be4e-609e5c18a07a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:19:54.421Z"
     }
    ],
    "approvals": [],
@@ -195705,8 +195709,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkp01qkfj",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae011qq0",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s2",
@@ -195724,8 +195728,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq0243mu",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae026960",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s3",
@@ -195743,8 +195747,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq0318id",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae03zjlh",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s4",
@@ -195762,8 +195766,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq04qxfk",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae04u77o",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s5",
@@ -195781,8 +195785,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq05josj",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae052ijc",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s6",
@@ -195800,8 +195804,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq0616cm",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae067mp0",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s7",
@@ -195819,8 +195823,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq07625u",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae07hc99",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s8",
@@ -195838,8 +195842,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq08km2n",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae08leo3",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s9",
@@ -195857,8 +195861,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkq09swmh",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae09rr01",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     },
     {
      "id": "s10",
@@ -195879,8 +195883,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmswrkr0a5wdd",
-     "createdAt": "2026-11-19T00:17:38.713Z"
+     "uid": "st-mwmszoae0a7m9e",
+     "createdAt": "2026-11-19T00:19:54.421Z"
     }
    ]
   }
