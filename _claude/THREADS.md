@@ -840,73 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:25 UTC · `server-gate-reject-any-build-without` added (5 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
-- 2026-11-18 13:24 UTC · `plan-studio-2-open-button-working-deep` s13 done (all) · orchestrator
-- 2026-11-18 13:25 UTC · `plan-studio-2-open-button-working-deep` s13 done (all) · foreign-write
-- 2026-11-18 13:27 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
-- 2026-11-18 13:27 UTC · `plan-studio-2-open-button-working-deep` s10 done, s11 done, s12 done, s13 done (all) · foreign-write
-- 2026-11-18 13:27 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
-- 2026-11-18 13:28 UTC · `every-plugin-gets-own-default-toolbar` s1 done, → running (all) · orchestrator
-- 2026-11-18 13:30 UTC · `every-plugin-gets-own-default-toolbar` s2 done (all) · orchestrator
-- 2026-11-18 13:38 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
-- 2026-11-18 13:38 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 13:38 UTC · `plan-studio-2-open-button-working-deep` s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, s11 done, s12 done (all) · foreign-write
-- 2026-11-18 13:38 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
-- 2026-11-18 13:38 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
-- 2026-11-18 13:38 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
-- 2026-11-18 13:38 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
-- 2026-11-18 13:39 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
-- 2026-11-18 13:40 UTC · `every-app-gets-own-locked-default` note (all) · builds-live
-- 2026-11-18 13:40 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
-- 2026-11-18 13:41 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 13:41 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 13:41 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 13:42 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
-- 2026-11-18 13:43 UTC · `every-plugin-gets-own-default-toolbar` branch claude/every-plugin-gets-own-default-toolbar, note (all) · reconciler
-- 2026-11-18 13:44 UTC · `every-plugin-gets-own-default-toolbar` s3 done (all) · orchestrator
-- 2026-11-18 13:47 UTC · `every-plugin-gets-own-default-toolbar` s4 done (all) · orchestrator
-- 2026-11-18 13:46 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
-- 2026-11-18 13:48 UTC · `every-plugin-gets-own-default-toolbar` s4 done (all) · foreign-write
-- 2026-11-18 13:49 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 13:52 UTC · `every-plugin-gets-own-default-toolbar` s5 done (all) · orchestrator
-- 2026-11-18 13:50 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 13:53 UTC · `one-build-time-always-split-to-fill` → running, note (all) · pipeline
-- 2026-11-18 13:54 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 13:55 UTC · `settings-fix-part-2-blank-toolbars` → running, note (all) · orchestrator
-- 2026-11-18 13:57 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · orchestrator
-- 2026-11-18 13:57 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · orchestrator
-- 2026-11-18 13:58 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · orchestrator
-- 2026-11-18 13:58 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · orchestrator
-- 2026-11-18 13:59 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · orchestrator
-- 2026-11-18 14:00 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · orchestrator
-- 2026-11-18 14:01 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · orchestrator
-- 2026-11-18 14:01 UTC · `attach-widgets-to-any-toolbar-banner` → running, note (all) · orchestrator
-- 2026-11-18 14:02 UTC · `one-build-time-always-split-to-fill` s1 done, → running (all) · orchestrator
-- 2026-11-18 13:59 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · foreign-write
-- 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
-- 2026-11-18 13:59 UTC · `settings-fix-part-2-blank-toolbars` → queued, note (all) · pipeline
-- 2026-11-18 14:01 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
-- 2026-11-18 14:06 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · pipeline
-- 2026-11-18 14:07 UTC · `every-plugin-gets-own-default-toolbar` s6 done (all) · orchestrator
-- 2026-11-18 14:06 UTC · `settings-fix-part-2-blank-toolbars` → pending (all) · foreign-write
-- 2026-11-18 14:09 UTC · `stop-push-storm-builds-live-pushes-build` added (2 steps) (all) · voice session
-- 2026-11-18 14:14 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · watchdog
-- 2026-11-18 14:15 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · foreign-write
-- 2026-11-18 14:16 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
-- 2026-11-18 14:16 UTC · `attach-widgets-to-any-toolbar-banner` → queued, note (all) · foreign-write
-- 2026-11-18 14:18 UTC · `plan-studio-2-open-button-working-deep` s14 done (all) · orchestrator
-- 2026-11-18 14:17 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
-- 2026-11-18 14:21 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · builds-live
-- 2026-11-18 14:20 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · pipeline
-- 2026-11-18 14:25 UTC · `one-build-time-always-split-to-fill` s2 done (all) · orchestrator
-- 2026-11-18 14:23 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 14:23 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 14:23 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 14:23 UTC · `vps-never-gives-up-fix-land-every-build` → landing, merged, note (all) · watchdog
-- 2026-11-18 14:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · foreign-write
 - 2026-11-18 14:24 UTC · `vps-never-gives-up-fix-land-every-build` → landing, merged, note (all) · foreign-write
@@ -1240,6 +1173,73 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:37 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · pipeline
 - 2026-11-19 00:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
 - 2026-11-19 00:39 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-19 00:42 UTC · `server-safe-mode-one-emergency-button` added (0 steps) (all) · voice session
+- 2026-11-19 00:42 UTC · `server-safe-mode-one-emergency-button` note (all) · orchestrator
+- 2026-11-19 00:42 UTC · `postgres-part-b-plan-plan-studio-catalog` → pending (all) · orchestrator
+- 2026-11-19 00:43 UTC · `postgres-part-b-plan-plan-studio-catalog` → queued, note (all) · cli
+- 2026-11-19 00:43 UTC · `server-safe-mode-one-emergency-button` note (all) · orchestrator
+- 2026-11-19 00:50 UTC · `postgres-part-c-console-state-settings` s1 done (all) · orchestrator
+- 2026-11-19 00:56 UTC · `postgres-part-b-plan-plan-studio-catalog` → pending (all) · orchestrator
+- 2026-11-19 00:56 UTC · `postgres-part-b-plan-plan-studio-catalog` → queued, note (all) · cli
+- 2026-11-19 01:02 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · cli
+- 2026-11-19 01:12 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · cli
+- 2026-11-19 01:13 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · pipeline
+- 2026-11-19 01:14 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · pipeline
+- 2026-11-19 01:18 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · orchestrator
+- 2026-11-19 01:19 UTC · `postgres-part-b-plan-plan-studio-catalog` → running, note (all) · pipeline
+- 2026-11-19 01:20 UTC · `postgres-part-b-plan-plan-studio-catalog` branch claude/postgres-part-b-plan-plan-studio-catalog (all) · pipeline
+- 2026-11-19 01:23 UTC · `postgres-part-c-console-state-settings` s2 done (all) · orchestrator
+- 2026-11-19 01:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 01:41 UTC · `urgent-all-data-to-postgres-builds-store` s3 done (all) · orchestrator
+- 2026-11-19 01:55 UTC · `postgres-part-c-console-state-settings` s3 done (all) · orchestrator
+- 2026-11-19 01:57 UTC · `postgres-part-b-plan-plan-studio-catalog` s1 done, → running (all) · orchestrator
+- 2026-11-19 02:00 UTC · `postgres-part-b-plan-plan-studio-catalog` s2 done (all) · orchestrator
+- 2026-11-19 02:03 UTC · `urgent-all-data-to-postgres-builds-store` s4 done (all) · orchestrator
+- 2026-11-19 02:06 UTC · `urgent-all-data-to-postgres-builds-store` s5 done (all) · orchestrator
+- 2026-11-19 02:07 UTC · `postgres-part-c-console-state-settings` s4 done, → landing (all) · orchestrator
+- 2026-11-19 02:13 UTC · `stop-push-storm-builds-live-pushes-build` → landing, branch claude/stop-push-storm-builds-live-pushes-build, note (all) · reconciler
+- 2026-11-19 02:13 UTC · `urgent-all-data-to-postgres-builds-store` PR #848, merged, note (all) · reconciler
+- 2026-11-19 02:13 UTC · `postgres-part-c-console-state-settings` PR #849, note (all) · reconciler
+- 2026-11-19 02:16 UTC · `stop-push-storm-builds-live-pushes-build` → fixing, note (all) · pipeline
+- 2026-11-19 02:22 UTC · `stop-push-storm-builds-live-pushes-build` PR #850, note (all) · reconciler
+- 2026-11-19 02:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 02:23 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `attach-widgets-to-any-toolbar-banner` s15 done, s16 done, s17 done, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, s21 done, s22 done, s23 done, s24 done, s25 done, s26 done, s27 done, → complete, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `urgent-all-data-to-postgres-builds-store` s1 done, s2 done, note (all) · foreign-write
+- 2026-11-19 02:23 UTC · `host-phone-connect-apk-axhub-browser` added (3 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `console-app-text-way-too-big-system-font` added (6 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `queue-stall-detector-vps-spots-queued` added (10 steps) (all) · foreign-write
+- 2026-11-19 02:23 UTC · `load-spike-alarm-vps-detects-cpu-load` added (10 steps) (all) · foreign-write
+- 2026-11-19 02:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 02:28 UTC · `postgres-part-b-plan-plan-studio-catalog` s3 done (all) · orchestrator
+- 2026-11-19 02:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 02:33 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
+- 2026-11-19 02:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 02:34 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-19 02:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-19 02:36 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-19 02:36 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-19 02:36 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-19 02:36 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-19 02:38 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 02:38 UTC · `postgres-part-b-plan-plan-studio-catalog` s4 done, → landing (all) · orchestrator
+- 2026-11-19 02:40 UTC · `postgres-part-b-plan-plan-studio-catalog` s4 done, → landing (all) · foreign-write
+- 2026-11-19 02:40 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · pipeline
+- 2026-11-19 02:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-19 02:42 UTC · `rebuild-every-toolbar-page-specific` → landed (all) · foreign-write
+- 2026-11-19 02:42 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed (all) · foreign-write
+- 2026-11-19 02:42 UTC · `vps-never-gives-up-fix-land-every-build` → landed (all) · foreign-write
+- 2026-11-19 02:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-19 02:42 UTC · `postgres-part-b-plan-plan-studio-catalog` s3 done, s4 done, → landing (all) · foreign-write
 
 ## Token passes (log)
 
