@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9171,
- "updatedAt": "2026-11-19T00:14:18.925Z",
+ "rev": 9172,
+ "updatedAt": "2026-11-19T00:15:32.638Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322698,19 +322698,27 @@
    "title": "Postgres part C: console state, settings, alerts and plugin data dirs to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 3, 4, 5, 6, 7 and the s4 order). This build does s4.4 and s4.5 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, build-live / build-progress / build-hooks, pending, build queue, agent-slots or auto-lander (part A), and never touch plan, plan-studio, catalog, tracker, sessions or changes (part B). Register new tables in their own module files under services/axf-data (e.g. tables_console.py, tables_plugins.py) and add only additive entries to shared registries. Secrets never go in the database. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over. Branch, PR, CI, merge queue; never push to main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T00:14:12.912Z",
+   "updatedAt": "2026-11-19T00:14:59.615Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-19T00:13:31.430Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-postgres-part-c-console-state-settings--paulie.",
+     "at": "2026-11-19T00:14:47.234Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-postgres-part-c-console-state-settings--paulie, shared account login)",
+     "at": "2026-11-19T00:14:59.615Z"
     }
    ],
    "approvals": [],
@@ -322730,20 +322738,20 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-postgres-part-c-console-state-settings--paulie",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-19T00:14:28.826Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-19T00:14:28.826Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -322751,10 +322759,8 @@
      "at": "2026-11-19T00:12:06.139Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-19T00:14:28.826Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -322857,7 +322863,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322880,12 +322886,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T00:13:37.013Z",
+   "updatedAt": "2026-11-19T00:14:30.325Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
      "at": "2026-11-19T00:13:37.013Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:14:30.325Z"
     }
    ],
    "approvals": [],
@@ -323020,7 +323030,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
