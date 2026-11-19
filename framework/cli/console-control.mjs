@@ -18,6 +18,9 @@
  *                                                       keys its Settings → Interface tab writes, axf.chrome.<type>.<id>):
  *                                                       get [key] · set <key> <value> (asset = the asset it uses; reset or
  *                                                       '' drops it) · reset [key] (all of them: --confirm) · open [tab]
+ *   axf console open <URL | #/<view>[/<sub>] | ?axf-target=<address> | address>
+ *                                                       follow a deep link in the open console (view:plan-studio-2/plan:<id>, …)
+ *   axf console resolve <the same>                     what that link opens (screen, address, console action), opens nothing
  *   axf console voice "<phrase>"                       what AmberX does with a spoken phrase ("scroll down", "disable plugin skins")
  *   axf console do <verb> [address] [--value v] [--confirm] [--reason "…"] [--to recent|all|<client>]
  *   --json  the answer as JSON · --remote <url>  another console
@@ -26,7 +29,9 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice', 'plugin-settings', 'toolbar', 'chrome', 'resolve']);
+/** `axf console open <x>` is a deep link (this CLI) when x is a URL, #/…, ?axf-…= or an address; words stay console-commands' screen open. */
+export const isLinkTarget = (x) => /^(https?:\/\/|#\/|\?axf-(target|open)=|[a-z][a-z-]*:)/.test(String(x ?? '').trim());
 /** The chrome kinds with a settings dialog (chrome-settings@1 CHROME_TYPES). */
 const CHROME_KINDS = ['tab-group', 'toolbar', 'banner', 'nav-menu', 'app-menu', 'context-menu'];
 /** One chrome instance setting's address: the same key its Settings → Interface tab writes. */
@@ -129,6 +134,18 @@ export function toRequest(argv) {
       if (op === 'get' && id) return { method: 'GET', path: `/toolbars/${encodeURIComponent(id)}` };
       if (op === 'press' && id && button) return { method: 'POST', path: `/toolbars/${encodeURIComponent(id)}/press`, body: { button, ...(flags.value !== undefined ? { value: flags.value } : {}), ...(flags.confirm ? { confirm: true } : {}) } };
       throw new Error('usage: axf console toolbar list [--view <view>] | get <toolbar id> | press <toolbar id> <button> [--value v] [--confirm]');
+    }
+    // deep links (apps/console-web/src/control/deepLink-core.mjs): a console URL, #/<view>[/<sub>], ?axf-target=<address>,
+    // ?axf-open=…, or an address (also view:plan-studio-2/plan:<id>): open it, or say what it would open
+    case 'open': {
+      const target = args.join(' ').trim();
+      if (!target) throw new Error('usage: axf console open <console URL | #/<view>[/<sub>] | ?axf-target=<address> | address>');
+      return { method: 'POST', path: '/open', body: { target, ...extra } };
+    }
+    case 'resolve': {
+      const target = args.join(' ').trim();
+      if (!target) throw new Error('usage: axf console resolve <console URL | #/<view>… | ?axf-target=… | address>');
+      return { method: 'GET', path: `/resolve?target=${encodeURIComponent(target)}` };
     }
     case 'voice': {
       const text = args.join(' ').trim();

@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "command-palette-drawer",
+  "name": "Command palette: side drawer",
+  "version": "1.0.0",
+  "description": "Ctrl+K command palette as a side drawer: the page stays visible beside it, results run the full height, slides in.",
+  "author": "AmberX AXF console",
+  "tags": [
+    "command-palette",
+    "console"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 420,
+    "backdrop": "none",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

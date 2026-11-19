@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "command-palette-drawer",
+  "name": "command-palette: Side drawer",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "A side drawer with full-height results, the page stays visible (console.palette.look = command-palette-drawer).",
+  "tags": [
+    "ui-choice",
+    "choice-set:command-palette",
+    "choice-option:drawer"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 420,
+    "backdrop": "none",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

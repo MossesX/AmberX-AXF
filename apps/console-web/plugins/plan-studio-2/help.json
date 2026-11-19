@@ -390,6 +390,30 @@
         "text": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator).",
         "kind": "screen",
         "draft": true
+      },
+      {
+        "target": "open",
+        "title": "Open",
+        "text": "Shows this plan on its own: only it and everything under it, with All plans to go back. The same as the link ?axf-target=view:plan-studio-2/plan:<id>, POST /api/plugins/plan-studio-2/plans/<id>/open, the MCP command plan-studio-2 open, tree.mjs open <id> and saying \"open <plan>\".",
+        "kind": "button"
+      },
+      {
+        "target": "open-selected",
+        "title": "Open the selected plan",
+        "text": "Opens the selected row on its own (plan-studio-2.open:<id>).",
+        "kind": "button"
+      },
+      {
+        "target": "all-plans",
+        "title": "All plans",
+        "text": "Leaves the opened plan and shows the whole tree again (plan-studio-2.close-plan).",
+        "kind": "button"
+      },
+      {
+        "target": "open-plan-studio",
+        "title": "Open Plan Studio 2.0",
+        "text": "Opens the planning tree itself from its settings sub-tab. Link: #/plan-studio-2 or ?axf-target=view:plan-studio-2; plan-studio-2.open from any console command.",
+        "kind": "button"
       }
     ],
     "intros": [

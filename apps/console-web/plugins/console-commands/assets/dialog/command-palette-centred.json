@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "command-palette-centred",
+  "name": "command-palette: Centred",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "A centred modal over a dimmed page (console.palette.look = command-palette).",
+  "tags": [
+    "ui-choice",
+    "choice-set:command-palette",
+    "choice-option:centred"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 640,
+    "backdrop": "dim",
+    "animation": "scale",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

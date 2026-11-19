@@ -6,6 +6,8 @@ page, the CLI, claude.ai sessions and AmberX share one set of rules (web/tree-co
   GET    state            the whole tree + trash + progress + the allowed values
   GET    tree             nested rows (id = one branch)
   GET    item/{id}        one item (id or words) with path, children, ancestors
+  GET    plans/{id}       one plan + what opening it means (address view:plan-studio-2/plan:<id>, link, action)
+  POST   plans/{id}/open  open it on its own in the console (the Open button, tree.mjs open, voice "open X")
   GET    find             q, kind, under, limit → hits (each with the focus that opens it)
   GET    export           format=md|json, id = one branch
   POST   add | rename | edit | move | nudge | indent | outdent | duplicate | undo | link | unlink | collapse | import | build | say
@@ -89,6 +91,36 @@ def tree(id: str = "") -> dict[str, Any]:
 def item(id: str) -> dict[str, Any]:
     """One item by id or by words in its title, with its path, children and ancestors."""
     return _answer(run({"op": "get", "id": id}))
+
+
+def open_plan(id: str, by: str = "console") -> dict[str, Any]:
+    """The one Open handler: tree.mjs `open` says what it means, the open console page is told to show it."""
+    r = run({"op": "open", "id": id})
+    if not r.get("ok"):
+        return r
+    cc = plugin_services.get("console-commands@1")
+    if not cc:
+        return {**r, "delivered": False, "note": "Console commands is not installed: use the link to open it"}
+    item_id = str((r.get("item") or {}).get("id") or id)
+    from urllib.parse import quote
+    out = cc.run({"op": "act", "target": "console.actions", "path": "plan-studio-2.open", "action": "run", "input": {"args": [quote(item_id, safe="")]}, "by": by}, by=by)
+    return {**r, "delivered": bool(out.get("ok")), "console": out}
+
+
+@router.get("/plans/{id}")
+def plan(id: str) -> dict[str, Any]:
+    """One plan (id or words) with what opening it means: its address view:plan-studio-2/plan:<id>, link and action."""
+    r = run({"op": "get", "id": id})
+    if r.get("ok"):
+        o = run({"op": "open", "id": id})
+        r = {**r, **{k: o.get(k) for k in ("address", "link", "action")}}
+    return _answer(r)
+
+
+@router.post("/plans/{id}/open")
+def open_route(id: str, request: Request) -> dict[str, Any]:
+    """Open one plan on its own in the console (the same as its Open button, `tree.mjs open`, voice "open X")."""
+    return _answer(open_plan(id, _by(request)))
 
 
 @router.get("/find")
@@ -196,7 +228,12 @@ async def build(request: Request) -> dict[str, Any]:
 @router.post("/say")
 async def say(request: Request) -> dict[str, Any]:
     """One spoken plan command ({text}) → the change it means, with what to say back (AmberX voice, the page's mic)."""
-    return _write("say", request, await _body(request))
+    body = await _body(request)
+    r = _write("say", request, body)
+    # "open X" from AmberX or the CLI: the console page shows it too (the page's own mic sends local and dispatches it itself)
+    if r.get("ok") and (r.get("command") or {}).get("op") == "open" and r.get("item") and not body.get("local"):
+        r = {**r, **{k: v for k, v in open_plan(str(r["item"]["id"]), _by(request)).items() if k in ("delivered", "console")}}
+    return r
 
 
 @router.delete("/all")

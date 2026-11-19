@@ -1117,6 +1117,18 @@
         "title": "Open in Plugin Manager",
         "text": "Opens this plugin in the Plugin Manager: its full details, dependencies, files and every log line.",
         "kind": "button"
+      },
+      {
+        "target": "view:command-palette",
+        "title": "Command palette",
+        "text": "Ctrl+K (Cmd+K), or Search on the banner on a phone: one search over every screen, tab, setting, command, plugin and Plan Studio 2.0 plan. ↑ ↓ to move, Enter to run; a command that deletes or resets asks first; approve / deny and owner-only settings never show here. Recent picks come first. Link: #/command-palette/<words>. Same search: GET /api/console-control/search?q=, MCP console_control_search, axf console search, voice \"search for …\". Its look: Settings → Interface → Command palette.",
+        "kind": "screen"
+      },
+      {
+        "target": "deep-links",
+        "title": "Console links",
+        "text": "#/<screen>[/<tab>], ?axf-target=<address> and ?axf-open=<address or action> open the screen they name, also a plugin's page that loads later; a link to something that is not here shows a notice. GET /api/console-control/resolve?target=… says what a link opens; console_open, POST /api/console-control/open, axf console open and voice \"open <link>\" follow it.",
+        "kind": "link"
       }
     ],
     "intros": [

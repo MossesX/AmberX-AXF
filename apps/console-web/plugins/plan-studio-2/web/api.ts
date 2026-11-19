@@ -12,6 +12,9 @@ export const FOLDER = 'plan-studio-2';
 export const VIEW = 'plan-studio-2';
 export const ID = 'ai.amberx.axf.console.plan-studio-2';
 export const CTX_TARGET = 'axp-plan-studio-2-item';
+/** console-control@1: the tree is a grid of the view, every item a row (`view:plan-studio-2/grid:plan-studio-2.tree/row:<id>`). */
+export const TREE_GRID = `view:${VIEW}/grid:plan-studio-2.tree`;
+export const rowAddress = (id: string) => `${TREE_GRID}/row:${id}`;
 export const DND_ZONE = 'axp-plan-studio-2';
 export const TOP = '__top__';
 export const DIALOGS = { item: 'plan-studio-2.item', move: 'plan-studio-2.move', link: 'plan-studio-2.link', build: 'plan-studio-2.build' } as const;
@@ -22,14 +25,15 @@ export const KEYS = {
 export const api = pluginApi(FOLDER, 'Plan Studio 2.0', { unavailable: 'Plan Studio 2.0 is switched off or its server part is not running.' });
 
 export interface ItemView extends Item { path: string; depth: number; progress: { done: number; total: number; minutes: number }; children: number }
-export interface OpResult { ok: boolean; rev?: number; item?: ItemView | null; say?: string; error?: string; trashId?: string; removed?: number; restored?: number; count?: number; build?: { profile: string; id: string }; steps?: number; minutes?: number; understood?: boolean; focus?: string; hits?: tc.Hit[]; markdown?: string; command?: tc.VoiceCommand; changed?: boolean | number }
+export interface OpResult { ok: boolean; rev?: number; item?: ItemView | null; say?: string; error?: string; trashId?: string; removed?: number; restored?: number; count?: number; build?: { profile: string; id: string }; steps?: number; minutes?: number; understood?: boolean; focus?: string; action?: string; address?: string; link?: string; hits?: tc.Hit[]; markdown?: string; command?: tc.VoiceCommand; changed?: boolean | number }
 export interface BuildPreview { ok: boolean; preview: true; build: { profile: string; id: string }; change: tc.BuildChange; minutes: number }
 interface StateWire { ok: boolean; error?: string; rev: number; items: Item[]; trash: State['trash']; store: string; onHub: boolean }
 
 /* ---------------------------------------------------------------- the store */
 
-interface Store { state: State | null; error: string; selected: string | null; focus: string | null; store: string; onHub: boolean; busy: boolean }
-let store: Store = { state: null, error: '', selected: null, focus: null, store: '', onHub: false, busy: false };
+/** `opened`: the plan (or any item) the page shows on its own (Open / `view:plan-studio-2/plan:<id>`), null = everything. */
+interface Store { state: State | null; error: string; selected: string | null; focus: string | null; opened: string | null; store: string; onHub: boolean; busy: boolean }
+let store: Store = { state: null, error: '', selected: null, focus: null, opened: null, store: '', onHub: false, busy: false };
 let loading: Promise<void> | null = null;
 const subs = new Set<() => void>();
 const tell = () => subs.forEach((f) => f());
@@ -57,6 +61,14 @@ export const select = (id: string | null) => set({ selected: id });
 /** A deep link (`plan-studio-2.focus:<id or words>`): the page selects it, opens its ancestors and scrolls to it. */
 export const requestFocus = (ref: string) => set({ focus: ref });
 export const tookFocus = () => set({ focus: null });
+/** Open one plan (id or words) as the page: only it and everything under it, selected. null = back to every plan. */
+export const openPlan = (ref: string | null) => {
+  const it = ref && store.state ? tc.resolve(store.state, ref) : null;
+  set({ opened: ref ? (it?.id ?? ref) : null, ...(it ? { selected: it.id } : {}) });
+};
+export const openedRef = () => store.opened;
+/** The deep-link address of an opened plan (the resolver maps `plan:<id>` to the `plan-studio-2.open:<id>` action). */
+export const planAddress = (id: string) => `view:${VIEW}/plan:${id}`;
 
 /* ---------------------------------------------------------------- writes */
 
@@ -82,7 +94,7 @@ export const linkItem = (id: string, l: Partial<Link>) => post('link', { id, ...
 export const unlinkItem = (id: string, l: { type: string; ref: string }) => post('unlink', { id, ...l });
 export const importItems = (data: unknown, parent: string | null) => post('import', { data, parent });
 export const sendToBuild = (id: string, o: { preview?: boolean; buildId?: string; said?: string } = {}) => post('build', { id, ...o }, { quiet: !!o.preview }) as Promise<OpResult | BuildPreview>;
-export const sayCommand = (text: string) => post('say', { text });
+export const sayCommand = (text: string) => post('say', { text, local: true });
 export async function deleteItem(id: string): Promise<OpResult> {
   set({ busy: true });
   try { const r = await api.del<OpResult>(`item/${encodeURIComponent(id)}`); await reload(); if (store.selected === id) set({ selected: null }); return r; } finally { set({ busy: false }); }

@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "command-palette-sheet",
+  "name": "Command palette: bottom sheet",
+  "version": "1.0.0",
+  "description": "Ctrl+K command palette as a bottom sheet: thumb-reachable on a phone, the field at the bottom edge of the list, slides up.",
+  "author": "AmberX AXF console",
+  "tags": [
+    "command-palette",
+    "console"
+  ],
+  "data": {
+    "variant": "sheet",
+    "width": 720,
+    "backdrop": "blur",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

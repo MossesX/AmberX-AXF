@@ -177,3 +177,23 @@ table; writes carry `audit { by, reason, at }`. Failure: `{ $axf, ok: false, cod
 
 Delivery, mailbox, `recent` / `all`, acks, wake through AmberX and the `status` field are console-commands' (CONTROL.md →
 Console). A console acks a console-control command with its answer envelope, so the caller gets the state it asked for.
+
+## Deep links (Nov 18 2026, build plan-studio-2-open-button-working-deep)
+
+A link names what to open; every surface lands on the same thing as following it:
+
+| Form | Example | Opens |
+| --- | --- | --- |
+| `#/<view>[/<sub>…]` | `#/plan-studio-2`, `#/settings/plugins/plan-studio-2` | `view:<view>`; settings subs are its tab / sub-tab rows |
+| `?axf-target=<address>` | `?axf-target=view:settings/tab:settings.tabs=plugins` | the address |
+| `?axf-open=<address\|action>` | `?axf-open=plan-studio-2.focus:deploy` | the address, or runs the action |
+
+A segment of a kind this contract has not got (`view:plan-studio-2/plan:<id>`) is the view's own `<view>.open:<id>`
+action; no new kind. The console reads the link before its first render (`apps/console-web/src/control/deepLink.ts`,
+pure rules `deepLink-core.mjs`, Python twin `console_control.parse_link` / `resolve_link`), waits until the screen has
+registered (plugin pages load lazily), opens it with the highlight, and shows a notice for a target that never comes.
+
+- REST `GET /api/console-control/resolve?target=…` (what it opens, opens nothing), `POST /api/console-control/open {target}`.
+- MCP `console_open` / `console_show` accept a URL, `#/…` or `?axf-…=` besides an address.
+- CLI `axf console open <link|address>`, `axf console resolve <link|address>`.
+- Voice "open #/plan-studio-2", "open view:plan-studio-2/plan:<id>" (`POST /api/console-control/voice`).

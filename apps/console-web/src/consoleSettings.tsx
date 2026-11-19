@@ -1,3 +1,4 @@
+import { PALETTE_LOOK_KEY, PALETTE_LOOKS } from './control/palette-core.mjs';
 import { useEffect, useState } from 'react';
 import { Button, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
@@ -110,5 +111,10 @@ export const consoleSettings: AxfWebLibrary = {
     settings: [{ key: SETTINGS_GEAR_PLACEMENT_KEY, label: 'Settings gear', kind: 'choice', default: 'icon', scope: 'app',
       options: [{ value: 'icon', label: 'Gear icon at the right' }, { value: 'label', label: 'Gear with the word Settings' }, { value: 'menu', label: 'In a ⋯ menu' }],
       description: 'Where each plugin screen puts the button that opens its settings.' }],
+  }, {
+    id: 'console.palette', tab: 'interface', label: 'Command palette', icon: 'search', order: 40, description: 'The Ctrl+K command palette (the Search button on the banner on a phone).',
+    settings: [{ key: PALETTE_LOOK_KEY, label: 'Palette look', kind: 'choice', default: PALETTE_LOOKS[0], scope: 'app',
+      options: [{ value: 'command-palette', label: 'Centred' }, { value: 'command-palette-sheet', label: 'Bottom sheet' }, { value: 'command-palette-drawer', label: 'Side drawer' }],
+      description: 'Which of the palette’s dialog assets it uses.' }],
   }],
 };

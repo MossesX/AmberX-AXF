@@ -1001,11 +1001,14 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         """Open a screen in Brett's open Dev Console (the live one he used last, then the next live one if it doesn't
         answer; to="all" for every open one, or a client id). `screen` = the view id ("plan-studio"), its title ("Plan
         Studio") or a few words ("plan studio", "orchestrator"); plugins' screens count. Or a console-control@1 address
-        ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "setting:<key>"): opened and focused. A tab or item on the screen:
+        ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "setting:<key>", "view:plan-studio-2/plan:<id>"): opened and focused.
+        Or a deep link: a console URL, "#/plan-studio-2", "?axf-target=<address>" (GET /api/console-control/resolve says what it opens). A tab or item on the screen:
         "build-orchestrator pending", or `focus` ("pending", a build id). A build: "build:<build id>" (or the bare id)
         opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.
         Read `status`: delivered (a console acked it), pending (no console answered yet; queued and AmberX opens the
         console on Brett's phone) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
+        if LINK_RE.match(screen.strip()):  # a console URL, #/<view>…, ?axf-target= / ?axf-open=: the deep-link resolver
+            return await _control_focus(screen.strip(), "open", to)
         if ADDRESS_RE.match(screen.strip()):
             return await _control_focus(screen.strip() if not focus else f"{screen.strip()}/{focus}", "focus", to)
         return await go({"op": "act", "target": "console.screens", "path": screen, "action": "open", "input": inp(to, focus=focus)})
@@ -1079,7 +1082,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
         whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed.
         `target` may be a console-control@1 address ("grid:queue/row:<id>", "plugin:<id>"): focused and highlighted."""
-        if ADDRESS_RE.match(target.strip()):
+        if ADDRESS_RE.match(target.strip()) or LINK_RE.match(target.strip()):
             st = await follow("state")
             if not st.get("on"):
                 return {"ok": True, "shown": False, "message": "Follow Amber is off: nothing was opened"}
@@ -1098,6 +1101,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
                          "console_control_scroll", "console_control_plugin", "console_control_voice", "console_control_plugin_settings", "console_control_toolbar")
 ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll|toolbar):")
+# a deep link (src/control/deepLink-core.mjs): a console URL, #/<view>[/<sub>], ?axf-target=<address>, ?axf-open=<…>
+LINK_RE = re.compile(r"^(https?://\S+[#?]|#/|\?axf-(target|open)=)")
 
 
 def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:

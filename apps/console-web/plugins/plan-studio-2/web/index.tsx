@@ -7,13 +7,24 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { useRuntime, Button } from '@console/axf/react';
+import { addLoadedSource } from '@console/control/search';
 import { appMenu } from './menu';
 import { BuildDialog, ItemDialog, LinkDialog, MoveDialog, PlanStudio2Page } from './ui';
-import { CTX_TARGET, DIALOGS, FOLDER, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
+import { CTX_TARGET, DIALOGS, FOLDER, openPlan, rowAddress, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
 import * as tc from './tree-core.mjs';
 import * as lc from './layout-core.mjs';
 import { readDock, setLayout, showSection, writeDock } from './layout';
 import './plan-studio-2.css';
+
+/** Settings → Plugins → Plan Studio 2.0: the page itself is one tap away (the sub-tab used to be a dead end). */
+function OpenPanel() {
+  const rt = useRuntime();
+  return (
+    <div className="fx-row" role="toolbar" aria-label="Open Plan Studio 2.0">
+      <Button tone="primary" icon="branch" data-axf-target="button:plan-studio-2.open-page" onClick={() => rt.navigate(VIEW)}>Open Plan Studio 2.0</Button>
+    </div>
+  );
+}
 
 function OpenButton() {
   const rt = useRuntime();
@@ -40,7 +51,9 @@ export const plugin: AxfWebLibrary = {
     };
     const need = (args: string[], ctx?: { payload?: string }): string | null => { const id = target(args, ctx); if (!id) rt.toast('Say which item (right-click a row, or give its name).', 'warning', T); return id; };
 
-    rt.actions.register('plan-studio-2.open', () => rt.navigate(VIEW), { label: 'Open Plan Studio 2.0' });
+    // `plan-studio-2.open[:<plan id or words>]`: the page, or one plan on its own (deep link view:plan-studio-2/plan:<id>)
+    rt.actions.register('plan-studio-2.open', (args) => { rt.navigate(VIEW); const ref = decodeURIComponent(args.join(':')).trim(); if (ref) openPlan(ref); }, { label: 'Open Plan Studio 2.0 (or one plan in it)', params: true, effect: 'navigate' });
+    rt.actions.register('plan-studio-2.close-plan', () => { openPlan(null); rt.navigate(VIEW); }, { label: 'Plan Studio 2.0: show every plan', effect: 'navigate' });
     rt.actions.register('plan-studio-2.focus', (args) => { rt.navigate(VIEW); const ref = decodeURIComponent(args.join(':')); if (ref) requestFocus(ref); }, { label: 'Open Plan Studio 2.0 at one item (id or words)', params: true, effect: 'navigate' });
     rt.actions.register('plan-studio-2.new', (args) => { rt.navigate(VIEW); rt.openDialog(DIALOGS.item, { parent: null, kind: args[0] || 'plan' }); }, { label: 'New plan (Plan Studio 2.0)', params: true });
     rt.actions.register('plan-studio-2.new-inside', (args, ctx) => { const id = need(args, ctx); if (!id) return; const it = tc.byId(treeState()!, id); rt.openDialog(DIALOGS.item, { parent: id, kind: it ? tc.CHILD_KIND[it.kind] : 'step' }); }, { label: 'New item inside', searchable: false });
@@ -79,6 +92,17 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plan-studio-2.collapse-all', () => { setCollapsed(null, true); rt.toast('Collapsed everything.', 'info', T); }, { label: 'Plan Studio 2.0: collapse all' });
     rt.actions.register('plan-studio-2.expand-all', () => { setCollapsed(null, false); rt.toast('Expanded everything.', 'info', T); }, { label: 'Plan Studio 2.0: expand all' });
     rt.actions.register('plan-studio-2.reload', () => void reload(), { label: 'Reload Plan Studio 2.0' });
+    // the command palette, REST /search, MCP console_control_search and voice "find …" find plans (and their sections)
+    // as rows of the tree; picking one opens the plan (view:plan-studio-2/plan:<id>)
+    let asked = false;
+    addLoadedSource('plan-studio-2.plans', () => {
+      const s = treeState();
+      if (!s) { if (!asked) { asked = true; void reload(); } return []; }
+      return s.items.filter((i) => i.kind === 'plan' || i.kind === 'section').map((i) => ({
+        address: rowAddress(i.id), kind: 'row' as const, label: i.title, detail: `Plan Studio 2.0 · ${tc.KIND_LABEL[i.kind]}${i.parent ? ` · ${tc.pathOf(s, i.id)}` : ''}`,
+        icon: tc.KIND_ICON[i.kind], keywords: ['plan', 'plan studio', ...i.tags], open: () => rt.dispatch(`plan-studio-2.open:${i.id}`),
+      }));
+    });
   },
   contextMenu: [
     {
@@ -123,5 +147,6 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.voiceLang, label: 'Voice language', kind: 'choice', default: 'en-US', options: [{ value: 'en-US', label: 'English (US)' }, { value: 'en-GB', label: 'English (UK)' }, { value: 'en-CA', label: 'English (Canada)' }] },
     ],
   }],
-  settingsPanels: [{ id: 'plan-studio-2.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'plan-studio-2.open', tab: FOLDER, title: 'Plan Studio 2.0', icon: 'branch', order: 1, render: () => <OpenPanel /> },
+    { id: 'plan-studio-2.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

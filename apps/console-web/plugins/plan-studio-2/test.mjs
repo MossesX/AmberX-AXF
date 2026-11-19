@@ -25,6 +25,10 @@ await t('plugin@1 manifest, lifecycle, commands, web part, never the old Plan St
   assert.equal(m.commands.$axf, 'plugin-commands@1');
   for (const f of ['install.mjs', 'uninstall.mjs', 'hooks.mjs', 'tree.mjs', 'help.json', 'server/__init__.py', 'web/index.tsx', 'web/ui.tsx', 'web/api.ts', 'web/menu.ts', 'web/voice.ts', 'web/tree-core.mjs', 'web/tree-core.d.mts', 'web/plan-studio-2.css']) assert.ok(existsSync(join(here, f)), f);
   const web = readFileSync(join(here, 'web/index.tsx'), 'utf8');
+  assert.match(web, /'plan-studio-2\.open'/); assert.match(web, /OpenPanel/);
+  const cmds = m.commands.items.map((c) => c.id); assert.ok(cmds.includes('open') && cmds.includes('plan'), 'open + plan commands');
+  const ui = readFileSync(join(here, 'web/ui.tsx'), 'utf8'); assert.match(ui, /SkinScope kind="plugin"/); assert.match(ui, /data-axf-scope=\{TREE_GRID\}/);
+  assert.match(readFileSync(join(here, 'server/__init__.py'), 'utf8'), /@router\.post\("\/plans\/\{id\}\/open"\)/);
   assert.match(web, /parent: 'plugins'/); assert.match(web, /PluginLifecyclePanel/); assert.match(web, /plan-studio-2\.focus/);
   for (const a of ['new-inside', 'rename', 'duplicate', 'move', 'link', 'export', 'build', 'delete', 'undo']) assert.match(web, new RegExp(`plan-studio-2\\.${a}`), `context menu action ${a}`);
   assert.match(readFileSync(join(here, 'web/menu.ts'), 'utf8'), /nav:plan-studio-2/);
@@ -212,6 +216,15 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.equal(cliJson('say', 'add a step Test it to Launch').understood, true);
   assert.equal(cliJson('say', 'mark Test it done').item.done, true);
   assert.match(cli('find', 'deploy'), /plan-studio-2\.focus:/);
+  // Open: one handler for the CLI, REST, the plugin command and voice (no console configured here: --local)
+  const env0 = { ...env }; delete env0.AXF_CONSOLE_URL; delete env0.AXF_TOKEN;
+  const o = JSON.parse(execFileSync('node', [join(here, 'tree.mjs'), 'open', 'Launch', '--json', '--local'], { env: env0, encoding: 'utf8' }).trim());
+  assert.equal(o.ok, true); assert.equal(o.item.title, 'Launch');
+  assert.equal(o.address, `view:plan-studio-2/plan:${o.item.id}`); assert.equal(o.action, `plan-studio-2.open:${o.item.id}`);
+  assert.equal(o.link, `?axf-target=view:plan-studio-2/plan:${o.item.id}`);
+  assert.deepEqual(JSON.parse(cli('api', JSON.stringify({ op: 'open', id: o.item.id }))).address, o.address);
+  const v = cliJson('say', 'open Launch'); assert.equal(v.action, o.action); assert.equal(v.address, o.address);
+  assert.equal(cliFails('open', 'no such plan anywhere', '--json', '--local').code, 'not_found');
   const st = JSON.parse(readFileSync(join(dir, 'tree.json'), 'utf8'));
   assert.equal(st.$axf, 'plan-tree@1'); assert.equal(st.items.length, 3);
   const pv = cliJson('build', 'Launch', '--preview'); assert.equal(pv.preview, true); assert.equal(pv.change.steps.length, 1);

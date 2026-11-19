@@ -270,3 +270,8 @@
 .cc-palette__label { flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cc-palette__detail { flex: 1 1 auto; margin-inline-start: var(--fx-dens-gap-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted); font-size: var(--fx-type-root-xs); }
 .cc-palette__empty { color: var(--fx-muted); margin: 0; }
+.cc-palette__section { color: var(--fx-muted); margin: 0; font-size: var(--fx-type-root-xs); text-transform: uppercase; letter-spacing: 0.04em; }
+/* the palette's look (its dialog asset, console.palette.look): a sheet keeps the field last for the thumb, a drawer runs full height */
+.cc-palette[data-variant="sheet"] { flex-direction: column-reverse; }
+.cc-palette[data-variant="drawer"] .cc-palette__hits { max-height: none; flex: 1 1 auto; }
+.cc-palette[data-header="accent-bar"] { border-block-start: var(--fx-border-w) solid var(--fx-accent); padding-block-start: var(--fx-dens-gap-sm); }

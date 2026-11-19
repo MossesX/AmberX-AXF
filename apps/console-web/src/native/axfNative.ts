@@ -19,12 +19,11 @@
  *   on screen it sends `shell.update` and the console shows its "Reload for the new version" bar (native.update). Outside the app they say the phone app isn't here.
  */
 import type { AxfRuntime } from '../axf/core';
-import { executeControl, describeAnswer } from '../control/executor';
 import { controlRegistry } from '../axf/react';
 import { loader } from '../pluginLoader';
 import {
   APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
-  PHONE_APP_ADDRESS, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  PHONE_APP_ADDRESS, nativeCall, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
 /** The shell's Java bridge (`NativeBridge`): every method answers a JSON string. */
@@ -72,29 +71,11 @@ export function nativeState(): NativeAnswer {
   return { ...info, ok: true, permissions: perms.permissions, overlay: overlay.overlay, canDraw: overlay.canDraw, insets: insets.insets, update: update.update };
 }
 
-/** Runs `?axf-open=` once on load (any browser). */
-function runDeepLink(rt: AxfRuntime): void {
-  const t = openTarget(window.location.href);
-  if (!t) return;
-  window.history.replaceState(window.history.state, '', t.rest);
-  if (t.kind === 'none') return;
-  setTimeout(() => {
-    if (t.kind === 'address') {
-      void executeControl(rt, { verb: 'open', address: t.target, by: 'deep-link' }).then((a) => { if (!a.ok) rt.toast(describeAnswer(a), 'warning', 'Open'); });
-      return;
-    }
-    const id = t.target.split(':')[0]!;
-    const known = rt.actions.list().find((a) => a.id === id);
-    if (!known) { rt.toast(`Nothing called "${t.target}" to open here`, 'warning', 'Open'); return; }
-    if (known.meta.personOnly) { rt.toast(`${known.meta.label} needs your own tap`, 'warning', 'Open'); return; }
-    rt.dispatch(t.target);
-  }, 300);
-}
+// `?axf-open=` (and #/…, ?axf-target=) is followed by the console's deep-link resolver (src/control/deepLink.ts).
 
 /** Wires the page to the phone app. Returns a remover. */
 export function installNative(rt: AxfRuntime): () => void {
   if (typeof window === 'undefined') return () => {};
-  runDeepLink(rt);
   const offs: Array<() => void> = [];
 
   // native.* actions everywhere: outside the app they answer that the app isn't here

@@ -53,6 +53,8 @@
       { "route": "GET /state", "id": "state", "title": "The whole tree", "description": "Every item of Plan Studio 2.0 with the trash, progress and the allowed kinds, statuses, priorities, models and link types.", "readOnly": true },
       { "route": "GET /tree", "id": "tree", "title": "The tree, nested", "description": "Items as nested rows (children inside their parent); `id` limits it to one branch.", "readOnly": true },
       { "route": "GET /item/{id}", "id": "item", "title": "One item", "description": "An item by id or by words in its title, with its path, children and ancestors.", "readOnly": true },
+      { "route": "GET /plans/{id}", "id": "plan", "title": "One plan and how to open it", "description": "A plan (id or words) with its address view:plan-studio-2/plan:<id>, the link that opens it and the console action.", "readOnly": true },
+      { "route": "POST /plans/{id}/open", "id": "open", "title": "Open a plan in the console", "description": "Shows one plan on its own in the open console, the same as its Open button (view:plan-studio-2/plan:<id>)." },
       { "route": "GET /find", "id": "find", "title": "Find items", "description": "Words → matching items, best first; each hit's `focus` opens it in the console (plan-studio-2.focus).", "readOnly": true },
       { "route": "GET /export", "id": "export", "title": "Export as Markdown or JSON", "description": "The whole tree or one branch as Markdown (`format=md`) or a plan-tree-export@1 JSON (`format=json`).", "readOnly": true },
       { "route": "POST /add", "id": "add", "title": "Add an item", "description": "A new plan, section, step, note, list or list item, inside `parent` (an id or words; empty = top level) at `index`." },
