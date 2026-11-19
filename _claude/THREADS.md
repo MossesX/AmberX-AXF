@@ -836,77 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 14:23 UTC · `remove-amberx-app-code-once-phone` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `settings-fix-part-2-blank-toolbars` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `dispatcher-split-builds-evenly-across` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `move-everything-axhub-web-console` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `one-true-source-for-every-setting` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `vps-sets-every-build-status-manifest` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `api-fully-drives-every-field-type-forms` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `active-tab-add-stop-button-per-running` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `active-tab-stop-button-grid-alignment` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `fix-ci-red-main-watchdog-test-vs-done` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `axhub-routes-for-console-hub` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `vps-frees-stale-build-slots-every-minute` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `vps-frees-stale-build-slots-every-2` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `watchdog-plugin-owns-every-vps` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `one-landing-line-pull-main-merge-one` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `land-watchdogs-pr-832-fix-two-red-ci` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `server-gate-reject-any-build-without` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `one-build-time-always-split-split-id` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `out-credits-account-failover-flag-dead` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `orchestrator-master-pause-switch-stop` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `host-phone-connect-apk-axhub-browser` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `console-app-text-way-too-big-system-font` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `deep-links-to-plugin-s-settings-don-t` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `queue-stall-detector-vps-spots-queued` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `load-spike-alarm-vps-detects-cpu-load` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `server-safe-mode-one-emergency-button` → failed, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `plan-blueprints` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `blueprint-notes-tasks` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `land-project-create-mcp-resolve-clash` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `skin-animations-animated-colour-swatches` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `grid-token-set-colours-hover-selected` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `orchestrator-stale-row-watchdog-vps` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `picker-dialog-plugin-replaces-all` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `axf-data-postgres-real-tables-own` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `attach-widgets-to-any-toolbar-banner` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `icon-packs-with-drag-drop-pack-designer` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `auto-lander-status-tab-rest-mcp-settings` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `gate-auto-lander-tab-and-controls` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `server-rule-done-means-merged-working` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `shrink-git-history-drop-old-builds` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `builds-keep-their-slot-across-phases` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `settings-opened-banners-nav-menu` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `edit-ui-mode-inline-edit-anything-active` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `auto-lander-drag-rows-to-set-merge-order` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `live-hot-refresh-every-grid-list-re` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `grids-layout-control-voice-controlled` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `change-asset-only-assets-built-screen` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `rebuild-fresh-main-collapsible-sections` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `nothing-saved-browser-all-console` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `merge-queue-view-every-build-s-fully` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `grid-filter-plugin-one-filter-search` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `ci-run-only-what-changed-no-second-run` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `pending-optimizer-ai-finds-pending` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `notify-phone-when-queue-starts-building` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `rebuild-every-context-menu-toolbar-nav` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `live-build-status-real-time-grids-15` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `right-click-running-build-open-headless` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `right-click-running-build-pop-open` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `auto-lander-settings-log-placeholder` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `toolbars-1-5-build-orchestrator-incl` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `toolbars-2-5-plan-studio-ui-review` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `toolbars-3-5-settings-appearance-systems` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `toolbars-4-5-chat-viewer-codebase` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `toolbars-2-5-plan-studio-ui-review-2` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `toolbars-5-5-claude-accounts-glossary` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `fix-banner-settings-interface-tab` → pending, note (all) · watchdog
-- 2026-11-19 14:24 UTC · `land-pr-730-reset-all-button-far-right` → pending, note (all) · watchdog
 - 2026-11-19 14:24 UTC · `flagship-professional-skin-covering` → pending, note (all) · watchdog
 - 2026-11-19 14:24 UTC · `remove-amberx-app-code-once-phone` → pending, note (all) · watchdog
 - 2026-11-19 14:24 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · watchdog
@@ -1236,6 +1165,77 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 17:39 UTC · `remove-amberx-app-code-once-phone` note (all) · foreign-write
 - 2026-11-19 17:43 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
 - 2026-11-19 17:43 UTC · `remove-amberx-app-code-once-phone` s7 done, → landing (all) · orchestrator
+- 2026-11-19 20:57 UTC · `plan-blueprints` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `blueprint-notes-tasks` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `land-project-create-mcp-resolve-clash` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `skin-animations-animated-colour-swatches` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `grid-token-set-colours-hover-selected` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `picker-dialog-plugin-replaces-all` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `axf-data-postgres-real-tables-own` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `auto-lander-status-tab-rest-mcp-settings` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `gate-auto-lander-tab-and-controls` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `shrink-git-history-drop-old-builds` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `builds-keep-their-slot-across-phases` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `settings-opened-banners-nav-menu` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `edit-ui-mode-inline-edit-anything-active` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `live-hot-refresh-every-grid-list-re` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `grids-layout-control-voice-controlled` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `change-asset-only-assets-built-screen` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `rebuild-fresh-main-collapsible-sections` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `nothing-saved-browser-all-console` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `merge-queue-view-every-build-s-fully` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `grid-filter-plugin-one-filter-search` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `ci-run-only-what-changed-no-second-run` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `pending-optimizer-ai-finds-pending` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `notify-phone-when-queue-starts-building` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `right-click-running-build-open-headless` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `right-click-running-build-pop-open` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `auto-lander-settings-log-placeholder` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `fix-banner-settings-interface-tab` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `land-pr-730-reset-all-button-far-right` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `flagship-professional-skin-covering` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `dispatcher-split-builds-evenly-across` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `move-everything-axhub-web-console` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `one-true-source-for-every-setting` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `vps-sets-every-build-status-manifest` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `api-fully-drives-every-field-type-forms` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `active-tab-add-stop-button-per-running` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `active-tab-stop-button-grid-alignment` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `axhub-routes-for-console-hub` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `vps-frees-stale-build-slots-every-2` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `watchdog-plugin-owns-every-vps` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `one-landing-line-pull-main-merge-one` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `server-gate-reject-any-build-without` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `one-build-time-always-split-split-id` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `out-credits-account-failover-flag-dead` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `orchestrator-master-pause-switch-stop` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `host-phone-connect-apk-axhub-browser` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `console-app-text-way-too-big-system-font` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
+- 2026-11-19 20:57 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
 
 ## Token passes (log)
 
