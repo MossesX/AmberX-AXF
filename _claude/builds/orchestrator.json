@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T01:12:16.339Z",
+ "updatedAt": "2026-11-19T01:14:20.849Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195670,7 +195670,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T01:12:06.941Z",
+   "updatedAt": "2026-11-19T01:13:44.828Z",
    "builtAt": "",
    "notes": [
     {
@@ -195700,6 +195700,10 @@
     {
      "text": "Requeued by cli: launch retries reset.",
      "at": "2026-11-19T01:12:06.941Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T01:13:44.828Z"
     }
    ],
    "approvals": [],

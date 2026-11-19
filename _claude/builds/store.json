@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9205,
- "updatedAt": "2026-11-19T01:12:16.339Z",
+ "rev": 9206,
+ "updatedAt": "2026-11-19T01:14:20.849Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323010,7 +323010,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T01:12:06.941Z",
+   "updatedAt": "2026-11-19T01:13:44.828Z",
    "builtAt": "",
    "notes": [
     {
@@ -323040,6 +323040,10 @@
     {
      "text": "Requeued by cli: launch retries reset.",
      "at": "2026-11-19T01:12:06.941Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T01:13:44.828Z"
     }
    ],
    "approvals": [],
@@ -323058,7 +323062,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -323174,7 +323178,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
