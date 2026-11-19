@@ -840,94 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 12:31 UTC · `vps-never-gives-up-fix-land-every-build` branch claude/vps-never-gives-up-fix-land-every-build (all) · pipeline
-- 2026-11-18 12:32 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
-- 2026-11-18 12:32 UTC · `server-gate-reject-any-build-without` added (0 steps) (all) · Brett
-- 2026-11-18 12:33 UTC · `server-gate-reject-any-build-without` note (all) · orchestrator
-- 2026-11-18 12:34 UTC · `plan-studio-2-open-button-working-deep` s1 done (all) · orchestrator
-- 2026-11-18 12:37 UTC · `vps-never-gives-up-fix-land-every-build` s1 done, → running (all) · orchestrator
-- 2026-11-18 12:37 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
-- 2026-11-18 12:38 UTC · `one-build-time-always-split-split-id` added (0 steps) (all) · Brett
-- 2026-11-18 12:39 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
-- 2026-11-18 12:39 UTC · `every-app-gets-own-locked-default` → running, note (all) · pipeline
-- 2026-11-18 12:40 UTC · `one-build-time-always-split-split-id` note (all) · orchestrator
-- 2026-11-18 12:40 UTC · `every-app-gets-own-locked-default` → running, note (all) · foreign-write
-- 2026-11-18 12:40 UTC · `one-build-time-always-split-to-fill` added (0 steps) (all) · Brett
-- 2026-11-18 12:41 UTC · `one-build-time-always-split-to-fill` → queued, note (all) · Brett
-- 2026-11-18 12:42 UTC · `vps-never-gives-up-fix-land-every-build` s2 done (all) · orchestrator
-- 2026-11-18 12:43 UTC · `plan-studio-2-open-button-working-deep` s2 done (all) · orchestrator
-- 2026-11-18 12:41 UTC · `every-app-gets-own-locked-default` → running, note (all) · builds-live
-- 2026-11-18 12:45 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 12:45 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 12:45 UTC · `every-app-gets-own-locked-default` note (all) · orchestrator
-- 2026-11-18 12:45 UTC · `plan-studio-2-open-button-working-deep` s3 done (all) · orchestrator
-- 2026-11-18 12:46 UTC · `vps-never-gives-up-fix-land-every-build` s3 done (all) · orchestrator
-- 2026-11-18 12:45 UTC · `every-app-gets-own-locked-default` → queued, note (all) · pipeline
-- 2026-11-18 12:46 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
-- 2026-11-18 12:46 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
-- 2026-11-18 12:47 UTC · `one-build-time-always-split-to-fill` note (all) · orchestrator
-- 2026-11-18 12:47 UTC · `vps-never-gives-up-fix-land-every-build` s4 done, → landing (all) · orchestrator
-- 2026-11-18 12:48 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 12:49 UTC · `plan-studio-2-open-button-working-deep` s4 done (all) · orchestrator
-- 2026-11-18 12:50 UTC · `plan-studio-2-open-button-working-deep` s5 done (all) · orchestrator
-- 2026-11-18 12:49 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
-- 2026-11-18 12:49 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · orchestrator
-- 2026-11-18 12:50 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 12:51 UTC · `one-build-time-always-split-to-fill` note (all) · pipeline
-- 2026-11-18 12:52 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · voice session
-- 2026-11-18 12:53 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · foreign-write
-- 2026-11-18 12:53 UTC · `plan-studio-2-open-button-working-deep` s4 done, s5 done (all) · foreign-write
-- 2026-11-18 12:53 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
-- 2026-11-18 12:53 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 12:53 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 12:56 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 12:56 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 12:56 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 12:58 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
-- 2026-11-18 13:00 UTC · `plan-studio-2-open-button-working-deep` s6 done (all) · orchestrator
-- 2026-11-18 13:00 UTC · `plan-studio-2-open-button-working-deep` s7 done (all) · orchestrator
-- 2026-11-18 13:01 UTC · `plan-studio-2-open-button-working-deep` s8 done (all) · orchestrator
-- 2026-11-18 13:01 UTC · `plan-studio-2-open-button-working-deep` s6 done (all) · foreign-write
-- 2026-11-18 13:03 UTC · `plan-studio-2-open-button-working-deep` s9 done (all) · orchestrator
-- 2026-11-18 13:06 UTC · `vps-never-gives-up-fix-land-every-build` → fixing, note (all) · pipeline
-- 2026-11-18 13:12 UTC · `vps-never-gives-up-fix-land-every-build` PR #842, note (all) · reconciler
-- 2026-11-18 13:14 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
-- 2026-11-18 13:16 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 13:16 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 13:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` → running, note (all) · pipeline
-- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
-- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
-- 2026-11-18 13:18 UTC · `plan-studio-2-open-button-working-deep` s10 done (all) · orchestrator
-- 2026-11-18 13:18 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
-- 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s11 done (all) · orchestrator
-- 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s12 done (all) · orchestrator
-- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
-- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
-- 2026-11-18 13:22 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
-- 2026-11-18 13:23 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 13:23 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
-- 2026-11-18 13:23 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 13:23 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
-- 2026-11-18 13:23 UTC · `plan-studio-2-open-button-working-deep` added (15 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (4 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `vps-never-gives-up-fix-land-every-build` added (4 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `every-app-gets-own-locked-default` added (6 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `every-plugin-gets-own-default-toolbar` added (7 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `server-gate-reject-any-build-without` added (5 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
-- 2026-11-18 13:23 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
-- 2026-11-18 13:24 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
-- 2026-11-18 13:25 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
-- 2026-11-18 13:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
-- 2026-11-18 13:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 13:25 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
-- 2026-11-18 13:25 UTC · `plan-studio-2-open-button-working-deep` added (15 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (4 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `vps-never-gives-up-fix-land-every-build` added (4 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `every-app-gets-own-locked-default` added (6 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `every-plugin-gets-own-default-toolbar` added (7 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `server-gate-reject-any-build-without` added (5 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `one-build-time-always-split-split-id` added (9 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `one-build-time-always-split-to-fill` added (27 steps) (all) · foreign-write
@@ -1240,6 +1152,94 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-18 21:26 UTC · `console-app-text-way-too-big-system-font` added (0 steps) (all) · voice session
 - 2026-11-18 21:26 UTC · `console-app-text-way-too-big-system-font` added (0 steps) (all) · foreign-write
 - 2026-11-18 21:27 UTC · `console-app-text-way-too-big-system-font` note (all) · orchestrator
+- 2026-11-18 22:57 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · orchestrator
+- 2026-11-18 22:57 UTC · `urgent-all-data-to-postgres-builds-store` s2 done, note (all) · orchestrator
+- 2026-11-18 22:58 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-18 23:19 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-18 23:20 UTC · `deep-links-to-plugin-s-settings-don-t` added (0 steps) (all) · voice session
+- 2026-11-18 23:20 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · orchestrator
+- 2026-11-18 23:21 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · builds-live
+- 2026-11-18 23:21 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 23:21 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 23:21 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 23:21 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-18 23:22 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · orchestrator
+- 2026-11-18 23:24 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-18 23:39 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-18 23:40 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-18 23:40 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-18 23:40 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-18 23:40 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-18 23:42 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-19 00:09 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 00:11 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · voice session
+- 2026-11-19 00:11 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · voice session
+- 2026-11-19 00:12 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · voice session
+- 2026-11-19 00:12 UTC · `postgres-part-c-console-state-settings` → queued (all) · voice session
+- 2026-11-19 00:13 UTC · `postgres-part-b-plan-plan-studio-catalog` → queued (all) · voice session
+- 2026-11-19 00:13 UTC · `postgres-part-c-console-state-settings` note (all) · pipeline
+- 2026-11-19 00:13 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · pipeline
+- 2026-11-19 00:14 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · pipeline
+- 2026-11-19 00:14 UTC · `postgres-part-c-console-state-settings` → running, note (all) · pipeline
+- 2026-11-19 00:15 UTC · `postgres-part-c-console-state-settings` note (all) · orchestrator
+- 2026-11-19 00:15 UTC · `postgres-part-c-console-state-settings` branch claude/postgres-part-c-console-state-settings (all) · pipeline
+- 2026-11-19 00:15 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · pipeline
+- 2026-11-19 00:16 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-19 00:16 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-19 00:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-19 00:16 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-19 00:17 UTC · `queue-stall-detector-vps-spots-queued` added (0 steps) (all) · voice session
+- 2026-11-19 00:17 UTC · `queue-stall-detector-vps-spots-queued` added (0 steps) (all) · foreign-write
+- 2026-11-19 00:17 UTC · `queue-stall-detector-vps-spots-queued` note (all) · orchestrator
+- 2026-11-19 00:18 UTC · `queue-stall-detector-vps-spots-queued` note (all) · builds-live
+- 2026-11-19 00:18 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-19 00:18 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-19 00:18 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-19 00:18 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-19 00:18 UTC · `urgent-all-data-to-postgres-builds-store` s1 done, s2 done, note (all) · foreign-write
+- 2026-11-19 00:18 UTC · `host-phone-connect-apk-axhub-browser` added (3 steps) (all) · foreign-write
+- 2026-11-19 00:18 UTC · `console-app-text-way-too-big-system-font` added (6 steps) (all) · foreign-write
+- 2026-11-19 00:18 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · foreign-write
+- 2026-11-19 00:18 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · foreign-write
+- 2026-11-19 00:18 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
+- 2026-11-19 00:18 UTC · `queue-stall-detector-vps-spots-queued` added (0 steps) (all) · foreign-write
+- 2026-11-19 00:19 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
+- 2026-11-19 00:19 UTC · `queue-stall-detector-vps-spots-queued` note (all) · orchestrator
+- 2026-11-19 00:20 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-19 00:22 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `urgent-all-data-to-postgres-builds-store` s1 done, s2 done, note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `host-phone-connect-apk-axhub-browser` added (6 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `console-app-text-way-too-big-system-font` added (6 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `queue-stall-detector-vps-spots-queued` added (10 steps) (all) · foreign-write
+- 2026-11-19 00:21 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `load-spike-alarm-vps-detects-cpu-load` added (0 steps) (all) · voice session
+- 2026-11-19 00:25 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-19 00:25 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
+- 2026-11-19 00:25 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · orchestrator
+- 2026-11-19 00:26 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 00:26 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · orchestrator
+- 2026-11-19 00:28 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-19 00:28 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
+- 2026-11-19 00:29 UTC · `load-spike-alarm-vps-detects-cpu-load` added (0 steps) (all) · foreign-write
+- 2026-11-19 00:32 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
+- 2026-11-19 00:32 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · foreign-write
+- 2026-11-19 00:31 UTC · `urgent-all-data-to-postgres-builds-store` → pending (all) · voice session
+- 2026-11-19 00:33 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · cli
+- 2026-11-19 00:33 UTC · `queue-stall-detector-vps-spots-queued` note (all) · orchestrator
+- 2026-11-19 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-19 00:36 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-19 00:36 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-19 00:36 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-19 00:36 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
+- 2026-11-19 00:37 UTC · `urgent-all-data-to-postgres-builds-store` → running, note (all) · pipeline
+- 2026-11-19 00:37 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 00:39 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 
 ## Token passes (log)
 

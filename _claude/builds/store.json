@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9149,
- "updatedAt": "2026-11-18T21:29:26.567Z",
+ "rev": 9190,
+ "updatedAt": "2026-11-19T00:39:28.222Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179448,10 +179448,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.124Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -180023,7 +180023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 102,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205978,10 +205978,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.124Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -206068,7 +206068,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208372,10 +208372,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.124Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -208572,7 +208572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210004,10 +210004,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.124Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -210094,7 +210094,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -220636,10 +220636,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.124Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -221229,7 +221229,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -238563,10 +238563,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -238653,7 +238653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -244428,7 +244428,7 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-18T19:54:25.323Z",
+   "updatedAt": "2026-11-19T00:39:12.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -244674,6 +244674,38 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-18T19:54:25.323Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T23:21:24.433Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-18T23:23:41.617Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-18T23:40:58.645Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-18T23:42:10.836Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-19T00:20:35.915Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-19T00:36:12.343Z"
+    },
+    {
+     "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-19T00:39:12.143Z"
     }
    ],
    "approvals": [],
@@ -244737,7 +244769,7 @@
    },
    "failure": {
     "kind": "ci-red",
-    "at": "2026-11-18T19:54:25.323Z",
+    "at": "2026-11-19T00:39:12.143Z",
     "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
     "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
     "step": "",
@@ -245289,7 +245321,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -252775,10 +252807,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [
      "hulu0241"
@@ -253277,7 +253309,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -256619,10 +256651,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -257411,7 +257443,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 55,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -260404,10 +260436,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -260755,7 +260787,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -260874,10 +260906,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.355Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -261342,7 +261374,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261508,10 +261540,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -261950,7 +261982,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262049,10 +262081,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -262439,7 +262471,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262556,10 +262588,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -262949,7 +262981,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -264195,10 +264227,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -264521,7 +264553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265246,10 +265278,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [
      "hulu0241"
@@ -265790,7 +265822,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265917,10 +265949,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -266313,7 +266345,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266430,10 +266462,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -266961,7 +266993,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267510,10 +267542,10 @@
     "dispatchedAt": "2026-11-18T00:34:47.468Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-18T00:34:47.468Z",
@@ -268224,7 +268256,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 151,
+   "rev": 153,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270255,10 +270287,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -271096,7 +271128,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271215,10 +271247,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -271744,7 +271776,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271846,10 +271878,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -272303,7 +272335,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272406,10 +272438,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -272890,7 +272922,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272998,10 +273030,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -273392,7 +273424,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273493,10 +273525,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -273540,7 +273572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273631,10 +273663,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -274004,7 +274036,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274116,10 +274148,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -274642,7 +274674,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275412,8 +275444,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-18T19:51:27.816Z",
-   "builtAt": "2026-11-18T19:51:27.816Z",
+   "updatedAt": "2026-11-19T00:36:12.343Z",
+   "builtAt": "2026-11-19T00:36:12.343Z",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -275758,6 +275790,22 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-18T19:51:27.816Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T23:21:24.433Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-18T23:40:58.645Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
+    },
+    {
+     "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
+     "at": "2026-11-19T00:36:12.343Z"
     }
    ],
    "approvals": [
@@ -276556,7 +276604,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 126,
+   "rev": 130,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276666,10 +276714,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -276935,7 +276983,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277031,10 +277079,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -277121,7 +277169,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -277284,10 +277332,10 @@
     "dispatchedAt": "2026-11-17T20:16:29.639Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:16:29.639Z",
@@ -277865,7 +277913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278240,10 +278288,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -278855,7 +278903,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 121,
+   "rev": 123,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278961,10 +279009,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -279358,7 +279406,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279454,10 +279502,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -279825,7 +279873,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284682,10 +284730,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -284901,7 +284949,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285033,10 +285081,10 @@
     "dispatchedAt": "2026-11-17T20:55:33.562Z",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:55:33.562Z",
@@ -285159,7 +285207,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285248,10 +285296,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -285373,7 +285421,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285463,10 +285511,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -285592,7 +285640,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285682,10 +285730,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -285811,7 +285859,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285901,10 +285949,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -286029,7 +286077,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286119,10 +286167,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -286248,7 +286296,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287776,10 +287824,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -288486,7 +288534,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290121,10 +290169,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -290296,7 +290344,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290465,10 +290513,10 @@
     "dispatchedAt": "2026-11-17T22:28:58.757Z",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T22:28:58.757Z",
@@ -290948,7 +290996,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -292848,10 +292896,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -293155,7 +293203,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293267,10 +293315,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -293970,7 +294018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -312303,10 +312351,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -312764,7 +312812,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -312871,10 +312919,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -313222,7 +313270,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -313354,10 +313402,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -313771,7 +313819,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -313796,8 +313844,8 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-18T19:51:27.816Z",
-   "builtAt": "2026-11-18T19:51:27.816Z",
+   "updatedAt": "2026-11-19T00:36:12.343Z",
+   "builtAt": "2026-11-19T00:36:12.343Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -313914,6 +313962,22 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-18T19:51:27.816Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T23:21:24.433Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-18T23:40:58.645Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
+    },
+    {
+     "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
+     "at": "2026-11-19T00:36:12.343Z"
     }
    ],
    "approvals": [],
@@ -314339,7 +314403,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -314437,10 +314501,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -314789,7 +314853,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -314864,10 +314928,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -315149,7 +315213,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -315246,10 +315310,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -315531,7 +315595,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -315648,10 +315712,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -316065,7 +316129,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -316146,10 +316210,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -316475,7 +316539,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -316545,10 +316609,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -316896,7 +316960,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -317000,10 +317064,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -317351,7 +317415,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -317957,10 +318021,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -318418,7 +318482,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -318986,10 +319050,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -319098,7 +319162,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319122,8 +319186,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-18T19:51:27.816Z",
-   "builtAt": "2026-11-18T19:51:27.816Z",
+   "updatedAt": "2026-11-19T00:36:12.343Z",
+   "builtAt": "2026-11-19T00:36:12.343Z",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -319228,6 +319292,22 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-18T19:51:27.816Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T23:21:24.433Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-18T23:40:58.645Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-19T00:16:21.534Z"
+    },
+    {
+     "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
+     "at": "2026-11-19T00:36:12.343Z"
     }
    ],
    "approvals": [],
@@ -319395,7 +319475,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -320055,10 +320135,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -320189,7 +320269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320268,10 +320348,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -320490,7 +320570,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321478,10 +321558,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -321565,7 +321645,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321752,7 +321832,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-18T21:00:01.858Z",
+   "updatedAt": "2026-11-19T00:37:52.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -321784,12 +321864,60 @@
      "at": "2026-11-18T20:29:05.528Z"
     },
     {
+     "text": "s2 (Fable): builds store is on Postgres tables. builds (keyed by id), build_steps, build_notes, journal (view build_journal); row-level patch writes (SELECT … FOR UPDATE on the touched builds only); key-level modes so store.json + journal/ move ahead of the rest of the namespace. Live: axf-data redeployed at a fixed address with host.env for host processes; engine moved shadow → postgres (SQLite side held 119 keys, Postgres 16 105; reads had been answering not_found); store copied and verified: 1 060 builds, 6 718 steps, 7 594 notes on both sides and as rows; journal: 22 parts, 15 731 entries (2 torn lines in p7 cannot be copied). Keys NOT flipped yet: a writer on older code would keep writing the file. s3 flips once main carries this: builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json (cli token, host URL), then drops the lock path and tmp files. Report: _claude/builds/reports/urgent-all-data-to-postgres-builds-store.md",
+     "at": "2026-11-18T22:57:10.231Z"
+    },
+    {
      "text": "Started run 1 on hulu0241 (Fable, Phase 2): axf-urgent-all-data-to-postgres-builds-store--joey.",
      "at": "2026-11-18T20:59:53.928Z"
     },
     {
      "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--joey, shared account login)",
      "at": "2026-11-18T21:00:01.858Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--joey: brief only · start 15.7K tokens ($0.13) · cost $26.28 · 235 turns · 6 tools, MCP none",
+     "at": "2026-11-18T22:58:57.550Z"
+    },
+    {
+     "text": "Model switch: phase 2 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-18T22:57:27.033Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T23:19:26.843Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-18T23:39:45.838Z"
+    },
+    {
+     "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
+     "at": "2026-11-19T00:09:45.626Z"
+    },
+    {
+     "text": "Brett, Nov 18 2026 (voice): split the rest so it runs on three slots without interfering. This build (part A) keeps s3 (builds cut-over), s4.1 only (pending, build queue, agent-slots, auto-lander: contended by every launch, stays with builds) and s5. s4.2, s4.3, s4.6 moved to 'Postgres part B'; s4.4, s4.5 moved to 'Postgres part C'. Do not do those here. Run s5 (CLAUDE.md rule + CI check that fails new JSON data writes) last, after parts B and C have merged, so the CI check doesn't fail their branches.",
+     "at": "2026-11-19T00:11:02.021Z"
+    },
+    {
+     "text": "PR #848 opened by hand (builds-live is paused, so no PR was opened after s2); merge queue lands it, then s3 cuts over.",
+     "at": "2026-11-19T00:26:18.724Z"
+    },
+    {
+     "text": "Queued by cli.",
+     "at": "2026-11-19T00:33:06.533Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T00:35:58.320Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--gina.",
+     "at": "2026-11-19T00:37:18.137Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-urgent-all-data-to-postgres-builds-store--gina, shared account login)",
+     "at": "2026-11-19T00:37:52.626Z"
     }
    ],
    "approvals": [],
@@ -321801,20 +321929,20 @@
     "session": "",
     "link": "",
     "by": "urgent-all-data-to-postgres-builds-store",
-    "brief": "# Build: urgent-all-data-to-postgres-builds-store\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"URGENT — All data to Postgres: builds store first, then every JSON data file\" (urgent-all-data-to-postgres-builds-store) [data] — Phase 2, model Fable.\nThis phase upgrades Opus → Fable: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/urgent-all-data-to-postgres-builds-store\nSteps in this phase (1 left, ~30 min):\n[ ] s2 (~30 min) Builds: Postgres tables for builds, steps, notes, journal; builds-store.mjs and the console server read/write them with row-level locking; migrate store.json + journal, verify counts\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-all-data-to-postgres-builds-store \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "brief": "# Build: urgent-all-data-to-postgres-builds-store\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"URGENT — All data to Postgres: builds store first, then every JSON data file\" (urgent-all-data-to-postgres-builds-store) [data] — Phase 3, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/urgent-all-data-to-postgres-builds-store\nSteps in this phase (3 left, ~1.2 h):\n[ ] s3 (~25 min) Cut builds over; drop the store.json lock path; orchestrator/pending/queue exports generated from the tables only if still needed\n[ ] s4 (~30 min) Move the remaining data namespaces from the inventory to tables, one per step, each verified then cut over\n[ ] s5 (~15 min) Rule in CLAUDE.md + DATA-STORE.md: no runtime data in JSON files, Postgres tables only; CI check that fails a new JSON data write\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step urgent-all-data-to-postgres-builds-store <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note urgent-all-data-to-postgres-builds-store \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-19T00:33:02.230Z",
+    "queuedBy": "cli",
     "account": "hulu0241",
-    "session": "axf-urgent-all-data-to-postgres-builds-store--joey",
+    "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
     "slot": "",
-    "model": "Fable",
-    "phase": "Phase 2",
-    "launchedAt": "2026-11-18T20:59:50.540Z",
+    "model": "Opus",
+    "phase": "Phase 3",
+    "launchedAt": "2026-11-19T00:37:13.344Z",
     "runs": 1,
     "crashes": 0,
     "lastRun": null,
@@ -321822,16 +321950,16 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-18T20:59:50.540Z",
+    "dispatchedAt": "2026-11-19T00:37:13.344Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T20:58:46.207Z",
+     "at": "2026-11-19T00:32:14.633Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
-    "pickedAt": "2026-11-18T20:59:50.540Z",
+    "pickedAt": "2026-11-19T00:37:13.344Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -321857,7 +321985,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-18T19:57:56.448Z"
+     "updatedAt": "2026-11-19T00:22:22.020Z"
     },
     {
      "id": "s2",
@@ -321874,12 +322002,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-18T22:57:27.033Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-18T14:45:31.829Z"
+     "updatedAt": "2026-11-19T00:22:22.020Z"
     },
     {
      "id": "s3",
@@ -321956,7 +322084,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322003,10 +322131,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -322068,7 +322196,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322115,10 +322243,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:00:44.125Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -322129,7 +322257,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwmjtcmy045gvh",
+     "uid": "st-mwmt2pxz0196s7",
      "title": "",
      "text": "Find how the other APKs are hosted on axHub and reuse that path and naming for phone-connect-debug.apk",
      "model": "Opus",
@@ -322147,11 +322275,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-18T20:03:01.846Z"
+     "updatedAt": "2026-11-19T00:22:15.315Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwmjtcmy05vaqs",
+     "uid": "st-mwmt2pxz0286s2",
      "title": "",
      "text": "Pull the latest phone-connect-debug.apk from the newest green main run and publish it there; add it to the CI publish step so every green main build refreshes it",
      "model": "Opus",
@@ -322169,11 +322297,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-18T20:03:01.846Z"
+     "updatedAt": "2026-11-19T00:22:15.315Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwmjtcmy06ntnw",
+     "uid": "st-mwmt2pxz0347nt",
      "title": "",
      "text": "Verify the direct link downloads in a phone browser and post the link to Brett",
      "model": "Opus",
@@ -322191,7 +322319,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-18T20:03:01.846Z",
-     "updatedAt": "2026-11-18T20:03:01.846Z"
+     "updatedAt": "2026-11-19T00:22:15.315Z"
     }
    ],
    "profiles": [
@@ -322202,7 +322330,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322260,10 +322388,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "mossesx-max-",
+     "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-18T21:28:24.452Z",
-     "why": "subscription account mossesx-max-"
+     "at": "2026-11-18T23:01:45.356Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -322416,12 +322544,1173 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-18T21:27:59.161Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "deep-links-to-plugin-s-settings-don-t",
+   "title": "Deep links to a plugin's settings don't open it (console_open just reloads the main page)",
+   "category": "Console > Settings",
+   "detail": "Brett (voice, Nov 18 2026): console_open with screen settings, tab plugins, item phone-connect answers ok/started but the console only refreshes the main page; the Phone Connect settings never open. Settings → Plugins also just lists plugins with no link into each plugin's settings. Known from another build log: the deep link to a settings sub-tab answers ok but the shared settings code doesn't move to it. Fix in the shared settings code so every plugin settings sub-tab is reachable by deep link (REST, MCP, CLI, voice) and by tapping the plugin in the list.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-18T23:20:06.039Z",
+   "updatedAt": "2026-11-18T23:22:58.546Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-18T23:20:57.231Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"aac21928-23b2-48fa-9705-70c97e75215f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-18T23:22:58.546Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-18T23:22:58.546Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 5,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"aac21928-23b2-48fa-9705-70c97e75215f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-18T23:21:30.418Z",
+     "why": "subscription account hulu0241"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwmqygky01pwra",
+     "title": "",
+     "text": "Brett (voice, Nov 18 2026): console_open with screen settings, tab plugins, item phone-connect answers ok/started but the console only refreshes the main page; the Phone Connect settings never open.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwmqygky02ye5m",
+     "title": "",
+     "text": "Settings → Plugins also just lists plugins with no link into each plugin's settings.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwmqygky03bi8s",
+     "title": "",
+     "text": "Known from another build log: the deep link to a settings sub-tab answers ok but the shared settings code doesn't move to it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwmqygky040217",
+     "title": "",
+     "text": "Fix in the shared settings code so every plugin settings sub-tab is reachable by deep link (REST, MCP, CLI, voice) and by tapping the plugin in the list.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwmqygky055n92",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/deep-links-to-plugin-s-settings-don-t.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/deep-links-to-plugin-s-settings-don-t.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-18T23:22:58.546Z",
+     "updatedAt": "2026-11-18T23:22:58.546Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1012
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-18T23:22:58.546Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "postgres-part-c-console-state-settings",
+   "title": "Postgres part C: console state, settings, alerts and plugin data dirs to tables",
+   "category": "data",
+   "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 3, 4, 5, 6, 7 and the s4 order). This build does s4.4 and s4.5 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, build-live / build-progress / build-hooks, pending, build queue, agent-slots or auto-lander (part A), and never touch plan, plan-studio, catalog, tracker, sessions or changes (part B). Register new tables in their own module files under services/axf-data (e.g. tables_console.py, tables_plugins.py) and add only additive entries to shared registries. Secrets never go in the database. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over. Branch, PR, CI, merge queue; never push to main.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/postgres-part-c-console-state-settings",
+   "pr": "",
+   "createdAt": "2026-11-19T00:11:19.627Z",
+   "updatedAt": "2026-11-19T00:14:59.615Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:13:31.430Z"
+    },
+    {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-postgres-part-c-console-state-settings--paulie.",
+     "at": "2026-11-19T00:14:47.234Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-postgres-part-c-console-state-settings--paulie, shared account login)",
+     "at": "2026-11-19T00:14:59.615Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "postgres-part-c-console-state-settings",
+    "brief": "# Build: postgres-part-c-console-state-settings\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Postgres part C: console state, settings, alerts and plugin data dirs to tables\" (postgres-part-c-console-state-settings) [data] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nSteps ≤ 10 min.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next (orchestrator.mjs act step <build> <stepId> done; the VPS opens and links the PR). Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~1.8 h):\n[ ] s1 (~30 min) s4.4: console state.json + small console files, deploys log, alerts, settings (hub-settings becomes the source), notifications, home cards, token log, notes, control inventory, amberx notes, app catalog rows → console_state, console_deploys, alerts, alerts_seen, settings, notifications, home_cards, token_log, notes, control_targets/tabs, app_catalog; backfill, verify, cut over\n[ ] s2 (~30 min) s4.5a: large plugin data first: chat-viewer SQLite → chats (+ tts blobs), shipped-features SQLite → ledger_* as source, push-banner, agent-swarm, ui-review; backfill, verify, cut over\n[ ] s3 (~30 min) s4.5b: remaining plugin data dirs per the inventory table (agent-manager, ai-assistant, activity, systems-check, claude-accounts, handoff, terminal, phone-connect, todo-manager...) plus plugin_settings and plugin_audit for small config and audit files; backfill, verify, cut over\n[ ] s4 (~15 min) Tests, report and PR: per-namespace count checks, report _claude/builds/reports/postgres-part-c.md, PR through CI and the merge queue\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step postgres-part-c-console-state-settings <stepId> done — it reaches main at once (builds-live). The VPS opens the PR and links it (Build rules → builds-live).\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account hulu0241 for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step postgres-part-c-console-state-settings <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note postgres-part-c-console-state-settings \"…\"); the build goes back to Pending for Brett.\n\n## Rules for this job\n- Fix what is broken when your tools can; anything that needs Brett goes in a systems check banner item with the exact steps, not only in chat.\n- Build options are `--switches` on every build driver (CLI, engine-rpc, serve, console API/UI, MCP), defined only in `framework/schemas/build-options.json`; each sets an asset token, and new builds default every option off.\n- `framework/schemas/asset-types.json` is the single source of truth for asset types. Per-port extensions live in files like `asset-types.android.json`.\n- Cross-port: change a reference engine in framework/core, then regenerate framework/spec/fixtures. No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md.\n- React/TS port: the first React/TS app built on it sets the conventions, so it must stay engine-compatible for Android porting.\n- `axf init` bakes `core/ react/ ui/ schemas/` into an app's `src/axf/` and records hashes in `axf.lock.json`. Change the framework, not baked copies.\n- Feature status: framework/catalog/status.json, then `node framework/cli/tracker.mjs`. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- Patches and Build Pilot are retired (Nov 3 2026): both apps and every integration with them were removed; the Dev Console and every other app run standalone. `MossesX/Build-Pilot` is archived on GitHub (read-only). Report `_claude/builds/reports/kill-patches-pilot.md`.\n- No secrets: `AXF_TOKEN` and `GITHUB_TOKEN` are environment variables only. `.mcp.json` references `${AXF_TOKEN}`.\n- He works mostly from his phone (Samsung Galaxy S26 Ultra), often in Moshi (mosh) on his Hostinger VPS where Claude Code runs. Lead with the result, short paragraphs, phone-readable.\n- Everything a later session needs lives in `_claude/` (this project) or `_claude/shared/` (all projects), synced with the hub. Phone, VPS, desktop and claude.ai sessions don't share chat history.\n- GitHub: account `MossesX`. A new repo must exist on GitHub before a session can push to it.\n- axHub (`MossesX/axHub`, https://axhub.amberxai.com/mcp) is his connector hub: use its tools (`list_services`, `describe_service`, `call`) to reach his services instead of asking for credentials.\n- Pending builds: check the pending list before any build (`node framework/cli/pending.mjs`, MCP `pending_list`, console → Pending builds). \"Add to the pending build list\" means park it.\n- Check the queue for clashes, and build related items together (Oct 21 2026, Brett): whenever any session (any machine, any surface: VPS, cloud, headless, claude.ai, console launches) is asked to build anything or to put anything in the build queue, first go through everything still to build (pending list, build queue, plan; the console's Build manager shows them all) for items that touch the same files, features or contracts, or that would later conflict with, undo or redo what is being built. If any of them should be built at the same time, build them together in this build (tell Brett which ones and why before starting; when one of them is pinned to a different model, say so in the model pick), then take each one off the pending list / build queue (mark it complete with this build's branch/PR and tick its steps) so nothing is built twice. If an item would clash but shouldn't be built now, say so and add a note on that item. When adding to the queue, merge into an overlapping item instead of adding a duplicate.\n- Every veto notice says what it's for (Oct 26 2026, Brett; axHub decision #99; veto since Oct 30 2026, #103): every axHub call that changes something carries `reason: { title, description }` (title = what is about to happen, one plain line; description = what it does and why). The notice and the AXHub page show the title first, the description when expanded, and the exact code in its own collapsible section; a call without a reason is refused.\n- One session, no sub-agents, no fan-outs. Don't ask questions: nobody is watching. Pick the sensible option, say so in the PR.\n- Every project has `_claude/` (memory/, instructions/, rules/, shared/) synced with `/projects/<name>/_claude/`, and its manifest's `data.shared` files synced with `/projects/<name>/_data/<same path>`.\n- Deleting files on the hub through axHub is a veto call (runs after the countdown unless Brett denies it).\n- axHub calls that change something carry `reason: {title, description}`. Send once and keep working: no polling, no re-sending, never approve anything yourself. Every run on an API key is Brett's confirm approval, never a veto.\n- Don't hand Brett chores (Oct 21 2026, Brett): anything a session would otherwise ask him to do (DNS records, env vars, redeploys, installers, VPS commands) the session does itself through axHub (`vps.run` as a veto call, the hub's other services). Anything that truly can't be done that way goes into the console's systems check banner as an item with Auto fix, like the other checks, instead of a to-do list in chat.\n- Broken = a banner item with a fix (Oct 30 2026, Brett: \"You need to make sure things like that go into one of the banners. I need to see that kind of shit.\"): anything broken that Brett needs to know about or fix (a dead, expired or under-scoped key, a service that stopped answering, a stuck build, CI red on main, a container in a restart loop, a full disk, a denied or expired approval) goes into a console banner item that says in plain words what broke, what it breaks and since when, with a Fix or Auto fix button, and is pushed once to the AmberX app. Never only in chat, a log or a terminal line. In AmberX-AXF the place is the systems check's health@1 registry (`plugin_services.get(\"axf.health@1\").register(…)`, `apps/console-web/plugins/systems-check/README.md`); a new key, service or failure mode gets a live check there.\n- Shared data is on the hub: the root manifest's `data.shared` (pending list, plan + media, build queue, catalog status, libraries index, project rules, tracker) is read and written in `/projects/amberx-axf/_data/<same path as in the repo>` where `/projects` is mounted (the Dev Console container), through `framework/cli/persist.mjs`. The repo copies are synced snapshots (`claude-sync sync`, then commit). On the VPS, change data through the CLI, console or MCP, not by editing repo files.\n- Plugins: each plugin gets a Plugin Manager entry (info, enable/disable, logs, settings). Plugins never ship their own settings screen, and never get a top-level settings tab: each plugin's settings are a sub-tab of Settings → Plugins (`SettingsTab.parent = 'plugins'`, enforced by the console for every plugin).\n- Every plugin ships install.mjs + uninstall.mjs and a Plugin Manager entry. Check: `node framework/cli/plugin-lifecycle.mjs check <folder>`.\n- UI-editing plugins: last save wins, fresh on focus (Oct 18 2026): theme, style, layout, manager and builder plugins (`plugin.json` → `uiEditor`: theme/style/layout/manager/builder) may edit the same values. Saves are per key, and when two of them save the same key the last save wins (`SettingsRegistry.set` merges into what storage holds now, so a save never reverts other keys). Whenever one opens, loads or comes back into focus (window focus, tab visible, another tab saved), it reloads current token values from settings before showing them: `useEditorSync()` (`framework/react/editorSync.ts`) → `rt.refreshFromSaved()` (web) / `AxfRuntime.refreshFromSaved()` (Kotlin). Two enabled editors of one kind are shown as an info-level clash in the Plugin Manager, not an error.\n- Plugin Manager (Oct 18 2026; Fable rebuild Oct 20 2026): the console's plugin manager is the `plugin-manager` plugin; its model is the cross-port `plugin-inventory@1` engine (`framework/core/engines/plugins.ts` = Kotlin `PluginInventoryEngine` = the plugin's `server/engine.py`, one fixture). It opens each plugin's UI and settings when they exist and lists dependencies in detail (what it needs and whether it's met, who provides it, who needs it, clashes). Every app's Settings → Plugins tab lists its libraries from the same engine; Android ships `PluginManagerModule` (axf-devtools). Links in menus are runtime contributions (`AxfWebLibrary.contextMenu`, `rt.addContextItems`), never edits to a context-menu asset.\n- One banner on screen — embed@1 (Oct 21 2026, Brett): an app shown inside another app's frame hides the chrome the host shows, its banner by default. Hosts mark what they embed (`EmbedEngine.userAgentSuffix` on a WebView's user agent, or `embedUrl` → `?axf-embed=<host>`); guests detect it (`rt.embedded`, automatic on the web) and apply the hide engine's forced layer, never touching the user's own saved choice. Settings grey the slot out (\"Shown by <host>\"). No app hosts others today (Patches, the first host, was retired Nov 3 2026). Engines on both ports, fixture `spec/fixtures/embed.json`.\n- One Banners settings (Oct 22 2026, Brett): every banner plugin's settings are one interface (Settings → Plugins → Banners and the right-click Banner settings: a tab per banner with its look, behaviour and own settings). A new banner plugin declares `label`, `icon` and `settingsTab` on its banner so its settings join in.\n- Plugins a host makes unneeded aren't loaded (Oct 22 2026, Brett): when an app runs inside a host (any app in a host's tab), plugins that would draw something the host already draws, or that the host makes unnecessary, aren't loaded on that page and are logged at launch. A plugin says when in its web library: `embed: { skipWhen: ['embedded' | 'take:<fn>' | 'hidden:<type>'] }` (`embedSkipReason` in `framework/core/engines/embed.ts`); `installLibraries` skips it, `rt.skippedLibraries` keeps why, the terminal gets one line each plus a summary, Settings → Plugins lists them. Page mode (an app's settings page in the host) never skips. Standalone everything loads. Every new plugin that only draws on chrome a host hides, or does a job a host takes, declares it.\n- Extraordinary care for expansion: placeholders everywhere, open registries, nothing in a build may constrain later scaling.\n- AmberX-AXF is private. Don't create the separate console repo (`axf-console`, reserved in its manifest) until he says so.\n- Every notification is in the one registry (Nov 6 2026, Brett: \"I need to control all the notifications.\"): every notification goes through the console's alert hub or asks capability `axf.notify@1` before it sends; a plugin that sends one declares it in its own `notify.json` (`notify-types@1`), and the Notifications panel controls it (Plugins → Notifications; `axf notify-control …`, MCP `notify-control_*`). Approvals and veto notices are guarded: only Brett's own click turns them down, never a session or agent. `python apps/console-web/plugins/notify-control/test.py` fails on an alert source no registry names.\n- Stay in this one session; no sub-agents; keep every step within its cap; read only the files listed; stop at the end of this phase.\n- Watch live: when you start on a screen or element, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"<what you are changing>\"` so the live preview follows you.\n- Code, comments, commits, PRs and docs stay clean and professional. In what you say to Brett you are Amber: short, blunt, lead with the result, plain phone-readable lines, say what broke and what it cost.\n- Done means merged and working (done-means-merged@1, Nov 17 2026, Brett: \"We asked you to build it. You should do whatever you have to do to build it, period.\"): never stop on a failure. A crash, red CI, a clash, a failed push or a stalled step is something you fix and retry with a different approach, not a reason to end the session: merge main in, fix the failing check, regenerate fixtures, redo the step. Never mark a build built or complete yourself: every step ticked means landing; the server sets landed only once the PR is merged and CI is green on the merge commit, and complete only once the feature verify passed (the builds store refuses anything else). If you truly cannot go on, write a build note saying what broke and what you tried; the server retries on its ladder (retry, fix, fresh session, another model or account) and escalates to the systems check banner and one phone push only when it runs out. Spec: `framework/spec/DONE-MEANS-MERGED.md`; check `node framework/spec/check-done-means-merged.mjs`.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "hulu0241",
+    "session": "axf-postgres-part-c-console-state-settings--paulie",
+    "slot": "",
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-19T00:14:28.826Z",
+    "runs": 1,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "2026-11-19T00:14:28.826Z",
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T00:12:06.139Z",
+     "why": "subscription account hulu0241"
+    },
+    "tried": [],
+    "pickedAt": "2026-11-19T00:14:28.826Z",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwmsooon05xftl",
+     "title": "",
+     "text": "s4.4: console state.json + small console files, deploys log, alerts, settings (hub-settings becomes the source), notifications, home cards, token log, notes, control inventory, amberx notes, app catalog rows → console_state, console_deploys, alerts, alerts_seen, settings, notifications, home_cards, token_log, notes, control_targets/tabs, app_catalog; backfill, verify, cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:11:19.628Z",
+     "updatedAt": "2026-11-19T00:11:19.628Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwmsooon06e740",
+     "title": "",
+     "text": "s4.5a: large plugin data first: chat-viewer SQLite → chats (+ tts blobs), shipped-features SQLite → ledger_* as source, push-banner, agent-swarm, ui-review; backfill, verify, cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:11:19.628Z",
+     "updatedAt": "2026-11-19T00:11:19.628Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwmsooon07vciw",
+     "title": "",
+     "text": "s4.5b: remaining plugin data dirs per the inventory table (agent-manager, ai-assistant, activity, systems-check, claude-accounts, handoff, terminal, phone-connect, todo-manager...) plus plugin_settings and plugin_audit for small config and audit files; backfill, verify, cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:11:19.628Z",
+     "updatedAt": "2026-11-19T00:11:19.628Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwmsooon08uad4",
+     "title": "",
+     "text": "Tests, report and PR: per-namespace count checks, report _claude/builds/reports/postgres-part-c.md, PR through CI and the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:11:19.628Z",
+     "updatedAt": "2026-11-19T00:11:19.628Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1013
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 9,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-19T00:11:19.628Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "postgres-part-b-plan-plan-studio-catalog",
+   "title": "Postgres part B: plan, Plan Studio, catalog, sessions and changes to tables",
+   "category": "data",
+   "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 2, 8 and the s4 order). This build does s4.2, s4.3 and s4.6 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, pending, build queue, agent-slots or auto-lander (part A), and never touch console state, settings, alerts, notifications, plugin data dirs (part C). Register new tables in their own module file under services/axf-data (e.g. tables_plan.py) and add only additive entries to shared registries, so merges with the other two builds stay clean. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over (key-level mode). No runtime data in JSON. Branch, PR, CI, merge queue; never push to main.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-19T00:12:01.641Z",
+   "updatedAt": "2026-11-19T00:15:35.430Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:13:37.013Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:14:30.325Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+     "at": "2026-11-19T00:15:35.430Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "launch failed: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T00:12:29.213Z",
+     "why": "subscription account hulu0241"
+    },
+    "tried": [
+     "hulu0241"
+    ],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwmspkmz05k1cu",
+     "title": "",
+     "text": "s4.2: plan.json, plan-studio (history, plans, categories, shipped log, tree), profiles, projects (incl. every project.manifest.json), plan media → plan_items, planner_*, plan_profiles, projects, blobs + plan_media; backfill, verify counts, cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:12:01.642Z",
+     "updatedAt": "2026-11-19T00:12:01.642Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwmspkmz06wq1k",
+     "title": "",
+     "text": "s4.3: catalog status, libraries, project rules → catalog_features, catalog_libraries, project_rules; tracker.json becomes a generated view; backfill, verify, cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:12:01.642Z",
+     "updatedAt": "2026-11-19T00:12:01.642Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwmspkmz074wb7",
+     "title": "",
+     "text": "s4.6: sessions + session messages, codebase changes → sessions, session_messages, codebase_changes; backfill, verify, cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:12:01.642Z",
+     "updatedAt": "2026-11-19T00:12:01.642Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwmspkmz087yut",
+     "title": "",
+     "text": "Tests, report and PR: per-namespace count checks, report _claude/builds/reports/postgres-part-b.md, PR through CI and the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:12:01.642Z",
+     "updatedAt": "2026-11-19T00:12:01.642Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1014
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 6,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-19T00:12:01.642Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "queue-stall-detector-vps-spots-queued",
+   "title": "Queue stall detector: VPS spots queued builds that aren't running and fixes it itself (AI fix behind a switch, default off)",
+   "category": "Builds > Pipeline",
+   "detail": "Brett (voice, Nov 19 2026): \"There needs to be something on the VPS to detect it when things are in the queue and not running … and then fix it. On its own, without AI. Or with, if the switch is on. Default off.\" Also: \"put some chatter in the group chat asking people to do different things and give them response.\"\n\nSeen today: three Postgres builds queued, 0 of 4 slots running and 0 waiting while the pipeline cron was on; earlier launches failed on a broken worktree and on the dispatcher running claude-headless.sh from an old build folder (axf-molly-container-orchestrator-gate, HOME unbound); the reconciler kept bouncing a build back to the Queue every 20-30 min without launching it.\n\nWhat to build:\n1. Detector on the VPS (server side, no AI, no console needed): every tick, if any build is queued and free slots exist but nothing launched within N minutes, it is a stall. Record why (dispatcher not ticking, lock held, launch failed, worktree broken, wrong launcher path, account limit, slot state stale).\n2. Auto-fix ladder without AI: restart the dispatcher tick, clear a stale lock or slot row, rebuild the worktree, use the launcher from /opt/axf only, try the next account; re-check after each.\n3. AI fix switch: setting axf.pipeline.stall.aiFix, default OFF. When on and the no-AI ladder is used up, start one headless Claude session to diagnose and fix.\n4. Group chat chatter: post each stall, each fix attempt and its result in the crew group chat, assigning the steps to named agents (who checks the lock, who rebuilds the worktree, who retries the launch) with their replies, so Brett can follow it.\n5. Banner + one phone push when it can't fix it (systems check health@1 item with Auto fix).\nExtend the existing stale-row watchdog / server watchdog (orchestrator-stale-row-watchdog-vps, server-watchdog-orchestrator-auto-recovers-stuck) instead of adding another cron; check for overlap first. Full API control (REST, MCP, CLI, voice) for its status, settings and the switch.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-19T00:16:59.516Z",
+   "updatedAt": "2026-11-19T00:33:37.916Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:17:38.713Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b9f2507e-39d1-4300-be4e-609e5c18a07a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "text": "Brett, Nov 19 2026 (voice): 'If the pipeline's running, the queue is running. Anything I put in the queue is going to run as long as a slot is open.' Today, setting status=queued through the console/control@1 did not issue a dispatch token, so builds sat queued forever with 0 waiting; the launcher refused manual starts; the pipeline refused builds left in queued/running. Fix: any build in Queued, however it got there (console, control@1, CLI, voice), gets a dispatch token and launches when a slot is free and the pipeline is on.",
+     "at": "2026-11-19T00:33:37.916Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-19T00:19:54.421Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 10,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b9f2507e-39d1-4300-be4e-609e5c18a07a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T00:18:21.120Z",
+     "why": "subscription account hulu0241"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwmszoae011qq0",
+     "title": "",
+     "text": "Brett (voice, Nov 19 2026): \"There needs to be something on the VPS to detect it when things are in the queue and not running … and then fix it. On its own, without AI. Or with, if the switch is on. Default off.\" Also: \"put some chatter in the group chat asking people to do different things and give them response.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwmszoae026960",
+     "title": "",
+     "text": "Seen today: three Postgres builds queued, 0 of 4 slots running and 0 waiting while the pipeline cron was on; earlier launches failed on a broken worktree and on the dispatcher running claude-headless.sh from an old build folder (axf-molly-container-orchestrator-gate, HOME unbound); the reconciler kept bouncing a build back to the Queue every 20-30 min without launching it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwmszoae03zjlh",
+     "title": "",
+     "text": "What to build:",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwmszoae04u77o",
+     "title": "",
+     "text": "Detector on the VPS (server side, no AI, no console needed): every tick, if any build is queued and free slots exist but nothing launched within N minutes, it is a stall. Record why (dispatcher not ticking, lock held, launch failed, worktree broken, wrong launcher path, account limit, slot state stale).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwmszoae052ijc",
+     "title": "",
+     "text": "Auto-fix ladder without AI: restart the dispatcher tick, clear a stale lock or slot row, rebuild the worktree, use the launcher from /opt/axf only, try the next account; re-check after each.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwmszoae067mp0",
+     "title": "",
+     "text": "AI fix switch: setting axf.pipeline.stall.aiFix, default OFF. When on and the no-AI ladder is used up, start one headless Claude session to diagnose and fix.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwmszoae07hc99",
+     "title": "",
+     "text": "Group chat chatter: post each stall, each fix attempt and its result in the crew group chat, assigning the steps to named agents (who checks the lock, who rebuilds the worktree, who retries the launch) with their replies, so Brett can follow it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwmszoae08leo3",
+     "title": "",
+     "text": "Banner + one phone push when it can't fix it (systems check health@1 item with Auto fix).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwmszoae09rr01",
+     "title": "",
+     "text": "Extend the existing stale-row watchdog / server watchdog (orchestrator-stale-row-watchdog-vps, server-watchdog-orchestrator-auto-recovers-stuck) instead of adding another cron; check for overlap first. Full API control (REST, MCP, CLI, voice) for its status, settings and the switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwmszoae0a7m9e",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/queue-stall-detector-vps-spots-queued.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/queue-stall-detector-vps-spots-queued.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:19:54.421Z",
+     "updatedAt": "2026-11-19T00:19:54.421Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1015
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-19T00:19:54.421Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "load-spike-alarm-vps-detects-cpu-load",
+   "title": "Load spike alarm: VPS detects CPU/load spikes, rings the phone, flashing banner alert that pops open",
+   "category": "Ops > Alerts",
+   "detail": "Brett (voice, Nov 19 2026): \"I need the VPS to detect spikes like that and get an audible alarm to the phone. And an alert in one of the banners that pops open automatically to show the flashing alert.\"\n\nSeen today: load average 60 this morning, then 13-22 on an 8-core KVM 8 (srv1837178) several times; cause each time was something different (builds-live push storm, cron-spawned node scripts piling up, Coolify at 400% CPU). Everything timed out while it lasted.\n\nWhat to build:\n1. Detector on the VPS, server side, no console or AI needed: samples load average, CPU per container and top processes every 30-60 s. A spike = load above a threshold relative to core count (default: over 1.5x cores for 2 minutes; settings for threshold, duration, cool-down). Records the top offenders (process, container, cron that started it).\n2. Audible alarm on the phone through Phone Connect (AmberX app is retired): a loud alarm-type notification that plays sound even on silent/DND where Android allows it, with the cause in the text and a tap that opens the console alert.\n3. Banner alert: the systems check banner (or alerts banner) gets a flashing, high-priority item, and the banner pops open on its own to show it. The item says what spiked, how high, since when and the top offenders, with Fix actions (kill the offending process, pause the cron, restart the container) that need a confirm.\n4. Clears itself and says so when load is back to normal.\n5. Uses the systems check health@1 registry; flashing look comes from asset tokens. Full API control (REST, MCP, CLI, voice) for status, settings, test alarm and acknowledge.\nCheck overlap with the Maintenance plugin (already reads os.getloadavg) and the queue stall detector build; reuse, don't duplicate.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-19T00:22:02.009Z",
+   "updatedAt": "2026-11-19T00:26:48.230Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:25:26.122Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"9cab585b-144f-44f9-b01c-fc3522439147\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-19T00:26:48.230Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-19T00:26:48.230Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 10,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"9cab585b-144f-44f9-b01c-fc3522439147\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T00:26:14.925Z",
+     "why": "subscription account hulu0241"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwmtf3uu013ra1",
+     "title": "",
+     "text": "Uses the systems check health@1 registry; flashing look comes from asset tokens. Full API control (REST, MCP, CLI, voice) for status, settings, test alarm and acknowledge.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwmtf3uu02q9zu",
+     "title": "",
+     "text": "Brett (voice, Nov 19 2026): \"I need the VPS to detect spikes like that and get an audible alarm to the phone. And an alert in one of the banners that pops open automatically to show the flashing alert.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwmtf3uu03awmv",
+     "title": "",
+     "text": "Seen today: load average 60 this morning, then 13-22 on an 8-core KVM 8 (srv1837178) several times; cause each time was something different (builds-live push storm, cron-spawned node scripts piling up, Coolify at 400% CPU). Everything timed out while it lasted.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwmtf3uu04v7yv",
+     "title": "",
+     "text": "What to build:",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwmtf3uu057d40",
+     "title": "",
+     "text": "Detector on the VPS, server side, no console or AI needed: samples load average, CPU per container and top processes every 30-60 s. A spike = load above a threshold relative to core count (default: over 1.5x cores for 2 minutes; settings for threshold, duration, cool-down). Records the top offenders (process, container, cron that started it).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwmtf3uu066pda",
+     "title": "",
+     "text": "Audible alarm on the phone through Phone Connect (AmberX app is retired): a loud alarm-type notification that plays sound even on silent/DND where Android allows it, with the cause in the text and a tap that opens the console alert.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwmtf3uu07tzwv",
+     "title": "",
+     "text": "Banner alert: the systems check banner (or alerts banner) gets a flashing, high-priority item, and the banner pops open on its own to show it. The item says what spiked, how high, since when and the top offenders, with Fix actions (kill the offending process, pause the cron, restart the container) that need a confirm.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwmtf3uu08oc56",
+     "title": "",
+     "text": "Clears itself and says so when load is back to normal.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwmtf3uu09cgb0",
+     "title": "",
+     "text": "Check overlap with the Maintenance plugin (already reads os.getloadavg) and the queue stall detector build; reuse, don't duplicate.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwmtf3uu0ayq7x",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/load-spike-alarm-vps-detects-cpu-load.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T00:31:53.233Z",
+     "updatedAt": "2026-11-19T00:31:54.438Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 1016
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-19T00:26:48.230Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
