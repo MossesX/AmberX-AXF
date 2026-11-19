@@ -34,7 +34,14 @@ for (const [id, g] of Object.entries(SPEC.groups)) {
     if (e.table) assert.ok(e.table.endsWith('_*') ? TABLES.includes(`=${e.table.slice(0, -2)}`) : TABLES.includes(`'${e.table}'`), `${id}: table ${e.table} is in services/axf-data/tables.py (a SQLite mirror prefix in DEFAULT_MIRROR)`);
   }
 }
-ok(`schema: ${Object.keys(SPEC.groups).length} group(s), every entry a key or prefix, flips name writers, the rest say why, tables exist`);
+const { ownerOf } = await import('../cli/data-cut.mjs');
+assert.equal(ownerOf('plugins/agent-swarm/runs.json')?.key, 'plugins/agent-swarm/runs.json', 'an exact key beats the plugins/ catch-all');
+assert.equal(ownerOf('plugins/molly/settings.json')?.prefix, 'plugins/', 'the catch-all takes what no other entry names');
+assert.equal(ownerOf('plugins/push-banner/gate-log.jsonl')?.prefix, 'plugins/push-banner/', 'the longest prefix wins');
+const exact = Object.values(SPEC.groups).flatMap((g) => g.entries).filter((e) => e.key).map((e) => e.key);
+assert.equal(new Set(exact).size, exact.length, 'no key is named by two entries');
+for (const k of exact) assert.equal(ownerOf(k)?.key, k, `${k} is owned by its own entry`);
+ok(`schema: ${Object.keys(SPEC.groups).length} group(s), every entry a key or prefix, flips name writers, the rest say why, tables exist, every key has one owner (exact key, else the longest prefix)`);
 
 try { execFileSync('python3', ['-c', 'import fastapi, uvicorn, cryptography'], { stdio: 'ignore' }); }
 catch { console.log(`data-cut: ${n} checks ok (server part skipped: python3 with fastapi, uvicorn and cryptography is needed)`); process.exit(0); }

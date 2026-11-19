@@ -39,6 +39,18 @@ const SETTLE_MS = Number(process.env.AXF_DATA_CUT_SETTLE_MS ?? 3000);
 
 export const entryOf = (e) => e.key || e.prefix;
 export const matches = (e, key) => (e.key ? key === e.key : key.startsWith(e.prefix));
+const ALL_ENTRIES = Object.values(SPEC.groups).flatMap((g) => g.entries);
+/** The entry that owns a key across every group: an exact key, else the longest matching prefix (so `plugins/` is a catch-all). */
+export function ownerOf(key) {
+  let best = null;
+  for (const e of ALL_ENTRIES) {
+    if (!matches(e, key)) continue;
+    const score = e.key ? Infinity : e.prefix.length;
+    if (!best || score > best.score) best = { e, score };
+  }
+  return best ? best.e : null;
+}
+const owns = (e, key) => ownerOf(key) === e;
 /** The namespace id and the key-level override path an entry flips (relative to the namespace id). */
 export function overrideOf(e) {
   const k = entryOf(e);
@@ -56,7 +68,7 @@ export function groupsOf(names, all) {
 export function localOf(group, scanned = scan()) {
   const out = [];
   for (const s of scanned.mapped) {
-    const e = group.entries.find((x) => matches(x, s.key));
+    const e = group.entries.find((x) => owns(x, s.key));
     if (!e) continue;
     // over the blob limit (chats.db): never read or snapshotted here; its rows come from mirror_sync
     let size = 0; try { size = statSync(s.file).size; } catch { continue; }
@@ -76,7 +88,7 @@ async function remoteOf(store, e) {
     let l; try { l = await store.list(head, { prefix, after }); } catch (err) { if (err.code === 'not_found') break; throw err; }
     for (const i of l.items) {
       const key = `${head}/${i.path}`;
-      if (!matches(e, key)) continue;
+      if (!owns(e, key)) continue;
       if (i.kind === 'journal') {
         const list = []; let since = 0;
         for (;;) { const r = await store.read(key, { since }); list.push(...r.entries.map((x) => x.entry)); if (!r.next) break; since = r.next; }
@@ -143,6 +155,8 @@ async function copyGroup(store, group, items, { apply, only = () => true, log = 
     for (const it of items.filter((i) => i.entry === entryOf(e) && !i.local && !i.error)) {
       const have = remote.get(it.key);
       if (same(it, have)) continue;
+      // a key already cut over is axf-data's: its file is the read-only copy and is never written back over it
+      if (files.modeOf(it.key) === 'cutover' || files.modeOf(it.key) === 'rollback') continue;
       if (have && SQLITE.test(it.key)) {
         const c = await sqliteSame(store, e, it);
         if (c.same) continue;

@@ -27,6 +27,7 @@ import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf import anthropic_keys as ak
 from axf.contracts import assistant as contract
 from axf_server import storage
+import data_store  # noqa: E402  (console server/data_store.py: storage.* routed by data-store-mode@1 → axf-data rows once cut over)
 
 from . import chatmode
 
@@ -91,11 +92,11 @@ DEFAULT_CONFIG: dict[str, Any] = {
 def _write(path: Path, data: Any, private: bool = True) -> None:
     """Atomic, 0600, folder 0700 (axf_server.storage). Every file is private now (conversations and usage were 0644
     in a 0700 folder before); `private` is kept for callers."""
-    storage.write_json(path, data, ensure_ascii=False)
+    data_store.write_json(path, data, ensure_ascii=False)
 
 
 def _read(path: Path, default: Any) -> Any:
-    return storage.read_json(path, default)  # a deep copy of the default when missing or damaged
+    return data_store.read_json(path, default)  # a deep copy of the default when missing or damaged
 
 
 def now_ms() -> int:

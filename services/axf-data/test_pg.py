@@ -447,7 +447,7 @@ def test_plugin_tables_s2():
         put('plugins/push-banner/config.json', {'$axf': 'push-banner-config@1', 'repos': ['a'], 'autoMerge': True})
         put('plugins/todo-manager/projects/p.json', {'id': 'p'})
         assert st.fetchone("SELECT value FROM plugin_settings WHERE path='push-banner/config.json' AND key='autoMerge'")['value'] is True
-        assert st.fetchone("SELECT table_name FROM keys WHERE path='todo-manager/projects/p.json'")['table_name'] == '', 'only the top of a data folder'
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='todo-manager/projects/p.json'")['table_name'] == 'plugin_docs', 'a nested document is a plugin_docs row'
         # shape change: sections-said without a map → stays in the same table as a head-only document; a list body leaves it
         etag = c.get('/v1/plugins/agent-swarm/sections-said.json', headers=H()).headers['etag']
         c.put('/v1/plugins/agent-swarm/sections-said.json', content='[1]', headers=J(**{'if-match': etag}))
@@ -463,6 +463,49 @@ def test_plugin_tables_s2():
         assert moved['tables'].get('swarm_jobs') == 1, moved
         st._assembled.clear()
         assert c.get('/v1/plugins/agent-swarm/job-briefs/j1.md', headers=H()).content == '# Brief\n\nDo it é'.encode()
+
+
+def test_plugin_tables_s3():
+    """Part C s3: the remaining plugin folders: specific lists (agent runs, to-dos, health checks, workers, glossary, feeds,
+    command catalog, usage), every nested plugin document in plugin_docs, Phone Connect devices / pairings / commands, and
+    the journals as plugin_audit / phone_log views. Bodies read back equal."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        put = lambda k, doc: c.put(f'/v1/{k}', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        docs = {
+            'plugins/agent-manager/runs.json': {'items': [{'id': 'r1', 'agent': 'a', 'status': 'ok', 'tokens': 3}]},
+            'plugins/agent-manager/hub-runs.json': [{'id': 'h1', 'status': 'done'}],
+            'plugins/todo-manager/store.json': {'$axf': 'todo-store@1', 'types': {'t': 1}, 'lists': [{'id': 'l1', 'title': 'L'}], 'entries': [{'id': 'e1', 'list': 'l1', 'title': 'Do', 'tags': []}], 'nextId': 2},
+            'plugins/systems-check/health-state.json': {'$axf': 'health-state@1', 'checks': {'disk': {'ok': True}, 'ci': {'ok': False}}, 'fixes': []},
+            'plugins/claude-accounts/workers.json': {'$axf': 'workers@1', 'workers': [{'id': 'w1', 'name': 'hulu'}], 'limits': {'a': 1}},
+            'plugins/console-terminal/feeds.json': {'$axf': 'feeds@1', 'feeds': {'f1': {'n': 1}}},
+            'plugins/ai-assistant/usage.json': {'days': {'2026-11-18': {'in': 5}}},
+            'plugins/glossary-index/catalog.json': {'$axf': 'glossary@1', 'total': 1, 'entries': [{'id': 'g1', 'kind': 'term', 'name': 'Amber'}]},
+            'plugins/whats-shipped/feed.json': {'$axf': 'feed@1', 'items': [{'id': 's1', 'pr': 704, 'title': 'Data'}]},
+            'plugins/console-commands/catalog-owner.json': {'$axf': 'catalog@1', 'items': [{'id': 'c1', 'plugin': 'x'}]},
+            'plugins/ai-assistant/conversations/c1.json': {'$axf': 'conversation@1', 'id': 'c1', 'title': 'Hi', 'messages': [{'t': 1}]},
+            'plugins/systems-check/whatsnew/w1.json': {'text': 'New', 'at': 1},
+            'phone/devices/p1.json': {'$axf': 'phone-device@1', 'deviceId': 'p1', 'name': 'S26', 'state': 'paired'},
+            'phone/commands/2026/c1.json': {'id': 'c1', 'deviceId': 'p1', 'state': 'done'},
+        }
+        for k, d in docs.items():
+            put(k, d)
+            assert c.get(f'/v1/{k}', headers=H()).json() == json.loads(canonical(d)), k
+        one = lambda sql: st.fetchone(sql)
+        assert one('SELECT id, status FROM agent_runs') == {'id': 'r1', 'status': 'ok'}
+        assert one('SELECT id FROM agent_hub_runs')['id'] == 'h1'
+        assert one('SELECT id, list FROM todo_items') == {'id': 'e1', 'list': 'l1'} and one('SELECT title FROM todo_lists')['title'] == 'L'
+        assert one("SELECT value FROM health_checks WHERE key='ci'")['value'] == {'ok': False}
+        assert one('SELECT name FROM worker_accounts')['name'] == 'hulu'
+        assert one('SELECT key FROM terminal_feeds')['key'] == 'f1' and one('SELECT key FROM assistant_usage')['key'] == '2026-11-18'
+        assert one('SELECT name FROM glossary_terms')['name'] == 'Amber' and one('SELECT pr FROM shipped_feed')['pr'] == 704
+        assert one('SELECT plugin FROM command_catalog')['plugin'] == 'x'
+        assert {(r['plugin'], r['folder']) for r in st.fetchall('SELECT plugin, folder FROM plugin_docs')} == {('ai-assistant', 'conversations'), ('systems-check', 'whatsnew')}
+        assert one('SELECT name, state FROM phone_devices') == {'name': 'S26', 'state': 'paired'} and one('SELECT state FROM phone_commands')['state'] == 'done'
+        c.post('/v1/plugins/console-commands/audit.jsonl:append', content=json.dumps({'entries': [{'action': 'run', 'by': 'svc:cli'}]}), headers=J())
+        c.post('/v1/phone/log:append', content=json.dumps({'entries': [{'kind': 'ping', 'device': 'p1'}]}), headers=J())
+        assert one('SELECT plugin, action, who FROM plugin_audit') == {'plugin': 'console-commands', 'action': 'run', 'who': 'svc:cli'}
+        assert one('SELECT kind, device FROM phone_log') == {'kind': 'ping', 'device': 'p1'}
 
 
 # ── SQLite mirrors ───────────────────────────────────────────────────────────────────────────────────────────────────

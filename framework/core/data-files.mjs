@@ -129,7 +129,7 @@ export function keyFor(p, env = process.env) {
   }
   return null;
 }
-const JOURNAL_KEYS = /^(builds\/journal\/[^/]+|planner\/shipped-log|console\/deploys\/log|notes\/_history\/.+)$/;
+const JOURNAL_KEYS = /^(builds\/journal\/[^/]+|planner\/shipped-log|console\/deploys\/log|phone\/log|notes\/_history\/.+)$/;
 export function kindOfKey(key) {
   let kind = JOURNAL_KEYS.test(key) ? 'journal' : kindOfFile(key);
   if (!NAMESPACES[key.split('/')[0]].kinds.includes(kind)) kind = 'blob';

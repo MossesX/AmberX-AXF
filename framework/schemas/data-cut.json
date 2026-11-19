@@ -311,6 +311,211 @@
           "why": "images, option assets and predictions written by the screenshot tools and the review runner with plain file writes; the images are blobs listed by the ui_review_shots view"
         }
       ]
+    },
+    "plugins-rest": {
+      "title": "The remaining plugin data folders, plugin_settings and plugin_audit",
+      "step": "postgres-part-c s3 (s4.5b)",
+      "entries": [
+        {
+          "prefix": "plugins/todo-manager/",
+          "table": "todo_items",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/todo-manager/server/model.py (axf_server.storage → data_store)"
+          ]
+        },
+        {
+          "key": "plugins/whats-shipped/feed.json",
+          "table": "shipped_feed",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/whats-shipped/server (axf_server.storage → data_store)"
+          ]
+        },
+        {
+          "key": "plugins/whats-shipped/pr-files.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/whats-shipped/server (axf_server.storage → data_store)"
+          ]
+        },
+        {
+          "key": "plugins/systems-check/health-state.json",
+          "table": "health_checks",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/systems-check/server/health.py (axf_server.storage → data_store)"
+          ]
+        },
+        {
+          "key": "plugins/systems-check/settings.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/systems-check/server/store.py (axf_server.storage → data_store)",
+            "systems-check/hooks.mjs (install: writes the default only when none exists)"
+          ]
+        },
+        {
+          "key": "plugins/systems-check/routine.json",
+          "table": "plugin_settings",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/systems-check/server/store.py (axf_server.storage → data_store), delete via data_store.remove"
+          ]
+        },
+        {
+          "prefix": "plugins/claude-settings/",
+          "table": "plugin_audit",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/claude-settings (data_store)"
+          ]
+        },
+        {
+          "prefix": "phone/devices/",
+          "table": "phone_devices",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/phone-connect/server/store.py (data_store)"
+          ]
+        },
+        {
+          "prefix": "phone/pairings/",
+          "table": "phone_pairings",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/phone-connect/server/store.py (data_store)"
+          ]
+        },
+        {
+          "prefix": "phone/commands/",
+          "table": "phone_commands",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/phone-connect/server/store.py (data_store)"
+          ]
+        },
+        {
+          "key": "phone/aliases.json",
+          "table": "",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/phone-connect/server/store.py (data_store)"
+          ]
+        },
+        {
+          "key": "phone/log",
+          "table": "phone_log",
+          "flip": true,
+          "writers": [
+            "apps/console-web/plugins/phone-connect/server/store.py (data_store.append_jsonl)"
+          ]
+        },
+        {
+          "prefix": "plugins/systems-check/",
+          "table": "plugin_docs",
+          "flip": false,
+          "why": "whatsnew/ is pruned with a directory glob (store.py save_summary): needs data_store.list_files before it flips"
+        },
+        {
+          "prefix": "plugins/agent-manager/",
+          "table": "agent_runs",
+          "flip": false,
+          "why": "memory/ and the library are listed with directory globs and addons.py / gittools.py write files directly"
+        },
+        {
+          "prefix": "plugins/ai-assistant/",
+          "table": "plugin_docs",
+          "flip": false,
+          "why": "conversations are listed with a directory index (store.py _index) and hooks.mjs writes config.json directly"
+        },
+        {
+          "prefix": "plugins/activity/",
+          "table": "plugin_docs",
+          "flip": false,
+          "why": "reports, hooks and seen files are also written with plain file writes (10 call sites)"
+        },
+        {
+          "prefix": "plugins/claude-accounts/",
+          "table": "worker_accounts",
+          "flip": false,
+          "why": "written by framework/cli account tools with plain file writes"
+        },
+        {
+          "prefix": "plugins/claude-handoff/",
+          "table": "plugin_docs",
+          "flip": false,
+          "why": "written by handoff.mjs with plain file writes"
+        },
+        {
+          "prefix": "plugins/console-terminal/",
+          "table": "terminal_feeds",
+          "flip": false,
+          "why": "store.py still writes through axf_server.storage and the terminal runner appends sessions.jsonl directly; ssh/ holds keys (secrets, never moved)"
+        },
+        {
+          "prefix": "plugins/glossary-index/",
+          "table": "glossary_terms",
+          "flip": false,
+          "why": "catalog.json is generated by the glossary indexer with plain file writes"
+        },
+        {
+          "prefix": "plugins/maintenance/",
+          "table": "plugin_docs",
+          "flip": false,
+          "why": "plans and snapshots written by maintenance scripts with plain file writes"
+        },
+        {
+          "prefix": "plugins/console-commands/",
+          "table": "command_catalog",
+          "flip": false,
+          "why": "catalog-owner.json and audit.jsonl written with plain file writes"
+        },
+        {
+          "prefix": "plugins/plugin-commands/",
+          "table": "plugin_audit",
+          "flip": false,
+          "why": "audit.jsonl appended with plain writes"
+        },
+        {
+          "prefix": "plugins/token-control/",
+          "table": "plugin_audit",
+          "flip": false,
+          "why": "passes and audit written with plain writes (5 modules); the salt is a secret and stays local"
+        },
+        {
+          "prefix": "plugins/container-access/",
+          "table": "plugin_audit",
+          "flip": false,
+          "why": "batches and audit also written with plain writes"
+        },
+        {
+          "prefix": "plugins/approvals-banner/",
+          "table": "plugin_audit",
+          "flip": false,
+          "why": "relay.jsonl appended by the approvals relay with plain writes"
+        },
+        {
+          "prefix": "plugins/gate/",
+          "table": "plugin_audit",
+          "flip": false,
+          "why": "history.jsonl is rewritten whole by gate-store.mjs writeHistory (a journal is append-only on axf-data)"
+        },
+        {
+          "prefix": "plugins/snapshot-manager/",
+          "table": "plugin_docs",
+          "flip": false,
+          "why": "snapshots also written with plain writes"
+        },
+        {
+          "prefix": "plugins/",
+          "table": "plugin_settings",
+          "flip": false,
+          "why": "every other plugin's small files (molly, plan-studio, brand-library, follow-amber, agent-voice, wake-listener…): mirrored until each plugin's writer moves"
+        }
+      ]
     }
   }
 }

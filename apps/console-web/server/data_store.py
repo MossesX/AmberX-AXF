@@ -129,7 +129,7 @@ def kind_of(key: str) -> str:
 
 def _is_journal_key(key: str) -> bool:
     # keys whose .jsonl extension the map drops (builds/journal/<month>, planner/shipped-log, console/deploys/log)
-    return bool(re.match(r"^(builds/journal/[^/]+|planner/shipped-log|console/deploys/log|notes/_history/.+)$", key))
+    return bool(re.match(r"^(builds/journal/[^/]+|planner/shipped-log|console/deploys/log|phone/log|notes/_history/.+)$", key))
 
 
 def nsid_of(key: str) -> str:

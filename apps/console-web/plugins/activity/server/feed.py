@@ -37,6 +37,7 @@ from typing import Any, Callable
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, storage
+import data_store  # noqa: E402  (console server/data_store.py: storage.* routed by data-store-mode@1 → axf-data rows once cut over)
 
 from . import complete
 
@@ -255,7 +256,7 @@ class Feed:
                 except (TypeError, ValueError):
                     raise ValueError(f"{k} must be a number of seconds") from None
         self.dir.mkdir(parents=True, exist_ok=True)
-        storage.write_json(self.dir / "config.json", c, dir_mode=None)  # atomic, 0600 (axf_server.storage)
+        data_store.write_json(self.dir / "config.json", c, dir_mode=None)  # atomic, 0600 (axf_server.storage)
         self._gh_cache = None
         return c
 
@@ -308,7 +309,7 @@ class Feed:
         p = self._report_path(it["id"])
         if not p.exists() and len(files) >= MAX_REPORTS:
             raise ValueError("too many reported items; finish some first")
-        storage.write_json(p, it, indent=None, dir_mode=None)  # atomic, 0600 (axf_server.storage)
+        data_store.write_json(p, it, indent=None, dir_mode=None)  # atomic, 0600 (axf_server.storage)
         return it
 
     def finish(self, iid: str, state: str = "done", detail: str | None = None) -> dict[str, Any] | None:
@@ -348,7 +349,7 @@ class Feed:
             d[iid] = now
             if len(d) > self.MAX_DISMISSED:
                 d = dict(sorted(d.items(), key=lambda kv: kv[1])[-self.MAX_DISMISSED:])
-            storage.write_json(self.dir / "dismissed.json", d, indent=None, dir_mode=None)
+            data_store.write_json(self.dir / "dismissed.json", d, indent=None, dir_mode=None)
         return True
 
     @staticmethod
@@ -462,7 +463,7 @@ class Feed:
                     c[iid] = now
                     c = {k: v for k, v in c.items() if now - v < self.CONTINUED_KEEP_MS}
                     self.dir.mkdir(parents=True, exist_ok=True)
-                    storage.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
+                    data_store.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
                 return {"id": iid, "action": acts[0]["action"] if acts else None, "by": redact(by, 60)}
         prev = self._read_report(self._report_path(iid))
         if prev and prev.get("state") == "held":
@@ -478,7 +479,7 @@ class Feed:
             if iid not in c:
                 return False
             c.pop(iid)
-            storage.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
+            data_store.write_json(self.dir / "continued.json", c, indent=None, dir_mode=None)
         return True
 
     # ---------------- GitHub Actions
