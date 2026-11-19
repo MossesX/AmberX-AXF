@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9265,
- "updatedAt": "2026-11-19T03:42:21.826Z",
+ "rev": 9266,
+ "updatedAt": "2026-11-19T03:45:59.718Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321873,7 +321873,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:41:53.628Z",
+   "updatedAt": "2026-11-19T03:45:28.420Z",
    "builtAt": "",
    "notes": [
     {
@@ -322047,6 +322047,14 @@
     {
      "text": "s8 verify: write through /opt/axf after the flip.",
      "at": "2026-11-19T03:41:53.628Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:44:55.335Z"
+    },
+    {
+     "text": "Refused running → landed (asked by orchestrator): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T03:45:30.829Z"
     }
    ],
    "approvals": [
@@ -322283,12 +322291,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T03:45:28.420Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-19T02:26:00.645Z",
-     "updatedAt": "2026-11-19T02:26:02.957Z"
+     "updatedAt": "2026-11-19T03:45:31.525Z"
     }
    ],
    "profiles": [
@@ -322299,7 +322307,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
