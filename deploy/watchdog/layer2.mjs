@@ -20,7 +20,7 @@
  *   node deploy/watchdog/layer2.mjs settings [--json] · set key=value…
  *
  * <dir> = AXF_WATCHDOG2_DIR, else <pipeline dir>/watchdog2 (the hub data store's pipeline folder, else ~/.axf/pipeline).
- * Layer 1 command: AXF_WATCHDOG2_TICK (default `node apps/console-web/plugins/build-orchestrator/orchestrator.mjs tick`),
+ * Layer 1 command: AXF_WATCHDOG2_TICK (default DEFAULT_TICK: the build orchestrator's `orchestrator.mjs tick`),
  * run with `--build <id>` appended for a nudge. Tests: AXF_WATCHDOG2_PROBES (JSON map "<build>/<step>" → probe),
  * AXF_WATCHDOG2_ACCOUNTS (JSON list of { name, usable, left }), AXF_WATCHDOG2_DRY_EXEC=1 (no tmux kill, no tick, no
  * markLimit: logged only), AXF_WATCHDOG_NOTIFY_LOG (alerts to a file), AXF_WATCHDOG2_STORE (a plain JSON store file).
@@ -43,13 +43,16 @@ export function pipeDir(env = process.env) {
 export const dirOf = (env = process.env) => env.AXF_WATCHDOG2_DIR || join(pipeDir(env), 'watchdog2');
 export const files = (env = process.env) => { const d = dirOf(env); return { dir: d, heartbeat: join(d, 'heartbeat.json'), memory: join(d, 'memory.json'), settings: join(d, 'settings.json'), actions: join(d, 'actions.jsonl') }; };
 export const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
-export const DEFAULT_TICK = 'node apps/console-web/plugins/build-orchestrator/orchestrator.mjs tick';
+// layer 1's command; the marked line goes with the build-orchestrator plugin (then a nudge has nothing to run)
+let orchTickCmd = '';
+orchTickCmd = 'node apps/console-web/plugins/build-orchestrator/orchestrator.mjs tick'; // axf-plugin:build-orchestrator
+export const DEFAULT_TICK = orchTickCmd;
 /** The lander's statuses are nudged with one lander tick for that build (deploy/lander/run.mjs, under its own lock). */
 export const DEFAULT_LANDER_TICK = 'node deploy/lander/run.mjs tick';
 
 export const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.${process.pid}.tmp`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
-export function logAction(env, a) { const f = files(env).actions; mkdirSync(dirname(f), { recursive: true }); appendFileSync(f, `${JSON.stringify({ at: new Date().toISOString(), by: C.BY, ...a })}\n`); }
+export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.${process.pid}.tmp`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); } // axf-data: not data (the watchdog's host-local heartbeat, memory and settings; build state goes through the builds store)
+export function logAction(env, a) { const f = files(env).actions; mkdirSync(dirname(f), { recursive: true }); appendFileSync(f, `${JSON.stringify({ at: new Date().toISOString(), by: C.BY, ...a })}\n`); } // axf-data: not data (the watchdog's host-local action log)
 
 export const loadSettings = (env = process.env) => C.normSettings(readJson(files(env).settings, {}) ?? {});
 export function saveSettings(patch, env = process.env) { const f = files(env).settings; const cur = readJson(f, {}) ?? {}; const next = { ...cur, ...patch }; writeJson(f, next); return C.normSettings(next); }
@@ -108,7 +111,9 @@ function sh(cmd, env, timeout = 300000) {
 }
 export function nudge(build, env = process.env, { lander = false } = {}) {
   if (lander) return sh(`${env.AXF_WATCHDOG2_LANDER_TICK || DEFAULT_LANDER_TICK} --only ${JSON.stringify(build)}`, env, 600000);
-  return sh(`${env.AXF_WATCHDOG2_TICK || DEFAULT_TICK} --build ${JSON.stringify(build)}`, env, 600000);
+  const tick = env.AXF_WATCHDOG2_TICK || DEFAULT_TICK;
+  if (!tick) return { ok: false, code: 'no-orchestrator', out: '', err: 'no orchestrator tick here (the build orchestrator plugin is not installed)' };
+  return sh(`${tick} --build ${JSON.stringify(build)}`, env, 600000);
 }
 function kill(session, env) { if (!session || dry(env)) return; spawnSync('tmux', ['kill-session', '-t', `=${session}`], { timeout: 10000 }); }
 async function outAccount(name, text, env) {
@@ -118,7 +123,7 @@ async function outAccount(name, text, env) {
 
 /** One alert to the console (axf.notify@1 pushes it to Brett's phone). Only give-ups use it. */
 export function sendAlert(alert, env = process.env) {
-  if (env.AXF_WATCHDOG_NOTIFY_LOG) { appendFileSync(env.AXF_WATCHDOG_NOTIFY_LOG, `${JSON.stringify(alert)}\n`); return true; }
+  if (env.AXF_WATCHDOG_NOTIFY_LOG) { appendFileSync(env.AXF_WATCHDOG_NOTIFY_LOG, `${JSON.stringify(alert)}\n`); return true; } // axf-data: not data (test sink for alerts)
   const name = env.AXF_PIPELINE_CONSOLE || 'axf-console';
   if (name === 'off') return false;
   const cmd = `curl -s -m 20 -X POST -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @- "http://127.0.0.1:${env.AXF_CONSOLE_PORT || 7090}/api/alerts"`;

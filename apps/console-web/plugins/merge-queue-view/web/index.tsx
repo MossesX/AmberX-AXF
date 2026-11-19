@@ -112,7 +112,17 @@ function OwnQueue() {
 
 /** The orchestrator's merging-statuses table when it is on (one table, one source), else the plugin's own grid. */
 function MergeQueueView() {
-  return useSlotFilled('builds.merge-queue') ? <Slot name="builds.merge-queue" /> : <OwnQueue />;
+  if (!useSlotFilled('builds.merge-queue')) return <OwnQueue />;
+  return (
+    <div className="fx-stack fx-stack--lg">
+      <header className="fx-pagehead"><div>
+        <p className="fx-eyebrow">Builds · read-only</p>
+        <h1>Merge queue</h1>
+        <p className="fx-muted">Builds merging to one PR, pulling main, running CI and merging into main: the same rows as the Builds table, from the same store. Everything here lands by itself.</p>
+      </div></header>
+      <Slot name="builds.merge-queue" />
+    </div>
+  );
 }
 
 export const plugin: AxfWebLibrary = {

@@ -1,7 +1,7 @@
 /**
  * Screenshots of the one status-driven builds table (Pipeline 2.0, status-table@1) for UI Review: the Build
  * orchestrator page (a building row expanded to its steps) and the read-only Merge queue view, desktop and phone,
- * against `vite preview` of dist/ with GET /api/plugins/build-orchestrator/table answered from a fixed fixture.
+ * against `vite preview` of dist/ with GET /api/plugins/build-orchestrator/table answered from a fixed fixture. axf-plugin:build-orchestrator
  *
  *   node scripts/status-table-shots.mjs <out-dir>        (build first: npm run build)
  *   ST_SHOTS_PORT=7098 · PW_CHROMIUM=<chromium path>

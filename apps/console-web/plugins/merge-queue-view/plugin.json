@@ -28,7 +28,8 @@
     "env": [],
     "mentions": [
       "apps/console-web/plugins/README.md",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "apps/console-web/scripts/auto-lander-shots.mjs"
     ]
   },
   "commands": {

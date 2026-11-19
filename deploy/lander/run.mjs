@@ -407,7 +407,7 @@ export async function main(argv) {
     const b = (await makeStore({ repo: s.repo })).read().find((x) => x.id === id);
     if (!b) { process.exitCode = 2; return print({ ok: false, error: `no build ${id || '<build>'}` }, `no build ${id || '<build>'}`); }
     const row = L.queueRows([b])[0] || null;
-    return print({ ok: true, build: id, row, status: b.status, attempt: b.attempt || 0, failure: b.failure || null, statusLog: b.statusLog || [], landing: L.landingOf(b) }, `${id}: ${b.status}${b.attempt ? ` (attempt ${b.attempt})` : ''}\n${(b.statusLog || []).map((x) => `  ${x.at} ${x.status} by ${x.by}${x.note ? ` · ${x.note}` : ''}`).join('\n')}`);
+    return print({ ok: true, build: id, row, status: b.status, attempt: b.attempt || 0, failure: b.failure || null, statusLog: b.statusLog || [], landing: L.landingOf(b) }, `${id}: ${b.status}${b.attempt ? ` (attempt ${b.attempt})` : ''}\n${(b.statusLog || []).map((x) => `  ${x.at} ${x.status} by ${x.by}${x.why || x.note ? ` · ${x.why || x.note}` : ''}`).join('\n')}`);
   }
   if (cmd === 'set') {
     const [k, v] = rest.filter((x) => !x.startsWith('--') && x !== flag('--by'));

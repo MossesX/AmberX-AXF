@@ -4,7 +4,7 @@
  * it changes, with `at` and `by`, and read back so a refused write is never silent.
  *
  * Fields the lander writes (Pipeline 2.0 contract; the builds@1 schema itself belongs to p2-status-core):
- *   build  status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, note? }], attempt, failure, pr,
+ *   build  status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, why? }], attempt, failure, pr,
  *          landing { split, merged[pr], closed[pr], reruns { head, n }, rules { head, ok, failing }, ciKick { head, at } }
  *   step   status, prNumber, statusAt, statusBy, statusLog[…]
  *          mergedAt, landed { pr, sha, mergedAt, ci, ciAt } with `landed` (done-means-merged@1 evidence); failedFrom with `failed`
@@ -31,11 +31,11 @@ export function applyChange(build, ch = {}, { at = new Date().toISOString(), by 
       // the watchdog and the table see where; it is dropped once the build leaves failed
       if (ch.status === 'failed') b.failedFrom = b.status; else delete b.failedFrom;
       b.status = ch.status; b.statusAt = at; b.statusBy = by;
-      b.statusLog = log(b.statusLog, { status: ch.status, at, by, ...(ch.status === 'failed' ? { attempt: ch.attempt ?? b.attempt ?? 0 } : {}), ...(ch.note ? { note: str(ch.note, 300) } : {}) }, LOG_MAX);
+      b.statusLog = log(b.statusLog, { status: ch.status, at, by, ...(ch.status === 'failed' ? { attempt: ch.attempt ?? b.attempt ?? 0 } : {}), ...(ch.note ? { why: str(ch.note, 300) } : {}) }, LOG_MAX);
       if (ch.status === 'landed') b.landedAt = at;
     } else refused.push(`${b.id}: ${b.status} → ${ch.status} goes back`);
   } else if (ch.status && ch.group === true && ch.status === b.status) {
-    b.statusAt = at; b.statusBy = by; b.statusLog = log(b.statusLog, { status: ch.status, at, by, note: str(ch.note || 'next PR', 300) }, LOG_MAX);
+    b.statusAt = at; b.statusBy = by; b.statusLog = log(b.statusLog, { status: ch.status, at, by, why: str(ch.note || 'next PR', 300) }, LOG_MAX);
   }
   if (ch.attempt !== undefined) b.attempt = Math.max(0, Number(ch.attempt) || 0);
   if (ch.failure !== undefined) { if (ch.failure) b.failure = clone(ch.failure); else delete b.failure; }

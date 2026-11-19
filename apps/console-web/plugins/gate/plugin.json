@@ -51,7 +51,8 @@
       "framework/spec/AUTO-LANDER.md",
       "framework/spec/DONE-MEANS-MERGED.md",
       "deploy/lander/run.mjs",
-      "deploy/systemd/axf-lander.service"
+      "deploy/systemd/axf-lander.service",
+      "deploy/watchdog/audits.mjs"
     ]
   },
   "commands": {

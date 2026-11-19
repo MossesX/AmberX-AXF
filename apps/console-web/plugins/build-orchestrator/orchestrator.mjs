@@ -146,7 +146,7 @@ async function tickCmd(given, out) {
   }
   const r = pl.tick();
   const at = new Date().toISOString();
-  try { const f = join(pl.pipeDir(), 'orchestrator-tick.json'); mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify({ at, by: 'orchestrator.mjs tick' })}\n`); renameSync(tmp, f); }
+  try { const f = join(pl.pipeDir(), 'orchestrator-tick.json'); mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify({ at, by: 'orchestrator.mjs tick' })}\n`); renameSync(tmp, f); } // axf-data: not data (the tick heartbeat watchdog layer 3 reads; host-local, not build state)
   catch (e) { process.stderr.write(`orchestrator: tick heartbeat not written: ${e.message}\n`); }
   const p2 = r.p2 ?? null;
   return out({ ok: true, at, tick: r }, `tick ${at} · launched ${(r.launched ?? []).length}${r.failed?.length ? ` · launch failed ${r.failed.length}` : ''}${p2 ? (p2.error ? ` · pipeline 2.0 failed: ${p2.error}` : ` · pipeline 2.0: active ${p2.active || 'none'}, launched ${p2.launched.length}`) : ''}`);

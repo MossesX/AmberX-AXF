@@ -4,7 +4,7 @@ Three layers keep the pipeline moving with no human (Brett, Nov 18–19 2026: "a
 
 | Layer | What | Schedule | File |
 |---|---|---|---|
-| 1 | The orchestrator tick does the normal work | cron `axf-orchestrator-tick`, every minute | `apps/console-web/plugins/build-orchestrator/orchestrator.mjs tick` |
+| 1 | The orchestrator tick does the normal work | cron `axf-orchestrator-tick`, every minute | the build orchestrator's `orchestrator.mjs tick` |
 | 2 | Finds stuck work and fixes it | cron `axf-watchdog-l2`, every minute | `layer2.mjs run` (decisions: `core.mjs`) |
 | 3 | Keeps layers 1 and 2 alive; alerts only when it can't heal | systemd `axf-watchdog-l3.timer`, every 2 min | `layer3.mjs run` |
 | – | Store audits: `builds-store.mjs verify`, `model-gate.mjs audit`, `build-origin.mjs missing` | cron `axf-watchdog-audits`, :17 and :47 | `audits.mjs run` |

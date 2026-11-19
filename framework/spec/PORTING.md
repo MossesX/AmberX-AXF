@@ -392,7 +392,7 @@ Android work): AmberX reads build rows through the console's REST and shows the 
 ## Deferred: status-table@1 (Nov 19 2026)
 
 Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules in
-`apps/console-web/plugins/build-orchestrator/web/status-table-core.mjs` (contract build and step statuses, labels with
+`apps/console-web/plugins/build-orchestrator/web/status-table-core.mjs` (contract build and step statuses, labels with <!-- axf-plugin:build-orchestrator -->
 "failed, attempt N", the older-status mapping, steps done/total, model / account / slot roll-up, toolbar filters, the
 merge-queue filter, client-side timers) and the console's reader of the builds store `apps/console-web/server/builds_store.py`.
 Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web

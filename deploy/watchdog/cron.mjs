@@ -24,7 +24,11 @@ import { fileURLToPath } from 'node:url';
 import { REPO } from './layer2.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
-export const ORCH_TICK = 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs';
+// the orchestrator's tick script (layer 1). The marked line goes with the build-orchestrator plugin: then no tick
+// schedule is written and layer 3 has no tick to watch.
+let orchTick = '';
+orchTick = 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs'; // axf-plugin:build-orchestrator
+export const ORCH_TICK = orchTick;
 export const RETIRED = Object.freeze(['axf-pipeline', 'axf-auto-land', 'axf-watchdog']);
 export const cronDir = (env = process.env) => env.AXF_WATCHDOG2_CRON_DIR || '/etc/cron.d';
 export const systemdDir = (env = process.env) => env.AXF_WATCHDOG2_SYSTEMD_DIR || '/etc/systemd/system';
@@ -37,7 +41,7 @@ const line = (dir, { min, lock, timeout, script, args, log, nice = false }) =>
 export function cronTexts(dir = REPO, env = process.env) {
   const head = (what) => `# ${what}\n# Written by deploy/watchdog/cron.mjs install (deploy/install-console.sh); edit that file, not this one.\n`;
   const out = {
-    'axf-orchestrator-tick': `${head('Pipeline 2.0 layer 1: the orchestrator tick, every minute.')}${line(dir, { min: '* * * * *', lock: 'axf-orchestrator-tick', timeout: 600, script: ORCH_TICK, args: 'tick', log: 'axf-orchestrator-tick' })}\n`,
+    ...(ORCH_TICK ? { 'axf-orchestrator-tick': `${head('Pipeline 2.0 layer 1: the orchestrator tick, every minute.')}${line(dir, { min: '* * * * *', lock: 'axf-orchestrator-tick', timeout: 600, script: ORCH_TICK, args: 'tick', log: 'axf-orchestrator-tick' })}\n` } : {}),
     'axf-watchdog-l2': `${head('Pipeline 2.0 layer 2: the watchdog pass, every minute (stuck statuses, dead sessions, usage limits).')}${line(dir, { min: '* * * * *', lock: 'axf-watchdog-l2', timeout: 300, script: 'deploy/watchdog/layer2.mjs', args: 'run', log: 'axf-watchdog-l2' })}\n`,
     'axf-watchdog-audits': `${head('Pipeline 2.0 store audits: verify, model-gate audit, build-origin; one at a time, low priority, main checkout only.')}${line(dir, { min: '17,47 * * * *', lock: 'axf-watchdog-audits', timeout: 2400, script: 'deploy/watchdog/audits.mjs', args: 'run', log: 'axf-watchdog-audits', nice: true })}\n`,
   };

@@ -92,9 +92,14 @@ export function runRound({ env = process.env, force = false } = {}) {
 
 export const status = (env = process.env) => readJson(stateFile(env), { audits: {} }) ?? { audits: {} };
 
+// the gate's build rules API; the marked line goes with the gate plugin (then handoff has nothing to point)
+let gateRulesApi = '';
+gateRulesApi = '../../apps/console-web/plugins/gate/build-rules-api.mjs'; // axf-plugin:gate
+
 /** Point the build rules at the watchdog in the live rules store (idempotent; each edit has its reason). */
 export async function handoff({ env = process.env } = {}) {
-  const { createBuildRulesOps } = await import('../../apps/console-web/plugins/gate/build-rules-api.mjs');
+  if (!gateRulesApi) return [{ id: 'build-rules', ok: true, already: true, why: 'no gate plugin here: nothing to point' }];
+  const { createBuildRulesOps } = await import(gateRulesApi);
   const ops = createBuildRulesOps({});
   const done = [];
   for (const a of AUDITS) for (const id of a.rules) {

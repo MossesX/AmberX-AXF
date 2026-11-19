@@ -60,7 +60,10 @@
       "deploy/auto-lander/fix-session.mjs",
       "deploy/test/claude-headless-brief.test.sh",
       "framework/spec/LIVE-DEMO.md",
-      "framework/spec/check-landing-line.mjs"
+      "framework/spec/check-landing-line.mjs",
+      "deploy/watchdog/cron.mjs",
+      "deploy/watchdog/layer2.mjs",
+      "apps/console-web/scripts/status-table-shots.mjs"
     ]
   },
   "commands": {
