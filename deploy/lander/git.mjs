@@ -14,6 +14,7 @@ import * as R from './land-rules.mjs';
 import { numstatLines } from './lander-core.mjs';
 
 export const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
+// axf-data: not data (host-local runner files: heartbeat, pause switch, GitHub ETag cache; build state goes to the builds store)
 export function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
 
 export function makeGit(cwd) {
@@ -189,6 +190,7 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
     const parse = (t) => { try { return t.trim() ? JSON.parse(t) : undefined; } catch { return undefined; } };
     const o = parse(stage(p, 2)); const t = parse(stage(p, 3)); const b = parse(stage(p, 1));
     if (o === undefined || t === undefined) { g(['checkout', `--${mainSide}`, '--', p]); log(`${p}: one side is not JSON; main's copy taken`); }
+    // axf-data: not data (a merged repo file in a temporary git worktree)
     else writeFileSync(join(wt, p), `${JSON.stringify(R.mergeJson3(b, o, t, mainSide), null, 2)}\n`);
     g(['add', '--', p]); resolved.push(p);
   }

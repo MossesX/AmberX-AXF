@@ -13,7 +13,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 
-const FOLDER = 'merge-queue';
+const FOLDER = 'merge-queue-view';
 const REFRESH_MS = 10000;
 
 interface Step { id: string; status: string; prNumber: number | null; model: string; slot: number | null }

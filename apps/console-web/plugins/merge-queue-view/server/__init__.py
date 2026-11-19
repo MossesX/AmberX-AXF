@@ -1,6 +1,6 @@
-"""Merge queue (merge-queue@2): the read-only view of the builds store. Mounted at /api/plugins/merge-queue/.
+"""Merge queue (merge-queue@2): the read-only view of the builds store. Mounted at /api/plugins/merge-queue-view/.
 
-One read, no writes: GET queue answers what `node apps/console-web/plugins/merge-queue/queue.mjs --json` prints (every
+One read, no writes: GET queue answers what `node apps/console-web/plugins/merge-queue-view/queue.mjs --json` prints (every
 build waiting to land, live status from the builds store). The plugin keeps no state and offers no actions.
 """
 from __future__ import annotations

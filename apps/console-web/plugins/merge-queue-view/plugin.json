@@ -24,10 +24,11 @@
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
-    "dataDir": ".axf-console/plugins/merge-queue",
+    "dataDir": ".axf-console/plugins/merge-queue-view",
     "env": [],
     "mentions": [
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      ".github/workflows/android.yml"
     ]
   },
   "commands": {

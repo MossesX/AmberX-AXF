@@ -1,4 +1,4 @@
-// node apps/console-web/plugins/merge-queue/test.mjs — the merge queue is a read-only view of the builds store.
+// node apps/console-web/plugins/merge-queue-view/test.mjs — the merge queue is a read-only view of the builds store.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';

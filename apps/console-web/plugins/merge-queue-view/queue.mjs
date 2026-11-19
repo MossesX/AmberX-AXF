@@ -5,7 +5,7 @@
  * Every build from `building` up to (not including) `landed`, with its live status (failed shows the attempt), its PRs
  * and its steps. No state of its own, no actions: the lander (deploy/lander/run.mjs) does the landing.
  *
- *   node apps/console-web/plugins/merge-queue/queue.mjs [--json]
+ *   node apps/console-web/plugins/merge-queue-view/queue.mjs [--json]
  * AXF_BUILDS_STORE points at another store (tests).
  */
 import { resolve } from 'node:path';

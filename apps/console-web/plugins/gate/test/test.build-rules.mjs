@@ -24,7 +24,7 @@ const BR = await import('../../../../../framework/core/build-rules.mjs');
 const { createGate, parseCli } = await import('../gate.mjs');
 const runner = await import('../build-rules-runner.mjs');
 const homeCard = await import('../fixers/home-card.mjs');
-const landCore = await import('../../push-banner/land/land-core.mjs'); // axf-not-plugin:push-banner (test data only)
+const lander = await import('../../../../../deploy/lander/lander-core.mjs');
 
 let n = 0;
 const tests = [];
@@ -120,11 +120,11 @@ t('the gate runs the home-card rule, fixes it, re-checks it and logs it; an unfi
   assert.deepEqual(runs.map((r) => r.id).sort(), ['always-red', 'home-card']);
   const gateHist = readFileSync(join(GATE, 'history.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l));
   assert.ok(gateHist.some((h) => h.kind === 'build-rule' && h.id === 'home-card' && h.action === 'fixed'), 'gate History has the fix');
-  // the gate verdict for that build is blocked by the build rules, and the lander gets a blocking reason
+  // the gate verdict for that build is blocked by the build rules, and the lander answers it with a fix
   const g = createGate();
   const v = g.run('check_pr', { snapshot: { number: 9, head: 'h', ci: 'success' }, build: 'b1', rulesDir: STORE });
   assert.equal(v.pass, false); assert.deepEqual(v.buildRules.failing, ['always-red']);
-  assert.equal(landCore.blockReason('b1', { ci: 'success', rules: { failing: v.buildRules.failing } }).kind, 'rules');
+  assert.equal(lander.failure({ id: 'b1' }, 'rules', { failing: v.buildRules.failing }).failure.retry, 'fix', 'the lander answers failing rules with a fix session');
   // the second run: the card is there, so home-card passes without a fix
   const again = await runner.runPhase('b1', 'gate', { store, dir: STORE, rules: ['home-card'], ctx: { root, cwd: root, build: { id: 'b1', plugins: ['demo-plugin'] } } });
   assert.equal(again.runs[0].result, 'pass');
