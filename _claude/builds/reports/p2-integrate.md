@@ -1,6 +1,6 @@
 # p2-integrate: Pipeline 2.0, the four parts in one PR
 
-Branch `claude/p2-integrate`, Nov 19 2026, Opus. The PR is open and not merged; the lander lands it.
+Branch `claude/p2-integrate`, PR #852, Nov 19 2026, Opus. The PR is open and not merged; the merge queue lands it.
 
 ## What it is
 
@@ -96,13 +96,44 @@ These were made on Opus: headless, nobody to ask, and the parts could not land w
 
 ## Checks
 
-CHECKS_TABLE
+Node v20.20.2 on this VPS. The script and per-check logs from this run are in `/tmp/p2checks/` (summary.txt).
+Everything below passed on the merged branch except the last four rows.
+
+| Check | Result |
+|---|---|
+| check-pipeline-2 | 41/41 |
+| p2-flow (incl. tick CLI, pinned relaunch, layer 3) | 35/35 |
+| orchestrator pipeline.test / test.mjs / test.py / launch-retry / toolbar / test-watchdog / status-table | 66 / 35 / 64 / 5 / 32 buttons / 15 / 9 |
+| plan-studio-2 | 17 |
+| build-pipeline / build-lock / agent-slots-data / agent-slots / build-limit | 154 / 8 / 6 / 56/56 / 52/52 |
+| builds-store-data / builds-live / data-store / headless-context / plugin-catalog / plugin-settings / ui-predict | 10 / 69 / 68 / 38 / 55 / ok / 12 |
+| lander `node --test deploy/lander/test/` | 21/21 |
+| merge-queue-view / gate test / build-rules / toolbar / routes / lander routes | 12 / 21 / 8 / 28 buttons / 34 / 45 |
+| framework/deploy test.sh / landing-line / gate-rules / json-data-writes / ref-links / build-breaker | 58 / 32 / 38 / ok / 19 / 14 |
+| watchdog `node --test deploy/watchdog/` | 20/20 |
+| model-policy / `bash -n install-console.sh` | 18 / ok |
+| activity / crew-live / whats-shipped / builds-page / maintenance / agent-voice | 142 / 57 / 47 / 14 / 96 / 41 |
+| server projects / readcache / data_store | 12 / 14 / ok |
+| check-theme / controls / toolbars / chrome-assets | ok |
+| plugin-lifecycle gate / merge-queue-view / push-banner --after-uninstall | clean |
+| console-web `npm run build` (heavy slot) | ok |
+| plugin-lifecycle build-orchestrator | one hit: `.brief.md`, this session's git-excluded brief file. Environment |
+| check-build-hook | JS heap out of memory even at 4096 MB. Environment; p2-ui saw the same on main |
+| check-builds-store | "history reads the journal home": `spawnSync ENOBUFS` on the 14 MB live journal. Environment; both p2-status-core and p2-ui saw it |
+| deploy/claude-workers.test.mjs | 97 pass, 1 fail ("one build account … the run ends"). It fails the same way on `origin/main` and on `claude/p2-status-core` alone, so it is not from this merge. VPS load was 7 at the time |
 
 ## UI Review
 
-UI_REVIEW
+The one UI change made here is the single Merge queue view. Its desktop and phone shots
+(`/root/axf-builds/_shots/p2-integrate/`) were submitted as `r-20261119-zbhzh01`, group
+"p2-integrate - Nov 19 1:55 PM". It went to the worktree store, because this run has no `AXF_CONSOLE_URL` / `AXF_TOKEN`;
+p2-ui and p2-lander hit the same limit. A systems check item (`p2-integrate:ui-review`, posted through the console's
+alerts API the way the dispatcher posts its own) gives the exact `--console` commands to file them, so Brett sees
+them. The PR says it is waiting in UI Review.
 
 ## Build record
 
-No build record for `p2-integrate` exists in the store, as with the four parts, so there were no steps to tick.
-`builds-live link` was tried after the PR opened (see below).
+PR [#852](https://github.com/MossesX/AmberX-AXF/pull/852), "Pipeline 2.0", is open and not merged.
+
+There is no build record for `p2-integrate` in the store, the same as for the four parts, so there were no steps to tick.
+`builds-live.mjs link p2-integrate --branch claude/p2-integrate --pr 852` answered `No build "p2-integrate"`.
