@@ -17,7 +17,7 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
   POST lander/pause {why?} · POST lander/resume
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
-  Server auto-lander (auto-lander@1, framework/spec/AUTO-LANDER.md; deploy/auto-lander/auto-lander.mjs):
+  The lander (lander@1, deploy/lander/run.mjs; the same routes the auto-lander@1 runner answered before Nov 19 2026):
   GET  auto-lander                      service up, current build, queue, per-build state and attempts, escalations
   GET  auto-lander/builds/<build>       one build's record and attempt log
   POST auto-lander/run                  ask the service for a tick now
@@ -60,7 +60,7 @@ _spec.loader.exec_module(health)  # type: ignore[union-attr]
 _spec_al = importlib.util.spec_from_file_location("axf_gate_auto_lander_health", Path(__file__).resolve().parent / "auto_lander_health.py")
 al_health = importlib.util.module_from_spec(_spec_al)  # the server auto-lander's systems-check item (pure)
 _spec_al.loader.exec_module(al_health)  # type: ignore[union-attr]
-AL_CLI = ROOT / "deploy" / "auto-lander" / "auto-lander.mjs"
+AL_CLI = ROOT / "deploy" / "lander" / "run.mjs"  # the Pipeline 2.0 lander (replaced deploy/auto-lander, Nov 19 2026)
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
 
@@ -79,9 +79,9 @@ def run(op: str, data: dict[str, Any] | None = None, timeout: int = 90) -> dict[
 
 
 def al_run(args: list[str], timeout: int = 60) -> dict[str, Any]:
-    """One server auto-lander command (deploy/auto-lander/auto-lander.mjs <args> --json): { ok, … } or { ok: false, code, message }."""
+    """One lander command (deploy/lander/run.mjs <args> --json): { ok, … } or { ok: false, code, message }."""
     if not AL_CLI.exists():
-        return {"ok": False, "code": "unavailable", "message": "the server auto-lander is not in this checkout (deploy/auto-lander/auto-lander.mjs)"}
+        return {"ok": False, "code": "unavailable", "message": "the lander is not in this checkout (deploy/lander/run.mjs)"}
     try:
         p = subprocess.run(["node", str(AL_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout)
     except (OSError, subprocess.TimeoutExpired) as e:
@@ -371,10 +371,11 @@ async def build_rules_delete(rule_id: str, request: Request) -> JSONResponse:
 
 
 # ---------------------------------------------------------------------- the server auto-lander (auto-lander@1)
-# deploy/auto-lander/auto-lander.mjs runs on the VPS (systemd timer, every minute); these routes read its state and
+# deploy/lander/run.mjs runs on the VPS (systemd timer axf-lander, every minute); these routes read its state and
 # send it commands through the same CLI the MCP tools (gate-auto-lander_*), `axf gate auto-lander …` and voice use.
 
-AL_SETTINGS = ("enabled", "maxAttempts", "backoffBaseMin", "backoffFactor", "backoffMaxMin", "attemptTimeoutMin", "pushOnEscalation")
+# the lander's settings (deploy/lander/lander-core.mjs DEFAULTS; the size cap is sizeCapLines)
+AL_SETTINGS = ("enabled", "sizeCapLines", "flakyReruns", "backoffBaseMin", "backoffFactor", "backoffMaxMin", "ciNoneKickMin", "ciTimeoutMin", "fixTimeoutMin", "notifyAfterAttempts", "workflow", "mergeMethod")
 
 
 def _al_answer(r: dict[str, Any]) -> JSONResponse:
@@ -436,7 +437,7 @@ async def auto_lander_resume(request: Request) -> JSONResponse:
 
 @router.get("/auto-lander/settings")
 async def auto_lander_settings_get() -> JSONResponse:
-    """The auto-lander's settings: enabled, maxAttempts, backoffBaseMin/Factor/MaxMin, attemptTimeoutMin, pushOnEscalation."""
+    """The lander's settings: enabled, sizeCapLines (the one-PR size cap), flakyReruns, backoff, CI and fix timeouts, notifyAfterAttempts."""
     return _al_answer(await run_in_threadpool(al_run, ["settings"]))
 
 

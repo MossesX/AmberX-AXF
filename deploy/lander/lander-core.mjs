@@ -54,8 +54,6 @@ export const DEFAULTS = Object.freeze({
   fixTimeoutMin: 60,
   /** From this attempt on, every new attempt is posted to the crew chat and the console alerts. */
   notifyAfterAttempts: 3,
-  /** Hold merging-main while UI Review holds the PR. Off: nothing waits for a person. */
-  waitUiReview: false,
   workflow: 'android.yml',
   mergeMethod: 'merge',
 });

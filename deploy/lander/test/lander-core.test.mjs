@@ -99,8 +99,8 @@ test('backoff is capped and nothing escalates: attempt 50 still retries', () => 
 });
 
 test('config: unknown keys dropped, numbers clamped, the cap is a setting', () => {
-  const c = L.normConfig({ sizeCapLines: '1200', flakyReruns: 99, bogus: 1, waitUiReview: 'on' });
-  assert.equal(c.sizeCapLines, 1200); assert.equal(c.flakyReruns, 5); assert.equal(c.waitUiReview, true); assert.ok(!('bogus' in c));
+  const c = L.normConfig({ sizeCapLines: '1200', flakyReruns: 99, bogus: 1, enabled: 'off' });
+  assert.equal(c.sizeCapLines, 1200); assert.equal(c.flakyReruns, 5); assert.equal(c.enabled, false); assert.ok(!('bogus' in c));
 });
 
 test('merge queue rows: read-only projection of the same builds, live status', () => {

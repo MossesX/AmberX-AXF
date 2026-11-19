@@ -18,6 +18,9 @@
  *   … pause [--by who] [--why …] | resume [--by who]        stop / start new work (what is in flight stays as it is)
  *   … run                                                   same as tick (the console's "run now")
  *   … fix <build> | retry <build>                           make a failed build's retry due now (no reset: attempts go on)
+ *   … show <build>                                          one build: its queue row, status log and failure
+ *   … settings | set <key> <value> [--by who]              the settings; set writes the data folder's config.json
+ *   … run --request                                         ask the service for a tick (the console's way; the timer runs it)
  * Environment: AXF_LANDER_DIR (data folder: service heartbeat, control, GitHub cache; default
  * <AXF_CONSOLE_ROOT or /opt/axf>/.axf-console/lander), AXF_LAND_REPO (checkout to run git in), AXF_LAND_REPO_SLUG
  * (MossesX/AmberX-AXF), AXF_LAND_GITHUB_API, AXF_LANDER_SIZE_CAP (lines, overrides the config), AXF_LANDER_BUILD_RULES=off,
@@ -144,7 +147,9 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
   const at = now();
   const out = { $axf: 'lander-tick@1', at, build: '', status: '', actions: [], waiting: '', error: '', others: [] };
   if (!cfg.enabled) { out.waiting = 'the lander is switched off (config enabled: false)'; return out; }
-  if (readControl(s).paused) { out.waiting = 'paused'; return out; }
+  const ctl = readControl(s);
+  if (ctl.paused) { out.waiting = 'paused'; return out; }
+  if (ctl.runRequested && !dry) G.writeJson(files(s).control, { ...ctl, runRequested: '' });
   store ??= dry ? memoryStore((await makeStore()).read()) : await makeStore({ by: 'lander', repo: s.repo });
   const all = store.read();
   const pick = L.pickBuild(only ? all.filter((b) => b.id === only) : all);
@@ -370,6 +375,10 @@ export async function main(argv) {
   const json = rest.includes('--json');
   const s = settings();
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
+  if (cmd === 'run' && rest.includes('--request')) {
+    G.writeJson(files(s).control, { ...readControl(s), runRequested: nowIso(), runRequestedBy: flag('--by') || 'cli' });
+    return print({ ok: true, requested: true }, 'a tick is requested (the timer runs one within a minute)');
+  }
   if (cmd === 'tick' || cmd === 'run') {
     const lock = takeLock(files(s).lock);
     if (!lock.ok) return print({ ok: true, skipped: 'another tick holds the lock' }, 'another tick is running');
@@ -381,7 +390,21 @@ export async function main(argv) {
   }
   if (cmd === 'status') { const st = await status(s); return print(st, `lander: ${st.service.paused ? 'paused' : 'on'}, last tick ${st.service.lastTick || 'never'}; landing ${st.current || 'nothing'}; ${st.queue.length} in the queue`); }
   if (cmd === 'queue') { const st = await status(s); return print({ ok: true, rows: st.builds }, st.builds.map((r) => `${r.status.padEnd(16)} ${r.build}${r.attempt ? ` (attempt ${r.attempt})` : ''}${r.prs.length ? ` ${r.prs.map((p) => `#${p.pr}`).join(' ')}` : ''}`).join('\n') || 'nothing waits to land'); }
-  if (cmd === 'config') { const c = readConfig(s); return print({ ok: true, settings: c }, Object.entries(c).map(([k, v]) => `${k} = ${v}`).join('\n')); }
+  if (cmd === 'show') {
+    const id = rest.find((x) => !x.startsWith('--'));
+    const b = (await makeStore({ repo: s.repo })).read().find((x) => x.id === id);
+    if (!b) { process.exitCode = 2; return print({ ok: false, error: `no build ${id || '<build>'}` }, `no build ${id || '<build>'}`); }
+    const row = L.queueRows([b])[0] || null;
+    return print({ ok: true, build: id, row, status: b.status, attempt: b.attempt || 0, failure: b.failure || null, statusLog: b.statusLog || [], landing: L.landingOf(b) }, `${id}: ${b.status}${b.attempt ? ` (attempt ${b.attempt})` : ''}\n${(b.statusLog || []).map((x) => `  ${x.at} ${x.status} by ${x.by}${x.note ? ` · ${x.note}` : ''}`).join('\n')}`);
+  }
+  if (cmd === 'set') {
+    const [k, v] = rest.filter((x) => !x.startsWith('--') && x !== flag('--by'));
+    if (!k || !(k in L.DEFAULTS) || v === undefined) { process.exitCode = 2; return print({ ok: false, error: `set <${Object.keys(L.DEFAULTS).join('|')}> <value>` }, `usage: set <key> <value>; keys: ${Object.keys(L.DEFAULTS).join(', ')}`); }
+    const cur = G.readJson(files(s).config, {}) || {};
+    G.writeJson(files(s).config, { ...cur, [k]: v, updatedAt: nowIso(), updatedBy: flag('--by') || 'cli' });
+    return print({ ok: true, key: k, value: readConfig(s)[k], settings: readConfig(s) }, `${k} = ${readConfig(s)[k]}`);
+  }
+  if (cmd === 'config' || cmd === 'settings') { const c = readConfig(s); return print({ ok: true, settings: c }, Object.entries(c).map(([k, v]) => `${k} = ${v}`).join('\n')); }
   if (cmd === 'pause' || cmd === 'resume') {
     const c = { ...readControl(s), paused: cmd === 'pause', [`${cmd}dBy`]: flag('--by') || 'cli', [`${cmd}dAt`]: nowIso(), ...(cmd === 'pause' ? { why: flag('--why') } : {}) };
     G.writeJson(files(s).control, c);

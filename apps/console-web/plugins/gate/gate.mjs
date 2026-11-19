@@ -215,11 +215,11 @@ export const cliWords = Object.freeze(['rules', 'build-rules', 'check', 'history
 
 /**
  * `axf gate auto-lander status|show <build>|run [--now]|retry <build>|fix <build>|pause|resume|settings|set <key> <value>`:
- * the server auto-lander's own CLI (deploy/auto-lander/auto-lander.mjs), the same commands REST, MCP and voice call.
- * `run` asks the service for a tick (as the console does); `run --now` ticks here at once.
+ * the lander's own CLI (deploy/lander/run.mjs, Pipeline 2.0; it replaced deploy/auto-lander on Nov 19 2026), the
+ * same commands REST, MCP and voice call. `run` asks the service for a tick (as the console does); `run --now` ticks here.
  */
 export async function autoLanderCli(argv) {
-  const al = await import('../../../../deploy/auto-lander/auto-lander.mjs');
+  const al = await import('../../../../deploy/lander/run.mjs');
   const [cmd = 'status', ...rest] = argv;
   const known = ['status', 'show', 'run', 'retry', 'fix', 'pause', 'resume', 'settings', 'set'];
   if (!known.includes(cmd)) { console.error(`axf gate auto-lander ${known.join('|')}`); return 2; }

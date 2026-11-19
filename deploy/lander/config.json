@@ -9,7 +9,6 @@
   "ciTimeoutMin": 120,
   "fixTimeoutMin": 60,
   "notifyAfterAttempts": 3,
-  "waitUiReview": false,
   "workflow": "android.yml",
   "mergeMethod": "merge"
 }

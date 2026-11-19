@@ -57,9 +57,23 @@ export function checkerOf(rule) {
   return { kind: 'none', why: c ? `checker ${c} runs in its own place` : 'no check' };
 }
 
-/** The rules a phase runs: enabled, that phase; before / after take vps rules only, the gate takes every doer. */
+/**
+ * Command checks never run at launch or at a build's end hook (Pipeline 2.0, Nov 19 2026): a `before` / `after` vps
+ * rule whose check is a command line (`builds-store.mjs verify`, a CI check) runs at the gate instead, which the lander
+ * runs once per green PR head inside its running-ci step. At launch it ran on every dispatcher tick, from old worktrees,
+ * in heavy slots. Fixers (home card, help stub, THREADS row) stay in their phase: they shape what the session builds.
+ */
+export const DEFERRED_PHASES = Object.freeze(['before', 'after']);
+export const deferredToGate = (r) => DEFERRED_PHASES.includes(r.phase) && r.doer === 'vps' && checkerOf(r).kind === 'command';
+
+/**
+ * The rules a phase runs: enabled, that phase; before / after take vps rules only (command checks left to the gate),
+ * the gate takes every doer plus the deferred command checks.
+ */
 export function rulesFor(store, phase, only = []) {
-  return BR.normStore(store).rules.filter((r) => r.enabled && r.phase === phase && (phase === 'gate' || r.doer === 'vps') && (!only.length || only.includes(r.id)));
+  return BR.normStore(store).rules.filter((r) => r.enabled && (!only.length || only.includes(r.id)) && (phase === 'gate'
+    ? r.phase === 'gate' || deferredToGate(r)
+    : r.phase === phase && r.doer === 'vps' && !deferredToGate(r)));
 }
 
 async function runCheck(rule, ctx, dryRun) {

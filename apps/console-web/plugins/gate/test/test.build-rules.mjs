@@ -141,6 +141,19 @@ t('before / after take only VPS rules; a dry run fixes nothing and writes no his
   assert.deepEqual(runner.readRuns({ dir: STORE }), []);
 });
 
+t('command checks never run at launch: a before / after command rule runs at the gate (the lander\'s CI step)', async () => {
+  const store = { rules: [
+    rule('one-builds-store', { phase: 'before', check: 'node framework/cli/builds-store.mjs verify' }),
+    rule('home-card', { phase: 'before', check: 'store:home-card', autofix: 'home-card' }),
+    rule('end-check', { phase: 'after', check: 'node -e 0' }),
+    rule('gate-own', { check: 'node -e 0' }),
+  ] };
+  assert.deepEqual(runner.rulesFor(store, 'before').map((r) => r.id), ['home-card'], 'launch keeps its fixers only');
+  assert.deepEqual(runner.rulesFor(store, 'after').map((r) => r.id), []);
+  assert.deepEqual(runner.rulesFor(store, 'gate').map((r) => r.id).sort(), ['end-check', 'gate-own', 'one-builds-store']);
+  assert.ok(runner.deferredToGate(store.rules[0]) && !runner.deferredToGate(store.rules[1]));
+});
+
 // ------------------------------------------------------------------ the dispatcher's brief
 
 t("the dispatcher's brief carries the store's session rules and never a VPS rule", async () => {
