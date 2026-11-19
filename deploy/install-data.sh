@@ -18,9 +18,12 @@
 #   4. runs `axf-data-db` (postgres:16-alpine, Brett's Nov 6 choice) on that network only, no -p, waits for pg_isready
 #   5. if the volume holds a SQLite store that is not on Postgres yet: backup first, copy, counts + manifests checked
 #      (services/axf-data/migrate_pg.py); a mismatch stops the install with the differences. A fresh volume skips this.
-#   6. runs `axf-data` with restart unless-stopped, no -p, no domain, no Traefik labels, on that network only, with the
-#      DSN; engine mode `postgres` on a fresh volume, `shadow` after a migration (cut over with `axf data engine postgres`)
-#   7. connects each client container that exists ($AXF_DATA_CLIENTS, default axf-console) to the network
+#   6. runs `axf-data` with restart unless-stopped, no -p, no domain, no Traefik labels, on that network only (at the fixed
+#      address <subnet>.250), with the DSN; engine mode `postgres` on a fresh volume, `shadow` after a migration (cut over
+#      with `axf data engine postgres`)
+#   7. connects each client container that exists ($AXF_DATA_CLIENTS, default axf-console) to the network, and writes
+#      conf/env/host.env (the fixed address + the orchestrator token) for processes on the VPS host itself: build sessions
+#      in worktrees, the gate runner, cron (framework/core/data-files.mjs remoteConfig reads it when AXF_DATA_URL is unset)
 #   8. installs the daily backup + mirror cron (deploy/axf-data-backup.cron → $BACKUPS, see services/axf-data/backup.py)
 #   9. waits for /v1/health and appends one deploy-log@1 record (target axf-data) with axf_deploy_log
 #
@@ -142,19 +145,29 @@ ENGINE="${AXF_DATA_ENGINE:-}"
 HAS_SQLITE="$(docker run --rm -v "$VOL":/data alpine:3.20 sh -c 'test -s /data/axf-data.sqlite && echo yes || echo no' 2>/dev/null || echo no)"
 if [ -z "$ENGINE" ] && [ "$HAS_SQLITE" = yes ]; then
   PG_KEYS="$(docker run --rm --network "$NET" -e "AXF_DATA_DSN=$DSN" -e AXF_DATA_DIR=/data -v "$VOL":/data "$NAME:latest" \
-    python -c "import pg,os; print(pg.PgStore(os.environ['AXF_DATA_DSN'],'/data').fetchone('SELECT COUNT(*) AS n FROM keys')['n'])" 2>/dev/null || echo 0)"
+    python -c "import pg,os; print(pg.PgStore(os.environ['AXF_DATA_DSN'],'/data').fetchone('SELECT COUNT(*) AS n FROM keys')['n'])" 2>/dev/null || echo error)"
+  # a probe that fails is not an empty database: stop here rather than start a copy over live data
+  [ "$PG_KEYS" != error ] || { say "could not read Postgres with the new image (schema migration or connection failed): docker run … $NAME:latest python -c 'import pg' to see why; nothing changed"; exit 1; }
   if [ "$PG_KEYS" = 0 ]; then
     say "SQLite store found on $VOL and Postgres is empty: migrating (backup first, counts and manifests checked)"
     docker run --rm --network "$NET" -e "AXF_DATA_DSN=$DSN" -e AXF_DATA_DIR=/data -e AXF_DATA_BACKUPS=/backups -v "$VOL":/data -v "$BACKUPS":/backups \
       "$NAME:latest" python migrate_pg.py || { say "migration refused: nothing moved to the console, Postgres left for inspection (docker run … migrate_pg.py --verify)"; exit 1; }
   fi
-  ENGINE=shadow
+  # the first run after a migration starts in shadow; once the service has recorded its own engine state (engine.json:
+  # a cut-over to postgres, a roll-back) that state is what a restart must come back to, so the env is not pinned over it
+  HAS_STATE="$(docker run --rm -v "$VOL":/data alpine:3.20 sh -c 'test -s /data/engine.json && echo yes || echo no' 2>/dev/null || echo no)"
+  [ "$HAS_STATE" = yes ] || ENGINE=shadow
 fi
 
 # ── 6. the service container ──
 FROM_SHA="$(docker inspect -f '{{index .Config.Labels "axf.sha"}}' "$NAME" 2>/dev/null || true)"
 SHA="$(git -C "$DIR" rev-parse HEAD 2>/dev/null || true)"
 axf_stop_container "$NAME"
+# A fixed address on the internal network (<subnet>.250): processes on the VPS host itself (build sessions in worktrees, the
+# gate runner, cron) reach axf-data through the docker bridge at this address, read from conf/env/host.env (step 7), since
+# the host cannot resolve the network alias and the internal network publishes nothing.
+SUBNET="$(docker network inspect -f '{{(index .IPAM.Config 0).Subnet}}' "$NET" 2>/dev/null || true)"
+HOST_IP="${AXF_DATA_HOST_IP:-${SUBNET:+${SUBNET%.*/*}.250}}"
 RUN=(-d --name "$NAME" --restart unless-stopped --network "$NET" --network-alias "$NAME"
   -v "$VOL":/data -v "$CONF/tokens.json":/run/axf-data/tokens.json:ro -v "$BACKUPS":/backups
   -e AXF_DATA_DIR=/data -e AXF_DATA_TOKENS_FILE=/run/axf-data/tokens.json -e AXF_DATA_BACKUPS=/backups
@@ -162,17 +175,27 @@ RUN=(-d --name "$NAME" --restart unless-stopped --network "$NET" --network-alias
   -l traefik.enable=false -l axf.service=axf-data -l "axf.sha=$SHA")
 [ -z "$ENGINE" ] || RUN+=(-e "AXF_DATA_ENGINE=$ENGINE")
 [ -z "${AXF_DATA_KEYS_URL:-}" ] || RUN+=(-e "AXF_DATA_KEYS_URL=$AXF_DATA_KEYS_URL")
+[ -z "$HOST_IP" ] || RUN+=(--ip "$HOST_IP")
 # the console's plugin data folders, read-only: the Shipped features ledger and the Chat viewer db are mirrored into rows
 [ -d "$PLUGINS_DIR" ] && RUN+=(-v "$PLUGINS_DIR":/mnt/console-plugins:ro)
 docker run "${RUN[@]}" "$NAME:latest" >/dev/null
 
-# ── 7. clients join the network (the console reaches http://axf-data:7700) ──
+# ── 7. clients join the network (the console reaches http://axf-data:7700); the host gets conf/env/host.env ──
 for c in $CLIENTS; do
   if docker inspect "$c" >/dev/null 2>&1; then
     docker network connect "$NET" "$c" >/dev/null 2>&1 || true
     say "client $c is on $NET"
   fi
 done
+# host.env: the orchestrator's token at the fixed address, for every process on the VPS outside the containers (build
+# sessions in worktrees, the gate runner, the auto-lander, cron). framework/core/data-files.mjs reads it when AXF_DATA_URL
+# is unset (remoteConfig). The builds store in cutover is unreachable from the host without it.
+HOST_ADDR="$(docker inspect -f "{{(index .NetworkSettings.Networks \"$NET\").IPAddress}}" "$NAME" 2>/dev/null || true)"
+if [ -n "$HOST_ADDR" ]; then
+  printf 'AXF_DATA_URL=http://%s:%s\nAXF_DATA_TOKEN=%s\n' "$HOST_ADDR" "$PORT" "$(sed -n 's/^AXF_DATA_TOKEN=//p' "$CONF/env/orchestrator.env")" > "$CONF/env/host.env"
+  chmod 600 "$CONF/env/host.env"
+  say "host processes reach axf-data at http://$HOST_ADDR:$PORT ($CONF/env/host.env)"
+fi
 
 # ── 8. daily backup (pg_dump) + nightly SQLite mirror (deploy/axf-data-backup.cron) ──
 if [ -d /etc/cron.d ]; then

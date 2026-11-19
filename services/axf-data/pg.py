@@ -116,7 +116,10 @@ class PgStore:
         conn = psycopg.connect(_dsn_with_schema(self.dsn, self.schema), autocommit=True, row_factory=dict_row)
         with conn.transaction():
             conn.execute(f'CREATE SCHEMA IF NOT EXISTS {self.schema}')
+            conn.execute(T.MIGRATE_V2_SQL)
             conn.execute(SCHEMA_SQL)
+            T.migrate_v2(conn)
+            conn.execute('INSERT INTO meta (k, v) VALUES (%s, %s) ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v', ('tables_version', str(T.TABLES_VERSION)))
         return conn
 
     def _ensure(self) -> psycopg.Connection:
@@ -397,36 +400,107 @@ class PgStore:
                 seen = self.fetchone('SELECT value FROM idem WHERE k=%s', (idem,))
                 if seen:
                     return seen['value']
-            cur = self._row(ns, path)
-            if cur and cur['kind'] != 'journal':
-                raise DataError('invalid_key', f"{ns}/{path} is a {cur['kind']}", ns=ns, path=path)
-            have = cur['entries'] if cur else 0
-            at, by = self.now(), caller.by
-            stamped = [journal_line(have + i + 1, at, by, ln) for i, ln in enumerate(lines)]
-            h = self._journal_hasher(ns, path, have)
-            for s in stamped:
-                h.update((s + '\n').encode('utf-8'))
-            total = have + len(lines)
-            size = (cur['size'] if cur else 0) + sum(len(s.encode('utf-8')) + 1 for s in stamped)
-            r = {'ns': ns, 'path': path, 'kind': 'journal', 'rev': (cur['rev'] if cur else 0) + 1, 'etag': f'{total}-{h.hexdigest()[:16]}',
-                 'at': at, 'by': by, 'size': size, 'content_type': 'application/x-ndjson', 'deleted': False, 'entries': total, 'table_name': 'journal', 'blob_sha': None}
-            out = {'$axf': 'data-append@1', 'ns': ns, 'path': path, 'first': have + 1, 'last': total, 'count': len(lines)}
             try:
                 with self.tx() as tcur:
-                    with tcur.copy('COPY journal (ns, path, seq, at, actor, entry, line) FROM STDIN') as cp:
-                        for i, (s, e) in enumerate(zip(stamped, entries)):
-                            cp.write_row((ns, path, have + i + 1, at, by, Jsonb(e, dumps=canonical), s))
-                    self._upsert_key(tcur, r)
-                    c = self._change(tcur, r, 'append', total)
-                    if idem:
-                        tcur.execute('INSERT INTO idem (k, value, at) VALUES (%s, %s, %s)', (idem, Jsonb(out), at))
+                    out, c = self._append_rows(tcur, ns, path, entries, lines, caller, idem)
             except BaseException:
                 self._jhash.pop((ns, path), None)
                 raise
-            self._jhash[(ns, path)] = (total, h)
             for hk in self.hooks:
                 hk.on_change(c)
             return out
+
+    def _append_rows(self, tcur, ns: str, path: str, entries: list, lines: list[str], caller: Caller, idem: str) -> tuple[dict, dict]:
+        """The journal rows, key row and change of one append, inside the caller's transaction (append, patch)."""
+        cur = self._row(ns, path)
+        if cur and cur['kind'] != 'journal':
+            raise DataError('invalid_key', f"{ns}/{path} is a {cur['kind']}", ns=ns, path=path)
+        have = cur['entries'] if cur else 0
+        at, by = self.now(), caller.by
+        stamped = [journal_line(have + i + 1, at, by, ln) for i, ln in enumerate(lines)]
+        h = self._journal_hasher(ns, path, have)
+        for s in stamped:
+            h.update((s + '\n').encode('utf-8'))
+        total = have + len(lines)
+        size = (cur['size'] if cur else 0) + sum(len(s.encode('utf-8')) + 1 for s in stamped)
+        r = {'ns': ns, 'path': path, 'kind': 'journal', 'rev': (cur['rev'] if cur else 0) + 1, 'etag': f'{total}-{h.hexdigest()[:16]}',
+             'at': at, 'by': by, 'size': size, 'content_type': 'application/x-ndjson', 'deleted': False, 'entries': total, 'table_name': 'journal', 'blob_sha': None}
+        out = {'$axf': 'data-append@1', 'ns': ns, 'path': path, 'first': have + 1, 'last': total, 'count': len(lines)}
+        with tcur.copy('COPY journal (ns, path, seq, at, actor, entry, line) FROM STDIN') as cp:
+            for i, (s, e) in enumerate(zip(stamped, entries)):
+                cp.write_row((ns, path, have + i + 1, at, by, Jsonb(e, dumps=canonical), s))
+        self._upsert_key(tcur, r)
+        c = self._change(tcur, r, 'append', total)
+        if idem:
+            tcur.execute('INSERT INTO idem (k, value, at) VALUES (%s, %s, %s)', (idem, Jsonb(out), at))
+        self._jhash[(ns, path)] = (total, h)
+        return out, c
+
+    def patch(self, ns: str, path: str, body: dict, caller: Caller) -> dict:
+        """data-patch@1 (row-level): some rows of a keyed list (the builds), the head fields given, and one journal line,
+        in one transaction. Only the named rows are locked (`SELECT … FOR UPDATE`); a row whose `rev` is not the `ifRev`
+        the writer read is a `conflict` naming the keys, and nothing is written. The record's rev and etag move like a put."""
+        cur = self._row(ns, path)
+        if not cur or cur['deleted']:
+            raise DataError('not_found', f'{ns}/{path} not found: put the document first', ns=ns, path=path)
+        t = T.by_name(cur.get('table_name') or '')
+        try:
+            p = T.check_patch(body, t if isinstance(t, T.DocTable) else None)
+        except ValueError as e:
+            raise DataError('invalid_body', str(e), ns=ns, path=path) from e
+        journal = p['journal']
+        jlines: list[str] = []
+        if journal:
+            jns, jpath = ns, journal['path']
+            self._kind_ok(jns, 'journal', jpath)
+            jlines = [canonical(journal['entry'])]
+            if len(jlines[0].encode('utf-8')) > LIMITS['entryBytes']:
+                raise DataError('too_large', f"the journal entry is over {LIMITS['entryBytes']} bytes", ns=jns, path=jpath)
+        with self.lock:
+            self.read_only_check(ns, path)
+            for jp in ([journal['path']] if journal else []):
+                self.read_only_check(ns, jp)
+            idem = f"{ns}/{journal['path']}#{journal['idem']}" if journal and journal.get('idem') else ''
+            jout = None
+            try:
+                with self.tx() as tcur:
+                    conflicts = []
+                    for lkey, changes in p['lists'].items():
+                        have = t.lock_rows(tcur, t.lists[lkey], [ch['key'] for ch in changes])
+                        conflicts += [{'list': lkey, **c} for c in T.rev_conflicts(changes, have)]
+                    if conflicts:
+                        raise DataError('conflict', f"{ns}/{path}: {len(conflicts)} item(s) changed since they were read: {', '.join(c['key'] for c in conflicts[:10])}",
+                                        ns=ns, path=path, rev=cur['rev'], etag=cur['etag'])
+                    applied = t.patch(tcur, ns, path, p['head'], p['lists'])
+                    stored = t.read(tcur, ns, path)
+                    rev = cur['rev'] + 1
+                    r = {'ns': ns, 'path': path, 'kind': 'record', 'rev': rev, 'etag': etag_of(rev, stored), 'at': self.now(), 'by': caller.by,
+                         'size': len(stored), 'content_type': 'application/json', 'deleted': False, 'entries': 0, 'table_name': t.name, 'blob_sha': None}
+                    self._upsert_key(tcur, r)
+                    for h in self.hooks:
+                        h.on_row(tcur, r, 'put', cur, stored)
+                    c = self._change(tcur, r, 'put')
+                    changes_out = [c]
+                    if journal:
+                        if idem:
+                            tcur.execute('SELECT value FROM idem WHERE k=%s', (idem,))
+                            seen = tcur.fetchone()
+                        else:
+                            seen = None
+                        if seen:
+                            jout = seen['value']
+                        else:
+                            jout, jc = self._append_rows(tcur, ns, journal['path'], [journal['entry']], jlines, caller, idem)
+                            changes_out.append(jc)
+            except BaseException:
+                if journal:
+                    self._jhash.pop((ns, journal['path']), None)
+                raise
+            self._assembled[(ns, path)] = (r['etag'], stored)
+            for h in self.hooks:
+                for ch in changes_out:
+                    h.on_change(ch)
+            return {'$axf': 'data-patch@1', 'record': _frame(r), 'applied': applied['applied'], 'added': applied['added'], 'journal': jout}
 
     def _journal_hasher(self, ns: str, path: str, have: int):
         cached = self._jhash.get((ns, path))

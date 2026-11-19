@@ -33,7 +33,8 @@ delete process.env.AXF_ORCH_FILE; delete process.env.AXF_PENDING_FILE;
 mkdirSync(join(dir, '_claude/builds'), { recursive: true });
 const modeFile = join(dir, '.axf-console/data-store/mode.json');
 const setMode = (mode) => { mkdirSync(join(dir, '.axf-console/data-store'), { recursive: true }); writeFileSync(modeFile, JSON.stringify({ $axf: 'data-store-mode@1', mode: 'local', namespaces: { builds: { mode } } })); const t = new Date(Date.now() + Math.random() * 5000); utimesSync(modeFile, t, t); };
-const H = { authorization: 'Bearer tok' };
+// one connection per request: uvicorn closes idle keep-alive sockets after 5 s and a pooled fetch on one answers "other side closed"
+const H = { authorization: 'Bearer tok', connection: 'close' };
 const remote = async (key) => { const r = await fetch(`${url}/v1/${key}`, { headers: H }); return r.status === 200 ? r.json() : null; };
 
 let n = 0;
@@ -86,6 +87,38 @@ try {
   await t('cutover: history reads the journal on axf-data', async () => {
     const h = io.journalOf('b3');
     assert.equal(h.length, 1); assert.equal(h[0].op, 'add');
+  });
+  await t('cutover: a write is a patch of the changed builds (row-level), not the whole store', async () => {
+    const before = await remote('builds/store.json');
+    const meta0 = await (await fetch(`${url}/v1/builds/store.json?meta=1`, { headers: H })).json();
+    // another writer changes b1 between our read and our write; we change b2: no conflict, both land
+    let raced = false;
+    io.withStore((s) => {
+      if (!raced) { raced = true; files.callSync({ op: 'patch', key: 'builds/store.json', body: { lists: { builds: [{ key: 'b1', ifRev: s.builds.find((b) => b.id === 'b1').rev, item: { ...s.builds.find((b) => b.id === 'b1'), title: 'b1 by molly', rev: s.builds.find((b) => b.id === 'b1').rev + 1 } }] } } }); }
+      s.builds.find((b) => b.id === 'b2').title = 'b2 by me';
+      return s;
+    }, { by: 'test', action: 'rename' });
+    const after = await remote('builds/store.json');
+    assert.equal(after.builds.find((b) => b.id === 'b1').title, 'b1 by molly');
+    assert.equal(after.builds.find((b) => b.id === 'b2').title, 'b2 by me');
+    assert.equal(after.builds.length, before.builds.length);
+    const meta1 = await (await fetch(`${url}/v1/builds/store.json?meta=1`, { headers: H })).json();
+    assert.equal(meta1.rev, meta0.rev + 2, 'two patches: two record revs');
+    // the same build changed by both: our first try conflicts on that row, withStore re-reads and re-applies on top
+    raced = false;
+    io.withStore((s) => {
+      const b = s.builds.find((x) => x.id === 'b3');
+      if (!raced) { raced = true; files.callSync({ op: 'patch', key: 'builds/store.json', body: { lists: { builds: [{ key: 'b3', ifRev: b.rev, item: { ...b, title: 'b3 by molly', rev: b.rev + 1 } }] } } }); }
+      b.notes.push({ text: `seen: ${b.title}`, at: new Date().toISOString() });
+      return s;
+    }, { by: 'test', action: 'note' });
+    const b3 = (await remote('builds/store.json')).builds.find((b) => b.id === 'b3');
+    assert.equal(b3.title, 'b3 by molly');
+    assert.equal(b3.notes.at(-1).text, 'seen: b3 by molly', 're-applied on the other writer\'s version');
+    const month = new Date().toISOString().slice(0, 7);
+    const j = await (await fetch(`${url}/v1/builds/journal/${month}?since=0`, { headers: H })).json();
+    assert.equal(j.entries.at(-1).entry.action, 'note', 'the journal line went with the patch');
+    assert.equal(j.entries.filter((e) => e.entry.action === 'note').length, 1, 'the conflicting first try wrote nothing');
   });
   await t('rollback: writes refused (read_only)', async () => {
     setMode('rollback');

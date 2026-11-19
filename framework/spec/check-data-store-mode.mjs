@@ -102,7 +102,25 @@ export async function checkMode({ WRITE = false } = {}) {
   step('listShadow', () => M.transition(s0, { ns: ['notes', 'plugins/ui-review'], to: 'shadow', at: T0, ctx: { manifests: same } }).changes);
   step('transitionNoAt', () => M.transition(s0, { ns: 'notes', to: 'shadow', ctx: { manifests: same } }));
   step('summary', () => M.summary(st));
+  // key-level modes (Nov 18 2026): one record or prefix of a namespace moves ahead of the rest; verified by the caller under its lock
+  const verified = { at: plus(5), how: 'builds-data cutover: record equal, journal compared line by line', counts: { builds: 3, steps: 9, notes: 2 } };
+  const k1 = step('keyCutoverUnverified', () => M.transitionKey(s0, { ns: 'builds', path: 'store.json', to: 'cutover', at: plus(5) }));
+  const k2 = step('keyCutover', () => M.transitionKey(s0, { ns: 'builds', path: 'store.json', to: 'cutover', at: plus(5), by: 'svc:cli', verified }));
+  const k3 = step('keyPrefixCutover', () => M.transitionKey(k2.state, { ns: 'builds', path: 'journal/', to: 'cutover', at: plus(6), by: 'svc:cli', verified }));
+  step('keyModes', () => ({ store: M.modeOf(k3.state, 'builds', 'store.json'), journal: M.modeOf(k3.state, 'builds', 'journal/2026-11'), journalLarge: M.modeOf(k3.state, 'builds', 'journal-large/1.json'), pipeline: M.modeOf(k3.state, 'builds', 'pipeline/state.json'), namespace: M.modeOf(k3.state, 'builds'), override: M.keyOverride(k3.state, 'builds', 'journal/2026-11-p3') }));
+  step('keyBackToLocal', () => M.transitionKey(k3.state, { ns: 'builds', path: 'store.json', to: 'local', at: plus(7) }));
+  step('keyNoWay', () => M.transitionKey(k3.state, { ns: 'builds', path: 'store.json', to: 'rollback', at: plus(7) }));
+  step('keyBadPath', () => M.transitionKey(s0, { ns: 'builds', path: '../x', to: 'shadow', at: plus(7), verified }));
+  step('keyNormRoundTrip', () => M.normState(JSON.parse(JSON.stringify(k3.state)), T0));
+  step('keyOpenNs', () => M.transitionKey(s0, { ns: 'plugins/ui-review', path: 'items.json', to: 'shadow', at: plus(8), verified }).state.namespaces['plugins/ui-review']);
   out.steps = steps;
+  assert.equal(k1.error, 'invalid_body');
+  assert.equal(k3.state.namespaces.builds.mode, 'local');
+  assert.equal(M.modeOf(k3.state, 'builds', 'store.json'), 'cutover');
+  assert.equal(M.modeOf(k3.state, 'builds', 'pipeline/state.json'), 'local');
+  assert.equal(M.modeOf(k3.state, 'builds'), 'local');
+  assert.equal(steps.find((s) => s.name === 'keyBackToLocal').v.state.namespaces.builds.keys['store.json'], undefined);
+  assert.deepEqual(steps.find((s) => s.name === 'keyNormRoundTrip').v, k3.state);
   assert.equal(steps.find((s) => s.name === 'cutoverFromLocal').v.ok, false);
   assert.equal(steps.find((s) => s.name === 'shadowRefusedThrows').v.error, 'invalid_body');
   assert.equal(steps.find((s) => s.name === 'cutoverWithDrift').v.ok, false);
