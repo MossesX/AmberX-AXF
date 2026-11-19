@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 14:23 UTC · `right-click-running-build-pop-open` → failed, note (all) · watchdog
-- 2026-11-19 14:23 UTC · `auto-lander-settings-log-placeholder` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `toolbars-1-5-build-orchestrator-incl` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `toolbars-2-5-plan-studio-ui-review` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `toolbars-3-5-settings-appearance-systems` → failed, note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 16:37 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
 - 2026-11-19 16:37 UTC · `remove-amberx-app-code-once-phone` s1 done, → running (all) · orchestrator
 - 2026-11-19 16:37 UTC · `remove-amberx-app-code-once-phone` s2 done (all) · orchestrator
+- 2026-11-19 16:38 UTC · `remove-amberx-app-code-once-phone` s3 done (all) · orchestrator
+- 2026-11-19 16:38 UTC · `remove-amberx-app-code-once-phone` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
