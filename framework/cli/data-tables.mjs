@@ -77,7 +77,11 @@ export const SETS = {
       planner_tree: (k, d) => (k === 'planner/v2/tree.json' ? (dicts(d.items) ? len(d.items) : 0) + (dicts(d.trash) ? len(d.trash) : 0) : 0),
     },
     namespaces: ['planner'],
-    keys: { console: ['framework/plan/plan.json', 'framework/plan/profiles.json', 'framework/plan/projects.json', 'framework/plan/media/', 'project.manifest.json', 'projects/'] },
+    keys: { console: ['framework/plan/plan.json', 'framework/plan/profiles.json', 'framework/plan/projects.json', 'framework/plan/media/', 'project.manifest.json', 'projects/'], planner: ['v2/'] },
+    // held on the files while the namespace is cut over: Plan Studio 2's tree is written by tree.mjs, which only reaches
+    // axf-data from this build on (data-files); until every writer runs it, a key override keeps both old and new code
+    // on the file. `--keys` copies it once more and flips it with the console keys.
+    pinLocal: { planner: ['v2/'] },
   },
   catalog: {
     step: 's4.3',
@@ -247,6 +251,15 @@ export async function cutover(name, { store, apply = false, keys = false, by = '
   }
   let state = dm.readState();
   const changes = [];
+  if (!keys) {
+    for (const [ns, paths] of Object.entries(set.pinLocal || {})) {
+      for (const p of paths) {
+        if (MODE.modeOf(state, ns, p.endsWith('/') ? `${p}x` : p) === 'local') continue;
+        const r = MODE.transitionKey(state, { ns, path: p, to: 'local', at: nowIso(), by, verified: { at: nowIso(), how: 'data-tables: held on the files until its writers run data-files' } });
+        state = r.state; changes.push(...r.changes);
+      }
+    }
+  }
   if (keys) {
     const verified = { at: nowIso(), how: `data-tables cutover ${name}: every file equal on axf-data, rows per table equal`, tables: report.tables };
     for (const [ns, paths] of Object.entries(set.keys)) {
