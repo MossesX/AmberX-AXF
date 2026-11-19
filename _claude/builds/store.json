@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9209,
- "updatedAt": "2026-11-19T01:17:15.642Z",
+ "rev": 9210,
+ "updatedAt": "2026-11-19T01:18:48.736Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321832,7 +321832,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:16:08.947Z",
+   "updatedAt": "2026-11-19T01:17:59.039Z",
    "builtAt": "",
    "notes": [
     {
@@ -322076,28 +322076,6 @@
      "updatedAt": "2026-11-18T14:45:31.829Z"
     },
     {
-     "id": "s6",
-     "uid": "st-mwmundu001dg92",
-     "title": "",
-     "text": "s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-19T01:06:18.147Z",
-     "updatedAt": "2026-11-19T01:06:20.232Z"
-    },
-    {
      "id": "s7",
      "uid": "st-mwmuoyjm0168do",
      "title": "",
@@ -322162,28 +322140,6 @@
      "rev": 1,
      "createdAt": "2026-11-19T01:15:30.323Z",
      "updatedAt": "2026-11-19T01:15:32.154Z"
-    },
-    {
-     "id": "s10",
-     "uid": "st-mwmv01v4013a6f",
-     "title": "",
-     "text": "s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-19T01:16:08.948Z",
-     "updatedAt": "2026-11-19T01:16:11.248Z"
     }
    ],
    "profiles": [
@@ -322201,7 +322157,35 @@
    "queue": null,
    "defaultAt": "2026-11-18T14:45:31.829Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s6",
+      "uid": "st-mwmundu001dg92",
+      "title": "",
+      "text": "s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-19T01:06:18.147Z",
+      "updatedAt": "2026-11-19T01:06:20.232Z"
+     },
+     "at": "2026-11-19T01:17:59.040Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    }
+   ],
    "legacy": [],
    "copies": []
   },
