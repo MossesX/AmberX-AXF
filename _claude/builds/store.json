@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9263,
- "updatedAt": "2026-11-19T03:33:17.338Z",
+ "rev": 9264,
+ "updatedAt": "2026-11-19T03:41:06.525Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321873,7 +321873,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:32:52.213Z",
+   "updatedAt": "2026-11-19T03:40:40.732Z",
    "builtAt": "",
    "notes": [
     {
@@ -322039,6 +322039,10 @@
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T03:32:52.213Z"
+    },
+    {
+     "text": "s8: builds store and journal flipped to axf-data tables (cutover, counts equal: 1066 builds, 6765 steps, 7683 notes). agent-slots left local: live worktrees (fix-main-ci-apk, postgres-part-b, postgres-part-c) still run pre-s4.1 agent-slots.mjs; flip with 'agent-slots.mjs data cutover --apply' once they carry it.",
+     "at": "2026-11-19T03:40:40.732Z"
     }
    ],
    "approvals": [
@@ -322291,7 +322295,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
