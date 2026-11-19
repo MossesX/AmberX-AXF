@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 17:34 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
 - 2026-11-18 17:34 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
 - 2026-11-18 17:34 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
 - 2026-11-18 17:34 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done, s20 done, note (all) · foreign-write
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 07:22 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 07:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 07:42 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 07:51 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 
 ## Token passes (log)
 
