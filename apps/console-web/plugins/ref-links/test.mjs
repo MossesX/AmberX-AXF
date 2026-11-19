@@ -30,7 +30,7 @@ const ids = t.map((x) => x.id);
 check('builds from the store (archived left out)', ids.includes('build:terminal-sessions-nav') && ids.includes('build:settings-wizard') && !ids.includes('build:gone-build'));
 check('a build carries its declared touches', t.find((x) => x.id === 'build:terminal-sessions-nav')?.touches?.join() === 'screen:terminal,toolbar:terminal');
 check('a build with a PR adds the PR', t.find((x) => x.id === 'pr:290')?.url?.endsWith('/pull/290'));
-check('every plugin is a target', ids.includes('plugin:push-banner') && ids.includes('plugin:ref-links'));
+check('every plugin is a target', ids.includes('plugin:gate') && ids.includes('plugin:ref-links'));
 check('console catalog items are targets', ids.includes('screen:plan-studio') && ids.includes('settings:terminal') && ids.includes('dialog:about'));
 
 const f = R.run({ op: 'find', text: 'Terminal settings and the Plan Studio screen for terminal-sessions-nav (PR 290); see apps/console-web/plugins/ref-links/refs.mjs', extra: catalog });

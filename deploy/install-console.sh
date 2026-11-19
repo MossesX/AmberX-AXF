@@ -232,11 +232,7 @@ docker network inspect axf-data >/dev/null 2>&1 && { docker network connect axf-
 # Pull main every 5 minutes; re-run this installer when it changed, and also while the sign-in wall waits for the hub.
 # Progress goes to update-status.json for the console's Activity banner. The script is root-only (0700): it carries
 # GITHUB_TOKEN for the re-run.
-# One deploy per merge-queue stack (Brett, Nov 4 2026: "Save the compute"): while the queue is merging a stack it
-# keeps push-banner/queue-merging fresh; the update waits until the last PR of the stack is in (stale after 15 min).
-QUEUE_HOLD="$DIR/.axf-console/plugins/push-banner/queue-merging"  # axf-plugin:push-banner
 AXF_UPDATE_DEPLOY="${AXF_DEPLOY_LOG:-$DIR/.axf-console/deploys/log.jsonl} console" \
-AXF_UPDATE_PRELUDE="[ -n \"\$(find \"$QUEUE_HOLD\" -mmin -15 2>/dev/null)\" ] && exit 0  # the merge queue is landing a stack: one deploy once it is all in" \
 axf_update_script /usr/local/bin/axf-console-update "$DIR" "$BRANCH" /var/log/axf-console-update.log \
   "GITHUB_TOKEN=\"$GITHUB_TOKEN\" DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" PORT=\"$PORT\" bash \"$DIR/deploy/install-console.sh\"" \
   "$DIR/.axf-console/update-status.json" "$DIR/.axf-console/wall-waiting"
@@ -261,13 +257,14 @@ axf_cron_file axf-pipeline "* * * * * root P=$DIR/apps/console-web/plugins/build
 # cron line: watchdog.mjs install-cron (/etc/cron.d/axf-watchdog, flock /run/axf-watchdog.lock, removes itself with the plugin).
 WD_JS="$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs"  # axf-plugin:build-orchestrator
 [ -f "$WD_JS" ] && { (cd "$DIR" && node "$WD_JS" install-cron --dir "$DIR") | sed 's/^/[axf] /' || say "watchdog cron not installed"; }  # axf-plugin:build-orchestrator
-# Auto-land (push banner, Nov 3 2026, Brett: "zero tokens for merging"): every 3 minutes a plain script lands finished
-# builds (worktree cleaned, main merged in, PR opened, CI started); the console's auto-merge merges them. No model calls.
-axf_cron_file axf-auto-land "*/3 * * * * root L=$DIR/apps/console-web/plugins/push-banner/land/land.mjs; [ -f \$L ] && cd $DIR && AXF_LAND_REPO=$DIR flock -n /run/axf-auto-land.lock timeout 900 node \$L run >> /var/log/axf-auto-land.log 2>&1"  # axf-plugin:push-banner
-# The server auto-lander (auto-lander@1, Brett Nov 16 2026: "Make the server do it automatically without the console"):
-# a systemd service + timer, every minute: merges main into clashing builds, starts fix sessions for red CI, hands green
-# PRs to the merge queue, escalates to the systems check after maxAttempts. Status: node deploy/auto-lander/auto-lander.mjs status
-axf_auto_lander_install "$DIR" || echo "auto-lander: not installed (see above)"  # axf-plugin:gate
+# The push banner's auto-land cron is retired with the push banner (Pipeline 2.0, Nov 19 2026): a deploy removes it so
+# it never comes back (it was parked in /root/axf-disabled-crons first).
+rm -f /etc/cron.d/axf-auto-land
+# The lander (lander@1, Pipeline 2.0, Brett Nov 18 2026: "absolutely no human intervention, ever"): a systemd service +
+# timer, every minute: the one build at build-complete lands as one PR (or 2, 3+ over the size cap), main pulled in, CI
+# once with the gate's build rules, merged; failures retry forward by themselves. It replaces the auto-lander@1 timer.
+# Status: node deploy/lander/run.mjs status
+axf_lander_install "$DIR" || echo "lander: not installed (see above)"  # axf-plugin:gate
 # Rotated Claude tokens (refresh-token-save, Nov 6 2026): the live login's renewals reach its saved copy within a minute,
 # and pairs AI keys renews reach the host's logins. Builds' own copies save back by themselves (claude-headless.sh).
 axf_cron_file axf-claude-token-save "* * * * * root T=$DIR/deploy/claude-token-save.mjs; [ -f \$T ] && flock -n /run/axf-claude-token-save.lock node \$T sweep >> /var/log/axf-claude-token-save.log 2>&1"

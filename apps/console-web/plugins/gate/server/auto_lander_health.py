@@ -1,4 +1,4 @@
-"""The server auto-lander on the systems check (axf.health@1; auto-lander@1, framework/spec/AUTO-LANDER.md).
+"""The server lander on the systems check (axf.health@1; lander@1, deploy/lander/run.mjs; auto-lander@1 before Nov 19 2026).
 
   gate-auto-lander   red when the auto-lander gave up on a build (attempts reached maxAttempts: what broke, since when,
                      the last attempt's log) or when its service stopped ticking (no tick for SERVICE_DOWN_MIN minutes);
@@ -55,10 +55,17 @@ def check(st: dict[str, Any], now_ms: float) -> dict[str, Any]:
     if not last or now_ms - last > SERVICE_DOWN_MIN * 60000:
         since = _when(svc.get("lastTick", "")) if last else "it was installed"
         return {"status": "error", "summary": f"The auto-lander service hasn't ticked since {since}: nothing is fixed or landed by itself.",
-                "details": ["On the VPS: systemctl status axf-auto-lander.timer; journalctl -u axf-auto-lander -n 50",
+                "details": ["On the VPS: systemctl status axf-lander.timer; journalctl -u axf-lander -n 50",
                             "Install or repair: sudo bash /opt/axf/deploy/install-console.sh (it installs the timer)"]}
     if svc.get("paused") and _ms(svc.get("pausedAt", "")) and now_ms - _ms(svc["pausedAt"]) > PAUSED_H * 3600000:
         return {"status": "warn", "summary": f"The auto-lander has been paused since {_when(svc.get('pausedAt', ''))} by {svc.get('pausedBy') or 'someone'}: nothing is fixed or landed by itself."}
+    failing = st.get("failing") or []
+    if failing:
+        f = failing[0]
+        more = f" and {len(failing) - 1} more" if len(failing) > 1 else ""
+        return {"status": "warn", "summary": f"{f.get('build')}{more} failed {f.get('attempt')} times landing ({f.get('kind')}): {str(f.get('why') or '')[:160]} "
+                                             "The lander keeps retrying by itself; nobody needs to act.",
+                "details": [f"{x.get('build')}{' (#' + str(x['pr']) + ')' if x.get('pr') else ''}: attempt {x.get('attempt')}, {x.get('kind')}: {str(x.get('why') or '')[:200]}" for x in failing[:8]]}
     n = len(st.get("builds") or [])
     return {"status": "ok", "summary": f"The auto-lander is {'paused' if svc.get('paused') else 'running'}; {n} build{'' if n == 1 else 's'} tracked{', working on ' + st['current'] if st.get('current') else ''}."}
 
@@ -87,7 +94,7 @@ def ensure(services: Any, status: Callable[[], dict[str, Any]], fix: Callable[[s
                       "autoFix": {"label": "Reset and fix now", "mode": "ask", "run": lambda: fix_all(status(), fix)},
                       "instructions": ["Press Fix (Reset and fix now): the attempts are reset and a fix session starts on the next tick.",
                                        "Or open Builds → Gate & rules → Auto-lander, read the attempt log, and Retry one build.",
-                                       "CLI: node deploy/auto-lander/auto-lander.mjs status · fix <build>; MCP gate-auto-lander_retry."]}, OWNER)
+                                       "CLI: node deploy/lander/run.mjs status · fix <build>; MCP gate-auto-lander_retry."]}, OWNER)
     except Exception:  # noqa: BLE001 — the plugin works without its check
         return False
     return True
