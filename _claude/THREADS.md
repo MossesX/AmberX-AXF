@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:25 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
-- 2026-11-18 13:25 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 13:25 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
-- 2026-11-18 13:25 UTC · `plan-studio-2-open-button-working-deep` added (15 steps) (all) · foreign-write
-- 2026-11-18 13:25 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (4 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `vps-never-gives-up-fix-land-every-build` added (4 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `every-app-gets-own-locked-default` added (6 steps) (all) · foreign-write
 - 2026-11-18 13:25 UTC · `every-plugin-gets-own-default-toolbar` added (7 steps) (all) · foreign-write
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:31 UTC · `urgent-all-data-to-postgres-builds-store` → pending (all) · voice session
 - 2026-11-19 00:33 UTC · `urgent-all-data-to-postgres-builds-store` → queued, note (all) · cli
 - 2026-11-19 00:33 UTC · `queue-stall-detector-vps-spots-queued` note (all) · orchestrator
+- 2026-11-19 00:35 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · pipeline
+- 2026-11-19 00:36 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
+- 2026-11-19 00:36 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
+- 2026-11-19 00:36 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
+- 2026-11-19 00:36 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 
 ## Token passes (log)
 
