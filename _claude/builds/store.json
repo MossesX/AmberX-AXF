@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9260,
- "updatedAt": "2026-11-19T03:10:43.919Z",
+ "rev": 9261,
+ "updatedAt": "2026-11-19T03:12:21.919Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323044,7 +323044,7 @@
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "#849",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T03:10:17.133Z",
+   "updatedAt": "2026-11-19T03:11:50.515Z",
    "builtAt": "2026-11-19T03:10:17.211Z",
    "notes": [
     {
@@ -323070,6 +323070,10 @@
     {
      "text": "All 4 steps done, PR #849 CI green (run 44446258602). 35 tables + 7 views (services/axf-data/tables_shapes.py, tables_console.py, tables_plugins.py; tables v5), data-cut tool + groups (framework/schemas/data-cut.json), writers moved onto the data layer, live backfill of 2 844 keys (2 814 equal at the last read). Flips NOT run yet on purpose: after the merge, redeploy axf-data (deploy/install-data.sh: creates the tables, retable moves records, installs the hourly sync cron) and the console, then: node framework/cli/data-cut.mjs cutover console --apply; then plugins-large; then plugins-rest (cli token, AXF_DATA_URL from host.env). Report: _claude/builds/reports/postgres-part-c.md.",
      "at": "2026-11-19T03:08:47.031Z"
+    },
+    {
+     "text": "Session axf-postgres-part-c-console-state-settings--paulie on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-19T03:11:50.515Z"
     }
    ],
    "approvals": [],
@@ -323090,14 +323094,23 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "hulu0241",
-    "session": "axf-postgres-part-c-console-state-settings--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "phase": "",
     "launchedAt": "2026-11-19T00:14:28.826Z",
     "runs": 1,
     "crashes": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-19T03:11:30.314Z",
+     "exit": 0,
+     "outcome": "finished",
+     "reason": "all-done",
+     "stepsLeft": 0,
+     "account": "hulu0241",
+     "session": "axf-postgres-part-c-console-state-settings--paulie",
+     "phase": "Phase 1"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
@@ -323224,7 +323237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
