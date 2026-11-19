@@ -27,6 +27,7 @@
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, statSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
@@ -47,10 +48,12 @@ export const trackerFile = () => process.env.AXF_ORCH_FILE || orchestratorPath()
 export const repoRoot = () => process.env.AXF_SWARM_REPO || ROOT;
 export const dataDir = () => process.env.AXF_SWARM_DIR || join(ROOT, '.axf-console/plugins/agent-swarm');
 
-export function readJson(f, fallback) { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return fallback; } }
+// through the data layer (framework/core/data-files.mjs): the file while its key is local, axf-data's rows once the key is
+// cut over (postgres part C: runs.json → swarm_runs, state.json → swarm_messages / swarm_notices); unmapped files stay local
+export function readJson(f, fallback) { return dataFiles.readJsonSync(f, fallback); }
 export function writeJson(f, data) {
   mkdirSync(dirname(f), { recursive: true });
-  const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(data, null, 1)}\n`); renameSync(tmp, f);
+  dataFiles.writeJsonSync(f, data, 1);
 }
 
 /** The roster file plus agents hired from the Breakroom (one-tap hires for job types, kept in the swarm state). */

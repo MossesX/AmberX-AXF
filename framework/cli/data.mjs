@@ -10,6 +10,8 @@
  *   axf data migrate [plan|apply|verify] [<ns>…|--all]   framework/cli/data-migrate.mjs (dry run by default)
  *   axf data get <key> | list <ns> [--prefix p]   read one key / list a namespace
  *   axf data tables [--sync chats|ledger|<key>]   the Postgres tables (rows, bytes, what each holds), SQLite mirrors; --sync mirrors one now
+ *   axf data cut [groups|status|copy|verify|cutover|sync|local] [<group>…] [--apply] [--no-flip]   group moves onto the
+ *                                                 Postgres rows: backfill, verify, key-level cut over (framework/cli/data-cut.mjs)
  *   axf data engine [sqlite|shadow|postgres] [--accept-drift]   which engine axf-data reads from, drift, next move; with a mode: move it
  *   --json on every command
  *
@@ -20,7 +22,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { remoteStore } from '../core/data-files.mjs';
 
-const HELP = `axf data [status|backup|verify|mode|drift|migrate|get|list|tables|engine] … (see framework/cli/data.mjs)`;
+const HELP = `axf data [status|backup|verify|mode|drift|migrate|cut|get|list|tables|engine] … (see framework/cli/data.mjs)`;
 const ENGINES = ['sqlite', 'shadow', 'postgres'];
 const MIRRORS = { chats: 'plugins/chat-viewer/chats.db', ledger: 'plugins/shipped-features/ledger.sqlite' };
 const fmtBytes = (n) => (n >= 1 << 30 ? `${(n / (1 << 30)).toFixed(1)} GB` : n >= 1 << 20 ? `${(n / (1 << 20)).toFixed(1)} MB` : n >= 1024 ? `${(n / 1024).toFixed(0)} KB` : `${n} B`);
@@ -28,7 +30,7 @@ const fmtBytes = (n) => (n >= 1 << 30 ? `${(n / (1 << 30)).toFixed(1)} GB` : n >
 export async function main(argv = process.argv.slice(2)) {
   const args = [...argv];
   const json = args.includes('--json');
-  const sub = ['status', 'backup', 'verify', 'mode', 'drift', 'migrate', 'get', 'list', 'tables', 'engine', 'help'].includes(args[0]) ? args.shift() : 'status';
+  const sub = ['status', 'backup', 'verify', 'mode', 'drift', 'migrate', 'cut', 'get', 'list', 'tables', 'engine', 'help'].includes(args[0]) ? args.shift() : 'status';
   const out = (v, text) => console.log(json ? JSON.stringify(v, null, 1) : text(v));
   if (sub === 'help') { console.log(HELP); return 0; }
   const call = async (method, path, body) => {
@@ -37,6 +39,10 @@ export async function main(argv = process.argv.slice(2)) {
     if (!r.ok) throw Object.assign(new Error(j.message || `axf-data answered ${r.status}`), { code: j.code });
     return j;
   };
+  if (sub === 'cut') {
+    const { spawnSync } = await import('node:child_process');
+    return spawnSync(process.execPath, [fileURLToPath(new URL('./data-cut.mjs', import.meta.url)), ...args], { stdio: 'inherit' }).status ?? 1;
+  }
   if (sub === 'migrate') { process.argv = [process.argv[0], fileURLToPath(new URL('./data-migrate.mjs', import.meta.url)), ...args]; await import('./data-migrate.mjs'); return 0; }
   if (sub === 'status' || sub === 'drift' || sub === 'mode') {
     const mode = await import('./data-mode.mjs');

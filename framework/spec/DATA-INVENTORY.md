@@ -28,6 +28,11 @@ axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` da
   `node framework/cli/builds-data.mjs cutover --apply`; `builds-data.mjs status` shows both sides. The file-lock path
   (`store.json.lock`, the `tmp-*` files) is no longer in use for the store; s3 removes the leftovers.
 
+- **Part C (Nov 19 2026, Opus)**: §3, §4, §5 (console part) and §6 have their tables (tables version 5: 35 tables, 7
+  views) and are backfilled; every key is in a group of `framework/schemas/data-cut.json` and moves with
+  `node framework/cli/data-cut.mjs` (copy, verify, key-level cutover of the entries whose writers all use the data layer,
+  hourly sync for the rest). Report: `_claude/builds/reports/postgres-part-c.md`.
+
 Row counts below are live `keys` rows in axf-data (not deleted); sizes are the stored bodies.
 
 ## Legend

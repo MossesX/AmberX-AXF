@@ -29,6 +29,7 @@ from typing import Any
 import plugin_services
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import storage
+import data_store  # noqa: E402  (console server/data_store.py: storage.* routed by data-store-mode@1 → axf-data rows once cut over)
 
 ROOT = Path(os.environ.get("AXF_ROOT", Path(__file__).resolve().parents[5])).resolve()
 DATA = Path(os.environ.get("AXF_SNAPSHOT_MANAGER_DIR", ROOT / ".axf-console" / "plugins" / "snapshot-manager"))
@@ -48,11 +49,11 @@ def _actor(a: dict[str, Any] | None) -> dict[str, Any]:
 
 
 def _write_json(p: Path, data: Any) -> None:
-    storage.write_json(p, data, indent=None)  # atomic, 0600, folder 0700 (axf_server.storage)
+    data_store.write_json(p, data, indent=None)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 def _read_json(p: Path, default: Any) -> Any:
-    return storage.read_json(p, default)
+    return data_store.read_json(p, default)
 
 
 def settings() -> dict[str, Any]:

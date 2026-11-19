@@ -119,6 +119,9 @@ class PgStore:
             conn.execute(T.MIGRATE_V2_SQL)
             conn.execute(SCHEMA_SQL)
             T.migrate_v2(conn)
+            v = conn.execute("SELECT v FROM meta WHERE k='tables_version'").fetchone()
+            if not v or int(v['v'] or 0) < T.TABLES_VERSION:
+                T.retable(conn)
             conn.execute('INSERT INTO meta (k, v) VALUES (%s, %s) ON CONFLICT (k) DO UPDATE SET v=EXCLUDED.v', ('tables_version', str(T.TABLES_VERSION)))
         return conn
 
@@ -193,6 +196,10 @@ class PgStore:
         t = T.table_for(ns, path, kind, content_type, body)
         if t:
             cur.execute('DELETE FROM records WHERE ns=%s AND path=%s', (ns, path))
+            cur.execute('SELECT table_name FROM keys WHERE ns=%s AND path=%s', (ns, path))
+            was = cur.fetchone()
+            if was and was['table_name'] and was['table_name'] != t.name:
+                self._clear_tables(cur, ns, path)  # the body changed shape: its rows in the other table go
             t.write(cur, ns, path, body)
             out = t.read(cur, ns, path)
             return out if out is not None else body, t.name, None

@@ -26,6 +26,7 @@ from typing import Any
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf.contracts import agents as contract  # framework/python
 from axf_server import storage
+import data_store  # noqa: E402  (console server/data_store.py: storage.* routed by data-store-mode@1 → axf-data rows once cut over)
 
 from . import llm, store
 
@@ -58,7 +59,7 @@ def load(scope: str) -> dict[str, Any]:
 def save(scope: str, mem: dict[str, Any]) -> None:
     with _lock:
         p = _path(scope)
-        storage.write_json(p, mem, indent=None, ensure_ascii=False)  # atomic, 0600 (axf_server.storage)
+        data_store.write_json(p, mem, indent=None, ensure_ascii=False)  # atomic, 0600 (axf_server.storage)
 
 
 tokens = contract.tokens

@@ -31,6 +31,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { gitAuthEnv, scrub } from './github.mjs';
 import { applyToPluginFile } from './build-defaults.mjs';
 import { installClash } from './plugin-instances.mjs';
+import { readJsonSync as dataReadJson, writeJsonSync as dataWriteJson } from '../core/data-files.mjs';
 import { coverage as commandCoverage } from './plugin-commands.mjs';
 
 export const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.meta.url)), '../..'));
@@ -58,7 +59,7 @@ const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo|too
 // data-store@1 maps every plugin's data folder to a namespace key (the path map, its fixtures), names the SQLite files it
 // mirrors as tables (the data-store plugin, the axf data CLIs, the axf-data service), and its specs and tests seed plugin
 // data files as fixtures: a plugin removed later leaves a line that maps nothing, data, not a reference.
-const DATA_STORE_MAP = /^(framework\/schemas\/data-store(-paths)?\.json|framework\/spec\/DATA-STORE\.md|framework\/spec\/fixtures\/data-store[a-z-]*\.json|framework\/spec\/check-(data-store[a-z-]*|data-migrate|builds-store-data)\.mjs|services\/axf-data\/test_[a-z_]+\.py|apps\/console-web\/server\/test_data_store\.py|apps\/console-web\/plugins\/data-store\/.+|framework\/cli\/data(-[a-z]+)?\.mjs|services\/axf-data\/[a-z_]+\.py)$/;
+const DATA_STORE_MAP = /^(framework\/schemas\/data-store(-paths)?\.json|framework\/schemas\/data-cut\.json|framework\/spec\/DATA-INVENTORY\.md|framework\/spec\/DATA-STORE\.md|framework\/spec\/fixtures\/data-store[a-z-]*\.json|framework\/spec\/check-(data-store[a-z-]*|data-migrate|data-cut|builds-store-data)\.mjs|services\/axf-data\/test_[a-z_]+\.py|apps\/console-web\/server\/test_data_store\.py|apps\/console-web\/plugins\/data-store\/.+|framework\/cli\/data(-[a-z]+)?\.mjs|services\/axf-data\/[a-z_]+\.py)$/;
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
@@ -102,14 +103,17 @@ function sizeOf(path) {
   return { files, bytes };
 }
 
+// state.json through the data layer (data-files.mjs): the file while console/state.json is local, the console_state rows
+// on axf-data once it is cut over (postgres part C); the console server writes the same key through data_store.py
 function readState() {
-  try { return JSON.parse(readFileSync(STATE, 'utf8')); } catch { return {}; }
+  const s = dataReadJson(STATE, {});
+  return s && typeof s === 'object' && !Array.isArray(s) ? s : {};
 }
 function writeState(mut) {
   const s = readState();
   mut(s);
   mkdirSync(dirname(STATE), { recursive: true });
-  writeFileSync(STATE, JSON.stringify(s, null, 2));
+  dataWriteJson(STATE, s, 2);
 }
 
 /* ------------------------------------------------------------------ stale reference scan */

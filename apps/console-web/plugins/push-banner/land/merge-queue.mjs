@@ -27,6 +27,7 @@
  * After each round its news goes to the crew's group chat as the owner of section `merge-queue` (chatRound below).
  */
 import { existsSync, mkdtempSync, readFileSync, renameSync, rmSync, writeFileSync, mkdirSync } from 'node:fs';
+import * as dataFiles from '../../../../../framework/core/data-files.mjs';
 import { spawnSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
@@ -35,8 +36,9 @@ import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
 import { ciOf, crewSay, mergeMain, reapFirst, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
+// the lander's state through the data layer (framework/core/data-files.mjs): files while local, axf-data rows once cut over
+const readJson = (f, d) => dataFiles.readJsonSync(f, d);
+function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); dataFiles.writeJsonSync(f, v, 1); }
 const lines = (t) => String(t || '').split('\n').map((x) => x.trim()).filter(Boolean);
 
 export const queueFile = (s) => join(s.dataDir, 'merge-queue.json');

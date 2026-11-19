@@ -25,6 +25,7 @@
  * (offer a default like 'Breakroom check - Oct 31 8:20 PM'); headless sessions name the group after their build.
  */
 import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -34,8 +35,9 @@ import * as cf from './web/conform.mjs';
 import { caller, dataDir, submitLocal } from './review.mjs';
 
 const IMG = /\.(png|jpe?g|webp)$/i;
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp`; writeFileSync(t, JSON.stringify(v, null, 1)); renameSync(t, f); };
+const readJson = (f, d) => dataFiles.readJsonSync(f, d);
+// through the data layer (framework/core/data-files.mjs): items.json follows its key onto axf-data's ui_review_items rows
+const writeJson = (f, v) => { mkdirSync(dirname(f), { recursive: true }); dataFiles.writeJsonSync(f, v, 1); };
 export const shotsDir = () => join(dataDir(), 'screenshots');
 const indexFile = () => join(shotsDir(), 'index.json');
 /** screenshots/index.json → working records (ui-review-item@1 screenshots → the Screenshots tab's shape) + groups. */

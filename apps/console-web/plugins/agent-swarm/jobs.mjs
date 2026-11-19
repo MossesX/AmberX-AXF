@@ -27,6 +27,7 @@
  * once they land there. Each run gets its own git worktree under the swarm's data folder.
  */
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -89,7 +90,7 @@ export function run(typeId, opts = {}) {
   if (opts.dry) return { ok: true, dry: true, jobType: jt.id, agent: agent.id, model: r.model, cap: r.cap, session, runId, brief, args };
   if (jc.lastRunOf(runs, jt.id)?.jobId === runId) throw new Error(`${jt.name} already started this minute (${runId})`);
   const wt = jobWorktree(jt, runId, runId.slice(-15));
-  const briefFile = join(dataDir(), 'job-briefs', `${runId}.md`); mkdirSync(join(dataDir(), 'job-briefs'), { recursive: true }); writeFileSync(briefFile, `${brief.text}\n`);
+  const briefFile = join(dataDir(), 'job-briefs', `${runId}.md`); mkdirSync(join(dataDir(), 'job-briefs'), { recursive: true }); dataFiles.writeTextSync(briefFile, `${brief.text}\n`);
   const log = `.axf-job-${runId}.log`.slice(0, 80);
   const p = spawnSync('bash', [launcher(), '--name', session, '--brief', briefFile, '--log', log, '--', ...args], { cwd: wt.path, encoding: 'utf8', env: { ...process.env, AXF_SURFACE: 'agent-job', AXF_MODEL: r.model, AXF_SESSION: session, AXF_AGENT: agent.id, AXF_AGENT_NAME: agent.name || agent.id, AXF_AGENT_BOOKED: runId, AXF_JOB_TYPE: jt.id }, timeout: 60000 });
   if (p.status !== 0) throw new Error(`launch failed: ${(p.stderr || p.stdout || '').trim().slice(-400)}`);
@@ -142,7 +143,7 @@ export function sweep(opts = {}) {
     const rec = updateRun(r.jobId, { endedAt: new Date().toISOString(), status: tr.final || build ? o.status : 'error', reason: tr.final || build ? o.reason : 'the session ended without a result', report: o.report, usage: tr.usage, budgetTokens: core.budgetTokens(tr.usage), turns: tr.turns, reportedCost: tr.reportedCost });
     if (!rec) continue;
     // the final message is kept as the run's report (read-only jobs can't write files): data folder, by run id
-    if (tr.text) { const f = join(dataDir(), 'job-reports', `${rec.jobId}.md`); mkdirSync(join(dataDir(), 'job-reports'), { recursive: true }); writeFileSync(f, `${tr.text.trim()}\n`); updateRun(rec.jobId, { reportFile: f }); }
+    if (tr.text) { const f = join(dataDir(), 'job-reports', `${rec.jobId}.md`); mkdirSync(join(dataDir(), 'job-reports'), { recursive: true }); dataFiles.writeTextSync(f, `${tr.text.trim()}\n`); updateRun(rec.jobId, { reportFile: f }); }
     chatAfterRun(rec); closed.push(rec.jobId);
   }
   return closed;

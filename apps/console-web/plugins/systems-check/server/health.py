@@ -33,6 +33,7 @@ from typing import Any, Callable
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import storage
+import data_store  # noqa: E402  (console server/data_store.py: storage.* routed by data-store-mode@1 → axf-data rows once cut over)
 
 VERSION = 1
 CAPABILITY = "axf.health@1"
@@ -264,14 +265,14 @@ class Monitor:
 
     def _load(self) -> dict[str, dict[str, Any]]:
         if self._mem is None:
-            raw = storage.read_json(self.state_file(), {})
+            raw = data_store.read_json(self.state_file(), {})
             self._mem = {k: v for k, v in (raw.get("checks") or {}).items() if isinstance(v, dict)} if isinstance(raw, dict) else {}
             self._hist = [f for f in (raw.get("fixes") or []) if isinstance(f, dict)][-HISTORY_KEEP:] if isinstance(raw, dict) else []
         return self._mem
 
     def _save(self) -> None:
         try:
-            storage.write_json(self.state_file(), {"$axf": "systems-check-health-state@1", "checks": self._mem or {}, "fixes": self._hist or []}, indent=1)
+            data_store.write_json(self.state_file(), {"$axf": "systems-check-health-state@1", "checks": self._mem or {}, "fixes": self._hist or []}, indent=1)
         except OSError:
             pass
 

@@ -16,7 +16,7 @@ written here.
 |---|---|
 | `main.py` | the HTTP API (`/v1/…`), auth, the backup / tables / engine routes |
 | `pg.py` | the Postgres engine: keys, records (JSONB), blobs, append-only journal (trigger), history, feed, snapshots; domain tables through `tables.py` |
-| `tables.py` | the real tables: `builds` + `build_steps`, `ui_review_items`, `planner_items`, `settings`, `notes`, `control_targets` + `control_tabs`, `store_heads`; SQLite mirrors (`ledger_*`, `chats_*`, `mirror_runs`) |
+| `tables.py` | the real tables: `builds` + `build_steps`, `ui_review_items`, `planner_items`, `settings`, `notes`, `control_targets` + `control_tabs`, `store_heads`; the console and plugin row families (`console_state`, `alerts`, `plugin_settings`, `plugin_docs`, `swarm_*`, `land_items`… part C); SQLite mirrors (`ledger_*`, `chats_*`, `mirror_runs`); `retable` moves old records into new tables |
 | `engine.py` | which engine runs (`AXF_DATA_DSN`), and the staged move sqlite → shadow → postgres with a drift log |
 | `migrate_pg.py` | SQLite axf-data → Postgres: backup first, copy key for key, counts + manifests must match |
 | `mirror_sync.py` | mirror a SQLite file the console still writes (Chat viewer db, Shipped features ledger) into rows |
@@ -59,8 +59,16 @@ each checked against the rev it was read at, the head fields given and one journ
 only those rows (`SELECT … FOR UPDATE`). It is how `framework/cli/builds-store.mjs` writes the builds store after the cut
 (`node framework/cli/builds-data.mjs cutover --apply`). The SQLite engine answers the same patch on the document.
 
+The console's and the plugins' own documents (postgres part C, Nov 19 2026) use four generic shapes: `KvTable` (an object →
+one row per key: `console_state`, `plugin_settings`, `health_checks`…), `ArrayTable` (a list, or one list inside a document
+→ one row per item: `alerts`, `swarm_runs`, `glossary_terms`, `app_catalog` + `app_catalog_versions`…), `MapTable` (an
+object of id → object: `amberx_notes`) and `TextTable` (Markdown: `swarm_jobs`); `plugin_docs` takes every nested plugin
+document, and the views `plugin_audit`, `console_deploys`, `token_log`, `phone_log`, `land_log`, `ui_review_shots`,
+`chat_audio` sit over the journal and keys rows. Which keys move, and when, is `framework/schemas/data-cut.json`
+(`node framework/cli/data-cut.mjs`, `axf data cut`).
+
 The two SQLite files the console still writes are mirrored table for table: the Shipped features ledger on every upload
-(`ledger_features`, `ledger_edits`, `ledger_manifests`…), the Chat viewer db nightly from the mounted file
+(`ledger_features`, `ledger_edits`, `ledger_manifests`…), the Chat viewer db hourly from the mounted file
 (`chats_sessions`, `chats_messages`; it is bigger than a blob may be). `mirror_runs` records each run and its counts;
 `POST /v1/_meta/tables/sync { source }` / `axf data tables --sync chats|ledger` runs one now.
 

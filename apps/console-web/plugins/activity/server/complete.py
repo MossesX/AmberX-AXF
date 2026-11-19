@@ -35,6 +35,7 @@ import plugin_services
 
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import storage
+import data_store  # noqa: E402  (console server/data_store.py: storage.* routed by data-store-mode@1 → axf-data rows once cut over)
 
 ACTIVE = ("queued", "running", "waiting")
 PUSH = ("off", "all", "done", "failed")
@@ -153,7 +154,7 @@ class Completer:
         if len(d) > MAX_SEEN:
             d = dict(list(d.items())[-MAX_SEEN:])
         self.dir.mkdir(parents=True, exist_ok=True)
-        storage.write_json(self.dir / "seen.json", d, indent=None, dir_mode=None)
+        data_store.write_json(self.dir / "seen.json", d, indent=None, dir_mode=None)
 
     # ---------------- watching
 

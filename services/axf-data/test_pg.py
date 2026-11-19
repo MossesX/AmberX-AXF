@@ -252,7 +252,7 @@ def test_tables_v1_rows_are_rekeyed_on_connect():
         st.q("INSERT INTO control_targets (section, pos, address, extra, doc_hash, child_lifted) VALUES ('tabGroups', 0, 'a', '{}', 'h', true), ('views', 0, 'v', '{}', 'h', NULL)")
         st.q("DELETE FROM meta WHERE k='tables_version'")
         st2 = pg_store(Path(st.dir).parent, st.schema)
-        assert st2.meta_get('tables_version') == '2'
+        assert st2.meta_get('tables_version') == str(T.TABLES_VERSION)
         assert st2.fetchall('SELECT rid, pos FROM builds ORDER BY pos') == [{'rid': 'x', 'pos': 0}, {'rid': 'y', 'pos': 1}]
         assert st2.fetchall('SELECT parent_rid, id FROM build_steps') == [{'parent_rid': 'x', 'id': 's1'}]
         assert st2.fetchall('SELECT parent_rid, text FROM build_notes') == [{'parent_rid': 'x', 'text': 'n1'}]
@@ -342,6 +342,170 @@ def test_other_domain_tables():
         assert tables['engine'] == 'postgres' and names['builds']['group'] == 'domain' and names['keys']['group'] == 'core'
         assert names['notes']['rows'] == 1 and names['planner_items']['rows'] == 2 and names['ui_review_items']['rows'] == 2
         assert code(c.get('/v1/_meta/tables', headers=H('console'))) == 'forbidden'
+
+
+def test_console_state_tables():
+    """Part C s1: the console's own documents are rows (console_state, alerts, alerts_seen, notifications, home_cards,
+    amberx_notes, app_catalog + versions), journals have views (console_deploys, token_log), every body reads back equal,
+    and a record stored before its table existed is moved into rows on connect (retable) with its etag unchanged."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        put = lambda k, doc: c.put(f'/v1/{k}', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        state = {'project': 'axf', 'terminal': [{'t': 1, 'line': 'x'}], 'plugins': {'a': {'on': True}}, 'n': None}
+        put('console/state.json', state)
+        put('console/host-check.json', {'$axf': 'host-check@1', 'at': 't', 'checks': [{'id': 'disk', 'ok': True}]})
+        alerts = [{'id': 'a1', 'key': 'ci', 'source': 'ci', 'severity': 'error', 'title': 'CI red', 'body': '', 'link': '', 'meta': {}, 'firstAt': 1, 'lastAt': 2,
+                   'count': 3, 'ack': False, 'resolved': False, 'resolvedAt': None}, {'id': 'a2', 'key': 'odd', 'severity': 'info', 'count': True}]
+        put('console/alerts.json', alerts)
+        put('console/alerts-seen.json', [39186205287, 39186205307, 'x'])
+        put('console/shared/notifications/inbox/2026/11/n1.json', {'id': 'n1', 'title': 'Hi', 'status': 'unread', 'extra': [1]})
+        put('console/home-cards/owner.json', {'$axf': 'home-layout@1', 'cards': [{'id': 'c1'}]})
+        put('console/amberx-notes/items/rows-0.json', {'t-1': {'id': 't-1', 'kind': 'task', 'title': 'Do', 'tags': ['a']}, 't-2': {'id': 't-2', 'kind': 'note'}})
+        put('console/amberx-notes/items/head.json', {'$axf': 'hub-table@1', 'table': 'items', 'count': 2, 'chunks': 1})
+        cat = {'$axf': 'app-catalog@1', 'updatedAt': 't', 'apps': [{'project': 'amberx-droid', 'name': 'AmberX', 'platform': 'android', 'appId': 'ai.amberx',
+               'versions': [{'version': '0.1.0', 'build': 3, 'file': 'apks/a.apk', 'size': 10, 'sha256': 'ab'}, {'version': '0.1.1', 'build': 'x'}]}]}
+        put('console/shared/app-catalog/catalog.json', cat)
+        for k, doc in [('console/state.json', state), ('console/alerts.json', alerts), ('console/alerts-seen.json', [39186205287, 39186205307, 'x']),
+                       ('console/shared/app-catalog/catalog.json', cat), ('console/amberx-notes/items/rows-0.json', None)]:
+            got = c.get(f'/v1/{k}', headers=H()).json()
+            if doc is not None:
+                assert got == json.loads(canonical(doc)), k
+        assert st.fetchone("SELECT value FROM console_state WHERE path='state.json' AND key='plugins'")['value'] == {'a': {'on': True}}
+        assert st.fetchone("SELECT COUNT(*) AS n FROM console_state WHERE path='host-check.json'")['n'] == 3
+        assert [(r['id'], r['severity'], r['count']) for r in st.fetchall('SELECT id, severity, count FROM alerts ORDER BY pos')] == [('a1', 'error', 3), ('a2', 'info', None)]
+        assert st.fetchone('SELECT COUNT(*) AS n FROM alerts_seen')['n'] == 3
+        assert st.fetchone('SELECT id, status FROM notifications') == {'id': 'n1', 'status': 'unread'}
+        assert st.fetchone('SELECT owner, schema FROM home_cards') == {'owner': None, 'schema': 'home-layout@1'}
+        assert [r['rid'] for r in st.fetchall('SELECT rid FROM amberx_notes ORDER BY pos')] == ['t-1', 't-2']
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='amberx-notes/items/head.json'")['table_name'] == ''
+        assert st.fetchone('SELECT app_id FROM app_catalog')['app_id'] == 'ai.amberx'
+        assert [(r['version'], r['build']) for r in st.fetchall('SELECT version, build FROM app_catalog_versions ORDER BY pos')] == [('0.1.0', 3), ('0.1.1', None)]
+        # journals: deploys log and token log as views over journal rows
+        c.post('/v1/console/deploys/log:append', content=json.dumps({'entries': [{'sha': 'abc', 'result': 'ok', 'at': 't'}]}), headers=J())
+        c.post('/v1/console/token-log/2026/11/06.jsonl:append', content=json.dumps({'entries': [{'$axf': 'token-turn@1', 'id': 'x', 'source': 'headless'}]}), headers=J())
+        assert st.fetchone('SELECT sha, result FROM console_deploys') == {'sha': 'abc', 'result': 'ok'}
+        assert st.fetchone('SELECT id, source FROM token_log') == {'id': 'x', 'source': 'headless'}
+        # a shape the table does not take stays a record
+        put('console/alerts-run.json', [1, 2])
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='alerts-run.json'")['table_name'] == ''
+        # replace + delete clear the rows
+        c.put('/v1/console/alerts.json', content=json.dumps(alerts[:1]), headers=J(**{'if-match': c.get('/v1/console/alerts.json', headers=H()).headers['etag']}))
+        assert st.fetchone('SELECT COUNT(*) AS n FROM alerts')['n'] == 1
+        c.delete('/v1/console/alerts.json', headers=H(**{'if-match': c.get('/v1/console/alerts.json', headers=H()).headers['etag']}))
+        assert st.fetchone('SELECT COUNT(*) AS n FROM alerts')['n'] == 0
+        # retable: a record written before the table existed (simulated) moves into rows on connect, etag unchanged
+        from tables import retable
+        st.q("UPDATE keys SET table_name='' WHERE path='state.json'")
+        st.q("DELETE FROM console_state WHERE path='state.json'")
+        st.q("INSERT INTO records (ns, path, data) VALUES ('console', 'state.json', %s)", (__import__('psycopg.types.json', fromlist=['Jsonb']).Jsonb(json.loads(canonical(state))),))
+        before = c.get('/v1/console/state.json', headers=H()).headers['etag']
+        with st.lock:
+            with st.db.transaction():
+                moved = retable(st.db, ('console',))
+        assert moved['moved'] >= 1 and moved['tables'].get('console_state') == 1, moved
+        assert st.fetchone("SELECT COUNT(*) AS n FROM records WHERE path='state.json'")['n'] == 0
+        st._assembled.clear()
+        r = c.get('/v1/console/state.json', headers=H())
+        assert r.headers['etag'] == before and r.json() == json.loads(canonical(state))
+        names = {t['name']: t for t in c.get('/v1/_meta/tables', headers=H()).json()['tables']}
+        assert names['console_state']['rows'] >= 3 and 'alerts_seen' in names and 'app_catalog_versions' in names
+
+
+def test_plugin_tables_s2():
+    """Part C s2: agent-swarm runs / messages / notices / sections said / job Markdown, the lander (land items, landing line,
+    merge queue), UI Review screenshots index + predictions are rows; images stay blobs listed by a view; a body that changes
+    shape moves out of its old table; text blobs written before their table existed are moved by retable."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        put = lambda k, doc: c.put(f'/v1/{k}', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        runs = {'$axf': 'swarm-runs@1', 'runs': [{'$axf': 'swarm-run@1', 'kind': 'job', 'jobId': 'j1', 'status': 'done', 'turns': 3, 'usage': {'in': 1}}, {'jobId': 'j2', 'turns': 'x'}]}
+        state = {'$axf': 'swarm-state@1', 'agents': {'a': {}}, 'messages': [{'id': 'm1', 'from': 'amber', 'text': 'hi', 'vibe': 1}], 'notices': [{'at': 't', 'agent': 'a', 'text': 'n'}]}
+        said = {'$axf': 'crew-sections-said@1', 'said': {'s1': '2026-11-18T19:40:27Z', 's2': 't2'}}
+        land = {'$axf': 'land@1', 'on': True, 'order': ['b1'], 'items': [{'id': 'b1', 'pr': 7, 'state': 'waiting', 'pushed': True}]}
+        line = {'$axf': 'landing-line@1', 'rev': 2, 'entries': [{'id': 'e1', 'pr': 9, 'state': 'ci'}], 'history': [{'id': 'e0', 'pr': 8, 'mainSha': 'abc'}]}
+        mq = {'$axf': 'merge-queue@1', 'on': True, 'depth': 3, 'history': [17, 18]}
+        shots = {'$axf': 'ui-shots@1', 'shots': [{'id': 's1', 'app': 'console-web', 'screen': 'home', 'group': 'g', 'size': 10, 'promoted': False}], 'groups': ['g']}
+        for k, d in [('plugins/agent-swarm/runs.json', runs), ('plugins/agent-swarm/state.json', state), ('plugins/agent-swarm/sections-said.json', said),
+                     ('plugins/push-banner/land.json', land), ('plugins/push-banner/landing-line.json', line), ('plugins/push-banner/merge-queue.json', mq),
+                     ('ui-review/screenshots/index.json', shots), ('ui-review/predictions/p.json', {'hash': 'h', 'at': 't', 'item': 'i', 'spec': {'x': 1}})]:
+            put(k, d)
+            assert c.get(f'/v1/{k}', headers=H()).json() == json.loads(canonical(d)), k
+        c.put('/v1/plugins/agent-swarm/job-briefs/j1.md', content='# Brief\n\nDo it é'.encode(), headers=H(**{'content-type': 'text/markdown', 'if-none-match': '*'}))
+        c.put('/v1/ui-review/shots/r1/a.png', content=b'\x89PNG\x00\x01', headers=H(**{'content-type': 'image/png', 'if-none-match': '*'}))
+        assert c.get('/v1/plugins/agent-swarm/job-briefs/j1.md', headers=H()).content == '# Brief\n\nDo it é'.encode()
+        assert [(r['job_id'], r['status'], r['turns']) for r in st.fetchall('SELECT job_id, status, turns FROM swarm_runs ORDER BY pos')] == [('j1', 'done', 3), ('j2', None, None)]
+        assert st.fetchone('SELECT sender, text FROM swarm_messages') == {'sender': 'amber', 'text': 'hi'}
+        assert st.fetchone('SELECT agent FROM swarm_notices')['agent'] == 'a'
+        assert st.fetchone("SELECT value FROM swarm_sections_said WHERE key='s2'")['value'] == 't2'
+        assert st.fetchone("SELECT folder, name FROM swarm_jobs") == {'folder': 'agent-swarm/job-briefs', 'name': 'j1.md'}
+        assert st.fetchone('SELECT id, pr, state FROM land_items') == {'id': 'b1', 'pr': 7, 'state': 'waiting'}
+        assert {r['section']: r['pr'] for r in st.fetchall('SELECT section, pr FROM landing_line')} == {'entries': 9, 'history': 8}
+        assert st.fetchone("SELECT value FROM merge_queue WHERE key='depth'")['value'] == 3
+        assert st.fetchone('SELECT app, grp FROM ui_review_screenshots') == {'app': 'console-web', 'grp': 'g'}
+        assert st.fetchone('SELECT hash FROM ui_review_predictions')['hash'] == 'h'
+        assert st.fetchone('SELECT path, size FROM ui_review_shots') == {'path': 'shots/r1/a.png', 'size': 6}
+        put('plugins/push-banner/config.json', {'$axf': 'push-banner-config@1', 'repos': ['a'], 'autoMerge': True})
+        put('plugins/todo-manager/projects/p.json', {'id': 'p'})
+        assert st.fetchone("SELECT value FROM plugin_settings WHERE path='push-banner/config.json' AND key='autoMerge'")['value'] is True
+        assert st.fetchone("SELECT table_name FROM keys WHERE path='todo-manager/projects/p.json'")['table_name'] == 'plugin_docs', 'a nested document is a plugin_docs row'
+        # shape change: sections-said without a map → stays in the same table as a head-only document; a list body leaves it
+        etag = c.get('/v1/plugins/agent-swarm/sections-said.json', headers=H()).headers['etag']
+        c.put('/v1/plugins/agent-swarm/sections-said.json', content='[1]', headers=J(**{'if-match': etag}))
+        assert st.fetchone('SELECT COUNT(*) AS n FROM swarm_sections_said')['n'] == 0
+        assert c.get('/v1/plugins/agent-swarm/sections-said.json', headers=H()).json() == [1]
+        # retable on a text blob stored before swarm_jobs existed
+        from tables import retable
+        st.q("UPDATE keys SET table_name='', blob_sha=%s WHERE path='agent-swarm/job-briefs/j1.md'", (st._write_blob(st.db.cursor(), '# Brief\n\nDo it é'.encode()),))
+        st.q("DELETE FROM swarm_jobs")
+        with st.lock:
+            with st.db.transaction():
+                moved = retable(st.db, ('plugins',))
+        assert moved['tables'].get('swarm_jobs') == 1, moved
+        st._assembled.clear()
+        assert c.get('/v1/plugins/agent-swarm/job-briefs/j1.md', headers=H()).content == '# Brief\n\nDo it é'.encode()
+
+
+def test_plugin_tables_s3():
+    """Part C s3: the remaining plugin folders: specific lists (agent runs, to-dos, health checks, workers, glossary, feeds,
+    command catalog, usage), every nested plugin document in plugin_docs, Phone Connect devices / pairings / commands, and
+    the journals as plugin_audit / phone_log views. Bodies read back equal."""
+    with PgEnv() as c:
+        st = c.app.state.store
+        put = lambda k, doc: c.put(f'/v1/{k}', content=json.dumps(doc), headers=J(**{'if-none-match': '*'}))
+        docs = {
+            'plugins/agent-manager/runs.json': {'items': [{'id': 'r1', 'agent': 'a', 'status': 'ok', 'tokens': 3}]},
+            'plugins/agent-manager/hub-runs.json': [{'id': 'h1', 'status': 'done'}],
+            'plugins/todo-manager/store.json': {'$axf': 'todo-store@1', 'types': {'t': 1}, 'lists': [{'id': 'l1', 'title': 'L'}], 'entries': [{'id': 'e1', 'list': 'l1', 'title': 'Do', 'tags': []}], 'nextId': 2},
+            'plugins/systems-check/health-state.json': {'$axf': 'health-state@1', 'checks': {'disk': {'ok': True}, 'ci': {'ok': False}}, 'fixes': []},
+            'plugins/claude-accounts/workers.json': {'$axf': 'workers@1', 'workers': [{'id': 'w1', 'name': 'hulu'}], 'limits': {'a': 1}},
+            'plugins/console-terminal/feeds.json': {'$axf': 'feeds@1', 'feeds': {'f1': {'n': 1}}},
+            'plugins/ai-assistant/usage.json': {'days': {'2026-11-18': {'in': 5}}},
+            'plugins/glossary-index/catalog.json': {'$axf': 'glossary@1', 'total': 1, 'entries': [{'id': 'g1', 'kind': 'term', 'name': 'Amber'}]},
+            'plugins/whats-shipped/feed.json': {'$axf': 'feed@1', 'items': [{'id': 's1', 'pr': 704, 'title': 'Data'}]},
+            'plugins/console-commands/catalog-owner.json': {'$axf': 'catalog@1', 'items': [{'id': 'c1', 'plugin': 'x'}]},
+            'plugins/ai-assistant/conversations/c1.json': {'$axf': 'conversation@1', 'id': 'c1', 'title': 'Hi', 'messages': [{'t': 1}]},
+            'plugins/systems-check/whatsnew/w1.json': {'text': 'New', 'at': 1},
+            'phone/devices/p1.json': {'$axf': 'phone-device@1', 'deviceId': 'p1', 'name': 'S26', 'state': 'paired'},
+            'phone/commands/2026/c1.json': {'id': 'c1', 'deviceId': 'p1', 'state': 'done'},
+        }
+        for k, d in docs.items():
+            put(k, d)
+            assert c.get(f'/v1/{k}', headers=H()).json() == json.loads(canonical(d)), k
+        one = lambda sql: st.fetchone(sql)
+        assert one('SELECT id, status FROM agent_runs') == {'id': 'r1', 'status': 'ok'}
+        assert one('SELECT id FROM agent_hub_runs')['id'] == 'h1'
+        assert one('SELECT id, list FROM todo_items') == {'id': 'e1', 'list': 'l1'} and one('SELECT title FROM todo_lists')['title'] == 'L'
+        assert one("SELECT value FROM health_checks WHERE key='ci'")['value'] == {'ok': False}
+        assert one('SELECT name FROM worker_accounts')['name'] == 'hulu'
+        assert one('SELECT key FROM terminal_feeds')['key'] == 'f1' and one('SELECT key FROM assistant_usage')['key'] == '2026-11-18'
+        assert one('SELECT name FROM glossary_terms')['name'] == 'Amber' and one('SELECT pr FROM shipped_feed')['pr'] == 704
+        assert one('SELECT plugin FROM command_catalog')['plugin'] == 'x'
+        assert {(r['plugin'], r['folder']) for r in st.fetchall('SELECT plugin, folder FROM plugin_docs')} == {('ai-assistant', 'conversations'), ('systems-check', 'whatsnew')}
+        assert one('SELECT name, state FROM phone_devices') == {'name': 'S26', 'state': 'paired'} and one('SELECT state FROM phone_commands')['state'] == 'done'
+        c.post('/v1/plugins/console-commands/audit.jsonl:append', content=json.dumps({'entries': [{'action': 'run', 'by': 'svc:cli'}]}), headers=J())
+        c.post('/v1/phone/log:append', content=json.dumps({'entries': [{'kind': 'ping', 'device': 'p1'}]}), headers=J())
+        assert one('SELECT plugin, action, who FROM plugin_audit') == {'plugin': 'console-commands', 'action': 'run', 'who': 'svc:cli'}
+        assert one('SELECT kind, device FROM phone_log') == {'kind': 'ping', 'device': 'p1'}
 
 
 # ── SQLite mirrors ───────────────────────────────────────────────────────────────────────────────────────────────────

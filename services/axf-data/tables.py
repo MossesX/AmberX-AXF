@@ -124,7 +124,7 @@ class ListSpec:
         return 'parent_rid' if self.key else 'parent_pos'
 
 
-TABLES_VERSION = 2   # meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
+TABLES_VERSION = 5   # 3–5 = the console and plugin row families (part C: tables_console.py, tables_plugins.py), moved in by retable(); meta.tables_version: 2 = keyed rows (rid) for lists with a key, children_lifted JSONB, build_notes
 
 
 def _rid(item: dict, spec: ListSpec, pos: int) -> str:
@@ -526,6 +526,13 @@ PLANNER = RecordTable('planner_items', 'planner', PLAN_COLS, 'planner items (pla
 NOTES = NotesTable()
 
 TABLES: list = [BUILDS, UI_REVIEW, CONTROL, SETTINGS, PLANNER, NOTES]
+# Part C (postgres-part-c-console-state-settings): the console's and the plugins' documents, in their own modules (shapes
+# in tables_shapes.py). Appended after the domain tables so those always win; catch-alls are last in PLUGIN_TABLES.
+from tables_console import CONSOLE_HOLDS, CONSOLE_SQL, CONSOLE_TABLES  # noqa: E402
+from tables_plugins import PLUGIN_HOLDS, PLUGIN_SQL, PLUGIN_TABLES  # noqa: E402
+from tables_shapes import retable  # noqa: E402,F401  (pg.py: T.retable)
+
+TABLES += CONSOLE_TABLES + PLUGIN_TABLES
 _BY_NAME = {t.name: t for t in TABLES}
 
 HOLDS = {
@@ -543,6 +550,8 @@ HOLDS = {
     'control_tabs': 'tabs of each tab group in the control registry',
     'mirror_runs': 'each SQLite mirror run: source, tables, row counts, result',
 }
+HOLDS.update(CONSOLE_HOLDS)
+HOLDS.update(PLUGIN_HOLDS)
 
 # Run before SCHEMA_SQL on a database made by an earlier version (pg.py PgStore._connect): the builds rows move from
 # position-keyed (section, pos) to id-keyed (section, rid) with steps and notes under the id, and every list table gets
@@ -610,6 +619,7 @@ CREATE OR REPLACE VIEW build_journal AS
 CREATE OR REPLACE VIEW note_history AS
   SELECT ns, path, seq, at, actor, entry FROM journal WHERE ns = 'notes' AND path LIKE '_history/%';
 """
+SCHEMA_SQL += CONSOLE_SQL + PLUGIN_SQL
 
 
 def table_for(ns: str, path: str, kind: str, content_type: str, body: bytes):

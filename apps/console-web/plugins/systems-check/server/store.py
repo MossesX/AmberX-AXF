@@ -9,6 +9,7 @@ from typing import Any
 import console_context as cx
 import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import storage
+import data_store  # noqa: E402  (console server/data_store.py: storage.* routed by data-store-mode@1 → axf-data rows once cut over)
 
 _lock = threading.RLock()
 SERVICE_IDS = {"console", "github", "claude", "vps", "hostinger", "coolify", "axhub", "data", "plugins", "routine"}
@@ -19,11 +20,11 @@ def data_dir() -> Path:
 
 
 def _write(p: Path, data: Any) -> None:
-    storage.write_json(p, data, indent=1)  # atomic, 0600, folder 0700 (axf_server.storage)
+    data_store.write_json(p, data, indent=1)  # atomic, 0600, folder 0700 (axf_server.storage)
 
 
 def _read(p: Path, default: Any) -> Any:
-    return storage.read_json(p, default)
+    return data_store.read_json(p, default)
 
 
 DEFAULTS: dict[str, Any] = {"$axf": "systems-check-settings@1", "ai": {"systems": False, "whatsnew": False}, "whatsNewBanner": True,
@@ -74,7 +75,7 @@ def save_routine(r: dict[str, Any]) -> None:
 
 
 def clear_routine() -> None:
-    (data_dir() / "routine.json").unlink(missing_ok=True)
+    data_store.remove(data_dir() / "routine.json")  # a tombstone on axf-data once cut over
 
 
 def summary(key: str) -> dict[str, Any] | None:

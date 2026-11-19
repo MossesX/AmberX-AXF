@@ -43,6 +43,7 @@
  */
 import { spawnSync } from 'node:child_process';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync, readdirSync } from 'node:fs';
+import * as dataFiles from '../../../../../framework/core/data-files.mjs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -71,8 +72,9 @@ export function settings() {
 
 // ------------------------------------------------------------------ small IO helpers
 
-const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
+// the lander's state through the data layer (framework/core/data-files.mjs): files while local, axf-data rows once cut over
+const readJson = (f, d) => dataFiles.readJsonSync(f, d);
+function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); dataFiles.writeJsonSync(f, v, 1); }
 
 export function makeGit(cwd) {
   return (args, o = {}) => {
