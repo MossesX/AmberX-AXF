@@ -180,7 +180,8 @@ def _data_watch() -> tuple[Path, ...]:
         projects = Path(os.environ.get("AXHUB_PROJECTS_DIR") or "/projects") / "amberx-axf" / "_data"
         if projects.is_dir():
             roots.append(projects)
-    out: list[Path] = [ROOT / "_claude" / "builds" / "store.json", ROOT / "_claude" / "builds"]
+    # the builds store is the axf-data tables (Pipeline 2.0): no store.json to watch; the folder still holds reports
+    out: list[Path] = [ROOT / "_claude" / "builds"]
     for r in roots:
         out += [r / "framework" / "plan", r / "framework" / "plan" / "profiles.json", r / "framework" / "catalog", r / "builds"]
     return tuple(out)

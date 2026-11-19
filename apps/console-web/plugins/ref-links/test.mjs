@@ -16,6 +16,8 @@ writeFileSync(join(root, '_claude', 'builds', 'store.json'), JSON.stringify({ bu
   { id: 'gone-build', title: 'Gone build', status: 'archived', steps: [], notes: [] },
 ] }));
 process.env.AXF_REPO_ROOT = root;
+// the builds come from the builds store (builds-store.mjs): a test store, no exports, nothing published
+Object.assign(process.env, { AXF_BUILDS_STORE: join(root, '_claude', 'builds', 'store.json'), AXF_BUILDS_EXPORT: '0', AXF_BUILDS_LIVE: '0' });
 const R = await import('./refs.mjs');
 
 let fails = 0; let n = 0;

@@ -6,7 +6,7 @@ read from files and git, never from a model (zero tokens):
   sessions   the live headless sessions: the capability ``axf.headless@1`` (the Terminal plugin's tmux list and
              headless-meter@1 files on the VPS) when it is there, else the worktrees' stream logs
   streams    ``<worktree>/<name>.jsonl``: the raw ``--output-format stream-json`` events (tool calls, usage, result)
-  builds     the builds store (builds@1, ``_claude/builds/store.json``): build, steps done / now / next, PR
+  builds     the builds store (builds@1, on the axf-data tables; never a store.json projection): build, steps done / now / next, PR
   roster     the agent swarm's crew (capability ``axf.swarm-roster@1``): names, avatars, pay, status
   git        the worktree vs the build's base (merge-base with origin/main): files created / modified / deleted, diffs
 
@@ -258,11 +258,15 @@ def _cost_tools(tools: list[dict[str, Any]], per_msg: dict[str, float]) -> list[
 
 # ------------------------------------------------------------------ builds and the roster
 
-def store_builds(store_file: Path) -> dict[str, dict[str, Any]]:
-    try:
-        s = json.loads(store_file.read_text("utf-8"))
-    except (OSError, ValueError):
-        return {}
+def store_builds(store: Path | dict[str, Any] | None) -> dict[str, dict[str, Any]]:
+    """Open builds by id, from the builds store as read (a dict; the server passes builds_store.read()) or a file (tests)."""
+    if isinstance(store, Path):
+        try:
+            s = json.loads(store.read_text("utf-8"))
+        except (OSError, ValueError):
+            return {}
+    else:
+        s = store if isinstance(store, dict) else {}
     return {b["id"]: b for b in s.get("builds") or [] if isinstance(b, dict) and b.get("id") and not b.get("deleted")}
 
 

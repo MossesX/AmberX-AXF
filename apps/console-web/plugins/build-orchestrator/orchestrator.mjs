@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Build orchestrator CLI. The orchestrator owns the one builds store (builds@1, `_claude/builds/store.json`, see
- * framework/cli/builds-store.mjs): a repo file, so any session on any machine or account reads it and carries the build
- * on (it syncs with the hub through claude-sync). Each build profile (build-profiles@1) is a field on the builds, and
+ * Build orchestrator CLI. The orchestrator owns the one builds store (builds@1, framework/cli/builds-store.mjs): on
+ * the axf-data Postgres tables once cut over (Pipeline 2.0: no store.json projection), so any session on any machine or
+ * account reads it and carries the build on. Each build profile (build-profiles@1) is a field on the builds, and
  * this CLI reads and writes the active profile's view of the store (orchestrator@1). Every write is versioned in
  * `_claude/builds/journal/`. The per-profile orchestrator.json files are the read-only pre-migration snapshots.
  * AXF_ORCH_FILE points at a plain orchestrator@1 file instead (old-style tests).

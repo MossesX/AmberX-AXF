@@ -462,7 +462,7 @@ export function StorePanel() {
   useEffect(() => { if (!s.state) void reload(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <div className="fx-stack">
-      <p className="fx-small" style={{ margin: 0 }}>One builds store for every profile: <code className="fx-mono">_claude/builds/store.json</code>, every write versioned in <code className="fx-mono">_claude/builds/journal/</code>. The old Pending, queue and orchestrator files are read-only exports of it.</p>
+      <p className="fx-small" style={{ margin: 0 }}>One builds store for every profile, on Postgres (axf-data): every build, step and note is a row, every write a journal line. Nothing reads a store.json file any more.</p>
       {s.state && <ul className="fx-small axp-builds__notes">{s.state.profiles.map((p) => <li key={p.id}><strong>{p.name}</strong> <span className="fx-mono">{p.id}</span>: {p.builds} builds, {p.progress.pct}% ({p.progress.done}/{p.progress.total} steps)</li>)}</ul>}
     </div>
   );

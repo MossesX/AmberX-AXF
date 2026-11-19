@@ -1023,32 +1023,16 @@ class ConsoleFocus:
         self._mtime = -1.0
         self._ids: set[str] = set()
 
-    def store(self) -> Path:
-        return ROOT / "_claude" / "builds" / "store.json"
-
     REMOTE_TTL_S = 30.0
 
     def ids(self) -> set[str]:
-        # data-store@1: in cutover the store is axf-data's tables (the file is a stale backup); the ids are read through
-        # data_store (the record the rows assemble) at most every REMOTE_TTL_S seconds. Local: the file, by its mtime.
-        import data_store
-        if data_store.remote_mode(self.store()):
-            if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
-                return self._ids
-            doc = data_store.read_json(self.store(), {})
-            self._ids = {str(b.get("id")) for b in (doc.get("builds", []) if isinstance(doc, dict) else []) if isinstance(b, dict) and b.get("id")}
-            self._mtime = time.monotonic()
+        # the builds store itself (server/builds_store.py: the axf-data tables once cut over, never a store.json
+        # projection), at most every REMOTE_TTL_S seconds
+        import builds_store
+        if time.monotonic() - self._mtime < self.REMOTE_TTL_S and self._ids:
             return self._ids
-        try:
-            mt = self.store().stat().st_mtime
-        except OSError:
-            return set()
-        if mt != self._mtime:
-            try:
-                self._ids = {str(b.get("id")) for b in json.loads(self.store().read_text()).get("builds", []) if isinstance(b, dict) and b.get("id")}
-            except (OSError, ValueError):
-                self._ids = set()
-            self._mtime = mt
+        self._ids = {str(b.get("id")) for b in builds_store.builds() if b.get("id")}
+        self._mtime = time.monotonic()
         return self._ids
 
     def resolve(self, path: str) -> dict[str, Any] | None:

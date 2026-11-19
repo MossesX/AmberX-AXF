@@ -24,6 +24,7 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import * as BR from '../../../../framework/core/build-rules.mjs';
+import { loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { createStore } from './gate-store.mjs';
 import { record } from './history.mjs';
 
@@ -133,11 +134,8 @@ export function touchedPlugins(branch, cwd = ROOT) {
 /** A build's record from the builds store (read only), for the fixers' context: plugins = the folders its branch touches. */
 export function buildContext(id, extra = {}) {
   let rec = {};
-  try {
-    const f = process.env.AXF_BUILDS_STORE || join(ROOT, '_claude/builds/store.json');
-    const s = JSON.parse(readFileSync(f, 'utf8'));
-    rec = (s.builds || []).find((b) => b.id === id) || {};
-  } catch { /* no store */ }
+  // the builds store itself (builds-store.mjs: the axf-data tables once cut over; Pipeline 2.0, no store.json)
+  try { rec = (loadStore().builds || []).find((b) => b.id === id) || {}; } catch { /* no store */ }
   const clean = Object.fromEntries(Object.entries(extra).filter(([, v]) => v !== undefined && v !== ''));
   const b = { id, title: rec.title || '', branch: rec.branch || '', pr: rec.pr || '', text: rec.detail || '', status: rec.status || '', mergedAt: rec.mergedAt || '', ...clean };
   if (!Array.isArray(b.plugins)) b.plugins = touchedPlugins(b.branch) ?? [];

@@ -44,6 +44,7 @@
  * (`SELECT … FOR UPDATE`), plus the journal line, in one transaction (writeStoreRemote). A conflict on one build re-reads
  * and re-applies the change, up to 5 times. rollback = writes refused (read_only) until the local copy has caught up.
  * The cut itself: `node framework/cli/builds-data.mjs cutover --apply` (copy, verify counts, flip the keys under the lock).
+ * After the cut no store.json is written anywhere (Pipeline 2.0, Nov 19 2026): readers ask the store, never the file.
  */
 import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -479,33 +480,12 @@ export function adoptStore(next, { journals = {} } = {}) {
     if (exportsOn()) exportAll(next);
   } finally { unlock(); }
 }
-/**
- * cutover: the console checkout's `store.json` (and its orchestrator exports) become a READ-ONLY projection of the
- * tables, rewritten after every write that changed a build. Console screens still read the file directly (activity,
- * crew-live, the Builds page's change watch, ref-links, projects); they keep seeing the live store until each asks the
- * store itself, and a writer from before the cut reads fresh data. The projection goes to the main checkout (the
- * console's, AXF_CONSOLE_ROOT) wherever the writer runs, never backwards: a file already at a newer rev is left alone.
- * Best effort: a projection that cannot be written (another user's file) never fails the write, which is on the tables.
+/*
+ * cutover (Pipeline 2.0, Nov 19 2026): there is no store.json projection any more. The console checkout's file is not
+ * rewritten after a write; every reader asks the builds store itself (this module's loadStore in Node, the console
+ * server's data_store.read_json in Python, both on the axf-data tables). The last copy of the file was kept at
+ * /root/axf-backups/store.json.final-20261119T024709Z.
  */
-export function consoleStoreFile() {
-  if (process.env.AXF_BUILDS_STORE) return storeFile();
-  const root = process.env.AXF_CONSOLE_ROOT && process.env.AXF_CONSOLE_ROOT !== 'off' ? resolve(process.env.AXF_CONSOLE_ROOT) : files.mainCheckout(REPO_ROOT);
-  return join(root, STORE_REL);
-}
-export function fileRev(f) {
-  try { const fd = openSync(f, 'r'); try { const b = Buffer.alloc(256); const n = readSync(fd, b, 0, 256, 0); const m = /"rev":\s*(\d+)/.exec(b.subarray(0, n).toString('utf8')); return m ? Number(m[1]) : -1; } finally { closeSync(fd); } }
-  catch { return -1; }
-}
-export function projectConsole(store) {
-  const f = consoleStoreFile();
-  try {
-    if (!existsSync(dirname(f)) || fileRev(f) > (store.rev ?? 0)) return false;
-    const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, storeText(store)); renameSync(tmp, f);
-    const root = dirname(dirname(dirname(f)));
-    if (!process.env.AXF_BUILDS_STORE && root !== REPO_ROOT) for (const x of orchestratorExports(store)) if (existsSync(join(root, x.rel)) || x.builds) writeFileSync(join(root, x.rel), x.text);
-    return true;
-  } catch (e) { process.stderr.write(`builds-store: console projection not written (${e.code || e.message}); the write is on the tables\n`); return false; }
-}
 /** cutover adopt: main's newer builds → the tables (withStore: row-level patch, re-read on a conflict). The ids taken. */
 export function adoptRemote(next) {
   let taken = [];
@@ -573,7 +553,6 @@ function withStoreOnce(fn, meta) {
   if (guarded.refused.length) process.stderr.write(guarded.refused.map((x) => `builds-store: refused ${x.id} ${x.from} → ${x.to}: ${x.why}\n`).join(''));
   const saved = saveStore(start, next, meta);
   if (exportsOn()) exportAll(saved.store);
-  if (saved.changes.length && storeMode() === 'cutover') projectConsole(saved.store);
   return { ...(r && r.$axf ? {} : r), store: saved.store, changes: saved.changes, rev: saved.rev, foreign, refused: guarded.refused };
 }
 
