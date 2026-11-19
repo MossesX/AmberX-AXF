@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:00:30.739Z",
+ "updatedAt": "2026-11-19T02:03:30.107Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194876,7 +194876,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:41:01.880Z",
+   "updatedAt": "2026-11-19T02:03:16.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -195062,9 +195062,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-19T02:03:16.121Z",
+     "note": "s4.1 (c9e65617a): pending + build queue live in the builds tables (exports of the builds record). agent-slots: agent_slots table, state by key mode, rev check replaces the mkdir lock in cutover, agent-slots data status|cutover|local (live status verified: local, remote copy stale from Nov 17). Flip waits until every worktree running agent-slots.mjs has this code. auto-lander is not a data-store path yet (needs a contract path rule, Fable). s4.2-s4.6 are builds postgres-part-b / postgres-part-c.",
      "uid": "st-mwm8h2vj09nsb2",
      "createdAt": "2026-11-18T14:45:31.829Z"
     },

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9221,
- "updatedAt": "2026-11-19T02:00:30.739Z",
+ "rev": 9222,
+ "updatedAt": "2026-11-19T02:03:30.107Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321832,7 +321832,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:41:01.880Z",
+   "updatedAt": "2026-11-19T02:03:16.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -322059,12 +322059,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 2,
+     "done": true,
+     "doneAt": "2026-11-19T02:03:16.121Z",
+     "note": "s4.1 (c9e65617a): pending + build queue live in the builds tables (exports of the builds record). agent-slots: agent_slots table, state by key mode, rev check replaces the mkdir lock in cutover, agent-slots data status|cutover|local (live status verified: local, remote copy stale from Nov 17). Flip waits until every worktree running agent-slots.mjs has this code. auto-lander is not a data-store path yet (needs a contract path rule, Fable). s4.2-s4.6 are builds postgres-part-b / postgres-part-c.",
+     "rev": 3,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-19T01:06:40.035Z"
+     "updatedAt": "2026-11-19T02:03:18.101Z"
     },
     {
      "id": "s5",
@@ -322141,7 +322141,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
