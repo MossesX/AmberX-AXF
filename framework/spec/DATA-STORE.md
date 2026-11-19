@@ -407,6 +407,28 @@ Known cost: a patch still assembles the whole record once to compute its etag (a
 etag is a later step. The namespace's other keys (pipeline, reconcile, shipped, reports, progress, origins, exports) are
 still files and move in their own steps (DATA-INVENTORY.md).
 
+### After the flip (s3, Nov 19 2026)
+
+- **No file lock, no file write.** In cutover `withStore` takes no `store.json.lock` (the rev check on each row is the lock),
+  `exportNow` reads the record without it, and `mergeRetiredNow` (a one-off on the raw file) stands down.
+  `builds-data.mjs clean [--apply]` removes `store.json.tmp-*` files of dead writers and an unheld lock; a successful
+  flip runs it.
+- **The file is a read-only projection.** After every write that changed a build, the console checkout's `store.json`
+  (the main checkout's, wherever the writer runs; `AXF_CONSOLE_ROOT` overrides) and its orchestrator exports are
+  rewritten from the record (`projectConsole`), never to an older rev than the file holds. Console screens that still
+  read the file (activity, crew-live, the Builds page's change watch, ref-links, projects) keep showing the live store
+  until each reads the store itself; nothing reads the file as the store, and an edit to it is overwritten.
+- **Writers from before the cut.** A session still on code from before key-level modes keeps writing its own copy and
+  publishes it to main through builds-live. Every new-code write flushes to main and pulls main back; in cutover that
+  pull (`adoptStore` → `adoptRemote`) takes only the builds main holds newer (per build and per step, builds-merge-core)
+  into the tables as one row-level patch (`by: builds-live`, `action: adopt`). Nothing older than the tables is taken, so
+  the changeover loses no tick. builds-live leaves the console checkout to the projection in cutover.
+- **The exports stay, generated from the tables.** `orchestrator.json`, `pending.json` and `build-queue.json` still have
+  readers (console views, pending.mjs, build-queue.mjs, handoff, feature matrix, …), so every write regenerates them from
+  the record the rows assemble, as before. They are read-only projections; a direct edit is absorbed into the tables.
+  They are dropped once their readers ask the store (s4/s5).
+- **Console focus** (`console-focus@1`) reads build ids through `data_store` (the tables in cutover, cached 30 s).
+
 ## What the first phase did not do
 
 Phase 1 of `data-container-axf-data-holds-all` was the contract, the reference client with a local-file backend, the

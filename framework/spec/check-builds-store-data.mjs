@@ -59,11 +59,18 @@ try {
     const list = await (await fetch(`${url}/v1/builds?prefix=store.journal/`, { headers: H })).json();
     assert.equal(list.items.length, 1, 'the journal part mirrored');
   });
-  await t('cutover: axf-data only, the local copy stays as the backup', async () => {
+  await t('cutover: axf-data is the store; the file is a read-only projection of it, never moved backwards', async () => {
     setMode('cutover');
-    const before = readFileSync(process.env.AXF_BUILDS_STORE, 'utf8');
     add('b3');
-    assert.equal(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'), before);
+    const file = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'));
+    assert.deepEqual(ids(file), ['b1', 'b2', 'b3'], 'the projection follows the tables');
+    assert.equal(file.rev, (await remote('builds/store.json')).rev, 'at the rev the tables hold');
+    assert.equal(io.fileRev(process.env.AXF_BUILDS_STORE), file.rev, 'fileRev reads the head');
+    const ahead = { ...file, rev: file.rev + 50, builds: [] };
+    writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify(ahead, null, 1));
+    assert.equal(io.projectConsole(io.loadStore()), false, 'a file at a newer rev is left alone');
+    assert.equal(JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')).builds.length, 0);
+    writeFileSync(process.env.AXF_BUILDS_STORE, JSON.stringify(file, null, 1));
     assert.deepEqual(ids(await remote('builds/store.json')), ['b1', 'b2', 'b3']);
     assert.deepEqual(ids(io.loadStore()), ['b1', 'b2', 'b3']);
     const month = new Date().toISOString().slice(0, 7);
@@ -132,7 +139,7 @@ try {
     assert.equal(after.builds.find((b) => b.id === 'b2').title, 'b2 from main');
     assert.equal(after.builds.find((b) => b.id === 'b1').title, 'b1 by molly', 'an older copy on main never wins');
     assert.ok(after.builds.some((b) => b.id === 'old-session'), 'a build only main has is added');
-    assert.equal(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8').includes('b2 from main'), false, 'nothing written to the file');
+    assert.ok(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8').includes('b2 from main'), 'the projection carries the adopted build');
     const month = new Date().toISOString().slice(0, 7);
     const j = await (await fetch(`${url}/v1/builds/journal/${month}?since=0`, { headers: H })).json();
     assert.equal(j.entries.at(-1).entry.action, 'adopt');
