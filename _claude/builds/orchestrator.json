@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T03:50:55.723Z",
+ "updatedAt": "2026-11-19T03:55:49.432Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194909,7 +194909,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:49:14Z",
+   "updatedAt": "2026-11-19T03:55:25.632Z",
    "builtAt": "",
    "notes": [
     {
@@ -195115,6 +195115,10 @@
     {
      "text": "Shipped manifest sm-urgent-all-data-to-postgres-builds-store rev 1 sent to Shipped features (orchestrator): landed 212fb1f83, 33 file(s), 0 test line(s), 5 open.",
      "at": "2026-11-19T03:49:14Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:55:25.632Z"
     }
    ],
    "approvals": [

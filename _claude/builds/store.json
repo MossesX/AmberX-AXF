@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9270,
- "updatedAt": "2026-11-19T03:50:55.723Z",
+ "rev": 9271,
+ "updatedAt": "2026-11-19T03:55:49.432Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321873,7 +321873,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:49:14Z",
+   "updatedAt": "2026-11-19T03:55:25.632Z",
    "builtAt": "",
    "notes": [
     {
@@ -322079,6 +322079,10 @@
     {
      "text": "Shipped manifest sm-urgent-all-data-to-postgres-builds-store rev 1 sent to Shipped features (orchestrator): landed 212fb1f83, 33 file(s), 0 test line(s), 5 open.",
      "at": "2026-11-19T03:49:14Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T03:55:25.632Z"
     }
    ],
    "approvals": [
@@ -322347,7 +322351,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
