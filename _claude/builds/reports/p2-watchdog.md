@@ -78,4 +78,4 @@ Branch `claude/p2-watchdog`. Not merged: it lands with p2-status-core, p2-lander
 - The `install-console.sh` line that ran `watchdog.mjs install-cron` was already broken: the stale-row watchdog has no
   such command, so the old cron came from the plugin installer. It is removed.
 - No build record called `p2-watchdog` was found in the store, so there were no steps to tick.
-  `builds-live.mjs link` was tried after the push.
+  `builds-live.mjs link p2-watchdog --branch claude/p2-watchdog` answered "No build \"p2-watchdog\"" after the push.
