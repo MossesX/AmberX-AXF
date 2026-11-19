@@ -840,41 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 16:09 UTC · `plan-studio-2-open-button-working-deep` s13 done, s14 done, s15 done, → complete, note (all) · foreign-write
-- 2026-11-18 16:09 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
-- 2026-11-18 16:09 UTC · `every-app-gets-own-locked-default` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, → complete, note (all) · foreign-write
-- 2026-11-18 16:09 UTC · `every-plugin-gets-own-default-toolbar` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → complete, note (all) · foreign-write
-- 2026-11-18 16:09 UTC · `one-build-time-always-split-to-fill` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s9 done, s10 done, note (all) · foreign-write
-- 2026-11-18 16:09 UTC · `stop-push-storm-builds-live-pushes-build` added (2 steps) (all) · foreign-write
-- 2026-11-18 16:09 UTC · `urgent-all-data-to-postgres-builds-store` added (5 steps) (all) · foreign-write
-- 2026-11-18 16:09 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
-- 2026-11-18 16:07 UTC · `attach-widgets-to-any-toolbar-banner` s14 done (all) · foreign-write
-- 2026-11-18 16:10 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-18 16:10 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
-- 2026-11-18 16:07 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
-- 2026-11-18 16:07 UTC · `orchestrator-master-pause-switch-stop` added (2 steps) (all) · foreign-write
-- 2026-11-18 16:09 UTC · `attach-widgets-to-any-toolbar-banner` s14 done (all) · foreign-write
-- 2026-11-18 16:11 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → landing (all) · orchestrator
-- 2026-11-18 16:11 UTC · `attach-widgets-to-any-toolbar-banner` s15 done (all) · orchestrator
-- 2026-11-18 16:12 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
-- 2026-11-18 16:13 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
-- 2026-11-18 16:14 UTC · `attach-widgets-to-any-toolbar-banner` s16 done (all) · orchestrator
-- 2026-11-18 16:11 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
-- 2026-11-18 16:13 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · orchestrator
-- 2026-11-18 16:14 UTC · `stop-push-storm-builds-live-pushes-build` s2 done, → complete (all) · foreign-write
-- 2026-11-18 16:18 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
-- 2026-11-18 16:18 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
-- 2026-11-18 16:18 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 16:18 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
-- 2026-11-18 16:18 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
-- 2026-11-18 16:16 UTC · `attach-widgets-to-any-toolbar-banner` s15 done, s16 done (all) · foreign-write
-- 2026-11-18 16:17 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
-- 2026-11-18 16:17 UTC · `rebuild-every-toolbar-page-specific` → landing, note (all) · watchdog
-- 2026-11-18 16:17 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 16:17 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
-- 2026-11-18 16:19 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
-- 2026-11-18 16:20 UTC · `attach-widgets-to-any-toolbar-banner` s17 done (all) · orchestrator
-- 2026-11-18 16:22 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
 - 2026-11-18 16:22 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done (all) · foreign-write
 - 2026-11-18 16:24 UTC · `server-gate-reject-any-build-without` note (all) · foreign-write
 - 2026-11-18 16:24 UTC · `one-build-time-always-split-to-fill` s11 done, s12 done, s13 done, s14 done, s15 done, s16 done, s17 done, s18 done, s19 done (all) · foreign-write
@@ -1240,6 +1205,41 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 06:21 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 06:31 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
 - 2026-11-19 06:41 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · reconciler
+- 2026-11-19 06:45 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `rename-every-crew-agent-agent-swarm-agent-manager-agent-cards-sessions-grou` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `always-fill-every-slot-when-slots-are` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `projects-own-everything-per-project` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `quick-settings-pinned-collapsible-pane` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `new-asset-type-animated-expanding-row` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `orchestrator-settings-collapsible-split` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `land-per-instance-settings-picker` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `context-menus-plugin-one-true-source` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `picker-dialog-plugin-replaces-all` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-19 06:45 UTC · `banner-widget-shapes-plus-change-icon` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `move-server-side-console-parts-onto-vps` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `rebuild-fresh-main-hide-any-asset` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `separate-settings-per-plugin-reset` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `live-build-status-real-time-grids-15` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `terminal-main-tab-streaming-console-s` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `icon-picker-every-banner-settings-widget` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `fix-banner-settings-interface-tab` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `flagship-professional-skin-covering-2` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `fix-refreshing-console-jumps-back` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `settings-fix-part-2-blank-toolbars` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `auto-lander-never-wait-missing-ui-review` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `approval-pass-covers-every-call` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `plan-studio-2-open-button-working-deep` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `every-app-gets-own-locked-default` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `every-plugin-gets-own-default-toolbar` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `one-build-time-always-split-to-fill` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `stop-push-storm-builds-live-pushes-build` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `urgent-all-data-to-postgres-builds-store` s8 done, → landed, note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `postgres-part-c-console-state-settings` note (all) · foreign-write
+- 2026-11-19 06:45 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · foreign-write
 
 ## Token passes (log)
 
