@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9218,
- "updatedAt": "2026-11-19T01:41:17.617Z",
+ "rev": 9219,
+ "updatedAt": "2026-11-19T01:55:29.932Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322902,7 +322902,7 @@
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T01:23:35.556Z",
+   "updatedAt": "2026-11-19T01:55:15.437Z",
    "builtAt": "",
    "notes": [
     {
@@ -323022,12 +323022,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T01:55:15.437Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-19T00:11:19.628Z",
-     "updatedAt": "2026-11-19T00:11:19.628Z"
+     "updatedAt": "2026-11-19T01:55:18.010Z"
     },
     {
      "id": "s4",
@@ -323060,7 +323060,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
