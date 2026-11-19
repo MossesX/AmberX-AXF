@@ -840,17 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:16 UTC · `fix-launcher-crash-duplicate-steps-brief` → landing, note (all) · watchdog
-- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` → running, note (all) · pipeline
-- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
-- 2026-11-18 13:17 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
-- 2026-11-18 13:18 UTC · `plan-studio-2-open-button-working-deep` s10 done (all) · orchestrator
-- 2026-11-18 13:18 UTC · `every-plugin-gets-own-default-toolbar` note (all) · pipeline
-- 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s11 done (all) · orchestrator
-- 2026-11-18 13:19 UTC · `plan-studio-2-open-button-working-deep` s12 done (all) · orchestrator
-- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
-- 2026-11-18 13:22 UTC · `plan-studio-2-open-button-working-deep` s11 done, s12 done (all) · foreign-write
-- 2026-11-18 13:22 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 13:23 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · foreign-write
 - 2026-11-18 13:23 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
 - 2026-11-18 13:23 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
@@ -1240,6 +1229,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:19 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
 - 2026-11-19 00:19 UTC · `queue-stall-detector-vps-spots-queued` note (all) · orchestrator
 - 2026-11-19 00:20 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
+- 2026-11-19 00:22 UTC · `every-plugin-screen-gets-a-settings-gear` → complete, note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `rebuild-every-toolbar-page-specific` note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `vps-never-gives-up-fix-land-every-build` note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `urgent-all-data-to-postgres-builds-store` s1 done, s2 done, note (all) · foreign-write
+- 2026-11-19 00:22 UTC · `host-phone-connect-apk-axhub-browser` added (6 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `console-app-text-way-too-big-system-font` added (6 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `deep-links-to-plugin-s-settings-don-t` added (5 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `postgres-part-c-console-state-settings` added (4 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `postgres-part-b-plan-plan-studio-catalog` added (4 steps) (all) · foreign-write
+- 2026-11-19 00:22 UTC · `queue-stall-detector-vps-spots-queued` added (10 steps) (all) · foreign-write
 
 ## Token passes (log)
 
