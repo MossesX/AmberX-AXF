@@ -2432,5 +2432,11 @@
     "wave": 1,
     "module": "lib-settings",
     "notes": "settings-iface@1 (core/engines/settings-iface-rules.mjs; build settings-iface-default-all, Brett Nov 18 2026): every settings asset requires data.builtFor (app | asset:<type> | plugin:<name> | chrome:<type>, backfilled); every asset type and console plugin ships a locked default-<name>; Settings shows it greyed with a checkbox on every plugin tab and in Appearance → Asset types; ticking opens a dialog listing only interfaces built for that owner, unticking returns to the default. Actions settings.iface / settings.iface.choose (REST, MCP, CLI, voice). CI framework/spec/check-settings-iface.mjs. Kotlin twin deferred."
+  },
+  "cx.toolbars.owner": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-toolbars",
+    "notes": "toolbar-owner@1 (core/engines/toolbar-owner-rules.mjs; build every-plugin-gets-own-default-toolbar, Brett Nov 18 2026): every console plugin ships a locked default-<plugin>-toolbar (15 page toolbars migrated into it, placeholders elsewhere); every toolbar is generic or built for one screen (data.builtFor, backfilled); a screen's picker (Change… / Interface tab, Use another toolbar) lists only generic toolbars plus its own; a pick or override changes look and style only, never the buttons. Actions toolbar.pick / toolbar.choose (REST, MCP, CLI, voice), CLI framework/cli/toolbar-owner.mjs, CI framework/spec/check-toolbar-owner.mjs. Kotlin twin deferred."
   }
 }

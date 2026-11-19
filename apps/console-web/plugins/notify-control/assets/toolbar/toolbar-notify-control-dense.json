@@ -55,6 +55,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:notify-control"
   }
 }

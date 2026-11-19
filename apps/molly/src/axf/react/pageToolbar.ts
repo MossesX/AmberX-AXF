@@ -19,6 +19,8 @@ import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from 
 import type { AxfRuntime } from '../core/runtime';
 import { findToolbarButton, invokeToolbarButton, pickPageToolbar, resolvePageToolbar, toolbarState, type ResolvedToolbar, type ResolvedToolbarButton, type ToolbarAssetLike, type ToolbarDispatchers, type ToolbarEnv, type ToolbarPage, type ToolbarPageState, type ToolbarPressOutcome } from '../core/engines/toolbar-actions';
 import { TOOLBAR_DEFAULTS } from '../core/engines/toolbar-rules.mjs';
+import { CHROME_INSTANCE_ASSET_KEY } from '../core/engines/chrome-settings-rules.mjs';
+import { isPlaceholderToolbar, toolbarChoices, toolbarPick, toolbarPickSet, type ToolbarChoice, type ToolbarPickResult } from '../core/engines/toolbar-owner-rules.mjs';
 import type { CompiledMenuItem } from '../core/engines/appmenu';
 import { useAxfState, useOptionalRuntime } from './AxfProvider';
 import { controlRegistry, useControlScope } from './controlTargets';
@@ -142,6 +144,8 @@ export interface PageToolbarHook {
   setFit: (n: number | undefined) => void;
   /** readable state (console-control) */
   state: () => ReturnType<typeof toolbarState> | null;
+  /** the asset is a generated placeholder default (only the Settings button): a page with a fallback keeps its own bar */
+  placeholder: boolean;
 }
 
 /** The provider lists a toolbar's live groups need, loaded through the runtime (reloaded shortly after the app changes). */
@@ -208,7 +212,8 @@ export function usePageToolbar(view?: string | null, slot?: string | null, asset
     else if (!out.ok && (out.code === 'disabled' || out.code === 'unsupported')) rt.toast(out.message, 'warning', btn.label);
     return out;
   }, [rt, toolbar, v]);
-  return { toolbar, asset, page, press, setFit, state: () => (toolbar ? toolbarState(toolbar) : null) };
+  const lookFrom = (asset as { lookFrom?: string } | null)?.lookFrom ?? null;
+  return { toolbar, asset, page, press, setFit, placeholder: isPlaceholderToolbar(asset), state: () => (toolbar ? { ...toolbarState(toolbar), lookFrom, pick: rt ? toolbarPick(rt.settings.get(CHROME_INSTANCE_ASSET_KEY('toolbar', toolbar.id)), page, rt.registry.list('toolbar') as never) : null, choices: rt ? toolbarChoices(page, rt.registry.list('toolbar') as never).map((c) => ({ id: c.id, generic: c.generic, isDefault: c.isDefault })) : [] } : null) };
 }
 
 /** The plugin that provides a view (`provides: view:<id>`), from the runtime's installed libraries, or null. */
@@ -233,3 +238,36 @@ export function registerLiveToolbar(id: string, entry: { hook: () => PageToolbar
 export const liveToolbars = (): { id: string; hook: PageToolbarHook; view: string | null }[] => [...live.entries()].map(([id, e]) => ({ id, hook: e.hook(), view: e.view }));
 export const liveToolbar = (id: string): PageToolbarHook | null => live.get(id)?.hook() ?? null;
 export function onLiveToolbars(l: Listener): () => void { liveListeners.add(l); return () => { liveListeners.delete(l); }; }
+
+/* ================================================================== the screen's toolbar picker (toolbar-owner@1) */
+
+/**
+ * The page a toolbar settings id belongs to (`gate`, `gate.auto-lander`): the mounted toolbar's page when it is live,
+ * else read from the id (view = the part before the slot, plugin = the library that provides that view).
+ */
+export function pageOfToolbarInstance(rt: AxfRuntime, id: string): ToolbarPage {
+  const hit = live.get(id);
+  if (hit) return hit.hook().page;
+  const dot = id.indexOf('.');
+  const view = dot > 0 ? id.slice(0, dot) : id;
+  const slot = dot > 0 ? id.slice(dot + 1) : TOOLBAR_DEFAULTS.slot;
+  return { view, plugin: pluginOfView(rt, view) ?? view, slot };
+}
+
+/** What a screen's toolbar picker offers: its own toolbar first, then the ones built for it, then every generic one. */
+export function pageToolbarChoices(rt: AxfRuntime, id: string): ToolbarChoice[] {
+  return toolbarChoices(pageOfToolbarInstance(rt, id), rt.registry.list('toolbar') as never);
+}
+
+/** What a screen's toolbar uses now: its own (locked) or a pick that lends the look. */
+export function pageToolbarPick(rt: AxfRuntime, id: string): ToolbarPickResult {
+  return toolbarPick(rt.settings.get(CHROME_INSTANCE_ASSET_KEY('toolbar', id)), pageOfToolbarInstance(rt, id), rt.registry.list('toolbar') as never);
+}
+
+/** Pick a screen's toolbar (`default` unticks, back to its own); null on success, else the reason. */
+export function setPageToolbarPick(rt: AxfRuntime, id: string, which: string): string | null {
+  const r = toolbarPickSet(pageOfToolbarInstance(rt, id), which, rt.registry.list('toolbar') as never);
+  if ('error' in r) return r.error;
+  if (r.value === null) rt.settings.clear(CHROME_INSTANCE_ASSET_KEY('toolbar', id)); else rt.settings.set(CHROME_INSTANCE_ASSET_KEY('toolbar', id), r.value);
+  return null;
+}

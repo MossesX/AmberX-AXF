@@ -71,6 +71,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:codebase-changes"
   }
 }

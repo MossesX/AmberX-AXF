@@ -58,6 +58,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "generic"
   }
 }

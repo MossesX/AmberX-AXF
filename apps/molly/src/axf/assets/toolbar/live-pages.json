@@ -37,6 +37,7 @@
         "max": 10,
         "label": "Pages"
       }
-    ]
+    ],
+    "builtFor": "generic"
   }
 }

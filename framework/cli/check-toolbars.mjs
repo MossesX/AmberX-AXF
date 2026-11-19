@@ -127,12 +127,13 @@ export function checkPageToolbarAsset(text) {
   return out;
 }
 
-/** Rule 5: the plugins drawing a handwritten toolbar with no page-scoped asset. */
+/** Rule 5: the plugins drawing a handwritten toolbar with no page-scoped asset (a placeholder default-<plugin>-toolbar,
+ * toolbar-owner@1, does not count: it carries only the Settings button). */
 export function pluginsWithoutPageToolbar() {
   const missing = [];
   for (const p of pluginDirs()) {
     const assets = join(p.dir, 'assets', 'toolbar');
-    const has = existsSync(assets) && readdirSync(assets).some((f) => { if (!f.endsWith('.json')) return false; try { const sc = parseToolbarScope(JSON.parse(readFileSync(join(assets, f), 'utf8')).data?.scope); return !!sc && sc.kind !== 'app'; } catch { return false; } });
+    const has = existsSync(assets) && readdirSync(assets).some((f) => { if (!f.endsWith('.json')) return false; try { const j = JSON.parse(readFileSync(join(assets, f), 'utf8')); if ((j.tags ?? []).includes('placeholder')) return false; const sc = parseToolbarScope(j.data?.scope); return !!sc && sc.kind !== 'app'; } catch { return false; } });
     if (has) continue;
     const draws = walk(p.dir).some((f) => /role="toolbar"/.test(readFileSync(f, 'utf8')));
     if (draws) missing.push(`${p.app}/${p.folder}`);

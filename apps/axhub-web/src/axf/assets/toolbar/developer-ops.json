@@ -63,6 +63,7 @@
         "order": 30
       }
     ],
-    "density": "compact"
+    "density": "compact",
+    "builtFor": "generic"
   }
 }

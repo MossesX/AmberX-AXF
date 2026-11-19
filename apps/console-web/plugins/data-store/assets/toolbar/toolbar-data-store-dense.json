@@ -51,6 +51,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:data-store"
   }
 }

@@ -1,0 +1,238 @@
+{
+  "$comment": "toolbar-owner@1 golden outputs (framework/spec/check-toolbar-owner.mjs --write); the Kotlin twin is deferred (spec/PORTING.md).",
+  "contract": "toolbar-owner@1",
+  "lookKeys": [
+    "variant",
+    "align",
+    "density",
+    "surface",
+    "divider",
+    "collapsible",
+    "overflow"
+  ],
+  "overrideKeys": [
+    "variant",
+    "align",
+    "density",
+    "surface",
+    "divider",
+    "collapsible",
+    "overflow",
+    "showSearch",
+    "tapConfirm"
+  ],
+  "outputs": {
+    "parse": {
+      "42": null,
+      "generic": {
+        "kind": "generic",
+        "id": ""
+      },
+      "view:gate": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "plugin:gate": {
+        "kind": "plugin",
+        "id": "gate"
+      },
+      "plugin:Bad Name": null,
+      "screen:gate": null,
+      "": null,
+      "app": null
+    },
+    "errors": {
+      "generic": [],
+      "view:gate": [],
+      "nope": [
+        "data.builtFor must be generic, view:<view id> or plugin:<name> (not \"nope\")"
+      ],
+      "undefined": []
+    },
+    "defaultIds": {
+      "gate": "default-gate-toolbar",
+      "ai.amberx.axf.console.plan-studio": "default-plan-studio-toolbar",
+      "Bad Name!": "default-bad-name-toolbar",
+      "": null
+    },
+    "builtForOf": {
+      "default-gate-toolbar": "plugin:gate",
+      "gate-dense": "view:gate",
+      "gate-auto-lander": "view:gate",
+      "default-notes-toolbar": "plugin:notes",
+      "standard-icons": "generic",
+      "minimal-glass": "generic",
+      "builds-only": "view:builds"
+    },
+    "ownToolbar": {
+      "gate": "default-gate-toolbar",
+      "gate lander slot": "gate-auto-lander",
+      "notes (placeholder default)": "default-notes-toolbar",
+      "builds": "builds-only",
+      "unknown": null
+    },
+    "choices": {
+      "gate": [
+        "*s:default-gate-toolbar",
+        "s:gate-dense",
+        "s:gate-auto-lander",
+        "g:minimal-glass",
+        "g:standard-icons"
+      ],
+      "gate lander slot": [
+        "*s:gate-auto-lander",
+        "s:default-gate-toolbar",
+        "s:gate-dense",
+        "g:minimal-glass",
+        "g:standard-icons"
+      ],
+      "notes (placeholder default)": [
+        "*s:default-notes-toolbar",
+        "g:minimal-glass",
+        "g:standard-icons"
+      ],
+      "builds": [
+        "*s:builds-only",
+        "g:minimal-glass",
+        "g:standard-icons"
+      ],
+      "unknown": [
+        "g:minimal-glass",
+        "g:standard-icons"
+      ]
+    },
+    "pick": {
+      "none": {
+        "id": "default-gate-toolbar",
+        "defaultId": "default-gate-toolbar",
+        "locked": true,
+        "source": "default",
+        "generic": false
+      },
+      "generic": {
+        "id": "minimal-glass",
+        "defaultId": "default-gate-toolbar",
+        "locked": false,
+        "source": "pick",
+        "generic": true
+      },
+      "same screen": {
+        "id": "gate-dense",
+        "defaultId": "default-gate-toolbar",
+        "locked": false,
+        "source": "pick",
+        "generic": false
+      },
+      "other screen": {
+        "id": "default-gate-toolbar",
+        "defaultId": "default-gate-toolbar",
+        "locked": true,
+        "source": "default",
+        "generic": false
+      },
+      "gone": {
+        "id": "default-gate-toolbar",
+        "defaultId": "default-gate-toolbar",
+        "locked": true,
+        "source": "default",
+        "generic": false
+      },
+      "own id": {
+        "id": "default-gate-toolbar",
+        "defaultId": "default-gate-toolbar",
+        "locked": true,
+        "source": "default",
+        "generic": false
+      }
+    },
+    "pickSet": {
+      "default": {
+        "value": null
+      },
+      "(empty)": {
+        "value": null
+      },
+      "minimal-glass": {
+        "value": "minimal-glass"
+      },
+      "builds-only": {
+        "error": "\"builds-only\" is not a generic toolbar or one built for this screen."
+      },
+      "default-gate-toolbar": {
+        "value": null
+      }
+    },
+    "layer": {
+      "scope": "view:gate",
+      "builtFor": "plugin:gate",
+      "variant": "labels",
+      "align": "center",
+      "showSearch": false,
+      "groups": [
+        {
+          "id": "g",
+          "items": [
+            {
+              "id": "land",
+              "icon": "rocket",
+              "label": "Land",
+              "action": "command:gate/land"
+            }
+          ]
+        }
+      ],
+      "surface": "glass",
+      "divider": false
+    },
+    "overrideOnly": {
+      "variant": "icons",
+      "showSearch": true,
+      "tapConfirm": "off"
+    },
+    "placeholder": {
+      "default-gate-toolbar": false,
+      "gate-dense": false,
+      "gate-auto-lander": false,
+      "default-notes-toolbar": true,
+      "standard-icons": false,
+      "minimal-glass": false,
+      "builds-only": false
+    },
+    "generated": {
+      "$axf": "asset@1",
+      "type": "toolbar",
+      "id": "default-sample-notes-toolbar",
+      "name": "Sample notes toolbar (default)",
+      "version": "1.0.0",
+      "description": "The default toolbar of the Sample notes plugin: locked until another toolbar (generic, or built for this screen) is picked; a pick changes the look only, never the buttons (toolbar-owner@1).",
+      "author": "AmberX AXF",
+      "tags": [
+        "default",
+        "toolbar-owner@1",
+        "plugin",
+        "placeholder"
+      ],
+      "data": {
+        "scope": "plugin:sample-notes",
+        "builtFor": "plugin:sample-notes",
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false,
+        "groups": [
+          {
+            "id": "plugin",
+            "label": "Sample notes",
+            "items": [
+              {
+                "id": "settings",
+                "icon": "settings",
+                "label": "Settings",
+                "action": "plugin.settings.open:sample-notes"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

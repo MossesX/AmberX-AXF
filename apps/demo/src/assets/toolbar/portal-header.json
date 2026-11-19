@@ -45,6 +45,7 @@
       }
     ],
     "surface": "raised",
-    "divider": false
+    "divider": false,
+    "builtFor": "generic"
   }
 }

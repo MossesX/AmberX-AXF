@@ -88,6 +88,7 @@
       }
     ],
     "surface": "glass",
-    "collapsible": true
+    "collapsible": true,
+    "builtFor": "generic"
   }
 }

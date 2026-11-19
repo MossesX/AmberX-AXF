@@ -43,7 +43,8 @@ export function PageToolbar({ view, slot, assetId, label, fallback = null, child
   hookRef.current = hook;
   // announce the live toolbar under its settings id (the API lists, reads and presses it through the same hook)
   useEffect(() => (toolbar ? registerLiveToolbar(toolbar.id, { hook: () => hookRef.current, view: hook.page.view ?? null }) : undefined), [toolbar?.id, hook.page.view]); // eslint-disable-line react-hooks/exhaustive-deps
-  if (!toolbar) return <>{fallback}</>;
+  // a generated placeholder default (toolbar-owner@1: only the Settings button) never replaces a page's own handwritten bar
+  if (!toolbar || (hook.placeholder && fallback !== null)) return <>{fallback}</>;
   return <PageToolbarView hook={hook} toolbar={toolbar} label={label} className={className}>{children}</PageToolbarView>;
 }
 

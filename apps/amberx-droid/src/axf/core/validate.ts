@@ -21,6 +21,7 @@ import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
 import { navStyleErrors } from './engines/navstyle-rules.mjs';
 import { builtForErrors } from './engines/settings-iface-rules.mjs';
+import { toolbarBuiltForErrors } from './engines/toolbar-owner-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -146,6 +147,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   // settings-iface@1: who a settings interface is built for (core/engines/settings-iface-rules.mjs); required, so a
   // missing one is already reported by `required`
   if (raw.type === 'settings' && 'builtFor' in data) errors.push(...builtForErrors(data.builtFor));
+  // toolbar-owner@1: a toolbar is generic or built for one screen (core/engines/toolbar-owner-rules.mjs)
+  if (raw.type === 'toolbar' && 'builtFor' in data) errors.push(...toolbarBuiltForErrors(data.builtFor));
   if (raw.type === 'uac-policy' && Array.isArray(data.roles)) {
     const ids = (data.roles as { id: string }[]).map((r) => r.id);
     if (!ids.includes(data.defaultRole as string)) errors.push('data.defaultRole must reference a role id');

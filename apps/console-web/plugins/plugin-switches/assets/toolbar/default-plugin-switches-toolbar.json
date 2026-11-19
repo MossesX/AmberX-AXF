@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "default-plugin-switches-toolbar",
+  "name": "Plugin switches toolbar (default)",
+  "version": "1.0.0",
+  "description": "The default toolbar of the Plugin switches plugin: locked until another toolbar (generic, or built for this screen) is picked; a pick changes the look only, never the buttons (toolbar-owner@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "toolbar-owner@1",
+    "plugin",
+    "placeholder"
+  ],
+  "data": {
+    "scope": "plugin:plugin-switches",
+    "builtFor": "plugin:plugin-switches",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "plugin",
+        "label": "Plugin switches",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "plugin.settings.open:plugin-switches"
+          }
+        ]
+      }
+    ]
+  }
+}

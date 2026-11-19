@@ -64,6 +64,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:ui-review"
   }
 }

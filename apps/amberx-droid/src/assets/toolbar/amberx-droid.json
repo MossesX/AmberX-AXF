@@ -72,6 +72,7 @@
         "at": "end",
         "order": 20
       }
-    ]
+    ],
+    "builtFor": "generic"
   }
 }

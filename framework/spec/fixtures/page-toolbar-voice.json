@@ -8,42 +8,42 @@
       "toolbar": "agent-swarm",
       "button": "hire",
       "address": "toolbar:agent-swarm/button:hire",
-      "asset": "agent-swarm"
+      "asset": "default-agent-swarm-toolbar"
     },
     {
       "phrase": "press run job on the breakroom toolbar",
       "toolbar": "agent-swarm",
       "button": "run",
       "address": "toolbar:agent-swarm/button:run",
-      "asset": "agent-swarm"
+      "asset": "default-agent-swarm-toolbar"
     },
     {
       "phrase": "press job types on the breakroom toolbar",
       "toolbar": "agent-swarm",
       "button": "types",
       "address": "toolbar:agent-swarm/button:types",
-      "asset": "agent-swarm"
+      "asset": "default-agent-swarm-toolbar"
     },
     {
       "phrase": "press pause agent on the breakroom toolbar",
       "toolbar": "agent-swarm",
       "button": "pause",
       "address": "toolbar:agent-swarm/button:pause",
-      "asset": "agent-swarm"
+      "asset": "default-agent-swarm-toolbar"
     },
     {
       "phrase": "press agent card on the breakroom toolbar",
       "toolbar": "agent-swarm",
       "button": "card",
       "address": "toolbar:agent-swarm/button:card",
-      "asset": "agent-swarm"
+      "asset": "default-agent-swarm-toolbar"
     },
     {
       "phrase": "press budget on the breakroom toolbar",
       "toolbar": "agent-swarm",
       "button": "budget",
       "address": "toolbar:agent-swarm/button:budget",
-      "asset": "agent-swarm"
+      "asset": "default-agent-swarm-toolbar"
     },
     {
       "phrase": "press queue selected on the builds toolbar",
@@ -106,91 +106,91 @@
       "toolbar": "chat-viewer",
       "button": "sync",
       "address": "toolbar:chat-viewer/button:sync",
-      "asset": "chat-viewer"
+      "asset": "default-chat-viewer-toolbar"
     },
     {
       "phrase": "press search on the chats toolbar",
       "toolbar": "chat-viewer",
       "button": "search",
       "address": "toolbar:chat-viewer/button:search",
-      "asset": "chat-viewer"
+      "asset": "default-chat-viewer-toolbar"
     },
     {
       "phrase": "press export on the chats toolbar",
       "toolbar": "chat-viewer",
       "button": "export",
       "address": "toolbar:chat-viewer/button:export",
-      "asset": "chat-viewer"
+      "asset": "default-chat-viewer-toolbar"
     },
     {
       "phrase": "press switch account on the claude accounts toolbar",
       "toolbar": "claude-accounts",
       "button": "switch",
       "address": "toolbar:claude-accounts/button:switch",
-      "asset": "claude-accounts"
+      "asset": "default-claude-accounts-toolbar"
     },
     {
       "phrase": "press check accounts now on the claude accounts toolbar",
       "toolbar": "claude-accounts",
       "button": "check",
       "address": "toolbar:claude-accounts/button:check",
-      "asset": "claude-accounts"
+      "asset": "default-claude-accounts-toolbar"
     },
     {
       "phrase": "press refresh on the claude accounts toolbar",
       "toolbar": "claude-accounts",
       "button": "refresh",
       "address": "toolbar:claude-accounts/button:refresh",
-      "asset": "claude-accounts"
+      "asset": "default-claude-accounts-toolbar"
     },
     {
       "phrase": "press job routing on the claude accounts toolbar",
       "toolbar": "claude-accounts",
       "button": "routing",
       "address": "toolbar:claude-accounts/button:routing",
-      "asset": "claude-accounts"
+      "asset": "default-claude-accounts-toolbar"
     },
     {
       "phrase": "press add a worker on the claude accounts toolbar",
       "toolbar": "claude-accounts",
       "button": "workers",
       "address": "toolbar:claude-accounts/button:workers",
-      "asset": "claude-accounts"
+      "asset": "default-claude-accounts-toolbar"
     },
     {
       "phrase": "press recent runs on the claude accounts toolbar",
       "toolbar": "claude-accounts",
       "button": "runs",
       "address": "toolbar:claude-accounts/button:runs",
-      "asset": "claude-accounts"
+      "asset": "default-claude-accounts-toolbar"
     },
     {
       "phrase": "press filter live on the codebase changes toolbar",
       "toolbar": "codebase-changes",
       "button": "live",
       "address": "toolbar:codebase-changes/button:live",
-      "asset": "codebase-changes"
+      "asset": "default-codebase-changes-toolbar"
     },
     {
       "phrase": "press resume on the codebase changes toolbar",
       "toolbar": "codebase-changes",
       "button": "resume",
       "address": "toolbar:codebase-changes/button:resume",
-      "asset": "codebase-changes"
+      "asset": "default-codebase-changes-toolbar"
     },
     {
       "phrase": "press open branch on the codebase changes toolbar",
       "toolbar": "codebase-changes",
       "button": "branch",
       "address": "toolbar:codebase-changes/button:branch",
-      "asset": "codebase-changes"
+      "asset": "default-codebase-changes-toolbar"
     },
     {
       "phrase": "press show areas on the codebase changes toolbar",
       "toolbar": "codebase-changes",
       "button": "areas",
       "address": "toolbar:codebase-changes/button:areas",
-      "asset": "codebase-changes"
+      "asset": "default-codebase-changes-toolbar"
     },
     {
       "phrase": "press new tab on the terminal toolbar",
@@ -246,266 +246,266 @@
       "toolbar": "data-store",
       "button": "backup",
       "address": "toolbar:data-store/button:backup",
-      "asset": "data-store"
+      "asset": "default-data-store-toolbar"
     },
     {
       "phrase": "press verify backup on the data store toolbar",
       "toolbar": "data-store",
       "button": "verify",
       "address": "toolbar:data-store/button:verify",
-      "asset": "data-store"
+      "asset": "default-data-store-toolbar"
     },
     {
       "phrase": "press sync tables on the data store toolbar",
       "toolbar": "data-store",
       "button": "sync",
       "address": "toolbar:data-store/button:sync",
-      "asset": "data-store"
+      "asset": "default-data-store-toolbar"
     },
     {
       "phrase": "press land now on the gate toolbar",
       "toolbar": "gate",
       "button": "land-now",
       "address": "toolbar:gate/button:land-now",
-      "asset": "gate"
+      "asset": "default-gate-toolbar"
     },
     {
       "phrase": "press pause lander on the gate toolbar",
       "toolbar": "gate",
       "button": "pause",
       "address": "toolbar:gate/button:pause",
-      "asset": "gate"
+      "asset": "default-gate-toolbar"
     },
     {
       "phrase": "press resume lander on the gate toolbar",
       "toolbar": "gate",
       "button": "resume",
       "address": "toolbar:gate/button:resume",
-      "asset": "gate"
+      "asset": "default-gate-toolbar"
     },
     {
       "phrase": "press run auto-lander on the gate toolbar",
       "toolbar": "gate",
       "button": "auto",
       "address": "toolbar:gate/button:auto",
-      "asset": "gate"
+      "asset": "default-gate-toolbar"
     },
     {
       "phrase": "press build rules on the gate toolbar",
       "toolbar": "gate",
       "button": "build-rules",
       "address": "toolbar:gate/button:build-rules",
-      "asset": "gate"
+      "asset": "default-gate-toolbar"
     },
     {
       "phrase": "press history on the gate toolbar",
       "toolbar": "gate",
       "button": "history",
       "address": "toolbar:gate/button:history",
-      "asset": "gate"
+      "asset": "default-gate-toolbar"
     },
     {
       "phrase": "press reset rules on the gate toolbar",
       "toolbar": "gate",
       "button": "reset",
       "address": "toolbar:gate/button:reset",
-      "asset": "gate"
+      "asset": "default-gate-toolbar"
     },
     {
       "phrase": "press search on the glossary toolbar",
       "toolbar": "glossary-index",
       "button": "search",
       "address": "toolbar:glossary-index/button:search",
-      "asset": "glossary-index"
+      "asset": "default-glossary-index-toolbar"
     },
     {
       "phrase": "press undescribed on the glossary toolbar",
       "toolbar": "glossary-index",
       "button": "undescribed",
       "address": "toolbar:glossary-index/button:undescribed",
-      "asset": "glossary-index"
+      "asset": "default-glossary-index-toolbar"
     },
     {
       "phrase": "press drafts on the glossary toolbar",
       "toolbar": "glossary-index",
       "button": "drafts",
       "address": "toolbar:glossary-index/button:drafts",
-      "asset": "glossary-index"
+      "asset": "default-glossary-index-toolbar"
     },
     {
       "phrase": "press rebuild index on the glossary toolbar",
       "toolbar": "glossary-index",
       "button": "rebuild",
       "address": "toolbar:glossary-index/button:rebuild",
-      "asset": "glossary-index"
+      "asset": "default-glossary-index-toolbar"
     },
     {
       "phrase": "press make a demo on the glossary toolbar",
       "toolbar": "glossary-index",
       "button": "demo",
       "address": "toolbar:glossary-index/button:demo",
-      "asset": "glossary-index"
+      "asset": "default-glossary-index-toolbar"
     },
     {
       "phrase": "press mark read on the notifications toolbar",
       "toolbar": "notify-control",
       "button": "read",
       "address": "toolbar:notify-control/button:read",
-      "asset": "notify-control"
+      "asset": "default-notify-control-toolbar"
     },
     {
       "phrase": "press filter by plugin on the notifications toolbar",
       "toolbar": "notify-control",
       "button": "plugin",
       "address": "toolbar:notify-control/button:plugin",
-      "asset": "notify-control"
+      "asset": "default-notify-control-toolbar"
     },
     {
       "phrase": "press notification settings on the notifications toolbar",
       "toolbar": "notify-control",
       "button": "settings",
       "address": "toolbar:notify-control/button:settings",
-      "asset": "notify-control"
+      "asset": "default-notify-control-toolbar"
     },
     {
       "phrase": "press start the demo on the orchestrator demo toolbar",
       "toolbar": "orchestrator-demo",
       "button": "start",
       "address": "toolbar:orchestrator-demo/button:start",
-      "asset": "orchestrator-demo"
+      "asset": "default-orchestrator-demo-toolbar"
     },
     {
       "phrase": "press summary on the orchestrator demo toolbar",
       "toolbar": "orchestrator-demo",
       "button": "summary",
       "address": "toolbar:orchestrator-demo/button:summary",
-      "asset": "orchestrator-demo"
+      "asset": "default-orchestrator-demo-toolbar"
     },
     {
       "phrase": "press next on the orchestrator demo toolbar",
       "toolbar": "orchestrator-demo",
       "button": "next",
       "address": "toolbar:orchestrator-demo/button:next",
-      "asset": "orchestrator-demo"
+      "asset": "default-orchestrator-demo-toolbar"
     },
     {
       "phrase": "press pause on the orchestrator demo toolbar",
       "toolbar": "orchestrator-demo",
       "button": "pause",
       "address": "toolbar:orchestrator-demo/button:pause",
-      "asset": "orchestrator-demo"
+      "asset": "default-orchestrator-demo-toolbar"
     },
     {
       "phrase": "press resume on the orchestrator demo toolbar",
       "toolbar": "orchestrator-demo",
       "button": "resume",
       "address": "toolbar:orchestrator-demo/button:resume",
-      "asset": "orchestrator-demo"
+      "asset": "default-orchestrator-demo-toolbar"
     },
     {
       "phrase": "press skip on the orchestrator demo toolbar",
       "toolbar": "orchestrator-demo",
       "button": "skip",
       "address": "toolbar:orchestrator-demo/button:skip",
-      "asset": "orchestrator-demo"
+      "asset": "default-orchestrator-demo-toolbar"
     },
     {
       "phrase": "press stop on the orchestrator demo toolbar",
       "toolbar": "orchestrator-demo",
       "button": "stop",
       "address": "toolbar:orchestrator-demo/button:stop",
-      "asset": "orchestrator-demo"
+      "asset": "default-orchestrator-demo-toolbar"
     },
     {
       "phrase": "press new plan on the plans toolbar",
       "toolbar": "plan-studio",
       "button": "new",
       "address": "toolbar:plan-studio/button:new",
-      "asset": "plan-studio-plans"
+      "asset": "default-plan-studio-toolbar"
     },
     {
       "phrase": "press search on the plans toolbar",
       "toolbar": "plan-studio",
       "button": "search",
       "address": "toolbar:plan-studio/button:search",
-      "asset": "plan-studio-plans"
+      "asset": "default-plan-studio-toolbar"
     },
     {
       "phrase": "press park on the plans toolbar",
       "toolbar": "plan-studio",
       "button": "park",
       "address": "toolbar:plan-studio/button:park",
-      "asset": "plan-studio-plans"
+      "asset": "default-plan-studio-toolbar"
     },
     {
       "phrase": "press turn into a build on the plans toolbar",
       "toolbar": "plan-studio",
       "button": "build",
       "address": "toolbar:plan-studio/button:build",
-      "asset": "plan-studio-plans"
+      "asset": "default-plan-studio-toolbar"
     },
     {
       "phrase": "press move category on the plans toolbar",
       "toolbar": "plan-studio",
       "button": "category",
       "address": "toolbar:plan-studio/button:category",
-      "asset": "plan-studio-plans"
+      "asset": "default-plan-studio-toolbar"
     },
     {
       "phrase": "press attach media on the plans toolbar",
       "toolbar": "plan-studio",
       "button": "media",
       "address": "toolbar:plan-studio/button:media",
-      "asset": "plan-studio-plans"
+      "asset": "default-plan-studio-toolbar"
     },
     {
       "phrase": "press enable/disable on the plugin manager toolbar",
       "toolbar": "plugin-manager",
       "button": "toggle",
       "address": "toolbar:plugin-manager/button:toggle",
-      "asset": "plugin-manager"
+      "asset": "default-plugin-manager-toolbar"
     },
     {
       "phrase": "press open settings on the plugin manager toolbar",
       "toolbar": "plugin-manager",
       "button": "settings",
       "address": "toolbar:plugin-manager/button:settings",
-      "asset": "plugin-manager"
+      "asset": "default-plugin-manager-toolbar"
     },
     {
       "phrase": "press view logs on the plugin manager toolbar",
       "toolbar": "plugin-manager",
       "button": "logs",
       "address": "toolbar:plugin-manager/button:logs",
-      "asset": "plugin-manager"
+      "asset": "default-plugin-manager-toolbar"
     },
     {
       "phrase": "press show dependencies on the plugin manager toolbar",
       "toolbar": "plugin-manager",
       "button": "deps",
       "address": "toolbar:plugin-manager/button:deps",
-      "asset": "plugin-manager"
+      "asset": "default-plugin-manager-toolbar"
     },
     {
       "phrase": "press check clashes on the plugin manager toolbar",
       "toolbar": "plugin-manager",
       "button": "clashes",
       "address": "toolbar:plugin-manager/button:clashes",
-      "asset": "plugin-manager"
+      "asset": "default-plugin-manager-toolbar"
     },
     {
       "phrase": "press install/uninstall on the plugin manager toolbar",
       "toolbar": "plugin-manager",
       "button": "install",
       "address": "toolbar:plugin-manager/button:install",
-      "asset": "plugin-manager"
+      "asset": "default-plugin-manager-toolbar"
     },
     {
       "phrase": "press update/replace on the plugin manager toolbar",
       "toolbar": "plugin-manager",
       "button": "update",
       "address": "toolbar:plugin-manager/button:update",
-      "asset": "plugin-manager"
+      "asset": "default-plugin-manager-toolbar"
     },
     {
       "phrase": "press add pr to queue on the merge queue toolbar",
@@ -561,91 +561,91 @@
       "toolbar": "shipped-features",
       "button": "sync",
       "address": "toolbar:shipped-features/button:sync",
-      "asset": "shipped-features"
+      "asset": "default-shipped-features-toolbar"
     },
     {
       "phrase": "press import manifests on the shipped features toolbar",
       "toolbar": "shipped-features",
       "button": "import",
       "address": "toolbar:shipped-features/button:import",
-      "asset": "shipped-features"
+      "asset": "default-shipped-features-toolbar"
     },
     {
       "phrase": "press backfill (dry run) on the shipped features toolbar",
       "toolbar": "shipped-features",
       "button": "backfill",
       "address": "toolbar:shipped-features/button:backfill",
-      "asset": "shipped-features"
+      "asset": "default-shipped-features-toolbar"
     },
     {
       "phrase": "press run checks on the systems check toolbar",
       "toolbar": "systems-check",
       "button": "run",
       "address": "toolbar:systems-check/button:run",
-      "asset": "systems-check"
+      "asset": "default-systems-check-toolbar"
     },
     {
       "phrase": "press auto fix all on the systems check toolbar",
       "toolbar": "systems-check",
       "button": "fix-all",
       "address": "toolbar:systems-check/button:fix-all",
-      "asset": "systems-check"
+      "asset": "default-systems-check-toolbar"
     },
     {
       "phrase": "press mute on the systems check toolbar",
       "toolbar": "systems-check",
       "button": "mute",
       "address": "toolbar:systems-check/button:mute",
-      "asset": "systems-check"
+      "asset": "default-systems-check-toolbar"
     },
     {
       "phrase": "press open source on the systems check toolbar",
       "toolbar": "systems-check",
       "button": "source",
       "address": "toolbar:systems-check/button:source",
-      "asset": "systems-check"
+      "asset": "default-systems-check-toolbar"
     },
     {
       "phrase": "press use skin on the theme manager toolbar",
       "toolbar": "theme-manager",
       "button": "use",
       "address": "toolbar:theme-manager/button:use",
-      "asset": "theme-manager"
+      "asset": "default-theme-manager-toolbar"
     },
     {
       "phrase": "press back to skin on the theme manager toolbar",
       "toolbar": "theme-manager",
       "button": "back",
       "address": "toolbar:theme-manager/button:back",
-      "asset": "theme-manager"
+      "asset": "default-theme-manager-toolbar"
     },
     {
       "phrase": "press preview on the theme manager toolbar",
       "toolbar": "theme-manager",
       "button": "preview",
       "address": "toolbar:theme-manager/button:preview",
-      "asset": "theme-manager"
+      "asset": "default-theme-manager-toolbar"
     },
     {
       "phrase": "press scope here on the theme manager toolbar",
       "toolbar": "theme-manager",
       "button": "scope",
       "address": "toolbar:theme-manager/button:scope",
-      "asset": "theme-manager"
+      "asset": "default-theme-manager-toolbar"
     },
     {
       "phrase": "press pick asset on the theme manager toolbar",
       "toolbar": "theme-manager",
       "button": "pick",
       "address": "toolbar:theme-manager/button:pick",
-      "asset": "theme-manager"
+      "asset": "default-theme-manager-toolbar"
     },
     {
       "phrase": "press restore to default on the theme manager toolbar",
       "toolbar": "theme-manager",
       "button": "restore",
       "address": "toolbar:theme-manager/button:restore",
-      "asset": "theme-manager"
+      "asset": "default-theme-manager-toolbar"
     },
     {
       "phrase": "press group by on the ui review toolbar",
@@ -708,28 +708,28 @@
       "toolbar": "wake-listener",
       "button": "on",
       "address": "toolbar:wake-listener/button:on",
-      "asset": "wake-listener"
+      "asset": "default-wake-listener-toolbar"
     },
     {
       "phrase": "press stop listening on the wake word toolbar",
       "toolbar": "wake-listener",
       "button": "off",
       "address": "toolbar:wake-listener/button:off",
-      "asset": "wake-listener"
+      "asset": "default-wake-listener-toolbar"
     },
     {
       "phrase": "press claude understands on the wake word toolbar",
       "toolbar": "wake-listener",
       "button": "claude-on",
       "address": "toolbar:wake-listener/button:claude-on",
-      "asset": "wake-listener"
+      "asset": "default-wake-listener-toolbar"
     },
     {
       "phrase": "press rules only on the wake word toolbar",
       "toolbar": "wake-listener",
       "button": "claude-off",
       "address": "toolbar:wake-listener/button:claude-off",
-      "asset": "wake-listener"
+      "asset": "default-wake-listener-toolbar"
     }
   ]
 }

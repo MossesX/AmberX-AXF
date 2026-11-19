@@ -53,6 +53,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:shipped-features"
   }
 }

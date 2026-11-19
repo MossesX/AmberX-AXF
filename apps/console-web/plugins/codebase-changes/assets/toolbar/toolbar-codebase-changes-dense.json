@@ -68,6 +68,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:codebase-changes"
   }
 }

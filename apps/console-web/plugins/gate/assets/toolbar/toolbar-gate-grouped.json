@@ -92,6 +92,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:gate"
   }
 }

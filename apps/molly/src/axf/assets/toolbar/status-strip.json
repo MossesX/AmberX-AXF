@@ -48,6 +48,7 @@
       }
     ],
     "density": "compact",
-    "surface": "flat"
+    "surface": "flat",
+    "builtFor": "generic"
   }
 }

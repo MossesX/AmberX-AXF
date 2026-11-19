@@ -79,6 +79,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:ui-review"
   }
 }

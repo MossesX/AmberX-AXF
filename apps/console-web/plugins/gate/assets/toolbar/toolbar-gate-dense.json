@@ -89,6 +89,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:gate"
   }
 }

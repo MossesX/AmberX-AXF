@@ -49,6 +49,7 @@
         ]
       }
     ],
-    "surface": "glass"
+    "surface": "glass",
+    "builtFor": "generic"
   }
 }

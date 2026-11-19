@@ -87,6 +87,7 @@
           }
         ]
       }
-    ]
+    ],
+    "builtFor": "view:plan-studio"
   }
 }

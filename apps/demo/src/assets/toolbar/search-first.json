@@ -29,6 +29,7 @@
         "at": "start",
         "order": 0
       }
-    ]
+    ],
+    "builtFor": "generic"
   }
 }
