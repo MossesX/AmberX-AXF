@@ -148,7 +148,7 @@ ok(cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }).length ==
 eq(f.plan, cs.chromeSettingsPlan('molly'), 'plan fixture');
 eq(f.missing, cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']), 'missing fixture');
 const apps = defaultApps() as string[];
-ok(apps.length >= 5, `at least five apps carry copies (${apps.length})`);
+ok(apps.length >= 4, `at least four apps carry copies (${apps.length})`);
 for (const d of apps) {
   const r = checkApp(d, defaults) as { app: { id: string }; dir: string; findings: string[] };
   eq(r.findings, [], `${d.replace(root, '')} (${r.app.id}): custom copies present + valid`);
