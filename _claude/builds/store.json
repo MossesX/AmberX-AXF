@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9203,
- "updatedAt": "2026-11-19T01:07:32.739Z",
+ "rev": 9204,
+ "updatedAt": "2026-11-19T01:08:27.227Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321832,7 +321832,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:07:03.025Z",
+   "updatedAt": "2026-11-19T01:07:54.449Z",
    "builtAt": "",
    "notes": [
     {
@@ -322099,9 +322099,9 @@
     },
     {
      "id": "s7",
-     "uid": "st-mwmuoc6h01nfo5",
+     "uid": "st-mwmuoyjm0168do",
      "title": "",
-     "text": "s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over",
+     "text": "s4.5 Plugin data dirs to tables: chat-viewer and shipped-features SQLite mirrors become the source, push-banner, agent-swarm, ui-review, then the small ones into plugin_settings / plugin_audit (DATA-INVENTORY order 5)",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -322116,8 +322116,30 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T01:07:03.027Z",
-     "updatedAt": "2026-11-19T01:07:04.745Z"
+     "createdAt": "2026-11-19T01:07:31.734Z",
+     "updatedAt": "2026-11-19T01:07:33.730Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwmupglh01xb0s",
+     "title": "",
+     "text": "s4.6 Sessions and codebase changes to tables (DATA-INVENTORY order 6: largest row counts, append-only), verified then cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T01:07:54.621Z",
+     "updatedAt": "2026-11-19T01:07:57.125Z"
     }
    ],
    "profiles": [
@@ -322128,7 +322150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
