@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:23 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · foreign-write
-- 2026-11-18 13:23 UTC · `approval-pass-covers-every-call` s12 done, → complete, note (all) · foreign-write
 - 2026-11-18 13:23 UTC · `plan-studio-2-open-button-working-deep` added (15 steps) (all) · foreign-write
 - 2026-11-18 13:23 UTC · `land-watchdogs-pr-832-fix-two-red-ci` added (4 steps) (all) · foreign-write
 - 2026-11-18 13:23 UTC · `vps-never-gives-up-fix-land-every-build` added (4 steps) (all) · foreign-write
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 00:22 UTC · `queue-stall-detector-vps-spots-queued` added (10 steps) (all) · foreign-write
 - 2026-11-19 00:21 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
 - 2026-11-19 00:22 UTC · `load-spike-alarm-vps-detects-cpu-load` added (0 steps) (all) · voice session
+- 2026-11-19 00:25 UTC · `every-plugin-screen-gets-a-settings-gear` → landed (all) · foreign-write
+- 2026-11-19 00:25 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
 
 ## Token passes (log)
 
