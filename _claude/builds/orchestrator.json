@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T14:20:09.657Z",
+ "updatedAt": "2026-11-19T14:22:53.675Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71119,6 +71119,11 @@
      "text": "Watchdog: build stuck at pending (2362 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2366 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -71753,6 +71758,11 @@
     {
      "text": "Watchdog: build stuck at pending (2362 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2366 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -120130,6 +120140,11 @@
      "text": "Watchdog: build stuck at pending (2298 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2302 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -129059,6 +129074,11 @@
      "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3506 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -130587,6 +130607,11 @@
      "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3506 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -131726,6 +131751,11 @@
     {
      "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3506 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -139969,6 +139999,11 @@
      "text": "Watchdog: build stuck at pending (2581 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2586 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -140580,6 +140615,11 @@
     {
      "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (589 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -153202,6 +153242,11 @@
      "text": "Watchdog: build stuck at pending (2964 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2969 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -162906,6 +162951,11 @@
      "text": "Watchdog: build stuck at pending (1096 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1101 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -163415,6 +163465,11 @@
     {
      "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3506 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -166417,6 +166472,11 @@
      "text": "Watchdog: build stuck at pending (3713 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3718 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -166774,6 +166834,11 @@
     {
      "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3506 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -167268,6 +167333,11 @@
      "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2302 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -167690,6 +167760,11 @@
      "text": "Watchdog: build stuck at pending (3704 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3709 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -168076,6 +168151,11 @@
     {
      "text": "Watchdog: build stuck at pending (2964 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2969 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -169329,6 +169409,11 @@
      "text": "Watchdog: build stuck at pending (2773 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2778 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -170138,6 +170223,11 @@
      "text": "Watchdog: build stuck at pending (2783 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2788 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -170663,6 +170753,11 @@
      "text": "Watchdog: build stuck at pending (2783 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2788 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -171055,6 +171150,11 @@
     {
      "text": "Watchdog: build stuck at pending (2773 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2778 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -171977,6 +172077,11 @@
     {
      "text": "Watchdog: build stuck at pending (2159 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2164 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -174096,6 +174201,11 @@
      "text": "Watchdog: build stuck at pending (2614 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2618 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -174864,6 +174974,11 @@
      "text": "Watchdog: build stuck at pending (2627 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2631 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -175355,6 +175470,11 @@
      "text": "Watchdog: build stuck at pending (2617 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2621 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -175786,6 +175906,11 @@
     {
      "text": "Watchdog: build stuck at pending (2614 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2618 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -176247,6 +176372,11 @@
      "text": "Watchdog: build stuck at pending (2608 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2613 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -176622,6 +176752,11 @@
      "text": "Watchdog: build stuck at pending (2608 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2612 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -176695,6 +176830,11 @@
     {
      "text": "Watchdog: build stuck at pending (2599 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2603 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -177064,6 +177204,11 @@
     {
      "text": "Watchdog: build stuck at pending (2593 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2597 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -177676,6 +177821,11 @@
     {
      "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (589 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -179165,6 +179315,11 @@
      "text": "Watchdog: build stuck at pending (2572 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2577 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -179430,6 +179585,11 @@
      "text": "Watchdog: build stuck at pending (1447 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1451 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -179596,6 +179756,11 @@
     {
      "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (589 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -180396,6 +180561,11 @@
      "text": "Watchdog: build stuck at pending (2201 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2205 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -180970,6 +181140,11 @@
      "text": "Watchdog: build stuck at pending (2543 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2548 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -181342,6 +181517,11 @@
     {
      "text": "Watchdog: build stuck at pending (2540 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2544 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -182096,6 +182276,11 @@
      "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2302 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182342,6 +182527,11 @@
      "text": "Watchdog: build stuck at pending (1446 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1451 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182481,6 +182671,11 @@
     {
      "text": "Watchdog: build stuck at pending (1444 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1449 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -182624,6 +182819,11 @@
      "text": "Watchdog: build stuck at pending (1445 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1450 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182762,6 +182962,11 @@
     {
      "text": "Watchdog: build stuck at pending (1443 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1448 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -182906,6 +183111,11 @@
      "text": "Watchdog: build stuck at pending (1445 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1449 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -183047,6 +183257,11 @@
     {
      "text": "Watchdog: build stuck at pending (1442 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1447 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -183690,6 +183905,11 @@
      "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (589 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -184069,6 +184289,11 @@
      "text": "Watchdog: build stuck at pending (2411 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2416 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -184220,6 +184445,11 @@
     {
      "text": "Watchdog: build stuck at pending (2360 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2365 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -186082,6 +186312,11 @@
      "text": "Watchdog: build stuck at pending (2218 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2222 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -186332,6 +186567,11 @@
     {
      "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (589 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -186798,6 +187038,11 @@
      "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2302 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -187110,6 +187355,11 @@
     {
      "text": "Watchdog: build stuck at pending (2129 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2134 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -188182,6 +188432,11 @@
      "text": "Watchdog: build stuck at pending (2127 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2131 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -188616,6 +188871,11 @@
      "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2301 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -188963,6 +189223,11 @@
     {
      "text": "Watchdog: build stuck at pending (1295 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1299 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -189824,6 +190089,11 @@
      "text": "Watchdog: build stuck at pending (2315 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2319 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -190163,6 +190433,11 @@
      "text": "Watchdog: build stuck at pending (2314 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2319 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -190470,6 +190745,11 @@
      "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (589 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -190739,6 +191019,11 @@
     {
      "text": "Watchdog: build stuck at pending (2188 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2193 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -191125,6 +191410,11 @@
      "text": "Watchdog: build stuck at pending (2183 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2188 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -191432,6 +191722,11 @@
     {
      "text": "Watchdog: build stuck at pending (2182 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2186 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -191783,6 +192078,11 @@
     {
      "text": "Watchdog: build stuck at pending (2172 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2176 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -192526,6 +192826,11 @@
     {
      "text": "Watchdog: build stuck at pending (2171 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2176 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -193359,6 +193664,11 @@
      "text": "Watchdog: build stuck at pending (1541 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1545 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -194137,6 +194447,11 @@
      "text": "Watchdog: build stuck at pending (1337 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1341 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -194269,6 +194584,11 @@
     {
      "text": "Watchdog: build stuck at pending (1523 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1528 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -195227,6 +195547,11 @@
      "text": "Watchdog: build stuck at pending (1455 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1460 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -196040,6 +196365,11 @@
      "text": "Watchdog: build stuck at pending (1319 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1324 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -196103,6 +196433,11 @@
     {
      "text": "Watchdog: build stuck at pending (1081 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1085 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -196190,6 +196525,11 @@
     {
      "text": "Watchdog: build stuck at pending (996 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1000 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -196341,6 +196681,11 @@
     {
      "text": "Watchdog: build stuck at pending (881 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (885 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
@@ -196797,6 +197142,11 @@
      "text": "Watchdog: build stuck at pending (810 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (814 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -197024,6 +197374,11 @@
      "text": "Watchdog: build stuck at pending (817 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (821 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -197247,6 +197602,11 @@
     {
      "text": "Watchdog: build stuck at pending (800 min past budget): re-ran the transition (1).",
      "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (804 min past budget): re-ran the transition (2).",
+     "at": "2026-11-19T14:18:01.648Z",
      "by": "watchdog"
     }
    ],
