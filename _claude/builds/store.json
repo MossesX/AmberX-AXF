@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9212,
- "updatedAt": "2026-11-19T01:20:30.338Z",
+ "rev": 9213,
+ "updatedAt": "2026-11-19T01:21:28.048Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323053,14 +323053,14 @@
    "title": "Postgres part B: plan, Plan Studio, catalog, sessions and changes to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 2, 8 and the s4 order). This build does s4.2, s4.3 and s4.6 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, pending, build queue, agent-slots or auto-lander (part A), and never touch console state, settings, alerts, notifications, plugin data dirs (part C). Register new tables in their own module file under services/axf-data (e.g. tables_plan.py) and add only additive entries to shared registries, so merges with the other two builds stay clean. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over (key-level mode). No runtime data in JSON. Branch, PR, CI, merge queue; never push to main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/postgres-part-b-plan-plan-studio-catalog",
    "pr": "",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T01:18:52.528Z",
+   "updatedAt": "2026-11-19T01:19:15.249Z",
    "builtAt": "",
    "notes": [
     {
@@ -323100,6 +323100,10 @@
      "at": "2026-11-19T01:14:57.854Z"
     },
     {
+     "text": "Started run 1 on hulu0241 (Opus, Phase 1): axf-postgres-part-b-plan-plan-studio-catalog--sully.",
+     "at": "2026-11-19T01:19:15.249Z"
+    },
+    {
      "text": "Claude account: hulu0241 (axf-postgres-part-b-plan-plan-studio-catalog--sully, shared account login)",
      "at": "2026-11-19T01:18:52.528Z"
     }
@@ -323121,20 +323125,20 @@
    "pipeline": {
     "queuedAt": "2026-11-19T00:56:16.431Z",
     "queuedBy": "cli",
-    "account": "",
-    "session": "",
+    "account": "hulu0241",
+    "session": "axf-postgres-part-b-plan-plan-studio-catalog--sully",
     "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "phase": "Phase 1",
+    "launchedAt": "2026-11-19T01:17:49.246Z",
+    "runs": 1,
     "crashes": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: worktree for postgres-part-b-plan-plan-studio-catalog: fatal: not a git repository (or any of the parent directories): .git",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-19T01:17:49.246Z",
     "planned": {
      "model": "Opus",
      "account": "hulu0241",
@@ -323142,10 +323146,8 @@
      "at": "2026-11-19T00:12:29.213Z",
      "why": "subscription account hulu0241"
     },
-    "tried": [
-     "hulu0241"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-19T01:17:49.246Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -323248,7 +323250,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
