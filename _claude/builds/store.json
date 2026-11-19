@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9237,
- "updatedAt": "2026-11-19T02:32:37.351Z",
+ "rev": 9238,
+ "updatedAt": "2026-11-19T02:33:13.549Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321853,7 +321853,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:31:45.341Z",
+   "updatedAt": "2026-11-19T02:32:46.328Z",
    "builtAt": "",
    "notes": [
     {
@@ -321959,6 +321959,10 @@
     {
      "text": "Refused running → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-19T02:22:00.738Z"
+    },
+    {
+     "text": "Headless run axf-urgent-all-data-to-postgres-builds-store--gina: brief only · start 13.9K tokens ($0.04) · cost $8.56 · 175 turns · 6 tools, MCP none",
+     "at": "2026-11-19T02:32:46.328Z"
     }
    ],
    "approvals": [
@@ -322210,7 +322214,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
