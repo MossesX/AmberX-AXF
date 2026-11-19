@@ -52,6 +52,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
+import * as P2 from '../core/pipeline-status.mjs';
 import { guardStatus, normAttempts, normEscalation, normFailure, normLanded, normPipeline } from '../core/build-pipeline.mjs';
 import { normRecoveries, normRecovery } from '../core/build-watchdog.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
@@ -79,7 +80,9 @@ export const MODELS = ['Fable', 'Opus'];
  * the merge commit), `complete` (landed + the feature verify passed), `escalated` (the retry ladder ran out: banner +
  * push). `built` stays as a legacy word read as landed; the pipeline never writes it again.
  */
-export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+export const LEGACY_STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+/** pipeline-2@1 (framework/spec/PIPELINE-2.md, Nov 19 2026): a `flow: 'pipeline-2'` build uses P2.BUILD_STATUSES, forward-only (enforceFlow). */
+export const STATUSES = [...LEGACY_STATUSES, ...P2.P2_ONLY];
 /** Statuses that count as finished work (progress, Pending list): every step done, whatever the PR is doing. */
 export const FINISHED = ['built', 'landing', 'landed', 'complete'];
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 }; // ≤ 10 min (Nov 13 2026; was 30)
@@ -146,6 +149,7 @@ export function normStep(s, i = 0, ctx = {}) {
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     ...(o.origin && typeof o.origin === 'object' ? { origin: { build: str(o.origin.build, 80), step: str(o.origin.step, 60), how: str(o.origin.how, 20) } } : {}),
+    ...P2.normFields(o, 'step'), // pipeline-2@1: status, statusAt, statusBy, attempt, account, slot, prNumber, worktree… (only when set)
   };
 }
 
@@ -273,6 +277,7 @@ export function normBuild(b, ctx = {}) {
     removedSteps: Array.isArray(o.removedSteps) ? o.removedSteps.map((r) => ({ step: normStep(r?.step, 0, ctx), at: str(r?.at, 40), why: str(r?.why, 300), by: str(r?.by, 80) })) : [],
     legacy: Array.isArray(o.legacy) ? o.legacy.map((l) => ({ file: str(l?.file, 300), profile: str(l?.profile, 40), id: str(l?.id, 80) })) : [],
     copies: Array.isArray(o.copies) ? clone(o.copies) : [],
+    ...P2.normFields(o, 'build'), // pipeline-2@1: flow, statusAt, statusBy, attempt, failedFrom, statusLog (only when set)
   };
 }
 

@@ -32,7 +32,9 @@ export function findBuild(store, { build = '', name = '', brief = '' } = {}) {
   const byId = (id) => (id ? live.find((b) => b.id === id) ?? null : null);
   const bare = String(name).replace(/^axf-/, '').replace(/^build:/, '');
   const fromBrief = /Continue build ".*?" \(([a-z0-9][a-z0-9._-]*)\)/.exec(brief)?.[1] ?? /orchestrator\.mjs (?:brief|next) ([a-z0-9][a-z0-9._-]*)/.exec(brief)?.[1] ?? '';
-  return byId(build) ?? byId(bare) ?? byId(fromBrief);
+  // pipeline-2@1: a step's session is named <build>--<step>
+  const ofStep = bare.includes('--') ? bare.slice(0, bare.lastIndexOf('--')) : '';
+  return byId(build) ?? byId(bare) ?? byId(fromBrief) ?? byId(ofStep);
 }
 
 /** { ok, why, build?, phase? }: may this build start on `model` now? */
