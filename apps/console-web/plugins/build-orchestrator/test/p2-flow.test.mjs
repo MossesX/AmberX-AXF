@@ -136,5 +136,43 @@ console.log('integration: orchestrator.mjs tick [--build] (layer 1) and the watc
   ok(f.tickScript === true && f.tickAgeMin != null && f.tickAgeMin < 2, `layer 3 sees the tick command and a fresh tick (${f.tickAgeMin?.toFixed?.(2)} min)`);
   ok(!L3.problems(f).some((p) => p.id === 'tick'), 'layer 3: no tick problem'); }
 
+console.log('a plan sent as one build (planning steps, no build steps): Fable designs the steps, or the fallback does');
+{ const sendPlan = (id, planning, detail = '') => BS.withStore((s) => { s.builds.push(core.normBuild(P2.transition({ id, title: `Plan ${id}`, detail, flow: P2.FLOW, planning, steps: [] }, 'pending', { by: 'test' }).rec)); return s; }, { by: 'test' });
+  const fable = join(tmp, 'fable.sh');
+  writeFileSync(fable, `#!/bin/bash
+p="$(cat)"; echo "$p" > "${tmp}/fable-prompt"
+echo 'Here you go: {"steps":[{"text":"Add the plan-build schema field","model":"Fable","minutes":20,"files":["framework/schemas"]},{"text":"Wire the console dialog","model":"Opus","minutes":15,"files":["apps/ui"]},{"text":"Tests and report","model":"Opus","minutes":10,"files":["apps/ui"]}]}'
+`); chmodSync(fable, 0o755);
+  sendPlan('plan-fable', [{ text: 'Schema field' }, { text: 'Dialog', model: 'Opus', minutes: 45 }]);
+  eq([get('plan-fable').steps.length, get('plan-fable').planning.length], [0, 2], 'sent: no build steps, the plan steps kept as planning');
+  F.advance({ build: 'plan-fable', env: { ...process.env, AXF_PIPELINE_SPLITTER: fable } });
+  let P = get('plan-fable');
+  eq(P.statusLog.map((l) => l.status), ['pending', 'splitting', 'split'], 'pending → splitting → split');
+  eq(P.steps.map((s) => [s.model, s.estimate]), [['Fable', '20 min'], ['Opus', '25 min']], 'Fable designed the steps with minutes and models (the two sharing files run as one)');
+  ok(P.steps.every((s) => s.status === 'pending'), 'every designed step row exists (pending)');
+  ok(/Split by Fable into 3 steps/.test(P.notes.at(-1)?.text ?? ''), 'the build says Fable split it');
+  const prompt = readFileSync(join(tmp, 'fable-prompt'), 'utf8');
+  ok(/Planning steps:\n1\. Schema field\n2\. Dialog \(noted: Opus, 45 min\)/.test(prompt) && /never share|must not touch the same files/.test(prompt), 'Fable gets the planning steps (with their hints) as context and the parallel-steps rule');
+  eq(P.planning.length, 2, 'the planning context stays on the build');
+
+  const broke = join(tmp, 'broke.sh'); writeFileSync(broke, '#!/bin/bash\ncat >/dev/null; echo "Credit balance is too low" >&2; exit 1\n'); chmodSync(broke, 0o755);
+  sendPlan('plan-nocredit', [{ text: 'Write the engine contract' }, { text: 'Toolbar button', minutes: 10 }]);
+  F.advance({ build: 'plan-nocredit', env: { ...process.env, AXF_PIPELINE_SPLITTER: broke } });
+  P = get('plan-nocredit');
+  eq([P.status, P.steps.map((s) => [s.text, s.model, s.estimate])], ['split', [['Write the engine contract', 'Fable', '30 min'], ['Toolbar button', 'Opus', '10 min']]], 'no Fable credits: one step per planning step, model by modelFor, minutes noted or the cap');
+  ok(/Fable could not split it \(splitter exit 1: Credit balance is too low\)/.test(P.notes.at(-1)?.text ?? ''), 'the build says why it fell back');
+
+  const junk = join(tmp, 'junk.sh'); writeFileSync(junk, '#!/bin/bash\ncat >/dev/null; echo \'{"steps":[{"text":"x","model":"Sonnet","minutes":90}]}\'\n'); chmodSync(junk, 0o755);
+  sendPlan('plan-body', [], 'Only a body: do the thing.');
+  F.advance({ build: 'plan-body', env: { ...process.env, AXF_PIPELINE_SPLITTER: junk } });
+  P = get('plan-body');
+  eq([P.steps.length, P.steps[0]?.estimate], [1, '30 min'], 'an answer that does not pass (Sonnet, 90 min) is not used: the whole plan is one step');
+  ok(/did not pass/.test(P.notes.at(-1)?.text ?? ''), '… and the note says so');
+
+  sendPlan('plan-container', [{ text: 'Anything' }]);
+  const r2 = F.advance({ build: 'plan-container', env: { ...process.env, AXF_P2_ACCOUNTS: '', AXF_PIPELINE_SPLITTER: '', AXF_CLAUDE_ACCOUNTS: join(tmp, 'no-logins') } });
+  eq(get('plan-container').status, 'pending', 'away from the VPS host (no logins) a planning-only build waits for the host tick');
+  ok(r2.waits.some((x) => x.id === 'plan-container' && /VPS host/.test(x.why)), '… and says what it waits for'); }
+
 console.log(`${failed ? 'FAIL' : 'ok'} p2-flow: ${n - failed}/${n}`);
 process.exit(failed ? 1 : 0);

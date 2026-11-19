@@ -22,8 +22,9 @@
  *   … collapse [<item>|--all] · expand [<item>|--all]
  *   … export [<item>] [--json] [--out file] · import <file.json> [--in <item>]
  *   … validate <item> [--id build-id]                             plan-build@1: the build id it gets and every reason it may not be sent
- *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; a Pipeline 2.0
- *                                                                 build (flow pipeline-2, pending) in the builds store
+ *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; ONE Pipeline 2.0
+ *                                                                 build (flow pipeline-2, pending, its steps kept as planning) in the
+ *                                                                 builds store; the orchestrator's splitting stage designs the build steps
  *   … say "<spoken sentence>"                                     one voice command (what AmberX and the page's mic send)
  *   … clear --yes                                                 everything gone (the trash too)
  *   … api '<json {op,…}>'                                         what the server calls (also reads stdin)
@@ -70,52 +71,60 @@ export function save(state) { const s = tc.normalize(state); writeJson(file(), s
 export function profiles() { try { return readProfiles().profiles?.map((p) => ({ id: p.id, label: p.label ?? p.name ?? p.id })) ?? []; } catch { return []; } }
 const buildId = (title, taken) => { const base = tc.slug(title).slice(0, 34) || 'plan'; let id = base; for (let n = 2; taken.has(id); n++) id = `${base}-${n}`.slice(0, 40); return id; };
 
+/** A build sent from this item that has not landed or left the flow yet (pending, split, active or failed), or null. */
+const liveSent = (builds, itemId) => builds.find((b) => b.planRef === itemId && b.flow === P2.FLOW && !b.deleted && ![P2.EXIT, 'landed'].includes(b.status)) ?? null;
+
 /**
- * The item as a plan-build@1 manifest (framework/schemas/json/plan-build.schema.json): the one shape every plan must
- * have before it can be sent. `id` is the build id Plan Studio gives it (from the title, unique in the builds store).
+ * The item as a plan-build@1 manifest (framework/schemas/json/plan-build.schema.json): one build, the plan as a whole
+ * (title, body, its open steps as planning steps). `id` is the build id Plan Studio gives it (from the title, unique in
+ * the builds store). Steps need no minutes or model: the orchestrator's splitting stage designs the build steps.
  * → { plan, errors: [{ path, why }] } (errors empty = it may be sent).
  */
 export function planOf(state, ref, { id = '', said = '' } = {}) {
   const it = tc.resolve(state, ref);
   if (!it) throw new tc.TreeError('not_found', `no item "${ref}"`);
   const change = tc.toBuild(state, it.id, { said });
-  const taken = new Set(BS.loadStore().builds.flatMap((b) => [b.id, b.alias].filter(Boolean)));
+  const builds = BS.loadStore().builds;
+  const taken = new Set(builds.flatMap((b) => [b.id, b.alias].filter(Boolean)));
   const plan = P2.normPlan({ ...change, id: id || buildId(it.title, taken), planItem: it.id, said,
     steps: change.steps.map((x) => ({ text: x.text, model: x.model, estimate: x.estimate })) });
   const errors = P2.validatePlan(plan);
   if (id && taken.has(id)) errors.push({ path: 'id', why: `"${id}" is already a build: pick another build id` });
+  const live = liveSent(builds, it.id);
+  if (live) errors.push({ path: 'planItem', why: `already sent as ${live.id} (${P2.labelOf(live.status, live.attempt)}): wait for it to land, or archive it first` });
   return { item: it, plan, errors };
 }
 
 /**
  * Send to orchestrator (pipeline-2@1, framework/spec/PIPELINE-2.md): the plan must pass plan-build@1 (nothing invalid
- * moves on: every reason is listed), gets its build id, and goes straight into the builds store as a Pipeline 2.0 build
- * (`flow: pipeline-2`, status `pending`, each step `pending` with its model). The orchestrator flow takes it from there
- * (splitting → split → pulling-main → assigning-models → ready). The item gets a `build` link back.
+ * moves on: every reason is listed), gets its build id, and goes into the builds store as ONE Pipeline 2.0 build
+ * (`flow: pipeline-2`, status `pending`, no build steps; the plan's steps kept as `planning`). The orchestrator flow
+ * takes it from there: splitting (Fable designs the build steps, each with minutes and a model) → split → pulling-main
+ * → assigning-models → ready. The item gets a `build` link back.
  */
 export function sendToBuild(state, ref, { profile = '', id = '', preview = false, by = '', said = '' } = {}) {
   const prof = profile || activeProfile().id;
   const { item: it, plan, errors } = planOf(state, ref, { id, said });
-  const minutes = plan.steps.reduce((m, s) => m + (s.minutes || 0), 0);
   const change = tc.toBuild(state, it.id, { said });
-  if (preview) return { ok: !errors.length, preview: true, build: { profile: prof, id: plan.id }, change, plan, errors, minutes };
-  if (!plan.steps.length) throw new tc.TreeError('validation', `"${it.title}" has no open steps to build: add steps under it first`);
+  if (preview) return { ok: !errors.length, preview: true, build: { profile: prof, id: plan.id }, change, plan, errors, planning: plan.steps.length };
   if (errors.length) throw new tc.TreeError('validation', `"${it.title}" does not pass plan-build@1, so it was not sent: ${errors.map((e) => `${e.path}: ${e.why}`).join('; ')}`);
   const now = new Date().toISOString(); const who = by || 'plan-studio-2';
   BS.withStore((s) => {
     if (core.findBuild(s, plan.id)) throw new tc.TreeError('validation', `"${plan.id}" is already a build: pick another build id`);
-    const steps = plan.steps.map((x, i) => P2.transition({ id: `s${i + 1}`, text: x.text, model: x.model, estimate: `${x.minutes} min`, files: x.files, phase: 1 }, 'pending', { at: now, by: who, kind: 'step' }).rec);
+    const live = liveSent(s.builds, it.id);
+    if (live) throw new tc.TreeError('validation', `"${it.title}" is already sent as ${live.id}: wait for it to land, or archive it first`);
     const b = P2.transition({
-      id: plan.id, title: plan.title, detail: plan.detail, source: FOLDER, planRef: it.id, profiles: [prof], createdAt: now, updatedAt: now,
-      notes: [{ text: `Plan Studio 2.0 item: ${it.id} (${tc.pathOf(state, it.id)}). Passed plan-build@1; sent to the orchestrator as a Pipeline 2.0 build.`, at: now }],
+      id: plan.id, title: plan.title, detail: plan.detail, source: FOLDER, planRef: it.id, profiles: [prof], createdAt: now, updatedAt: now, flow: P2.FLOW,
+      notes: [{ text: `Plan Studio 2.0 item: ${it.id} (${tc.pathOf(state, it.id)}). Passed plan-build@1; sent as one Pipeline 2.0 build with ${plan.steps.length} planning step${plan.steps.length === 1 ? '' : 's'}. The splitting stage designs its build steps.`, at: now }],
       ...(said ? { origin: { said, at: now, source: 'console', by: by || 'Brett' } } : {}),
-      steps,
+      planning: plan.steps,
+      steps: [],
     }, 'pending', { at: now, by: who, why: 'Send to orchestrator' }).rec;
     s.builds.push(core.normBuild(b, { now, profile: prof }));
     return s;
-  }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} steps` });
+  }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} planning steps` });
   const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${plan.id}`, label: plan.title });
-  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, steps: plan.steps.length, minutes, plan };
+  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan };
 }
 
 /* ------------------------------------------------------------------ one op → one change (the server, the CLI, voice) */
@@ -157,7 +166,7 @@ export function api(r, { by = '' } = {}) {
     case 'collapse': { const ids = r.all ? null : [tc.resolve(s, r.id)?.id].filter(Boolean); if (!r.all && !ids.length) throw new tc.TreeError('not_found', `no item "${r.id}"`); const res = tc.setCollapsed(s, ids, r.collapsed !== false); return done(res, `${r.collapsed === false ? 'Expanded' : 'Collapsed'} ${r.all ? 'everything' : 'it'}.`); }
     case 'import': { const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
     case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
-    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, steps: res.steps, minutes: res.minutes, say: `Sent it to the build orchestrator as ${res.build.id} with ${res.steps} steps.` }; }
+    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, say: `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
@@ -216,7 +225,7 @@ export async function main(argv = process.argv.slice(2)) {
       case 'expand': return out(api({ op: 'collapse', id: a[0], all: !!flags.all || !a[0], collapsed: false }), 'expanded');
       case 'export': { const r = api({ op: 'export', id: a[0], format: flags.json ? 'json' : 'md' }); const text = r.format === 'json' ? JSON.stringify(r.data, null, 1) : r.markdown; if (flags.out) { writeFileSync(flags.out, text); return console.log(`wrote ${flags.out}`); } return console.log(text); }
       case 'import': { const data = JSON.parse(readFileSync(a[0] === '-' ? 0 : a[0], 'utf8')); return out(api({ op: 'import', data, parent: flags.in }), 'imported'); }
-      case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
+      case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
       case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }

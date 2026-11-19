@@ -403,8 +403,8 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
 
 // ------------------------------------------------------------------ the split
 
-/** Run the configured splitter on a prompt: { text, provider, error }. */
-export function askSplitter(prompt, settings, env = process.env) {
+/** Run the configured splitter on a prompt: { text, provider, error }. `model` = the policy key it runs on (opus | fable). */
+export function askSplitter(prompt, settings, env = process.env, { model = 'opus' } = {}) {
   if (env.AXF_PIPELINE_SPLITTER) {
     const r = spawnSync('bash', ['-c', env.AXF_PIPELINE_SPLITTER], { input: prompt, encoding: 'utf8', timeout: 180e3, env });
     return r.status === 0 ? { text: r.stdout, provider: 'claude', error: '' } : { text: '', provider: 'claude', error: `splitter exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
@@ -418,7 +418,7 @@ export function askSplitter(prompt, settings, env = process.env) {
     try { snap = snapshotLogin({ dir, session: 'split', account }); } catch { snap = null; }
     const e = snap ? childEnv(snap, env) : { ...env };
     e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools', ''], { input: prompt, encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
+    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS[modelKey(model)] || MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools', ''], { input: prompt, encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
     if (r.error) return { text: '', provider: 'claude', error: `claude not available: ${r.error.message}` };
     if (r.status !== 0) return { text: '', provider: 'claude', error: `claude exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
     let text = r.stdout; try { const j = JSON.parse(r.stdout); text = typeof j?.result === 'string' ? j.result : r.stdout; } catch { /* plain text */ }
@@ -1602,7 +1602,7 @@ export function health({ env = process.env, by = 'dispatcher' } = {}) {
 // ------------------------------------------------------------------ CLI
 
 // pipeline2.mjs uses these (bound here: it is imported by this file, so it can't import them at load time)
-P2F.bindPipeline({ pipeDir, slotsNow, accountsRead, loadSettings, ensureWorktree, pipelineLock, seesAccounts });
+P2F.bindPipeline({ pipeDir, slotsNow, accountsRead, loadSettings, ensureWorktree, pipelineLock, seesAccounts, askSplitter });
 
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json' && a !== '--expect-fail');

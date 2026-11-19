@@ -4,8 +4,11 @@
  * Runs on the VPS host (worktrees, tmux, the Claude logins). Everything is a status in the builds store, forward-only;
  * the pure decisions are framework/core/pipeline-status.mjs.
  *
- *   pending → splitting → split          every Pipeline 2.0 build sent from Plan Studio: its steps cut into as many
- *                                        parts as there are slots, parts never sharing files
+ *   pending → splitting → split          every Pipeline 2.0 build sent from Plan Studio arrives as one plan (title,
+ *                                        body, planning steps; no build steps): Fable designs the build steps, each
+ *                                        with minutes and a model (one per planning step when Fable cannot answer);
+ *                                        a build that already has steps is cut into as many parts as there are slots,
+ *                                        parts never sharing files
  *   split → pulling-main                 only when no other build is active (one active build at a time)
  *   pulling-main                         one step at a time: its worktree cut at <worktrees>/<build>--<step> on
  *                                        claude/<build>--<step> from fresh origin/main (cut BEFORE launch, never at launch)
@@ -34,6 +37,7 @@ import { appendFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P2 from '../../../../framework/core/pipeline-status.mjs';
+import * as PC from './pipeline-core.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
 import { FlowRefused, loadStore, setFlowStatus } from '../../../../framework/cli/builds-store.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
@@ -92,15 +96,52 @@ export function partStep(part, i, { at: when, by }) {
   return P2.transition({ ...base, id: `s${i + 1}` }, 'pending', { at: when, by, kind: 'step', why: 'split' }).rec;
 }
 
+/** Where Fable can be asked: a test splitter, or the VPS host (the logins live there; elsewhere the host's tick splits). */
+const canAskFable = (env) => !!env.AXF_PIPELINE_SPLITTER || !!env.AXF_P2_ACCOUNTS || !PL.seesAccounts || PL.seesAccounts(env);
+
+/**
+ * The build steps of a build Plan Studio sent as one plan (planning steps only, no build steps): Fable designs them,
+ * each with minutes and a model (pipeline-core p2SplitPrompt, checked by normDesign). When Fable cannot answer (no
+ * credits, no login, the split provider off, an answer that does not pass) the split falls back to one step per planning
+ * step (fallbackDesign) and the build's note says why. → { steps: [{ text, model, minutes, files }], by, why }
+ */
+export function designSteps(b, { env = process.env, slots = 1 } = {}) {
+  let settings = { splitProvider: 'claude' }; try { settings = PL.loadSettings(env); } catch { /* defaults */ }
+  let why = '';
+  if (env.AXF_PIPELINE_SPLITTER || settings.splitProvider === 'claude') {
+    try {
+      const a = PL.askSplitter(PC.p2SplitPrompt(b, { slots, maxStepMinutes: P2.STEP_MAX_MINUTES }), settings, env, { model: 'fable' });
+      if (!a.error) {
+        const d = P2.normDesign(PC.answerJson(a.text));
+        if (!d.errors.length) return { steps: d.steps, by: 'fable', why: '' };
+        why = `the answer did not pass: ${d.errors.slice(0, 3).map((x) => `${x.path} ${x.why}`).join('; ')}`;
+      } else why = a.error;
+    } catch (e) { why = str(e.message); }
+  } else why = `split provider is ${settings.splitProvider}`;
+  return { steps: P2.fallbackDesign(b), by: 'fallback', why: str(why, 300) };
+}
+
 function splitAll(store, env, out, only = '') {
   for (const b of p2Builds(store).filter((x) => at(x, 'pending', 'splitting') && (!only || x.id === only))) {
-    if (b.status === 'pending' && !move(b.id, 'splitting', { why: 'the orchestrator is splitting it' })) continue;
+    const planningOnly = !b.steps.length;
+    if (planningOnly && !canAskFable(env)) { out.waits.push({ id: b.id, why: 'Fable designs its steps on the VPS host (the next host tick)' }); continue; }
+    if (b.status === 'pending' && !move(b.id, 'splitting', { why: planningOnly ? 'Fable is designing its steps' : 'the orchestrator is splitting it' })) continue;
     const slots = slotCount(env);
-    const parts = P2.splitParts(b.steps.filter((s) => !s.skip), slots);
+    let parts; let note = '';
+    if (planningOnly) {
+      const d = designSteps(b, { env, slots });
+      const steps = d.steps.map((x) => ({ text: x.text, model: x.model, estimate: `${x.minutes} min`, files: x.files, phase: 1 }));
+      parts = P2.splitParts(steps, steps.length); // one row per designed step; only steps sharing files go together
+      const minutes = d.steps.reduce((m, x) => m + x.minutes, 0);
+      note = d.by === 'fable'
+        ? `Split by Fable into ${d.steps.length} step${d.steps.length === 1 ? '' : 's'} (${minutes} min, ${d.steps.filter((x) => x.model === 'Fable').length} Fable).`
+        : `Fable could not split it (${d.why}): one step per planning step instead (${d.steps.length}, ${minutes} min). Review the steps.`;
+      logLine({ event: 'design', build: b.id, by: d.by, steps: d.steps.length, why: d.why });
+    } else parts = P2.splitParts(b.steps.filter((s) => !s.skip), slots);
     const when = nowIso();
     const r = move(b.id, 'split', { why: `${parts.length} step${parts.length === 1 ? '' : 's'} for ${slots} slot${slots === 1 ? '' : 's'}`,
-      mutate: (rec) => { rec.steps = parts.map((p, i) => storeCore.normStep(partStep(p, i, { at: when, by: 'orchestrator' }), i)); } });
-    if (r) { out.split.push({ id: b.id, steps: parts.length, slots }); logLine({ event: 'split', build: b.id, steps: parts.length, slots }); say('orchestrator', 'done', `Split ${b.id} into ${parts.length} step${parts.length === 1 ? '' : 's'} (${slots} slots).`, b.id); }
+      mutate: (rec) => { rec.steps = parts.map((p, i) => storeCore.normStep(partStep(p, i, { at: when, by: 'orchestrator' }), i)); if (note) rec.notes.push({ text: note, at: when, by: 'orchestrator' }); } });
+    if (r) { out.split.push({ id: b.id, steps: parts.length, slots }); logLine({ event: 'split', build: b.id, steps: parts.length, slots }); say('orchestrator', 'done', note || `Split ${b.id} into ${parts.length} step${parts.length === 1 ? '' : 's'} (${slots} slots).`, b.id); }
   }
 }
 

@@ -259,6 +259,7 @@ export function normBuild(b, ctx = {}) {
     ...(P2.isP2(o) ? (P2.normLandFailure(o.failure) ? { failure: P2.normLandFailure(o.failure) } : {}) : (normFailure(o.failure) ? { failure: normFailure(o.failure) } : {})),
     ...(P2.isP2(o) && P2.normLanding(o.landing) ? { landing: P2.normLanding(o.landing) } : {}), // lander@1: the PR groups, merged / closed PRs, CI re-runs, rules per head
     ...(P2.isP2(o) && str(o.landedAt) ? { landedAt: str(o.landedAt, 40) } : {}),
+    ...(P2.isP2(o) && P2.normPlanning(o.planning).length ? { planning: P2.normPlanning(o.planning) } : {}), // pipeline-2@1: Plan Studio's steps, planning context for the split (never build steps)
     ...(normLanded(o.landed) ? { landed: normLanded(o.landed) } : {}),
     ...(normEscalation(o.escalation) ? { escalation: normEscalation(o.escalation) } : {}),
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)

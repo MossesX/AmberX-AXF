@@ -384,12 +384,13 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
   }, (e: Error) => setErr(e.message));
   return (
     <div className={`${B}__dialog fx-stack`}>
-      <p className="fx-muted">“{it.title}” becomes a pending build in the Build orchestrator. Its open steps (any depth) become the build's steps; the item gets a link back to the build.</p>
+      <p className="fx-muted">“{it.title}” becomes one pending build in the Build orchestrator. Its open steps (any depth) go along as planning notes: Fable designs the real build steps, each with its minutes and model. The item gets a link back to the build.</p>
       {err && <Note tone="danger">{err}</Note>}
       {preview && (
         <>
-          <p className={`${B}__n`}>{preview.change.steps.length} steps · {preview.minutes} min · profile {preview.build.profile}</p>
-          <ol className={`${B}__steps`}>{preview.change.steps.map((s, i) => <li key={i}>{s.text} <span className="fx-muted">{s.model}{s.estimate ? `, ${s.estimate}` : ''}</span></li>)}</ol>
+          <p className={`${B}__n`}>{preview.planning} planning step{preview.planning === 1 ? '' : 's'} · profile {preview.build.profile}</p>
+          {preview.errors?.length ? <Note tone="warning">{preview.errors.map((e) => e.why).join('; ')}</Note> : null}
+          <ol className={`${B}__steps`}>{preview.change.steps.map((s, i) => <li key={i}>{s.text}{s.model || s.estimate ? <span className="fx-muted"> {[s.model, s.estimate].filter(Boolean).join(', ')}</span> : null}</li>)}</ol>
           <TextField label="Build id" value={buildId} onChange={setBuildId} placeholder={preview.build.id} mono hint="Lower-case letters, digits and dashes; made from the title when empty." />
         </>
       )}

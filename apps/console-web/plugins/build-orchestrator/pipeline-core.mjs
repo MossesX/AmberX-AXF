@@ -529,6 +529,34 @@ export function rulesSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
   return steps;
 }
 
+/**
+ * Pipeline 2.0 (pipeline-2@1): the one-shot prompt for Fable to design the build steps of a build Plan Studio sent as one
+ * plan (title, body, planning steps; no build steps). Steps run at the same time, each in its own worktree cut from
+ * main, so they never share files. The answer is JSON only and must pass pipeline-status normDesign.
+ */
+export function p2SplitPrompt(b, { slots = 1, maxStepMinutes = 30 } = {}) {
+  const planning = list(b.planning);
+  const said = str(b.origin?.said, 6000).trim();
+  return [
+    'You are the AmberX AXF build orchestrator\'s splitting stage. Design the build steps for the plan below.',
+    `The plan's steps are planning notes from Plan Studio, not build steps: use them as context, merge, cut or reorder them as the work needs.`,
+    `Each build step is a separate headless Claude Code session in its own git worktree cut from main; up to ${Math.max(1, Number(slots) || 1)} run at the same time and their branches land as one PR. So steps must not depend on each other's unmerged work and must not touch the same files.`,
+    `Rules: every step ${maxStepMinutes} minutes or less, estimated in whole minutes; 1 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; the last step covers tests and the report (_claude/builds/reports/<build id>.md).`,
+    `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Never Sonnet or Haiku.`,
+    'Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","minutes":<n>,"files":["…"]}]}',
+    '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.detail ? `Body:\n${str(b.detail, 8000)}` : '',
+    planning.length ? `Planning steps:\n${planning.map((s, i) => `${i + 1}. ${str(s.text, 2000)}${s.model || s.minutes ? ` (noted: ${[s.model, s.minutes ? `${s.minutes} min` : ''].filter(Boolean).join(', ')})` : ''}${list(s.files).length ? ` [files: ${list(s.files).join(', ')}]` : ''}`).join('\n')}` : '',
+    said ? `Brett said (verbatim):\n${said}` : '',
+  ].filter(Boolean).join('\n');
+}
+
+/** The JSON object in a splitter's answer (alone or inside other text), or null. */
+export function answerJson(text) {
+  const s = str(text, 200000); const start = s.indexOf('{'); const end = s.lastIndexOf('}');
+  if (start < 0 || end <= start) return null;
+  try { return JSON.parse(s.slice(start, end + 1)); } catch { return null; }
+}
+
 /** Does this build still need the orchestrator's split? (no steps, or steps over the limit / without estimates) */
 export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
   if (!b || ['built', 'complete', 'archived', 'failed'].includes(b.status) || b.deleted) return false;

@@ -16,7 +16,12 @@
     "statusLog": { "type": "array", "maxItems": 60, "items": { "$ref": "#/$defs/logLine" } },
     "landing": { "type": "object", "description": "lander@1 landing record (normLanding): split, merged, closed, reruns, rules, ciKick, fullKick, lastMerge" },
     "landedAt": { "type": "string", "format": "date-time" },
-    "steps": { "type": "array", "items": { "$ref": "#/$defs/step" } }
+    "planning": {
+      "description": "The plan's steps as Plan Studio sent them: planning context for the splitting stage, never build steps (kept for the record after the split)",
+      "type": "array", "maxItems": 100,
+      "items": { "type": "object", "required": ["text"], "properties": { "text": { "type": "string", "minLength": 1, "maxLength": 2000 }, "model": { "enum": ["Fable", "Opus"] }, "minutes": { "type": "integer", "minimum": 1 }, "files": { "type": "array", "items": { "type": "string", "maxLength": 300 } } } }
+    },
+    "steps": { "type": "array", "description": "Build steps. A build sent from Plan Studio arrives with none; the splitting stage writes them.", "items": { "$ref": "#/$defs/step" } }
   },
   "allOf": [
     { "if": { "properties": { "status": { "const": "failed" } } }, "then": { "required": ["attempt", "failedFrom"] } }

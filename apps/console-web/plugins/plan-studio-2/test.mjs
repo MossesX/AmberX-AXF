@@ -166,7 +166,7 @@ await t('normalize: unknown parents become roots, cycles are broken, orders cont
   assert.deepEqual(tc.roots(nz).map((i) => i.order), tc.roots(nz).map((_, k) => k));
 });
 
-await t('toBuild: open steps at any depth become the build steps; notes under it become the detail', () => {
+await t('toBuild: open steps at any depth become the planning steps; notes under it become the detail', () => {
   const b = tc.toBuild(s, 'Launch', { said: 'ship it' });
   assert.equal(b.action, 'add'); assert.equal(b.title, 'Launch'); assert.equal(b.source, 'plan-studio-2');
   assert.ok(b.steps.every((x) => x.text !== 'Write the copy'), 'done steps are left out');
@@ -208,24 +208,31 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.equal(cli('where'), dir);
   assert.match(cli('tree'), /empty/);
   cli('add', 'plan', 'Launch', '--priority', 'P1');
+  cli('add', 'plan', 'Empty');
+  const bad = cliFails('validate', 'Empty', '--json'); assert.equal(bad.ok, false); assert.ok(bad.errors.some((e) => /nothing to build/.test(e.why)), 'plan-build@1: a plan with no steps and no body is refused');
+  assert.throws(() => cli('build', 'Empty'), /does not pass plan-build@1/);
+  cli('delete', 'Empty');
   cli('add', 'step', 'Deploy', '--in', 'Launch', '--model', 'Opus', '--minutes', '30');
-  cli('add', 'step', 'Too long', '--in', 'Launch', '--model', 'Opus', '--minutes', '45');
-  const bad = cliFails('validate', 'Launch', '--json'); assert.equal(bad.ok, false); assert.ok(bad.errors.some((e) => /30 minutes or less/.test(e.why)), 'plan-build@1: a step over 30 min is refused');
-  assert.throws(() => cli('build', 'Launch'), /does not pass plan-build@1/);
-  cli('delete', 'Too long');
+  cli('add', 'step', 'Long and unestimated', '--in', 'Launch');
+  const good = cliJson('validate', 'Launch'); assert.equal(good.ok, true, `planning steps need no minutes or model: ${JSON.stringify(good.errors)}`);
+  assert.deepEqual(good.plan.steps.map((x) => [x.model ?? '', x.minutes ?? 0]), [['Opus', 30], ['', 0]], 'hints go along only when set');
+  cli('delete', 'Long and unestimated');
   assert.equal(cliJson('say', 'add a step Test it to Launch').understood, true);
   assert.equal(cliJson('say', 'mark Test it done').item.done, true);
   assert.match(cli('find', 'deploy'), /plan-studio-2\.focus:/);
   const st = JSON.parse(readFileSync(join(dir, 'tree.json'), 'utf8'));
   assert.equal(st.$axf, 'plan-tree@1'); assert.equal(st.items.length, 3);
-  const pv = cliJson('build', 'Launch', '--preview'); assert.equal(pv.preview, true); assert.equal(pv.change.steps.length, 1);
-  const b = cliJson('build', 'Launch', '--said', 'ship it'); assert.equal(b.build.id, 'launch'); assert.equal(b.steps, 1);
+  const pv = cliJson('build', 'Launch', '--preview'); assert.equal(pv.preview, true); assert.equal(pv.change.steps.length, 1); assert.equal(pv.planning, 1);
+  const b = cliJson('build', 'Launch', '--said', 'ship it'); assert.equal(b.build.id, 'launch'); assert.equal(b.planning, 1);
   const orch = JSON.parse(readFileSync(join(dir, 'store.json'), 'utf8'));
   const sent = orch.builds.find((x) => x.id === 'launch');
-  assert.equal(sent.source, 'plan-studio-2'); assert.equal(sent.steps[0].model, 'Opus'); assert.equal(sent.origin.said, 'ship it');
-  assert.equal(sent.flow, 'pipeline-2'); assert.equal(sent.status, 'pending'); assert.equal(sent.steps[0].status, 'pending'); assert.ok(sent.statusAt && sent.statusBy, 'pipeline-2@1: at / by recorded');
+  assert.equal(sent.source, 'plan-studio-2'); assert.equal(sent.origin.said, 'ship it');
+  assert.equal(sent.flow, 'pipeline-2'); assert.equal(sent.status, 'pending'); assert.ok(sent.statusAt && sent.statusBy, 'pipeline-2@1: at / by recorded');
+  assert.equal(sent.steps.length, 0, 'one build, no build steps: the splitting stage designs them');
+  assert.deepEqual(sent.planning, [{ text: 'Deploy', model: 'Opus', minutes: 30 }], 'the plan steps are kept as planning context');
   assert.ok(cliJson('show', 'Launch').item.links.some((l) => l.type === 'build' && l.ref.endsWith(':launch')));
   assert.throws(() => cli('build', 'Launch', '--id', 'launch'), /already a build/);
+  assert.throws(() => cli('build', 'Launch', '--id', 'launch-again'), /already sent as launch/, 'no second build while the first is pending or active');
   const del = cliJson('delete', 'Deploy'); assert.equal(del.removed, 1);
   assert.match(cli('trash'), /Deploy/);
   assert.equal(cliJson('undo').item.title, 'Deploy');
