@@ -38,6 +38,12 @@ axHub's volume `/projects/*/_data` and `/projects/_shared`, and the `axfdata` da
   `planner_shipped` over the journal. Keys written before a table existed move in on connect (`PgStore._backfill`,
   byte-equal check per key, report in `GET /v1/_meta/tables` → `backfill`). Copy / check / cut:
   `node framework/cli/data-tables.mjs status|backfill|cutover plan`.
+  Live Nov 19 2026 01:54 UTC: axf-data redeployed, backfill moved 301 keys (0 failed), 9 files axf-data lacked or held
+  stale were written, every table equals the files (plan_items 1 023, planner_history 893, planner_lists 388,
+  planner_categories 92, projects 22, planner_items 10, plan_media 9, plan_profiles 2, planner_tree 2, plan_projects 1),
+  and **`planner` is in cutover**. The `console` keys (plan.json, profiles, projects, media, manifests) stay on files
+  until the console runs code with key-level modes (it started before #848): then
+  `data-tables.mjs cutover plan --apply --keys`.
 
 Row counts below are live `keys` rows in axf-data (not deleted); sizes are the stored bodies.
 
