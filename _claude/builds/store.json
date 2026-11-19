@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9369,
- "updatedAt": "2026-11-19T14:45:13.469Z",
+ "rev": 9370,
+ "updatedAt": "2026-11-19T14:54:29.174Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179646,10 +179646,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.745Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -180221,7 +180221,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 143,
+   "rev": 144,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206277,10 +206277,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -206367,7 +206367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208748,10 +208748,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -208948,7 +208948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210453,10 +210453,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -210543,7 +210543,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -221166,10 +221166,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -221759,7 +221759,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 119,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -239247,10 +239247,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -239337,7 +239337,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -253572,10 +253572,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [
      "hulu0241"
@@ -254074,7 +254074,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 109,
+   "rev": 110,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -257489,10 +257489,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -258281,7 +258281,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 94,
+   "rev": 95,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261355,10 +261355,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -261706,7 +261706,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261898,10 +261898,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -262366,7 +262366,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262605,10 +262605,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -263047,7 +263047,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263219,10 +263219,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -263609,7 +263609,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263799,10 +263799,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -264192,7 +264192,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265519,10 +265519,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -265845,7 +265845,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266647,10 +266647,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [
      "hulu0241"
@@ -267191,7 +267191,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267391,10 +267391,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -267787,7 +267787,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267977,10 +267977,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -268508,7 +268508,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269130,10 +269130,10 @@
     "dispatchedAt": "2026-11-18T00:34:47.468Z",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-18T00:34:47.468Z",
@@ -269844,7 +269844,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 192,
+   "rev": 193,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271948,10 +271948,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -272789,7 +272789,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272981,10 +272981,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.751Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -273510,7 +273510,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273685,10 +273685,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -274142,7 +274142,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274318,10 +274318,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -274802,7 +274802,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274983,10 +274983,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -275377,7 +275377,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275551,10 +275551,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -275598,7 +275598,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275762,10 +275762,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -276135,7 +276135,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276320,10 +276320,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -276846,7 +276846,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279044,10 +279044,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -279313,7 +279313,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279482,10 +279482,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -279572,7 +279572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279812,10 +279812,10 @@
     "dispatchedAt": "2026-11-17T20:16:29.639Z",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:16:29.639Z",
@@ -280393,7 +280393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280841,10 +280841,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -281456,7 +281456,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 162,
+   "rev": 163,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281635,10 +281635,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -282032,7 +282032,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -282201,10 +282201,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -282572,7 +282572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287510,10 +287510,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -287729,7 +287729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287934,10 +287934,10 @@
     "dispatchedAt": "2026-11-17T20:55:33.562Z",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T20:55:33.562Z",
@@ -288060,7 +288060,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288222,10 +288222,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -288347,7 +288347,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288510,10 +288510,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.746Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -288639,7 +288639,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288802,10 +288802,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -288931,7 +288931,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -289094,10 +289094,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -289222,7 +289222,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -289385,10 +289385,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -289514,7 +289514,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -291273,10 +291273,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -291983,7 +291983,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -293703,10 +293703,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -293878,7 +293878,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -294124,10 +294124,10 @@
     "dispatchedAt": "2026-11-17T22:28:58.757Z",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "2026-11-17T22:28:58.757Z",
@@ -294607,7 +294607,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 76,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -296580,10 +296580,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -296887,7 +296887,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -297072,10 +297072,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -297775,7 +297775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -316185,10 +316185,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -316646,7 +316646,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -316826,10 +316826,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -317177,7 +317177,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -317382,10 +317382,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -317799,7 +317799,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -318558,10 +318558,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -318910,7 +318910,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319058,10 +319058,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -319343,7 +319343,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 65,
+   "rev": 66,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319517,10 +319517,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -319802,7 +319802,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -319992,10 +319992,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -320409,7 +320409,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320563,10 +320563,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -320892,7 +320892,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321035,10 +321035,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -321386,7 +321386,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -321563,10 +321563,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -321914,7 +321914,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -322609,10 +322609,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -323070,7 +323070,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323719,10 +323719,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -323831,7 +323831,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -324889,10 +324889,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -325023,7 +325023,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -325175,10 +325175,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -325397,7 +325397,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -326467,10 +326467,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -326554,7 +326554,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -327653,10 +327653,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -327718,7 +327718,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -327839,10 +327839,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -327926,7 +327926,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -328057,10 +328057,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -328213,7 +328213,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -328348,10 +328348,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -328482,7 +328482,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -329099,10 +329099,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -329343,7 +329343,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -329478,10 +329478,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Fable",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -329719,7 +329719,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -329854,10 +329854,10 @@
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
-     "account": "",
-     "kind": "",
-     "at": "2026-11-19T14:09:16.747Z",
-     "why": "the one build account hulu0241 is hit its limit until 2026-11-19 17:09 (API overflow is off)"
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-19T14:54:22.752Z",
+     "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
@@ -330120,7 +330120,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
