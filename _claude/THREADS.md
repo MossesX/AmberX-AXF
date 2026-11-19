@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 14:23 UTC · `live-build-status-real-time-grids-15` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `right-click-running-build-open-headless` → failed, note (all) · watchdog
 - 2026-11-19 14:23 UTC · `right-click-running-build-pop-open` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 14:45 UTC · `queue-stall-detector-vps-spots-queued` → pending, note (all) · watchdog
 - 2026-11-19 14:45 UTC · `load-spike-alarm-vps-detects-cpu-load` → pending, note (all) · watchdog
 - 2026-11-19 14:45 UTC · `server-safe-mode-one-emergency-button` → pending, note (all) · watchdog
+- 2026-11-19 16:37 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
 
 ## Token passes (log)
 
