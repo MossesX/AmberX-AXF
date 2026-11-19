@@ -1,5 +1,5 @@
-// The AmberX notes core (amberx-notes@1 rules), kept here when apps/amberx-droid was retired (Nov 19 2026); the
-// TypeScript original is on the archive/amberx-droid branch. This file is now the source: edit it here.
+// Bundled copy of the AmberX notes core (amberx-notes@1 rules), frozen when apps/amberx-droid was retired (Nov 19 2026);
+// the TypeScript original is on the archive/amberx-droid branch. No generator any more: edit this file.
 const FORMAT = "amberx-notes@1";
 const HUB_PROJECT = "amberx-axf";
 const DATA_FOLDER = "amberx-notes";

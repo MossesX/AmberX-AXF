@@ -25,7 +25,7 @@ Build `remove-amberx-app-code-once-phone`, Nov 19 2026, on the PR #853 branch (`
 - `amberx-droid` from the `targets` of ten console plugins.
 - Gizmo guide: the "Re-record the AmberX walkthrough" panel and its `/amberx-walkthrough/rerecord` routes (the script
   it ran lived in the app).
-- token-control: `gen-amberx-core.mjs` (its source is gone); the generated notes core is kept as `lib/amberx-core.mjs`.
+- token-control: `gen-amberx-core.mjs` (its source is gone); the bundled notes core stays as `lib/amberx-core.gen.mjs`.
 - Spec checks that looped over the app (claude-session, listeners, hub-look, help, design-package, scale, xlayout,
   page toolbars, watch-live, plugin-commands, ci-scope).
 - Docs and agent material: RULES.md (project list, Android exception), headless Watch-live note, WATCH-LIVE.md,
