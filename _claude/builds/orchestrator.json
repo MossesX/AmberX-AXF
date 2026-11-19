@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T01:14:20.849Z",
+ "updatedAt": "2026-11-19T01:15:44.824Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194876,7 +194876,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:07:54.449Z",
+   "updatedAt": "2026-11-19T01:15:30.250Z",
    "builtAt": "",
    "notes": [
     {
@@ -195130,6 +195130,25 @@
      "note": "",
      "uid": "st-mwmupglh01xb0s",
      "createdAt": "2026-11-19T01:07:54.621Z"
+    },
+    {
+     "id": "s9",
+     "text": "s4.2 Plan, plan-studio, profiles, projects, plan media to tables (DATA-INVENTORY order 2), verified then cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwmuz7p601s62h",
+     "createdAt": "2026-11-19T01:15:30.323Z"
     }
    ]
   },

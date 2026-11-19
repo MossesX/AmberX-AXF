@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9206,
- "updatedAt": "2026-11-19T01:14:20.849Z",
+ "rev": 9207,
+ "updatedAt": "2026-11-19T01:15:44.824Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321832,7 +321832,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:07:54.449Z",
+   "updatedAt": "2026-11-19T01:15:30.250Z",
    "builtAt": "",
    "notes": [
     {
@@ -322140,6 +322140,28 @@
      "rev": 1,
      "createdAt": "2026-11-19T01:07:54.621Z",
      "updatedAt": "2026-11-19T01:07:57.125Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwmuz7p601s62h",
+     "title": "",
+     "text": "s4.2 Plan, plan-studio, profiles, projects, plan media to tables (DATA-INVENTORY order 2), verified then cut over",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T01:15:30.323Z",
+     "updatedAt": "2026-11-19T01:15:32.154Z"
     }
    ],
    "profiles": [
@@ -322150,7 +322172,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
