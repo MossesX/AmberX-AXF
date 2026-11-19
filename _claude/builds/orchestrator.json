@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T14:09:24.057Z",
+ "updatedAt": "2026-11-19T14:20:09.657Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -71114,6 +71114,11 @@
     {
      "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T22:41:55.276Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2362 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -71744,6 +71749,11 @@
     {
      "text": "Fixing: the push failed (every step is done but no PR reached GitHub after 15 min). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-17T22:41:55.276Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2362 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -120115,6 +120125,11 @@
     {
      "text": "Repeated steps collapsed: 25 → 22 (step-dedupe cleanup).",
      "at": "2026-11-17T23:45:45.186Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2298 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -129039,6 +129054,11 @@
     {
      "text": "Back to Pending (cli).",
      "at": "2026-11-17T03:41:40.958Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -130562,6 +130582,11 @@
     {
      "text": "Back to Pending (cli).",
      "at": "2026-11-17T03:41:58.620Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -131697,6 +131722,11 @@
     {
      "text": "Back to Pending (cli).",
      "at": "2026-11-17T03:41:54.122Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -139934,6 +139964,11 @@
     {
      "text": "Watchdog: Pending build orchestrator-stale-row-watchdog-vps → Complete: Its PR merged on main (PR #780 merged 2026-11-17T18:59:35Z (e5452d2cadf1); on main by squash e5452d2cadf1; build orchestrator-stale-row-watchdog-vps: pending) (status stays pending: steps still open)",
      "at": "2026-11-17T19:02:22.905Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2581 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -140541,6 +140576,11 @@
     {
      "text": "Watchdog: UI Review item r-20261115-d87ad27e → Remove: The build was cancelled (PR #676 open; not on main; build picker-dialog-plugin-replaces-all: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -153157,6 +153197,11 @@
     {
      "text": "Reconciler: PR #713 merged; paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2964 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -162856,6 +162901,11 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-18T19:18:52.523Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1096 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -163361,6 +163411,11 @@
     {
      "text": "Back to Pending (cli).",
      "at": "2026-11-17T03:41:49.159Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -166357,6 +166412,11 @@
     {
      "text": "Split by Claude into 13 steps (0 Fable).",
      "at": "2026-11-17T00:10:20.120Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3713 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -166710,6 +166770,11 @@
     {
      "text": "Back to Pending (cli).",
      "at": "2026-11-17T03:41:43.539Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3502 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -167198,6 +167263,11 @@
     {
      "text": "Repeated steps collapsed: 18 → 17 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:10.204Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -167615,6 +167685,11 @@
     {
      "text": "Split by Claude into 15 steps (2 Fable).",
      "at": "2026-11-17T00:19:30.095Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (3704 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -167997,6 +168072,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T12:39:27.078Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2964 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -169244,6 +169324,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:50:18.946Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2773 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -170048,6 +170133,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:40:17.557Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2783 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -170568,6 +170658,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:40:17.557Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2783 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -170956,6 +171051,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-17T15:50:18.946Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2773 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -171873,6 +171973,11 @@
     {
      "text": "Reconciler: PR #787 merged",
      "at": "2026-11-18T02:04:14.056Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2159 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -173986,6 +174091,11 @@
     {
      "text": "Brett: right-click any container, dataset or header/window gets 'Make collapsible' (toggle): adds a caret to its header that collapses/expands it; state saved on axHub. Same by voice/API.",
      "at": "2026-11-17T18:29:57.824Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2614 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -174749,6 +174859,11 @@
     {
      "text": "Split by Claude into 20 steps (5 Fable).",
      "at": "2026-11-17T18:16:52.043Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2627 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -175235,6 +175350,11 @@
     {
      "text": "Split by Claude into 17 steps (5 Fable).",
      "at": "2026-11-17T18:26:55.611Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2617 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -175662,6 +175782,11 @@
     {
      "text": "Split by Claude into 18 steps (4 Fable).",
      "at": "2026-11-17T18:29:43.448Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2614 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -176117,6 +176242,11 @@
     {
      "text": "Back from the Archive as pending (console).",
      "at": "2026-11-17T18:35:31.115Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2608 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -176487,6 +176617,11 @@
     {
      "text": "Brett: the Merge queue tab stays as its own tab (separate build merge-queue-view-every-build-s-fully). In the orchestrator, the filter dialog ties only to the All builds tab (every build regardless of state); don't replace the Merge queue tab with a preset.",
      "at": "2026-11-17T18:35:33.947Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2608 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -176556,6 +176691,11 @@
     {
      "text": "Split by Claude into 14 steps (0 Fable).",
      "at": "2026-11-17T18:44:38.551Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2599 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -176920,6 +177060,11 @@
     {
      "text": "Brett: optimizer limits as preference settings: max projected work per combined build (estimated minutes, default 3 h), plus max steps and max projected tokens as backstops, whichever hits first. The optimizer is a dialog (Optimize button + Use Claude switch + ? tooltip + these limits) that pops up from hooks in the application menu, the context menu and the Pending toolbar.",
      "at": "2026-11-17T18:50:35.499Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2593 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -177527,6 +177672,11 @@
     {
      "text": "Watchdog: UI Review item r-20261117-cirmv01 → Remove: The build was cancelled (PR #814 open; not on main; build separate-settings-per-plugin-reset: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -179010,6 +179160,11 @@
     {
      "text": "Split by Claude into 10 steps (0 Fable).",
      "at": "2026-11-17T19:11:27.800Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2572 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -179270,6 +179425,11 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T13:57:02.232Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1447 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -179432,6 +179592,11 @@
     {
      "text": "Watchdog: Merge queue entry 815 → Remove: The build was cancelled (PR #815 open; not on main; build live-build-status-real-time-grids-15: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -180226,6 +180391,11 @@
     {
      "text": "fix-ci-red-main-watchdog-test-vs-done touched orchestrator-demo to clear main CI: added web/menu.ts, a tokens block in plugin.json, a page head and <PageToolbar view=\"orchestrator-demo\"/> on DemoView (replacing the hand-drawn Start/Summary row), and the voice inventory entries. Merge main before the last step.",
      "at": "2026-11-18T01:22:46.670Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2201 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -180795,6 +180965,11 @@
     {
      "text": "Split by Claude into 15 steps (0 Fable).",
      "at": "2026-11-17T19:40:28.677Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2543 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -181163,6 +181338,11 @@
     {
      "text": "Split by Claude into 14 steps (0 Fable).",
      "at": "2026-11-17T19:43:46.240Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2540 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -181911,6 +182091,11 @@
     {
      "text": "Repeated steps collapsed: 108 → 9 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:14.716Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182152,6 +182337,11 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T13:57:24.630Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1446 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182287,6 +182477,11 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T13:59:17.223Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1444 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182424,6 +182619,11 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T13:58:04.213Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1445 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182558,6 +182758,11 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T14:00:06.040Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1443 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182696,6 +182901,11 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T13:58:51.015Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1445 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -182833,6 +183043,11 @@
     {
      "text": "Coordinate with every-plugin-gets-own-default-toolbar (toolbar-owner@1): a plugin's own toolbar is apps/console-web/plugins/<folder>/assets/toolbar/default-<folder>-toolbar.json (locked default; builtFor plugin:<folder>; placeholder tag = only the Settings button, replace its groups and drop the tag). Extra toolbars set data.builtFor (view:<id> for one screen, generic only in framework/assets). A picked toolbar lends look only (TOOLBAR_LOOK_KEYS); buttons and widgets stay the screen's own. Checks: node framework/cli/toolbar-owner.mjs check, node framework/spec/check-toolbar-owner.mjs.",
      "at": "2026-11-18T14:01:02.623Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1442 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -183470,6 +183685,11 @@
     {
      "text": "Watchdog: Merge queue entry 823 → Remove: The build was cancelled (PR #823 open; not on main; build fix-banner-settings-interface-tab: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -183844,6 +184064,11 @@
     {
      "text": "Session axf-land-pr-730-reset-all-button-far-right--gina on hulu0241 ended (exit 0); the build was already landing.",
      "at": "2026-11-17T21:51:57.240Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2411 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -183991,6 +184216,11 @@
     {
      "text": "Duplicate of flagship-professional-skin-covering-2 (same brief, Nov 17 2026): Phase 1 (s1-s9, Fable) landed there on branch claude/flagship-professional-skin-covering-2. Do not build this one separately; fold or drop it.",
      "at": "2026-11-17T22:43:24.016Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2360 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -185847,6 +186077,11 @@
     {
      "text": "Overlap with move-everything-axhub-web-console: the console's Hub plugin (hub-admin) now carries every axHub web page (approvals with Approve / Deny / Shelve through the approvals-banner relay, log, passes, users, account, connectors, handoff, auth). Once Phone Connect is paired, hub notices should deep-link to the console (?axf-open=hub.open:approvals:<id>) and the AmberX app's own approvals UI can go; keep the relay (approvals-banner) and lib-approvals: the console decides through them.",
      "at": "2026-11-18T01:05:37.986Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2218 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -186093,6 +186328,11 @@
     {
      "text": "Watchdog: Merge queue entry 826 → Remove: The build was cancelled (PR #826 open; not on main; build settings-fix-part-2-blank-toolbars: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -186553,6 +186793,11 @@
     {
      "text": "Repeated steps collapsed: 2171 → 13 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:26.584Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -186861,6 +187106,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-18T02:34:17.013Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2129 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -187927,6 +188177,11 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-18T02:34:17.013Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2127 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -188356,6 +188611,11 @@
     {
      "text": "Repeated steps collapsed: 750 → 15 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:33.618Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2297 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -188699,6 +188959,11 @@
     {
      "text": "Repeated steps collapsed: 2682 → 18 (step-dedupe cleanup).",
      "at": "2026-11-17T23:46:36.260Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1295 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -189554,6 +189819,11 @@
     {
      "text": "Split by Claude into 13 steps (0 Fable).",
      "at": "2026-11-17T23:28:40.222Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2315 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -189888,6 +190158,11 @@
     {
      "text": "Split by Claude into 12 steps (0 Fable).",
      "at": "2026-11-17T23:29:29.116Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2314 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -190190,6 +190465,11 @@
     {
      "text": "Watchdog: Merge queue entry 830 → Remove: The build was cancelled (PR #830 open; not on main; build fix-ci-red-main-watchdog-test-vs-done: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (585 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -190455,6 +190735,11 @@
     {
      "text": "Split by Claude into 18 steps (0 Fable).",
      "at": "2026-11-18T01:35:20.283Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2188 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -190835,6 +191120,11 @@
     {
      "text": "Split by Claude into 14 steps (0 Fable).",
      "at": "2026-11-18T01:40:26.884Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2183 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -191138,6 +191428,11 @@
     {
      "text": "Split by Claude into 15 steps (0 Fable).",
      "at": "2026-11-18T01:41:46.107Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2182 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -191484,6 +191779,11 @@
     {
      "text": "Rule: always keep one build slot free on the VPS. The dispatcher fills at most limit minus 1 slots; the spare slot is only for urgent fixes (land fixes, manual launches, auto-lander fix sessions). Setting in the Watchdog plugin, default 1 spare.",
      "at": "2026-11-18T01:49:50.517Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2172 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -192222,6 +192522,11 @@
     {
      "text": "Split by Claude into 20 steps (5 Fable).",
      "at": "2026-11-18T01:52:04.656Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (2171 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -193049,6 +193354,11 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:22:44.042Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1541 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -193822,6 +194132,11 @@
     {
      "text": "Coordinate with one-build-time-always-split-to-fill (PR #846): its gate rule 'require-split-id' (Gate & rules, on by default) already refuses any build start without an orchestrator build ID or a valid split ID (claude-headless.sh + model-gate.mjs launch, exit 3) and sends the refusal to the Failed tab with gateReason. Reuse that rule (settings.checks includes 'build-id') instead of adding a second one; this build's remaining scope is vps.build_start and Molly enforcing the same rule.",
      "at": "2026-11-18T15:46:35.752Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1337 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -193950,6 +194265,11 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T12:40:13.541Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1523 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -194902,7 +195222,13 @@
    "createdAt": "2026-11-18T12:52:45.120Z",
    "updatedAt": "2026-11-18T13:48:23.424Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Watchdog: build stuck at pending (1455 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -195709,7 +196035,13 @@
    "createdAt": "2026-11-18T16:04:23.517Z",
    "updatedAt": "2026-11-18T16:04:23.517Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Watchdog: build stuck at pending (1319 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -195767,7 +196099,13 @@
    "createdAt": "2026-11-18T20:03:01.845Z",
    "updatedAt": "2026-11-18T20:03:01.845Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Watchdog: build stuck at pending (1081 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -195848,6 +196186,11 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-18T21:27:59.161Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (996 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -195994,6 +196337,11 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"aac21928-23b2-48fa-9705-70c97e75215f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-18T23:22:58.546Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (881 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -196444,6 +196792,11 @@
     {
      "text": "Brett, Nov 19 2026 (voice): 'If the pipeline's running, the queue is running. Anything I put in the queue is going to run as long as a slot is open.' Today, setting status=queued through the console/control@1 did not issue a dispatch token, so builds sat queued forever with 0 waiting; the launcher refused manual starts; the pipeline refused builds left in queued/running. Fix: any build in Queued, however it got there (console, control@1, CLI, voice), gets a dispatch token and launches when a slot is free and the pipeline is on.",
      "at": "2026-11-19T00:33:37.916Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (810 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -196666,6 +197019,11 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"9cab585b-144f-44f9-b01c-fc3522439147\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:26:48.230Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (817 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -196885,6 +197243,11 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-19T00:42:43.036Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (800 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T14:13:32.247Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
