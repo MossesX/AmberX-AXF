@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9367,
- "updatedAt": "2026-11-19T14:43:56.320Z",
+ "rev": 9368,
+ "updatedAt": "2026-11-19T14:44:12.426Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -112593,14 +112593,14 @@
    "title": "Plan Studio: Blueprints",
    "category": "Plan Studio",
    "detail": "Blueprints = named packages of plans (blueprint@1), one active at a time; Plan Studio shows the active one. Blueprints section (list/create/rename/duplicate/delete/move plans, bulk), context-menu Blueprints submenu + control@1 planner.blueprints + MCP/CLI/voice switch; migration of every current plan into \"Existing\"; UI from assets; tests; UI Review with 3 options. Supersedes plan-archive.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/plan-blueprints",
    "pr": "",
    "createdAt": "2026-11-07T13:13:15.892Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -112643,6 +112643,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -112833,7 +112838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -112861,9 +112866,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -112878,6 +112884,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -113720,14 +113733,14 @@
    "title": "Blueprints switch notes, tasks and to-dos too (+ permanent Global group)",
    "category": "Plan Studio",
    "detail": "Switching the active blueprint (blueprint@1, build plan-blueprints) also switches the notes-tasks plugin's notes, tasks, to-dos and lists (amberx.items, amberx.lists). Optional `blueprint` field on items/lists; existing ones go to the blueprint the plans went to. Permanent Global group in Plan Studio and the notes/tasks manager (can't be deleted or moved); any plan/note/task/to-do/list can be set Global; Quick notes lives in Global. Voice/control@1/MCP/CLI; active-blueprint chip in AmberX and the console; UI Review 3 options; tests; Shipped features. Based on claude/plan-blueprints.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/blueprint-notes-tasks",
    "pr": "",
    "createdAt": "2026-11-07T14:45:07.894Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -113770,6 +113783,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -113951,7 +113969,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -113979,9 +113997,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -113996,6 +114015,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -179432,7 +179458,7 @@
    "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -179442,7 +179468,7 @@
    "mergedAt": "2026-11-17T19:07:59Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -179537,6 +179563,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -180163,7 +180194,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 141,
+   "rev": 142,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -180205,9 +180236,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -180222,6 +180254,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -206078,7 +206117,7 @@
    "title": "Land project-create-mcp: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206086,7 +206125,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:01:01.567Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -206153,6 +206192,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -206285,7 +206329,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 83,
+   "rev": 84,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206309,9 +206353,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -206326,6 +206371,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -208525,7 +208577,7 @@
    "title": "Skin animations: animated colour swatches, skin-switch sweep, swatch picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208533,7 +208585,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -208600,6 +208652,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -208842,7 +208899,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208871,9 +208928,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -208888,6 +208946,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -210210,7 +210275,7 @@
    "title": "Grid token set: colours, hover, selected, lines",
    "category": "",
    "detail": "Today grids/tables only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants) and borrow the general colour tokens, so hover/selected/striping can't be styled per grid. Add a dedicated grid token family in tokens.style, following skins and editable in Token Control, the UI Manager and per instance: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency per grid (default 100%). Wire every grid/table component to read them, and add a CI check against hard-coded grid colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210218,7 +210283,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:29.839Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -210281,6 +210346,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -210413,7 +210483,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 84,
+   "rev": 85,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -210437,9 +210507,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -210454,6 +210525,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -220850,7 +220928,7 @@
    "title": "Watchdog + watch-rule system (orchestrator, Plan Studio, everything)",
    "category": "",
    "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-stale-row-watchdog-vps",
@@ -220858,7 +220936,7 @@
    "pr": "#780",
    "mergedAt": "2026-11-17T18:59:35Z",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -220961,6 +221039,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -221605,7 +221688,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 118,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -221650,9 +221733,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -221667,6 +221751,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -221675,7 +221766,7 @@
    "title": "Picker dialog plugin replaces all dropdowns",
    "category": "",
    "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -221683,7 +221774,7 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -221778,6 +221869,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -222411,7 +222507,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -222454,9 +222550,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -222471,6 +222568,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -238900,7 +239004,7 @@
    "title": "axf-data on Postgres: real tables in its own container",
    "category": "",
    "detail": "Follow-up to data-container-axf-data-holds-all (PR #704, SQLite + blobs). Move axf-data onto Postgres (Brett's Nov 6 choice) as its own private Coolify container with a persistent volume and daily backups. Real tables (not JSON copies or SQLite blobs) for: builds store, journal and history, notes, settings, planner items, UI reviews, the one true feature store, the Shipped features ledger, chats, and the API/control registry (apps/console-web/src/control/inventory.json becomes a table generated from each plugin's registered targets, never hand-edited, so builds stop clashing on it). Keep the data-store@1 API on top so callers don't change. Migrate from the SQLite axf-data with backup first, count checks, shadow, then cutover; never lose data. Tests, help, Shipped features. Land with the one-at-a-time lander.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -238909,7 +239013,7 @@
    "mergedAt": "2026-11-17T02:53:56Z",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -239000,6 +239104,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -239135,7 +239244,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -239159,9 +239268,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -239176,6 +239286,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -253176,7 +253293,7 @@
    "title": "Attach widgets to any toolbar, banner style",
    "category": "",
    "detail": "Fresh build on current main replacing the stale toolbar-widgets-attach-any-banner-style (about 2,004 behind, archived). Any widget can be attached to any toolbar, styled like banner widgets (any banner widget style and shape), snap-not-overlap. Old branch for intent only. Framework controls and tokens, console-control addresses, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -253184,7 +253301,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:44:59.053Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -253295,6 +253412,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -253848,7 +253970,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 107,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -253888,9 +254010,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -253905,6 +254028,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -257118,7 +257248,7 @@
    "title": "Icon packs with drag-drop pack designer",
    "category": "",
    "detail": "FABLE build, fresh on current main, replacing the stale icon-map-icon-packs-every-icon-badge-app (archived). Icon map of every icon spot in every app (icons, badges, app icons). Icon packs swap any or all of them per app or hub-wide, with reset. Very powerful, polished, easy drag-and-drop Icon Pack Designer with live preview. Randomly generated icons and whole packs. Import icons from many sources (open icon libraries, SVG/PNG upload, URLs, other packs). Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -257126,7 +257256,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:46.098Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -257197,6 +257327,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -258031,7 +258166,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -258083,9 +258218,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -258100,6 +258236,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -260997,14 +261140,14 @@
    "title": "Auto-lander status tab, REST, MCP and settings",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (its steps s15-s18), built in parallel with it. REST routes in the gate plugin: GET /api/plugins/gate/auto-lander (service up, current build, queue, per-build state and attempts), POST run/retry/pause/resume/settings. Same actions on MCP, CLI 'axf gate auto-lander', AmberX voice, console-control addresses. Gate > Auto-lander tab: service status, current build, grid of builds with state, attempts, last result, keep ALL existing columns plus commits behind main, Retry/Pause/Fix buttons. Settings under Settings > Plugins > Gate (enabled, maxAttempts, backoff, push on escalation). Read the auto-lander@1 contract from the main build's branch claude/server-auto-lander-fixes-lands once it exists; stub against it otherwise. Land through the orchestrator.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T00:04:44.153Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -261039,6 +261182,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -261432,7 +261580,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -261466,9 +261614,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -261483,6 +261632,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -261491,7 +261647,7 @@
    "title": "Gate auto-lander tab and controls",
    "category": "",
    "detail": "Split out of server-auto-lander-fixes-lands (steps s15-s18), built in parallel. REST in the gate plugin: GET /api/plugins/gate/auto-lander (service up, current build, queue, per-build state, attempts), POST run/retry/pause/resume/settings; same on MCP, CLI 'axf gate auto-lander', AmberX voice, console-control. Gate > Auto-lander tab: service status, current build, grid of builds keeping ALL existing columns plus commits behind main, attempts, last result, Retry/Pause/Fix. Settings under Settings > Plugins > Gate. Use the auto-lander@1 contract from claude/server-auto-lander-fixes-lands when present. Land through the orchestrator.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -261499,7 +261655,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T00:05:48.290Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -261558,6 +261714,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -262068,7 +262229,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262107,9 +262268,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -262124,6 +262286,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -262132,7 +262301,7 @@
    "title": "Server rule: done means merged and working, never stop on failure",
    "category": "",
    "detail": "Server gate rule, enforced on the VPS for every build and every session (in every brief too): a build is never 'complete' or 'built' until it is merged to main with CI green and its feature verified working. Any failure along the way (session crash, red CI, clash, push failure, stalled, fell back to Pending) is never left silent: the server automatically retries, and if the same approach fails it tries a different approach (different fix strategy, fresh session, different model/account), logging each attempt. The build status shows the real state (building, fixing, landing, landed). Only after repeated different attempts fail does it escalate to a banner item plus a phone push saying what broke and what was tried. Brett should never have to discover a failure or ask twice. Coordinate with server-auto-lander-fixes-lands (reuse its attempt log and escalation). Land through the orchestrator.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -262141,7 +262310,7 @@
    "mergedAt": "2026-11-17T19:06:28Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -262232,6 +262401,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -262725,7 +262899,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -262763,9 +262937,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -262780,6 +262955,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -262788,7 +262970,7 @@
    "title": "Shrink git history: drop the old builds journal parts",
    "category": "",
    "detail": "Follow-up to stop-auto-lander-committing-tracking (builds-journal@1, framework/spec/BUILDS.md > Journal home). Once s8-s9 move _claude/builds/journal/*.jsonl to the hub data store, git history still carries the 911 MiB of old parts (13 files, every clone and worktree pays for them; repo pack 554 MiB). Removing them needs a history rewrite (git filter-repo on main and every live claude/* branch), a force push, and a re-clone or re-init of every checkout and worktree (/opt/axf, /root/axf-builds/*, the console container, laptops). Brett's call: do it in a quiet window with every build landed or parked. Not started; nothing here changes until he says so.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "stop-auto-lander-committing-tracking s1",
    "pendingId": "",
@@ -262796,7 +262978,7 @@
    "pr": "",
    "priority": "P3",
    "createdAt": "2026-11-17T00:15:35.778Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -262831,6 +263013,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -263263,7 +263450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263299,9 +263486,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -263316,6 +263504,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -263324,7 +263519,7 @@
    "title": "Builds keep their slot across phases",
    "category": "",
    "detail": "When a build's phase finishes (e.g. Fable phase done, Opus phase next), it must NOT go back in line or release its slot. The next phase starts immediately in the same slot (same or new session, right model/account). A build holds its slot until it is merged and done. Builds already running always finish before any queued build starts. Server-side rule, enforced by the orchestrator on the VPS. Land through the orchestrator.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -263332,7 +263527,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T03:38:28.564Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -263387,6 +263582,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -263822,7 +264022,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -263858,9 +264058,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -263875,6 +264076,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -265016,7 +265224,7 @@
    "title": "Settings opened from banners, nav menu and toolbars must open in the floating window",
    "category": "",
    "detail": "#628 (all-settings-interfaces-open-floating) landed, but settings opened from chrome (right-click/long-press Settings… on any banner, nav menu, toolbar, tab group, menu bar; the axf.chrome.settings dialogs and any plugin settings gear reached from them) still open in the main content area. Route every settings entry point through the same floating settings window #628 uses. First check the live console runs a build that includes #628; if not, redeploy. Test each entry point (banner, nav, toolbar, tab group, plugin gear) on desktop and phone. Same through REST, MCP, CLI, voice.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -265024,7 +265232,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:47:48.703Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -265083,6 +265291,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -265451,7 +265664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -265484,9 +265697,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -265501,6 +265715,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -266116,7 +266337,7 @@
    "title": "Edit UI mode: inline-edit anything, active only while Ctrl is held",
    "category": "",
    "detail": "Add an 'Edit UI' toggle (banner/toolbar button + setting). When it's on, holding Ctrl (long-press equivalent on phone) makes any element editable in place: labels/text, grid cells and row data where the data source allows writes, column headers, asset properties (toolbar, tab group, banner, widgets: size, colour, icon, order, hide). Releasing Ctrl ends editing; with Edit UI off, Ctrl does nothing special. Hovered element gets an outline; click edits inline; Enter/blur saves, Esc cancels; every change undoable. Edits save through the normal owner (asset system for looks, data API for data), never as one-off overrides. Works in console, axHub web and AmberX. Same toggle and edits via REST, MCP, CLI, voice. Coordinate with rebuild-fresh-main-hide-any-asset (hide/unhide should be one of the inline actions).",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -266124,7 +266345,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:52:56.126Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -266187,6 +266408,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -266773,7 +266999,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -266815,9 +267041,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -266832,6 +267059,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -266840,7 +267074,7 @@
    "title": "Auto-lander: drag rows to set merge order, lander follows it",
    "category": "",
    "detail": "Gate & rules > Auto-lander tab: drag-and-drop rows (and Move to top / Move up / Move down / Move to bottom in each row's menu, multi-select) to set the order PRs get merged in. The order is stored server-side on the VPS and the lander (server-auto-lander) always lands strictly in that order, one at a time, merging main in before each. New PRs join at the bottom; default order is closest-to-main first until Brett reorders. Show a position number column. Same reorder via REST, MCP, CLI, voice ('land #774 next'). Coordinate with auto-lander-grid-one-row-per-build and server-auto-lander-fixes-lands.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -266848,7 +267082,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T14:59:44.363Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -266907,6 +267141,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -267345,7 +267584,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -267381,9 +267620,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -267398,6 +267638,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -267406,7 +267653,7 @@
    "title": "Live hot refresh: every grid and list re-renders instantly when its data changes",
    "category": "",
    "detail": "Every grid, list and table in the console (Auto-lander, orchestrator tabs, Pending, Plan Studio, UI Review, etc.) updates live without a reload whenever its data changes: server pushes change events (SSE/WebSocket from the data store / axf-data change feed), the framework DataGrid subscribes and re-renders only changed rows, keeping scroll, selection, sort, filters and open dialogs. Local actions (drag and drop, reorder, edit, archive) re-render instantly (optimistic) and reconcile with the server. Changes made from REST/MCP/CLI/voice or by the VPS lander show up live too. Reconnects automatically. Add a live indicator. Framework-level so every app gets it.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -267414,7 +267661,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T15:05:47.233Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -267469,6 +267716,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -268042,7 +268294,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -268083,9 +268335,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -268100,6 +268353,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -268108,7 +268368,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -268117,7 +268377,7 @@
    "mergedAt": "2026-11-18T02:00:51Z",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -268580,6 +268840,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -269354,7 +269619,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 190,
+   "rev": 191,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -269402,9 +269667,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -269419,6 +269685,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -271345,7 +271618,7 @@
    "title": "Grids & layout control: voice-controlled grids, full column set, Containers menu, IDE layout, aligned columns, X closes pop-ups",
    "category": "",
    "detail": "ONE build combining five (Brett: make them all one build). All on Fable.\nA) Every grid, new and existing: select/highlight WHOLE rows by any condition (keyword, date built, commits/PRs behind main, status, model...), multi-select adds rather than replaces; bulk move highlighted rows to top/bottom/position N/another tab (session-only order); voice scroll up/down in steps; click/right-click 'here/this row/that button'; edit grid colours by voice. Settings in Settings > Plugins > Console control. Fix console_control_focus select:true to add to selection.\nB) Every grid showing build info (Orchestrator, Lander/Gate, notes, tests...): full column set (date and time, model used, account used, steps done/total, more); current visible columns = default, the rest hidden; row number column 1,2,3 that a row keeps when moved. Header right-click > Columns submenu: Visible (check marks) and Hidden (red no-entry crosses), click toggles.\nC) Context menu 'Containers': Visible/Hidden lists of every pane (dataset bar etc.), toggle show/hide. Global 'IDE layout' item right above Settings on every full-screen main UI: IDE-style layout, every container a tab group, drag one into another to tab it, reset on every container and floating window.\nD) Line up header and cell columns in every grid/table (one column definition, hidden columns, indent, phone); CI check.\nE) Pop-up windows: X closes (not minimize).\nFull API parity for everything (voice, REST, MCP, CLI, console-control). Tests + UI Review.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -271353,7 +271626,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:11:55.610Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -271392,6 +271665,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -272275,7 +272553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272329,9 +272607,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -272346,6 +272625,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -272354,7 +272640,7 @@
    "title": "Change asset: only assets built for this screen/plugin can be swapped in",
    "category": "",
    "detail": "Every asset (toolbar, tab group, nav menu, banner, etc.) carries a field naming the screen/plugin it was built for. The Change asset list on every page only shows assets built for that exact screen; swapping in an incompatible one is refused everywhere (UI, REST, MCP, CLI, voice). Migration: tag existing assets with their screen; untagged ones only appear on the screen they're currently used on. Also: a 'Reset all to default' on every page with Change asset, plus a global one. Tests + UI Review.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -272362,7 +272648,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:15:39.557Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -272401,6 +272687,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -272972,7 +273263,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273013,9 +273304,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -273030,6 +273322,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -273038,7 +273337,7 @@
    "title": "Rebuild fresh on main: collapsible sections in every settings screen (was #372)",
    "category": "",
    "detail": "PR #372 settings-sections-everywhere was closed unmerged and its branch is gone. Rebuild on current main: every settings section (all settings screens, floating settings window, every settings asset layout) is collapsible, with collapse all / expand all, state remembered; full API parity; tests + UI Review. Reuse anything left in git history or reports for #372.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -273046,7 +273345,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:25:05.725Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -273081,6 +273380,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -273580,7 +273884,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -273618,9 +273922,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -273635,6 +273940,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -273643,7 +273955,7 @@
    "title": "Nothing saved in the browser: all console settings and asset overrides live on the server",
    "category": "",
    "detail": "Move every console setting, asset override (axf.chrome.* per-asset settings), layout, dock, column, tab and UI state out of browser localStorage into the server (axf-data, per user), so voice/API/MCP can read and reset them and every device sees the same thing. One-time migration uploads what the browser has now, then the browser keeps nothing. Add a global 'Reset every asset override' (all axf.chrome.* at once) in Settings > Appearance and as an action/API. Also: reloading the console keeps you on the page/tab/dialog you were on instead of going to Home. Full API parity, tests.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -273651,7 +273963,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T18:28:34.337Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -273690,6 +274002,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -274216,7 +274533,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274255,9 +274572,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -274272,6 +274590,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -274280,7 +274605,7 @@
    "title": "Merge queue view: every build that's fully built and ready to merge but not merged yet (display only)",
    "category": "",
    "detail": "Bring back a Merge queue tab, display only: it lists every build/PR that is completely built and ready to merge but not merged yet, in the order the orchestrator will land them, with CI state, commits behind main, and why it's waiting. It does NOT merge anything: landing stays with the orchestrator/lander. Rows use the shared grid (row numbers, columns menu). Full API parity (deep link, state read, MCP, CLI, voice). Tests + UI Review.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -274288,7 +274613,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:32:41.029Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -274331,6 +274656,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -274767,7 +275097,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274803,9 +275133,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -274820,6 +275151,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -274828,7 +275166,7 @@
    "title": "Grid Filter plugin: one filter/search/sort dialog that ties to any grid, plus an All builds tab",
    "category": "",
    "detail": "New plugin 'Grid Filter': a small dialog with filters, search bar, sort by, group by and saved presets; its own settings. Every grid (and tab group / dataset) gets a Plugins tab in its settings where Grid Filter is tied to it. Opening the plugin lists every grid it's tied to. Right-click any grid > apply a filter preset: replaces whatever filter/sort/queue that grid had. A filter icon on each grid header (or right-click > Filter) opens the dialog for that grid. Orchestrator gets an 'All builds' tab showing every build, driven by this filter; 'Ready to merge (built, not merged)' ships as a saved preset (replaces the separate merge-queue view). Display only, landing stays with the orchestrator. Full API parity (deep link, state, REST, MCP, CLI, voice). Tests + UI Review.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -274836,7 +275174,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:34:36.995Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -274875,6 +275213,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -274964,7 +275307,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -274986,9 +275329,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -275003,6 +275347,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -275011,7 +275362,7 @@
    "title": "CI: run only what changed, no second run on main after merge (Gate setting to switch it)",
    "category": "",
    "detail": "Implement VPS rule ci-only-what-changed in .github/workflows/android.yml: ci-scope runs only jobs for touched parts; Android/Gradle/console APK only on Android/Kotlin/Gradle changes; drop the AmberX Capacitor APK job; main does not re-run CI after a merge (PR already tested with latest main, lands one at a time). Add a Gate setting (Settings > Plugins > Gate, checkbox) 'Run CI on main after a merge' default OFF, that the workflow honors (read via ci-scope from the gate settings / a committed config), same over REST/MCP/CLI/voice. Tests.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275019,7 +275370,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:43:16.825Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -275062,6 +275413,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -275477,7 +275833,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -275512,9 +275868,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -275529,6 +275886,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -275537,7 +275901,7 @@
    "title": "Pending optimizer: AI finds pending builds that should be one and combines them",
    "category": "",
    "detail": "An AI pass (on demand, plus automatically when a build is filed) goes through every Pending build, finds the ones that touch the same files, features or contracts (or would clash / redo each other) and proposes combining them. Combining makes one new build that keeps every step of the originals (done steps stay done, in order, with Brett's original words for each), and archives the originals with a link to the combined one. Builds that already have done steps on separate branches are only combined after their branches are merged together cleanly; otherwise they're flagged, not combined. Shows its reasoning per group; Brett can approve all, approve per group, or switch it to auto. Full API parity (deep link, state read, REST, MCP, CLI, voice). Tests + UI Review.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -275545,7 +275909,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T18:47:36.225Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -275596,6 +275960,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -276164,7 +276533,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 72,
+   "rev": 73,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276205,9 +276574,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -276222,6 +276592,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -276230,7 +276607,7 @@
    "title": "Separate settings per plugin + reset confirm dialog",
    "category": "",
    "detail": "1) Every plugin gets its OWN settings interface showing only that plugin's settings; stop opening the console settings and jumping to the plugin's tab. The console keeps its own separate settings interface. Settings interfaces are not shared. 2) Sweep every page/plugin so each opens its correct default settings interface. 3) Clicking Reset in any settings interface opens a confirmation dialog with an 'Include assets' switch (on = also reset assets/skins to default; off = settings only) and a scrollable table listing every changed asset, same as the table in the settings panel.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -276238,7 +276615,7 @@
    "pr": "#814",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:36.706Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -276397,6 +276774,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -276937,7 +277319,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -276976,9 +277358,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -276993,6 +277376,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -278229,7 +278619,7 @@
    "title": "Notify the phone when the Queue starts building",
    "category": "",
    "detail": "Whenever the Queue is sent to build (the dispatcher launches a queued build / a build starts), push a notification to the AmberX app on Brett's phone: which build, model, account. Declare the notify type in notify.json, send through axf.notify@1, with a setting to turn it off.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278237,7 +278627,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:09:13.799Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -278272,6 +278662,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -278583,7 +278978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278614,9 +279009,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -278631,6 +279027,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -278639,7 +279042,7 @@
    "title": "Rebuild every context menu, toolbar, nav menu and app menu: compact console default + fully mapped per-plugin (Fable)",
    "category": "",
    "detail": "CONTEXT MENU. 1) New default console context menu asset, set as the console default on axHub, with ONLY, in order: Console settings; Change skin; divider; Plugins (submenu); [dynamic section placeholder]; divider; Assets UI (Brett said 'Ash's UI'); Open terminal. Remove everything else. 2) Plugins submenu lists every plugin, green check = enabled, X = disabled. Clicking one opens a dialog: Enable/Disable (by status), Open (choose main app area or pop-up window), Open its settings. 3) Dynamic section: each plugin fills it with a fully mapped, compact, useful, integrated context menu for the UI showing and where you clicked (no junk like copy/paste). Every plugin's dynamic section includes Containers > View / Hidden, listing all containers to toggle (fold in part C of grids-layout-control-voice-controlled). 4) The main menu and every submenu have a max length and scroll past it, with a setting for the max. ALSO: rebuild every plugin's toolbar, navigation menu and application menu the same way, fully mapped to that plugin/page (coordinate with rebuild-every-toolbar-page-specific; no duplicate work). Every menu is a hot-swappable asset with full API (deep link, REST, MCP, CLI, voice). Build on Fable.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278647,7 +279050,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:18:29.714Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -278686,6 +279089,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -278818,7 +279226,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -278842,9 +279250,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -278859,6 +279268,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -278867,7 +279283,7 @@
    "title": "Live build status: real-time grids, 15-second VPS liveness check, animated running rows, red alert + dialog when a build breaks",
    "category": "",
    "detail": "1) Live updates: the console updates in real time whenever a build changes (push over the console's live channel, no refresh), on every grid and tab (Active, Queue, Pending, Incomplete, etc.). 2) The VPS checks every 15 seconds that each running job is really alive (session, pid, heartbeat) and pushes the result to the console. 3) Every running/building row in any grid shows an animated indicator: a spinning/animated icon next to it, and the row itself slowly flashes or pulses. Configurable in settings: animation type (flash, pulse, glow, other), colors, speed, as a hot-swappable asset with tokens only. 4) When a running job stops or breaks: the animation stops, the row turns red/pink, a pop-up alert says it broke, and a dialog shows what happened (cause, exit code, last step, what the watchdog is doing about it), with a link to the build. 5) Full API: deep link, state read, REST, MCP, CLI, voice for the settings and the alert. Coordinate with both watchdogs (#772 recovery, #780 stale-row) instead of duplicating their checks.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -278875,7 +279291,7 @@
    "pr": "#815",
    "priority": "P1",
    "createdAt": "2026-11-17T19:30:44.328Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -278974,6 +279390,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -279615,7 +280036,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -279658,9 +280079,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -279675,6 +280097,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -279683,7 +280112,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -279692,7 +280121,7 @@
    "mergedAt": "2026-11-17T22:34:43Z",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -279979,6 +280408,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -280654,7 +281088,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 160,
+   "rev": 161,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -280699,9 +281133,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -280716,6 +281151,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -280724,7 +281166,7 @@
    "title": "Right-click a running build: open its headless session in a terminal to watch it live",
    "category": "",
    "detail": "Right-click a running/active build in any build grid → context menu item 'Watch session' that opens that build's live headless session (its tmux session on the VPS) in a console terminal tab, read-only by default so Brett can eavesdrop without disturbing it, with an option to take over/type. Shows which account and phase. If no live session, the item is disabled with the reason. Same action through REST, MCP, CLI and voice ('watch the skins session'). Fits into the dynamic section of the rebuilt context menus (rebuild-every-context-menu-toolbar-nav).",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -280732,7 +281174,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T19:32:52.965Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -280767,6 +281209,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -281206,7 +281653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281242,9 +281689,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -281259,6 +281707,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -281267,14 +281722,14 @@
    "title": "Right-click a running build: pop open the terminal focused on its headless session tab",
    "category": "",
    "detail": "Every headless session already has its own terminal tab in the console. Right-click a running/active build in any build grid → context menu item 'Open session' that pops open the console terminal with focus on that build's existing headless session tab (no new session). Disabled with the reason when the build has no live session. Same action through REST, MCP, CLI and voice ('show me the skins session'). Fits into the dynamic section of the rebuilt context menus (rebuild-every-context-menu-toolbar-nav).",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T19:33:17.840Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -281309,6 +281764,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -281722,7 +282182,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 67,
+   "rev": 68,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -281757,9 +282217,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -281774,6 +282235,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -286548,14 +287016,14 @@
    "title": "Auto-lander settings: Log placeholder for the future Log plugin",
    "category": "",
    "detail": "In the auto-lander's settings (Gate plugin, AutoLanderSettings), add a 'Log' section placeholder: an empty slot/registry hook that a future Log plugin fills with the auto-lander's full log (every tick, decision, merge-main, fix attempt, land, error). For now it shows 'Log viewer coming with the Log plugin' plus a link to the existing Attempts list. Make the slot generic so the Log plugin can attach to any plugin's settings the same way.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T19:37:43.130Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -286594,6 +287062,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -286855,7 +287328,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -286885,9 +287358,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -286902,6 +287376,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -286910,7 +287391,7 @@
    "title": "Toolbars 1/5: Build orchestrator (incl. merge queue), Gate & rules, Terminal",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Build orchestrator pages (Pipeline/Pending/Queue, with merge-queue buttons folded in), Gate & rules, Terminal/sessions. API targets + one test. No Molly/AmberX/axHub web/Expenses. Land when done.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -286918,7 +287399,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:39:55.233Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -286985,6 +287466,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -287162,7 +287648,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 78,
+   "rev": 79,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287187,9 +287673,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -287204,6 +287691,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -287212,14 +287706,14 @@
    "title": "Toolbars 2/5: Plan Studio, UI Review, Plugin Manager",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Plan Studio, UI Review (Approve/Reject stay person-only), Plugin Manager. API targets + one test. Land when done.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T20:40:07.679Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -287258,6 +287752,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -287425,7 +287924,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287450,9 +287949,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -287467,6 +287967,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -287475,7 +287982,7 @@
    "title": "Toolbars 3/5: Settings + Appearance, Systems check, Notifications",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Settings level toolbar + Appearance/Theme manager, Systems check, Notifications. API targets + one test. Land when done.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -287483,7 +287990,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:40:33.480Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -287522,6 +288029,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -287693,7 +288205,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287718,9 +288230,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -287735,6 +288248,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -287743,7 +288263,7 @@
    "title": "Toolbars 4/5: Chat viewer, Codebase changes, Agent swarm/Breakroom",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Chat viewer, Codebase changes, Agent swarm/Breakroom. API targets + one test. Land when done.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -287751,7 +288271,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:40:41.293Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -287790,6 +288310,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -287961,7 +288486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 70,
+   "rev": 71,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -287986,9 +288511,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -288003,6 +288529,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -288011,7 +288544,7 @@
    "title": "Toolbars 2/5: Plan Studio, UI Review, Plugin Manager",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets with real buttons bound to existing actions for: Plan Studio, UI Review (Approve/Reject stay person-only), Plugin Manager. API targets + one test. Land when done.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -288019,7 +288552,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:41:31.688Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -288058,6 +288591,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -288228,7 +288766,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288253,9 +288791,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -288270,6 +288809,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -288278,7 +288824,7 @@
    "title": "Toolbars 5/5: Claude accounts, Glossary, leftovers + hide the rest",
    "category": "",
    "detail": "Console only, Opus, max 4 steps. Using the page-toolbar foundation from rebuild-every-toolbar-page-specific (must land first; merge main), build page-specific toolbar assets for Claude accounts, Glossary and any leftover console toolbars in the inventory; hide toolbars on any console page not covered by toolbar builds 1-5. Add voice phrases for the new buttons and the CI guard in check-toolbars.mjs. API targets + one test. Land when done.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -288286,7 +288832,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T20:41:37.028Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -288325,6 +288871,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -288496,7 +289047,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -288521,9 +289072,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -288538,6 +289090,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -289081,7 +289640,7 @@
    "title": "Fix: banner settings Interface tab changes the banner, not the settings window",
    "category": "",
    "detail": "In the banner's settings, the Interface tab currently changes the look of the settings window itself. Point every control in that tab at the banner it belongs to, so changes apply to the banner live. Check every other asset's settings Interface tab (toolbars, tab groups, nav, grids) for the same bug and fix them too. Console only, small, land when done.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -289089,7 +289648,7 @@
    "pr": "#823",
    "priority": "P0",
    "createdAt": "2026-11-17T21:23:34.872Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -289224,6 +289783,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -289622,7 +290186,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -289656,9 +290220,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -289673,6 +290238,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -289681,7 +290253,7 @@
    "title": "Land PR #730 Reset all button (far right)",
    "category": "",
    "detail": "Branch claude/reset-all-button-every-asset-override (PR #730). Brett picked UI Review option: button far right. Merge origin/main: clashes only in generated files apps/axhub-web/axf.lock.json, apps/molly/axf.lock.json, apps/console-web/src/control/inventory.json; take main's lock files (molly is removed, drop if gone), regenerate inventory.json, run checks, land. Console only. At most 3 steps.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -289689,7 +290261,7 @@
    "pr": "#803",
    "priority": "P0",
    "createdAt": "2026-11-17T21:26:38.676Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -289764,6 +290336,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -289950,7 +290527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290069,9 +290646,10 @@
    ],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -290086,6 +290664,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -290094,7 +290679,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -290102,7 +290687,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-17T21:29:59.240Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -290141,6 +290726,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -290893,7 +291483,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -290941,9 +291531,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -290958,6 +291549,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -292507,14 +293105,14 @@
    "title": "Remove the AmberX app code once Phone Connect is paired",
    "category": "",
    "detail": "Follow-up of rebuild-fresh-main-phone-connect-small s24 (decision Nov 17 2026, _claude/memory/decisions.md → Phone Connect replaces the AmberX app). AmberX is retired in policy; its code goes only after Phone Connect is installed and paired on Brett's phone so approvals and pushes never go dark.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -292553,6 +293151,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -292764,7 +293367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -292792,9 +293395,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -292809,6 +293413,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -292817,14 +293428,14 @@
    "title": "Settings fix part 2: blank toolbars, locked settings layout",
    "category": "",
    "detail": "Follow-up to PR #822 (fix-banner-settings-interface-tab), which finished before Brett's later notes. 1) Strip EVERY page toolbar in the console to blank: remove all buttons (New, Open, Save, Undo, Redo, Cut, Theme, etc. from PR #817); each keeps only one small gear that opens its settings. 2) Gizmo X AI Studio is the one fixed interface for every settings window: remove the settings-interface picker, the 'This settings window' fold and any way to edit the settings window's own layout or look. 3) Each toolbar's settings: Override switch next to the settings row, OFF by default (locked to Gizmo X AI Studio, greyed, sections collapsed); ON makes it editable and sections expandable; turning it OFF resets to defaults; a toolbar shows as edited in main Settings only while Override is on. 4) Console toolbars use the same shared toolbar asset axHub uses. 5) Owner must be allowed every chrome reset (fix 'Permission denied ... reset a chrome piece'). Everything token-driven. Console only. Skins must not restyle toolbars.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "mcp",
    "pendingId": "settings-fix-part-2-blank-toolbars",
    "branch": "claude/settings-fix-part-2-blank-toolbars",
    "pr": "#826",
    "createdAt": "2026-11-17T22:26:09.371Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -292935,6 +293546,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -293469,7 +294085,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -295291,9 +295907,10 @@
    ],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -295308,6 +295925,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -295316,14 +295940,14 @@
    "title": "Dispatcher: split builds evenly across Claude accounts",
    "category": "",
    "detail": "Bug: the orchestrator plans every build on hulu0241 (5/5 full) while mossesx-max- (Moses X) sits at 0/5. Fix the dispatcher/planner in apps/console-web/plugins/build-orchestrator/pipeline.mjs (planned.account, loadOwnAccounts, accounts.json) so subscription accounts are filled round-robin: alternate accounts per launch and always pick the account with the fewest running builds, keeping running counts equal (e.g. 3/3, not 5/0). Re-plan already-planned Pending/Queue builds when they launch, not stick to the stale planned account. API keys stay off until both subscriptions are busy. Show per-account running counts in the pipeline status. Add a test. Land as soon as green.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "mcp",
    "pendingId": "dispatcher-split-builds-evenly-across",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:27:03.346Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -295382,6 +296006,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -295725,7 +296354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 68,
+   "rev": 69,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -295759,9 +296388,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -295776,6 +296406,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -295784,14 +296421,14 @@
    "title": "Move everything from axHub web into the console",
    "category": "",
    "detail": "Bring every axHub web page and option into the Dev Console as console screens/plugins: approvals (incl. log, passes, veto/countdown), users, account, apps/connectors and services, handoff, auth admin, and their settings. Same API reach (REST, MCP, CLI, voice). The console becomes the only UI; axHub stays as the backend/MCP hub only. Then retire the axHub web UI. Works together with Phone Connect (replaces the AmberX phone app) and remove-amberx-app-code-once-phone. Token-driven, console only. Plan in Plan Studio first.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "mcp",
    "pendingId": "move-everything-axhub-web-console",
    "branch": "claude/move-everything-axhub-web-console",
    "pr": "",
    "createdAt": "2026-11-17T22:28:32.914Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -295850,6 +296487,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -296589,7 +297231,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -299990,9 +300632,10 @@
    ],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -300007,6 +300650,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -314879,14 +315529,14 @@
    "title": "One true source for every setting",
    "category": "",
    "detail": "Rule from Brett: every setting has exactly one true source. Audit the console, plugins, orchestrator, axHub and framework for any setting stored or editable in more than one place (example found: Claude account on/off lived in both claude-accounts workers.json and the orchestrator's pipeline accounts.json, so Moses X looked on but never got builds). For each duplicate: pick the one source, migrate values, make every other place read from it (no copies), remove duplicate controls/APIs. Add a CI check that fails when a setting key is defined or written in two stores. Write the rule into the shared build rules so every future build follows it. Report listing each duplicate found and fixed.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "mcp",
    "pendingId": "one-true-source-for-every-setting",
    "branch": "claude/one-true-source-for-every-setting",
    "pr": "",
    "createdAt": "2026-11-17T22:38:13.587Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -314933,6 +315583,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -315436,7 +316091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -315477,9 +316132,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -315494,6 +316150,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -315502,14 +316165,14 @@
    "title": "VPS sets every build status in the manifest; orchestrator files tabs from it",
    "category": "",
    "detail": "Rule from Brett: the VPS is the only thing that sets a build's status. Status lives in the build manifest the VPS owns. As soon as a build starts on the VPS, its manifest status becomes building. When the VPS hands a build back to the orchestrator (stopped, killed, crashed, paused, kicked out) and its status is building or on hold, the orchestrator files it straight into the Hold tab: never Pending, never auto-relaunched. The orchestrator never computes status itself; it only reads the manifest status and puts the build in the matching tab. Hold must work on running builds too (stop the session on the VPS, keep the branch and ticked steps, file to Hold). Today hold only works on queued builds, and a paused build (flagship-professional-skin-covering-2) got relaunched on its own. Add tests: started build returned => Hold; held build never relaunched by the dispatcher. Part of the everything-on-the-VPS rule; coordinate with move-server-side-console-parts-onto-vps.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "mcp",
    "pendingId": "vps-sets-every-build-status-manifest",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-17T22:42:26.247Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -315556,6 +316219,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -315943,7 +316611,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -315994,9 +316662,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -316011,6 +316680,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -316019,7 +316695,7 @@
    "title": "Voice drives the whole app: your mouth is the mouse (Fable sweep)",
    "category": "",
    "detail": "Brett: the API must fully control the entire app. Found in a live demo: Plan Studio 2.0 'plan-studio-2.new' and 'new-inside' only open a blank Plan item dialog; the text passed as args never fills Title/Note, and there is no console-control command to set a dialog field (title, note, kind, priority, model, checkbox, any input). Fix at the framework level: every input, textarea, select, switch and checkbox in every console dialog and screen gets a console-control address (field:<dialog>/<name>) with set/get, and a dialog submit/save. Action args that name a value (new:<title>) must fill the form and save. Plan Studio 2.0 first (new, new-inside, rename with text, note, priority, model), then sweep all plugins. CI check: fails on any form control without a settable address. Same through REST, MCP, CLI and voice. Test: create a nested plan with titles, notes and ticked checkboxes entirely through the API and verify it on screen.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -316027,7 +316703,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T22:53:07.696Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -316082,6 +316758,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -316541,7 +317222,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -316551,9 +317232,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -316568,6 +317250,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -317191,7 +317880,7 @@
    "title": "Active tab: add Stop button per running build and fix grid alignment",
    "category": "",
    "detail": "In the Build orchestrator Active tab there is no way for Brett to stop a running build. Add a Stop button on every running build row (stops the tmux session on the VPS through the VPS, marks it Hold, never relaunches). Also the Active tab grid columns are out of alignment; fix the layout so headers and cells line up at all widths. Add a CI check.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -317199,7 +317888,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:24:57.257Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -317234,6 +317923,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -317628,7 +318322,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 62,
+   "rev": 63,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -317638,9 +318332,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -317655,6 +318350,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -317663,7 +318365,7 @@
    "title": "Active tab Stop button and grid alignment fix",
    "category": "",
    "detail": "Build orchestrator Active tab: add a Stop button on every running build row (stops its VPS tmux session through the VPS, marks it Hold, never relaunches). Fix the Active tab grid so headers and cells line up at all widths. Add a CI check.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -317671,7 +318373,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-17T23:25:30.509Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -317710,6 +318412,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -318037,7 +318744,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -318047,9 +318754,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -318064,6 +318772,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -318072,7 +318787,7 @@
    "title": "Fix CI red on main: watchdog test vs done-means-merged guard, alerts engine job",
    "category": "",
    "detail": "CI on main has been red since at least 2026-11-17 19:19 (runs 44171482751, 44186908843) on two jobs, and every PR inherits it (seen on #827):\n1. Build engine sweep: apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs fails 'run: complete / archive builds under the store lock': the stale-row watchdog moves a queued build whose PR merged straight to complete, and the done-means-merged guard refuses it ('refused q-merged queued → landed: landed needs the merge commit (landed.sha)'). Make the watchdog record the merge evidence (landed.sha from the merge commit) and move it to landed (complete only through verify), then update the test to match done-means-merged@1.\n2. Web Dev Console (React/TS) + Python API: step 'Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption' fails; read the run log, fix the engine or regenerate the fixture.\nDone when both jobs are green on main.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "fix-launcher-crash-duplicate-steps-brief",
    "pendingId": "fix-ci-red-main-watchdog-test-vs-done",
@@ -318080,7 +318795,7 @@
    "pr": "#830",
    "priority": "P1",
    "createdAt": "2026-11-18T00:32:34.912Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -318151,6 +318866,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -318472,7 +319192,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -318529,9 +319249,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -318546,6 +319267,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -318554,14 +319282,14 @@
    "title": "axHub repo: JSON routes for connectors, handoff and auth admin; redirect old pages to the console",
    "category": "",
    "detail": "The console is the only hub UI now (build move-everything-axhub-web-console, hub-console@1). axHub keeps serving JSON pages for approvals, log, passes, go pass, users, account, handoff, apps and the policy table; the console shows these hub parts as \"the hub has no route for this yet\" (hub_missing) until the axHub repo grows the routes:\n- POST /auth/api/services {namespace, type, config}  (connectors/add: axHub configures services in its own CLI (axhub services add); no JSON route yet.; today: axhub services add <namespace> --type <type>)\n- POST /auth/api/services/{namespace}/reconnect  (connectors/reconnect: No reconnect route on the hub yet.; today: axhub services refresh <namespace>)\n- DELETE /auth/api/services/{namespace}  (connectors/remove: No remove route on the hub yet.; today: axhub services remove <namespace>)\n- POST /auth/api/handoff/{id}/accept {device}  (handoff/accept: Device-to-device handoff waits on the hub protocol (AXPP).)\n- DELETE /auth/api/handoff/{id}  (handoff/clear: No delete route for a handoff run yet.)\n- POST /auth/api/auth/tokens {label, scopes[], expiresInDays}  (auth/token-create: No token admin route on the hub yet; the secret is shown once and never stored in the console.)\n- DELETE /auth/api/auth/tokens/{id}  (auth/token-revoke: No token admin route on the hub yet.)\n- POST /auth/api/auth/clients {name, redirectUris[]}  (auth/client-add: OAuth clients are configured on the hub itself today.)\n- DELETE /auth/api/auth/clients/{id}  (auth/client-remove: OAuth clients are configured on the hub itself today.)\n\nAlso on the axHub side: redirect the old HTML pages (/auth/admin/approvals, /auth/account, /auth/admin/users, …) straight to https://console.amberxai.com/?axf-open=hub.open:<screen>[:<id>] instead of the retired web app, keep /auth/api/* and /mcp as they are, and drop the axhub-web static site from the deploy once the console redirect has run for a while. Repo: MossesX/axHub (packages/server/src/*-web.ts).",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "axhub-routes-for-console-hub",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T01:33:44.715Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -318596,6 +319324,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -319055,7 +319788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -319075,9 +319808,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -319092,6 +319826,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -319100,7 +319841,7 @@
    "title": "VPS frees stale build slots every minute",
    "category": "",
    "detail": "agent-slots counts dead entries as running: a 3-day-old rhonda-ci-fix job, finished tmux sessions waiting to close, and builds-store verify heavy processes. Add a VPS timer every minute that checks each slot entry against a live claude process and tmux session, frees dead or finished ones, kills hung heavy steps, closes finished sessions, then launches the next queued build. Log every freed slot. CI check.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -319108,7 +319849,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:36:53.146Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -319143,6 +319884,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -319514,7 +320260,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -319524,9 +320270,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -319541,6 +320288,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -319549,14 +320303,14 @@
    "title": "VPS frees stale build slots every minute",
    "category": "",
    "detail": "agent-slots counts dead entries as running: a 3-day-old rhonda-ci-fix job, finished tmux sessions waiting to close, and builds-store verify heavy processes. Add a VPS timer every minute that checks each slot entry against a live claude process and tmux session, frees dead or finished ones, kills hung heavy steps, closes finished sessions, then launches the next queued build. Log every freed slot. CI check.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T01:37:23.899Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -319591,6 +320345,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -319984,7 +320743,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320004,9 +320763,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -320021,6 +320781,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -320029,14 +320796,14 @@
    "title": "Watchdog plugin owns every VPS automation and its rules",
    "category": "",
    "detail": "Rule: anything the VPS automates lives in the Watchdog plugin. Move the recovery watchdog and stale-row watchdog settings, rules, tab, logs and FYIs out of Build orchestrator settings into the Watchdog plugin, with one settings source. Also move auto-lander controls, the slot sweeper and every other VPS timer or cron (axf-auto-lander, axf-watchdog, stale-row) into it, each with its own rules and an on/off switch. Run after watchdogs-combined-land lands. CI check that no VPS automation settings live outside the Watchdog plugin.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T01:39:44.152Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -320095,6 +320862,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -320488,7 +321260,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -320508,9 +321280,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -320525,6 +321298,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -321074,7 +321854,7 @@
    "title": "One landing line: pull in main and merge one build at a time",
    "category": "",
    "detail": "Landing must be one strict line on the VPS: finished builds wait in a single ordered landing line; only one lands at a time. For each: fetch main, merge main into the branch, resolve clashes (automatic fix session if needed), run checks against that fresh main, merge to main, then the next one starts from the new main. Nothing else may push to main while one is landing. A build that finishes building goes straight into the line. Lives in the Watchdog plugin with its settings and order. CI check.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -321082,7 +321862,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T01:48:59.706Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -321117,6 +321897,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -321620,7 +322405,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -321630,9 +322415,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -321647,6 +322433,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -322173,14 +322966,14 @@
    "title": "Land watchdogs PR #832: fix its two red CI checks",
    "category": "",
    "detail": "PR #832 (stale-row watchdog + recovery watchdog, auto-recovers stuck builds) is mergeable but fails Build engine sweep (Node) and Web Dev Console (React/TS) + Python API. Check out claude/watchdogs-combined-land, merge main, fix both failures (fix main too if it is red there; #830 may already carry fixes), push, and let the merge queue land it. Do not change the watchdog features themselves.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:21:16.238Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -322215,6 +323008,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -322357,7 +323155,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -322367,9 +323165,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -322384,6 +323183,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -323314,7 +324120,7 @@
    "title": "Server gate: reject any build without an orchestrator build ID",
    "category": "",
    "detail": "Brett (Nov 18): add a rule on the Gate & rules screen (on by default) so the VPS only starts builds that carry an orchestrator-issued build ID. Any start without one (vps.build_start, launcher, hand launch) is rejected and kicked back to the orchestrator with the reason, and the orchestrator puts it in its Failed tab with that reason so it can be fixed and re-queued. Molly (the orchestrator gate) and the VPS both enforce it. Shows on the Gate & rules screen; full REST/MCP/CLI/voice parity; tests and a CI check.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -323322,7 +324128,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:32:49.331Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -323361,6 +324167,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -323525,7 +324336,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -323551,9 +324362,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -323568,6 +324380,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -323576,7 +324395,7 @@
    "title": "One build at a time, always split: split-ID gate, Splitting status, expandable queue row with live per-part badges",
    "category": "",
    "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. Every build is split into parts that can run in parallel without touching the same files; each part gets its own branch and slot (up to 4), merges current main first, then parts are combined into one branch, one CI run, one landing. 2) GATE: the VPS rejects any build start that lacks an orchestrator build ID AND a split ID proving it went through the orchestrator splitter; rejected starts go back to the orchestrator Failed tab with the reason. Rule shown on Gate & rules, on by default. 3) PENDING: shows one row per build. As soon as the orchestrator receives a pending build it auto-splits it; while splitting the row status reads Splitting with an animated split icon. 4) QUEUE: when split is done the build moves to the Queue as ONE expandable row. Expanded, it lists every part with its slot and a live animated status badge (waiting, building, testing, rebuilding, failed, done; animation only while actually working). The main row shows the overall status. 5) Once all parts are built it is sent on and the queue row keeps updating continuously (combining, running CI, merging, merged, live, Finished). Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and supersedes the 4-builds rule; coordinate with the server-gate build queued just before.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -323584,7 +324403,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-18T12:38:28.230Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -323623,6 +324442,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -323875,7 +324699,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323885,9 +324709,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -323902,6 +324727,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -324859,14 +325691,14 @@
    "title": "Out-of-credits account failover: flag the dead account and move every slot to the backup",
    "category": "orchestrator",
    "detail": "Brett's words: \"So Moses X just ran out of credits. So when it runs out of credits, it needs to note that and stop using it. It needs to switch everything over to Hulu.\"\n\nWhen a Claude account (e.g. MossesX) runs out of credits, the orchestrator records it on the account (out of credits + timestamp + which build/step hit it), stops handing that account any new slots or steps, and moves every running and queued slot over to the backup account (\"Hulu\" (name from voice transcription, confirm)). In-flight steps on the dead account get handed off on the same branch, not restarted. Show the account switch in the banner and the builds journal.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T12:52:45.120Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -324897,6 +325729,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -325008,7 +325845,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -325018,9 +325855,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -325035,6 +325873,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -326021,14 +326866,14 @@
    "title": "Orchestrator master pause switch: stop sending builds to the VPS",
    "category": "orchestrator",
    "detail": "Priority: High (Brett).\n\nBrett's words: \"I need a master switch in the orchestrator that pauses everything. ... It only wants to suspend builds. It reads everything, it just will not send anything to the VPS anymore. Need a switch.\"\n\nOne switch in the Build orchestrator (also in the banner and as an API/MCP call): when paused, the orchestrator keeps reading, planning, splitting and showing builds, but launches nothing on the VPS (no new headless runs, no new slots, no relaunch/recovery launches from the watchdogs). Builds already running are left alone. Paused state is obvious everywhere (banner chip, orchestrator header). Unpause resumes normal launching.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T16:04:23.517Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -326059,6 +326904,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -326148,7 +326998,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -326158,9 +327008,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -326175,6 +327026,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -326183,14 +327041,14 @@
    "title": "Host the Phone Connect APK on axHub for browser download",
    "category": "phone-connect",
    "detail": "Brett's words: \"Why don't you put it on axHub so I can just download it from a browser like all the other ones?\"\n\nPublish apps/phone-connect's CI APK (phone-connect-debug.apk from the 'Android framework + console' workflow) to axHub the same way the other app APKs are hosted, with a stable direct download link that works from a phone browser. Update it automatically on every green main build. Then send Brett the link (console notify / Phone Connect once paired) and list it with the other downloads.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T20:03:01.845Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -326221,6 +327079,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -326332,7 +327195,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -326342,9 +327205,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -326359,6 +327223,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -326367,14 +327238,14 @@
    "title": "Console app: text way too big (system font scale, Samsung DeX)",
    "category": "Apps > Console app",
    "detail": "Brett (voice, Nov 18 2026): the console Android app (apps/console-droid, console-app-debug.apk) shows huge text, especially in Samsung DeX on a monitor; Ctrl+minus does nothing. He mainly needs the app for the overlay, but wants this fixed. Likely cause: the WebView follows the system font scale / density (textZoom). Fix: lock WebView text zoom to 100% (or a setting), size correctly for DeX desktop windows, keep the overlay unaffected. Full API control per the usual rule.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T21:26:24.655Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -326409,6 +327280,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -326595,7 +327471,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -326605,9 +327481,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -326622,6 +327499,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -326630,14 +327514,14 @@
    "title": "Deep links to a plugin's settings don't open it (console_open just reloads the main page)",
    "category": "Console > Settings",
    "detail": "Brett (voice, Nov 18 2026): console_open with screen settings, tab plugins, item phone-connect answers ok/started but the console only refreshes the main page; the Phone Connect settings never open. Settings → Plugins also just lists plugins with no link into each plugin's settings. Known from another build log: the deep link to a settings sub-tab answers ok but the shared settings code doesn't move to it. Fix in the shared settings code so every plugin settings sub-tab is reachable by deep link (REST, MCP, CLI, voice) and by tapping the plugin in the list.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-18T23:20:06.039Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -326676,6 +327560,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -326840,7 +327729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -326850,9 +327739,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -326867,6 +327757,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -327353,14 +328250,14 @@
    "title": "Queue stall detector: VPS spots queued builds that aren't running and fixes it itself (AI fix behind a switch, default off)",
    "category": "Builds > Pipeline",
    "detail": "Brett (voice, Nov 19 2026): \"There needs to be something on the VPS to detect it when things are in the queue and not running … and then fix it. On its own, without AI. Or with, if the switch is on. Default off.\" Also: \"put some chatter in the group chat asking people to do different things and give them response.\"\n\nSeen today: three Postgres builds queued, 0 of 4 slots running and 0 waiting while the pipeline cron was on; earlier launches failed on a broken worktree and on the dispatcher running claude-headless.sh from an old build folder (axf-molly-container-orchestrator-gate, HOME unbound); the reconciler kept bouncing a build back to the Queue every 20-30 min without launching it.\n\nWhat to build:\n1. Detector on the VPS (server side, no AI, no console needed): every tick, if any build is queued and free slots exist but nothing launched within N minutes, it is a stall. Record why (dispatcher not ticking, lock held, launch failed, worktree broken, wrong launcher path, account limit, slot state stale).\n2. Auto-fix ladder without AI: restart the dispatcher tick, clear a stale lock or slot row, rebuild the worktree, use the launcher from /opt/axf only, try the next account; re-check after each.\n3. AI fix switch: setting axf.pipeline.stall.aiFix, default OFF. When on and the no-AI ladder is used up, start one headless Claude session to diagnose and fix.\n4. Group chat chatter: post each stall, each fix attempt and its result in the crew group chat, assigning the steps to named agents (who checks the lock, who rebuilds the worktree, who retries the launch) with their replies, so Brett can follow it.\n5. Banner + one phone push when it can't fix it (systems check health@1 item with Auto fix).\nExtend the existing stale-row watchdog / server watchdog (orchestrator-stale-row-watchdog-vps, server-watchdog-orchestrator-auto-recovers-stuck) instead of adding another cron; check for overlap first. Full API control (REST, MCP, CLI, voice) for its status, settings and the switch.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:16:59.516Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -327403,6 +328300,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -327677,7 +328579,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -327687,9 +328589,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -327704,6 +328607,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -327712,14 +328622,14 @@
    "title": "Load spike alarm: VPS detects CPU/load spikes, rings the phone, flashing banner alert that pops open",
    "category": "Ops > Alerts",
    "detail": "Brett (voice, Nov 19 2026): \"I need the VPS to detect spikes like that and get an audible alarm to the phone. And an alert in one of the banners that pops open automatically to show the flashing alert.\"\n\nSeen today: load average 60 this morning, then 13-22 on an 8-core KVM 8 (srv1837178) several times; cause each time was something different (builds-live push storm, cron-spawned node scripts piling up, Coolify at 400% CPU). Everything timed out while it lasted.\n\nWhat to build:\n1. Detector on the VPS, server side, no console or AI needed: samples load average, CPU per container and top processes every 30-60 s. A spike = load above a threshold relative to core count (default: over 1.5x cores for 2 minutes; settings for threshold, duration, cool-down). Records the top offenders (process, container, cron that started it).\n2. Audible alarm on the phone through Phone Connect (AmberX app is retired): a loud alarm-type notification that plays sound even on silent/DND where Android allows it, with the cause in the text and a tap that opens the console alert.\n3. Banner alert: the systems check banner (or alerts banner) gets a flashing, high-priority item, and the banner pops open on its own to show it. The item says what spiked, how high, since when and the top offenders, with Fix actions (kill the offending process, pause the cron, restart the container) that need a confirm.\n4. Clears itself and says so when load is back to normal.\n5. Uses the systems check health@1 registry; flashing look comes from asset tokens. Full API control (REST, MCP, CLI, voice) for status, settings, test alarm and acknowledge.\nCheck overlap with the Maintenance plugin (already reads os.getloadavg) and the queue stall detector build; reuse, don't duplicate.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:22:02.009Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -327758,6 +328668,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -328029,7 +328944,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -328039,9 +328954,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -328056,6 +328972,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   },
@@ -328064,14 +328987,14 @@
    "title": "Server safe mode: one emergency button that instantly sheds load on the VPS",
    "category": "Ops > Emergency",
    "detail": "Brett (voice, Nov 19 2026): \"I need an emergency button … like a safe mode button. I hit it, boom, and immediately the server shuts a whole bunch of shit down.\"\n\nSeen today: load 60 this morning, 13-42 several times tonight (push storm, cron pile-ups, builds-store verify jobs re-reading the 14 MB store, Coolify at 400%). Everything timed out, including the console and the phone app.\n\nWhat to build:\n1. One Safe mode switch, reachable from a big button in the console banner, the phone (Phone Connect / console app, works even when the console is slow because it talks to a tiny always-on endpoint), voice and the CLI/MCP. Confirm once.\n2. On: moves the non-essential crons aside (console-nightly, doctor, maintenance, watchdogs, auto-land, updaters), holds the pipeline (no new launches), pauses heavy steps (builds-store verify, model-gate audit, typechecks, vite/esbuild), optionally pauses running build sessions, and stops non-essential containers. Configurable list of what goes down and what stays.\n3. Always stays up: axHub, the console server, axf-data / Postgres, Phone Connect link, SSH.\n4. Off: puts back exactly what it took down, in order, and reports.\n5. Shows the live picture while on: load, CPU per container, memory, swap, disk, what it stopped.\n6. Hooks into the load spike alarm build: optional auto safe mode when load passes a set level.\nFull API control (REST, MCP, CLI, voice).",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-19T00:42:04.028Z",
-   "updatedAt": "2026-11-19T14:24:01.548Z",
+   "updatedAt": "2026-11-19T14:44:01.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -328110,6 +329033,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-19T14:39:01.187Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-19T14:44:01.143Z",
      "by": "watchdog"
     }
    ],
@@ -328406,7 +329334,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -328416,9 +329344,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-19T14:24:01.548Z",
+   "statusAt": "2026-11-19T14:44:01.143Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -328433,6 +329362,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-19T14:44:01.143Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
     }
    ]
   }
