@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9277,
- "updatedAt": "2026-11-19T04:43:27.929Z",
+ "rev": 9278,
+ "updatedAt": "2026-11-19T04:53:19.037Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322053,7 +322053,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T04:42:54.229Z",
+   "updatedAt": "2026-11-19T04:52:44.638Z",
    "builtAt": "",
    "notes": [
     {
@@ -322283,6 +322283,10 @@
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T04:42:54.229Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:52:44.638Z"
     }
    ],
    "approvals": [
@@ -322551,7 +322555,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -323531,8 +323535,9 @@
    "pendingId": "",
    "branch": "claude/postgres-part-b-plan-plan-studio-catalog",
    "pr": "#851",
+   "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T04:18:33.129Z",
+   "updatedAt": "2026-11-19T04:52:44.638Z",
    "builtAt": "",
    "notes": [
     {
@@ -323590,6 +323595,10 @@
     {
      "text": "Watchdog: Merge queue entry 851 → Remove: The build was cancelled (PR #851 open; not on main; build postgres-part-b-plan-plan-studio-catalog: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Reconciler: PR #851 merged",
+     "at": "2026-11-19T04:52:44.638Z"
     }
    ],
    "approvals": [],
@@ -323744,7 +323753,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

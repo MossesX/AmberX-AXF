@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T04:43:27.929Z",
+ "updatedAt": "2026-11-19T04:53:19.037Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -195089,7 +195089,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T04:42:54.229Z",
+   "updatedAt": "2026-11-19T04:52:44.638Z",
    "builtAt": "",
    "notes": [
     {
@@ -195319,6 +195319,10 @@
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T04:42:54.229Z"
+    },
+    {
+     "text": "Reconciler: PR #848 merged: landed (complete once verified)",
+     "at": "2026-11-19T04:52:44.638Z"
     }
    ],
    "approvals": [
@@ -196055,8 +196059,9 @@
    "pendingId": "",
    "branch": "claude/postgres-part-b-plan-plan-studio-catalog",
    "pr": "#851",
+   "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T04:18:33.129Z",
+   "updatedAt": "2026-11-19T04:52:44.638Z",
    "builtAt": "",
    "notes": [
     {
@@ -196114,6 +196119,10 @@
     {
      "text": "Watchdog: Merge queue entry 851 → Remove: The build was cancelled (PR #851 open; not on main; build postgres-part-b-plan-plan-studio-catalog: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Reconciler: PR #851 merged",
+     "at": "2026-11-19T04:52:44.638Z"
     }
    ],
    "approvals": [],
