@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T02:43:34.039Z",
+ "updatedAt": "2026-11-19T02:44:04.536Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194905,7 +194905,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:42:28.843Z",
+   "updatedAt": "2026-11-19T02:43:17.443Z",
    "builtAt": "",
    "notes": [
     {
@@ -194981,10 +194981,6 @@
      "at": "2026-11-19T00:33:06.533Z"
     },
     {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-19T00:35:58.320Z"
-    },
-    {
      "text": "Started run 1 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--gina.",
      "at": "2026-11-19T00:37:18.137Z"
     },
@@ -195025,16 +195021,24 @@
      "at": "2026-11-19T02:33:14.133Z"
     },
     {
+     "text": "Refused queued → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T02:34:00.569Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--rhonda.",
+     "at": "2026-11-19T02:43:17.443Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T00:35:58.320Z"
+    },
+    {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-19T02:34:37.031Z"
     },
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T02:34:00.568Z"
-    },
-    {
-     "text": "Refused queued → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T02:34:00.569Z"
     },
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
@@ -195053,16 +195057,7 @@
      "at": "2026-11-19T02:41:43.030Z"
     }
    ],
-   "approvals": [
-    {
-     "phase": 2,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-19T01:41:01.880Z",
-     "by": "auto",
-     "kind": "downgrade"
-    }
-   ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -195135,7 +195130,7 @@
      "createdAt": "2026-11-18T14:45:31.829Z"
     },
     {
-     "id": "s4",
+     "id": "s9",
      "text": "s4.1 Pending, build queue, agent-slots, auto-lander to tables (DATA-INVENTORY order 1): pending/queue are projections of the builds tables since s3; agent-slots and auto-lander state get tables; each verified (counts) then cut over",
      "model": "Opus",
      "why": "",
@@ -195149,9 +195144,9 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-19T02:03:16.121Z",
-     "note": "s4.1 (c9e65617a): pending + build queue live in the builds tables (exports of the builds record). agent-slots: agent_slots table, state by key mode, rev check replaces the mkdir lock in cutover, agent-slots data status|cutover|local (live status verified: local, remote copy stale from Nov 17). Flip waits until every worktree running agent-slots.mjs has this code. auto-lander is not a data-store path yet (needs a contract path rule, Fable). s4.2-s4.6 are builds postgres-part-b / postgres-part-c.",
-     "uid": "st-mwm8h2vj09nsb2",
-     "createdAt": "2026-11-18T14:45:31.829Z"
+     "note": "",
+     "uid": "st-mwmy1pox01y32m",
+     "createdAt": "2026-11-19T02:41:25.838Z"
     },
     {
      "id": "s5",
@@ -195173,7 +195168,7 @@
      "createdAt": "2026-11-18T14:45:31.829Z"
     },
     {
-     "id": "s6",
+     "id": "s11",
      "text": "s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over",
      "model": "Opus",
      "why": "",
@@ -195188,11 +195183,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmundu001dg92",
-     "createdAt": "2026-11-19T01:06:18.147Z"
+     "uid": "st-mwmy1pox024051",
+     "createdAt": "2026-11-19T02:41:25.838Z"
     },
     {
-     "id": "s10",
+     "id": "s12",
      "text": "s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over",
      "model": "Opus",
      "why": "",
@@ -195207,11 +195202,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmv01v4013a6f",
-     "createdAt": "2026-11-19T01:16:08.948Z"
+     "uid": "st-mwmy1pox030grh",
+     "createdAt": "2026-11-19T02:41:25.838Z"
     },
     {
-     "id": "s8",
+     "id": "s13",
      "text": "Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.",
      "model": "Opus",
      "why": "",
@@ -195226,8 +195221,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwmxhw7h01vhee",
-     "createdAt": "2026-11-19T02:26:00.645Z"
+     "uid": "st-mwmy1pox04jrrg",
+     "createdAt": "2026-11-19T02:41:25.838Z"
     }
    ]
   },

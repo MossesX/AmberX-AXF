@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 14:31 UTC · `plan-studio-2-open-button-working-deep` PR #843 (all) · builds-live
 - 2026-11-18 14:32 UTC · `every-plugin-screen-gets-a-settings-gear` → fixing, note (all) · pipeline
 - 2026-11-18 14:33 UTC · `every-plugin-gets-own-default-toolbar` note (all) · orchestrator
 - 2026-11-18 14:34 UTC · `plan-studio-2-open-button-working-deep` note (all) · reconciler
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 02:41 UTC · `postgres-part-b-plan-plan-studio-catalog` s1 done, s2 done, s3 done, s4 done, → landing, note (all) · foreign-write
 - 2026-11-19 02:41 UTC · `queue-stall-detector-vps-spots-queued` note (all) · foreign-write
 - 2026-11-19 02:41 UTC · `server-safe-mode-one-emergency-button` added (11 steps) (all) · foreign-write
+- 2026-11-19 02:43 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · foreign-write
 
 ## Token passes (log)
 

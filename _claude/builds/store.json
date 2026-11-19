@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9248,
- "updatedAt": "2026-11-19T02:43:34.039Z",
+ "rev": 9249,
+ "updatedAt": "2026-11-19T02:44:04.536Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -322965,7 +322965,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T02:42:28.843Z",
+   "updatedAt": "2026-11-19T02:43:17.443Z",
    "builtAt": "",
    "notes": [
     {
@@ -323041,10 +323041,6 @@
      "at": "2026-11-19T00:33:06.533Z"
     },
     {
-     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
-     "at": "2026-11-19T00:35:58.320Z"
-    },
-    {
      "text": "Started run 1 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--gina.",
      "at": "2026-11-19T00:37:18.137Z"
     },
@@ -323085,16 +323081,24 @@
      "at": "2026-11-19T02:33:14.133Z"
     },
     {
+     "text": "Refused queued → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-19T02:34:00.569Z"
+    },
+    {
+     "text": "Started run 2 on hulu0241 (Opus, Phase 3): axf-urgent-all-data-to-postgres-builds-store--rhonda.",
+     "at": "2026-11-19T02:43:17.443Z"
+    },
+    {
+     "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
+     "at": "2026-11-19T00:35:58.320Z"
+    },
+    {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
      "at": "2026-11-19T02:34:37.031Z"
     },
     {
      "text": "Reconciler: PR #848 merged: landed (complete once verified)",
      "at": "2026-11-19T02:34:00.568Z"
-    },
-    {
-     "text": "Refused queued → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
-     "at": "2026-11-19T02:34:00.569Z"
     },
     {
      "text": "Launch failed on hulu0241: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
@@ -323113,16 +323117,7 @@
      "at": "2026-11-19T02:41:43.030Z"
     }
    ],
-   "approvals": [
-    {
-     "phase": 2,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-19T01:41:01.880Z",
-     "by": "auto",
-     "kind": "downgrade"
-    }
-   ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -323137,42 +323132,33 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-19T00:33:02.230Z",
-    "queuedBy": "cli",
-    "account": "hulu0241",
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
     "session": "",
     "slot": "",
-    "model": "Opus",
+    "model": "",
     "phase": "",
-    "launchedAt": "2026-11-19T00:37:13.344Z",
-    "runs": 1,
+    "launchedAt": "",
+    "runs": 0,
     "crashes": 0,
-    "lastRun": {
-     "at": "2026-11-19T02:40:46.229Z",
-     "exit": 0,
-     "outcome": "requeued",
-     "reason": "",
-     "stepsLeft": 1,
-     "account": "hulu0241",
-     "session": "axf-urgent-all-data-to-postgres-builds-store--gina",
-     "phase": ""
-    },
+    "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "launch failed: launcher exit 1: /root/axf-builds/axf-molly-container-orchestrator-gate/deploy/claude-headless.sh: line 92: HOME: unbound variable",
     "route": "",
-    "dispatchedAt": "2026-11-19T00:37:13.344Z",
+    "dispatchedAt": "",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-19T00:32:14.633Z",
+     "at": "2026-11-18T20:58:46.207Z",
      "why": "subscription account hulu0241"
     },
     "tried": [
      "hulu0241"
     ],
-    "pickedAt": "2026-11-19T00:37:13.344Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": "",
@@ -323248,8 +323234,8 @@
      "updatedAt": "2026-11-19T02:41:38.344Z"
     },
     {
-     "id": "s4",
-     "uid": "st-mwm8h2vj09nsb2",
+     "id": "s9",
+     "uid": "st-mwmy1pox01y32m",
      "title": "",
      "text": "s4.1 Pending, build queue, agent-slots, auto-lander to tables (DATA-INVENTORY order 1): pending/queue are projections of the builds tables since s3; agent-slots and auto-lander state get tables; each verified (counts) then cut over",
      "model": "Opus",
@@ -323264,10 +323250,10 @@
      "skip": false,
      "done": true,
      "doneAt": "2026-11-19T02:03:16.121Z",
-     "note": "s4.1 (c9e65617a): pending + build queue live in the builds tables (exports of the builds record). agent-slots: agent_slots table, state by key mode, rev check replaces the mkdir lock in cutover, agent-slots data status|cutover|local (live status verified: local, remote copy stale from Nov 17). Flip waits until every worktree running agent-slots.mjs has this code. auto-lander is not a data-store path yet (needs a contract path rule, Fable). s4.2-s4.6 are builds postgres-part-b / postgres-part-c.",
-     "rev": 3,
-     "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-19T02:03:18.101Z"
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-19T02:41:25.838Z",
+     "updatedAt": "2026-11-19T02:41:27.633Z"
     },
     {
      "id": "s5",
@@ -323292,8 +323278,8 @@
      "updatedAt": "2026-11-19T02:41:38.344Z"
     },
     {
-     "id": "s6",
-     "uid": "st-mwmundu001dg92",
+     "id": "s11",
+     "uid": "st-mwmy1pox024051",
      "title": "",
      "text": "s4.3 Catalog status, libraries, project rules to tables; tracker.json becomes a view generated from them (DATA-INVENTORY order 3), verified then cut over",
      "model": "Opus",
@@ -323309,13 +323295,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-19T01:06:18.147Z",
-     "updatedAt": "2026-11-19T02:42:01.659Z"
+     "rev": 1,
+     "createdAt": "2026-11-19T02:41:25.838Z",
+     "updatedAt": "2026-11-19T02:41:27.633Z"
     },
     {
-     "id": "s10",
-     "uid": "st-mwmv01v4013a6f",
+     "id": "s12",
+     "uid": "st-mwmy1pox030grh",
      "title": "",
      "text": "s4.4 Console state, settings, alerts, notifications, home cards, token log, notes, control inventory, app catalog to tables (DATA-INVENTORY order 4), verified then cut over",
      "model": "Opus",
@@ -323331,13 +323317,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-19T01:16:08.948Z",
-     "updatedAt": "2026-11-19T02:42:01.659Z"
+     "rev": 1,
+     "createdAt": "2026-11-19T02:41:25.838Z",
+     "updatedAt": "2026-11-19T02:41:27.633Z"
     },
     {
-     "id": "s8",
-     "uid": "st-mwmxhw7h01vhee",
+     "id": "s13",
+     "uid": "st-mwmy1pox04jrrg",
      "title": "",
      "text": "Flip the builds store to the tables once this branch is merged and /opt/axf runs it (git -C /opt/axf log has the projection: grep projectConsole framework/cli/builds-store.mjs; else bash deploy/install-console.sh via agent-slots heavy): set -a; . /root/hub/data/axf-data/conf/env/cli.env; set +a; AXF_DATA_URL=http://172.16.7.250:7700 node framework/cli/builds-data.mjs cutover --apply --store /opt/axf/_claude/builds/store.json --by svc:cli. Verify builds-data status (modes cutover, counts equal), a tick lands in the builds rows and /opt/axf store.json follows (projection). agent-slots: flip (agent-slots.mjs data cutover --apply) only when every live worktree running agent-slots.mjs carries the s4.1 code; otherwise leave a note.",
      "model": "Opus",
@@ -323354,8 +323340,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-19T02:26:00.645Z",
-     "updatedAt": "2026-11-19T02:26:02.957Z"
+     "createdAt": "2026-11-19T02:41:25.838Z",
+     "updatedAt": "2026-11-19T02:41:27.633Z"
     }
    ],
    "profiles": [
@@ -323369,17 +323355,36 @@
    "rev": 58,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-18T14:45:31.823Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwm8h2vi06h4qn": "2026-11-18T14:45:31.829Z",
+     "st-mwm8h2vi070oxb": "2026-11-18T14:45:31.829Z",
+     "st-mwm8h2vi086tbx": "2026-11-18T14:45:31.829Z",
+     "st-mwmy1pox01y32m": "2026-11-18T14:45:31.829Z",
+     "st-mwm8h2vj0a7ucv": "2026-11-18T14:45:31.829Z",
+     "st-mwmy1pox024051": "2026-11-19T01:06:18.147Z",
+     "st-mwmy1pox030grh": "2026-11-19T01:16:08.948Z",
+     "st-mwmy1pox04jrrg": "2026-11-19T02:26:00.645Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-18T14:45:31.829Z",
    "rearranged": false,
    "removedSteps": [
     {
      "step": {
-      "id": "s7",
-      "uid": "st-mwmuoyjm0168do",
+      "id": "s4",
+      "uid": "st-mwm8h2vj09nsb2",
       "title": "",
-      "text": "s4.5 Plugin data dirs to tables: chat-viewer and shipped-features SQLite mirrors become the source, push-banner, agent-swarm, ui-review, then the small ones into plugin_settings / plugin_audit (DATA-INVENTORY order 5)",
+      "text": "Move the remaining data namespaces from the inventory to tables, one per step, each verified then cut over",
       "model": "Opus",
       "why": "",
       "phase": "",
@@ -323394,66 +323399,12 @@
       "doneAt": "",
       "note": "",
       "rev": 1,
-      "createdAt": "2026-11-19T01:07:31.734Z",
-      "updatedAt": "2026-11-19T01:07:33.730Z"
+      "createdAt": "2026-11-18T14:45:31.829Z",
+      "updatedAt": "2026-11-18T14:45:31.829Z"
      },
-     "at": "2026-11-19T01:18:35.535Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s8",
-      "uid": "st-mwmupglh01xb0s",
-      "title": "",
-      "text": "s4.6 Sessions and codebase changes to tables (DATA-INVENTORY order 6: largest row counts, append-only), verified then cut over",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "30 min",
-      "files": [],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-19T01:07:54.621Z",
-      "updatedAt": "2026-11-19T01:07:57.125Z"
-     },
-     "at": "2026-11-19T01:19:30.135Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s9",
-      "uid": "st-mwmuz7p601s62h",
-      "title": "",
-      "text": "s4.2 Plan, plan-studio, profiles, projects, plan media to tables (DATA-INVENTORY order 2), verified then cut over",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "30 min",
-      "files": [],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-19T01:15:30.323Z",
-      "updatedAt": "2026-11-19T01:15:32.154Z"
-     },
-     "at": "2026-11-19T01:21:20.653Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
+     "at": "2026-11-19T02:41:25.838Z",
+     "why": "removed on the Pending list",
+     "by": "pending"
     }
    ],
    "legacy": [],
