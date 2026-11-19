@@ -9,7 +9,7 @@
 import assert from 'node:assert/strict';
 import { execFileSync, spawn, spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:net';
 import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
@@ -22,7 +22,8 @@ const ok = (name) => { n += 1; console.log(`  ✓ ${name}`); };
 // ── the group schema ──
 const SPEC = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/data-cut.json'), 'utf8'));
 assert.equal(SPEC.$axf, 'data-cut@1');
-const TABLES = readFileSync(join(ROOT, 'services/axf-data/tables.py'), 'utf8');
+// the table registry: tables.py plus the modules it appends (tables_console.py, tables_plugins.py, …)
+const TABLES = readdirSync(join(ROOT, 'services/axf-data')).filter((f) => /^tables(_[a-z]+)?\.py$/.test(f)).map((f) => readFileSync(join(ROOT, 'services/axf-data', f), 'utf8')).join('\n');
 for (const [id, g] of Object.entries(SPEC.groups)) {
   assert.ok(g.title && Array.isArray(g.entries) && g.entries.length, `${id}: title and entries`);
   for (const e of g.entries) {
@@ -31,7 +32,7 @@ for (const [id, g] of Object.entries(SPEC.groups)) {
     assert.equal(typeof e.flip, 'boolean', `${id}: ${e.key || e.prefix} says flip`);
     if (!e.flip) assert.ok(e.why, `${id}: ${e.key || e.prefix} says why it does not flip`);
     if (e.flip) assert.ok(Array.isArray(e.writers) && e.writers.length, `${id}: ${e.key || e.prefix} names its writers`);
-    if (e.table) assert.ok(e.table.endsWith('_*') ? TABLES.includes(`=${e.table.slice(0, -2)}`) : TABLES.includes(`'${e.table}'`), `${id}: table ${e.table} is in services/axf-data/tables.py (a SQLite mirror prefix in DEFAULT_MIRROR)`);
+    if (e.table) assert.ok(e.table.endsWith('_*') ? TABLES.includes(`=${e.table.slice(0, -2)}`) : TABLES.includes(`'${e.table}'`), `${id}: table ${e.table} is in services/axf-data/tables*.py (or a SQLite mirror prefix in DEFAULT_MIRROR)`);
   }
 }
 const { ownerOf } = await import('../cli/data-cut.mjs');

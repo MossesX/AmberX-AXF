@@ -64,8 +64,11 @@ def _roots() -> dict[str, Path]:
 
 
 def _registry() -> tuple[dict, dict]:
-    reg = json.loads((ROOT / "framework/schemas/data-store.json").read_text("utf-8"))
-    paths = json.loads((ROOT / "framework/schemas/data-store-paths.json").read_text("utf-8"))
+    # the registry is code, not data: read it from AXF_ROOT when that checkout has it, else from this module's own checkout
+    # (tests and tools point AXF_ROOT at a scratch tree without framework/schemas)
+    base = ROOT if (ROOT / "framework/schemas/data-store.json").is_file() else Path(__file__).resolve().parents[3]
+    reg = json.loads((base / "framework/schemas/data-store.json").read_text("utf-8"))
+    paths = json.loads((base / "framework/schemas/data-store-paths.json").read_text("utf-8"))
     return reg, paths
 
 
