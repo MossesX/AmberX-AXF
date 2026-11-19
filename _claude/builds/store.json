@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9373,
- "updatedAt": "2026-11-19T16:38:23.018Z",
+ "rev": 9374,
+ "updatedAt": "2026-11-19T16:38:42.016Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -293247,10 +293247,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/fix-main-ci-p2",
+   "pr": "#853",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T16:38:17.426Z",
+   "updatedAt": "2026-11-19T16:38:37.818Z",
    "builtAt": "",
    "notes": [
     {
@@ -293446,12 +293446,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T16:38:24.813Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:58:19.850Z",
-     "updatedAt": "2026-11-17T23:04:11.462Z"
+     "updatedAt": "2026-11-19T16:38:25.408Z"
     },
     {
      "id": "s6",
@@ -293468,12 +293468,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-19T16:38:32.424Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-17T21:58:19.850Z",
-     "updatedAt": "2026-11-17T23:04:11.462Z"
+     "updatedAt": "2026-11-19T16:38:32.955Z"
     },
     {
      "id": "s7",
@@ -293506,7 +293506,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": {
