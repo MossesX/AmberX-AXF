@@ -49,6 +49,7 @@ function github(r, ci = () => 'success') {
       const c = ci(m[1]);
       if (c === 'none') return { check_runs: [] };
       if (c === 'running') return { check_runs: [{ status: 'in_progress', name: 'tests' }] };
+      if (c === 'light') return { check_runs: [{ status: 'completed', conclusion: 'success', name: 'scope' }, { status: 'completed', conclusion: 'success', name: 'Light PR checks (full run happens once, in the merge queue)' }] };
       return { check_runs: [{ status: 'completed', conclusion: c, name: 'tests', details_url: 'https://github.com/o/r/actions/runs/42/job/1' }] };
     }
     if (method === 'PUT' && (m = path.match(/\/pulls\/(\d+)\/merge$/))) {
@@ -185,6 +186,19 @@ test('CI running or not started: the build waits in running-ci, CI is started on
   now.add(11); await tick(opts); now.add(1); await tick(opts);
   assert.equal(gh.calls.filter((c) => c.includes('/dispatches')).length, 1, 'dispatched once per head');
   state = 'running'; out = await tick(opts); assert.equal(out.waiting, 'CI is running');
+  state = 'success'; await tick(opts);
+  assert.equal(store.list[0].status, 'landed');
+});
+
+test('light PR checks only: the lander starts the full CI run once and lands only on it', async () => {
+  const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
+  let state = 'light'; const gh = github(r, () => state);
+  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
+  const opts = base(r, gh, store, now);
+  let out = await tick(opts);
+  assert.equal(store.list[0].status, 'running-ci'); assert.equal(out.waiting, 'waiting for the full CI run');
+  await tick(opts);
+  assert.equal(gh.calls.filter((c) => c.includes('/dispatches')).length, 1, 'one full run per head');
   state = 'success'; await tick(opts);
   assert.equal(store.list[0].status, 'landed');
 });

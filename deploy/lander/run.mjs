@@ -244,8 +244,17 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       if (!head) return fail('infra', { why: `${branch} is not on GitHub` });
       let runs = [];
       try { runs = (await gh('GET', `/repos/${s.slug}/commits/${head}/check-runs?per_page=100`))?.check_runs || []; } catch (e) { out.waiting = `CI can't be read (${e.message})`; return 'stop'; }
-      const ci = L.ciOf(runs);
       const since = b.statusAt || at;
+      // light PR checks only (ci-scope: a PR while the old merge queue's repo variable is on): the one CI run must be the
+      // full one, so it is dispatched once per head (workflow_dispatch is always full) and only the full run counts
+      if (L.lightOnly(runs)) {
+        if (b.landing?.fullKick?.head !== head && !dry) {
+          try { await gh('POST', `/repos/${s.slug}/actions/workflows/${cfg.workflow}/dispatches`, { ref: branch }); write({ landing: { fullKick: { head, at } } }); act(`only light PR checks on ${head.slice(0, 9)}: started the full CI run`); } catch (e) { log(`dispatch: ${e.message}`); }
+        }
+        if (L.ciTimedOut(since, at, cfg)) return fail('ci-timeout', { why: `no full CI run after ${cfg.ciTimeoutMin} min`, head, pr: g.inFlight.pr });
+        out.waiting = 'waiting for the full CI run'; return 'stop';
+      }
+      const ci = L.ciOf(runs);
       if (ci.ci === 'none') {
         const kick = b.landing?.ciKick;
         if (kick?.head !== head && L.ciKickDue(since, at, cfg) && !dry) {
@@ -286,7 +295,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
         catch (e) { return fail(e.status === 405 || e.status === 409 ? 'merge' : 'infra', { why: `merging PR #${g.inFlight.pr}: ${e.message}`, head, pr: g.inFlight.pr }); }
       }
       const merged = [...L.landingOf(b).merged, g.inFlight.pr];
-      if (!write({ landing: { merged, reruns: null, rules: null, ciKick: null }, failure: null })) return 'stop';
+      if (!write({ landing: { merged, reruns: null, rules: null, ciKick: null, fullKick: null }, failure: null })) return 'stop';
       act(`PR #${g.inFlight.pr} merged into main`);
       git(['push', '-q', s.remote, '--delete', branch]);
       const left = L.groupState(b).waiting.length;
@@ -315,7 +324,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
     if (fr.retry === 'split') {
       if (g.inFlight && !dry) { try { await gh('PATCH', `/repos/${s.slug}/pulls/${g.inFlight.pr}`, { state: 'closed' }); } catch (e) { log(`close #${g.inFlight.pr}: ${e.message}`); } }
       const closed = g.inFlight ? [...L.landingOf(b).closed, g.inFlight.pr] : L.landingOf(b).closed;
-      if (!write({ status: 'merging-pr', landing: { split: true, closed, reruns: null, rules: null, ciKick: null }, note: `Lander: attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''}; its steps land one PR each` })) return 'stop';
+      if (!write({ status: 'merging-pr', landing: { split: true, closed, reruns: null, rules: null, ciKick: null, fullKick: null }, note: `Lander: attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''}; its steps land one PR each` })) return 'stop';
       act(`attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''} into one PR per step`); return 'merging-pr';
     }
     if (fr.retry === 'fix') {

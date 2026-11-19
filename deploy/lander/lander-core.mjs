@@ -209,6 +209,17 @@ export function ciOf(runs) {
   const runIds = [...new Set(bad.map((r) => runIdOf(r)).filter(Boolean))];
   return { ci: bad.length ? 'failure' : 'success', failing: bad.map((r) => str(r.name, 120)), runIds };
 }
+/** The jobs of a light PR run (ci-scope.mjs `light`, android.yml `scope` + "Light PR checks …"). */
+const LIGHT = /^(Light PR checks|scope)\b/i;
+/**
+ * Only light PR checks ran on the head (a pull_request run while the repo variable AXF_MERGE_QUEUE is on): no full CI
+ * yet. True when a light job is there and no other GitHub Actions job is.
+ */
+export function lightOnly(runs) {
+  const ours = (runs || []).filter((r) => (r?.app?.slug || 'github-actions') === 'github-actions' && r?.conclusion !== 'skipped');
+  return ours.some((r) => /^Light PR checks/i.test(String(r.name || ''))) && ours.every((r) => LIGHT.test(String(r.name || '')));
+}
+
 /** The Actions run id of a check run (from its details URL …/actions/runs/<id>/job/<job>). */
 export function runIdOf(checkRun) {
   const m = String(checkRun?.details_url || checkRun?.html_url || '').match(/\/actions\/runs\/(\d+)/);
