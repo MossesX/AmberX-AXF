@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-19T03:41:06.525Z",
+ "updatedAt": "2026-11-19T03:42:21.826Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -194909,7 +194909,7 @@
    "pr": "#848",
    "mergedAt": "2026-11-19T00:25:51Z",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T03:40:40.732Z",
+   "updatedAt": "2026-11-19T03:41:53.628Z",
    "builtAt": "",
    "notes": [
     {
@@ -195079,6 +195079,10 @@
     {
      "text": "s8: builds store and journal flipped to axf-data tables (cutover, counts equal: 1066 builds, 6765 steps, 7683 notes). agent-slots left local: live worktrees (fix-main-ci-apk, postgres-part-b, postgres-part-c) still run pre-s4.1 agent-slots.mjs; flip with 'agent-slots.mjs data cutover --apply' once they carry it.",
      "at": "2026-11-19T03:40:40.732Z"
+    },
+    {
+     "text": "s8 verify: write through /opt/axf after the flip.",
+     "at": "2026-11-19T03:41:53.628Z"
     }
    ],
    "approvals": [
