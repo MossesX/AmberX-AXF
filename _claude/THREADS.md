@@ -840,7 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-18 13:38 UTC · `out-credits-account-failover-flag-dead` added (3 steps) (all) · foreign-write
 - 2026-11-18 13:39 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
 - 2026-11-18 13:40 UTC · `every-app-gets-own-locked-default` note (all) · builds-live
 - 2026-11-18 13:40 UTC · `every-app-gets-own-locked-default` note (all) · pipeline
@@ -1240,6 +1239,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-19 01:20 UTC · `postgres-part-b-plan-plan-studio-catalog` branch claude/postgres-part-b-plan-plan-studio-catalog (all) · pipeline
 - 2026-11-19 01:23 UTC · `postgres-part-c-console-state-settings` s2 done (all) · orchestrator
 - 2026-11-19 01:24 UTC · `urgent-all-data-to-postgres-builds-store` note (all) · orchestrator
+- 2026-11-19 01:41 UTC · `urgent-all-data-to-postgres-builds-store` s3 done (all) · orchestrator
 
 ## Token passes (log)
 

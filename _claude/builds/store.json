@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9217,
- "updatedAt": "2026-11-19T01:25:21.148Z",
+ "rev": 9218,
+ "updatedAt": "2026-11-19T01:41:17.617Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -321832,7 +321832,7 @@
    "branch": "claude/urgent-all-data-to-postgres-builds-store",
    "pr": "",
    "createdAt": "2026-11-18T14:45:31.823Z",
-   "updatedAt": "2026-11-19T01:24:15.746Z",
+   "updatedAt": "2026-11-19T01:41:01.880Z",
    "builtAt": "",
    "notes": [
     {
@@ -321924,7 +321924,16 @@
      "at": "2026-11-19T01:24:15.746Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-19T01:41:01.880Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -322028,12 +322037,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-19T01:41:01.880Z",
+     "note": "Cut code on the branch (dab6d1fe5, 6acb5345f): no file lock/writes in cutover, main-newer builds adopted into the tables, store.json + orchestrator exports a read-only projection of the tables, builds-data clean, console focus via data_store. /opt/axf deployed to main (git; image rebuild queued behind the heavy slots). The key flip (builds-data cutover --apply --store /opt/axf/_claude/builds/store.json) runs once this PR is on main and /opt/axf runs it: main lacks the projection, so a flip now would freeze the file-reading console screens.",
+     "rev": 2,
      "createdAt": "2026-11-18T14:45:31.829Z",
-     "updatedAt": "2026-11-18T14:45:31.829Z"
+     "updatedAt": "2026-11-19T01:41:05.314Z"
     },
     {
      "id": "s4",
@@ -322132,7 +322141,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
