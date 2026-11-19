@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9282,
- "updatedAt": "2026-11-19T05:16:14.335Z",
+ "rev": 9283,
+ "updatedAt": "2026-11-19T05:16:41.907Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -323549,7 +323549,7 @@
    "pr": "#851",
    "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T05:15:14.719Z",
+   "updatedAt": "2026-11-19T05:16:16.620Z",
    "builtAt": "",
    "notes": [
     {
@@ -323661,7 +323661,17 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-19T05:16:16.620Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-postgres-part-b-plan-plan-studio-catalog--sully",
+     "phase": "Phase 1"
+    }
    },
    "failure": {
     "kind": "push-fail",
@@ -323769,7 +323779,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
