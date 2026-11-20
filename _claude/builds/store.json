@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9912,
- "updatedAt": "2026-11-20T09:09:06.994Z",
+ "rev": 9913,
+ "updatedAt": "2026-11-20T09:09:21.303Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s14",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T09:08:51.462Z",
+   "updatedAt": "2026-11-20T09:09:17.408Z",
    "builtAt": "",
    "notes": [
     {
@@ -341240,11 +341240,11 @@
      "done": true,
      "doneAt": "2026-11-20T09:07:59.078Z",
      "note": "",
-     "rev": 10,
+     "rev": 11,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T09:07:59.540Z",
-     "statusAt": "2026-11-20T09:05:14.555Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T09:09:17.458Z",
+     "statusAt": "2026-11-20T09:09:17.408Z",
+     "statusBy": "headless",
      "attempt": 3,
      "statusLog": [
       {
@@ -341309,9 +341309,16 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "axf-fable-full-audit-ui-overhaul-conso--s14--joey on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T09:09:17.408Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s14",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s14",
@@ -341683,7 +341690,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 568,
+   "rev": 569,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
