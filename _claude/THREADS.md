@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 22:17 UTC · `out-credits-account-failover-flag-dead` → pending, note (all) · watchdog
-- 2026-11-19 22:17 UTC · `orchestrator-master-pause-switch-stop` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `host-phone-connect-apk-axhub-browser` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `console-app-text-way-too-big-system-font` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `deep-links-to-plugin-s-settings-don-t` → pending, note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 01:59 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 02:03 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-20 02:03 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
+- 2026-11-20 02:04 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
+- 2026-11-20 02:04 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 
 ## Token passes (log)
 
