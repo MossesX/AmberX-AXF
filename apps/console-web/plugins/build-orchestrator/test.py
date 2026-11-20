@@ -67,7 +67,7 @@ with tempfile.TemporaryDirectory() as d:
     keep = {k: os.environ.get(k) for k in ("AXF_BUILDS_STORE", "AXF_BUILDS_EXPORT", "AXF_BUILDS_LIVE")}
     os.environ.update(AXF_BUILDS_STORE=str(store), AXF_BUILDS_EXPORT="0", AXF_BUILDS_LIVE="0")
     try:
-        srv._table_cache.clear()
+        srv.readcache.invalidate("build-orchestrator:table:")
         t = srv.status_table()
         rows = {r["id"]: r for r in t.get("rows", [])}
         check(t["ok"] and set(rows) == {"t-build", "t-ci"}, f"GET /table: open builds only, landed and archived left out ({sorted(rows)})")
@@ -76,12 +76,54 @@ with tempfile.TemporaryDirectory() as d:
         check("t-landed" in [r["id"] for r in srv.status_table(landed=True)["rows"]], "GET /table?landed=1: landed builds too")
         check(srv.status_table(since=7) == {"ok": True, "unchanged": True, "rev": 7}, "since=<rev> at the same rev: nothing new")
     finally:
-        srv._table_cache.clear()
+        srv.readcache.invalidate("build-orchestrator:table:")
         for k, v in keep.items():
             if v is None:
                 os.environ.pop(k, None)
             else:
                 os.environ[k] = v
+
+# ---- a node CLI that hangs (audit F2): one process for every concurrent reader, a 503 with the reason, never a 500
+import subprocess  # noqa: E402
+import threading  # noqa: E402
+real_run, calls = srv.subprocess.run, []
+
+
+def slow_timeout(cmd, **kw):  # noqa: ANN001, ANN003, ANN201
+    calls.append(cmd)
+    time.sleep(0.3)
+    raise subprocess.TimeoutExpired(cmd, kw.get("timeout"))
+
+
+srv.subprocess.run = slow_timeout
+try:
+    srv.readcache.invalidate("build-orchestrator:")
+    codes: list[int] = []
+
+    def read() -> None:
+        try:
+            srv.status_table()
+            codes.append(200)
+        except srv.HTTPException as e:
+            codes.append(e.status_code)
+
+    ts = [threading.Thread(target=read) for _ in range(6)]
+    for x in ts:
+        x.start()
+    for x in ts:
+        x.join()
+    check(len(calls) == 1, f"six concurrent table reads on a cache miss start one node process ({len(calls)})")
+    check(codes == [503] * 6, f"a CLI timeout answers 503 with the reason, not a 500 ({codes})")
+    srv.readcache.invalidate("build-orchestrator:")
+    try:
+        srv.priority_list()
+        check(False, "a priority list timeout is a 503")
+    except srv.HTTPException as e:
+        check(e.status_code == 503 and "longer than" in e.detail, "a priority list timeout is a 503 that says why")
+    check(srv._run("state").get("timeout") is True, "an orchestrator CLI timeout is an answer, not an exception")
+finally:
+    srv.subprocess.run = real_run
+    srv.readcache.invalidate("build-orchestrator:")
 
 # ---- the build pipeline routes (Nov 8 2026): the CLI is where the server looks, ids are checked, errors map to codes
 check(srv.PIPELINE_CLI.is_file(), "pipeline.mjs is where the server looks for it")
