@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:14 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
 - 2026-11-20 01:14 UTC · `notify-phone-when-queue-starts-building` note (all) · watchdog
 - 2026-11-20 01:14 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · watchdog
 - 2026-11-20 01:14 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 08:27 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
 - 2026-11-20 08:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 08:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 08:33 UTC · `fable-full-audit-ui-overhaul-conso` s10 done (all) · orchestrator
 
 ## Token passes (log)
 
