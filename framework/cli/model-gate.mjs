@@ -37,11 +37,28 @@ export function findBuild(store, { build = '', name = '', brief = '' } = {}) {
   return byId(build) ?? byId(bare) ?? byId(fromBrief) ?? byId(ofStep);
 }
 
-/** { ok, why, build?, phase? }: may this build start on `model` now? */
-export function launchCheck(b, model) {
+/** The Pipeline 2.0 step a launch is for: AXF_BUILD_STEP, else the <build>--<step> launch name. */
+export function stepOf(b, { step = '', name = '' } = {}) {
+  if (!b || b.flow !== 'pipeline-2') return null;
+  const bare = String(name).replace(/^axf-/, '');
+  const id = step || (bare.startsWith(`${b.id}--`) ? bare.slice(b.id.length + 2).split('--')[0] : '');
+  return (b.steps ?? []).find((s) => s.id === id) ?? null;
+}
+
+/**
+ * { ok, why, build?, phase?, step? }: may this build start on `model` now? A Pipeline 2.0 step is pinned by its own
+ * `model` (the orchestrator assigns it; the watchdog raises it to Fable first, recorded on the build), so its launch is
+ * compared with that step, never with the build's first open phase (Nov 20 2026: a step raised to Fable was refused
+ * because phase 1 of the build was Opus).
+ */
+export function launchCheck(b, model, { step = null } = {}) {
   if (!b) return { ok: true, why: 'not an orchestrator build: nothing to compare' };
   const want = modelKey(model);
   if (!want) return { ok: true, why: `model "${model}" unknown to the policy: the launcher's own check decides` };
+  if (step) {
+    if (modelRank(want) > modelRank(step.model)) return { ok: false, build: b.id, step: step.id, why: `${b.id}/${step.id} is pinned to ${label(step.model)}; launching it on ${label(want)} is a model upgrade: raise the step first.` };
+    return { ok: true, build: b.id, step: step.id, why: `${b.id}/${step.id} runs on ${label(step.model)}; ${label(want)} is ${modelRank(want) < modelRank(step.model) ? 'a downgrade (fine)' : 'the same model'}` };
+  }
   const phases = stepPhases(b.steps);
   const p = phases.find((x) => b.steps.some((s) => x.stepIds.includes(s.id) && open(s)));
   if (!p) return { ok: true, why: `${b.id} has no open steps` };
@@ -94,7 +111,7 @@ async function main(argv) {
     loadUpgradePolicy();
     const briefFile = opt('brief'); const brief = briefFile && existsSync(briefFile) ? readFileSync(briefFile, 'utf8').slice(0, 64 * 1024) : '';
     const b = findBuild(loadStore(), { build: opt('build') || process.env.AXF_BUILD_ID || '', name: opt('name'), brief });
-    const r = launchCheck(b, opt('model') || process.env.AXF_MODEL || '');
+    const r = launchCheck(b, opt('model') || process.env.AXF_MODEL || '', { step: stepOf(b, { step: opt('step') || process.env.AXF_BUILD_STEP || '', name: opt('name') }) });
     console.log(json ? JSON.stringify(r) : `${r.ok ? 'ok' : 'refused'}: ${r.why}`);
     if (!r.ok) process.exitCode = 3;
     return;

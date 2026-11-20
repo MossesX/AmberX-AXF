@@ -355,6 +355,24 @@ def test_backup_verify_restore_prune():
         assert 8 <= len(older) <= 11 and all(k >= 'axf-data-20260816' for k in older)
 
 
+def test_backup_run_one_at_a_time():
+    """`backup.py run` while another run holds the lock stops at once (exit 0, nothing written) instead of a second dump."""
+    import fcntl
+    import io
+    from contextlib import redirect_stdout
+    import backup
+    with tempfile.TemporaryDirectory() as d:
+        out = Path(d) / 'backups'
+        out.mkdir()
+        with open(out / '.backup.lock', 'w') as held:
+            fcntl.flock(held, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                rc = backup.main(['run', '--data', str(Path(d) / 'data'), '--out', str(out), '--dsn', ''])
+        assert rc == 0 and json.loads(buf.getvalue())['skipped'], buf.getvalue()
+        assert not backup.backups(out) and not (out / 'last.json').exists(), 'the second run wrote nothing'
+
+
 def test_backup_routes():
     with Env() as c:
         os.environ['AXF_DATA_BACKUPS'] = str(Path(c.app.state.store.dir).parent / 'bk')

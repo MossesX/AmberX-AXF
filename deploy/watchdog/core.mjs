@@ -17,8 +17,12 @@
  *                                                                        retried on another account with usage left
  *   - a failed build or step under maxAttempts                         → retried forward (attempt N+1)
  *   - a build in a landing status (LANDER_OWNED)                       → the lander's: nudged with a lander tick only
- *   - a failed record at maxAttempts                                   → left failed, one give-up alert
+ *   - an Opus step failed in its slot at maxAttempts                   → raised to Fable once (the switch is noted on
+ *                                                                        the build) and relaunched as attempt N+1
+ *   - a failed record at maxAttempts                                   → left failed, one give-up alert; final: the
+ *                                                                        orchestrator never relaunches it (P2.sendable)
  */
+import { MAX_ATTEMPTS } from '../../framework/core/pipeline-status.mjs';
 
 export const SCHEMA = 'pipeline-watchdog@2';
 export const BY = 'watchdog';
@@ -52,7 +56,7 @@ export const STEP_BUDGET_MIN = Object.freeze({ pending: 30, 'pulling-main': 15, 
 
 export const DEFAULTS = Object.freeze({
   enabled: true,
-  maxAttempts: 5,      // attempts per build or step before the watchdog stops retrying and alerts
+  maxAttempts: MAX_ATTEMPTS, // attempts per build or step before the watchdog stops retrying and alerts (layer 1 reads it too)
   nudges: 2,           // re-runs of a stuck transition before it is marked failed
   nudgeEveryMin: 3,    // minutes between two nudges of the same stuck status
   retryAfterMin: 1,    // minutes a failed record stands before it is retried (lets layer 1 retry first)
@@ -137,7 +141,7 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
       if (!STEP_STATUSES.includes(s.status) || STEP_DONE.includes(s.status) || s.skip) continue;
       const key = stepName(b, s);
       const p = probes[key] ?? {};
-      if (s.status === FAILED) { out.push({ kind: 'step-failed', build: b.id, step: s.id, status: FAILED, failedFrom: s.failedFrom || '', attempt: attemptOf(s), account: s.account || '', tried: Array.isArray(s.tried) ? s.tried : [], minutes: Math.round((now - sinceOf(s)) / MIN) }); continue; }
+      if (s.status === FAILED) { out.push({ kind: 'step-failed', build: b.id, step: s.id, status: FAILED, failedFrom: s.failedFrom || '', attempt: attemptOf(s), model: s.model || '', account: s.account || '', tried: Array.isArray(s.tried) ? s.tried : [], minutes: Math.round((now - sinceOf(s)) / MIN) }); continue; }
       if (s.status === 'building') {
         const age = (now - sinceOf(s)) / MIN;
         if (p.logTail && LIMIT_RE.test(p.logTail)) { out.push({ kind: 'step-limit', build: b.id, step: s.id, status: s.status, cause: 'usage-limit', account: s.account || '', attempt: attemptOf(s), evidence: str((p.logTail.match(LIMIT_RE) || [''])[0], 120) }); continue; }
@@ -146,10 +150,16 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
         if (late > 0 && (p.logAgeMin == null || p.logAgeMin >= S.logIdleMin)) { out.push({ kind: 'step-hung', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), account: s.account || '', attempt: attemptOf(s), session: p.session || '' }); continue; }
         continue;
       }
-      // a step waiting for a slot is only late while its build is the active one (one active build at a time)
-      if (s.status === 'ready' && !isActive(b)) continue;
+      // a step waiting for a slot is only late while its build is the active one (one active build at a time); a
+      // pending step of a build that waits its turn (split) is not late either: main is pulled into it only once the
+      // build is active (Nov 20 2026: a waiting build's pending steps were failed and retried towards a give-up)
+      if ((s.status === 'ready' || s.status === 'pending') && !isActive(b)) continue;
+      // a completed step waits for its siblings: only the lander moves it on (in-pr), after build-complete. Never late
+      // before that (Nov 20 2026: finished steps were failed and given up on while the rest of the build still ran);
+      // late after it = the lander's, nudged only
+      if (s.status === 'completed' && !landerOwned(b)) continue;
       const late = over(s, S.budgets.step, now);
-      if (late > 0) out.push({ kind: 'step-stuck', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), attempt: attemptOf(s) });
+      if (late > 0) out.push({ kind: 'step-stuck', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), attempt: attemptOf(s), ...(s.status === 'completed' ? { lander: true } : {}) });
     }
     if (WAITING_BUILD.includes(b.status) && anyActive) continue;
     const late = over(b, S.budgets.build, now);
@@ -178,6 +188,7 @@ const keyOf = (i) => `${i.build}${i.step ? `/${i.step}` : ''}:${i.status}${i.fai
  *   fail-limit         a step hit a usage limit: account out, kill the session, fail; the retry picks another account
  *   fail-dead          a building step whose session is gone (or hung: the session is killed first)
  *   retry              a failed record goes back into failedFrom as attempt N+1 (a step gets `account` when it needs one)
+ *   escalate           an Opus step that died in its slot used up its attempts: raised to Fable, relaunched once more
  *   give-up            attempts used up: stays failed, alert Brett once (the only time this layer pages)
  *   wait               nothing yet (cooling down between nudges, or a retry not yet due)
  */
@@ -207,16 +218,27 @@ export function plan(issue, { memory = {}, settings = normSettings(), now = Date
       return { action: 'fail-dead', key: k, kill: true, why: `building ${issue.minutes} min past its budget with a silent log: session killed` };
     case 'build-failed':
     case 'step-failed': {
+      // a step failed after its session ended cleanly (failedFrom completed: older passes failed finished steps as
+      // "stuck"): its work is done, so it goes back to completed whatever its attempt count or alert
+      if (issue.kind === 'step-failed' && issue.failedFrom === 'completed') return { action: 'retry', key: k, attempt: issue.attempt + 1, to: 'completed', why: 'its session had ended cleanly: back to completed' };
       if (memory.alerted?.[k]) return { action: 'wait', key: k, why: 'gave up already (alerted)' };
       if (!issue.failedFrom) return { action: 'give-up', key: k, why: 'failed with no failedFrom: the watchdog cannot tell where to continue' };
-      if (issue.attempt >= S.maxAttempts) return { action: 'give-up', key: k, why: `attempt ${issue.attempt} of ${S.maxAttempts} failed at ${issue.failedFrom}` };
+      const inSlot = issue.kind === 'step-failed' && STEP_FLOW.indexOf(issue.failedFrom) >= STEP_FLOW.indexOf('ready') && STEP_FLOW.indexOf(issue.failedFrom) <= STEP_FLOW.indexOf('building');
+      if (issue.attempt >= S.maxAttempts) {
+        // the Fable path (Brett, Nov 4 2026: "If it needs Fable, set it to be Fable"): one more go on the stronger model
+        if (inSlot && issue.model && issue.model !== 'Fable') {
+          const acct = pickAccount(accounts, [issue.account, ...(issue.tried ?? [])]) || pickAccount(accounts, []);
+          if (acct) return { action: 'escalate', key: k, attempt: issue.attempt + 1, to: 'ready', account: acct, model: 'Fable', why: `attempt ${issue.attempt} of ${S.maxAttempts} failed on ${issue.model} at ${issue.failedFrom}: raised to Fable for one more go` };
+        }
+        return { action: 'give-up', key: k, why: `attempt ${issue.attempt} of ${S.maxAttempts} failed at ${issue.failedFrom}${issue.model === 'Fable' && inSlot ? ' (Fable included)' : ''}` };
+      }
       if (issue.minutes < S.retryAfterMin) return { action: 'wait', key: k, why: 'retry not due yet' };
       if (issue.kind === 'build-failed' && ACTIVE_BUILD.includes(issue.failedFrom)) {
         const other = (store?.builds ?? []).find((b) => live(b) && b.id !== issue.build && b.status !== FAILED && ACTIVE_BUILD.includes(b.status));
         if (other) return { action: 'wait', key: k, why: `${other.id} is the active build` };
       }
       const r = { action: 'retry', key: k, attempt: issue.attempt + 1, to: issue.failedFrom, why: `retry forward at ${issue.failedFrom}, attempt ${issue.attempt + 1}` };
-      if (issue.kind === 'step-failed' && STEP_FLOW.indexOf(issue.failedFrom) >= STEP_FLOW.indexOf('ready') && STEP_FLOW.indexOf(issue.failedFrom) <= STEP_FLOW.indexOf('building')) {
+      if (inSlot) {
         // a step that dies in its slot relaunches through `ready` (the orchestrator sends it to a slot on the pinned account)
         const tried = [issue.account, ...(issue.tried ?? [])];
         const acct = pickAccount(accounts, tried) || pickAccount(accounts, []);
@@ -250,6 +272,10 @@ export function applyDecision(store, issue, d, { now = Date.now() } = {}) {
     const extra = issue.step ? { tried: [...new Set([...(rec.tried ?? []), rec.account].filter(Boolean))].slice(-10) } : {};
     Object.assign(rec, stamp(rec, flow, FAILED, { at, why: d.why, failedFrom: rec.status, extra }));
     text = `Watchdog: ${what} failed at ${rec.failedFrom}, attempt ${attemptOf(rec)}: ${d.why}.`;
+  } else if (d.action === 'escalate' && issue.step) {
+    const from = rec.model || 'Opus';
+    Object.assign(rec, stamp({ ...rec, failedFrom: 'ready' }, flow, 'ready', { at, why: d.why, attempt: d.attempt, extra: { model: 'Fable', account: d.account, slot: undefined, tmux: undefined } }));
+    text = `Watchdog: step ${issue.step} raised ${from} → Fable after ${d.attempt - 1} failed attempts; relaunched at ready, attempt ${d.attempt} on ${d.account}.`;
   } else if (d.action === 'retry') {
     const to = issue.step ? retryTarget(rec.failedFrom) : rec.failedFrom;
     const fake = issue.step && to !== rec.failedFrom ? { ...rec, failedFrom: to } : rec;

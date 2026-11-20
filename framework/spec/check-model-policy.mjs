@@ -10,7 +10,7 @@ import { JOB_DEFAULTS, JOB_ENUMS, jobTypeErrors, normalizeJobType } from '../cor
 import { MODELS as STORE_MODELS } from '../plan/builds-store-core.mjs';
 import { suggestModel } from '../cli/plan.mjs';
 import * as SW from '../core/model-switch.mjs';
-import { audit, findBuild, launchCheck } from '../cli/model-gate.mjs';
+import { audit, findBuild, launchCheck, stepOf } from '../cli/model-gate.mjs';
 import { readUpgradePolicy } from '../cli/upgrade-policy.mjs';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -116,6 +116,17 @@ t('upgrade policy reader: setting value, default off, env can only make it stric
   assert.equal(readUpgradePolicy({ AXF_CLAUDE_SETTINGS_FILE: f, AXF_FABLE_UPGRADE_APPROVAL: '0' }).approvalRequired, true, 'the environment never turns it off');
   writeFileSync(f, JSON.stringify({ values: { [SW.UPGRADE_SETTING]: false } }));
   assert.equal(readUpgradePolicy({ AXF_CLAUDE_SETTINGS_FILE: f, AXF_FABLE_UPGRADE_APPROVAL: '1' }).approvalRequired, true, 'the environment may make it stricter');
+});
+
+t('pipeline-2 steps: a launch is judged by its own step (raised to Fable = Fable allowed), never by phase 1', () => {
+  const b = { id: 'pb', flow: 'pipeline-2', approvals: [], steps: [{ id: 's1', model: 'Opus', text: 'a' }, { id: 's8', model: 'Fable', text: 'b' }] };
+  assert.equal(stepOf(b, { name: 'pb--s8' })?.id, 's8', 'step from the <build>--<step> name');
+  assert.equal(stepOf(b, { step: 's1', name: 'pb--s8' })?.id, 's1', 'AXF_BUILD_STEP wins');
+  assert.equal(stepOf({ ...b, flow: '' }, { name: 'pb--s8' }), null, 'builds@1: no step pin');
+  assert.equal(launchCheck(b, 'fable', { step: stepOf(b, { name: 'pb--s8' }) }).ok, true, 's8 was raised to Fable: Fable is its own model');
+  assert.equal(launchCheck(b, 'fable', { step: stepOf(b, { name: 'pb--s1' }) }).ok, false, 's1 is Opus: Fable is an upgrade');
+  assert.equal(launchCheck(b, 'opus', { step: stepOf(b, { name: 'pb--s8' }) }).ok, true, 'a downgrade is fine');
+  assert.equal(findBuild({ builds: [b] }, { name: 'pb--s8' })?.id, 'pb', 'the build from the step name');
 });
 
 console.log(`model-policy: ${n} checks passed`);

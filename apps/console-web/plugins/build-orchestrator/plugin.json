@@ -644,6 +644,9 @@
             "parallelPerAccount": {
               "type": "integer"
             },
+            "stepsInParallel": {
+              "type": "integer"
+            },
             "maxRuns": {
               "type": "integer"
             },

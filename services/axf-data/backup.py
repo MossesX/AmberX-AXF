@@ -407,7 +407,17 @@ def main(argv: list[str] | None = None) -> int:
     if a.dsn:
         os.environ['AXF_DATA_DSN'] = a.dsn
     if a.cmd == 'run':
-        r = run(data, out, dsn=a.dsn, schema=a.schema)
+        # one backup at a time: a second pg_dump of the same database doubles the time every table is share-locked and
+        # the load (Nov 20 2026: the cron's run, a systems-check fix and a hand run overlapped). The later one stops.
+        import fcntl
+        out.mkdir(parents=True, exist_ok=True)
+        with open(out / '.backup.lock', 'w') as lk:
+            try:
+                fcntl.flock(lk, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            except BlockingIOError:
+                print(json.dumps({'ok': True, 'skipped': 'another backup is running (it writes last.json)'}))
+                return 0
+            r = run(data, out, dsn=a.dsn, schema=a.schema)
         print(json.dumps({k: v for k, v in r.items() if k != 'journalLines'}, indent=1))
         return 0 if r['verify']['ok'] else 2
     if a.cmd == 'verify':

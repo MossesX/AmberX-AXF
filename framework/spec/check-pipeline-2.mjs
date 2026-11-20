@@ -63,6 +63,12 @@ const fixture = {
     { title: 'T', planning: [{ text: 'Write the contract' }, { text: 'Button', minutes: 10 }, { text: 'Big', minutes: 90 }] },
     { title: 'Engine work', detail: 'Body only.' },
   ].map((b) => ({ build: b, steps: P.fallbackDesign(b) })),
+  maxAttempts: P.MAX_ATTEMPTS,
+  sendable: [
+    { status: 'ready' }, { status: 'ready', attempt: 9 }, { status: 'failed', failedFrom: 'building', attempt: 4 },
+    { status: 'failed', failedFrom: 'building', attempt: 5 }, { status: 'failed', failedFrom: 'sending', attempt: 21 },
+    { status: 'failed', failedFrom: 'pulling-main', attempt: 1 }, { status: 'building' }, { status: 'completed' },
+  ].map((step) => ({ step, sendable: P.sendable(step), gaveUp: P.gaveUp(step) })),
 };
 if (process.argv.includes('--write')) { writeFileSync(FIX, `${JSON.stringify(fixture, null, 1)}\n`); console.log(`wrote ${FIX}`); process.exit(0); }
 let fx = null; try { fx = JSON.parse(readFileSync(FIX, 'utf8')); } catch { ok(false, `fixture ${FIX} missing: run with --write`); }
@@ -76,6 +82,9 @@ eq(t({ status: 'building', attempt: 1 }, 'failed').rec.failedFrom, 'building', '
 eq(t({ status: 'failed', failedFrom: 'building', attempt: 1 }, 'building').rec.attempt, 2, 'a retry is attempt + 1');
 ok(!t({ status: 'failed', failedFrom: 'building', attempt: 1 }, 'ready').ok, 'a retry never goes back');
 eq(P.labelOf('failed', 3), 'failed, attempt 3', 'failed label');
+ok(P.gaveUp({ status: 'failed', failedFrom: 'building', attempt: 5 }) && !P.sendable({ status: 'failed', failedFrom: 'building', attempt: 5 }), 'a give-up is final: never sendable again');
+ok(P.sendable({ status: 'failed', failedFrom: 'building', attempt: 4 }) && P.sendable({ status: 'ready', attempt: 6 }), 'attempts left, or the watchdog moved it to ready: sendable');
+ok(!P.sendable({ status: 'failed', failedFrom: 'building', attempt: 3 }, 3), 'the cap is a setting');
 eq(P.labelOf('split'), 'Pending', 'split shows as Pending');
 const r1 = t({}, 'pending').rec; eq([r1.statusAt, r1.statusBy, r1.statusLog.length, r1.flow], ['T', 'x', 1, 'pipeline-2'], 'at / by / log / flow recorded');
 ok(t({ status: 'in-pr' }, 'failed', 'step').ok === false, 'in-pr is final for a step');
