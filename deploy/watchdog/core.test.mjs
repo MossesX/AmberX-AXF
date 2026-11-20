@@ -129,3 +129,25 @@ test('pickAccount: most usage left, never an excluded or limited one', () => {
   assert.equal(C.pickAccount([{ name: 'a', left: 0.9, usable: false }, { name: 'b', left: 0.1 }, { name: 'c', left: 0.5 }], ['c']), 'b');
   assert.equal(C.pickAccount([{ name: 'a', left: 0 }]), '');
 });
+
+test('an Opus step out of attempts is raised to Fable once; a Fable step out of attempts gives up for good', () => {
+  const accts = [{ name: 'a', left: 0.9 }, { name: 'b', left: 0.5 }];
+  const store = { builds: [{ id: 'b', status: 'building', statusAt: ago(30), notes: [], steps: [{ id: 's1', status: 'failed', failedFrom: 'building', attempt: C.DEFAULTS.maxAttempts, model: 'Opus', account: 'a', statusAt: ago(5) }] }] };
+  const [i] = C.findIssues(store, { now: NOW });
+  const d = C.plan(i, { now: NOW, accounts: accts, store });
+  assert.deepEqual([d.action, d.to, d.model, d.attempt, d.account], ['escalate', 'ready', 'Fable', C.DEFAULTS.maxAttempts + 1, 'b']);
+  const note = C.applyDecision(store, i, d, { now: NOW });
+  const st = store.builds[0].steps[0];
+  assert.deepEqual([st.status, st.model, st.attempt, st.account], ['ready', 'Fable', C.DEFAULTS.maxAttempts + 1, 'b']);
+  assert.match(note, /raised Opus → Fable/);
+  // the Fable go fails too: final give-up, alerted once, then left alone
+  Object.assign(st, { status: 'failed', failedFrom: 'building', statusAt: ago(5) });
+  const [j] = C.findIssues(store, { now: NOW });
+  const g = C.plan(j, { now: NOW, accounts: accts, store });
+  assert.equal(g.action, 'give-up'); assert.match(g.why, /Fable included/);
+  assert.equal(C.plan(j, { now: NOW, accounts: accts, memory: C.nextMemory({}, [j], [g], NOW) }).action, 'wait');
+  // a step that failed before its slot (pulling-main) is never escalated: plain give-up
+  const pm = { kind: 'step-failed', build: 'x', step: 's1', status: 'failed', failedFrom: 'pulling-main', attempt: 5, model: 'Opus', minutes: 5 };
+  assert.equal(C.plan(pm, { now: NOW, accounts: accts }).action, 'give-up');
+  assert.equal(C.DEFAULTS.maxAttempts, 5, 'the shared cap (pipeline-status MAX_ATTEMPTS)');
+});

@@ -401,6 +401,10 @@ Plan Studio Send fix (Nov 19 2026): plan-build@1 steps are planning only (no min
 cases `normPlan`, `designs` and `fallbacks`. **Kotlin twin deferred** for the same reason: no Android surface sends
 plans or splits builds.
 
+Final give-ups (Nov 20 2026, build ops-slots-watchdog-cleanup): the engine adds `MAX_ATTEMPTS` (5, the watchdog's
+maxAttempts default), `gaveUp` (failed at attempt >= max) and `sendable` (ready, or failed in a slot status with attempts
+left), with fixture cases `maxAttempts` and `sendable`. **Kotlin twin deferred**: no Android surface dispatches steps.
+
 ## Deferred: status-table@1 (Nov 19 2026)
 
 Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules in
