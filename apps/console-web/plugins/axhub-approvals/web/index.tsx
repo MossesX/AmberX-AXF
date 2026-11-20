@@ -29,5 +29,5 @@ export const plugin: AxfWebLibrary = {
     'axhub-approval': { title: 'Request', icon: 'shield', keywords: ["request", "approval"], render: () => <ApprovalDetail /> },
     'axhub-approvals-log': { title: 'Approvals log', icon: 'list', keywords: ["log", "history", "auto-approve"], render: () => <ApprovalLog /> },
   },
-  nav: { label: 'axHub', items: [{ id: 'axhub-approvals', label: 'Approvals', icon: 'shield', view: 'axhub-approvals' }, { id: 'axhub-approvals-log', label: 'Approvals log', icon: 'list', view: 'axhub-approvals-log' }] },
+  nav: { label: 'System', items: [{ id: 'axhub-approvals', label: 'Approvals', icon: 'shield', view: 'axhub-approvals' }, { id: 'axhub-approvals-log', label: 'Approvals log', icon: 'list', view: 'axhub-approvals-log' }] },
 };

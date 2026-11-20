@@ -20,5 +20,5 @@ export const plugin: AxfWebLibrary = {
   views: {
     'axhub-apps': { title: 'Apps', icon: 'download', keywords: ["apk", "download", "catalog"], render: () => <Apps /> },
   },
-  nav: { label: 'axHub', items: [{ id: 'axhub-apps', label: 'Apps', icon: 'download', view: 'axhub-apps' }] },
+  nav: { label: 'System', items: [{ id: 'axhub-apps', label: 'Apps', icon: 'download', view: 'axhub-apps' }] },
 };
