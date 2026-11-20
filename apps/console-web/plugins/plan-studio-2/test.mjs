@@ -234,8 +234,27 @@ await t('CLI: empty store, add / say / find / build / undo / export / clear; the
   assert.throws(() => cli('build', 'Launch', '--id', 'launch'), /already a build/);
   assert.throws(() => cli('build', 'Launch', '--id', 'launch-again'), /already sent as launch/, 'no second build while the first is pending or active');
   const del = cliJson('delete', 'Deploy'); assert.equal(del.removed, 1);
+  // the backup: every delete is one line in deleted.jsonl with the item and everything under it
+  const kept1 = readFileSync(join(dir, 'deleted.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)).at(-1);
+  assert.equal(del.backup, 'deleted.jsonl'); assert.equal(kept1.id, del.trashId); assert.equal(kept1.items[0].title, 'Deploy'); assert.equal(kept1.items[0].model, 'Opus');
+  // find <id> answers whether an item is still there (ids were never searched, so a kept item read as gone)
+  assert.equal(cliJson('find', del.item.id).hits.length, 0, 'a deleted item is not found by its id');
+  const kept = cliJson('show', 'Launch').item.id; assert.equal(cliJson('find', kept).hits[0].id, kept, 'a live item is found by its id');
+  // remove = delete, for any kind, with the branch; several at once by id; a wrong id deletes nothing
+  cli('add', 'section', 'Scratch', '--in', 'Launch'); const note = cliJson('add', 'note', 'Old idea', '--in', 'Scratch').item.id;
+  const stepId = cliJson('add', 'step', 'Stale gate', '--in', 'Launch').item.id; const scratch = cliJson('show', 'Scratch').item.id;
+  const before = JSON.parse(readFileSync(join(dir, 'tree.json'), 'utf8')).items.length;
+  assert.throws(() => cli('remove', stepId, 'no-such-id'), /nothing was deleted/);
+  assert.throws(() => cli('remove'), /usage/);
+  assert.equal(JSON.parse(readFileSync(join(dir, 'tree.json'), 'utf8')).items.length, before, 'a refused remove changes nothing');
+  const many = cliJson('remove', stepId, scratch, note); assert.deepEqual(many.deleted.map((d) => [d.id, d.removed]), [[stepId, 1], [scratch, 2]], 'a child of a removed branch goes with it, once');
+  for (const id of [stepId, scratch, note]) assert.equal(cliJson('find', id).hits.length, 0);
+  assert.equal(cliJson('undo', many.deleted[1].trashId).item.id, scratch); assert.equal(cliJson('find', note).hits[0].id, note, 'undo brings the whole branch back');
+  const plan2 = cliJson('add', 'plan', 'Throwaway').item.id; cli('add', 'step', 'One', '--in', plan2);
+  assert.equal(cliJson('rm', plan2).removed, 2, 'a whole plan goes with its steps');
+  cli('remove', scratch);
   assert.match(cli('trash'), /Deploy/);
-  assert.equal(cliJson('undo').item.title, 'Deploy');
+  assert.equal(cliJson('undo', del.trashId).item.title, 'Deploy');
   assert.match(cli('export', 'Launch'), /^# Launch/);
   assert.equal(JSON.parse(cli('export', '--json')).$axf, 'plan-tree-export@1');
   assert.equal(cliJson('api', JSON.stringify({ op: 'state' })).count, 3);
