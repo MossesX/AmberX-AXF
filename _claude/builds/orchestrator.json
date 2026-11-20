@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T18:25:26.690Z",
+ "updatedAt": "2026-11-20T18:53:04.820Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2038,7 +2038,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "863",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T18:18:52.818Z",
+   "updatedAt": "2026-11-20T18:49:41.693Z",
    "builtAt": "",
    "notes": [
     {
