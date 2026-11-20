@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10004,
- "updatedAt": "2026-11-20T12:15:11.717Z",
+ "rev": 10005,
+ "updatedAt": "2026-11-20T12:17:31.998Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,14 +337237,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "running-ci",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "860",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T12:12:50.726Z",
+   "updatedAt": "2026-11-20T12:17:27.945Z",
    "builtAt": "",
    "notes": [
     {
@@ -338971,6 +338971,11 @@
      "text": "Watchdog: step s18 stuck at completed (64 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T12:13:02.033Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 4: CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)",
+     "at": "2026-11-20T12:17:27.945Z",
+     "by": "lander"
     }
    ],
    "approvals": [
@@ -339052,9 +339057,9 @@
     "why": "CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)",
     "head": "8c53ac893febf1213846ba356b647251d8d06226",
     "pr": 860,
-    "at": "2026-11-20T12:04:03.211Z",
-    "retry": "rerun",
-    "notBefore": "2026-11-20T12:12:03.211Z",
+    "at": "2026-11-20T12:17:24.574Z",
+    "retry": "split",
+    "notBefore": "2026-11-20T12:33:24.574Z",
     "failing": [
      "Web Dev Console (React/TS) + Python API"
     ],
@@ -342708,7 +342713,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 659,
+   "rev": 660,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342719,9 +342724,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T12:12:50.726Z",
+   "statusAt": "2026-11-20T12:17:27.945Z",
    "statusBy": "lander",
-   "attempt": 3,
+   "attempt": 4,
+   "failedFrom": "running-ci",
    "statusLog": [
     {
      "status": "pending",
@@ -342832,6 +342838,13 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: attempt 3: re-running the failed CI jobs on 8c53ac893 (flaky check)"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-20T12:17:27.945Z",
+     "by": "lander",
+     "attempt": 4,
+     "why": "Lander: failed in running-ci, attempt 4: CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)"
     }
    ]
   },
@@ -345973,39 +345986,45 @@
     },
     {
      "text": "Split by Fable into 7 steps (200 min, 7 Fable).",
-     "at": "2026-11-20T12:08:57.395Z",
-     "by": "orchestrator"
+     "at": "2026-11-20T12:08:57.395Z"
     },
     {
      "text": "Split by Fable into 8 steps (220 min, 8 Fable).",
-     "at": "2026-11-20T12:09:22.575Z",
-     "by": "orchestrator"
+     "at": "2026-11-20T12:09:22.575Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "planning": [
-    {
-     "text": "Detailed CI failure report every time CI fails: which job, which step, the real error lines, and the likely cause, shown on the build and in the auto-lander",
-     "model": "Fable"
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-20T12:15:46.265Z",
+     "why": "subscription account hulu0241"
     },
-    {
-     "text": "Shallow/sparse checkout in every CI job - checkout alone took 11 minutes on the ~840 MB repo",
-     "model": "Fable"
-    },
-    {
-     "text": "Every CI job runs only when its own paths change, including manual workflow_dispatch runs; a console-only change never builds Android",
-     "model": "Fable"
-    },
-    {
-     "text": "Cache Gradle, npm and pip between CI runs; app builds reuse prebuilt framework modules instead of recompiling the framework",
-     "model": "Fable"
-    },
-    {
-     "text": "Verify in a real run that today's fixes hold: 4 steps in parallel, watchdog give-up is final, act step uses Pipeline 2.0 statuses",
-     "model": "Fable"
-    }
-   ],
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -346260,7 +346279,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

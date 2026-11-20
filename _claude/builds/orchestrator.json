@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T12:15:11.717Z",
+ "updatedAt": "2026-11-20T12:17:31.998Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -76,13 +76,11 @@
     },
     {
      "text": "Split by Fable into 7 steps (200 min, 7 Fable).",
-     "at": "2026-11-20T12:08:57.395Z",
-     "by": "orchestrator"
+     "at": "2026-11-20T12:08:57.395Z"
     },
     {
      "text": "Split by Fable into 8 steps (220 min, 8 Fable).",
-     "at": "2026-11-20T12:09:22.575Z",
-     "by": "orchestrator"
+     "at": "2026-11-20T12:09:22.575Z"
     }
    ],
    "approvals": [],
@@ -1932,7 +1930,7 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "running-ci",
+   "status": "failed",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -1940,7 +1938,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "860",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T12:12:50.726Z",
+   "updatedAt": "2026-11-20T12:17:27.945Z",
    "builtAt": "",
    "notes": [
     {
@@ -3667,6 +3665,11 @@
      "text": "Watchdog: step s18 stuck at completed (64 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T12:13:02.033Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 4: CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)",
+     "at": "2026-11-20T12:17:27.945Z",
+     "by": "lander"
     }
    ],
    "approvals": [
