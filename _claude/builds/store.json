@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10169,
- "updatedAt": "2026-11-20T23:00:20.690Z",
+ "rev": 10170,
+ "updatedAt": "2026-11-20T23:06:24.389Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344794,8 +344794,7 @@
     },
     {
      "text": "Watchdog: step s5 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-20T23:00:02.234Z",
-     "by": "watchdog"
+     "at": "2026-11-20T23:00:02.234Z"
     }
    ],
    "approvals": [],
@@ -344836,10 +344835,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-20T19:55:57.622Z",
+     "at": "2026-11-20T23:05:48.985Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -345232,7 +345231,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
