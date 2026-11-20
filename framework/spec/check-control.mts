@@ -30,7 +30,7 @@ const spec = read('framework/schemas/asset-types.json');
 eq([...CONTROL_OPS], ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'], 'seven ops');
 eq(CONTROL_EFFECT.remove, 'destructive', 'remove is destructive');
 eq(CONTROL_EFFECT.act, 'write', 'act writes');
-ok(CONTROL_TARGET_IDS.length === 27, `27 targets (${CONTROL_TARGET_IDS.length})`);
+ok(CONTROL_TARGET_IDS.length === 28, `28 targets (${CONTROL_TARGET_IDS.length})`);
 eq(CONTROL_TARGET_IDS.slice(0, 13), ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.look', 'tokens.custom', 'tokens.slots', 'amberx.items', 'amberx.lists', 'planner.plans', 'planner.builds'], 'targets are append-only');
 for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
   ok(/^(tokens|amberx|planner|console|pass|plugins)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
@@ -46,10 +46,14 @@ eq(controlPermission('plugins.reads', 'act', 'read'), 'control.plugins.read', 'a
 eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write', 'a plugin command writes (a deleting one asks for more)');
 eq(CONTROL_TARGET_IDS.slice(20, 22), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console and pass ones (append-only)');
 eq(CONTROL_TARGET_IDS.slice(22, 23), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
-eq(CONTROL_TARGET_IDS.slice(26, 27), ['console.toolbars'], 'page toolbars come last (append-only, build rebuild-every-toolbar-page-specific)');
+eq(CONTROL_TARGET_IDS.slice(26, 27), ['console.toolbars'], 'page toolbars come after plugin settings (append-only, build rebuild-every-toolbar-page-specific)');
 eq(CONTROL_TARGET_IDS.slice(23, 24), ['console.control'], 'console control by address comes after the nav tokens (append-only, build full-api-and-voice-control)');
 eq(CONTROL_TARGET_IDS.slice(24, 25), ['tokens.instances'], 'per-instance component tokens after console control (append-only, build own-token-sets-for-grids-and-tab-groups)');
 eq(CONTROL_TARGET_IDS.slice(25, 26), ['console.pluginsettings'], 'plugin settings (sub-tab and gear) come after the console control target (append-only, build every-plugin-screen-gets-a-settings-gear)');
+eq(CONTROL_TARGET_IDS.slice(27, 28), ['console.screen'], 'the console screen target comes after the page toolbars (append-only, build voice-console-control)');
+eq(controlPermission('console.screen', 'act', 'map'), 'control.console.read', 'reading the element map only reads');
+eq(controlPermission('console.screen', 'act', 'click'), 'control.console.write', 'a click by words writes');
+eq(controlPermission('console.screen', 'act', 'scroll'), 'control.console.navigate', 'scrolling the screen only navigates');
 eq(controlPermission('console.pluginsettings', 'act', 'open'), 'control.console.navigate', 'opening a plugin\'s settings only navigates');
 eq(controlPermission('console.pluginsettings', 'act', 'set'), 'control.console.write', 'setting a plugin setting writes');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');

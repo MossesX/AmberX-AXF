@@ -334,6 +334,18 @@ class PluginLoader {
   markInstalled() {
     for (const f of this.installed) { const w = this.waiters.get(f); if (w) { this.waiters.delete(f); for (const r of w) r(); } }
   }
+  /**
+   * Load a plugin's chunk and wait until the shell installed it for real (its views render, its actions answer).
+   * → true when it had to be loaded, false when it was installed already. Gives up waiting after `timeoutMs`.
+   */
+  async ensure(folder: string, timeoutMs = 8000): Promise<boolean> {
+    if (this.live.has(folder) && this.installed.has(folder)) return false;
+    if (!importers.has(folder)) return false;
+    await this.request(folder);
+    if (this.errors.has(folder)) return false;
+    await Promise.race([this.whenInstalled(folder), new Promise<void>((r) => setTimeout(r, timeoutMs))]);
+    return true;
+  }
   private whenInstalled(folder: string): Promise<void> {
     if (this.live.has(folder) && this.installed.has(folder)) return Promise.resolve();
     return new Promise((res) => { const list = this.waiters.get(folder) ?? []; list.push(res); this.waiters.set(folder, list); this.bump(); });

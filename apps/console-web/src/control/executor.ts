@@ -9,7 +9,9 @@
  * `window.axfConsoleControl(cmd)` (the e2e tests and the devtools console).
  *
  * What the registry does not know yet (a tab of a screen that is not open, a row of a grid on another screen) is
- * reached by opening the screen the static inventory names for the address, then asking again.
+ * reached by opening the screen the static inventory names for the address, then asking again. A screen that belongs
+ * to a plugin whose chunk has not loaded yet is loaded first (the shell registers how with `setViewLoader`), so its
+ * tabs, grids and buttons can be addressed the moment it is asked for, not only after someone opened it once.
  */
 import type { AxfRuntime } from '../axf/core';
 import {
@@ -39,6 +41,16 @@ export interface ControlStateSnapshot {
 export type ControlAnswer = ConsoleControlResult & { state: ControlStateSnapshot };
 
 let focused: { address: string; view: string } | null = null;
+
+/**
+ * Loads the code of a view that is not installed yet (a lazily loaded plugin's screen) and resolves once it is.
+ * → true when something was loaded, false when the view needs nothing (or cannot be loaded). Set by the shell.
+ */
+type ViewLoader = (view: string) => Promise<boolean>;
+let viewLoader: ViewLoader | null = null;
+export function setViewLoader(fn: ViewLoader | null): void { viewLoader = fn; }
+/** How long a freshly loaded view gets to render its targets. */
+const LOADED_VIEW_WAITS_MS = [100, 250, 500, 900, 1500];
 
 const nextFrame = () => new Promise<void>((r) => (typeof requestAnimationFrame === 'function' ? requestAnimationFrame(() => r()) : setTimeout(r, 16)));
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
@@ -89,14 +101,25 @@ export async function executeControl(rt: AxfRuntime, raw: unknown): Promise<Cont
       for (const ms of [150, 400, 900]) { await nextFrame(); await wait(ms); res = await reg.run(cmd); if (res.ok || res.code !== CONSOLE_CONTROL_WIRE.NOT_FOUND) break; }
     }
   }
-  // not rendered yet: open the screen the inventory names, let it render, ask again (once)
+  // not rendered yet: open the screen the inventory names (loading its plugin's chunk first when it is not in yet),
+  // let it render, ask again
   if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND && cmd.address && OPENS_SCREEN.has(cmd.verb)) {
     const view = inventoryViewOf(cmd.address);
-    if (view && view !== rt.getState().view) {
-      rt.navigate(view);
-      await nextFrame(); await nextFrame(); await wait(150);
-      res = await reg.run(cmd);
-      if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND) { await wait(400); res = await reg.run(cmd); }
+    if (view) {
+      let loaded = false;
+      try { loaded = viewLoader ? await viewLoader(view) : false; } catch { /* the retry answers */ }
+      const moved = view !== rt.getState().view;
+      if (moved) rt.navigate(view);
+      if (moved || loaded) {
+        await nextFrame(); await nextFrame(); await wait(150);
+        res = await reg.run(cmd);
+        if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND) { await wait(400); res = await reg.run(cmd); }
+        // a chunk that just arrived still has to mount its screen and register its tabs, grids and buttons
+        for (const ms of loaded ? LOADED_VIEW_WAITS_MS : []) {
+          if (res.ok || res.code !== CONSOLE_CONTROL_WIRE.NOT_FOUND) break;
+          await wait(ms); res = await reg.run(cmd);
+        }
+      }
     }
   }
   // a screen, tab or panel has no focus of its own: bringing it into focus is opening it (with the highlight)

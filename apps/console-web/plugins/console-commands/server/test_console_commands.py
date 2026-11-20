@@ -30,9 +30,11 @@ import plugin_services  # noqa: E402
 
 WOKEN: list[tuple[str, str]] = []
 
-spec = importlib.util.spec_from_file_location("console_commands_server", HERE / "__init__.py")
+# loaded as the console loads it (main.py): a package, so the server part's own modules import
+spec = importlib.util.spec_from_file_location("console_commands_server", HERE / "__init__.py", submodule_search_locations=[str(HERE)])
 cc = importlib.util.module_from_spec(spec)
 assert spec and spec.loader
+sys.modules["console_commands_server"] = cc
 spec.loader.exec_module(cc)
 cc.WAKE_AFTER_S = 0.3
 cc.WAKER = lambda url, browser: (WOKEN.append((url, browser)), {"ok": True, "message": "AmberX is opening the console"})[1]
@@ -220,7 +222,7 @@ eq(j["delivery"]["how"], "live", "a live console: delivery live")
 
 # ======================================================================== console wake: no console connected
 client.post("/api/console/bye", json={"client": "desk-0001"})
-eq(client.get("/api/console/settings").json()["settings"], {"wake": True, "ttlS": 120, "browser": "chrome"}, "default settings: wake on, 2 minutes, Chrome")
+eq(client.get("/api/console/settings").json()["settings"], {"wake": True, "ttlS": 120, "browser": "chrome", "describeModel": "claude-opus-5-5"}, "default settings: wake on, 2 minutes, Chrome, Opus describes screenshots")
 
 # a wrong name answers at once (checked against the last catalog the console sent), nothing queued, nobody woken
 r = client.post("/api/console/open", json={"screen": "spreadsheet"})
@@ -265,7 +267,7 @@ time.sleep(0.4)
 eq(len(WOKEN), 1, "no wake when a console came back in time")
 
 # wake off: queued, nobody woken; the call gives up waiting with queued (still delivered later)
-eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "ttlS": 30, "browser": "default"}, "settings saved, TTL clamped to 30 s")
+eq(client.post("/api/console/settings", json={"wake": False, "ttlS": 5, "browser": "default"}).json()["settings"], {"wake": False, "ttlS": 30, "browser": "default", "describeModel": "claude-opus-5-5"}, "settings saved, TTL clamped to 30 s")
 eq(client.post("/api/console/settings", json={"wake": True}, headers={"x-user": "sam"}).status_code, 403, "only the owner changes them")
 client.post("/api/console/bye", json={"client": "woke-0001"})
 r = cc.run({"op": "act", "target": "console.screens", "path": "plan studio", "action": "open"}, ["*"], "Amber", cc.OWNER, wait=cc.WAKE_AFTER_S + 0.5)
@@ -599,6 +601,152 @@ os.utime(old_f, (time.time() - cc.SHOT_TTL_S - 5,) * 2)
 eq(cc.sweep_shots(), 1, "an upload nobody read is swept after the TTL")
 ok(not old_f.exists(), "and is gone")
 ok(oct(cc.SHOT_DIR.stat().st_mode & 0o777) == "0o700", "the temp folder is private to the server")
+
+
+# ---- voice (build voice-console-control, Nov 20 2026): the element map in the ack, the screenshot in words, driving the screen
+ELEMENTS = [{"n": 1, "label": "Queue", "kind": "tab", "box": {"x": 10, "y": 10, "w": 80, "h": 30}, "visible": True},
+            {"n": 2, "label": "Retry", "kind": "button", "box": {"x": 300, "y": 90, "w": 70, "h": 28}, "visible": True}]
+drive_got: list[dict] = []
+drive_mode: dict = {}
+
+
+def voice_console(cid: str) -> None:
+    """A console tab that answers screenshots with the element map and runs console-screen commands."""
+    def loop() -> None:
+        with client.stream("GET", f"/api/console/stream?client={cid}") as st:
+            for line in st.iter_lines():
+                if not line.startswith("data: "):
+                    continue
+                m = json.loads(line[6:])
+                if m.get("$axf") == "console-hello@1":
+                    client.post("/api/console/hello", json={"client": cid, "catalog": CATALOG})
+                    continue
+                drive_got.append(m)
+                if m["op"] == "screenshot":
+                    client.post(f"/api/console/shot?client={cid}&id={m['id']}", content=drive_mode.get("png", PNG), headers={"content-type": "image/png"})
+                    client.post("/api/console/ack", json={"client": cid, "id": m["id"], "ok": True, "message": "captured the screen",
+                                                          "result": {"shot": True, "width": 800, "height": 600, "state": STATE, "elements": ELEMENTS, "viewport": {"width": 800, "height": 600, "scale": 1}}})
+                elif m["op"] == "drive":
+                    c = m["command"]
+                    if drive_mode.get("slow"):
+                        client.post("/api/console/seen", json={"client": cid, "working": m["id"]})
+                        time.sleep(drive_mode["slow"])
+                    if c.get("target") == "retry all":
+                        res = {"$axf": "console-screen@1", "ok": False, "action": c["action"], "code": "ambiguous", "message": '"retry all" matches 2 elements: say which by number', "candidates": ELEMENTS, "elements": ELEMENTS}
+                    elif c.get("target") == "Stop all" and not c.get("confirm"):
+                        res = {"$axf": "console-screen@1", "ok": False, "action": c["action"], "code": "confirmation_required", "message": '"Stop all" deletes, stops or merges something', "elements": ELEMENTS}
+                    else:
+                        res = {"$axf": "console-screen@1", "ok": True, "action": c["action"], "did": f'{c["action"]} {c.get("target") or c.get("path")}', "elements": ELEMENTS, "state": STATE}
+                    client.post("/api/console/ack", json={"client": cid, "id": m["id"], "ok": res["ok"], "message": res.get("did") or res.get("message"), "result": res})
+    threading.Thread(target=loop, daemon=True).start()
+
+
+with cc._lock:
+    for c in cc._clients.values():
+        c["lastSeen"] = 0.0
+client.post("/api/console/hello", json={"client": "voice-0001", "catalog": CATALOG, "used": True})
+voice_console("voice-0001")
+wait_for(lambda: stream_open("voice-0001"))
+described: list[tuple] = []
+
+
+def fake_model(png_b64: str, system: str, prompt: str, model: str, profile: str) -> dict:
+    described.append((png_b64, system, prompt, model, profile))
+    if drive_mode.get("model_sleep"):
+        time.sleep(drive_mode["model_sleep"])
+    if drive_mode.get("model_error"):
+        raise RuntimeError(drive_mode["model_error"])
+    return {"text": "The Settings screen. A dialog titled Asset JSON is open. Two buttons: Queue and Retry.", "usage": {"input": 2050, "output": 180}, "model": model, "profile": "anthropic-claude"}
+
+
+cc.describer.set_model(fake_model)
+cc.describer.clear_cache()
+j = client.post("/api/console/screenshot", json={}).json()
+eq(j.get("elements"), ELEMENTS, "a screenshot answer carries the console's numbered element map")
+ok("description" not in j and not described, "no description unless asked (REST): the model is not called")
+j = client.post("/api/console/screenshot", json={"describe": True}).json()
+eq(j.get("description"), "The Settings screen. A dialog titled Asset JSON is open. Two buttons: Queue and Retry.", "describe: the screenshot in words")
+eq((j["describedBy"]["model"], j["describedBy"]["profile"], j["describedBy"]["usage"], j["describedBy"]["cached"]), ("claude-opus-5-5", "anthropic-claude", {"input": 2050, "output": 180}, False), "with the model, the profile and the tokens it cost")
+ok(j["images"] and j["elements"] == ELEMENTS and j["state"] == STATE, "the image, the map and the state are kept")
+eq(base64.b64decode(described[-1][0]), PNG, "the model gets the PNG the console uploaded")
+ok("Never guess" in described[-1][1] and "screen: Settings" in described[-1][2] and "open dialog: asset-json" in described[-1][2], "it is told to describe literally, and what the console says about itself")
+j2 = client.post("/api/console/screenshot", json={"describe": True}).json()
+ok(len(described) == 1 and j2["describedBy"]["cached"] is True and j2["description"] == j["description"], "the same image again within 2 minutes: the cached description, no model call")
+j = client.post("/api/console/screenshot", json={"describe": True, "question": "Which build   failed?"}).json()
+ok(len(described) == 2 and "answer this from what is visible only" in described[-1][2] and "Which build failed?" in described[-1][2], "a question is passed on (and is its own cache entry)")
+drive_mode["png"] = PNG + b"\x01"
+cc.describer.DESCRIBE_TIMEOUT_S = 0.3
+drive_mode["model_sleep"] = 1.2
+t0 = time.monotonic()
+j = client.post("/api/console/screenshot", json={"describe": True}).json()
+ok(j["description"] == "" and "took longer" in j["describeNote"] and j["images"] and j["elements"] == ELEMENTS and j["status"] == "delivered", "a description that takes too long is skipped with a note: image and map still come")
+ok(time.monotonic() - t0 < 1.1, "and the answer does not wait for the model")
+time.sleep(1.2)
+drive_mode["model_sleep"] = 0
+j = client.post("/api/console/screenshot", json={"describe": True}).json()
+ok(j["describedBy"].get("cached") is True and j["description"], "the late description is kept for the next ask")
+cc.describer.DESCRIBE_TIMEOUT_S = 30.0
+drive_mode["png"] = PNG + b"\x02"
+drive_mode["model_error"] = "HTTP 529: overloaded"
+j = client.post("/api/console/screenshot", json={"describe": True}).json()
+ok(j["description"] == "" and "HTTP 529: overloaded" in j["describeNote"] and j["images"], "a model failure is a note, never a failed screenshot")
+drive_mode["model_error"] = ""
+cc.describer.set_model(None)
+drive_mode["png"] = PNG + b"\x03"
+j = client.post("/api/console/screenshot", json={"describe": True}).json()
+ok(j["description"] == "" and "axf.llm@1" in j["describeNote"], "no model route installed: a note that says so")
+
+
+class FakeLlm:
+    calls: list[dict] = []
+
+    def profiles(self) -> list[dict]:
+        return [{"id": "claude-code-subscription", "kind": "claude-code", "keyReady": True}, {"id": "anthropic-claude", "kind": "anthropic", "keyReady": True}]
+
+    def complete(self, messages: list[dict], system: str | None = None, profile: str | None = None, model: str | None = None, tools: object = None, params: dict | None = None) -> dict:
+        FakeLlm.calls.append({"messages": messages, "system": system, "profile": profile, "model": model, "params": params})
+        return {"text": "A screen.", "usage": {"input": 10, "output": 3}, "profile": profile, "model": model}
+
+
+plugin_services.provide("axf.llm@1", FakeLlm(), folder="test-llm")
+j = client.post("/api/console/screenshot", json={"describe": True}).json()
+call = FakeLlm.calls[-1]
+eq((j["description"], call["profile"], call["model"]), ("A screen.", "anthropic-claude", "claude-opus-5-5"), "the console's own model route: the Anthropic profile (the CLI profile takes no images), Opus")
+ok(call["messages"][0]["images"][0]["media_type"] == "image/png" and base64.b64decode(call["messages"][0]["images"][0]["data"]) == PNG + b"\x03", "the image goes as a base64 PNG block")
+eq(cc.clean_settings({"describeModel": "claude-haiku-5-5"})["describeModel"], "claude-opus-5-5", "only Opus or Fable describe")
+eq(cc.clean_settings({"describeModel": "claude-fable-5-2"})["describeModel"], "claude-fable-5-2", "Fable can be picked")
+cc.describer.set_model(fake_model)
+
+# driving the screen: control@1 console.screen → op drive, answered by the console
+j = client.post("/api/console/drive", json={"action": "click", "target": "Retry"}).json()
+eq((drive_got[-1]["op"], drive_got[-1]["command"]), ("drive", {"$axf": "console-screen@1", "action": "click", "target": "Retry"}), "a click reaches the console as a console-screen command")
+ok(j["ok"] and j["data"]["did"] == "click Retry" and j["data"]["elements"] == ELEMENTS and j["data"]["client"] == "voice-0001", "the answer says what it did and carries the new map")
+r = client.post("/api/console/drive", json={"action": "click", "target": "retry all"})
+eq((r.status_code, r.json()["code"], len(r.json()["candidates"])), (409, "ambiguous", 2), "several matches: the candidates, nothing done")
+r = client.post("/api/console/drive", json={"action": "click", "target": "Stop all"})
+eq((r.status_code, r.json()["code"]), (409, "confirmation_required"), "a destructive control needs confirm")
+j = client.post("/api/console/drive", json={"action": "click", "target": "Stop all", "confirm": True}).json()
+ok(j["ok"] and drive_got[-1]["command"].get("confirm") is True, "confirm is passed to the console")
+j = client.post("/api/console/drive", json={"action": "scroll", "to": "Retry"}).json()
+eq(drive_got[-1]["command"], {"$axf": "console-screen@1", "action": "scroll", "to": "Retry"}, "scroll: `to` is the target to bring into view")
+j = client.post("/api/console/drive", json={"action": "menu", "path": "Settings > Plugins", "client": "voice-0001"}).json()
+ok(j["ok"] and drive_got[-1]["command"]["path"] == "Settings > Plugins", "a menu path; `client` picks the console")
+eq(client.post("/api/console/drive", json={"action": "fly"}).status_code, 400, "an unknown action is refused before anything is sent")
+j = svc.run({"op": "act", "target": "console.screen", "action": "click", "input": {"target": "Retry"}}, ["control.console.read", "control.console.navigate"], "mcp")
+eq((j.get("code"), j.get("requires")), ("denied", "control.console.write"), "a click needs control.console.write")
+j = svc.run({"op": "get", "target": "console.screen"}, ["control.console.read"], "mcp")
+ok(j["ok"] and drive_got[-1]["command"]["action"] == "map" and j["data"]["elements"] == ELEMENTS, "reading the map needs only control.console.read")
+drive_mode["slow"] = cc.LIVE_TRY_S * 1.6
+j = client.post("/api/console/drive", json={"action": "menu", "path": "File > Open"}).json()
+ok(j["ok"] and j["data"]["did"] == "menu File > Open", "a slow menu walk that said it is working is waited for")
+drive_mode["slow"] = 0
+eq(svc.drive({"action": "map"}, "test")["elements"], ELEMENTS, "the capability's drive() answers with the console's own envelope")
+with cc._lock:
+    for c in cc._clients.values():
+        c["lastSeen"] = 0.0
+r = client.post("/api/console/drive", json={"action": "click", "target": "Retry"})
+eq((r.status_code, r.json()["code"]), (503, "unavailable"), "no console open: unavailable, never queued (a click must not run late)")
+ok(r.json().get("openUrl"), "with the link to open the console")
 
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

@@ -55,6 +55,8 @@ import { TOOLBAR_FIXTURE_CASES, toolbarFixtureOutputs } from './toolbar-actions-
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
+import { screenElementMap, screenKeys, screenMapText, screenMenuPath, screenResolveTarget, screenTargetGuard } from '../core/engines/console-screen.mjs';
+import { SAMPLE_SCREEN, SAMPLE_TARGETS } from './console-screen-sample.mjs';
 import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
 import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
@@ -2503,6 +2505,20 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       'unknown-code': consoleControlFailure('boom', 'x'), denied: consoleControlFailure('denied', 'needs control.console.write', { requires: 'control.console.write' }), 'unknown-error': failureOf(new Error('secret details')),
     },
     helpers: { tabId: [tabAddressId('row'), tabAddressId('row', 'v'), tabAddressId('row', null)], child: [childAddress(null, 'view', 'builds'), childAddress('view:builds', 'row', 'a/b')], parent: nearestRegisteredParent(snapshot, parseAddress('view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:nope')), 'no-parent': nearestRegisteredParent(snapshot, parseAddress('view:nope/button:x')) },
+  });
+}
+
+// console-screen@1 (core/engines/console-screen.mjs): the numbered element map of a sample screen, what each spoken target names, the guard of every element
+{
+  const map = screenElementMap(SAMPLE_SCREEN);
+  write('console-screen.json', {
+    raw: SAMPLE_SCREEN,
+    map,
+    text: screenMapText(map),
+    resolve: Object.fromEntries(SAMPLE_TARGETS.map((t) => [t.target, screenResolveTarget(map, t.target, { prefer: t.prefer ?? [] })])),
+    guards: Object.fromEntries(map.map((e) => [e.n, screenTargetGuard(e)])),
+    menuPaths: Object.fromEntries(['Settings > Plugins > Agent cap', 'File › Open', 'settings then plugins'].map((p) => [p, screenMenuPath(p)])),
+    keys: Object.fromEntries(['ctrl+s', 'down down enter', 'Shift+Tab', 'esc', 'banana'].map((k) => [k, screenKeys(k)])),
   });
 }
 

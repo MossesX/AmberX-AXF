@@ -1,0 +1,948 @@
+{
+  "raw": [
+    {
+      "label": "File",
+      "kind": "menu",
+      "group": "app menu",
+      "state": {
+        "expanded": false
+      },
+      "address": "button:menu.file",
+      "box": {
+        "x": 120,
+        "y": 8,
+        "w": 40,
+        "h": 24
+      }
+    },
+    {
+      "label": "View",
+      "kind": "menu",
+      "group": "app menu",
+      "state": {
+        "expanded": false
+      },
+      "address": "button:menu.view",
+      "box": {
+        "x": 168,
+        "y": 8,
+        "w": 44,
+        "h": 24
+      }
+    },
+    {
+      "label": "Building",
+      "kind": "tab",
+      "group": "tabs",
+      "state": {
+        "selected": true
+      },
+      "address": "view:build-orchestrator/tab:orchestrator.tabs=building",
+      "box": {
+        "x": 24,
+        "y": 60,
+        "w": 90,
+        "h": 32
+      }
+    },
+    {
+      "label": "Queue",
+      "kind": "tab",
+      "group": "tabs",
+      "address": "view:build-orchestrator/tab:orchestrator.tabs=queue",
+      "box": {
+        "x": 118,
+        "y": 60,
+        "w": 80,
+        "h": 32
+      }
+    },
+    {
+      "label": "Refresh",
+      "kind": "button",
+      "group": "toolbar Builds",
+      "address": "toolbar:builds/button:refresh",
+      "box": {
+        "x": 1380,
+        "y": 62,
+        "w": 80,
+        "h": 28
+      }
+    },
+    {
+      "label": "Stop all",
+      "kind": "button",
+      "group": "toolbar Builds",
+      "state": {
+        "danger": true
+      },
+      "address": "toolbar:builds/button:stop-all",
+      "box": {
+        "x": 1470,
+        "y": 62,
+        "w": 90,
+        "h": 28
+      }
+    },
+    {
+      "label": "voice-console-control · running · step 3 of 6",
+      "kind": "row",
+      "group": "grid Builds",
+      "state": {
+        "expanded": false
+      },
+      "address": "grid:builds/row:voice-console-control",
+      "box": {
+        "x": 24,
+        "y": 120,
+        "w": 1540,
+        "h": 40
+      }
+    },
+    {
+      "label": "Expand row",
+      "kind": "expander",
+      "group": "row voice-console-control",
+      "state": {
+        "expanded": false
+      },
+      "box": {
+        "x": 1520,
+        "y": 126,
+        "w": 28,
+        "h": 28
+      }
+    },
+    {
+      "label": "skin-gallery-fixes · failed · step 2 of 4",
+      "kind": "row",
+      "group": "grid Builds",
+      "state": {
+        "expanded": true,
+        "selected": true
+      },
+      "address": "grid:builds/row:skin-gallery-fixes",
+      "box": {
+        "x": 24,
+        "y": 164,
+        "w": 1540,
+        "h": 40
+      }
+    },
+    {
+      "label": "Retry",
+      "kind": "button",
+      "group": "row skin-gallery-fixes",
+      "box": {
+        "x": 1400,
+        "y": 170,
+        "w": 70,
+        "h": 28
+      }
+    },
+    {
+      "label": "Collapse row",
+      "kind": "expander",
+      "group": "row skin-gallery-fixes",
+      "state": {
+        "expanded": true
+      },
+      "box": {
+        "x": 1520,
+        "y": 170,
+        "w": 28,
+        "h": 28
+      }
+    },
+    {
+      "label": "Retry",
+      "kind": "button",
+      "group": "row plan-studio-search",
+      "box": {
+        "x": 1400,
+        "y": 258,
+        "w": 70,
+        "h": 28
+      }
+    },
+    {
+      "label": "plan-studio-search · failed · step 1 of 3",
+      "kind": "row",
+      "group": "grid Builds",
+      "state": {
+        "expanded": false
+      },
+      "address": "grid:builds/row:plan-studio-search",
+      "box": {
+        "x": 24,
+        "y": 252,
+        "w": 1540,
+        "h": 40
+      }
+    },
+    {
+      "label": "Search builds",
+      "kind": "input",
+      "state": {
+        "value": "skin"
+      },
+      "box": {
+        "x": 1100,
+        "y": 62,
+        "w": 260,
+        "h": 28
+      }
+    },
+    {
+      "label": "Approve",
+      "kind": "button",
+      "group": "dialog Approval",
+      "box": {
+        "x": 700,
+        "y": 500,
+        "w": 90,
+        "h": 32
+      }
+    },
+    {
+      "label": "Settings",
+      "kind": "link",
+      "group": "side menu",
+      "address": "view:settings",
+      "box": {
+        "x": 0,
+        "y": 700,
+        "w": 200,
+        "h": 36
+      }
+    },
+    {
+      "label": "shipped-features-export · done",
+      "kind": "row",
+      "group": "grid Builds",
+      "address": "grid:builds/row:shipped-features-export",
+      "box": {
+        "x": 24,
+        "y": 1400,
+        "w": 1540,
+        "h": 40
+      },
+      "visible": false
+    },
+    {
+      "label": "",
+      "kind": "button",
+      "box": {
+        "x": 1,
+        "y": 1,
+        "w": 10,
+        "h": 10
+      }
+    },
+    {
+      "label": "hidden",
+      "kind": "button",
+      "box": {
+        "x": 1,
+        "y": 1,
+        "w": 0,
+        "h": 10
+      }
+    }
+  ],
+  "map": [
+    {
+      "n": 1,
+      "label": "File",
+      "kind": "menu",
+      "group": "app menu",
+      "state": {
+        "expanded": false
+      },
+      "address": "button:menu.file",
+      "box": {
+        "x": 120,
+        "y": 8,
+        "w": 40,
+        "h": 24
+      },
+      "visible": true
+    },
+    {
+      "n": 2,
+      "label": "View",
+      "kind": "menu",
+      "group": "app menu",
+      "state": {
+        "expanded": false
+      },
+      "address": "button:menu.view",
+      "box": {
+        "x": 168,
+        "y": 8,
+        "w": 44,
+        "h": 24
+      },
+      "visible": true
+    },
+    {
+      "n": 3,
+      "label": "Building",
+      "kind": "tab",
+      "group": "tabs",
+      "state": {
+        "selected": true
+      },
+      "address": "view:build-orchestrator/tab:orchestrator.tabs=building",
+      "box": {
+        "x": 24,
+        "y": 60,
+        "w": 90,
+        "h": 32
+      },
+      "visible": true
+    },
+    {
+      "n": 4,
+      "label": "Queue",
+      "kind": "tab",
+      "group": "tabs",
+      "address": "view:build-orchestrator/tab:orchestrator.tabs=queue",
+      "box": {
+        "x": 118,
+        "y": 60,
+        "w": 80,
+        "h": 32
+      },
+      "visible": true
+    },
+    {
+      "n": 5,
+      "label": "Search builds",
+      "kind": "input",
+      "state": {
+        "value": "skin"
+      },
+      "box": {
+        "x": 1100,
+        "y": 62,
+        "w": 260,
+        "h": 28
+      },
+      "visible": true
+    },
+    {
+      "n": 6,
+      "label": "Refresh",
+      "kind": "button",
+      "group": "toolbar Builds",
+      "address": "toolbar:builds/button:refresh",
+      "box": {
+        "x": 1380,
+        "y": 62,
+        "w": 80,
+        "h": 28
+      },
+      "visible": true
+    },
+    {
+      "n": 7,
+      "label": "Stop all",
+      "kind": "button",
+      "group": "toolbar Builds",
+      "state": {
+        "danger": true
+      },
+      "address": "toolbar:builds/button:stop-all",
+      "box": {
+        "x": 1470,
+        "y": 62,
+        "w": 90,
+        "h": 28
+      },
+      "visible": true
+    },
+    {
+      "n": 8,
+      "label": "voice-console-control · running · step 3 of 6",
+      "kind": "row",
+      "group": "grid Builds",
+      "state": {
+        "expanded": false
+      },
+      "address": "grid:builds/row:voice-console-control",
+      "box": {
+        "x": 24,
+        "y": 120,
+        "w": 1540,
+        "h": 40
+      },
+      "visible": true
+    },
+    {
+      "n": 9,
+      "label": "Expand row",
+      "kind": "expander",
+      "group": "row voice-console-control",
+      "state": {
+        "expanded": false
+      },
+      "box": {
+        "x": 1520,
+        "y": 126,
+        "w": 28,
+        "h": 28
+      },
+      "visible": true
+    },
+    {
+      "n": 10,
+      "label": "skin-gallery-fixes · failed · step 2 of 4",
+      "kind": "row",
+      "group": "grid Builds",
+      "state": {
+        "expanded": true,
+        "selected": true
+      },
+      "address": "grid:builds/row:skin-gallery-fixes",
+      "box": {
+        "x": 24,
+        "y": 164,
+        "w": 1540,
+        "h": 40
+      },
+      "visible": true
+    },
+    {
+      "n": 11,
+      "label": "Retry",
+      "kind": "button",
+      "group": "row skin-gallery-fixes",
+      "box": {
+        "x": 1400,
+        "y": 170,
+        "w": 70,
+        "h": 28
+      },
+      "visible": true
+    },
+    {
+      "n": 12,
+      "label": "Collapse row",
+      "kind": "expander",
+      "group": "row skin-gallery-fixes",
+      "state": {
+        "expanded": true
+      },
+      "box": {
+        "x": 1520,
+        "y": 170,
+        "w": 28,
+        "h": 28
+      },
+      "visible": true
+    },
+    {
+      "n": 13,
+      "label": "plan-studio-search · failed · step 1 of 3",
+      "kind": "row",
+      "group": "grid Builds",
+      "state": {
+        "expanded": false
+      },
+      "address": "grid:builds/row:plan-studio-search",
+      "box": {
+        "x": 24,
+        "y": 252,
+        "w": 1540,
+        "h": 40
+      },
+      "visible": true
+    },
+    {
+      "n": 14,
+      "label": "Retry",
+      "kind": "button",
+      "group": "row plan-studio-search",
+      "box": {
+        "x": 1400,
+        "y": 258,
+        "w": 70,
+        "h": 28
+      },
+      "visible": true
+    },
+    {
+      "n": 15,
+      "label": "Approve",
+      "kind": "button",
+      "group": "dialog Approval",
+      "box": {
+        "x": 700,
+        "y": 500,
+        "w": 90,
+        "h": 32
+      },
+      "visible": true
+    },
+    {
+      "n": 16,
+      "label": "Settings",
+      "kind": "link",
+      "group": "side menu",
+      "address": "view:settings",
+      "box": {
+        "x": 0,
+        "y": 700,
+        "w": 200,
+        "h": 36
+      },
+      "visible": true
+    },
+    {
+      "n": 17,
+      "label": "shipped-features-export · done",
+      "kind": "row",
+      "group": "grid Builds",
+      "address": "grid:builds/row:shipped-features-export",
+      "box": {
+        "x": 24,
+        "y": 1400,
+        "w": 1540,
+        "h": 40
+      },
+      "visible": false
+    }
+  ],
+  "text": "1. [menu] File (collapsed) · in app menu · at 120,8 40×24 → button:menu.file\n2. [menu] View (collapsed) · in app menu · at 168,8 44×24 → button:menu.view\n3. [tab] Building (selected) · in tabs · at 24,60 90×32 → view:build-orchestrator/tab:orchestrator.tabs=building\n4. [tab] Queue · in tabs · at 118,60 80×32 → view:build-orchestrator/tab:orchestrator.tabs=queue\n5. [input] Search builds (value \"skin\") · at 1100,62 260×28\n6. [button] Refresh · in toolbar Builds · at 1380,62 80×28 → toolbar:builds/button:refresh\n7. [button] Stop all (destructive) · in toolbar Builds · at 1470,62 90×28 → toolbar:builds/button:stop-all\n8. [row] voice-console-control · running · step 3 of 6 (collapsed) · in grid Builds · at 24,120 1540×40 → grid:builds/row:voice-console-control\n9. [expander] Expand row (collapsed) · in row voice-console-control · at 1520,126 28×28\n10. [row] skin-gallery-fixes · failed · step 2 of 4 (expanded, selected) · in grid Builds · at 24,164 1540×40 → grid:builds/row:skin-gallery-fixes\n11. [button] Retry · in row skin-gallery-fixes · at 1400,170 70×28\n12. [expander] Collapse row (expanded) · in row skin-gallery-fixes · at 1520,170 28×28\n13. [row] plan-studio-search · failed · step 1 of 3 (collapsed) · in grid Builds · at 24,252 1540×40 → grid:builds/row:plan-studio-search\n14. [button] Retry · in row plan-studio-search · at 1400,258 70×28\n15. [button] Approve · in dialog Approval · at 700,500 90×32\n16. [link] Settings · in side menu · at 0,700 200×36 → view:settings\n17. [row] shipped-features-export · done · in grid Builds · scroll to see → grid:builds/row:shipped-features-export",
+  "resolve": {
+    "5": {
+      "element": {
+        "n": 5,
+        "label": "Search builds",
+        "kind": "input",
+        "state": {
+          "value": "skin"
+        },
+        "box": {
+          "x": 1100,
+          "y": 62,
+          "w": 260,
+          "h": 28
+        },
+        "visible": true
+      }
+    },
+    "#2": {
+      "element": {
+        "n": 2,
+        "label": "View",
+        "kind": "menu",
+        "group": "app menu",
+        "state": {
+          "expanded": false
+        },
+        "address": "button:menu.view",
+        "box": {
+          "x": 168,
+          "y": 8,
+          "w": 44,
+          "h": 24
+        },
+        "visible": true
+      }
+    },
+    "number 9": {
+      "element": {
+        "n": 9,
+        "label": "Expand row",
+        "kind": "expander",
+        "group": "row voice-console-control",
+        "state": {
+          "expanded": false
+        },
+        "box": {
+          "x": 1520,
+          "y": 126,
+          "w": 28,
+          "h": 28
+        },
+        "visible": true
+      }
+    },
+    "640,300": {
+      "point": {
+        "x": 640,
+        "y": 300
+      }
+    },
+    "(12, 40)": {
+      "point": {
+        "x": 12,
+        "y": 40
+      }
+    },
+    "grid:builds/row:skin-gallery-fixes": {
+      "element": {
+        "n": 10,
+        "label": "skin-gallery-fixes · failed · step 2 of 4",
+        "kind": "row",
+        "group": "grid Builds",
+        "state": {
+          "expanded": true,
+          "selected": true
+        },
+        "address": "grid:builds/row:skin-gallery-fixes",
+        "box": {
+          "x": 24,
+          "y": 164,
+          "w": 1540,
+          "h": 40
+        },
+        "visible": true
+      }
+    },
+    "row:plan-studio-search": {
+      "element": {
+        "n": 13,
+        "label": "plan-studio-search · failed · step 1 of 3",
+        "kind": "row",
+        "group": "grid Builds",
+        "state": {
+          "expanded": false
+        },
+        "address": "grid:builds/row:plan-studio-search",
+        "box": {
+          "x": 24,
+          "y": 252,
+          "w": 1540,
+          "h": 40
+        },
+        "visible": true
+      }
+    },
+    "refresh": {
+      "element": {
+        "n": 6,
+        "label": "Refresh",
+        "kind": "button",
+        "group": "toolbar Builds",
+        "address": "toolbar:builds/button:refresh",
+        "box": {
+          "x": 1380,
+          "y": 62,
+          "w": 80,
+          "h": 28
+        },
+        "visible": true
+      }
+    },
+    "the Refresh button": {
+      "element": {
+        "n": 6,
+        "label": "Refresh",
+        "kind": "button",
+        "group": "toolbar Builds",
+        "address": "toolbar:builds/button:refresh",
+        "box": {
+          "x": 1380,
+          "y": 62,
+          "w": 80,
+          "h": 28
+        },
+        "visible": true
+      }
+    },
+    "refrsh": {
+      "element": {
+        "n": 6,
+        "label": "Refresh",
+        "kind": "button",
+        "group": "toolbar Builds",
+        "address": "toolbar:builds/button:refresh",
+        "box": {
+          "x": 1380,
+          "y": 62,
+          "w": 80,
+          "h": 28
+        },
+        "visible": true
+      }
+    },
+    "queue tab": {
+      "element": {
+        "n": 4,
+        "label": "Queue",
+        "kind": "tab",
+        "group": "tabs",
+        "address": "view:build-orchestrator/tab:orchestrator.tabs=queue",
+        "box": {
+          "x": 118,
+          "y": 60,
+          "w": 80,
+          "h": 32
+        },
+        "visible": true
+      }
+    },
+    "row 3": {
+      "element": {
+        "n": 13,
+        "label": "plan-studio-search · failed · step 1 of 3",
+        "kind": "row",
+        "group": "grid Builds",
+        "state": {
+          "expanded": false
+        },
+        "address": "grid:builds/row:plan-studio-search",
+        "box": {
+          "x": 24,
+          "y": 252,
+          "w": 1540,
+          "h": 40
+        },
+        "visible": true
+      }
+    },
+    "the second row": {
+      "element": {
+        "n": 10,
+        "label": "skin-gallery-fixes · failed · step 2 of 4",
+        "kind": "row",
+        "group": "grid Builds",
+        "state": {
+          "expanded": true,
+          "selected": true
+        },
+        "address": "grid:builds/row:skin-gallery-fixes",
+        "box": {
+          "x": 24,
+          "y": 164,
+          "w": 1540,
+          "h": 40
+        },
+        "visible": true
+      }
+    },
+    "last row": {
+      "element": {
+        "n": 13,
+        "label": "plan-studio-search · failed · step 1 of 3",
+        "kind": "row",
+        "group": "grid Builds",
+        "state": {
+          "expanded": false
+        },
+        "address": "grid:builds/row:plan-studio-search",
+        "box": {
+          "x": 24,
+          "y": 252,
+          "w": 1540,
+          "h": 40
+        },
+        "visible": true
+      }
+    },
+    "retry": {
+      "candidates": [
+        {
+          "n": 11,
+          "label": "Retry",
+          "kind": "button",
+          "group": "row skin-gallery-fixes",
+          "box": {
+            "x": 1400,
+            "y": 170,
+            "w": 70,
+            "h": 28
+          },
+          "visible": true
+        },
+        {
+          "n": 14,
+          "label": "Retry",
+          "kind": "button",
+          "group": "row plan-studio-search",
+          "box": {
+            "x": 1400,
+            "y": 258,
+            "w": 70,
+            "h": 28
+          },
+          "visible": true
+        }
+      ],
+      "ambiguous": true
+    },
+    "the lower retry button": {
+      "element": {
+        "n": 14,
+        "label": "Retry",
+        "kind": "button",
+        "group": "row plan-studio-search",
+        "box": {
+          "x": 1400,
+          "y": 258,
+          "w": 70,
+          "h": 28
+        },
+        "visible": true
+      }
+    },
+    "skin gallery": {
+      "element": {
+        "n": 10,
+        "label": "skin-gallery-fixes · failed · step 2 of 4",
+        "kind": "row",
+        "group": "grid Builds",
+        "state": {
+          "expanded": true,
+          "selected": true
+        },
+        "address": "grid:builds/row:skin-gallery-fixes",
+        "box": {
+          "x": 24,
+          "y": 164,
+          "w": 1540,
+          "h": 40
+        },
+        "visible": true
+      }
+    },
+    "shipped features": {
+      "element": {
+        "n": 17,
+        "label": "shipped-features-export · done",
+        "kind": "row",
+        "group": "grid Builds",
+        "address": "grid:builds/row:shipped-features-export",
+        "box": {
+          "x": 24,
+          "y": 1400,
+          "w": 1540,
+          "h": 40
+        },
+        "visible": false
+      }
+    },
+    "launch rocket": {
+      "candidates": []
+    },
+    "stop all": {
+      "element": {
+        "n": 7,
+        "label": "Stop all",
+        "kind": "button",
+        "group": "toolbar Builds",
+        "state": {
+          "danger": true
+        },
+        "address": "toolbar:builds/button:stop-all",
+        "box": {
+          "x": 1470,
+          "y": 62,
+          "w": 90,
+          "h": 28
+        },
+        "visible": true
+      }
+    }
+  },
+  "guards": {
+    "1": null,
+    "2": null,
+    "3": null,
+    "4": null,
+    "5": null,
+    "6": null,
+    "7": "destructive",
+    "8": null,
+    "9": null,
+    "10": null,
+    "11": null,
+    "12": null,
+    "13": null,
+    "14": null,
+    "15": "person",
+    "16": null,
+    "17": null
+  },
+  "menuPaths": {
+    "Settings > Plugins > Agent cap": [
+      "Settings",
+      "Plugins",
+      "Agent cap"
+    ],
+    "File › Open": [
+      "File",
+      "Open"
+    ],
+    "settings then plugins": [
+      "settings",
+      "plugins"
+    ]
+  },
+  "keys": {
+    "ctrl+s": {
+      "keys": [
+        {
+          "key": "s",
+          "ctrl": true,
+          "shift": false,
+          "alt": false,
+          "meta": false
+        }
+      ]
+    },
+    "down down enter": {
+      "keys": [
+        {
+          "key": "ArrowDown",
+          "ctrl": false,
+          "shift": false,
+          "alt": false,
+          "meta": false
+        },
+        {
+          "key": "ArrowDown",
+          "ctrl": false,
+          "shift": false,
+          "alt": false,
+          "meta": false
+        },
+        {
+          "key": "Enter",
+          "ctrl": false,
+          "shift": false,
+          "alt": false,
+          "meta": false
+        }
+      ]
+    },
+    "Shift+Tab": {
+      "keys": [
+        {
+          "key": "Tab",
+          "ctrl": false,
+          "shift": true,
+          "alt": false,
+          "meta": false
+        }
+      ]
+    },
+    "esc": {
+      "keys": [
+        {
+          "key": "Escape",
+          "ctrl": false,
+          "shift": false,
+          "alt": false,
+          "meta": false
+        }
+      ]
+    },
+    "banana": {
+      "error": "\"banana\" is not a key (a letter, a digit, Enter, Escape, Tab, Space, arrows, Backspace, Delete, Home, End, PageUp, PageDown, F1-F12)"
+    }
+  }
+}

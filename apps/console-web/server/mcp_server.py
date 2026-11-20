@@ -62,7 +62,15 @@ Chat and voice sessions (claude.ai, Amber): whenever you act, post one short lin
 live in the Terminal's sessions nav and jumps in from there.
 
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
-console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
+console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console.
+
+Voice calls: you cannot see images, so `console_screenshot` answers in words first (a literal description, then a numbered
+list of everything that can be pressed). When Brett points at something ("click that", "right-click the second row",
+"expand row 3", "open the app menu, go to Settings", "jump to the queue"), act with `console_click`,
+`console_right_click`, `console_context_menu`, `console_menu`, `console_expand` / `console_collapse`, `console_jump`,
+`console_scroll`, `console_type`, `console_key`: the target is his words, a number from the list, an address or x,y.
+Several matches come back as numbered choices: ask him which, never guess. confirmation_required = it deletes, stops or
+merges: tell him what it will do, then call again with confirm=true. Approve / deny are his own tap, never yours."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
@@ -954,7 +962,11 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh",
-                 "console_screenshot")
+                 "console_screenshot",
+                 # console-screen@1 (= CONSOLE_SCREEN_TOOLS in core/engines/console-screen.mjs): see and drive the screen by words, for voice
+                 "console_click", "console_right_click", "console_double_click", "console_menu", "console_context_menu", "console_expand", "console_collapse",
+                 "console_jump", "console_scroll", "console_type", "console_key")
+SCREEN_MAP_LINES = 250  # elements listed as text in one answer (the structured answer carries all of them)
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -1046,14 +1058,159 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": "refresh", "input": inp(to, **({"hard": True} if hard else {}))})
 
     @mcp.tool(annotations=READ)
-    async def console_screenshot(selector: str = "", address: str = "", to: Delivery = "recent") -> CallToolResult:
-        """See what Brett's open Dev Console shows: a PNG of the screen (at most 1600 px wide) plus its state (screen id
-        and label, open tab of each tab row, open dialog, selection, scroll). Whole page by default; one panel or dialog
-        with `address` (a console-control@1 address: "view:settings/panel:appearance", "grid:queue") or `selector` (CSS).
-        Read-only: nothing on screen changes. `status` as console_open: delivered, pending (no console answered yet: it is
-        captured when one opens) or failed. to="all" captures every open console."""
-        r = await go({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": inp(to, selector=selector.strip(), address=address.strip())})
+    async def console_screenshot(selector: str = "", address: str = "", describe: bool = True, question: str = "", to: Delivery = "recent") -> CallToolResult:
+        """See what Brett's open Dev Console shows. Made for voice calls, where the image never reaches you: the answer
+        starts with a written description of the screen (headings, tabs, buttons, rows with their text and status,
+        banners, errors, dialogs, open menus, numbers; literal, no guessing), then a numbered list of everything that
+        can be pressed (its words, kind, state, console-control address and box x,y w×h in the image's pixels; off-screen
+        ones say "scroll to see"), then the PNG (at most 1600 px wide) and the state (screen, open tabs, dialog,
+        selection, scroll). Use the numbers with console_click / console_right_click / console_expand and the others.
+        `question` = one thing to answer from the screen ("which build failed?"). describe=false skips the description
+        (the list and image still come). Whole page by default; one panel or dialog with `address` (a console-control@1
+        address: "view:settings/panel:appearance", "grid:queue") or `selector` (CSS). Read-only: nothing on screen
+        changes. `status` as console_open: delivered, pending (no console answered yet) or failed. to="all" captures
+        every open console. The description gives up after 30 s (the list and image still come, with a note) and is
+        reused for 2 minutes while the screen has not changed."""
+        r = await go({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot",
+                      "input": inp(to, selector=selector.strip(), address=address.strip(), describe=True if describe else None, question=question.strip())})
         return shot_result(r)
+
+    async def look(describe: bool, to: str, did: dict[str, Any]) -> CallToolResult:
+        """The screen after an action: screenshot + description + numbered map, led by what the action did."""
+        r = await anyio.to_thread.run_sync(lambda: console({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "by": "mcp",
+                                                            "input": inp(to, describe=True if describe else None)}))
+        if not r.get("ok") or not r.get("images"):
+            # the action ran; the picture did not come back: answer with the map the action itself returned
+            r = {"ok": True, "status": "delivered", "images": [], "elements": did.get("elements") or [], "state": did.get("state") or {},
+                 **({"describeNote": f"no screenshot came back ({r.get('message') or r.get('code') or 'no answer'}): the list is from the console itself"} if describe else {})}
+        return shot_result(r, did)
+
+    async def drive(action: str, describe: bool = True, client: str = "recent", /, **fields: Any) -> CallToolResult:
+        """One console-screen@1 action, then the new screen. Several matches, a control that needs confirm and a miss
+        come back as the answer (with the numbered choices), so a voice session can ask Brett which one."""
+        body = {k: v for k, v in fields.items() if v not in (None, False) and (v != "" or k == "text")}
+        if client and client != "recent":
+            body["client"] = client
+        r = await anyio.to_thread.run_sync(lambda: console({"op": "act", "target": "console.screen", "action": action, "input": body, "by": "mcp"}))
+        data = r.get("data") if isinstance(r.get("data"), dict) else {}
+        if not r.get("ok"):
+            return screen_failure(action, {**data, **{k: r[k] for k in ("code", "message", "openUrl", "candidates") if k in r}})
+        return await look(describe, client, data)
+
+    @mcp.tool(annotations=WRITE)
+    async def console_click(target: str, confirm: bool = False, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: left-click something on Brett's open console ("click Retry", "click that row", "click the green
+        button top right"). `target` = its words (case-insensitive; a transcription slip still matches), its number from
+        the last console_screenshot list, a console-control address, or "x,y" in the screenshot's pixels (anywhere).
+        Several matches: the numbered choices come back and nothing is clicked; ask Brett or pass the number. A control
+        that deletes, stops or merges answers confirmation_required: tell Brett, then call again with confirm=true.
+        Approve / deny are never clicked. Returns what happened, then the new screen (description + numbered list)."""
+        return await drive("click", describe, to, target=target, confirm=confirm)
+
+    @mcp.tool(annotations=WRITE)
+    async def console_double_click(target: str, confirm: bool = False, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: double-click something on Brett's open console (target as console_click). Returns the new screen."""
+        return await drive("double_click", describe, to, target=target, confirm=confirm)
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_right_click(target: str, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: right-click anything on Brett's open console (a row, a tab, a toolbar, empty space, or "x,y"
+        anywhere) to open its context menu. Nothing is chosen: the menu's items come back numbered in the list, pick one
+        with console_click (its number or words). `target` as console_click. To right-click and pick in one call:
+        console_context_menu."""
+        return await drive("right_click", describe, to, target=target)
+
+    @mcp.tool(annotations=WRITE)
+    async def console_context_menu(target: str, item: str, confirm: bool = False, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: right-click `target` and pick `item` from its context menu in one call ("open the context menu on
+        that row and hit Retry"). `target` and `item` as console_click (words, a number, …). An item that deletes, stops
+        or merges answers confirmation_required until confirm=true; the menu stays open and its items are listed."""
+        return await drive("context_menu", describe, to, target=target, item=item, confirm=confirm)
+
+    @mcp.tool(annotations=WRITE)
+    async def console_menu(path: str, confirm: bool = False, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: open the app menu or the side menu and walk a path, clicking each name in turn: "Settings > Plugins >
+        Agent cap", "File > Open". Each name is looked for in the open menu first, then anywhere on the screen, then
+        inside each app menu. Stops and says where it got to when a name is not found. A last item that deletes, stops
+        or merges needs confirm=true."""
+        return await drive("menu", describe, to, path=path, confirm=confirm)
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_expand(row: str, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: expand a row, a nested note or any folded section on Brett's open console ("expand row 3", "open
+        that build's details"). `row` as console_click's target ("row 3", words from the row, a number, an address).
+        Already expanded: says so and changes nothing."""
+        return await drive("expand", describe, to, target=row)
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_collapse(row: str, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: collapse an expanded row, note or section (`row` as console_expand)."""
+        return await drive("collapse", describe, to, target=row)
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_scroll(direction: Literal["", "up", "down", "page-up", "page-down", "top", "bottom"] = "", to_target: str = "", describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: scroll Brett's open console: `direction` (up, down, page-up, page-down, top, bottom), or `to_target`
+        = something to bring into view (its words or number, as console_click: use it for list entries marked "scroll
+        to see"). Returns the new screen."""
+        if not direction and not to_target.strip():
+            raise ToolError("invalid: console_scroll needs a direction or a to_target")
+        return await drive("scroll", describe, to, dir=direction, to=to_target.strip())
+
+    @mcp.tool(annotations=WRITE)
+    async def console_type(text: str, target: str = "", submit: bool = False, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: type into a field on Brett's open console ("type skins in the search box"). `target` = the field
+        (its label or placeholder, a number, …; empty = the field that has the focus). The text replaces what the field
+        holds; a dropdown picks the option with that text. submit=true presses Enter afterwards."""
+        return await drive("type", describe, to, text=text, target=target, submit=submit)
+
+    @mcp.tool(annotations=WRITE)
+    async def console_key(keys: str, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: press keys on Brett's open console, on whatever has the focus: "Escape", "Enter", "ctrl+s", "down
+        down enter", "shift+tab" (letters, digits, Enter, Escape, Tab, Space, arrows, Backspace, Delete, Home, End,
+        PageUp, PageDown, F1-F12; ctrl / shift / alt / meta as modifiers). Returns the new screen."""
+        return await drive("key", describe, to, keys=keys)
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_jump(to_name: str, describe: bool = True, to: Delivery = "recent") -> CallToolResult:
+        """For voice: jump Brett's open console to any screen, tab, plugin view, build or row by name ("jump to the
+        queue", "go back to the orchestrator", "show the voice console control build"). `to_name` = a screen ("build
+        orchestrator"), a screen and its tab ("build-orchestrator pending"), a build id ("build:<id>"), a settings tab
+        ("plugins/<plugin>"), a console-control address ("view:gate", "grid:queue/row:<id>") or any words (the best
+        search hit is opened). A plugin whose screen is not loaded yet is loaded first. Only navigates. Returns the new
+        screen (description + numbered list)."""
+        name = to_name.strip()
+        if not name:
+            raise ToolError("invalid: console_jump needs a name")
+        did = await jump(name, to)
+        if not did.get("ok"):
+            return screen_failure("jump", did)
+        return await look(describe, to, did)
+
+    async def jump(name: str, to: str) -> dict[str, Any]:
+        """Open what a name means: an address, a screen (or a build on its screen), a settings tab, else the best search hit."""
+        if ADDRESS_RE.match(name):
+            r = await anyio.to_thread.run_sync(lambda: (_control_run or console_control_runner())({"verb": "focus", "address": name, "to": to, "by": "mcp"}))
+            return {**r, "did": f"jumped to {r.get('focused') or r.get('opened') or name}"} if r.get("ok") else r
+        tried: dict[str, Any] = {}
+        for target in ("console.screens", "console.settings"):
+            r = await anyio.to_thread.run_sync(lambda t=target: console({"op": "act", "target": t, "path": name, "action": "open", "by": "mcp", "input": inp(to)}))
+            if r.get("ok") and r.get("status") != "failed":
+                item = (r.get("data") or {}).get("item") or {}
+                where = next((str(d.get("message")) for d in r.get("delivered") or [] if d.get("ok") and d.get("message")), "")
+                return {"ok": True, "did": f"jumped: {where or 'opened ' + str(item.get('label') or name)}", "status": r.get("status")}
+            tried = tried or r
+            if r.get("code") not in ("not_found", "validation"):
+                return tried
+        run = _control_run or console_control_runner()
+        s = await anyio.to_thread.run_sync(lambda: run({"verb": "search", "query": {"q": name, "limit": 5}, "to": to, "by": "mcp"}))
+        hits = [h for h in s.get("hits") or [] if isinstance(h, dict) and h.get("address")]
+        if not hits:
+            return {"ok": False, "code": "not_found", "message": f"nothing in the console is called \"{name}\"" + (f" ({tried.get('message')})" if tried.get("message") else "")}
+        r = await anyio.to_thread.run_sync(lambda: run({"verb": "focus", "address": hits[0]["address"], "to": to, "by": "mcp"}))
+        if not r.get("ok"):
+            return r
+        return {**r, "did": f"jumped to {hits[0].get('label') or hits[0]['address']} ({hits[0]['address']})",
+                **({"alsoFound": [{"label": h.get("label"), "address": h["address"]} for h in hits[1:]]} if len(hits) > 1 else {})}
 
     @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:
@@ -1105,15 +1262,73 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await follow("state")
 
 
-def shot_result(r: dict[str, Any]) -> CallToolResult:
-    """A console screenshot answer as MCP content: one image block per console, then the answer as JSON without the
-    image data (status, state, delivery). No image (pending, or the console could not capture): the JSON alone."""
+def element_line(e: dict[str, Any]) -> str:
+    """One element of the map as a line (= screenElementLine in core/engines/console-screen.mjs)."""
+    s = e.get("state") if isinstance(e.get("state"), dict) else {}
+    box = e.get("box") if isinstance(e.get("box"), dict) else {}
+    flags = ["expanded" if s.get("expanded") is True else "collapsed" if s.get("expanded") is False else "", "selected" if s.get("selected") else "",
+             "on" if s.get("checked") is True else "off" if s.get("checked") is False else "", "pressed" if s.get("pressed") else "", "disabled" if s.get("disabled") else "",
+             "destructive" if s.get("danger") else "", f'value "{s["value"]}"' if s.get("value") else ""]
+    flags = [f for f in flags if f]
+    where = "scroll to see" if e.get("visible") is False else f"at {box.get('x')},{box.get('y')} {box.get('w')}×{box.get('h')}"
+    return (f"{e.get('n')}. [{e.get('kind')}] {e.get('label')}" + (f" ({', '.join(flags)})" if flags else "") + (f" · in {e['group']}" if e.get("group") else "")
+            + f" · {where}" + (f" → {e['address']}" if e.get("address") else ""))
+
+
+def map_text(elements: list[Any], limit: int = SCREEN_MAP_LINES) -> str:
+    """The numbered element map as text (= screenMapText): what a voice session reads instead of the image."""
+    rows = [e for e in elements if isinstance(e, dict)]
+    if not rows:
+        return "No interactive element is on the screen."
+    more = len(rows) - limit
+    return "\n".join(element_line(e) for e in rows[:limit]) + (f"\n… and {more} more" if more > 0 else "")
+
+
+def shot_result(r: dict[str, Any], did: dict[str, Any] | None = None) -> CallToolResult:
+    """A console screenshot answer as MCP content, in the order a voice session needs it: the description first (text:
+    led by what an action did, when this follows one; a note when there is no description), the numbered element map
+    (text), one image block per console, then the answer as JSON without the image data and without the map (status,
+    state, delivery, description, describedBy). The structured answer carries everything, the map included."""
     images = [i for i in r.get("images") or [] if isinstance(i, dict) and i.get("data")]
+    elements = r.get("elements") if isinstance(r.get("elements"), list) else None
     meta = {**{k: v for k, v in r.items() if k not in ("images", "sent")},
             "images": [{k: v for k, v in i.items() if k != "data"} for i in images]}
-    blocks: list[Any] = [ImageContent(type="image", data=str(i["data"]), mime_type=str(i.get("mime") or "image/png")) for i in images]
-    blocks.append(TextContent(type="text", text=json.dumps(meta, default=str)))
+    if did:
+        meta["did"] = str(did.get("did") or "")
+        meta.update({k: did[k] for k in ("target", "menu", "walked", "alsoFound") if did.get(k) not in (None, "", [])})
+    blocks: list[Any] = []
+    said = [meta["did"]] if meta.get("did") else []
+    if "description" in r or "describeNote" in r:
+        said.append(str(r.get("description") or "") or f"(No description: {r.get('describeNote') or 'none came back'})")
+        if r.get("description") and r.get("describeNote"):
+            said.append(f"({r['describeNote']})")
+    if said:
+        blocks.append(TextContent(type="text", text="\n\n".join(said)))
+    if elements is not None:
+        blocks.append(TextContent(type="text", text="What can be pressed (number. [kind] words · where → address):\n" + map_text(elements)))
+    blocks += [ImageContent(type="image", data=str(i["data"]), mime_type=str(i.get("mime") or "image/png")) for i in images]
+    blocks.append(TextContent(type="text", text=json.dumps({k: v for k, v in meta.items() if k != "elements"}, default=str)))
     return CallToolResult(content=blocks, structured_content=meta)
+
+
+def screen_failure(action: str, r: dict[str, Any]) -> CallToolResult:
+    """A screen action that did not happen, as an answer to read out: several matches (the numbered choices), a control
+    that needs confirm, a miss (the nearest ones), no console open. Only an unexpected failure is an error."""
+    code = str(r.get("code") or "unexpected")
+    cands = [c for c in r.get("candidates") or [] if isinstance(c, dict)]
+    lines = [f"{code}: {r.get('message') or 'failed'}"]
+    if cands:
+        lines.append(("Which one?" if code == "ambiguous" else "Closest:") + "\n" + "\n".join(element_line(c) for c in cands))
+    if r.get("openUrl"):
+        lines.append(f"Open the console: {r['openUrl']}")
+    meta = {"ok": False, "action": action, "code": code, "message": str(r.get("message") or ""), **({"candidates": cands} if cands else {}),
+            **{k: r[k] for k in ("target", "walked", "menu", "openUrl", "personOnly", "destructive", "nearest") if r.get(k) not in (None, "", [])},
+            **({"elements": r["elements"]} if isinstance(r.get("elements"), list) else {})}
+    blocks: list[Any] = [TextContent(type="text", text="\n".join(lines))]
+    if code in ("not_found", "confirmation_required") and isinstance(r.get("elements"), list) and not cands:
+        blocks.append(TextContent(type="text", text="What can be pressed:\n" + map_text(r["elements"])))
+    blocks.append(TextContent(type="text", text=json.dumps({k: v for k, v in meta.items() if k != "elements"}, default=str)))
+    return CallToolResult(content=blocks, structured_content=meta, is_error=code not in ("ambiguous", "confirmation_required", "not_found", "unavailable", "denied", "not_implemented", "invalid"))
 
 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)

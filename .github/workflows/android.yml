@@ -288,6 +288,7 @@ jobs:
           npx tsx scripts/interface-scope-check.mts     # two <InterfaceScope>s read their own interfaces, the app keeps its own
           npx tsx scripts/window-handles-check.mts      # every floating window has its 8 resize handles, windows stay under dialogs, settings 'Opens in' dialog
           npx tsx scripts/fetch-share-check.mts         # one shared /api GET per source, hidden tab quiet, 5xx exponential backoff
+          node scripts/console-screen.e2e.mjs           # console-screen@1 in a real page: element map, click by words / number / x,y, right-click + context menu, expand, menu path, type, keys, confirm guard  # axf-plugin:console-commands
       - name: Alerts + MCP client + axf_server — engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption
         run: |
           set -o pipefail
@@ -334,6 +335,7 @@ jobs:
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
             npx -y tsx framework/spec/check-control.mts                # control@1: one command schema for tokens, AmberX entities and the planner: registry, gate (roles × ops), confirm flow, errors, projections, snapshot, fixture
             npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages, screen focus, late commands
+            npx -y tsx framework/spec/check-console-screen.mts         # console-screen@1: numbered element map, target by words / number / address / x,y, destructive guard, menu paths, keys, fixture replay
             npx -y tsx framework/spec/check-console-control.mts        # console-control@1: address grammar, verbs, resolve against a target snapshot, search, scroll maths, wire codes, schemas + snapshot + fixture current
             npx -y tsx framework/spec/check-orchestrator-focus.mts  # a build asked for by a console command: kept for the tab that mounts later, settled once shown, its row selector  # axf-plugin:build-orchestrator
             node framework/spec/check-nightly-deploy.mjs

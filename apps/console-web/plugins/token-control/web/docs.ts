@@ -133,7 +133,8 @@ Reads are marked read-only, removes destructive. A failure raises a tool error w
 | run an action | \`console_action {action: "terminal.open"}\` | \`POST /api/console/action {"id": …}\` | \`axf console action terminal.open\` |
 | back / home / close | \`console_back {move: "back"}\` | \`POST /api/console/back\` | \`axf console back\` |
 | reload the page | \`console_refresh {hard?}\` | \`POST /api/console/refresh\` | \`axf console refresh [--hard]\` |
-| see the screen (PNG + state) | \`console_screenshot {address?, selector?}\` | \`POST /api/console/screenshot\` | \`axf console screenshot [--out f.png]\` |
+| see the screen (PNG + state + description + numbered element map) | \`console_screenshot {address?, selector?, describe?, question?}\` | \`POST /api/console/screenshot\` | \`axf console screenshot [--describe] [--out f.png]\` |
+| drive the screen by words (voice) | \`console_click\` · \`console_right_click\` · \`console_double_click\` · \`console_context_menu\` · \`console_menu\` · \`console_expand\` · \`console_collapse\` · \`console_jump\` · \`console_scroll\` · \`console_type\` · \`console_key\` | \`POST /api/console/drive {action, target, …}\` | \`axf console drive <action> [target] [--item i] [--path p] [--text t] [--keys k] [--dir d] [--confirm]\` |
 | where is it | \`console_where\` | \`GET /api/console/where\` | \`axf console where\` |
 | what can it open | \`console_list {kind: "screens", q: "build"}\` | \`GET /api/console/list?kind=screens&q=build\` | \`axf console list screens build\` |
 

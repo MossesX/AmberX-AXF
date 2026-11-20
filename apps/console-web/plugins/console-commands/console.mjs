@@ -9,7 +9,8 @@
  *   node console.mjs run      one command on stdin ({command, grants?, by?, clients}) → the answer as JSON (`deliver` = what to send)
  *   node console.mjs open <screen> [--focus <tab or build>] | dialog <id> | dialog close [id] | settings <tab> [--anchor a] | action <id> [args…] [--confirm t]
  *                    | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients
- *                    | screenshot [--address <console-control address> | --selector <css>] [--out shot.png]   (the image + screen state)
+ *                    | screenshot [--address <console-control address> | --selector <css>] [--describe] [--question q] [--out shot.png]   (the image + screen state + element map)
+ *                    | drive <action> [target words] [--item i] [--path "A > B"] [--text t] [--keys k] [--dir d] [--scroll-to t] [--submit] [--confirm]   (console-screen@1)
  *                    | overlay expand | overlay collapse | overlay open <url>   (AmberX's overlay on Brett's phone, POST /api/console/overlay)
  *        → sent to the console (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN), which runs it
  *   --to recent|all|<client id>   which open console (default: the one used last)
@@ -24,6 +25,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CONTROL_TARGETS, controlFailure, controlGate, controlResult, normalizeControl } from '../../../../framework/core/engines/control-rules.mjs';
 import { CONSOLE_TOOLS, normalizeConsoleCatalog, runConsoleCommand } from '../../../../framework/core/engines/console-commands.mjs';
+import { CONSOLE_SCREEN_ACTIONS, screenElementLine, screenMapText } from '../../../../framework/core/engines/console-screen.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
@@ -76,7 +78,7 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | screenshot [--address a | --selector css] [--out file.png] | overlay expand|collapse|open <url>   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | screenshot [--address a | --selector css] [--describe] [--question q] [--out file.png] | drive <map|click|right_click|double_click|menu|context_menu|expand|collapse|scroll|type|key> [target] [--item i] [--path p] [--text t] [--keys k] [--dir d] [--scroll-to t] [--submit] [--confirm] | overlay expand|collapse|open <url>   [--to recent|all|<client>]';
 export const OVERLAY_VERBS = ['expand', 'collapse', 'open'];
 
 /** `axf console …` words → a control@1 console command, or { error }. */
@@ -108,8 +110,21 @@ export function commandFromArgv(argv) {
     case 'refresh': cmd = { ...act('console.nav', 'refresh', 'here'), input: { ...input, ...(f.hard ? { hard: true } : {}), ...(f.all ? { to: 'all' } : {}) } }; break;
     case 'where': case 'here': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
     case 'screenshot': case 'shot': {
-      const shotInput = { ...(typeof f.to === 'string' ? { to: f.to } : {}), ...(typeof f.address === 'string' ? { address: f.address } : {}), ...(typeof f.selector === 'string' ? { selector: f.selector } : {}) };
+      const shotInput = { ...(typeof f.to === 'string' ? { to: f.to } : {}), ...(typeof f.address === 'string' ? { address: f.address } : {}), ...(typeof f.selector === 'string' ? { selector: f.selector } : {}),
+        ...(f.describe || typeof f.question === 'string' ? { describe: true } : {}), ...(typeof f.question === 'string' ? { question: f.question } : {}) };
       cmd = { op: 'act', target: 'console.nav', path: 'here', action: 'screenshot', ...(Object.keys(shotInput).length ? { input: shotInput } : {}) };
+      break;
+    }
+    case 'drive': case 'screen-do': {
+      // console-screen@1: act on the screen by words, a map number, an address or x,y (core/engines/console-screen.mjs)
+      const [action, ...target] = rest;
+      if (!CONSOLE_SCREEN_ACTIONS.includes(action)) return { error: `usage: axf console drive <${CONSOLE_SCREEN_ACTIONS.join('|')}> [target] [--item i] [--path "A > B"] [--text t] [--keys k] [--dir d] [--scroll-to t] [--submit] [--confirm]` };
+      const driveInput = {
+        ...(target.length ? { target: target.join(' ') } : {}), ...Object.fromEntries(['item', 'path', 'text', 'keys', 'dir'].filter((k) => typeof f[k] === 'string').map((k) => [k, f[k]])),
+        ...(typeof f['scroll-to'] === 'string' ? { to: f['scroll-to'] } : {}), ...(f.submit ? { submit: true } : {}), ...(f.confirm === true ? { confirm: true } : {}),
+        ...(typeof f.to === 'string' && f.to !== 'recent' ? { client: f.to } : {}),
+      };
+      cmd = { op: 'act', target: 'console.screen', action, ...(Object.keys(driveInput).length ? { input: driveInput } : {}) };
       break;
     }
     case 'clients': case 'consoles': cmd = { op: 'list', target: 'console.clients' }; break;
@@ -162,7 +177,15 @@ export function formatAnswer(r) {
     const files = (r.images ?? []).map((i) => `${i.file ?? '(not saved)'} ${i.width ?? '?'}×${i.height ?? '?'}`);
     if (r.status === 'pending' || r.queued) return `pending: screenshot — ${r.message ?? 'no console answered yet'}`;
     if (!files.length) return `✗ screenshot: ${r.message || (r.delivered ?? []).map((d) => d.message).join(' · ') || 'no image came back'}`;
-    return `✓ screenshot → ${files.join(' · ')}\n${formatShotState(r.state)}`;
+    const said = r.description ? `\n\n${r.description}` : r.describeNote ? `\n\n(${r.describeNote})` : '';
+    const by = r.describedBy?.model ? `\n(described by ${r.describedBy.model}${r.describedBy.cached ? ', cached' : ` in ${r.describedBy.ms} ms, ${r.describedBy.usage?.input ?? 0} + ${r.describedBy.usage?.output ?? 0} tokens`})` : '';
+    return `✓ screenshot → ${files.join(' · ')}\n${formatShotState(r.state)}${said}${by}${Array.isArray(r.elements) ? `\n\n${screenMapText(r.elements)}` : ''}`;
+  }
+  if (r.target === 'console.screen') {
+    const d = r.data ?? {};
+    const cands = (r.candidates ?? d.candidates ?? []).map(screenElementLine).join('\n');
+    if (!r.ok) return `${r.code}: ${r.message}${cands ? `\n${cands}` : ''}`;
+    return `✓ ${d.did ?? r.action}\n\n${screenMapText(d.elements ?? [])}`;
   }
   if (!r.ok) return r.code === 'confirmation_required' ? `${r.message}\nconfirm token: ${r.confirm}` : `${r.code}: ${r.message}`;
   if (r.op === 'list') {
