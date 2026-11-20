@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9414,
- "updatedAt": "2026-11-20T02:05:16.091Z",
+ "rev": 9415,
+ "updatedAt": "2026-11-20T02:16:41.079Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -271528,6 +271528,11 @@
      "text": "Watchdog: build retried at pending, attempt 5.",
      "at": "2026-11-20T02:05:02.626Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T02:16:02.277Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -272307,7 +272312,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 224,
+   "rev": 225,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284770,6 +284775,11 @@
      "text": "Watchdog: build retried at pending, attempt 5.",
      "at": "2026-11-20T02:05:02.626Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T02:16:02.277Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -285450,7 +285460,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 194,
+   "rev": 195,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 22:17 UTC · `deep-links-to-plugin-s-settings-don-t` → pending, note (all) · watchdog
-- 2026-11-19 22:17 UTC · `queue-stall-detector-vps-spots-queued` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `load-spike-alarm-vps-detects-cpu-load` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `server-safe-mode-one-emergency-button` → pending, note (all) · watchdog
 - 2026-11-20 00:07 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 02:04 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 - 2026-11-20 02:05 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
 - 2026-11-20 02:05 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
+- 2026-11-20 02:16 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-20 02:16 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 
 ## Token passes (log)
 
