@@ -5,7 +5,7 @@
  * Small on purpose: no window or dock engine, framework controls only, theme tokens only.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, IconButton, Icon, Markdown, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Icon, Markdown, Note, PageToolbar, Segmented, SelectField, TextField, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
@@ -100,17 +100,28 @@ function NotesView() {
   }, [list, sort, q]);
 
   const folderOptions = [{ value: '', label: 'Top level' }, ...(list?.folders ?? []).map((f) => ({ value: f, label: f }))];
+  // the shared framework toolbars (page-toolbar@1, assets/toolbar/notes.json and notes-note.json)
+  const setEdit = (v: boolean) => { if (!open) return false; if (!v && draft !== open.content && !window.confirm('Drop your changes?')) return editing; setEditing(v); if (!v) setDraft(open.content); return v; };
+  usePublishPageState('notes', {
+    available: !busy && !!list?.available,
+    note: open ? { path: open.path, editing, dirty: !busy && editing && draft !== open.content, idle: !busy && !editing } : null,
+  });
+  useToolbarHandlers('notes', {
+    'notes.new-note': () => { setAsk({ kind: 'note', value: '', folder: open?.folder ?? 'misc' }); return { asking: 'note' }; },
+    'notes.new-folder': () => { setAsk({ kind: 'folder', value: '', folder: '' }); return { asking: 'folder' }; },
+    'notes.reload': async () => { await load(); return { notes: list?.notes.length ?? 0 }; },
+    'notes.edit': () => ({ editing: setEdit(!editing) }),
+    'notes.save': async () => { await save(); return { saved: open?.path ?? null }; },
+    'notes.rename': () => { if (!open) return null; setAsk({ kind: 'rename', value: open.name, folder: open.folder }); return { asking: 'rename' }; },
+    'notes.delete': () => { remove(); return { path: open?.path ?? null }; },
+  });
 
   return (
     <div className="fx-stack fx-stack--lg axp-notes-browser">
       <header className="fx-pagehead">
         <div><p className="fx-eyebrow">Claude files · notes</p><h1>Notes</h1><p className="fx-muted">Every note saved for Brett in one place: read, search, edit, rename and move them.</p></div>
-        <div className="axp-notes-browser__acts">
-          <Button icon="plus" disabled={busy || !list?.available} onClick={() => setAsk({ kind: 'note', value: '', folder: open?.folder ?? 'misc' })}>New note</Button>
-          <Button tone="ghost" icon="folder" disabled={busy || !list?.available} onClick={() => setAsk({ kind: 'folder', value: '', folder: '' })}>New folder</Button>
-          <IconButton icon="refresh" label="Reload" onClick={() => void load()} />
-        </div>
       </header>
+      <PageToolbar view="notes" />
 
       {list && !list.available && <Note tone="warning">The hub's shared Claude files aren't mounted on this console ({list.root}).</Note>}
       {error && <Note tone={conflict ? 'warning' : 'danger'}>{error}{conflict && open && <> <Button size="sm" icon="refresh" onClick={() => void openNote(open.path)}>Reload the note</Button></>}</Note>}
@@ -155,19 +166,13 @@ function NotesView() {
           {!open && <p className="fx-muted">Pick a note on the left.</p>}
           {open && (
             <>
-              <div className="axp-notes-browser__bar" role="toolbar" aria-label="Note">
-                <div className="axp-notes-browser__label">
-                  <strong>{open.title}</strong>
-                  <span className="fx-small fx-muted axp-notes-browser__sub">{open.path} · {when(open.updatedAt)}{open.updatedBy ? ` · ${open.updatedBy}` : ''}</span>
-                </div>
-                <div className="axp-notes-browser__acts">
-                  <Switch label="Edit" checked={editing} onChange={(v) => { if (!v && draft !== open.content && !window.confirm('Drop your changes?')) return; setEditing(v); if (!v) setDraft(open.content); }} />
-                  {editing && <Button tone="primary" icon="save" disabled={busy || draft === open.content} onClick={() => void save()}>Save</Button>}
-                  <IconButton icon="edit" label="Rename" disabled={busy || editing} onClick={() => setAsk({ kind: 'rename', value: open.name, folder: open.folder })} />
-                  <SelectField label="Move to" value={open.folder} options={folderOptions} onChange={(v) => void moveTo(v)} />
-                  <IconButton icon="trash" label="Delete" disabled={busy || editing} onClick={remove} />
-                </div>
+              <div className="axp-notes-browser__label">
+                <strong>{open.title}</strong>
+                <span className="fx-small fx-muted axp-notes-browser__sub">{open.path} · {when(open.updatedAt)}{open.updatedBy ? ` · ${open.updatedBy}` : ''}</span>
               </div>
+              <PageToolbar view="notes" slot="note" label="Note" className="axp-notes-browser__bar">
+                <SelectField label="Move to" value={open.folder} options={folderOptions} onChange={(v) => void moveTo(v)} />
+              </PageToolbar>
               {editing
                 ? <TextField label="Note text (Markdown)" mono rows={24} value={draft} onChange={setDraft} />
                 : <div className="axp-notes-browser__doc"><Markdown text={open.content.replace(/<!--[\s\S]*?-->\n?/g, '')} /></div>}

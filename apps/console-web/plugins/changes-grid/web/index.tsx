@@ -6,7 +6,7 @@
  * expands to its details (a change's whole entry is fetched on first expand). Filter, search, sort. Stores nothing.
  */
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, IconButton, ModelBadge, PriorityTag, Segmented } from '@console/axf/react';
+import { Button, Chip, IconButton, ModelBadge, PageToolbar, PriorityTag, Segmented, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
@@ -100,6 +100,12 @@ function GridView() {
   const byFeature = useMemo(() => new Map((data?.features ?? []).map((f) => [f.id, f])), [data]);
   const n = useMemo(() => counts(rows), [rows]);
   const toggle = (k: string) => setOpen((s) => { const x = new Set(s); if (x.has(k)) x.delete(k); else x.add(k); return x; });
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/changes-grid.json)
+  usePublishPageState(VIEW, { loaded: !!data, expanded: open.size, rows: rows.length });
+  useToolbarHandlers(VIEW, {
+    'changes-grid.reload': () => { reload(); return { reloading: true }; },
+    'changes-grid.collapse': () => { const n2 = open.size; setOpen(new Set()); return { collapsed: n2 }; },
+  });
 
   return (
     <div className="fx-stack fx-stack--lg axp-changes-grid">
@@ -109,16 +115,14 @@ function GridView() {
           <h1>Changes &amp; features</h1>
           <p className="fx-muted axp-changes-grid__lede" title="Every change from the codebase log and every planned feature in one grid, newest first.">Every change and planned feature, newest first.</p>
         </div>
-        <IconButton icon="refresh" label="Reload" onClick={reload} />
       </header>
-      <div className="axp-changes-grid__bar" role="toolbar" aria-label="Filter the grid">
+      <PageToolbar view="changes-grid" className="axp-changes-grid__bar">
         <input className="fx-input axp-changes-grid__search" type="search" placeholder="Search names, ids, status, model…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" />
         <Segmented label="Show" size="sm" value={show} onChange={setShow} options={[{ value: 'all', label: 'Both' }, { value: 'changes', label: 'Changes' }, { value: 'features', label: 'Features' }]} />
         <select className="fx-input axp-changes-grid__sort" value={sort} onChange={(e) => setSort(e.target.value as Sort)} aria-label="Sort">
           <option value="newest">Newest</option><option value="oldest">Oldest</option><option value="title">Name</option>
         </select>
-        <IconButton icon="chevron-up" label="Collapse all" onClick={() => setOpen(new Set())} disabled={!open.size} />
-      </div>
+      </PageToolbar>
       {data && !data.changesOk ? <p className="fx-small fx-muted">The changes log isn’t available (Codebase changes plugin off or its log unreachable); showing features only.</p> : null}
       {!data ? <p className="fx-empty">Loading…</p> : !rows.length ? <p className="fx-empty">Nothing matches.</p> : null}
       {rows.length ? (

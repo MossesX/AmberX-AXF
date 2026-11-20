@@ -29,8 +29,7 @@
 /* the Actions window */
 .axp-ctxd-act { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-lg); min-height: 0; height: 100%; overflow: auto; }
 .axp-ctxd-act__bar { display: flex; gap: var(--fx-dens-gap-md); align-items: center; }
-.axp-ctxd-act__bar > :first-child { flex: 1; min-width: 0; }
-.axp-ctxd-act__filter { position: relative; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); }
+.axp-ctxd-act__search { flex: 1; min-width: 0; }
 .axp-ctxd-act__target { margin: 0; }
 .axp-ctxd-act__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
 .axp-ctxd-act__head { display: flex; gap: var(--fx-dens-gap-md); align-items: center; margin-bottom: var(--fx-dens-gap-md); }

@@ -5,12 +5,12 @@
  * the tree on a narrow screen).
  */
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Note, PageToolbar, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, VIEW, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -66,10 +66,20 @@ export function PlanStudio2Page() {
   const total = state ? tc.progress(state, null) : { done: 0, total: 0, minutes: 0 };
   const current = state && selected ? tc.byId(state, selected) : null;
   const newPlan = () => rt.openDialog(DIALOGS.item, { parent: null, kind: 'plan' });
+  // the shared framework toolbars (page-toolbar@1, assets/toolbar/plan-studio-2.json and plan-studio-2-item.json)
+  usePublishPageState(VIEW, { loaded: !!state, items: state?.items.length ?? 0, trash: state?.trash.length ?? 0, undoable: !!state?.trash.length && !busy, selection: current ? { id: current.id, title: current.title } : null });
+  useToolbarHandlers(VIEW, {
+    'plan-studio-2.new-plan': () => { newPlan(); return { kind: 'plan' }; },
+    'plan-studio-2.undo': async () => { const r = await undoDelete(); rt.toast(r.say ?? 'Undone.', 'success', 'Plan Studio 2.0'); return r; },
+    'plan-studio-2.expand': () => { setCollapsed(null, false); return { expanded: true }; },
+    'plan-studio-2.collapse': () => { setCollapsed(null, true); return { collapsed: true }; },
+    'plan-studio-2.export': async () => { const t = await exportText(null, 'md'); download('plan-studio-2.md', t); return { bytes: t.length }; },
+    'plan-studio-2.reload': async () => { await reload(); return { reloaded: true }; },
+  });
 
   const treeNode = (
     <div className={`${B}__main fx-stack`}>
-      <div className={`${B}__tools`} role="toolbar" aria-label="Tree tools">
+      <div className={`${B}__tools`} role="search" aria-label="Tree tools" data-axf-not-toolbar="search fields only: the tree's buttons are on the page toolbar">
         <TextField label="Find" value={q} onChange={setQ} type="search" placeholder="Find a plan, step or note…" className={`${B}__find`} />
         <Switch label="Show done" checked={showDone} onChange={(v) => rt.settings.set(KEYS.showDone, v)} />
       </div>
@@ -101,16 +111,10 @@ export function PlanStudio2Page() {
           <h1>Plan Studio 2.0</h1>
           <p className="fx-muted">Plans, sections, steps, notes and lists nested as deep as you like. Right-click or long-press any row for everything you can do to it, drag the grip to move it, or just say it.</p>
         </div>
-        <div className={`${B}__actions`} role="toolbar" aria-label="Plan Studio 2.0 actions">
-          <Button tone="primary" icon="plus" onClick={newPlan}>New plan</Button>
-          <IconButton icon="undo" label="Undo delete" disabled={!state?.trash.length || busy} onClick={() => void undoDelete().then((r) => rt.toast(r.say ?? 'Undone.', 'success', 'Plan Studio 2.0'))} />
-          <IconButton icon="chevron-down" label="Expand all" data-axf-target="action:plan-studio-2.expand-all" disabled={!state} onClick={() => setCollapsed(null, false)} />
-          <IconButton icon="chevron-up" label="Collapse all" data-axf-target="action:plan-studio-2.collapse-all" disabled={!state} onClick={() => setCollapsed(null, true)} />
-          <IconButton icon="download" label="Export all as Markdown" disabled={!state?.items.length} onClick={() => void exportText(null, 'md').then((t) => download('plan-studio-2.md', t))} />
-          <IconButton icon="refresh" label="Reload" onClick={() => void reload()} />
-          <LayoutSwitcher />
-        </div>
       </header>
+      <PageToolbar view="plan-studio-2" label="Plan Studio 2.0 actions" className={`${B}__actions`}>
+        <LayoutSwitcher />
+      </PageToolbar>
       {error && <Note tone="danger">{error}</Note>}
       <SectionLayout sections={sections} />
       <DragLayer />
@@ -159,6 +163,13 @@ function Editor({ item, state }: { item: Item; state: State }) {
   const dirty = JSON.stringify({ ...draft, updatedAt: '' }) !== JSON.stringify({ ...item, updatedAt: '' });
   const save = () => void editItem(item.id, { title: draft.title, body: draft.body, status: draft.status, priority: draft.priority, model: draft.model, minutes: draft.minutes, kind: draft.kind, tags: draft.tags }).then((r) => rt.toast(r.say ?? 'Saved.', 'success', 'Plan Studio 2.0'));
   const path = tc.ancestors(state, item.id);
+  useToolbarHandlers(VIEW, {
+    'plan-studio-2.item-new': () => { rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] }); return { parent: item.id }; },
+    'plan-studio-2.item-move': () => { rt.openDialog(DIALOGS.move, { id: item.id }); return { id: item.id }; },
+    'plan-studio-2.item-link': () => { rt.openDialog(DIALOGS.link, { id: item.id }); return { id: item.id }; },
+    'plan-studio-2.item-build': () => { rt.openDialog(DIALOGS.build, { id: item.id }); return { id: item.id }; },
+    'plan-studio-2.item-delete': async () => { const r = await deleteItem(item.id); rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0'); return r; },
+  });
   const openLink = (l: Link) => {
     if (l.type === 'url') { window.open(l.ref, '_blank', 'noopener'); return; }
     const spec = linkAction(l);
@@ -167,13 +178,7 @@ function Editor({ item, state }: { item: Item; state: State }) {
   return (
     <section className={`${B}__editor fx-card`} data-fx-ctx-target={CTX_TARGET} data-fx-ctx-payload={item.id}>
       <p className="fx-eyebrow">{path.length ? path.map((a) => a.title).join(' › ') : 'Top level'} · {tc.KIND_LABEL[item.kind]}</p>
-      <div className={`${B}__editrow`} role="toolbar" aria-label="Item actions">
-        <Button size="sm" icon="plus" onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })}>New inside</Button>
-        <Button size="sm" icon="move" onClick={() => rt.openDialog(DIALOGS.move, { id: item.id })}>Move to…</Button>
-        <Button size="sm" icon="external" onClick={() => rt.openDialog(DIALOGS.link, { id: item.id })}>Link…</Button>
-        <Button size="sm" icon="rocket" onClick={() => rt.openDialog(DIALOGS.build, { id: item.id })}>Send to build…</Button>
-        <Button size="sm" icon="trash" tone="danger" undoable onClick={() => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0'))}>Delete</Button>
-      </div>
+      <PageToolbar view="plan-studio-2" slot="item" label="Item actions" className={`${B}__editrow`} />
       <TextField label="Title" value={draft.title} onChange={(v) => setDraft({ ...draft, title: v })} />
       <TextField label="Notes" value={draft.body} onChange={(v) => setDraft({ ...draft, body: v })} rows={5} placeholder="What it is, why, how far it got…" />
       <div className={`${B}__fields`}>
@@ -264,7 +269,7 @@ function CommandBox() {
   };
   return (
     <div className={`${B}__cmd`}>
-      <div className={`${B}__cmdrow`} role="toolbar" aria-label="Say a command">
+      <div className={`${B}__cmdrow`} role="group" aria-label="Say a command">
         <TextField label="Say it" value={text} onChange={setText} placeholder="new plan Launch · add a step Deploy to Launch · rename Deploy to Ship · move Ship into Launch · delete Ship · undo" className={`${B}__cmdin`} />
         <Button icon="play" onClick={() => { void run(text, false); setText(''); }} disabled={!text.trim()}>Run</Button>
         {canListen() && <Button icon={listening ? 'pause' : 'mic'} tone={listening ? 'danger' : 'neutral'} onClick={() => void talk()}>{listening ? 'Stop' : 'Talk'}</Button>}

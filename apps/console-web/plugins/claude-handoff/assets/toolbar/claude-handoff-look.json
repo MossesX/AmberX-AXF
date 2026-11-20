@@ -1,0 +1,64 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "claude-handoff-look",
+  "name": "Look roller",
+  "version": "1.0.0",
+  "description": "The installer look roller's toolbar: show the token tree, roll a new look from the switched-on rows, undo the last roll and go back to the app's look.",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "claude-handoff",
+    "look"
+  ],
+  "data": {
+    "scope": "view:claude-handoff-look",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "look",
+        "label": "Look",
+        "items": [
+          {
+            "id": "roll",
+            "icon": "shuffle",
+            "label": "Roll",
+            "action": "handler:claude-handoff.look-roll",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "undo",
+            "icon": "undo",
+            "label": "Undo",
+            "action": "handler:claude-handoff.look-undo",
+            "enabledWhen": "undoable",
+            "priority": 260
+          },
+          {
+            "id": "tokens",
+            "icon": "list",
+            "label": "Tokens",
+            "action": "handler:claude-handoff.look-tokens",
+            "checked": "state:treeOpen",
+            "priority": 220
+          },
+          {
+            "id": "reset",
+            "icon": "refresh",
+            "label": "Back to the app's look",
+            "action": "handler:claude-handoff.look-reset",
+            "priority": 150
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, PageToolbar, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
@@ -76,6 +76,13 @@ function SessionsView() {
     return { model: (top(picks.map((r) => r.model as ModelKey)) ?? 'opus') as ModelKey, effort: (top(picks.map((r) => r.effort as Effort)) ?? 'high') as Effort };
   }, [rows]);
   const installed = installedTargets(st);
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/session-checkin.json)
+  usePublishPageState('session-checkin', { flagged: mismatches, flaggedOnly: filter === 'mismatch' });
+  useToolbarHandlers('session-checkin', {
+    'session-checkin.refresh': () => { load(); return { refreshing: true }; },
+    'session-checkin.flagged': () => { const on = filter !== 'mismatch'; setFilter(on ? 'mismatch' : 'all'); return { flaggedOnly: on }; },
+    'session-checkin.settings': () => { rt.dispatch('settings.open:session-checkin'); return { opened: 'settings' }; },
+  });
 
   return (
     <div className="fx-stack fx-stack--lg">
@@ -84,9 +91,6 @@ function SessionsView() {
           <p className="fx-eyebrow">Session archive{rows ? ` · ${rows.length}` : ''}</p>
           <h1>Sessions</h1>
           <p className={`fx-muted ${P}__lede`} title="Every session check-in, newest first. Pick one to see what was detected, what was picked and what the baseline build costs.">Every session check-in, newest first. Tap one for details.</p>
-        </div>
-        <div className={`${P}__acts`}>
-          <IconButton icon="refresh" label="Refresh" onClick={load} />
         </div>
       </header>
 
@@ -99,7 +103,7 @@ function SessionsView() {
       )}
       {err && <p className={`${P}__error`}>{err}</p>}
 
-      <div className={`${P}__bar`} role="toolbar" aria-label="Session check-in">
+      <PageToolbar view="session-checkin" label="Session check-in" className={`${P}__bar`}>
         <div className={`${P}__strip`}>
           <Chip>{rows?.length ?? '…'} sessions</Chip>
           <Chip tone={mismatches ? 'warning' : undefined}>{rows ? mismatches : '…'} flagged</Chip>
@@ -108,7 +112,7 @@ function SessionsView() {
         <select className={`fx-input ${P}__filter`} value={filter} onChange={(e) => setFilter(e.target.value as Filter)} aria-label="Filter sessions">
           {FILTERS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
         </select>
-      </div>
+      </PageToolbar>
 
       {rows && shown.length === 0 && <p className="fx-muted">{rows.length ? 'No sessions match this filter.' : 'No check-ins archived yet. They appear here after the next new Claude Code session with the check-in installed.'}</p>}
       {shown.length > 0 && (

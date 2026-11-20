@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, ModelBadge, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, ModelBadge, PageToolbar, TabGroup, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { registerRowRefTarget, rowHooks, useDataset, useDatasetsRevision } from '@console/axf/libs/datagrid';
@@ -79,6 +79,14 @@ export function BuildBreakerPage() {
   const t = useMemo(() => bb.totals(shown), [shown]);
   const tAll = useMemo(() => bb.totals(all), [all]);
   const filtering = !!(q || statuses.length || model !== 'any' || range !== 'all' || attached !== all);
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/build-breaker.json)
+  usePublishPageState(VIEW, { asks: shown.length, filtering });
+  useToolbarHandlers(VIEW, {
+    'build-breaker.reload': async () => { await load(); return { asks: all.length }; },
+    'build-breaker.expand': () => { setGridDefault(true); setGrids({}); setOpenRows(new Set(shown.map((a) => a.id))); return { open: shown.length }; },
+    'build-breaker.collapse': () => { setGridDefault(false); setGrids({}); setOpenRows(new Set()); return { open: 0 }; },
+    'build-breaker.clear': () => { setQ(''); setStatuses([]); setModel('any'); setRange('all'); return { cleared: true }; },
+  });
 
   if (!res) return <div className="fx-stack fx-stack--lg axp-build-breaker"><Head /><LoadingSkeleton rows={8} label="Loading every ask" /></div>;
   if (!doc) return <div className="fx-stack fx-stack--lg axp-build-breaker"><Head /><EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => { setRes(null); void load(); } }}>{res.error || 'The asks could not be read.'}</EmptyState></div>;
@@ -88,8 +96,6 @@ export function BuildBreakerPage() {
   const gridOpen = (id: string) => grids[id] ?? (gridDefault || !!q);
   const toggleGrid = (id: string) => setGrids((g) => ({ ...g, [id]: !gridOpen(id) }));
   const toggleRow = (id: string) => setOpenRows((s) => { const x = new Set(s); if (x.has(id)) x.delete(id); else x.add(id); return x; });
-  const expandAll = () => { setGridDefault(true); setGrids({}); setOpenRows(new Set(shown.map((a) => a.id))); };
-  const collapseAll = () => { setGridDefault(false); setGrids({}); setOpenRows(new Set()); };
   const toggleStatus = (s: string) => setStatuses((x) => (x.includes(s) ? x.filter((y) => y !== s) : [...x, s]));
   const resetFilters = () => { setQ(''); setStatuses([]); setModel('any'); setRange('all'); };
   const statusList = bb.STATUSES.filter((s) => (tAll.statuses[s.id] ?? 0) > 0 || statuses.includes(s.id));
@@ -106,7 +112,7 @@ export function BuildBreakerPage() {
       <TotalsStrip t={t} filtered={filtering} of={all.length} />
       <div className="axp-build-breaker__bar">
         <TabGroup id="build-breaker.view" label="View" className="axp-build-breaker__tabs" value={tab} onChange={setTab} tabs={TABS.map((x) => ({ value: x.id, label: x.label, icon: x.icon, badge: x.n }))} />
-        <div className="axp-build-breaker__tools" role="toolbar" aria-label="Filter and sort">
+        <PageToolbar view="build-breaker" label="Filter and sort" className="axp-build-breaker__tools">
           <label className="fx-search axp-build-breaker__search">
             <Icon name="search" size={13} />
             <input type="search" placeholder="Search what you asked, in your words…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search asks" />
@@ -127,12 +133,7 @@ export function BuildBreakerPage() {
             <Icon name="layers" size={12} />
             <select aria-label="Group by" value={group} onChange={(e) => setGroup(e.target.value)}>{bb.GROUPS.map((g) => <option key={g.id} value={g.id}>{g.id === 'none' ? 'No grouping' : `By ${g.label.toLowerCase()}`}</option>)}</select>
           </label>
-          <span className="axp-build-breaker__fold">
-            <IconButton icon="chevron-down" label="Expand all" title="Open every grid and every row" onClick={expandAll} />
-            <IconButton icon="chevron-up" label="Collapse all" title="Close every grid and row" onClick={collapseAll} />
-            {filtering && <IconButton icon="x" label="Clear filters" onClick={resetFilters} />}
-          </span>
-        </div>
+        </PageToolbar>
         <div className="axp-build-breaker__statuses" role="group" aria-label="Status filter (pick any)">
           {statusList.map((s) => {
             const on = statuses.includes(s.id);
