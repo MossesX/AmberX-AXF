@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9789,
- "updatedAt": "2026-11-20T07:36:54.377Z",
+ "rev": 9790,
+ "updatedAt": "2026-11-20T07:37:09.374Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:36:49.666Z",
+   "updatedAt": "2026-11-20T07:36:59.588Z",
    "builtAt": "",
    "notes": [
     {
@@ -337952,13 +337952,12 @@
      "done": true,
      "doneAt": "2026-11-20T05:52:06.661Z",
      "note": "",
-     "rev": 53,
+     "rev": 54,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T06:52:05.729Z",
-     "statusAt": "2026-11-20T06:52:01.449Z",
-     "statusBy": "watchdog",
-     "attempt": 21,
-     "failedFrom": "completed",
+     "updatedAt": "2026-11-20T07:36:59.662Z",
+     "statusAt": "2026-11-20T07:36:59.588Z",
+     "statusBy": "ops-slots-watchdog-cleanup",
+     "attempt": 22,
      "statusLog": [
       {
        "status": "pending",
@@ -338281,9 +338280,16 @@
        "by": "watchdog",
        "attempt": 21,
        "why": "completed did not move after 2 re-run(s) of the transition (28 min past its budget)"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T07:36:59.588Z",
+       "by": "ops-slots-watchdog-cleanup",
+       "attempt": 22,
+       "why": "its session had ended cleanly; failed only by the watchdog's completed-step budget (fixed in PR #857)"
       }
      ],
-     "status": "failed",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s1",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s1",
@@ -340816,7 +340822,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 443,
+   "rev": 444,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
