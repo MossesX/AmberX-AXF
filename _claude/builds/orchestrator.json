@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T06:59:10.552Z",
+ "updatedAt": "2026-11-20T06:59:26.444Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -540,6 +540,11 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s6--earl, shared account login)",
      "at": "2026-11-20T06:57:11.968Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at completed (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T06:59:02.140Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
