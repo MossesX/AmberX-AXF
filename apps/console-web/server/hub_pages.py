@@ -178,8 +178,9 @@ def router_for(state_dir: Path, client_factory: Callable[[], httpx.Client] | Non
     make = client_factory or (lambda: httpx.Client(timeout=TIMEOUT_S, follow_redirects=False))
 
     def log(entry: dict[str, Any]) -> None:
-        # data-store@1: the relay's write log is a journal; it reaches the tables through the store, never a bare file write
+        # no-json-data@1: the write goes through the data layer (a journal), never a bare file append
         try:
+            state_dir.mkdir(parents=True, exist_ok=True)
             data_store.append_jsonl(state_dir / "hub-pages.jsonl", {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **entry})
         except (OSError, data_store.DataStoreError):
             pass

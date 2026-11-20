@@ -127,8 +127,9 @@ throws('symlinked plugin folder not touched', () => cat.unpack(pkg, linkPlugins,
 check('console server skips dot folders', /startswith\(\("_", "\."\)\)/.test(readFileSync(join(REPO, 'apps/console-web/server/main.py'), 'utf8')));
 
 
-// axhub kind (axHub web plugins): web files only, still packed, published and served; no app installs them since
-// apps/axhub-web folded into the console (Nov 20 2026), so the kind has no `into`
+// axhub kind (axHub web plugins): web files only, listed and served by the catalog. Since the web app folded into the
+// console (Nov 20 2026) no kind in the repo registry installs into an app, so app-install/app-uninstall are exercised on a
+// scratch kind with `into`, registered for this test only.
 {
   const asrc = join(tmp, 'src', 'hub-hello');
   mkdirSync(join(asrc, 'web'), { recursive: true });
@@ -141,33 +142,34 @@ check('console server skips dot folders', /startswith\(\("_", "\."\)\)/.test(rea
   throws('axhub package with a server file refused', () => cat.verifyPackage({ ...ap, files: [...ap.files, { path: 'server.py', b64: '' }] }), /may only carry/);
   throws('axhub package needs axhub-plugin@1', () => cat.pack(src, 'axhub'), /axhub-plugin@1/);
   check('axhub published', cat.publishPackage(ap).published === true);
-  check('no kind installs into an app today', Object.values(cat.KINDS).every((k) => !k.into));
-  throws('retired axhub kind has no app folder', () => cat.appPluginsDir('axhub'), /don't install into an app/);
-  throws('retired axhub kind takes no app-list', () => cat.listAppPlugins('axhub'), /don't install into an app/);
-  let noApp = null; try { await cat.installAppPlugin('axhub', 'hub-hello'); } catch (e) { noApp = e; }
-  check('retired axhub kind takes no app-install', /don't install into an app/.test(noApp?.message ?? '') && !existsSync(join(root, 'apps/axhub-web')));
+  check('no repo kind installs into an app (axhub-web folded into the console)', Object.values(cat.KINDS).every((k) => !k.into));
+  throws('axhub kind has no app folder', () => cat.appPluginsDir('axhub'), /don't install into an app/);
   throws('console kind has no app folder', () => cat.appPluginsDir('console'), /don't install into an app/);
 
-  // the app-plugin path itself (a kind with `into`) stays covered through a scratch kind registered for this run only
+  // a scratch kind that does install into an app folder of the clone: same manifest and file rules as axhub
   const into = 'apps/scratch-app/src/plugins';
-  cat.KINDS.scratch = { label: 'Scratch app plugin', manifest: 'axhub-plugin@1', allow: cat.KINDS.axhub.allow, idPattern: cat.KINDS.axhub.idPattern, into };
-  check('scratch kind published', cat.publishPackage(cat.pack(asrc, 'scratch')).published === true);
-  throws('app folder missing in the clone', () => cat.listAppPlugins('scratch'), /missing/);
-  mkdirSync(join(root, into, '_template'), { recursive: true });
-  writeFileSync(join(root, into, '_template/plugin.json'), JSON.stringify({ ...am, id: 'ai.amberx.axhub.example' }));
-  check('nothing installed yet (template skipped)', cat.listAppPlugins('scratch').items.length === 0);
-  const r = await cat.installAppPlugin('scratch', 'hub-hello');
-  check('app-install unpacks into the app folder', r.dir === `${into}/hub-hello` && existsSync(join(root, r.dir, 'web/index.tsx')));
-  const li = cat.listAppPlugins('scratch').items;
-  check('app-list lists it with its model', li.length === 1 && li[0].id === am.id && li[0].builtWith?.model === 'opus');
-  let again = null; try { await cat.installAppPlugin('scratch', 'hub-hello'); } catch (e) { again = e; }
-  check('second install refused without update', /already installed/.test(again?.message ?? ''));
-  mkdirSync(join(root, into, 'not-a-plugin'));
-  let nap = null; try { await cat.uninstallAppPlugin('scratch', 'not-a-plugin'); } catch (e) { nap = e; }
-  check('uninstall refuses a folder without a plugin of the kind', /doesn't hold/.test(nap?.message ?? '') && existsSync(join(root, into, 'not-a-plugin')));
-  const u = await cat.uninstallAppPlugin('scratch', 'hub-hello');
-  check('app-uninstall removes it', u.removed === 'hub-hello' && !existsSync(join(root, into, 'hub-hello')));
-  delete cat.KINDS.scratch;
+  cat.KINDS.scratch = { ...cat.KINDS.axhub, label: 'Scratch app plugin', into };
+  try {
+    check('scratch kind published', cat.publishPackage(cat.pack(asrc, 'scratch')).published === true);
+    throws('app folder missing in the clone', () => cat.listAppPlugins('scratch'), /missing/);
+    mkdirSync(join(root, into, '_template'), { recursive: true });
+    writeFileSync(join(root, into, '_template/plugin.json'), JSON.stringify({ ...am, id: 'ai.amberx.axhub.example' }));
+    check('nothing installed yet (template skipped)', cat.listAppPlugins('scratch').items.length === 0);
+    const r = await cat.installAppPlugin('scratch', 'hub-hello');
+    check('app-install unpacks into the app folder', r.dir === `${into}/hub-hello` && existsSync(join(root, r.dir, 'web/index.tsx')));
+    const li = cat.listAppPlugins('scratch').items;
+    check('app-list lists it with its model', li.length === 1 && li[0].id === am.id && li[0].builtWith?.model === 'opus');
+    let again = null; try { await cat.installAppPlugin('scratch', 'hub-hello'); } catch (e) { again = e; }
+    check('second install refused without update', /already installed/.test(again?.message ?? ''));
+    mkdirSync(join(root, into, 'not-a-plugin'));
+    let nap = null; try { await cat.uninstallAppPlugin('scratch', 'not-a-plugin'); } catch (e) { nap = e; }
+    check('uninstall refuses a folder without a plugin of the kind', /doesn't hold/.test(nap?.message ?? '') && existsSync(join(root, into, 'not-a-plugin')));
+    const u = await cat.uninstallAppPlugin('scratch', 'hub-hello');
+    check('app-uninstall removes it', u.removed === 'hub-hello' && !existsSync(join(root, into, 'hub-hello')));
+  } finally {
+    delete cat.KINDS.scratch;
+  }
+  throws('scratch kind gone after the test', () => cat.appPluginsDir('scratch'), /unknown plugin kind/);
 }
 
 console.log(`plugin catalog: ${ok} passed, ${fail} failed`);
