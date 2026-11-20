@@ -15,7 +15,7 @@ tighten spacing, alignment and sizing everywhere.
 3. Every fix checked with `check-theme`, `check-controls`, `check-toolbars`, `check-chrome-assets` and `tsc --noEmit`;
    all green after every commit.
 
-## What was found and fixed (10 commits, each separately landable)
+## What was found and fixed (11 commits, each separately landable)
 
 | # | Commit | Screens | Found | Fixed |
 |---|--------|---------|-------|-------|
@@ -27,6 +27,15 @@ tighten spacing, alignment and sizing everywhere.
 | 6 | data grid column heads | Gate, Merge queue, Builds, Crew, every DataGrid | Column heads are framework buttons and centred their label over wide columns ("Rule" floating mid-column over left-aligned cells) | Head cells start at the cell's edge; end-aligned columns keep right alignment; console copy mirrored |
 | 7 | shipped features bar; merge queue timer | Shipped features; Builds / Merge queue | View segment half a row above the search input; timer cell "5h 09m/ 2d 12h" (flex swallowed the space) | Bar aligns to the bottom; regular gap in the timer |
 | 8 | text columns in text units | Agent swarm (Cost tab), Chats, Shipped features | Grid columns sized in `--fx-space` multiples; spacing presets run 2.9–8px, so under a compact preset the number columns shrank to ~20px and overprinted (headers and values) | The width helpers count in text size (same result at the default scale) |
+| 9 | builds table phone meta line | Builds, Merge queue (phone) | The status table's one-line phone meta used the class `st-meta`, which the Standards page defines too; the later stylesheet won and rows read "7/75h 25m/ 2d 12h#853" | Own class `st-rowmeta` with regular gaps; Standards keeps its rule |
+
+Verified on the "after" shots: plugin titles start on the same line as core titles, toolbar counters sit after their
+labels (Agent swarm, Codebase changes, Notifications), the assistant list is left-aligned and truncates, the Standards
+slug has its gap, the build filters are apart, the swarm Cost grid is legible, grid heads start at their cells. Nineteen
+plugin views (Agent voice, AmberX listeners, Build Breaker, Builds, Changes & features, Claude handoff, Claude session,
+Crew, Fable rebuilds, Feature matrix, MD Studio, Notes, Audio out, Plugin Update, New project, Sessions, Theme editor,
+Theme manager, Voice notes) could not be opened by address in a fresh browser (see below), so they were reviewed in
+CSS only; the page-rhythm and framework fixes apply to them all the same.
 
 Also touched up on the way: the AI assistant `__conv-main` rows, Agent manager strip, and the Standards title are the
 only plugin-internal CSS changes outside layout; every change is layout, never a control's look (controls stay the
@@ -55,4 +64,8 @@ all pass after every commit. `tsc --noEmit` on the console: clean. Theme baselin
 
 ## UI Review
 
-Waiting in UI Review (desktop + phone, before / after) — see the PR for the group name.
+Six items wait in UI Review, group **"fable-full-audit-ui-overhaul-conso - Nov 20 11:07 AM"** (kind Screens & pages, app
+console-web), each with before / after desktop shots and after phone shots: Agent manager (gear bar, chip strip),
+Agent swarm (toolbar counters, Cost grid), AI assistant (conversation list), Standards + Build queue + Boilerplates,
+Merge queue + Gate + Codebase changes + Notifications + Shipped features (grid heads, timer, counters, bar), Home
+(every view opens at its top). Items r-20261120-026358d6, -51d1371f, -dac3b146, -3adb4571, -79852698, -e652e9b7.
