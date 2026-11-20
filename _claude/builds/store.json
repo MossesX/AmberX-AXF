@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9386,
- "updatedAt": "2026-11-20T00:08:34.541Z",
+ "rev": 9387,
+ "updatedAt": "2026-11-20T00:08:44.659Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -245816,7 +245816,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245825,7 +245825,7 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-19T02:45:52.730Z",
+   "updatedAt": "2026-11-20T00:08:39Z",
    "builtAt": "",
    "notes": [
     {
@@ -246111,6 +246111,10 @@
     {
      "text": "Fixing: CI is red (CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.). The server retries on its ladder; nothing stops here.",
      "at": "2026-11-19T02:45:52.730Z"
+    },
+    {
+     "text": "Shipped manifest sm-every-plugin-screen-gets-a-settings-gear rev 1 sent to Shipped features (orchestrator): PR #767, 0 file(s), 3 test line(s), 0 open.",
+     "at": "2026-11-20T00:08:39Z"
     }
    ],
    "approvals": [],
@@ -246172,24 +246176,11 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "failure": {
-    "kind": "ci-red",
-    "at": "2026-11-19T02:45:52.730Z",
-    "why": "CI is red (Light PR checks (full run happens once, in the merge queue)). Needs a code fix.",
-    "head": "7cb2122c7d010ee6040e119a73e8e48fe0889cf6",
-    "step": "",
-    "exit": null
-   },
-   "landed": {
-    "pr": 767,
-    "sha": "887cb0cfb47ab716459191232f52f840aa869add",
-    "mergedAt": "2026-11-17T19:07:28Z",
-    "ci": "unknown",
-    "ciAt": "",
-    "ciRun": "",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+   "shipped": {
+    "id": "sm-every-plugin-screen-gets-a-settings-gear",
+    "rev": 1,
+    "at": "2026-11-20T00:08:39Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -246726,7 +246717,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 95,
+   "rev": 96,
    "deleted": false,
    "deletedAt": "",
    "pending": {
