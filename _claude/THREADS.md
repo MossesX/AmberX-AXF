@@ -836,9 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `separate-settings-per-plugin-reset` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `notify-phone-when-queue-starts-building` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `rebuild-every-context-menu-toolbar-nav` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `live-build-status-real-time-grids-15` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `right-click-running-build-open-headless` → failed, note (all) · watchdog
@@ -1236,6 +1233,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 11:34 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr, note (all) · lander
 - 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` PR 860 (all) · lander
+- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
+- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 11:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
