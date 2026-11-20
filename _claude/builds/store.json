@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9384,
- "updatedAt": "2026-11-20T00:07:33.783Z",
+ "rev": 9385,
+ "updatedAt": "2026-11-20T00:07:44.338Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -232482,7 +232482,7 @@
    "mergedAt": "2026-11-17T02:07:47Z",
    "priority": "P0",
    "createdAt": "2026-11-15T04:28:05.062Z",
-   "updatedAt": "2026-11-17T19:02:33.722Z",
+   "updatedAt": "2026-11-20T00:07:39Z",
    "builtAt": "2026-11-16T23:35:36.106Z",
    "notes": [
     {
@@ -232572,6 +232572,10 @@
     {
      "text": "Watchdog: UI Review item r-20261115-29c7b1b6 → Complete: Its PR merged on main (PR #704 merged 2026-11-17T02:07:47Z (7015af4b817c); on main by merge-commit 7015af4b817c; build data-container-axf-data-holds-all: complete)",
      "at": "2026-11-17T19:02:33.722Z"
+    },
+    {
+     "text": "Shipped manifest sm-data-container-axf-data-holds-all rev 1 sent to Shipped features (orchestrator): PR #704, 0 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-20T00:07:39Z"
     }
    ],
    "approvals": [
@@ -232641,6 +232645,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-data-container-axf-data-holds-all",
+    "rev": 1,
+    "at": "2026-11-20T00:07:39Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -233351,7 +233361,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
