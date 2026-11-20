@@ -396,7 +396,7 @@ export const plugin: AxfWebLibrary = {
   version: '1.0.0',
   appMenu,
   views: { 'session-checkin': { title: 'Sessions', icon: 'list', render: () => <SessionsView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'session-checkin', label: 'Sessions', icon: 'list', view: 'session-checkin' }] },
+  nav: { label: 'AI & agents', items: [{ id: 'session-checkin', label: 'Sessions', icon: 'list', view: 'session-checkin' }] },
   settingsTabs: [{ id: 'session-checkin', label: 'Session check-in', icon: 'check-circle', order: 36, description: 'The questions every new Claude Code session opens with, where they are installed, and the baseline build costs they quote.' }],
   settingsPanels: [
     { id: 'session-checkin.status', tab: 'session-checkin', title: 'Status', icon: 'info', order: 10, render: () => <StatusPanel /> },

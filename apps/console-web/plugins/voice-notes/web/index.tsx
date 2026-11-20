@@ -473,7 +473,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.2.0',
   provides: ['voice-notes.settings', 'voice-notes.page'],
   views: { 'voice-notes': { title: 'Voice notes', icon: 'mic', keywords: ['voice', 'notes', 'dictation', 'voice vault', 'lists'], render: () => <NotesPage /> } },
-  nav: { label: 'Plugins', items: [{ id: 'voice-notes', label: 'Voice notes', icon: 'mic', view: 'voice-notes' }] },
+  nav: { label: 'Docs & media', items: [{ id: 'voice-notes', label: 'Voice notes', icon: 'mic', view: 'voice-notes' }] },
   settingsTabs: [{ id: 'voice-notes', label: 'Voice notes', icon: 'mic', parent: 'plugins', order: 60, description: 'Set up the voice-activated notes pusher (kept on axHub).' }],
   settingsPanels: [
     { id: 'voice-notes.where', tab: 'voice-notes', title: 'Where it lives', icon: 'cloud', order: 5, render: () => <WherePanel /> },

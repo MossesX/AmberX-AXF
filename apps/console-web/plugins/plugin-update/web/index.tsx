@@ -205,7 +205,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plugin-update.open', () => rt.navigate(VIEW), { label: 'Plugin Update: check for plugin updates' });
   },
   views: { [VIEW]: { title: 'Plugin Update', icon: 'refresh', keywords: ['update', 'plugins', 'versions', 'rebuild', 'model', 'fable', 'opus'], render: () => <PluginUpdate /> } },
-  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Plugin Update', icon: 'refresh', view: VIEW }] },
+  nav: { label: 'System', items: [{ id: VIEW, label: 'Plugin Update', icon: 'refresh', view: VIEW }] },
   contextMenu: [
     { id: 'plugin-update.default', target: 'default', order: 92, items: [{ id: 'plugin-update', label: 'Plugin Update', icon: 'refresh', action: 'plugin-update.open' }] },
   ],

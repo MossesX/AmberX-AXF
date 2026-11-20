@@ -563,7 +563,7 @@ export const plugin: AxfWebLibrary = {
   version: '1.0.0',
   appMenu,
   views: { 'project-wizard': { title: 'New project', icon: 'rocket', render: () => <ProjectWizardView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'project-wizard', label: 'New project', icon: 'rocket', view: 'project-wizard' }] },
+  nav: { label: 'Framework', items: [{ id: 'project-wizard', label: 'New project', icon: 'rocket', view: 'project-wizard' }] },
   settingsTabs: [{ id: 'project-wizard', label: 'Project wizard', icon: 'rocket', order: 37, description: 'What the New project wizard can reach from the console server: GitHub, VPS git, the workspace and allowed folders.' }],
   settingsPanels: [{ id: 'project-wizard.status', tab: 'project-wizard', title: 'Connections and folders', icon: 'info', order: 10, render: () => <SettingsPanel /> }],
 };

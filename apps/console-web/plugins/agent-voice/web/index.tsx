@@ -154,7 +154,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('agent-voice.resume', () => resumeSpeaking(), { label: 'Resume the agent' });
   },
   views: { [VIEW]: { title: 'Agent voice', icon: 'mic', render: () => <ConsolePage /> } },
-  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Agent voice', icon: 'mic', view: VIEW }] },
+  nav: { label: 'AI & agents', items: [{ id: VIEW, label: 'Agent voice', icon: 'mic', view: VIEW }] },
   contextMenu: [{ id: 'agent-voice.ctx', target: '*', order: 60, items: [
     { id: 'agent-voice.open', label: 'Agent voice…', icon: 'mic', action: 'agent-voice.open' },
     { id: 'agent-voice.stop', label: 'Stop the agent talking', icon: 'x', action: 'agent-voice.stop' },

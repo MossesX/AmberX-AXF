@@ -189,7 +189,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   views: { notes: { title: 'Notes', icon: 'file', render: () => <NotesView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }] },
+  nav: { label: 'Docs & media', items: [{ id: 'notes', label: 'Notes', icon: 'file', view: 'notes' }] },
   settingsTabs: [{ id: 'notes-browser', label: 'Notes', icon: 'file', order: 90, parent: 'plugins' }],
   settingsPanels: [
     { id: 'notes-browser.where', tab: 'notes-browser', title: 'Where notes live', icon: 'folder', order: 10, render: () => <SettingsPanel /> },
