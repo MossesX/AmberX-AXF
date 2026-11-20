@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9981,
- "updatedAt": "2026-11-20T11:46:29.198Z",
+ "rev": 9982,
+ "updatedAt": "2026-11-20T11:47:11.010Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338506,6 +338506,11 @@
      "text": "Watchdog: step s18 stuck at completed (37 min past budget): re-ran the transition (4).",
      "at": "2026-11-20T11:46:01.385Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (7 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:47:01.205Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -342221,7 +342226,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 643,
+   "rev": 644,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
