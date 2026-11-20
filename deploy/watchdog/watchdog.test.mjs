@@ -68,3 +68,10 @@ test('layer 2 run on a plain JSON store: limit → failed, then retried on anoth
   assert.ok(b.notes.every((n) => n.by === 'watchdog'));
   assert.ok(existsSync(join(d, 'wd', 'heartbeat.json')));
 });
+
+test('layer 2 probe names: a step without a recorded tmux is looked up as axf-<build>--<step>, never a guessed single-dash name', async () => {
+  const L = await import('./layer2.mjs');
+  const p = L.placeOf({ id: 'b' }, { id: 's6' }, { AXF_PIPELINE_WORKTREES: '/w' });
+  assert.deepEqual([p.session, p.prefix, p.worktree], ['', 'axf-b--s6', '/w/b--s6']);
+  assert.equal(L.placeOf({ id: 'b' }, { id: 's6', tmux: 'axf-b--s6--earl' }).session, 'axf-b--s6--earl');
+});

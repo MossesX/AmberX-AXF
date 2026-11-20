@@ -26,6 +26,18 @@ t('tmux sessions are matched per build', () => {
   assert.deepEqual(L.tmuxSessions('a', env), ['axf-a--earl', 'axf-a--gina-201500']);
   assert.deepEqual(L.tmuxSessions('ab', env), ['axf-ab--x']);
 });
+t('Pipeline 2.0 steps: a step launch sees its own step only, never its sibling steps of the same build', () => {
+  const env = { ...off, AXF_BUILD_LOCK_TMUX: 'axf-b--s5--joey,axf-b--s1--earl-201500,axf-b--s50--x,axf-b--paulie' };
+  assert.deepEqual(L.tmuxSessions('b', env, 's5'), ['axf-b--s5--joey']);
+  assert.deepEqual(L.tmuxSessions('b', env, 's6'), [], 's6 is free while s5 and s1 run');
+  assert.deepEqual(L.tmuxSessions('b', env, 's1'), ['axf-b--s1--earl-201500']);
+  assert.equal(L.tmuxSessions('b', env).length, 4, 'without a step every session of the build counts (builds@1)');
+  const l6 = L.liveness('b', { step: 's6', env, useLock: false });
+  assert.ok(!l6.live && l6.step === 's6' && /b--s6: no live session/.test(l6.why), l6.why);
+  const l5 = L.liveness('b', { step: 's5', env, useLock: false });
+  assert.ok(l5.live && /b--s5 already has a live session: tmux axf-b--s5--joey/.test(l5.why), l5.why);
+  assert.ok(L.liveness('b', { env, useLock: false }).live, 'a whole-build check still sees them');
+});
 t('lock freshness: a heartbeat within LOCK_STALE_MS is fresh, older has expired', () => {
   const now = Date.parse('2026-11-13T20:00:00Z');
   assert.ok(L.lockFresh({ beat: '2026-11-13T19:50:00Z' }, now));
