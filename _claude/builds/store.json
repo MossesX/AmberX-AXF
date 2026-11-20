@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10118,
- "updatedAt": "2026-11-20T20:15:02.051Z",
+ "rev": 10119,
+ "updatedAt": "2026-11-20T20:15:36.510Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344670,7 +344670,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "split",
+   "status": "pulling-main",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -344678,7 +344678,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T20:14:47.882Z",
+   "updatedAt": "2026-11-20T20:15:32.866Z",
    "builtAt": "",
    "notes": [
     {
@@ -344859,7 +344859,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344870,7 +344870,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T19:55:45.100Z",
+   "statusAt": "2026-11-20T20:15:32.866Z",
    "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
@@ -344894,6 +344894,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "2 steps for 4 slots"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-20T20:15:32.866Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "no other build is active"
     }
    ]
   }
