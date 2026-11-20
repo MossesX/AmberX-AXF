@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `flagship-professional-skin-covering` note (all) · builds-live
-- 2026-11-20 00:11 UTC · `settings-fix-part-2-blank-toolbars` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `dispatcher-split-builds-evenly-across` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `move-everything-axhub-web-console` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `one-true-source-for-every-setting` note (all) · builds-live
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 05:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 05:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 05:52 UTC · `fable-full-audit-ui-overhaul-conso` s1 done (all) · orchestrator
+- 2026-11-20 05:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 05:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 
 ## Token passes (log)
 
