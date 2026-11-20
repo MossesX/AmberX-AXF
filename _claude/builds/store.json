@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9915,
- "updatedAt": "2026-11-20T09:10:19.136Z",
+ "rev": 9916,
+ "updatedAt": "2026-11-20T09:10:52.819Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s14",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T09:10:02.130Z",
+   "updatedAt": "2026-11-20T09:10:49.310Z",
    "builtAt": "",
    "notes": [
     {
@@ -341473,13 +341473,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 9,
+     "rev": 10,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T09:10:10.492Z",
-     "statusAt": "2026-11-20T09:10:02.130Z",
-     "statusBy": "watchdog",
-     "attempt": 4,
-     "failedFrom": "ready",
+     "updatedAt": "2026-11-20T09:10:49.359Z",
+     "statusAt": "2026-11-20T09:10:49.310Z",
+     "statusBy": "orchestrator",
+     "attempt": 5,
      "statusLog": [
       {
        "status": "pending",
@@ -341543,9 +341542,16 @@
        "by": "watchdog",
        "attempt": 4,
        "why": "ready did not move after 2 re-run(s) of the transition (6 min past its budget)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T09:10:49.310Z",
+       "by": "orchestrator",
+       "attempt": 5,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s16",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
@@ -341744,7 +341750,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 571,
+   "rev": 572,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
