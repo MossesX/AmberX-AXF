@@ -21,7 +21,7 @@ const head = (cols) => `${row(cols)}\n${row(cols.map(() => '---'))}`;
 const lines = [];
 
 // checks per section
-const sections = ['startup', 'screens', 'tabs', 'settings', 'dialogs', 'commands'];
+const sections = ['startup', 'screens', 'tabs', 'settings', 'dialogs', 'commands', 'slowshot'];
 lines.push('### Browser suite: checks passed per section', '', head(['section', ...LABELS]));
 for (const s of sections) {
   lines.push(row([s, ...suites.map((r) => { if (!r) return '—'; const c = r.checks.filter((x) => x.section === s); return c.length ? `${c.filter((x) => x.ok).length}/${c.length}` : '—'; })]));

@@ -20,6 +20,8 @@
  *             list, open (by name and by address), settings, dialog open/close, back, home, action, screenshot
  *             (whole page, an address, a selector, a bad selector), refresh (soft and hard: the page comes back and
  *             answers again) and a timing run of ten screenshots in a row
+ *   slowshot  console_screenshot with the page's CPU 4× and 10× slower (a capture of several seconds, as on the live
+ *             console or a phone): an image must come back, and the console must still answer the next command
  * Every check is recorded (pass/fail, time, detail); the suite never stops at the first failure. Writes
  * <out>/<label>/results.json and shots/, prints a summary, exits 1 when a check failed.
  */
@@ -39,7 +41,7 @@ const LABEL = opt('label', 'before');
 const ROOT = resolve(opt('root', join(APP, '../..')));
 const OUT = join(opt('out', '/tmp/axf-suite/out'), LABEL);
 const SHOTS = join(OUT, 'shots');
-const ONLY = new Set((opt('only', 'startup,screens,tabs,settings,dialogs,commands')).split(','));
+const ONLY = new Set((opt('only', 'startup,screens,tabs,settings,dialogs,commands,slowshot')).split(','));
 const PHONE = args.includes('--phone');
 
 /** What a console that starts and answers well keeps to. */
@@ -421,7 +423,33 @@ function save() {
 }
 for (const sig of ['SIGTERM', 'SIGINT']) process.on(sig, () => { results.stopped = sig; save(); if (sandbox) down(sandbox.name); process.exit(1); });
 
-const SECTIONS = { startup: sectionStartup, screens: sectionScreens, tabs: sectionTabs, settings: sectionSettings, dialogs: sectionDialogs, commands: sectionCommands };
+/**
+ * console_screenshot on a slow console: the page's CPU slowed 4× and 10× (Chrome DevTools throttling), so a capture
+ * takes seconds as on the big live console or a phone. Then one plain command, to see the console still counts as awake.
+ */
+async function sectionSlowShot() {
+  const { page } = await sharedPage();
+  await page.bringToFront(); await page.evaluate(() => window.focus());
+  await rest('POST', '/open', { screen: 'build-orchestrator', by: 'suite' });
+  const cdp = await page.context().newCDPSession(page);
+  const out = [];
+  for (const rate of [4, 10]) {
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate });
+    const r = await rest('POST', '/screenshot', { by: 'suite' }, 90_000);
+    const img = delivered(r) && Array.isArray(r.images) && r.images.length > 0 && !!r.images[0].data;
+    if (img) writeFileSync(join(SHOTS, `console-screenshot-slow-${rate}x.png`), Buffer.from(r.images[0].data, 'base64'));
+    record('slowshot', `screenshot with the CPU ${rate}× slower: answered with an image`, img, why(r).slice(0, 300), r.ms);
+    record('slowshot', `screenshot with the CPU ${rate}× slower: answered ≤ 30 s`, r.ms <= 30_000, `${r.ms} ms`, r.ms);
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+    await sleep(1000);
+    const o = await rest('POST', '/open', { screen: 'plan studio', by: 'suite' }, 45_000);
+    record('slowshot', `after it: open answers at once (the console is not written off as asleep)`, delivered(o) && o.ms <= 5000, why(o).slice(0, 200), o.ms);
+    out.push({ rate, ms: r.ms, image: img, status: r.status, openMs: o.ms });
+  }
+  results.sections.slowshot = out;
+}
+
+const SECTIONS = { startup: sectionStartup, screens: sectionScreens, tabs: sectionTabs, settings: sectionSettings, dialogs: sectionDialogs, commands: sectionCommands, slowshot: sectionSlowShot };
 try {
   for (const [name, fn] of Object.entries(SECTIONS)) {
     if (!ONLY.has(name)) continue;
