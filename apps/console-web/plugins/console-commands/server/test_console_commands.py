@@ -146,6 +146,12 @@ eq(phone_got[-1]["$axf"], "console-command@1", "message frame")
 # ---- whole command, settings sub-tab with anchor, back
 j = client.post("/api/console", json={"op": "act", "target": "console.settings", "path": "plugins/sample-tools", "action": "open", "input": {"anchor": "settings-group:x"}}).json()
 ok(j["ok"] and phone_got[-1]["kind"] == "settings" and phone_got[-1]["anchor"] == "settings-group:x", "settings sub-tab through the whole-command route")
+# POST /api/console/settings with a tab opens it (it shares the path with the wake-settings save, which once shadowed it)
+n_before = len(phone_got)
+j = client.post("/api/console/settings", json={"tab": "plugins/sample-tools", "anchor": "settings-group:x", "by": "claude"}).json()
+ok(j["ok"] and len(phone_got) == n_before + 1 and phone_got[-1]["kind"] == "settings" and phone_got[-1]["anchor"] == "settings-group:x", f"POST /settings with a tab opens it ({j})")
+j = client.post("/api/console/settings", json={"ttlS": 120}).json()
+ok(j["ok"] and j["settings"]["ttlS"] == 120 and len(phone_got) == n_before + 1, "POST /settings without a tab still saves the wake settings (nothing sent)")
 ok(client.post("/api/console/back", json={}).json()["ok"] and phone_got[-1]["op"] == "back", "back")
 ok(client.post("/api/console/home", json={}).json()["ok"] and phone_got[-1]["op"] == "home", "home")
 
@@ -520,6 +526,10 @@ def shot_console(cid: str) -> None:
                     client.post("/api/console/hello", json={"client": cid, "catalog": CATALOG})
                     continue
                 shot_got.append(m)
+                if m["op"] == "screenshot" and shot_mode.get("working"):
+                    client.post("/api/console/seen", json={"client": cid, "working": m["id"]})
+                if m["op"] == "screenshot" and shot_mode.get("delay"):
+                    time.sleep(shot_mode["delay"])
                 if m["op"] == "screenshot" and shot_mode["upload"]:
                     up = client.post(f"/api/console/shot?client={cid}&id={m['id']}", content=PNG, headers={"content-type": "image/png"})
                     shot_mode["upload_status"] = up.status_code
@@ -551,6 +561,25 @@ shot_mode["upload"] = False
 j = client.post("/api/console/screenshot", json={}).json()
 eq((j.get("status"), j.get("images")), ("failed", []), "an ack without an uploaded image is failed, not delivered")
 shot_mode["upload"] = True
+# a capture slower than one live try (LIVE_TRY_S): the console says it is working, the server waits for it
+cc.SHOT_WORK_S = 4.0
+shot_mode.update(working=True, delay=cc.LIVE_TRY_S * 2.5)
+j = client.post("/api/console/screenshot", json={}).json()
+eq((j.get("status"), (j.get("delivery") or {}).get("how")), ("delivered", "live"), f"a slow capture that said it is working is waited for ({j.get('message')})")
+eq(base64.b64decode(j["images"][0]["data"]) if j.get("images") else b"", PNG, "and its image comes back")
+ok(cc._live(cc._clients["shot-0001"]), "the working console is not marked asleep")
+# the same slow capture without the working signal: the call moves on, the late ack still brings the image back
+shot_mode.update(working=False)
+with cc._lock:  # only this console is open (the earlier tests' fake consoles would take the queued copy)
+    for c in cc._clients.values():
+        if c["id"] != "shot-0001":
+            c["lastSeen"] = 0.0
+j = client.post("/api/console/screenshot", json={}).json()
+eq(j.get("status"), "delivered", f"a late screenshot ack is delivered ({j.get('message')})")
+eq(base64.b64decode(j["images"][0]["data"]) if j.get("images") else b"", PNG, "with its image (it used to come back without one)")
+eq(list(cc.SHOT_DIR.glob("*.png")), [], "and the upload is read and deleted")
+shot_mode.update(delay=0)
+client.post("/api/console/seen", json={"client": "shot-0001", "used": True})
 eq(client.post("/api/console/shot?client=shot-0001&id=cc-nobody", content=PNG).status_code, 409, "an upload nobody waits for is refused")
 eq(client.post("/api/console/shot?client=nobody-001&id=cc-1", content=PNG).status_code, 404, "an upload from an unknown console is refused")
 eq(client.post("/api/console/shot?client=shot-0001&id=cc-1", content=PNG, headers={"x-user": "sam"}).status_code, 404, "someone else can't upload for Brett's console")

@@ -69,11 +69,13 @@ const res = [
   { id: 'r4', mode: 'run', pid: 500, session: 'axf-limittest-d', at: new Date(now).toISOString() },  // alive, no claude yet: counts
   { id: 'r5', mode: 'run', pid: 999, at: new Date(now).toISOString() },                                // gone: dropped
   { id: 'r6', mode: 'launch', session: 'axf-limittest-old', at: new Date(now - 3600e3).toISOString() }, // expired
+  { id: 'r7', mode: 'launch', pid: 998, session: 'axf-limittest-refused', at: new Date(now).toISOString() }, // launcher gone, no session: dropped
+  { id: 'r8', mode: 'launch', pid: 500, session: 'axf-limittest-starting', at: new Date(now).toISOString() }, // launcher alive: counts
 ];
 c = L.countLive({ ...base, reservations: res }, lim, {});
-eq(c.keep.map((r) => r.id), ['r2', 'r4'], 'reservations: open ones kept');
-eq(c.live, 4, 'run mode: session + loose claude + two reservations');
-eq(L.decide(c, lim), { ok: false, live: 4, max: 3, free: 0 }, 'over the limit: refused');
+eq(c.keep.map((r) => r.id), ['r2', 'r4', 'r8'], 'reservations: open ones kept; a launch whose launcher died with no session is not (a refused launch never holds a place)');
+eq(c.live, 5, 'run mode: session + loose claude + three reservations');
+eq(L.decide(c, lim), { ok: false, live: 5, max: 3, free: 0 }, 'over the limit: refused');
 // ghosts hold no place: a test stand-in from /tmp/axf-limit-*, a claude whose /tmp folder was deleted; a claude in a deleted build worktree still counts (the reaper judges it), and under `only` (this
 // test's own end-to-end run) the stand-ins count as builds
 const ghosts = [
@@ -186,7 +188,9 @@ if (hasTmux) {
     ok(await until(() => !sandboxProcs(dirs.d).length, 10_000), `nothing of the killed session is left: ${JSON.stringify(sandboxProcs(dirs.d))}`);
     writeFileSync(join(dirs.b, 'go'), '');
   } finally {
-    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); spawnSync('tmux', ['kill-session', '-t', `=axf-${tag}-${k}`]); }
+    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); }
+    // a session renamed by the launcher is still ours: by prefix
+    for (const n of (spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout || '').split('\n')) if (n.startsWith(`axf-${tag}-`)) spawnSync('tmux', ['kill-session', '-t', `=${n}`]);
     // the folder goes only once nothing runs from it any more (a process left in a deleted folder is a ghost)
     await until(() => !sandboxProcs().length, 10_000);
     for (const p of sandboxProcs()) { try { process.kill(p.pid, 'SIGKILL'); } catch { /* gone */ } }

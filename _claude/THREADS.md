@@ -836,220 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:14 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `fix-banner-settings-interface-tab` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `land-pr-730-reset-all-button-far-right` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `flagship-professional-skin-covering` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `dispatcher-split-builds-evenly-across` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `move-everything-axhub-web-console` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `one-true-source-for-every-setting` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `vps-sets-every-build-status-manifest` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `api-fully-drives-every-field-type-forms` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `active-tab-add-stop-button-per-running` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `active-tab-stop-button-grid-alignment` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `axhub-routes-for-console-hub` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `vps-frees-stale-build-slots-every-2` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `watchdog-plugin-owns-every-vps` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `one-landing-line-pull-main-merge-one` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `server-gate-reject-any-build-without` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `one-build-time-always-split-split-id` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `out-credits-account-failover-flag-dead` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `orchestrator-master-pause-switch-stop` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `host-phone-connect-apk-axhub-browser` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `console-app-text-way-too-big-system-font` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
-- 2026-11-20 01:14 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
-- 2026-11-20 01:15 UTC · `plan-blueprints` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `blueprint-notes-tasks` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `land-project-create-mcp-resolve-clash` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `skin-animations-animated-colour-swatches` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `grid-token-set-colours-hover-selected` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `orchestrator-stale-row-watchdog-vps` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `picker-dialog-plugin-replaces-all` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `axf-data-postgres-real-tables-own` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `attach-widgets-to-any-toolbar-banner` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `icon-packs-with-drag-drop-pack-designer` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `auto-lander-status-tab-rest-mcp-settings` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `gate-auto-lander-tab-and-controls` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `server-rule-done-means-merged-working` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `shrink-git-history-drop-old-builds` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `builds-keep-their-slot-across-phases` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `settings-opened-banners-nav-menu` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `edit-ui-mode-inline-edit-anything-active` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `auto-lander-drag-rows-to-set-merge-order` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `live-hot-refresh-every-grid-list-re` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `grids-layout-control-voice-controlled` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `change-asset-only-assets-built-screen` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `rebuild-fresh-main-collapsible-sections` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `nothing-saved-browser-all-console` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `merge-queue-view-every-build-s-fully` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `grid-filter-plugin-one-filter-search` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `ci-run-only-what-changed-no-second-run` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `pending-optimizer-ai-finds-pending` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `separate-settings-per-plugin-reset` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `notify-phone-when-queue-starts-building` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `rebuild-every-context-menu-toolbar-nav` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `live-build-status-real-time-grids-15` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `right-click-running-build-open-headless` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `right-click-running-build-pop-open` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `auto-lander-settings-log-placeholder` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `toolbars-1-5-build-orchestrator-incl` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `toolbars-2-5-plan-studio-ui-review` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `toolbars-3-5-settings-appearance-systems` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `toolbars-4-5-chat-viewer-codebase` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `toolbars-2-5-plan-studio-ui-review-2` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `toolbars-5-5-claude-accounts-glossary` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `fix-banner-settings-interface-tab` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `land-pr-730-reset-all-button-far-right` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `flagship-professional-skin-covering` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `settings-fix-part-2-blank-toolbars` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `dispatcher-split-builds-evenly-across` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `move-everything-axhub-web-console` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `one-true-source-for-every-setting` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `vps-sets-every-build-status-manifest` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `api-fully-drives-every-field-type-forms` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `active-tab-add-stop-button-per-running` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `active-tab-stop-button-grid-alignment` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `fix-ci-red-main-watchdog-test-vs-done` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `axhub-routes-for-console-hub` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `vps-frees-stale-build-slots-every-minute` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `vps-frees-stale-build-slots-every-2` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `watchdog-plugin-owns-every-vps` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `one-landing-line-pull-main-merge-one` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `land-watchdogs-pr-832-fix-two-red-ci` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `server-gate-reject-any-build-without` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `one-build-time-always-split-split-id` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `out-credits-account-failover-flag-dead` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `orchestrator-master-pause-switch-stop` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `host-phone-connect-apk-axhub-browser` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `console-app-text-way-too-big-system-font` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `deep-links-to-plugin-s-settings-don-t` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `queue-stall-detector-vps-spots-queued` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `load-spike-alarm-vps-detects-cpu-load` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `server-safe-mode-one-emergency-button` → failed, note (all) · watchdog
-- 2026-11-20 01:16 UTC · `plan-blueprints` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `blueprint-notes-tasks` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `land-project-create-mcp-resolve-clash` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `skin-animations-animated-colour-swatches` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `grid-token-set-colours-hover-selected` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `picker-dialog-plugin-replaces-all` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `axf-data-postgres-real-tables-own` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `auto-lander-status-tab-rest-mcp-settings` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `gate-auto-lander-tab-and-controls` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `shrink-git-history-drop-old-builds` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `builds-keep-their-slot-across-phases` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `settings-opened-banners-nav-menu` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `edit-ui-mode-inline-edit-anything-active` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `live-hot-refresh-every-grid-list-re` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
-- 2026-11-20 01:16 UTC · `grids-layout-control-voice-controlled` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `change-asset-only-assets-built-screen` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `rebuild-fresh-main-collapsible-sections` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `nothing-saved-browser-all-console` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `merge-queue-view-every-build-s-fully` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `grid-filter-plugin-one-filter-search` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `ci-run-only-what-changed-no-second-run` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `pending-optimizer-ai-finds-pending` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `separate-settings-per-plugin-reset` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `notify-phone-when-queue-starts-building` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `live-build-status-real-time-grids-15` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-20 01:16 UTC · `right-click-running-build-open-headless` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `right-click-running-build-pop-open` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `auto-lander-settings-log-placeholder` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `fix-banner-settings-interface-tab` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `land-pr-730-reset-all-button-far-right` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `flagship-professional-skin-covering` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `settings-fix-part-2-blank-toolbars` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `dispatcher-split-builds-evenly-across` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `move-everything-axhub-web-console` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `one-true-source-for-every-setting` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `vps-sets-every-build-status-manifest` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `api-fully-drives-every-field-type-forms` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `active-tab-add-stop-button-per-running` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `active-tab-stop-button-grid-alignment` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `fix-ci-red-main-watchdog-test-vs-done` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `axhub-routes-for-console-hub` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `vps-frees-stale-build-slots-every-minute` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `vps-frees-stale-build-slots-every-2` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `watchdog-plugin-owns-every-vps` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `one-landing-line-pull-main-merge-one` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `server-gate-reject-any-build-without` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `one-build-time-always-split-split-id` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `out-credits-account-failover-flag-dead` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `orchestrator-master-pause-switch-stop` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `host-phone-connect-apk-axhub-browser` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `console-app-text-way-too-big-system-font` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
-- 2026-11-20 01:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:27 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:31 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:32 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
-- 2026-11-20 01:32 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
-- 2026-11-20 01:33 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
-- 2026-11-20 01:33 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-20 01:43 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:43 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:48 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
-- 2026-11-20 01:48 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
-- 2026-11-20 01:49 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
-- 2026-11-20 01:49 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-20 01:59 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:59 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 02:03 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 02:03 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 02:04 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
-- 2026-11-20 02:04 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
-- 2026-11-20 02:05 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
-- 2026-11-20 02:05 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-20 02:16 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 02:16 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 02:21 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 02:21 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 02:22 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
-- 2026-11-20 02:22 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
-- 2026-11-20 02:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 02:23 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` added (0 steps) (all) · plan-studio-2
-- 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` added (0 steps) (all) · builds-live
-- 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` → splitting (all) · builds-live
-- 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` → splitting (all) · orchestrator
-- 2026-11-20 04:52 UTC · `fable-full-audit-ui-overhaul-conso` → split, note (all) · orchestrator
-- 2026-11-20 04:52 UTC · `fable-full-audit-ui-overhaul-conso` → pulling-main (all) · orchestrator
-- 2026-11-20 04:58 UTC · `fable-full-audit-ui-overhaul-conso` → assigning-models (all) · orchestrator
-- 2026-11-20 04:58 UTC · `fable-full-audit-ui-overhaul-conso` → ready (all) · orchestrator
-- 2026-11-20 04:59 UTC · `fable-full-audit-ui-overhaul-conso` → sending (all) · orchestrator
 - 2026-11-20 05:00 UTC · `fable-full-audit-ui-overhaul-conso` → building (all) · builds-live
 - 2026-11-20 04:59 UTC · `fable-full-audit-ui-overhaul-conso` → building (all) · orchestrator
 - 2026-11-20 05:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
@@ -1236,6 +1022,220 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 08:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 08:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 08:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 08:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 08:55 UTC · `fable-full-audit-ui-overhaul-conso` s12 done (all) · orchestrator
+- 2026-11-20 08:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 08:58 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 09:02 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 09:04 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 09:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 09:06 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` s13 done (all) · orchestrator
+- 2026-11-20 09:07 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s13 (all) · builds-live
+- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` s14 done (all) · orchestrator
+- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s14 (all) · builds-live
+- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 09:10 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 09:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 09:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 09:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:17 UTC · `fable-full-audit-ui-overhaul-conso` s15 done (all) · orchestrator
+- 2026-11-20 09:18 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 09:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 10:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 10:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 10:05 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · watchdog
+- 2026-11-20 10:06 UTC · `fable-full-audit-ui-overhaul-conso` → building, note (all) · watchdog
+- 2026-11-20 10:06 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 10:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 10:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 10:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 10:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 10:29 UTC · `fable-full-audit-ui-overhaul-conso` s17 done (all) · orchestrator
+- 2026-11-20 10:29 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s17 (all) · builds-live
+- 2026-11-20 10:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 10:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 10:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` s18 done (all) · orchestrator
+- 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s18 (all) · builds-live
+- 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 11:08 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s8 (all) · builds-live
+- 2026-11-20 11:08 UTC · `fable-full-audit-ui-overhaul-conso` s8 done, note (all) · orchestrator
+- 2026-11-20 11:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` s16 done (all) · orchestrator
+- 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s16 (all) · builds-live
+- 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 11:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 11:33 UTC · `fable-full-audit-ui-overhaul-conso` s7 done (all) · orchestrator
+- 2026-11-20 11:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 11:34 UTC · `fable-full-audit-ui-overhaul-conso` → build-complete (all) · headless
+- 2026-11-20 11:34 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr, note (all) · lander
+- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` PR 860 (all) · lander
+- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
+- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 11:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:40 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:42 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:43 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:46 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:47 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:48 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:04 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · lander
+- 2026-11-20 12:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:05 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 12:07 UTC · `ci-speed-ci-failure-reports-lean` added (0 steps) (all) · plan-studio-2
+- 2026-11-20 12:07 UTC · `ci-speed-ci-failure-reports-lean` → splitting (all) · orchestrator
+- 2026-11-20 12:08 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · orchestrator
+- 2026-11-20 12:09 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 12:09 UTC · `ci-speed-ci-failure-reports-lean` note (all) · orchestrator
+- 2026-11-20 12:10 UTC · `pipeline-2-0-fully-autonomous-buil` → failed, note (all) · watchdog
+- 2026-11-20 12:11 UTC · `pipeline-2-0-fully-autonomous-buil` → split, note (all) · watchdog
+- 2026-11-20 12:11 UTC · `pipeline-2-0-fully-autonomous-buil` → archived (all) · cli
+- 2026-11-20 12:12 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci, note (all) · lander
+- 2026-11-20 12:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · lander
+- 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:19 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 12:23 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 12:24 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
+- 2026-11-20 12:25 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
+- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr, note (all) · lander
+- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` PR 861 (all) · lander
+- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
+- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 12:35 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:42 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:02 UTC · `fable-full-audit-ui-overhaul-conso` → merging-main (all) · lander
+- 2026-11-20 13:03 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr (all) · lander
+- 2026-11-20 13:03 UTC · `fable-full-audit-ui-overhaul-conso` → failed (all) · lander
+- 2026-11-20 13:04 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 13:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 13:07 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 13:08 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
+- 2026-11-20 13:09 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
+- 2026-11-20 13:20 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 13:24 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 13:25 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
+- 2026-11-20 13:26 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
+- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr (all) · lander
+- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` PR 862 (all) · lander
+- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
+- 2026-11-20 13:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:33 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 13:37 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:41 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:53 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 13:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:01 UTC · `fable-full-audit-ui-overhaul-conso` → merging-main (all) · lander
+- 2026-11-20 14:01 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr (all) · lander
+- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` PR 863 (all) · lander
+- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
+- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 14:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:22 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` → failed (all) · lander
+- 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:26 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 14:29 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 14:30 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
+- 2026-11-20 14:31 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
+- 2026-11-20 14:41 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 14:44 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 14:45 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
+- 2026-11-20 14:46 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 14:55 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 14:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 15:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 15:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 15:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 15:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 15:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 15:15 UTC · `fable-full-audit-ui-overhaul-conso` → failed (all) · lander
+- 2026-11-20 15:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 15:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 16:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 18:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 19:11 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 19:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 19:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:22 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:25 UTC · `land-round-2` → archived, note (all) · console
+- 2026-11-20 19:25 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `remove-amberx-app-code-once-phone` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `postgres-part-c-console-state-settings` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `rebuild-every-toolbar-page-specific` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `land-round-2` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `rebuild-every-toolbar-page-specific` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `remove-amberx-app-code-once-phone` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `postgres-part-c-console-state-settings` → archived, note (all) · foreign-write
+- 2026-11-20 19:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:35 UTC · `nov-20-fix-list-voice-console-cont` added (0 steps) (all) · plan-studio-2
+- 2026-11-20 19:36 UTC · `nov-20-fix-list-voice-console-cont` → splitting (all) · orchestrator
+- 2026-11-20 19:38 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · orchestrator
+- 2026-11-20 19:38 UTC · `nov-20-fix-list-voice-console-cont` note (all) · orchestrator
+- 2026-11-20 19:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:41 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:44 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:47 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` added (0 steps) (all) · plan-studio-2
+- 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` → splitting (all) · orchestrator
+- 2026-11-20 19:54 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` → split, note (all) · orchestrator
+- 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
+- 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
+- 2026-11-20 19:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
+- 2026-11-20 19:57 UTC · `nov-20-fix-list-voice-console-cont` note (all) · orchestrator
+- 2026-11-20 19:58 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 

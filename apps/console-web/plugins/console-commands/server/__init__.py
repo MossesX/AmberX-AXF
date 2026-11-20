@@ -34,7 +34,7 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
 (the contract path, main.py's CAPABILITY_MOUNTS; console token or a hub admin).
 
   POST hello {client, app, title, device, catalog, here, used?}    a console announces itself (and its catalog)
-  POST seen  {client, here?, used?}                                heartbeat; used = Brett touched that console
+  POST seen  {client, here?, used?, working?}                      heartbeat; used = Brett touched that console; working = <command id> it is busy on
   POST bye   {client}                                              the tab closed
   GET  stream?client=<id>                                          server-sent events: one console-command@1 per `data:`
   POST ack   {client, id, ok, message, here?}                      what the console did with a command
@@ -49,6 +49,8 @@ Screenshots (console.nav act screenshot): the console captures what it shows as 
 to `shot` and acks with the screen state. The answer carries `images` [{client, mime, data (base64), bytes, width,
 height}] and `state` (screen, tabs, dialog, selection, scroll). An upload lives in a temp folder (AXF_CONSOLE_SHOT_DIR,
 default <tmp>/axf-console-shots) only until the answer reads it, and is swept after SHOT_TTL_S whatever happens.
+A capture takes seconds, so the console says `seen {working: <id>}` as soon as it gets one and then has SHOT_WORK_S to ack
+before the next console is tried; an ack that lands after the call moved on (a late ack) still brings its image back.
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -104,6 +106,11 @@ SHOT_DIR = Path(os.environ.get("AXF_CONSOLE_SHOT_DIR") or Path(tempfile.gettempd
 SHOT_MAX_BYTES = 4_000_000  # = CONSOLE_SHOT_MAX_BYTES in core/engines/console-commands.mjs
 SHOT_TTL_S = 120.0          # = CONSOLE_SHOT_TTL_MS: an upload nobody read is deleted after this
 SHOT_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
+# A capture takes longer than a navigation (clone, draw, encode, upload): a console that said it is working on a
+# screenshot (`seen` with `working: <id>`) gets this long to ack before the next console is tried. It is longer than the
+# console's own capture time limit (CAPTURE_TIMEOUT_MS in web/capture.ts), so a working console always answers in time.
+SHOT_WORK_S = 30.0
+SHOT_ACK_WAIT_S = 30.0      # how long a screenshot sent to every console (to="all") or from the queue waits for acks
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 BROWSERS = ("chrome", "default")
 
@@ -255,13 +262,20 @@ def _turn_order(audience: str, first: str, app: str) -> list[str]:
     return (head + [c["id"] for c in cs if c["id"] != first])[:MAX_TRIES]
 
 
-def try_in_turn(ids: list[str], message: dict[str, Any], audience: str, each: float = LIVE_TRY_S) -> tuple[list[str], dict[str, dict[str, Any]]]:
+def _working(mid: str, cid: str) -> bool:
+    with _lock:
+        return cid in ((_acks.get(mid) or {}).get("working") or ())
+
+
+def try_in_turn(ids: list[str], message: dict[str, Any], audience: str, each: float | None = None, work: float = 0.0) -> tuple[list[str], dict[str, dict[str, Any]]]:
     """Send to one console at a time until one acks. A console that doesn't answer within `each` seconds counts as
-    asleep (out of `recent`) until it beats again. → (the consoles asked, their acks by client id)."""
+    asleep (out of `recent`) until it beats again, unless it said it is working on the command (a screenshot): then it
+    gets up to `work` seconds more. → (the consoles asked, their acks by client id)."""
+    each = LIVE_TRY_S if each is None else each  # read at call time (a default argument froze it at import)
     mid = str(message.get("id") or "")
     ev = threading.Event()
     with _lock:
-        _acks[mid] = {"event": ev, "want": set(), "results": {}, "any": True}
+        _acks[mid] = {"event": ev, "want": set(), "results": {}, "any": True, "working": set()}
     tried: list[str] = []
     for cid in ids:
         with _lock:
@@ -272,6 +286,8 @@ def try_in_turn(ids: list[str], message: dict[str, Any], audience: str, each: fl
             _push(c, message)
         tried.append(cid)
         if ev.wait(each):
+            break
+        if work > 0 and _working(mid, cid) and ev.wait(work):
             break
         with _lock:
             c["lastSeen"] = min(c["lastSeen"], _now() - STALE_S - 1)
@@ -503,7 +519,7 @@ def drain(audience: str, pick: str = "") -> None:
             if r.get("ok") and isinstance(d, dict):
                 message = {**(d.get("message") or {}), "delivery": "woke" if _how(e) == "woke via AmberX" else "queued"}
                 r["sent"] = message
-                r["delivered"] = deliver([str(x) for x in d.get("to") or []], message, audience, wait=10.0)
+                r["delivered"] = deliver([str(x) for x in d.get("to") or []], message, audience, wait=SHOT_ACK_WAIT_S if _is_shot(e["command"]) else ACK_WAIT_S)
             r["delivery"] = {"how": _how(e), "id": e["id"], "queuedFor": round(_now() - e["at"], 1), **({"tried": e["tried"]} if e.get("tried") else {}), **({"wake": e["wake"]} if e["wake"] else {})}
             r["status"] = _status_of(r)
             with _lock:
@@ -611,7 +627,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     got there, which consoles were tried) and `status` (delivered / pending / failed) on a sent command. No console
     connected: queued, and the call waits up to `wait` seconds. A screenshot answer also carries `images` and `state`."""
     r = _run(command, grants, by, audience, wait)
-    return attach_shots(r) if _is_shot(command or {}) and r.get("sent") else r
+    # every way a screenshot can come back (live, after retry, a late ack, from the queue) carries the image
+    return attach_shots(r) if _is_shot(command or {}) and (r.get("sent") or r.get("delivered")) else r
 
 
 def _run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None) -> dict[str, Any]:
@@ -641,14 +658,14 @@ def _run(command: dict[str, Any], grants: list[str] | None = None, by: str = "",
             first = _clients.get(to[0]) or {}
             order = _turn_order(audience, to[0], str(first.get("app") or "console-web"))
         if recent and order:
-            tried, acks = try_in_turn(order, message, audience)
+            tried, acks = try_in_turn(order, message, audience, work=SHOT_WORK_S if _is_shot(command) else 0.0)
             r["delivered"] = [acks[c] if c in acks else {"client": c, "ok": False, "pending": True, "message": "didn't answer (asleep?)"} for c in tried]
             who = next((c for c in tried if c in acks), "")
             r["delivery"] = {"how": "live" if who and who == tried[0] else "after retry" if who else "pending", "tried": tried, **({"client": who} if who else {})}
             if not who:
                 r = _nobody_answered(command, grants, by, audience, r, tried, message, RETRY_WAIT_S if wait is None else min(wait, RETRY_WAIT_S))
         else:
-            r["delivered"] = deliver(to, message, audience)
+            r["delivered"] = deliver(to, message, audience, wait=SHOT_ACK_WAIT_S if _is_shot(command) else ACK_WAIT_S)
             r["delivery"] = {"how": "after reconnect" if r["delivered"] and all(x.get("afterReconnect") for x in r["delivered"] if x.get("ok")) and any(x.get("ok") for x in r["delivered"]) else "live"}
         r["status"] = _status_of(r)
         if r["status"] == "pending" and not r.get("queued"):
@@ -679,7 +696,8 @@ def _nobody_answered(command: dict[str, Any], grants: list[str], by: str, audien
     with _lock:
         state, result = e["state"], e["result"]
     if state in ("delivered", "failed") and result is not None:
-        return result
+        # a late ack answers for the message that was sent live (a screenshot's upload is filed under its id)
+        return result if result.get("sent") else {**result, "sent": message}
     waiting = state in ("queued", "delivering")
     out = {**r, "ok": waiting, "queued": waiting,
            "delivery": {"how": "queued" if waiting else state, "id": e["id"], "tried": tried, "expiresAt": _iso(e["expires"]), **({"wake": e["wake"]} if e["wake"] else {})}}
@@ -1048,6 +1066,10 @@ async def seen(request: Request) -> dict[str, Any]:
         _front_of(c, b)
         if b.get("used"):
             c["lastUsed"] = _now()
+        # "working on <id>": the console got a command that takes a while (a screenshot) and is on it
+        a = _acks.get(str(b.get("working") or ""))
+        if a is not None and c["id"] in a["want"]:
+            a.setdefault("working", set()).add(c["id"])
         hello_again = not _ready(c)
     if not hello_again and c.get("queue") is not None and _has_queued(audience):
         _drain_soon(audience)
@@ -1204,11 +1226,17 @@ def get_settings(request: Request) -> dict[str, Any]:
 
 
 @router.post("/settings")
-async def set_settings(request: Request) -> dict[str, Any]:
+async def set_settings(request: Request) -> Any:
+    """Two commands share this path (/api/console/settings and /api/plugins/console-commands/settings are one router):
+    a body naming a tab ({tab | path | q, anchor?, to?}) opens that Settings tab in the open console; any other body is a
+    patch of this plugin's own settings (wake, ttlS, browser; the owner only). Two routes on one path left the second
+    (open a tab) unreachable."""
+    b = await _body(request)
+    if any(isinstance(b.get(k), str) and b[k] for k in ("tab", "path", "q")):
+        return await open_settings(request, b)
     _, _, audience = caller(request)
     if audience != OWNER:
         raise HTTPException(403, "only the console's owner changes the console commands settings")
-    b = await _body(request)
     return {"ok": True, "settings": save_settings({k: b[k] for k in DEFAULTS if k in b})}
 
 
@@ -1234,9 +1262,8 @@ async def open_dialog(request: Request) -> JSONResponse:
     return await go(request, {"op": "act", "target": "console.dialogs", "path": path, "action": action, **_to(b, arg=b.get("arg")), **_audit(b)})
 
 
-@router.post("/settings")
-async def open_settings(request: Request) -> JSONResponse:
-    b = await _body(request)
+async def open_settings(request: Request, b: dict[str, Any]) -> JSONResponse:
+    """POST /settings with a tab (routed by set_settings): open that Settings tab in the open console."""
     return await go(request, {"op": "act", "target": "console.settings", "path": b.get("tab") or b.get("path") or b.get("q"), "action": "open", **_to(b, anchor=b.get("anchor")), **_audit(b)})
 
 

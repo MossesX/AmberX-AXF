@@ -1,0 +1,54 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.axhub-approvals",
+  "name": "axHub approvals",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The hub's approvals inside the console: every request axHub has asked about (pending and held calls first), decided here through the console's hub-pages relay with a hub session, never the console token; one request's page with the complete call, history, postpone (time, date or condition) and every action it allows; held calls (veto@1) with the live countdown, Deny, Approve now and Shelve; the auto-approve window; the approvals log with calls that ran under a pass. Module axHub (the hub's own pages inside the console, folded from apps/axhub-web Nov 20 2026). Only a wall admin's browser may use it; uninstalling it removes only these pages.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:axhub-approvals",
+    "view:axhub-approval",
+    "view:axhub-approvals-log",
+    "action:axhub-approvals.open",
+    "action:axhub-approvals-log.open",
+    "action:hub.review"
+  ],
+  "optional": [],
+  "scopes": [],
+  "enabledByDefault": true,
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-20"
+  },
+  "tabable": {
+    "view": "axhub-approvals",
+    "label": "Approvals",
+    "icon": "shield"
+  },
+  "banner": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/axhub-approvals",
+    "env": [],
+    "mentions": [
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "help": "help.json",
+  "opens": "main",
+  "settingsTab": {
+    "default": true,
+    "label": "axHub approvals",
+    "icon": "shield",
+    "order": 71
+  }
+}

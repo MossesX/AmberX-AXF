@@ -89,7 +89,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('watchdog.status', async () => {
       void open('watchdog');
       try {
-        const s = await watchdogApi.call<WatchdogStatus>('watchdog/status');
+        const s = await watchdogApi.call<WatchdogStatus>('recovery-watchdog/status');
         const running = s.lastScan?.builds.length ?? 0; const stuck = s.lastScan?.builds.filter((b) => b.stuck).length ?? 0;
         rt.toast(`Watchdog ${s.settings.enabled ? 'on' : 'off'}: last pass ${s.ageMin != null ? `${s.ageMin} min ago` : 'never'}, ${running} running, ${stuck} stuck, ${s.recent.length} recent fixes${s.gaveUp.length ? `, gave up on ${s.gaveUp.length}` : ''}.`, s.stale || s.gaveUp.length ? 'warning' : 'success');
       } catch (e) { rt.toast((e as Error).message, 'danger'); }
@@ -97,7 +97,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('watchdog.run', async ([arg]) => {
       try {
         const build = decodeURIComponent(arg ?? '').trim();
-        const r = await watchdogApi.post<{ requested?: boolean; fixes?: unknown[] }>('watchdog/run', build ? { build } : {});
+        const r = await watchdogApi.post<{ requested?: boolean; fixes?: unknown[] }>('recovery-watchdog/run', build ? { build } : {});
         rt.toast(r.requested ? 'Asked the VPS for a watchdog pass: it runs within a minute.' : `Watchdog pass done: ${r.fixes?.length ?? 0} fixed.`, 'success');
       } catch (e) { rt.toast((e as Error).message, 'danger'); }
     }, { label: 'Build watchdog: run a pass now (optionally one build)' });
