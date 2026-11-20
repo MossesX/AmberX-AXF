@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9557,
- "updatedAt": "2026-11-20T05:53:16.264Z",
+ "rev": 9558,
+ "updatedAt": "2026-11-20T05:53:41.771Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:53:11.717Z",
+   "updatedAt": "2026-11-20T05:53:37.608Z",
    "builtAt": "",
    "notes": [
     {
@@ -337241,11 +337241,11 @@
      "done": true,
      "doneAt": "2026-11-20T05:52:06.661Z",
      "note": "",
-     "rev": 51,
+     "rev": 52,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:52:07.271Z",
-     "statusAt": "2026-11-20T05:50:50.501Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T05:53:37.666Z",
+     "statusAt": "2026-11-20T05:53:37.608Z",
+     "statusBy": "amber-fix-send-timeout",
      "attempt": 21,
      "statusLog": [
       {
@@ -337555,9 +337555,16 @@
        "by": "orchestrator",
        "attempt": 21,
        "why": "to hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T05:53:37.608Z",
+       "by": "amber-fix-send-timeout",
+       "attempt": 21,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s1",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s1",
@@ -338729,7 +338736,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 170,
+   "rev": 171,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
