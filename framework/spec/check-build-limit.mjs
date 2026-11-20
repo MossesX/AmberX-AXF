@@ -69,11 +69,13 @@ const res = [
   { id: 'r4', mode: 'run', pid: 500, session: 'axf-limittest-d', at: new Date(now).toISOString() },  // alive, no claude yet: counts
   { id: 'r5', mode: 'run', pid: 999, at: new Date(now).toISOString() },                                // gone: dropped
   { id: 'r6', mode: 'launch', session: 'axf-limittest-old', at: new Date(now - 3600e3).toISOString() }, // expired
+  { id: 'r7', mode: 'launch', pid: 998, session: 'axf-limittest-refused', at: new Date(now).toISOString() }, // launcher gone, no session: dropped
+  { id: 'r8', mode: 'launch', pid: 500, session: 'axf-limittest-starting', at: new Date(now).toISOString() }, // launcher alive: counts
 ];
 c = L.countLive({ ...base, reservations: res }, lim, {});
-eq(c.keep.map((r) => r.id), ['r2', 'r4'], 'reservations: open ones kept');
-eq(c.live, 4, 'run mode: session + loose claude + two reservations');
-eq(L.decide(c, lim), { ok: false, live: 4, max: 3, free: 0 }, 'over the limit: refused');
+eq(c.keep.map((r) => r.id), ['r2', 'r4', 'r8'], 'reservations: open ones kept; a launch whose launcher died with no session is not (a refused launch never holds a place)');
+eq(c.live, 5, 'run mode: session + loose claude + three reservations');
+eq(L.decide(c, lim), { ok: false, live: 5, max: 3, free: 0 }, 'over the limit: refused');
 
 // admit: N pass, N+1 refused, under one lock
 rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });

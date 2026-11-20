@@ -605,7 +605,9 @@ fi
 LOCK_CLI="$HERE/../framework/cli/build-lock.mjs"
 if [[ -n "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null && [[ -f "$LOCK_CLI" ]]; then
   lverdict="$(node "$LOCK_CLI" check "$AXF_BUILD_ID" ${AXF_BUILD_STEP:+--step "$AXF_BUILD_STEP"} --dir "$(pwd)" --no-lock 2>&1)"; l_st=$?
-  if (( l_st == 3 )); then echo "claude-headless: $lverdict" >&2; echo "$lverdict"; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; exit 3; fi
+  # refused: give back the agent slot AND the hard-limit place this launch reserved (a leaked reservation held a build
+  # place for reserveSec after every refusal: Nov 20 2026, two refused retries a minute kept a step out of a free place)
+  if (( l_st == 3 )); then echo "claude-headless: $lverdict" >&2; echo "$lverdict"; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; [[ -n "$limit_res" ]] && node "$LIMIT_JS" release "$limit_res" >/dev/null 2>&1; exit 3; fi
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
