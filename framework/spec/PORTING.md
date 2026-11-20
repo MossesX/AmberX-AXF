@@ -409,3 +409,10 @@ Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules i
 merge-queue filter, client-side timers) and the console's reader of the builds store `apps/console-web/server/builds_store.py`.
 Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web
 view; a native Builds table would port status-table-core.mjs as is (pure, no IO) and read GET /table.
+
+## Deferred: AmberX skin in the Android asset copy (Nov 20 2026)
+
+The finished Dev Console look is saved as the framework skin `framework/assets/skin/amberx-house.json` (name "AmberX",
+skin@1 data only, no engine change) and baked into the web apps' shared set. The Android copy under
+`apps/phone-connect/app/src/main/assets/axf/assets/skin` is not refreshed (no new Android work): until it is, the phone
+app's Skin picker does not list AmberX, and a look naming `amberx-house` falls back to the app's own look there.
