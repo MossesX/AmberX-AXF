@@ -321,6 +321,7 @@ jobs:
             npx -y tsx framework/spec/check-skin-animations.mts         # skin animations: behaviour-theme swatch / skin-switch / picker fields, Animations picks, colour maths, runtime actions, CLI, tokens-only CSS, reduced motion
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
             node framework/spec/check-skin-modes.mjs                    # skin-modes@1: every skin ships a light and a dark colour theme (shipped, right scheme, own theme is one of them)
+            node framework/spec/check-theme-contrast.mjs                # every colour theme, light and dark: the full token set, and every text token at WCAG AA on bg and surface
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
             node framework/spec/check-settings-iface.mjs                # settings-iface@1: every asset type + plugin ships its locked default-<name>, every settings asset has a valid builtFor, picker lists only its owner's
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up

@@ -415,6 +415,10 @@ merge-queue filter, client-side timers) and the console's reader of the builds s
 Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web
 view; a native Builds table would port status-table-core.mjs as is (pure, no IO) and read GET /table.
 
+## Deferred: theme switch stays in the look's pair (Nov 20 2026)
+
+Build fable-full-audit-ui-overhaul-conso s12 (skin pass, Opus, web only): `core/engines/widgets.ts` `themeSwitchPair(active, own, others)` picks the light / dark pair a theme switch toggles inside (its own pair while the colour theme in force is one of the two, else the first other theme-switch asset's pair holding it, else its own). The React `ThemeSwitchWidget` passes every registered theme-switch asset, so the AmberX banner's switch stays on Saffron Day / Carbon Amber instead of jumping to Arctic Daylight / Amber Ember. Fixture key `themeSwitchPair` in `spec/fixtures/widgets.json` (`spec/check-widgets.mts`). **Kotlin twin deferred** (Android on hold): `WidgetEngine.themeSwitchPair` replaying the new key, and the Compose theme switch reading every theme-switch asset; `ConformanceTest` ignores the new key until then.
+
 ## Deferred: AmberX skin in the Android asset copy (Nov 20 2026)
 
 The finished Dev Console look is saved as the framework skin `framework/assets/skin/amberx-house.json` (name "AmberX",

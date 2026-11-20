@@ -20,14 +20,14 @@
       "text": "#1f2023",
       "muted": "#6d6f74",
       "border": "#dddedf",
-      "accent": "#6c727f",
+      "accent": "#6a707c",
       "accentText": "#ffffff",
-      "accentSoft": "rgba(108,114,127,0.1)",
+      "accentSoft": "rgba(106,112,124,0.1)",
       "danger": "#ce2732",
-      "success": "#218c5a",
-      "warning": "#b87614",
-      "info": "#1686b6",
-      "focus": "#6c727f",
+      "success": "#1d7c50",
+      "warning": "#976211",
+      "info": "#14759f",
+      "focus": "#6a707c",
       "shadow": "rgba(21,31,50,0.12)"
     }
   }
