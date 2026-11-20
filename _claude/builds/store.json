@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9391,
- "updatedAt": "2026-11-20T00:10:43.621Z",
+ "rev": 9392,
+ "updatedAt": "2026-11-20T00:10:59.423Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -270603,6 +270603,16 @@
     {
      "text": "Shipped manifest sm-rebuild-fresh-main-phone-connect-small rev 1 sent to Shipped features (orchestrator): PR #787, 0 file(s), 0 test line(s), 8 open.",
      "at": "2026-11-20T00:10:39Z"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -271382,7 +271392,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 205,
+   "rev": 207,
    "deleted": false,
    "deletedAt": "",
    "pending": {
