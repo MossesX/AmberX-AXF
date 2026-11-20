@@ -6,6 +6,7 @@
  *
  *   node scripts/console-control.e2e.mjs          (build first: npm run build)
  *   CC_E2E_PORT=7099 · PW_CHROMIUM=<chromium path> · CC_E2E_SHOTS=<dir> (palette screenshots, desktop + phone)
+ *   CC_E2E_MAP=<file.json> (the screen maps: the Build orchestrator, and a tab row before and after a tab is opened by its address)
  *
  * Covers: open a tab, scroll, focus a grid row and a build step (the build's real steps, from orchestrator.mjs state),
  * set a setting, press a button, search then focus, the voice action, and the search palette (Ctrl+K and its deep link).
@@ -13,7 +14,7 @@
  */
 import { spawn, execFileSync } from 'node:child_process';
 import { createRequire } from 'node:module';
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -27,6 +28,7 @@ let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }
 if (!playwright) { try { playwright = await import('playwright'); } catch { console.error('playwright not found (npm i -D playwright, or PLAYWRIGHT_DIR)'); process.exit(2); } }
 
+const INVENTORY = JSON.parse(readFileSync(join(APP, 'src/control/inventory.json'), 'utf8'));
 let checks = 0;
 let last; // the last answer, printed when a check fails
 const ok = (c, what) => { if (!c) throw new Error(`✗ ${what}${last ? `\n  last answer: ${JSON.stringify(last).slice(0, 1200)}` : ''}`); checks++; };
@@ -92,6 +94,46 @@ try {
   // state with nothing asked: where the console is
   let a = await run({ verb: 'state' });
   ok(a.ok && typeof a.state.screen === 'string' && a.state.targets > 0, 'state answers with the live snapshot');
+
+  // the screen map (what a screenshot says can be clicked, for a caller that cannot see it): the Build orchestrator's
+  // buttons, fields and menus with their words and addresses, in reading order
+  for (let i = 0; i < 40; i++) { a = await run({ verb: 'open', address: 'view:build-orchestrator' }); if (a.ok) break; await sleep(250); } // plugin screens load after the shell
+  ok(a.ok, `the Build orchestrator opens (${a.message ?? ''})`);
+  await page.waitForFunction(() => window.axfScreenMap().items.filter((i) => i.on === 'screen' && i.address.startsWith('view:build-orchestrator/')).length > 5, null, { timeout: 10_000 }).catch(() => undefined);
+  const map = await page.evaluate(() => window.axfScreenMap());
+  const seen = map.items.filter((i) => i.on === 'screen');
+  ok(map.view === 'build-orchestrator' && seen.length > 5, `the screen map lists what the Build orchestrator shows (${seen.length} on screen)`);
+  ok(seen.every((i) => i.text && i.address && i.w > 0 && i.h > 0 && i.x < map.width && i.y < map.height), 'every item has words, an address and a place inside the viewport');
+  ok(seen.every((i, n) => n === 0 || i.y >= seen[n - 1].y - 10), 'on-screen items are in reading order (top to bottom)');
+  ok(new Set(map.items.map((i) => i.address)).size === map.items.length, 'every address is listed once');
+  const plain = seen.find((i) => i.address.includes('/button:seen.'));
+  ok(plain, 'a control with no address of its own got a seen.<words> address');
+  a = await run({ verb: 'state', address: plain.address });
+  ok(a.ok, `a seen.<words> address is a console-control target (${a.message ?? ''})`);
+  if (process.env.CC_E2E_SHOTS) { mkdirSync(process.env.CC_E2E_SHOTS, { recursive: true }); await page.screenshot({ path: join(process.env.CC_E2E_SHOTS, 'screen-map-build-orchestrator.png') }); }
+
+  // a tab row in the screen map: its tabs by their words, the open one marked; another tab found by its words opens by its
+  // address (the first screen of the inventory that draws a tab row with this offline backend)
+  let tabMap = null;
+  for (const view of [...new Set(INVENTORY.tabGroups.map((g) => g.view).filter(Boolean))].slice(0, 16)) {
+    a = await run({ verb: 'open', address: `view:${view}` });
+    if (!a.ok) continue;
+    await page.waitForFunction(() => window.axfScreenMap().items.filter((i) => i.role === 'tab' && i.kind === 'tab' && i.on === 'screen').length >= 2, null, { timeout: 1500 }).catch(() => undefined);
+    const m = await page.evaluate(() => window.axfScreenMap());
+    const ts = m.items.filter((i) => i.role === 'tab' && i.kind === 'tab' && i.on === 'screen');
+    if (ts.length >= 2 && ts.some((t) => t.value === true) && ts.some((t) => t.value !== true && !t.disabled)) { tabMap = m; break; }
+  }
+  ok(tabMap, 'a screen with a tab row lists its tabs, the open one marked');
+  const mapTabs = tabMap.items.filter((i) => i.role === 'tab' && i.kind === 'tab' && i.on === 'screen');
+  ok(mapTabs.every((t) => /\/tab:[^/]+=[^/]+$/.test(t.address) || /^tab:[^/]+=[^/]+$/.test(t.address)), `each tab carries its console-control address (${mapTabs.map((t) => `${t.text}${t.value === true ? '*' : ''}`).join(', ')})`);
+  const otherTab = mapTabs.find((t) => t.value !== true && !t.disabled);
+  a = await run({ verb: 'open', address: otherTab.address });
+  ok(a.ok, `the tab that says "${otherTab.text}" opens by its address (${a.message ?? ''})`);
+  await sleep(300);
+  const mapAfter = await page.evaluate(() => window.axfScreenMap());
+  ok(mapAfter.items.find((i) => i.address === otherTab.address)?.value === true, `the next map says "${otherTab.text}" is the open tab`);
+  if (process.env.CC_E2E_MAP) writeFileSync(process.env.CC_E2E_MAP, JSON.stringify({ orchestrator: map, tabs: tabMap, clicked: otherTab, after: mapAfter }, null, 1));
+  if (process.env.CC_E2E_SHOTS) await page.screenshot({ path: join(process.env.CC_E2E_SHOTS, 'screen-map-after-tab.png') });
 
   // open a tab (Settings › Plugins): the answer's state says the screen and the active tab
   a = await run({ verb: 'open', address: 'view:settings/tab:settings.tabs=plugins' });
@@ -176,7 +218,7 @@ try {
   if (shots) await phone.screenshot({ path: join(shots, 'palette-phone.png') });
 
   ok(!errors.length, `no page errors (${errors.slice(0, 3).join(' | ')})`);
-  console.log(`✓ console-control e2e — ${checks} checks (open, set, scroll, focus row + step, press, search → focus, voice, palette)`);
+  console.log(`✓ console-control e2e — ${checks} checks (open, set, scroll, focus row + step, press, search → focus, screen map, voice, palette)`);
 } catch (e) {
   console.error(e instanceof Error ? e.message : e);
   process.exitCode = 1;

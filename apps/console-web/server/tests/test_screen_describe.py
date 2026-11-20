@@ -83,6 +83,11 @@ ok(pick("nightly")["pick"]["kind"] == "row" and pick("nightly build")["how"] == 
 ok(pick("report open")["pick"]["n"] == 7 and pick("report open")["how"] == "every word", "every word, any order")
 ok(pick("shiped")["pick"]["n"] == 2 and pick("pendding")["pick"]["n"] == 1 and pick("lode more")["pick"]["text"] == "Load more", "a small transcription slip still matches")
 ok(pick("shiped")["how"] == "close spelling", "and says it was a close spelling")
+near = sd.clickables({"items": [{"address": "view:x/button:seen.more", "kind": "button", "role": "button", "text": "More: new skill, tool, training", "on": "screen"},
+                                {"address": "view:x/tab:t=skills", "kind": "tab", "role": "tab", "text": "Skills", "on": "screen", "value": True},
+                                {"address": "view:x/button:banner.claude", "kind": "button", "role": "button", "text": "Claude", "on": "screen", "value": "Claude"}]})
+ok(sd.find(near, "skillss")["pick"]["text"] == "Skills", "of two close spellings the much closer one is taken")
+ok("value" not in near["items"][2] and near["items"][1]["value"] is True, "a value that only repeats the words is left out of the list")
 many = pick("retry")
 ok("pick" not in many and [i["n"] for i in many["matches"]] == [5, 6] and "say which" in many["message"], "several visible matches: the list, never a guess (the off-screen one is left out)")
 ok(pick("retry", nth=2)["pick"]["n"] == 6 and "matches" in pick("retry", nth=5), "nth picks among them; out of range asks again")

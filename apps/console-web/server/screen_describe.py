@@ -37,6 +37,7 @@ CACHE_MAX = 40
 LAST_TTL_S = 600.0          # how long "click 4" may refer to the last list
 MAX_LISTED = 200            # items written into the text (the structured list keeps them all)
 FUZZY_MIN = 0.8             # spelling closeness that still counts as the same words
+FUZZY_TIE = 0.15            # two close spellings this near each other are both offered
 LLM_CAPABILITY = "axf.llm@1"
 VISION_KINDS = ("anthropic",)   # provider kinds of the shared registry that take an image and answer as Claude
 MODEL_RE = re.compile(r"claude-(opus|fable)", re.I)
@@ -98,8 +99,9 @@ def clickables(screen_map: Any, targets: Any = None, view: str = "") -> dict[str
             for k in ("disabled", "destructive"):
                 if it.get(k) is True:
                     row[k] = True
-            if isinstance(it.get("value"), (str, int, float, bool)) and it.get("value") != "":
-                row["value"] = it["value"] if not isinstance(it["value"], str) else _clean(it["value"], 80)
+            v = it.get("value")
+            if isinstance(v, (int, float, bool)) or (isinstance(v, str) and v and _clean(v, 80).lower() not in (text.lower(), row.get("label", "").lower())):
+                row["value"] = v if not isinstance(v, str) else _clean(v, 80)  # a value that only repeats the words is left out
             items.append(row)
     elif isinstance(targets, list):
         source = "targets"
@@ -261,7 +263,7 @@ def find(cm: dict[str, Any], text: str, nth: int = 0, kind: str = "", by_number:
         return {"none": True, "message": f'nothing on the screen says "{said}"' + (f" (as a {role})" if role else ""),
                 "nearest": [i for i in pool if _norm(i["text"]) in near][:5]}
     best = int(scored[0][0])  # the tier: every match in it is as good a reading of the words as the first
-    hits = [i for s, i in scored if int(s) == best]
+    hits = [i for s, i in scored if int(s) == best and (best > 1 or s >= scored[0][0] - FUZZY_TIE)]  # among close spellings, only the closest
     on_screen = [i for i in hits if i.get("on") != "scroll"]
     hits = sorted(on_screen or hits, key=lambda i: i.get("n", 0))
     if len(hits) == 1:

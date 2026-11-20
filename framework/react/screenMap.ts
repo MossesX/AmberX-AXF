@@ -51,8 +51,12 @@ export const SCREEN_MAP_LINE_PX = 10;
 const CONTAINER_KINDS = new Set<ConsoleControlKind>(['view', 'panel', 'grid', 'scroll', 'toolbar']);
 /** Registered kinds that are one control: a clickable element inside one is that control, not another item. */
 const LEAF_KINDS = new Set<ConsoleControlKind>(['button', 'tab', 'subtab', 'setting', 'function']);
+/** Registered kinds listed by their registered name, not by every word their element holds. */
+const NAMED_KINDS = new Set<ConsoleControlKind>(['setting', 'plugin']);
 const ROLE_OF_KIND: Partial<Record<ConsoleControlKind, ScreenMapRole>> = { tab: 'tab', subtab: 'tab', button: 'button', function: 'button', row: 'row', step: 'step', setting: 'input', plugin: 'plugin' };
 const CLICKABLE = 'button, a[href], summary, input:not([type="hidden"]), select, textarea, [role="button"], [role="tab"], [role="link"], [role="menuitem"], [role="menuitemcheckbox"], [role="menuitemradio"], [role="option"], [role="switch"], [role="checkbox"], [role="radio"]';
+/** What a tab target's element must be to count as the tab itself (some targets answer with the panel they open). */
+const TAB_CONTROL = '[role="tab"], [data-axf-tab], button, a[href]';
 const CLIPS = /auto|scroll|hidden|clip/;
 const DESTRUCTIVE_WORDS = /\b(delete|remove|purge|wipe|reset|uninstall|drop|clear|discard|revoke|destroy|erase|kill)\b/i;
 
@@ -188,14 +192,18 @@ export function screenMap(rt: AxfRuntime, within?: Element | null): ScreenMap {
     if (target.kind === 'tab' || target.kind === 'subtab') {
       if (!target.address.slice(target.address.lastIndexOf('/') + 1).includes('=')) continue; // the tab row, not a tab
       if ((uses.get(el) ?? 0) > 1) continue; // a tab folded under More answers with its row's element: not drawn itself
+      if (!el.matches(TAB_CONTROL)) continue; // its element is the tab's panel, not the tab: the sweep lists the real control
     }
+    // a button or tab whose element holds other controls is the region it opens (a dialog, a panel), not the control itself
+    if (target.kind !== 'setting' && LEAF_KINDS.has(target.kind) && !el.matches(CLICKABLE) && el.querySelector(CLICKABLE)) continue;
     owned.add(el);
     if (LEAF_KINDS.has(target.kind)) leaves.push(el);
     const p = place(el, clip, clips);
     if (!p) continue;
-    const text = wordsOf(el) || screenMapText(target.label);
-    if (!text) continue;
     const label = screenMapText(target.label);
+    // a setting's row and a plugin's card hold more words than their name: the name is what a caller says
+    const text = NAMED_KINDS.has(target.kind) ? label || wordsOf(el) : wordsOf(el) || label;
+    if (!text) continue;
     const value = registeredValue(target, el);
     push({
       address: target.address, kind: target.kind, role: ROLE_OF_KIND[target.kind] ?? 'button', text, ...(label && label.toLowerCase() !== text.toLowerCase() ? { label } : {}),

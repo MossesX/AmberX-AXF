@@ -95,15 +95,19 @@ check(screenMapRole('BUTTON', null, null) === 'button' && screenMapRole('DIV', '
   const icon = el('button', '', [400, 100, 30, 30], { 'aria-label': 'Settings' }, pane);
   const below = el('button', 'Delete build', [20, 900, 100, 30], {}, pane);     // scrolled out of the pane
   el('button', 'Hidden', [0, 0, 0, 0], {}, pane);                               // display: none (no box)
-  const name = el('input', '', [500, 100, 200, 30], { type: 'text', placeholder: 'Build name' }, pane);
+  const field = el('div', 'Name of the build The name shown in lists', [480, 95, 300, 40], {}, pane);   // a setting's row: label, hint, control
+  const name = el('input', '', [500, 100, 200, 30], { type: 'text', placeholder: 'Build name' }, field);
   (name as HTMLInputElement).value = 'nightly';
   const row = el('div', 'nightly build failed 2 of 9', [20, 300, 900, 40], {}, pane);
   const inRow = el('button', 'Logs', [800, 305, 60, 30], {}, row);
-  // a tab's own target, its inner label must not be listed again
+  const panel = el('div', 'Everything about plugins, a whole panel of text', [0, 400, 900, 100], {}, pane);
   const offs = [
     reg.register({ address: `view:${view}/tab:q=pending`, kind: 'tab', label: 'Pending', element: () => tabPending, get: () => true }),
     reg.register({ address: `view:${view}/tab:q=shipped`, kind: 'tab', label: 'Shipped', element: () => tabShipped, get: () => false }),
     reg.register({ address: `view:${view}/tab:q`, kind: 'tab', label: 'Queue tabs', element: () => document.body }),
+    reg.register({ address: `view:${view}/tab:s=plugins`, kind: 'tab', label: 'Plugins', element: () => panel }),
+    reg.register({ address: `view:${view}/button:open-pane`, kind: 'button', label: 'Open pane', element: () => pane }),
+    reg.register({ address: `view:${view}/setting:x.name`, kind: 'setting', label: 'Name of the build', element: () => field, get: () => 'nightly' }),
     reg.register({ address: `view:${view}/button:save`, kind: 'button', label: 'Save changes', element: () => save, invoke: () => undefined }),
     reg.register({ address: `view:${view}/grid:queue`, kind: 'grid', label: 'Queue', element: () => pane }),
     reg.register({ address: `view:${view}/grid:queue/row:nightly`, kind: 'row', label: 'nightly', element: () => row }),
@@ -113,17 +117,19 @@ check(screenMapRole('BUTTON', null, null) === 'button' && screenMapRole('DIV', '
   const by = (text: string) => map.items.find((i) => i.text === text);
   const seen = map.items.filter((i) => i.on === 'screen').map((i) => i.text);
   check(map.view === view && map.width === 1000 && map.height === 600, 'the map says which screen and how big the viewport is');
-  check(JSON.stringify(seen) === JSON.stringify(['Pending', 'Shipped', 'Save', 'Retry', 'Settings', 'Build name', 'Open report', 'nightly build failed 2 of 9Logs', 'Logs']), `on screen, in reading order (${JSON.stringify(seen)})`);
+  check(JSON.stringify(seen) === JSON.stringify(['Pending', 'Shipped', 'Save', 'Retry', 'Settings', 'Name of the build', 'Open report', 'nightly build failed 2 of 9Logs', 'Logs']), `on screen, in reading order (${JSON.stringify(seen)})`);
   check(by('Pending')?.address === `view:${view}/tab:q=pending` && by('Pending')?.role === 'tab' && by('Pending')?.value === true && by('Shipped')?.value === undefined, 'a registered tab keeps its address and says it is the open one');
   check(!map.items.some((i) => i.address === `view:${view}/tab:q` || i.kind === 'grid'), 'a tab row and a grid are containers, not something to click');
   check(by('Save')?.address === `view:${view}/button:save` && by('Save')?.label === 'Save changes', 'a registered button shows its words, with its label when that differs');
   check(by('Retry')?.address === `view:${view}/button:seen.retry` && by('Retry')?.kind === 'button', 'a plain button gets a seen.<words> address');
   check(by('Open report')?.role === 'link' && by('Settings')?.address.endsWith('button:seen.settings'), 'a link is a link; an icon button is named by its aria-label');
-  check(by('Build name')?.role === 'input' && by('Build name')?.value === 'nightly', 'an input is named by its placeholder and shows its text');
+  check(by('Name of the build')?.role === 'input' && by('Name of the build')?.value === 'nightly' && by('Name of the build')?.address === `view:${view}/setting:x.name` && !by('Build name'), 'a setting is listed once, by its name, with its value (not its input again)');
+  check(!map.items.some((i) => i.address.endsWith('button:open-pane')) && !!by('Retry'), 'a button target that answers with a region full of controls is not listed, and does not hide them');
   check(by('Logs')?.address.endsWith('button:seen.logs') && map.items.some((i) => i.kind === 'row' && i.address.endsWith('row:nightly')), 'a row is listed, and so is a button inside it');
   check(by('Delete build')?.on === 'scroll' && by('Delete build')?.destructive === true, 'a control scrolled out of its pane is "scroll to see"; a delete button is marked');
   check(map.items[map.items.length - 1]?.text === 'Delete build', 'scroll-to-see items come after the visible ones');
   check(!by('Hidden'), 'a control with no box is left out');
+  check(!map.items.some((i) => i.address.endsWith('tab:s=plugins')), 'a tab target that answers with its panel is not listed as that panel');
   check(map.items.every((i) => i.w > 0 && i.h > 0), 'every item has a size');
 
   // the swept button is a real console-control@1 target: press = its click
