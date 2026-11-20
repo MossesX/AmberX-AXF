@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9748,
- "updatedAt": "2026-11-20T07:12:07.270Z",
+ "rev": 9749,
+ "updatedAt": "2026-11-20T07:12:19.276Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:12:01.505Z",
+   "updatedAt": "2026-11-20T07:12:12.191Z",
    "builtAt": "",
    "notes": [
     {
@@ -337766,7 +337766,7 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "Earl the Ear",
+    "by": "fable-full-audit-ui-overhaul-conso--s7",
     "brief": "# Fable full audit + UI overhaul (console): step s7\n\nBuild fable-full-audit-ui-overhaul-conso (Pipeline 2.0), step s7 of 18. Model Opus. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fable-full-audit-ui-overhaul-conso--s7 (already cut from main) · branch claude/fable-full-audit-ui-overhaul-conso--s7.\n\n## Your step\nExtensive tests (Brett, Nov 19): end-to-end browser tests of every console screen, tab, dialog and console command (open, screenshot, refresh/startup), plus server load tests for background loops; run before and after the fixes, results in the report. Brett wants Ultra effort (pipeline has no effort\n\n## The build\nBrett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
@@ -340516,7 +340516,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 399,
+   "rev": 400,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
