@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T19:23:05.512Z",
+ "updatedAt": "2026-11-20T19:25:57.388Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -15110,7 +15110,7 @@
    "title": "Land round 2: catch up and land the rest, Molly first",
    "category": "Landing",
    "detail": "Agent: Landin' Lenny. One PR at a time: update from main, resolve conflicts keeping both sides, CI green, merge. Order: #288 (+#266) → #294 #295 → #296 → #298 → #281 #291 #293 → #289 #269 → #300. Don't merge WIP #299 #301 #302; close #297 if orphan dup. Redeploy console + Molly after #288, all apps at the end.",
-   "status": "blocked",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "land-round-2",
@@ -15118,7 +15118,7 @@
    "pr": "#313",
    "mergedAt": "2026-11-04T17:27:24Z",
    "createdAt": "2026-11-04T10:43:58.630Z",
-   "updatedAt": "2026-11-16T16:44:21.205Z",
+   "updatedAt": "2026-11-20T19:25:52.497Z",
    "builtAt": "",
    "notes": [
     {
@@ -15160,6 +15160,10 @@
     {
      "text": "Note from build remove-old-molly-app-project-keep-axf (Nov 16 2026): the Molly app is removed (apps/molly, molly.amberxai.com, the molly agent add-on; the guide is now gizmo-guide). Drop the Molly part of this build; the rest stands.",
      "at": "2026-11-16T16:44:21.205Z"
+    },
+    {
+     "text": "Moved to the Archive from blocked (console): Brett, Nov 20: only today's builds stay in the pipeline and build manager.",
+     "at": "2026-11-20T19:25:52.497Z"
     }
    ],
    "approvals": [],

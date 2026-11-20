@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:32 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
 - 2026-11-20 01:32 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 - 2026-11-20 01:33 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
 - 2026-11-20 01:33 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 19:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 19:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 19:22 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:25 UTC · `land-round-2` → archived, note (all) · console
 
 ## Token passes (log)
 
