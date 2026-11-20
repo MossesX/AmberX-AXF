@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10144,
- "updatedAt": "2026-11-20T22:48:30.789Z",
+ "rev": 10145,
+ "updatedAt": "2026-11-20T22:54:37.272Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344842,7 +344842,7 @@
      "uid": "st-mwpefvmx014dcz",
      "title": "",
      "text": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868).",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -344855,16 +344855,28 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T19:55:54.728Z"
+     "updatedAt": "2026-11-20T22:54:33.811Z",
+     "statusAt": "2026-11-20T22:54:33.772Z",
+     "statusBy": "amber",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T22:54:33.772Z",
+       "by": "amber",
+       "attempt": 1
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
      "uid": "st-mwpefvmx02vjfu",
      "title": "",
      "text": "Run 44801650701 on 7f128689.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -344877,16 +344889,28 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T19:55:54.728Z"
+     "updatedAt": "2026-11-20T22:54:33.811Z",
+     "statusAt": "2026-11-20T22:54:33.772Z",
+     "statusBy": "amber",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T22:54:33.772Z",
+       "by": "amber",
+       "attempt": 1
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s3",
      "uid": "st-mwpefvmx037f4v",
      "title": "",
      "text": "Fix it, CI green, land.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -344899,16 +344923,28 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T19:55:54.728Z"
+     "updatedAt": "2026-11-20T22:54:33.811Z",
+     "statusAt": "2026-11-20T22:54:33.772Z",
+     "statusBy": "amber",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T22:54:33.772Z",
+       "by": "amber",
+       "attempt": 1
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s4",
      "uid": "st-mwpefvmx04iekt",
      "title": "",
      "text": "Every step on Fable.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -344921,16 +344957,28 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T19:55:54.728Z"
+     "updatedAt": "2026-11-20T22:54:33.811Z",
+     "statusAt": "2026-11-20T22:54:33.772Z",
+     "statusBy": "amber",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T22:54:33.772Z",
+       "by": "amber",
+       "attempt": 1
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s5",
      "uid": "st-mwpefvmx05hf5z",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -344946,9 +344994,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T19:55:54.728Z"
+     "updatedAt": "2026-11-20T22:54:33.811Z",
+     "statusAt": "2026-11-20T22:54:33.772Z",
+     "statusBy": "amber",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T22:54:33.772Z",
+       "by": "amber",
+       "attempt": 1
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
@@ -344959,7 +345019,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
