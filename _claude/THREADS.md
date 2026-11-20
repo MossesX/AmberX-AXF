@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:12 UTC · `vps-never-gives-up-fix-land-every-build` → pending, note (all) · builds-live
-- 2026-11-20 00:13 UTC · `postgres-part-b-plan-plan-studio-catalog` note (all) · orchestrator
 - 2026-11-20 00:15 UTC · `vps-never-gives-up-fix-land-every-build` → landing, note (all) · watchdog
 - 2026-11-20 00:58 UTC · `plan-blueprints` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `blueprint-notes-tasks` note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:16 UTC · `fable-full-audit-ui-overhaul-conso` s2 undone (all) · orchestrator
 - 2026-11-20 06:21 UTC · `fable-full-audit-ui-overhaul-conso` s3 done (all) · orchestrator
 - 2026-11-20 06:21 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s3 (all) · builds-live
+- 2026-11-20 06:21 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 06:22 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 
 ## Token passes (log)
 
