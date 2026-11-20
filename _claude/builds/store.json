@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10022,
- "updatedAt": "2026-11-20T13:02:59.438Z",
+ "rev": 10023,
+ "updatedAt": "2026-11-20T13:03:19.971Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,180 +337237,16 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "merging-main",
+   "status": "merging-pr",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "861",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T13:02:43.531Z",
+   "updatedAt": "2026-11-20T13:03:10.225Z",
    "builtAt": "",
    "notes": [
-    {
-     "text": "Plan Studio 2.0 item: fable-full-code-audit-cleanup-sw-cfs5 (Fable full audit + UI overhaul (console)). Passed plan-build@1; sent as one Pipeline 2.0 build with 18 planning steps. The splitting stage designs its build steps.",
-     "at": "2026-11-20T04:51:19.241Z"
-    },
-    {
-     "text": "Fable could not split it (claude exit 1: {\"duration_api_ms\":16003,\"stop_reason\":\"tool_use\",\"session_id\":\"096458a8-ba4f-40f6-9c9c-20eeb6f3050a\",\"total_cost_usd\":1.10801075,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":53223,\"cache_read_input_tokens\":5923,\"output_tokens\":841,\"output_tokens_details\":{\"thinking_tokens\"): one step per planning step instead (18, 540 min). Review the steps.",
-     "at": "2026-11-20T04:52:28.145Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--earl, shared account login)",
-     "at": "2026-11-20T05:00:10.850Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T05:02:02.832Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T05:02:02.832Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-20T05:06:02.096Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-20T05:08:01.519Z"
-    },
-    {
-     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--earl: brief only · start 10.1K tokens ($0.02) · cost $3.11 · 67 turns · 6 tools, MCP none",
-     "at": "2026-11-20T05:09:37.096Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $3.11",
-     "at": "2026-11-20T05:09:42.087Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending. Alerted Brett.",
-     "at": "2026-11-20T05:11:01.431Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--earl, shared account login)",
-     "at": "2026-11-20T05:11:46.871Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-fable-full-audit-ui-overhaul-conso--s1--earl is gone while the step was building.",
-     "at": "2026-11-20T05:12:01.578Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-20T05:14:02.887Z"
-    },
-    {
-     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s2--earl: brief only · start 10.0K tokens ($0.02) · cost $1.76 · 48 turns · 6 tools, MCP none",
-     "at": "2026-11-20T05:22:26.589Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $1.76",
-     "at": "2026-11-20T05:22:33.274Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 13 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-20T05:23:01.701Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at building, attempt 6: tmux session axf-fable-full-audit-ui-overhaul-conso--s2--earl is gone while the step was building.",
-     "at": "2026-11-20T05:25:01.372Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 6 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-20T05:26:01.682Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--lenny, shared account login)",
-     "at": "2026-11-20T05:26:16.746Z"
-    },
-    {
-     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--lenny: brief only · start 10.1K tokens ($0.02) · cost $0.08 · 3 turns · 6 tools, MCP none",
-     "at": "2026-11-20T05:27:58.004Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.08",
-     "at": "2026-11-20T05:28:04.501Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at building, attempt 15: tmux session axf-fable-full-audit-ui-overhaul-conso--s1--lenny is gone while the step was building.",
-     "at": "2026-11-20T05:30:02.343Z"
-    },
-    {
-     "text": "Watchdog: step s1 gave up: attempt 16 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-20T05:32:01.783Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--joey, shared account login)",
-     "at": "2026-11-20T05:46:58.274Z"
-    },
-    {
-     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--joey: brief only · start 10.1K tokens ($0.00) · cost $0.06 · 3 turns · 6 tools, MCP none",
-     "at": "2026-11-20T05:48:14.948Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 1 run, $0.06",
-     "at": "2026-11-20T05:48:19.332Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--earl, shared account login)",
-     "at": "2026-11-20T05:51:20.700Z"
-    },
-    {
-     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--earl: brief only · start 10.1K tokens ($0.02) · cost $3.16 · 70 turns · 6 tools, MCP none",
-     "at": "2026-11-20T05:52:33.724Z"
-    },
-    {
-     "text": "Worker accounts: hulu0241: 2 runs, $6.26",
-     "at": "2026-11-20T05:52:39.801Z"
-    },
-    {
-     "text": "Watchdog: step s2 gave up: attempt 15 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-20T05:54:01.815Z"
-    },
-    {
-     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--lenny, shared account login)",
-     "at": "2026-11-20T05:55:03.784Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:54:01.815Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at ready (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at ready (3 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at ready (3 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at ready (3 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at ready (2 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at ready (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at ready (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z"
-    },
     {
      "text": "Watchdog: step s3 retried at ready, attempt 4 on hulu0241.",
      "at": "2026-11-20T05:59:01.980Z"
@@ -339681,6 +339517,175 @@
      "text": "Watchdog: step s18 stuck at completed (113 min past budget): re-ran the transition (9).",
      "at": "2026-11-20T13:02:02.702Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Lander: PR 3 of 19 (s2, split after a failure)",
+     "at": "2026-11-20T13:03:10.225Z",
+     "by": "lander"
+    },
+    {
+     "text": "Plan Studio 2.0 item: fable-full-code-audit-cleanup-sw-cfs5 (Fable full audit + UI overhaul (console)). Passed plan-build@1; sent as one Pipeline 2.0 build with 18 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-20T04:51:19.241Z"
+    },
+    {
+     "text": "Fable could not split it (claude exit 1: {\"duration_api_ms\":16003,\"stop_reason\":\"tool_use\",\"session_id\":\"096458a8-ba4f-40f6-9c9c-20eeb6f3050a\",\"total_cost_usd\":1.10801075,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":53223,\"cache_read_input_tokens\":5923,\"output_tokens\":841,\"output_tokens_details\":{\"thinking_tokens\"): one step per planning step instead (18, 540 min). Review the steps.",
+     "at": "2026-11-20T04:52:28.145Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--earl, shared account login)",
+     "at": "2026-11-20T05:00:10.850Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-20T05:02:02.832Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
+     "at": "2026-11-20T05:02:02.832Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T05:06:02.096Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-20T05:08:01.519Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--earl: brief only · start 10.1K tokens ($0.02) · cost $3.11 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-20T05:09:37.096Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.11",
+     "at": "2026-11-20T05:09:42.087Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 5 of 5 failed at sending. Alerted Brett.",
+     "at": "2026-11-20T05:11:01.431Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--earl, shared account login)",
+     "at": "2026-11-20T05:11:46.871Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 3: tmux session axf-fable-full-audit-ui-overhaul-conso--s1--earl is gone while the step was building.",
+     "at": "2026-11-20T05:12:01.578Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T05:14:02.887Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s2--earl: brief only · start 10.0K tokens ($0.02) · cost $1.76 · 48 turns · 6 tools, MCP none",
+     "at": "2026-11-20T05:22:26.589Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $1.76",
+     "at": "2026-11-20T05:22:33.274Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 13 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T05:23:01.701Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 6: tmux session axf-fable-full-audit-ui-overhaul-conso--s2--earl is gone while the step was building.",
+     "at": "2026-11-20T05:25:01.372Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 6 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T05:26:01.682Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--lenny, shared account login)",
+     "at": "2026-11-20T05:26:16.746Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--lenny: brief only · start 10.1K tokens ($0.02) · cost $0.08 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-20T05:27:58.004Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.08",
+     "at": "2026-11-20T05:28:04.501Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 15: tmux session axf-fable-full-audit-ui-overhaul-conso--s1--lenny is gone while the step was building.",
+     "at": "2026-11-20T05:30:02.343Z"
+    },
+    {
+     "text": "Watchdog: step s1 gave up: attempt 16 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T05:32:01.783Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--joey, shared account login)",
+     "at": "2026-11-20T05:46:58.274Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--joey: brief only · start 10.1K tokens ($0.00) · cost $0.06 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-20T05:48:14.948Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.06",
+     "at": "2026-11-20T05:48:19.332Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--earl, shared account login)",
+     "at": "2026-11-20T05:51:20.700Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--earl: brief only · start 10.1K tokens ($0.02) · cost $3.16 · 70 turns · 6 tools, MCP none",
+     "at": "2026-11-20T05:52:33.724Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 2 runs, $6.26",
+     "at": "2026-11-20T05:52:39.801Z"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 15 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T05:54:01.815Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--lenny, shared account login)",
+     "at": "2026-11-20T05:55:03.784Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:54:01.815Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at ready (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at ready (3 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at ready (3 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at ready (3 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at ready (2 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z"
     }
    ],
    "approvals": [
@@ -339756,32 +339761,18 @@
      "phase": ""
     }
    },
-   "failure": {
-    "kind": "ci-red",
-    "status": "running-ci",
-    "why": "CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)",
-    "head": "8c53ac893febf1213846ba356b647251d8d06226",
-    "pr": 860,
-    "at": "2026-11-20T12:17:24.574Z",
-    "retry": "split",
-    "notBefore": "2026-11-20T12:33:24.574Z",
-    "failing": [
-     "Web Dev Console (React/TS) + Python API"
-    ],
-    "runIds": [
-     44728889828
-    ]
-   },
    "landing": {
     "split": true,
+    "merged": [
+     861
+    ],
     "closed": [
      860
     ],
-    "rules": {
+    "lastMerge": {
+     "pr": 861,
+     "sha": "346c5c4fd27875b7f34a7ce8f0fdfc0e554eb7a4",
      "head": "849c9dfb89b68c3aeafc3fc5b0bf7df826058546",
-     "ok": true,
-     "failing": [],
-     "fixed": [],
      "at": "2026-11-20T13:01:57.875Z"
     }
    },
@@ -343431,7 +343422,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 676,
+   "rev": 678,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343442,7 +343433,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T13:02:43.531Z",
+   "statusAt": "2026-11-20T13:03:10.225Z",
    "statusBy": "lander",
    "attempt": 4,
    "statusLog": [
@@ -343587,6 +343578,13 @@
      "at": "2026-11-20T13:02:43.531Z",
      "by": "lander",
      "attempt": 1
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-20T13:03:10.225Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: PR 3 of 19 (s2, split after a failure)"
     }
    ]
   },
