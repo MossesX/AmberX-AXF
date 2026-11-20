@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9998,
- "updatedAt": "2026-11-20T12:09:06.398Z",
+ "rev": 9999,
+ "updatedAt": "2026-11-20T12:09:24.099Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -343891,6 +343891,11 @@
      "text": "Watchdog: build stuck at split (287 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T12:05:02.043Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (291 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T12:09:02.399Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -345792,7 +345797,7 @@
    },
    "kind": "build",
    "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
