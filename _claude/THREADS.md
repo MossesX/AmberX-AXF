@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:33 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-20 01:43 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-20 01:43 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 01:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-20 01:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 19:25 UTC · `land-round-2` → archived, note (all) · console
 - 2026-11-20 19:25 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → archived, note (all) · console
 - 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · console
 
 ## Token passes (log)
 
