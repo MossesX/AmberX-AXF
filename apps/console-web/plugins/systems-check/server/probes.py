@@ -234,12 +234,12 @@ def elevenlabs_key(key: str, f: Fetch = fetch) -> Probe:
     return unreachable("ElevenLabs", code, body)
 
 
-# ---------------------------------------------------------------- push path (ntfy + the console alerts AmberX reads)
+# ---------------------------------------------------------------- push path (ntfy + the console alerts the phone gets)
 
 def ntfy(server: str, topic: str, token: str, f: Fetch = fetch) -> Probe:
     """ntfy's own access check for the topic (GET /<topic>/auth): reachable, and the token (if any) may use it."""
     if not topic:
-        return p("info", "ntfy is off (no topic): phones get alerts through the AmberX app.")
+        return p("info", "ntfy is off (no topic): phones get alerts through Phone Connect.")
     url = f"{server.rstrip('/')}/{topic}/auth"
     code, _, body = f(url, {"authorization": f"Bearer {token}"} if token else {})
     if code == 200:

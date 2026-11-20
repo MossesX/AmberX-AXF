@@ -67,9 +67,8 @@ function onReply(r: AssistantReply) {
 function sayAs(agentId: string, name: string, text: string) {
   const p = profileOf(agentId);
   if (!p) return;
-  const mic = voiceData().store.mic;
   speak({
-    profile: p, agentName: name || agentName(agentId), text, global: voiceData().store.pronunciations, holdMic: mic.muteWakeWhileSpeaking,
+    profile: p, agentName: name || agentName(agentId), text, global: voiceData().store.pronunciations,
     onDone: () => {
       // Conversation mode: the mic opens again for the answer (the Assistant's mic does the listening).
       if (p.conversation && p.permissions.listen && !speakerState().speaking) window.dispatchEvent(new CustomEvent('axf:agent-voice.listen', { detail: { agentId } }));

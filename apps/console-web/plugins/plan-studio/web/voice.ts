@@ -4,13 +4,11 @@
  * say you're done.
  *
  * Nobody imports anybody:
- *  - the microphone is taken through mic-lease@1 (`globalThis.__axfMicLease`, the same object AmberX's dictation,
- *    notes and Agent voice use); this file carries its own copy of the lease for when it loads first (same contract,
- *    same key as apps/amberx-droid/src/miclease.ts on the agent-voice branch);
- *  - listening: AmberX's native speech (`Capacitor.Plugins.AmberxNative.listen`) inside the Android shell, else the
- *    browser's Web Speech recognizer;
- *  - speaking: agent-voice@1 when installed (`axf:agent-voice.say` window event; it picks the voice), else AmberX's
- *    native speak, else Web Speech synthesis.
+ *  - the microphone is taken through mic-lease@1 (`globalThis.__axfMicLease`, the same object dictation, notes and
+ *    Agent voice use); this file carries its own copy of the lease for when it loads first (same contract, same key);
+ *  - listening: the browser's Web Speech recognizer;
+ *  - speaking: agent-voice@1 when installed (`axf:agent-voice.say` window event; it picks the voice), else Web Speech
+ *    synthesis.
  * The loop itself (runConversation) takes these as plain functions, so tests drive it with fake speech in and out.
  */
 
@@ -162,26 +160,16 @@ export async function runConversation(io: VoiceIo, handle: TurnHandler, { maxTur
 /* ---------------------------------------------------------------- the device's speech */
 
 type Rec = { lang: string; interimResults: boolean; maxAlternatives: number; continuous: boolean; start(): void; stop(): void; abort(): void; onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }> & { isFinal: boolean }> }) => void) | null; onend: (() => void) | null; onerror: ((e: { error?: string }) => void) | null };
-type NativeVoice = { listen(o: { lang: string; prompt?: string }): Promise<{ text: string }>; speak(o: { text: string; lang: string }): Promise<void> };
 
 const win = () => (typeof window === 'undefined' ? undefined : (window as unknown as Record<string, unknown>));
-/** AmberX's native speech plugin inside the Android shell (Capacitor), else null. */
-export function nativeVoice(): NativeVoice | null {
-  const cap = win()?.Capacitor as { isNativePlatform?: () => boolean; Plugins?: Record<string, unknown> } | undefined;
-  if (!cap?.isNativePlatform?.()) return null;
-  const n = cap.Plugins?.AmberxNative as NativeVoice | undefined;
-  return n && typeof n.listen === 'function' ? n : null;
-}
 export function webRecognizer(): (new () => Rec) | null {
   const w = win();
   return (w?.SpeechRecognition ?? w?.webkitSpeechRecognition ?? null) as (new () => Rec) | null;
 }
-export const canListen = () => !!(nativeVoice() || webRecognizer());
+export const canListen = () => !!webRecognizer();
 
-/** One utterance from the device (native first, else Web Speech). */
+/** One utterance from the device (Web Speech). */
 export function listenOnce(lang = 'en-US', timeoutMs = 15_000): Promise<string> {
-  const n = nativeVoice();
-  if (n) return n.listen({ lang, prompt: 'Plan Studio is listening' }).then((r) => r?.text ?? '').catch(() => '');
   const R = webRecognizer();
   if (!R) return Promise.reject(new Error('This device has no speech recognizer.'));
   return new Promise((done) => {
@@ -199,7 +187,7 @@ export function listenOnce(lang = 'en-US', timeoutMs = 15_000): Promise<string> 
 /** Is Agent voice (agent-voice@1) installed? `libs` = the runtime's libraries. */
 export function hasAgentVoice(libs: { provides?: string[] }[]): boolean { return libs.some((l) => (l.provides ?? []).includes('axf.agent-voice@1')); }
 
-/** Say it: agent-voice@1, else AmberX native speak, else Web Speech. Resolves when done (estimated for agent-voice). */
+/** Say it: agent-voice@1, else Web Speech. Resolves when done (estimated for agent-voice). */
 export async function speakOut(text: string, { agentVoice = false, lang = 'en-US' } = {}): Promise<void> {
   if (!text) return;
   const w = win();
@@ -211,8 +199,6 @@ export async function speakOut(text: string, { agentVoice = false, lang = 'en-US
     for (let i = 0; i < 60 && synth?.speaking; i += 1) await new Promise((r) => setTimeout(r, 250));
     return;
   }
-  const n = nativeVoice();
-  if (n) { await n.speak({ text, lang }).catch(() => undefined); return; }
   const synth = w?.speechSynthesis as SpeechSynthesis | undefined;
   const U = w?.SpeechSynthesisUtterance as (new (t: string) => SpeechSynthesisUtterance) | undefined;
   if (!synth || !U) return;
