@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T06:57:13.169Z",
+ "updatedAt": "2026-11-20T06:57:22.899Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:57:04.169Z",
+   "updatedAt": "2026-11-20T06:57:11.968Z",
    "builtAt": "",
    "notes": [
     {
@@ -503,48 +503,43 @@
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 21 of 5 failed at completed. Alerted Brett.",
-     "at": "2026-11-20T06:54:02.149Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:54:02.149Z"
     },
     {
      "text": "Watchdog: step s13 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T06:54:02.149Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:54:02.149Z"
     },
     {
      "text": "Watchdog: step s14 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T06:54:02.149Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:54:02.149Z"
     },
     {
      "text": "Watchdog: step s15 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T06:54:02.149Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:54:02.149Z"
     },
     {
      "text": "Watchdog: step s16 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-20T06:54:02.149Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:54:02.149Z"
     },
     {
      "text": "Watchdog: step s17 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T06:54:02.149Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:54:02.149Z"
     },
     {
      "text": "Watchdog: step s18 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T06:54:02.149Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:54:02.149Z"
     },
     {
      "text": "Watchdog: step s6 stuck at sending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T06:55:02.461Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:55:02.461Z"
     },
     {
      "text": "Watchdog: step s6 failed at sending, attempt 2: sending did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-20T06:56:01.271Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:56:01.271Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s6--earl, shared account login)",
+     "at": "2026-11-20T06:57:11.968Z"
     }
    ],
    "approvals": [],
