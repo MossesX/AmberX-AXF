@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 02:04 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
 - 2026-11-20 02:04 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 - 2026-11-20 02:05 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
 - 2026-11-20 02:05 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 19:26 UTC · `remove-amberx-app-code-once-phone` → archived, note (all) · foreign-write
 - 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · foreign-write
 - 2026-11-20 19:26 UTC · `postgres-part-c-console-state-settings` → archived, note (all) · foreign-write
+- 2026-11-20 19:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
