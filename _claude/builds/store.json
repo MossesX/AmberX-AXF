@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10072,
- "updatedAt": "2026-11-20T15:16:18.434Z",
+ "rev": 10073,
+ "updatedAt": "2026-11-20T15:50:13.122Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "863",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T15:15:48.693Z",
+   "updatedAt": "2026-11-20T15:46:47.605Z",
    "builtAt": "",
    "notes": [
     {
@@ -341275,7 +341275,14 @@
     ],
     "runIds": [
      44749685198
-    ]
+    ],
+    "fix": {
+     "at": "2026-11-20T15:46:43.854Z",
+     "head": "351656f945481f2e898f0833582b6dca1543ff94",
+     "session": "",
+     "exit": 3,
+     "why": "{\"ok\":false,\"unassigned\":false,\"why\":\"lenny: Quit · joey: Quit · 5 more can't either\",\"tried\":[{\"agent\":\"lenny\",\"why\":\"Quit\"},{\"agent\":\"joey\",\"why\":\"Quit\"},{\"agent\":\"paulie\",\"why\":\"Quit\"},{\"agent\":\"su"
+    }
    },
    "landing": {
     "split": true,
@@ -344948,7 +344955,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 720,
+   "rev": 721,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
