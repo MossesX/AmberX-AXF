@@ -14,6 +14,7 @@ Amber assistant plan stays its own build.
 | 4 | Medium | The self-test failed on any machine with those leftovers ("chat folders removed" checked the shared /tmp). | `test.py` stopped at "FAIL: chat folders removed" before the fix. |
 | 5 | Medium | Double send: Enter pressed twice before the next render (or voice and a tap together) could start two turns. Text sent while a reply ran was cleared and lost. | `chat.tsx` `run` / `send` |
 | 6 | Low | An unhandled promise rejection when the running-session lookup failed while a conversation opened. | `chat.tsx` `open` → `attach` |
+| 6b | Medium (UI) | On a phone, picking a conversation (or New chat) left the slide-over list covering the chat; it only closed in the dialog. | Phone screenshot during this step |
 | 7 | Low (UI) | Raw icon-only buttons with a tooltip only (no `aria-label`, no console control target). Attach and New chat both used the plus icon. Replies always showed the sparkles avatar, never the agent's icon. Plugin CSS stripped the suggestion chips' border, so they looked like plain text. The composer placeholder (key hints) was cut off on a phone. | Phone screenshot before the fix |
 
 ## Fixed (one commit each)
@@ -35,7 +36,7 @@ Amber assistant plan stays its own build.
    they are older than the CLI deadline plus 5 minutes. It runs at most once an hour, from the CLI provider.
 4. **Self-test**: it runs in its own temp folder and gained 15 checks (console tools, grants, gate refusal, owner-only,
    routing, end-to-end tool turn, migration, sweep). 218 checks pass.
-5. **Chat UI** (`ai-assistant: chat UI fixes and tightening`): fixes for findings 5, 6 and 7. The icon buttons are now
+5. **Chat UI** (`ai-assistant: chat UI fixes and tightening`, plus the phone list fix): fixes for findings 5, 6, 6b and 7. The icon buttons are now
    framework IconButtons, Attach has the file icon, replies show the agent's icon, the suggestions are framework buttons
    (the restyle rule is gone), the placeholder is short and the key hints are in its tooltip. The welcome text says the
    console can be driven from the chat. One new help entry ("Remove this model") keeps help coverage at 100%.

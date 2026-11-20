@@ -47,8 +47,9 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [archived, setArchived] = useState(false);
-  // phones start on the chat; the conversations list slides over it from the list button
-  const [showList, setShowList] = useState(!compact && !globalThis.matchMedia?.('(max-width: 760px)').matches);
+  // phones start on the chat; the conversations list slides over it from the list button (and slides away on a pick)
+  const overlay = () => compact || !!globalThis.matchMedia?.('(max-width: 760px)').matches;
+  const [showList, setShowList] = useState(!overlay());
   const [conv, setConv] = useState<Conversation | null>(null);
   const [pending, setPending] = useState<ConvSettings>({});
   const [text, setText] = useState('');
@@ -79,7 +80,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     convId.current = id;
     try {
       const c = await client.getConversation(id);
-      setConv(c); remember(id); setErr(''); if (compact) setShowList(false);
+      setConv(c); remember(id); setErr(''); if (overlay()) setShowList(false);
       if (follow) void attach(c).catch(() => undefined); // a failed lookup only means nothing to follow
     } catch { setConv(null); remember(''); }
   };
@@ -92,7 +93,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
       try {
         const settings: ConvSettings = { ...(start.agentId ? { agentId: start.agentId } : {}), ...(start.profileId ? { profileId: start.profileId } : {}), ...(start.profileId && start.model ? { model: start.model } : {}) };
         const c = await client.createConversation(settings, start.title);
-        setConv(c); remember(c.id); convId.current = c.id; if (compact) setShowList(false);
+        setConv(c); remember(c.id); convId.current = c.id; if (overlay()) setShowList(false);
         const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content: start.message, createdAt: Date.now(), meta: { context: null } };
         await run({ content: start.message }, opt, c);
       } catch (e) { setErr((e as Error).message); }
@@ -155,7 +156,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     return () => { on = false; };
   }, [activeAgent?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); setPending({}); remember(''); setEditing(''); setText(''); setTimeout(() => inputRef.current?.focus(), 30); };
+  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); setPending({}); remember(''); setEditing(''); setText(''); if (overlay()) setShowList(false); setTimeout(() => inputRef.current?.focus(), 30); };
   const updateSettings = async (s: Partial<ConvSettings>) => {
     if (!conv) { setPending((p) => ({ ...p, ...s })); return; }
     setConv(await client.patchConversation(conv.id, { settings: s }));
