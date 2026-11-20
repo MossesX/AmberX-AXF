@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:16 UTC · `builds-keep-their-slot-across-phases` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `settings-opened-banners-nav-menu` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `edit-ui-mode-inline-edit-anything-active` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 13:04 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 - 2026-11-20 13:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 13:07 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 13:08 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
 
 ## Token passes (log)
 
