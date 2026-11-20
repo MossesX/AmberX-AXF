@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9752,
- "updatedAt": "2026-11-20T07:13:11.075Z",
+ "rev": 9753,
+ "updatedAt": "2026-11-20T07:13:45.570Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:13:01.445Z",
+   "updatedAt": "2026-11-20T07:13:41.841Z",
    "builtAt": "",
    "notes": [
     {
@@ -339382,16 +339382,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": true,
-     "doneAt": "2026-11-20T07:08:34.197Z",
+     "done": false,
+     "doneAt": "",
      "note": "",
-     "rev": 12,
+     "rev": 13,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:13:06.937Z",
-     "statusAt": "2026-11-20T07:13:01.445Z",
-     "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "building",
+     "updatedAt": "2026-11-20T07:13:41.898Z",
+     "statusAt": "2026-11-20T07:13:41.841Z",
+     "statusBy": "orchestrator",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -339462,9 +339461,17 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "tmux session axf-fable-full-audit-ui-overhaul-conso-s6 is gone while the step was building"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T07:13:41.841Z",
+       "by": "orchestrator",
+       "attempt": 4,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed"
+     "status": "building",
+     "account": "hulu0241"
     },
     {
      "id": "s7",
@@ -340548,7 +340555,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 404,
+   "rev": 405,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
