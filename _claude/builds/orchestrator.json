@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T19:38:18.781Z",
+ "updatedAt": "2026-11-20T19:38:41.471Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Nov 20 fix list + voice console control",
    "category": "",
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
-   "status": "splitting",
+   "status": "split",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -67,17 +67,280 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-20T19:36:13.842Z",
+   "updatedAt": "2026-11-20T19:38:07.542Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Plan Studio 2.0 item: nov-20-fix-list-voice-console-co-em42 (Nov 20 fix list + voice console control). Passed plan-build@1; sent as one Pipeline 2.0 build with 8 planning steps. The splitting stage designs its build steps.",
      "at": "2026-11-20T19:35:44.492Z"
+    },
+    {
+     "text": "Split by Fable into 12 steps (340 min, 12 Fable).",
+     "at": "2026-11-20T19:37:44.403Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "stepsInParallel setting: in apps/console-web/plugins/build-orchestrator/server/__init__.py add stepsInParallel (and confirm briefMaxBytes, healthEveryMin, autoQueue) to the pipeline_settings_set allowlist, with the same typing/bounds the other keys get. Add a pytest in apps/console-web/plugins/build-orchestrator/server/test_pipeline_settings.py (new file) covering accept/refuse per key. Then set stepsInParallel=6 live through the console API and confirm pipeline_settings_get reads back 6. Never touch agent_slots maxBuilds or the agent-slots plugin. Cherry-pick from branch claude/fix-slots-lander-plans-v2 where it already has this.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/__init__.py",
+      "apps/console-web/plugins/build-orchestrator/server/test_pipeline_settings.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06v01nnl7",
+     "createdAt": "2026-11-20T19:38:07.543Z"
+    },
+    {
+     "id": "s2",
+     "text": "Side-by-side parallel settings in the Rules plugin (Builds -> Gate & rules, apps/console-web/plugins/gate/ web UI; if the settings UI lives in a 'rules' plugin folder use that): one row showing allowed parallel builds (pipeline stepsInParallel, editable, read/written through the build-orchestrator plugin's pipeline-settings route) next to the host cap (agent-slots maxBuilds, read live from the agent-slots plugin route, kept Brett-only: owner guard stays, console token can't change it). Show a themed note when parallel is above the cap. Tokens only, framework controls, data-axf-target on both fields. Touch only the gate plugin's web files + its plugin.json; no server allowlist changes (step 1 owns them).",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/gate/web/",
+      "apps/console-web/plugins/gate/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06v02gfax",
+     "createdAt": "2026-11-20T19:38:07.543Z"
+    },
+    {
+     "id": "s3",
+     "text": "- Manifest fields for Send to orchestrator, contract side: add `steps` (integer >= 1 or null) and `models` (array of allowed model ids or null) to the plan@1 schema (framework/schemas/plan.json or wherever plan@1 is defined) and to build-pipeline@1 (framework/core/build-pipeline.mjs: normalise, validate, defaults null = orchestrator decides). Regenerate framework/schemas/json/ with `node framework/cli/axf.mjs schemas`, add fixtures for valid/invalid values under framework/spec/fixtures/, extend framework/spec/check-build-pipeline (or the matching check) so a models list outside framework/core/mo\n- Lander: set sizeCapLines to 20000 in deploy/lander/config.json and in any host config the running lander reads (check the systemd unit axf-lander and the data-store namespace for lander settings; change it through data-store@1, not a JSON write). Then read the lander state and journal for PR #863 (build part 4, s3), find why it stalled (CI never seen, head pin drift, gate verdict, size split loop) and fix the cause in deploy/lander/run.mjs with a regression case in framework/spec/check-landing-line.mjs (--write the fixture if the landing-line contract changed). Cherry-pick from claude/fix-slot",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "60 min",
+     "files": [
+      "framework/schemas/plan.json",
+      "framework/schemas/json/",
+      "framework/core/build-pipeline.mjs",
+      "framework/spec/fixtures/",
+      "framework/spec/check-build-pipeline.mjs",
+      "deploy/lander/config.json",
+      "deploy/lander/run.mjs",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures/landing-line.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 3: 2 plan steps in one session (they touch the same files).",
+     "uid": "st-mwpdt06v03vz2h",
+     "createdAt": "2026-11-20T19:38:07.543Z"
+    },
+    {
+     "id": "s4",
+     "text": "Plan Studio side of the manifest fields: in apps/console-web/plugins/plan-studio/ add Steps (number or Auto) and Models (multi-pick from the model policy or Auto) fields to the plan editor and to Turn into a build, write them on the plan record and pass `steps` / `models` on the orchestrator add call; plans.mjs gets `--steps N|auto` and `--models fable,opus|auto`; the plugin's own server routes accept and validate the two fields (null allowed). Add a test under the plugin folder. Tokens only, framework controls, data-axf-target on the new fields.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06v04g3az",
+     "createdAt": "2026-11-20T19:38:07.543Z"
+    },
+    {
+     "id": "s5",
+     "text": "Orchestrator honours the manifest fields at intake: in apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake + the split prompt) a `steps` number forces the split into exactly that many steps (fill or merge to hit it, cap still 30 min each) and a `models` list limits assignable models (refuse others, coerce per model-policy, never Sonnet/Haiku); null leaves today's behaviour. Record both on the build record and the brief. Add a node test next to pipeline.mjs (mock the model call). Do not edit orchestrator.mjs or server/__init__.py (other steps own them).",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06v05xgtm",
+     "createdAt": "2026-11-20T19:38:07.543Z"
+    },
+    {
+     "id": "s6",
+     "text": "Fix the 'refused building -> running' status bug: find where the orchestrator sends status `running` (apps/console-web/plugins/build-orchestrator/orchestrator.mjs act/launch paths and the headless launcher's status call in deploy/claude-headless.sh) and map it to the Pipeline 2.0 status set (building / queued / built / complete / failed as framework/core/build-pipeline.mjs defines); make framework/cli/builds-store.mjs translate a legacy `running` write to `building` instead of refusing, journalled, and extend framework/spec/check-builds-store.mjs with the case. Do not edit pipeline.mjs or server/__init__.py.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "deploy/claude-headless.sh",
+      "framework/cli/builds-store.mjs",
+      "framework/spec/check-builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06v06y991",
+     "createdAt": "2026-11-20T19:38:07.543Z"
+    },
+    {
+     "id": "s7",
+     "text": "Voice console control part 1, console_screenshot: in the console-control plugin (apps/console-web/plugins/console-control/) make console_screenshot return the image plus a detailed text description from a vision model through the console's existing Claude route (new server/vision.py, model from model-policy, never Sonnet/Haiku) and a numbered map of every visible interactive element (grid rows, expanders, context-menu and app-menu items, tabs, buttons, fields): words, state (open/selected/disabled), console-control address, bounding box and number. Browser side: new web/elementMap.ts collecting from data-axf-target / framework controls / open menus. Reuse branch claude/voice-console-control where it already has this. Only touch the screenshot tool's handler plus the two new files.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/console-control/server/vision.py",
+      "apps/console-web/plugins/console-control/web/elementMap.ts",
+      "apps/console-web/plugins/console-control/server/screenshot.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06w07h72k",
+     "createdAt": "2026-11-20T19:38:07.544Z"
+    },
+    {
+     "id": "s8",
+     "text": "Voice console control part 2a, pointer tools: new apps/console-web/plugins/console-control/server/actions.py and web/actions.ts implementing console_click, console_double_click, console_right_click (target by words, element number from the last map, address, or x,y), console_context_menu (open and pick an item path), console_menu (app menu path), console_expand / console_collapse. Register them as MCP tools and REST routes under /api/console-control in a new routes file and as `axf console click|right-click|menu|expand|collapse` in the plugin's CLI; declare them in plugin.json commands. Approve/Deny and owner-only settings stay refused (personOnly), destructive presses need confirm. Register targets so framework/cli/check-console-control.mjs passes. Cherry-pick from claude/voice-console-control where useful.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/console-control/server/actions.py",
+      "apps/console-web/plugins/console-control/web/actions.ts",
+      "apps/console-web/plugins/console-control/server/routes_actions.py",
+      "apps/console-web/plugins/console-control/plugin.json",
+      "apps/console-web/plugins/console-control/console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06w08jhi8",
+     "createdAt": "2026-11-20T19:38:07.544Z"
+    },
+    {
+     "id": "s9",
+     "text": "Voice console control part 2b, console_jump: in the console's plugin loader and router (apps/console-web/src/, the console-control runtime hooks in framework/react/ if the address resolver lives there) add console_jump to any screen, tab, plugin, build or grid row, loading an unloaded plugin chunk first and waiting for its targets to register before resolving the address; expose it as a new MCP tool / route in its own new file apps/console-web/plugins/console-control/server/jump.py and `axf console jump <address>`. Add a browser-side wait-for-target helper (web/jump.ts). Do not edit actions.py, routes_actions.py or elementMap.ts.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/console-control/server/jump.py",
+      "apps/console-web/plugins/console-control/web/jump.ts",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06w09bjsf",
+     "createdAt": "2026-11-20T19:38:07.544Z"
+    },
+    {
+     "id": "s10",
+     "text": "Voice console control part 3, help and docs: help stubs for every new tool in the console-control plugin's help/ folder, a Voice section in apps/console-web/plugins/console-control/README.md, update _claude/memory/docs/console-control.md and framework/spec/CONSOLE-CONTROL.md (tool list, element map format, target by words/number/address/xy, personOnly refusals), and the build's catalog descriptions so apps/console-web/plugins/glossary-index/catalog.mjs --check passes. No code files.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/console-control/help/",
+      "apps/console-web/plugins/console-control/README.md",
+      "_claude/memory/docs/console-control.md",
+      "framework/spec/CONSOLE-CONTROL.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06w0amwht",
+     "createdAt": "2026-11-20T19:38:07.544Z"
+    },
+    {
+     "id": "s11",
+     "text": "Tests, live proof and report: pytest + node tests for the new console-control tools with the vision model mocked (apps/console-web/plugins/console-control/tests/, new), run the CI sweep (axf validate, check-console-control.mjs, check-theme.mjs, check-controls.mjs, check-json-data-writes.mjs, check-builds-store.mjs, check-landing-line.mjs, check-build-pipeline, plugin lifecycle check, catalog --check, console typecheck). Live proof through axHub on the Build orchestrator: console_screenshot map, right-click a row and pick a menu item, expand a row, open the app menu to Settings, console_jump back; save the shots with axf shot --group 'nov-20-fix-list-voice-console-cont - <date>'. Confirm stepsInParallel reads 6 and the lander cap is 20000 live. Write _claude/builds/reports/nov-20-fix-list-voice-console-cont.md: what was fixed, before/after, what each tool does, tests, gaps, and that both stopped direct builds were absorbed.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/console-control/tests/",
+      "_claude/builds/reports/nov-20-fix-list-voice-console-cont.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdt06w0bbg86",
+     "createdAt": "2026-11-20T19:38:07.544Z"
+    }
+   ]
   },
   {
    "id": "ci-speed-ci-failure-reports-lean",
