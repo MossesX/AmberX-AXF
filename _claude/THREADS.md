@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 22:17 UTC · `fix-banner-settings-interface-tab` → pending, note (all) · watchdog
-- 2026-11-19 22:17 UTC · `land-pr-730-reset-all-button-far-right` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `flagship-professional-skin-covering` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `settings-fix-part-2-blank-toolbars` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `dispatcher-split-builds-evenly-across` → pending, note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 01:16 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
+- 2026-11-20 01:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
+- 2026-11-20 01:27 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 
 ## Token passes (log)
 
