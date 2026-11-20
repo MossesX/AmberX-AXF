@@ -80,8 +80,8 @@ export function BuildBreakerPage() {
   const tAll = useMemo(() => bb.totals(all), [all]);
   const filtering = !!(q || statuses.length || model !== 'any' || range !== 'all' || attached !== all);
 
-  if (!res) return <div className="fx-stack axp-build-breaker"><Head /><LoadingSkeleton rows={8} label="Loading every ask" /></div>;
-  if (!doc) return <div className="fx-stack axp-build-breaker"><Head /><EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => { setRes(null); void load(); } }}>{res.error || 'The asks could not be read.'}</EmptyState></div>;
+  if (!res) return <div className="fx-stack fx-stack--lg axp-build-breaker"><Head /><LoadingSkeleton rows={8} label="Loading every ask" /></div>;
+  if (!doc) return <div className="fx-stack fx-stack--lg axp-build-breaker"><Head /><EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => { setRes(null); void load(); } }}>{res.error || 'The asks could not be read.'}</EmptyState></div>;
 
   const apps = bb.sections(doc, tab === 'all' ? shown.filter((a) => !a.plugin) : shown, 'app');
   const plugins = bb.sections(doc, shown, 'plugin');
@@ -101,7 +101,7 @@ export function BuildBreakerPage() {
   ];
 
   return (
-    <div className="fx-stack axp-build-breaker">
+    <div className="fx-stack fx-stack--lg axp-build-breaker">
       <Head doc={doc} />
       <TotalsStrip t={t} filtered={filtering} of={all.length} />
       <div className="axp-build-breaker__bar">

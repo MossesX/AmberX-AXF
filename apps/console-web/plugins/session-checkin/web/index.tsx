@@ -78,7 +78,7 @@ function SessionsView() {
   const installed = installedTargets(st);
 
   return (
-    <div className="fx-stack">
+    <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Session archive{rows ? ` · ${rows.length}` : ''}</p>

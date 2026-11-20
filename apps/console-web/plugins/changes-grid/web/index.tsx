@@ -102,7 +102,7 @@ function GridView() {
   const toggle = (k: string) => setOpen((s) => { const x = new Set(s); if (x.has(k)) x.delete(k); else x.add(k); return x; });
 
   return (
-    <div className="fx-stack axp-changes-grid">
+    <div className="fx-stack fx-stack--lg axp-changes-grid">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Builds{data ? ` · ${rows.length} rows · ${n.changes} changes · ${n.features} features` : ' · loading…'}</p>

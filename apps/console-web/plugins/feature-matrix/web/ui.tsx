@@ -71,7 +71,7 @@ export function FeatureMatrixPage() {
   if (!data) return <LoadingSkeleton rows={4} label="Loading the feature matrices" />;
   const dirty = data.rows.filter((r) => r.dirty).length;
   return (
-    <div className="fx-stack axp-feature-matrix">
+    <div className="fx-stack fx-stack--lg axp-feature-matrix">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Builds · {data.rows.length} matrices{dirty ? ` · ${dirty} need apply` : ''}{data.state.updatedAt ? ` · updated ${fmtTime(data.state.updatedAt)}` : ''}</p>

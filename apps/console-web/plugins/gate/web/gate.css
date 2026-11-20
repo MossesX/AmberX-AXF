@@ -24,3 +24,5 @@
 .axp-gate__card-body { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 30), 1fr)); gap: var(--fx-dens-gap-sm); }
 .axp-gate__card-field { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
 .axp-gate__card-field dd { margin: 0; overflow-wrap: anywhere; }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-gate > .fx-pagehead { margin-bottom: calc(var(--fx-dens-gap-3xl) - var(--fx-dens-gap-lg)) }
