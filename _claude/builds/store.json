@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9760,
- "updatedAt": "2026-11-20T07:16:26.280Z",
+ "rev": 9761,
+ "updatedAt": "2026-11-20T07:17:02.495Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:16:01.327Z",
+   "updatedAt": "2026-11-20T07:16:57.257Z",
    "builtAt": "",
    "notes": [
     {
@@ -339411,13 +339411,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 19,
+     "rev": 20,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:15:45.451Z",
-     "statusAt": "2026-11-20T07:15:45.392Z",
+     "updatedAt": "2026-11-20T07:16:57.323Z",
+     "statusAt": "2026-11-20T07:16:57.257Z",
      "statusBy": "orchestrator",
-     "attempt": 6,
-     "failedFrom": "building",
+     "attempt": 7,
      "statusLog": [
       {
        "status": "pending",
@@ -339530,9 +339529,16 @@
        "by": "orchestrator",
        "attempt": 6,
        "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s6 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s6--earl (heartbeat 2026-11-20T06:57:00.733Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T07:16:57.257Z",
+       "by": "orchestrator",
+       "attempt": 7,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s6",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s6"
@@ -340619,7 +340625,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 413,
+   "rev": 414,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
