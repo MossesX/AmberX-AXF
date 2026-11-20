@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10045,
- "updatedAt": "2026-11-20T14:01:35.929Z",
+ "rev": 10046,
+ "updatedAt": "2026-11-20T14:01:46.829Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,14 +337237,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "running-ci",
+   "status": "merging-main",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "862",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T14:01:31.661Z",
+   "updatedAt": "2026-11-20T14:01:37.071Z",
    "builtAt": "",
    "notes": [
     {
@@ -344008,7 +344008,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 694,
+   "rev": 695,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344019,7 +344019,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T13:33:13.647Z",
+   "statusAt": "2026-11-20T14:01:37.071Z",
    "statusBy": "lander",
    "attempt": 5,
    "statusLog": [
@@ -344195,6 +344195,12 @@
     {
      "status": "running-ci",
      "at": "2026-11-20T13:33:13.647Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "merging-main",
+     "at": "2026-11-20T14:01:37.071Z",
      "by": "lander",
      "attempt": 1
     }
