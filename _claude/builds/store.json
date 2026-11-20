@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10103,
- "updatedAt": "2026-11-20T19:51:08.744Z",
+ "rev": 10104,
+ "updatedAt": "2026-11-20T19:54:16.046Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350224,6 +350224,75 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "11 steps for 4 slots"
+    }
+   ]
+  },
+  {
+   "id": "fix-main-ci-red-after-s16-s7-hand-",
+   "title": "Fix main CI (red after s16 + s7 hand lands)",
+   "category": "",
+   "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
+   "status": "pending",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-20T19:54:07.251Z",
+   "updatedAt": "2026-11-20T19:54:07.251Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: fix-main-ci-red-after-s16-s7-han-6nk9 (Fix main CI (red after s16 + s7 hand lands)). Passed plan-build@1; sent as one Pipeline 2.0 build with 3 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-20T19:54:07.251Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "planning": [
+    {
+     "text": "Build engine sweep: framework/spec/check-plugin-catalog.mjs fails on main (7f128689). Reproduce, find which landing broke it (s16 axHub fold or s7), fix the cause (catalog entries, plugin.json, removed/added plugins), never just loosen the check",
+     "model": "Fable"
+    },
+    {
+     "text": "Web Dev Console job: step 'Alerts + MCP client + axf_server - engines match their fixtures (TS, Python), conflict detection, console alert server, web push encryption' fails on main. Reproduce, find the cause, fix it with a test",
+     "model": "Fable"
+    },
+    {
+     "text": "Run the full CI scope for the touched files until green, land on main, confirm the main run after landing is green, report what broke and what changed",
+     "model": "Fable"
+    }
+   ],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-20T19:54:07.251Z",
+   "statusBy": "plan-studio-2",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-20T19:54:07.251Z",
+     "by": "plan-studio-2",
+     "attempt": 1,
+     "why": "Send to orchestrator"
     }
    ]
   }

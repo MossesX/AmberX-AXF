@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T19:51:08.744Z",
+ "updatedAt": "2026-11-20T19:54:16.046Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -52,6 +52,31 @@
     "from": "report",
     "addenda": []
    },
+   "steps": []
+  },
+  {
+   "id": "fix-main-ci-red-after-s16-s7-hand-",
+   "title": "Fix main CI (red after s16 + s7 hand lands)",
+   "category": "",
+   "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
+   "status": "pending",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-20T19:54:07.251Z",
+   "updatedAt": "2026-11-20T19:54:07.251Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: fix-main-ci-red-after-s16-s7-han-6nk9 (Fix main CI (red after s16 + s7 hand lands)). Passed plan-build@1; sent as one Pipeline 2.0 build with 3 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-20T19:54:07.251Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
