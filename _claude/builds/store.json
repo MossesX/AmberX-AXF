@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9425,
- "updatedAt": "2026-11-20T04:53:27.880Z",
+ "rev": 9426,
+ "updatedAt": "2026-11-20T04:53:44.580Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338444,7 +338444,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T04:53:17.941Z",
+   "updatedAt": "2026-11-20T04:53:35.375Z",
    "builtAt": "",
    "notes": [
     {
@@ -338687,12 +338687,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 4,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:52:29.712Z",
-     "statusAt": "2026-11-20T04:52:28.145Z",
+     "updatedAt": "2026-11-20T04:53:35.464Z",
+     "statusAt": "2026-11-20T04:53:35.375Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -338700,9 +338700,32 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T04:53:26.651Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T04:53:31.574Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "worktree for fable-full-audit-ui-overhaul-conso--s4: fatal: 'claude/fable-full-audit-ui-overhaul-conso--s4' is already used by worktree at '/root/axf-builds/fable-full-audit-ui-overhaul-conso--s4'"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T04:53:35.375Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s4",
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s4"
     },
     {
      "id": "s5",
@@ -339203,7 +339226,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 10,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
