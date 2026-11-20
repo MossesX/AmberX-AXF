@@ -403,6 +403,14 @@ export function buildAction(action, ids, { by = process.env.AXF_ACTOR || 'consol
 
 // ------------------------------------------------------------------ the split
 
+/**
+ * The one-shot split call. No tools at all: no built-in ones (--tools '') and no MCP servers from the repo or the login
+ * (--strict-mcp-config): a tool call ends the one turn without an answer (stop_reason tool_use, claude exit 1). No hooks
+ * (disableAllHooks): the repo's SessionEnd hook held the process past the answer until the timeout killed it (Nov 20 2026).
+ */
+export const SPLIT_ARGS = (modelId) => ['-p', '--model', modelId, '--output-format', 'json', '--max-turns', '1', '--tools', '', '--strict-mcp-config', '--settings', JSON.stringify({ disableAllHooks: true })];
+/** Fable thinking through a big plan took 172 s (Nov 20 2026); the tick itself is allowed 600 s. */
+export const SPLIT_TIMEOUT_MS = 420e3;
 /** Run the configured splitter on a prompt: { text, provider, error }. `model` = the policy key it runs on (opus | fable). */
 export function askSplitter(prompt, settings, env = process.env, { model = 'opus' } = {}) {
   if (env.AXF_PIPELINE_SPLITTER) {
@@ -410,7 +418,7 @@ export function askSplitter(prompt, settings, env = process.env, { model = 'opus
     return r.status === 0 ? { text: r.stdout, provider: 'claude', error: '' } : { text: '', provider: 'claude', error: `splitter exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
   }
   if (settings.splitProvider !== 'claude') return { text: '', provider: settings.splitProvider, error: `split provider is ${settings.splitProvider}` };
-  // a one-shot Claude call on a login copy: a worker account when one is free, else the active one
+  // a one-shot Claude call on a login copy (SPLIT_ARGS): a worker account when one is free, else the active one
   const dir = join(tmpdir(), `axf-split-${process.pid}`); mkdirSync(dir, { recursive: true, mode: 0o700 });
   let snap = null;
   try {
@@ -418,7 +426,10 @@ export function askSplitter(prompt, settings, env = process.env, { model = 'opus
     try { snap = snapshotLogin({ dir, session: 'split', account }); } catch { snap = null; }
     const e = snap ? childEnv(snap, env) : { ...env };
     e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS[modelKey(model)] || MODEL_IDS.opus, '--output-format', 'json', '--max-turns', '1', '--tools', ''], { input: prompt, encoding: 'utf8', timeout: 240e3, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
+    const r = spawnSync('claude', SPLIT_ARGS(MODEL_IDS[modelKey(model)] || MODEL_IDS.opus), { input: prompt, encoding: 'utf8', timeout: SPLIT_TIMEOUT_MS, env: e, cwd: REPO_ROOT, maxBuffer: 8 * 1024 * 1024 });
+    // the answer is the one JSON result line; a late exit after it (killed at the timeout) does not lose it
+    const done = (() => { try { const j = JSON.parse(String(r.stdout || '').trim()); return j?.subtype === 'success' && !j.is_error && typeof j.result === 'string' ? j.result : null; } catch { return null; } })();
+    if (done !== null) return { text: done, provider: 'claude', error: '' };
     if (r.error) return { text: '', provider: 'claude', error: `claude not available: ${r.error.message}` };
     if (r.status !== 0) return { text: '', provider: 'claude', error: `claude exit ${r.status}: ${str((r.stderr || r.stdout || '').trim(), 300)}` };
     let text = r.stdout; try { const j = JSON.parse(r.stdout); text = typeof j?.result === 'string' ? j.result : r.stdout; } catch { /* plain text */ }
@@ -1510,7 +1521,7 @@ export function callAccount(name, env = process.env, { session = 'probe' } = {})
       if (exp && exp - Date.now() < RENEW_GUARD_MS) return { skipped: true, status: null, out: '', error: 'its login renews soon: not called, so no running build is left on a spent token' };
     }
     const e = childEnv(snap, env); e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
-    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.fable, '--output-format', 'json', '--max-turns', '1', '--tools', ''], { input: 'Reply with the single word ok.', encoding: 'utf8', timeout: 120e3, env: e, cwd: tmpdir() });
+    const r = spawnSync('claude', ['-p', '--model', MODEL_IDS.fable, '--output-format', 'json', '--max-turns', '1', '--tools', '', '--strict-mcp-config'], { input: 'Reply with the single word ok.', encoding: 'utf8', timeout: 120e3, env: e, cwd: tmpdir() });
     return { skipped: false, status: r.status, out: `${r.stdout || ''}${r.stderr || ''}`, error: r.error?.message || '' };
   } catch (e) { return { skipped: false, status: null, out: '', error: str(e.message, 200) }; }
   finally { if (snap) { try { releaseLogin({ dir, session }); } catch { /* best effort */ } } try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }

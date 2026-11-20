@@ -152,6 +152,7 @@ export function countLive(facts, limit, opts = {}) {
   for (const r of facts.reservations ?? []) {
     if (!r || now - Date.parse(r.at || 0) > limit.reserveSec * 1000) continue;
     if (r.mode === 'launch' && r.session && [...tm.keys()].some((n) => n.startsWith(r.session))) continue; // its session exists: counted as setup/session
+    if (r.mode === 'launch' && r.pid && !alive(r.pid)) continue; // its launcher is gone and no session came of it: it never starts
     if (r.mode !== 'launch' && (!alive(r.pid) || coveredPids.has(r.pid))) continue; // gone, or its claude runs and counts
     keep.push(r);
     if (r.id === opts.self || (r.session && r.session === opts.self) || (only && !only.test(`${r.session ?? ''} ${r.cwd ?? ''}`))) continue;
