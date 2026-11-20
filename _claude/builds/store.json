@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10155,
- "updatedAt": "2026-11-20T22:56:46.503Z",
+ "rev": 10156,
+ "updatedAt": "2026-11-20T22:56:56.678Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344683,7 +344683,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:56:37.498Z",
+   "updatedAt": "2026-11-20T22:56:52.617Z",
    "builtAt": "",
    "notes": [
     {
@@ -344800,6 +344800,18 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "fix-main-ci-red-after-s16-s7-hand---s1",
+    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s1\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s1 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s1 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s1.\n\n## Your step\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868).\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
@@ -344855,12 +344867,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 8,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:56:37.545Z",
-     "statusAt": "2026-11-20T22:56:37.498Z",
+     "updatedAt": "2026-11-20T22:56:52.661Z",
+     "statusAt": "2026-11-20T22:56:52.617Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "failedFrom": "sending",
      "statusLog": [
       {
@@ -344895,6 +344907,20 @@
        "at": "2026-11-20T22:56:37.498Z",
        "by": "orchestrator",
        "attempt": 1,
+       "why": "launch on hulu0241: refused: fix-main-ci-red-after-s16-s7-hand---s1 already has a live session: lock launching (heartbeat 2026-11-20T22:56:32.515Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:56:48.138Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T22:56:52.617Z",
+       "by": "orchestrator",
+       "attempt": 2,
        "why": "launch on hulu0241: refused: fix-main-ci-red-after-s16-s7-hand---s1 already has a live session: lock launching (heartbeat 2026-11-20T22:56:32.515Z)"
       }
      ],
@@ -345115,7 +345141,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 50,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
