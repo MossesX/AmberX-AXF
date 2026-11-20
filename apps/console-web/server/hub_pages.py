@@ -36,6 +36,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
+import data_store
 import wall
 
 COOKIE = "axhub_session"
@@ -177,11 +178,10 @@ def router_for(state_dir: Path, client_factory: Callable[[], httpx.Client] | Non
     make = client_factory or (lambda: httpx.Client(timeout=TIMEOUT_S, follow_redirects=False))
 
     def log(entry: dict[str, Any]) -> None:
+        # no-json-data@1: through the data store (local file today, Postgres once the namespace moves), never a bare write
         try:
-            state_dir.mkdir(parents=True, exist_ok=True)
-            with (state_dir / "hub-pages.jsonl").open("a") as f:
-                f.write(json.dumps({"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **entry}) + "\n")
-        except OSError:
+            data_store.append_jsonl(state_dir / "hub-pages.jsonl", {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **entry})
+        except (OSError, data_store.DataStoreError):
             pass
 
     def caller(request: Request) -> wall.Caller:
