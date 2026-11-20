@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9636,
- "updatedAt": "2026-11-20T06:29:40.359Z",
+ "rev": 9637,
+ "updatedAt": "2026-11-20T06:29:57.589Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:29:36.818Z",
+   "updatedAt": "2026-11-20T06:29:53.612Z",
    "builtAt": "",
    "notes": [
     {
@@ -338139,9 +338139,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 42,
+     "rev": 43,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:29:36.864Z",
+     "updatedAt": "2026-11-20T06:29:53.662Z",
      "statusAt": "2026-11-20T06:29:36.818Z",
      "statusBy": "orchestrator",
      "attempt": 18,
@@ -338438,7 +338438,7 @@
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s3",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
-     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s3--rhonda"
+     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s3--lenny"
     },
     {
      "id": "s4",
@@ -339250,7 +339250,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 268,
+   "rev": 269,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
