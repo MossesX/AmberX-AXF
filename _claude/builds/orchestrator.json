@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T07:42:05.538Z",
+ "updatedAt": "2026-11-20T07:43:05.266Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Pipeline 2.0: fully autonomous build pipeline",
    "category": "",
    "detail": "Brett, Nov 18 2026 (voice). Goal: absolutely no human intervention, ever. Brett says \"build this app\" and the next thing he sees is it landed, no matter what. The pipeline fixes, names, stores and logs everything itself. Why: builds piled up for weeks with nothing merging and nobody knew the pipeline was broken (tonight: Postgres part B died on a dead worktree, failed 3 launches, got benched by the 3-fails-per-hour rule, silently).\n\nThe flow itself is in the section \"Brett's flow\" below; it wins over anything here.\n\n## Status lifecycle (forward-only)\n- Everything is status; nothing goes back.\n- All of a build's steps merge into ONE PR (one CI run), then pull main, CI, merge to main. Steps do not merge on their own (saves the CI time of running it once per step).\n- Failed shows the attempt: \"failed, attempt 2\", \"attempt 3\", etc.\n\n## Builds table\n- One table, driven by each build's status, not its location. No tabs at all.\n- Purely filters, carried on the toolbar.\n- Every row: status badge + live timer (elapsed / remaining) for building, polling, CI checking or merging.\n\n## Fail-safes / redundancy (self-healing, not paging Brett)\n- Multiple independent ways to catch stalls and trigger fixes.\n- Layer 1: the pipeline tick does the normal work.\n- Layer 2: a separate watchdog on its own cron with its own code finds anything that hasn't moved in X minutes and fixes it itself (rebuild a dead worktree, requeue, switch account/model).\n- Layer 3: an outside checker (axHub or another box) makes sure the watchdog is alive and restarts it.\n- Never fail silently.\n\n## Landing\n- Postgres parts A/B/C: when all three finish, merge them together in one PR (one CI run); if it fails, split and land one at a time.\n\n## Related\n- Builds store moving off the 14 MB store.json to Postgres row-level writes (Postgres parts A/B/C).\n- Later: separate dedicated build box (console and everything else stay on the Hostinger KVM 8), Postgres primary on the KVM 8, replica on the build box, writes over WireGuard.\n- Visual flow diagrams in Plan Studio 2.0.\n\nOne-PR size cap: Brett, Nov 18 2026 (voice): bundling every step into one PR is better (one CI run instead of each PR waiting, re-pulling main and rerunning CI after the last one lands), as long as it isn't huge.\n\nSize cap: over a certain size, the pieces are combined into two PRs, or three, or however many the size calls for (not one PR per step). Those PRs then land one at a time: each pulls in main, runs CI and merges in turn, etc. Threshold not set yet.\n\nWorktrees cut before launch: Brett, Nov 19 2026 (voice): worktrees are cut BEFORE launch, never at launch. Each step's worktree is created and pulls main during the pending / pulling-main stage, so when a slot frees up, launch only starts the session. Launch must never time out on cutting a worktree under load.",
-   "status": "pending",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -84,6 +84,121 @@
     {
      "text": "Split by Fable into 23 steps (630 min, 3 Fable).",
      "at": "2026-11-20T07:09:10.161Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
