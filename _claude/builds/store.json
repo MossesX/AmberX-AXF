@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9643,
- "updatedAt": "2026-11-20T06:31:49.903Z",
+ "rev": 9644,
+ "updatedAt": "2026-11-20T06:31:59.377Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:31:46.013Z",
+   "updatedAt": "2026-11-20T06:31:51.230Z",
    "builtAt": "",
    "notes": [
     {
@@ -338140,12 +338140,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T06:31:51.230Z",
      "note": "",
-     "rev": 43,
+     "rev": 44,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:29:53.662Z",
+     "updatedAt": "2026-11-20T06:31:51.739Z",
      "statusAt": "2026-11-20T06:29:36.818Z",
      "statusBy": "orchestrator",
      "attempt": 18,
@@ -339289,7 +339289,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 276,
+   "rev": 277,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
