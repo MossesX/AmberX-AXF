@@ -100,11 +100,22 @@ app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
+# Device routes of plugins that own a paired device (manifest "deviceRoutes": true): /api/plugins/<folder>/device/…,
+# filled in as plugins load. Their caller is the device, which holds its own bearer token, never the console's, and
+# every route there authenticates that token itself.
+_DEVICE_PREFIXES: set[str] = set()
+
+
+def _device_route(path: str) -> bool:
+    return any(path.startswith(p) for p in _DEVICE_PREFIXES)
+
+
 @app.middleware("http")
 async def _wall_token_gate(request: Request, call_next):  # type: ignore[no-untyped-def]
     """Behind axHub's sign-in wall, a request let through on a bearer header (X-Auth-Via: token, set by the hub; the
-    proxy strips any client copy) must carry the real console token on every route, reads included."""
-    if request.headers.get("x-auth-via") == "token":
+    proxy strips any client copy) must carry the real console token on every route, reads included. Device routes are
+    the exception: the wall passes a device's bearer the same way, and without it a paired phone could never connect."""
+    if request.headers.get("x-auth-via") == "token" and not _device_route(request.url.path):
         tok = current_token()
         got = request.headers.get("authorization", "")
         if not tok or not _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode()):
@@ -1355,6 +1366,7 @@ def load_plugins() -> None:
                 device_router = getattr(module, "device_router", None)
                 if device_router is not None and m.get("deviceRoutes") is True:
                     app.include_router(device_router, prefix=f"/api/plugins/{folder.name}/device", dependencies=[Depends(_plugin_guard(folder.name))])
+                    _DEVICE_PREFIXES.add(f"/api/plugins/{folder.name}/device/")
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console
@@ -1884,11 +1896,25 @@ if DIST.exists():
     _DIST_ROOT = DIST.resolve()
 
     @app.get("/{path:path}")
-    def spa(path: str) -> FileResponse:
+    def spa(path: str) -> Response:
+        # An API path that no route answered is a 404 in JSON, not the console page: a caller's r.json() then fails with
+        # the real cause (a removed or mistyped route) instead of an HTML parse error.
+        if _api_path(path):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
         # Never serve anything outside dist/: the path arrives decoded, so ../ (also as %2e%2e or %2f) must be refused here.
         try:
             f = (_DIST_ROOT / path).resolve()
             is_file = bool(path) and f.is_relative_to(_DIST_ROOT) and f.is_file()
         except (OSError, ValueError, RuntimeError):  # a path too long, with a NUL byte or a symlink loop is simply not a file
             is_file = False
-        return FileResponse(f if is_file else _DIST_ROOT / "index.html")
+        if is_file and f.name != "index.html":
+            return FileResponse(f)
+        # index.html names this build's hashed entry chunk, and a deploy empties dist/assets: it must be revalidated on
+        # every load, or a heuristically cached copy asks for a bundle that no longer exists (a blank console).
+        return FileResponse(_DIST_ROOT / "index.html", headers={"cache-control": "no-cache"})
+
+
+def _api_path(path: str) -> bool:
+    """True for a path under /api or /mcp (the SPA fallback must not answer those with the console page)."""
+    head = path.lstrip("/").split("/", 1)[0]
+    return head in ("api", "mcp")
