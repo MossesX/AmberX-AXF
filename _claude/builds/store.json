@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9534,
- "updatedAt": "2026-11-20T05:33:53.531Z",
+ "rev": 9535,
+ "updatedAt": "2026-11-20T05:36:47.803Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336991,7 +336991,7 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "building",
+   "status": "pending",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -337087,13 +337087,11 @@
     },
     {
      "text": "Watchdog: step s1 failed at building, attempt 15: tmux session axf-fable-full-audit-ui-overhaul-conso--s1--lenny is gone while the step was building.",
-     "at": "2026-11-20T05:30:02.343Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:30:02.343Z"
     },
     {
      "text": "Watchdog: step s1 gave up: attempt 16 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-20T05:32:01.783Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:32:01.783Z"
     }
    ],
    "approvals": [],
@@ -337127,79 +337125,19 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-20T05:35:45.361Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-20T05:27:44.615Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-fable-full-audit-ui-overhaul-conso--s1--lenny",
-     "phase": ""
-    }
+    "heldWhy": ""
    },
-   "planning": [
-    {
-     "text": "Audit: Fable reads the whole console (web, server, plugins) and writes a findings report ranked by impact"
-    },
-    {
-     "text": "Fix console_screenshot so the open console actually captures and answers"
-    },
-    {
-     "text": "Fix the refresh hang: lazy-load plugin calls on startup, nothing blocks first paint"
-    },
-    {
-     "text": "Remove demo and dead code from the live console (orchestrator-demo and similar)"
-    },
-    {
-     "text": "Kill runaway background loops/timers in the console server"
-    },
-    {
-     "text": "Fix the remaining audit findings, each as its own small change"
-    },
-    {
-     "text": "Extensive tests (Brett, Nov 19): end-to-end browser tests of every console screen, tab, dialog and console command (open, screenshot, refresh/startup), plus server load tests for background loops; run before and after the fixes, results in the report. Brett wants Ultra effort (pipeline has no effort"
-    },
-    {
-     "text": "Full UI suite pass: touch up and patch every screen, tighten spacing, alignment and sizing everywhere"
-    },
-    {
-     "text": "Rebuild the navigation menu from scratch, clean and consistent"
-    },
-    {
-     "text": "Rebuild the context menu (Search anywhere at the bottom, overflow items in the toolbar not the panel)"
-    },
-    {
-     "text": "One shared toolbar: every plugin uses the same framework toolbar, no plugin-specific toolbars"
-    },
-    {
-     "text": "Skin pass: go through the skin and make it really good, light and dark, every token used consistently"
-    },
-    {
-     "text": "Watchdog pipeline audit: why ghost build processes (pids in deleted /tmp/axf-limit-* folders) survive and hold build slots; fix the watchdog/reaper and build-limit so dead slots are always freed, with tests"
-    },
-    {
-     "text": "Run with at least 4 slots in parallel (Brett, Nov 19)"
-    },
-    {
-     "text": "Remove redundant and stale references to the retired AmberX app (apps/amberx-droid etc.) across code, CI, docs and settings; keep the AmberX brand and framework name"
-    },
-    {
-     "text": "Fold the axHub web UI into the console (Brett, Nov 19 - un-holds the earlier 'Fold every axHub app feature into the console' plan): every axHub web feature becomes a console plugin, grouped in modules, plugins stay uninstallable; axHub server stays; archive then retire axhub-web"
-    },
-    {
-     "text": "Patch up the console AI assistant (Amber): chatting with Claude and driving the console by command both work reliably; fix its bugs and tighten its UI (the full Amber assistant plan stays its own build)"
-    },
-    {
-     "text": "When done: save the whole finished look as a skin named AmberX and make it the default skin"
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -337221,294 +337159,7 @@
      "note": "",
      "rev": 42,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:33:41.847Z",
-     "statusAt": "2026-11-20T05:33:41.787Z",
-     "statusBy": "orchestrator",
-     "attempt": 18,
-     "failedFrom": "building",
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:52:40.657Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:52:47.967Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T04:59:03.634Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T04:59:23.829Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock launching (heartbeat 2026-11-20T04:59:16.433Z)"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T04:59:38.621Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T04:59:46.825Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock launching (heartbeat 2026-11-20T04:59:16.433Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T04:59:50.503Z",
-       "by": "orchestrator",
-       "attempt": 3,
-       "why": "axf-fable-full-audit-ui-overhaul-conso--s1--earl on hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:12:01.578Z",
-       "by": "watchdog",
-       "attempt": 3,
-       "why": "tmux session axf-fable-full-audit-ui-overhaul-conso--s1--earl is gone while the step was building"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:12:42.614Z",
-       "by": "orchestrator",
-       "attempt": 4,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:12:48.990Z",
-       "by": "orchestrator",
-       "attempt": 4,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:13:38.436Z",
-       "by": "orchestrator",
-       "attempt": 5,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:13:43.483Z",
-       "by": "orchestrator",
-       "attempt": 5,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:14:34.781Z",
-       "by": "orchestrator",
-       "attempt": 6,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:14:39.523Z",
-       "by": "orchestrator",
-       "attempt": 6,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:15:42.507Z",
-       "by": "orchestrator",
-       "attempt": 7,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:15:47.714Z",
-       "by": "orchestrator",
-       "attempt": 7,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:16:33.550Z",
-       "by": "orchestrator",
-       "attempt": 8,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:16:38.854Z",
-       "by": "orchestrator",
-       "attempt": 8,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:17:40.176Z",
-       "by": "orchestrator",
-       "attempt": 9,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:17:45.618Z",
-       "by": "orchestrator",
-       "attempt": 9,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:18:36.227Z",
-       "by": "orchestrator",
-       "attempt": 10,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:18:41.145Z",
-       "by": "orchestrator",
-       "attempt": 10,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:19:34.741Z",
-       "by": "orchestrator",
-       "attempt": 11,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:19:40.222Z",
-       "by": "orchestrator",
-       "attempt": 11,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--earl (heartbeat 2026-11-20T04:59:48.402Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:20:54.404Z",
-       "by": "orchestrator",
-       "attempt": 12,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:21:19.842Z",
-       "by": "orchestrator",
-       "attempt": 12,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s2--earl; claude pid 3308526"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:21:58.572Z",
-       "by": "orchestrator",
-       "attempt": 13,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:22:42.137Z",
-       "by": "orchestrator",
-       "attempt": 13,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s2--earl"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:23:36.534Z",
-       "by": "orchestrator",
-       "attempt": 14,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:23:59.438Z",
-       "by": "orchestrator",
-       "attempt": 14,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s2--earl"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:25:41.248Z",
-       "by": "orchestrator",
-       "attempt": 15,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:30:02.343Z",
-       "by": "watchdog",
-       "attempt": 15,
-       "why": "tmux session axf-fable-full-audit-ui-overhaul-conso--s1--lenny is gone while the step was building"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:30:57.440Z",
-       "by": "orchestrator",
-       "attempt": 16,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:31:05.437Z",
-       "by": "orchestrator",
-       "attempt": 16,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--lenny (heartbeat 2026-11-20T05:25:57.750Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:32:36.707Z",
-       "by": "orchestrator",
-       "attempt": 17,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:32:42.249Z",
-       "by": "orchestrator",
-       "attempt": 17,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--lenny (heartbeat 2026-11-20T05:25:57.750Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:33:35.327Z",
-       "by": "orchestrator",
-       "attempt": 18,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:33:41.787Z",
-       "by": "orchestrator",
-       "attempt": 18,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s1 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s1--lenny (heartbeat 2026-11-20T05:25:57.750Z)"
-      }
-     ],
-     "status": "failed",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s1",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s1",
-     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s1--lenny",
-     "tried": [
-      "hulu0241"
-     ]
+     "updatedAt": "2026-11-20T05:33:41.847Z"
     },
     {
      "id": "s2",
@@ -337530,224 +337181,7 @@
      "note": "",
      "rev": 30,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:29:41.553Z",
-     "statusAt": "2026-11-20T05:29:41.500Z",
-     "statusBy": "orchestrator",
-     "attempt": 11,
-     "failedFrom": "building",
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:52:54.179Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:53:00.933Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:00:32.981Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:00:45.284Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock launching (heartbeat 2026-11-20T05:00:38.981Z)"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T05:02:02.832Z",
-       "by": "watchdog",
-       "attempt": 2,
-       "why": "retry forward at sending, attempt 2"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:04:39.242Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:05:08.831Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s1--earl; claude pid 3232233"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T05:06:02.096Z",
-       "by": "watchdog",
-       "attempt": 3,
-       "why": "retry forward at sending, attempt 3"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:06:46.540Z",
-       "by": "orchestrator",
-       "attempt": 3,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:07:11.472Z",
-       "by": "orchestrator",
-       "attempt": 3,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s1--earl; claude pid 3232233"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T05:08:01.519Z",
-       "by": "watchdog",
-       "attempt": 4,
-       "why": "retry forward at sending, attempt 4"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:08:48.059Z",
-       "by": "orchestrator",
-       "attempt": 4,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:09:20.169Z",
-       "by": "orchestrator",
-       "attempt": 4,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s1--earl; claude pid 3232233"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:09:57.613Z",
-       "by": "orchestrator",
-       "attempt": 5,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:10:30.734Z",
-       "by": "orchestrator",
-       "attempt": 5,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s1--earl"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:11:20.742Z",
-       "by": "orchestrator",
-       "attempt": 6,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:11:41.070Z",
-       "by": "orchestrator",
-       "attempt": 6,
-       "why": "axf-fable-full-audit-ui-overhaul-conso--s2--earl on hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:25:01.372Z",
-       "by": "watchdog",
-       "attempt": 6,
-       "why": "tmux session axf-fable-full-audit-ui-overhaul-conso--s2--earl is gone while the step was building"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:26:11.652Z",
-       "by": "orchestrator",
-       "attempt": 7,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:26:21.461Z",
-       "by": "orchestrator",
-       "attempt": 7,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s2--earl (heartbeat 2026-11-20T05:11:38.969Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:27:41.039Z",
-       "by": "orchestrator",
-       "attempt": 8,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:27:50.344Z",
-       "by": "orchestrator",
-       "attempt": 8,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s2--earl (heartbeat 2026-11-20T05:11:38.969Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:28:27.497Z",
-       "by": "orchestrator",
-       "attempt": 9,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:28:32.779Z",
-       "by": "orchestrator",
-       "attempt": 9,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s2--earl (heartbeat 2026-11-20T05:11:38.969Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:28:52.120Z",
-       "by": "orchestrator",
-       "attempt": 10,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:28:57.153Z",
-       "by": "orchestrator",
-       "attempt": 10,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s2--earl (heartbeat 2026-11-20T05:11:38.969Z)"
-      },
-      {
-       "status": "building",
-       "at": "2026-11-20T05:29:36.649Z",
-       "by": "orchestrator",
-       "attempt": 11,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:29:41.500Z",
-       "by": "orchestrator",
-       "attempt": 11,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s2--earl (heartbeat 2026-11-20T05:11:38.969Z)"
-      }
-     ],
-     "status": "failed",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
-     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s2--earl",
-     "tried": [
-      "hulu0241"
-     ]
+     "updatedAt": "2026-11-20T05:29:41.553Z"
     },
     {
      "id": "s3",
@@ -337769,58 +337203,7 @@
      "note": "",
      "rev": 6,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T05:02:07.789Z",
-     "statusAt": "2026-11-20T05:02:02.832Z",
-     "statusBy": "watchdog",
-     "attempt": 2,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:53:11.249Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:53:17.941Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:00:51.666Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:01:28.054Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s1--earl; claude pid 3232233"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T05:02:02.832Z",
-       "by": "watchdog",
-       "attempt": 2,
-       "why": "retry forward at sending, attempt 2"
-      }
-     ],
-     "status": "ready",
-     "account": "hulu0241",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s3",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s3"
+     "updatedAt": "2026-11-20T05:02:07.789Z"
     },
     {
      "id": "s4",
@@ -337842,43 +337225,7 @@
      "note": "",
      "rev": 4,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:53:35.464Z",
-     "statusAt": "2026-11-20T04:53:35.375Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:53:26.651Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T04:53:31.574Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "worktree for fable-full-audit-ui-overhaul-conso--s4: fatal: 'claude/fable-full-audit-ui-overhaul-conso--s4' is already used by worktree at '/root/axf-builds/fable-full-audit-ui-overhaul-conso--s4'"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:53:35.375Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s4",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s4"
+     "updatedAt": "2026-11-20T04:53:35.464Z"
     },
     {
      "id": "s5",
@@ -337900,36 +337247,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:54:02.848Z",
-     "statusAt": "2026-11-20T04:54:02.701Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:53:54.229Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:54:02.701Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s5",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s5"
+     "updatedAt": "2026-11-20T04:54:02.848Z"
     },
     {
      "id": "s6",
@@ -337951,36 +337269,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:54:19.928Z",
-     "statusAt": "2026-11-20T04:54:19.865Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:54:10.195Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:54:19.865Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s6",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s6"
+     "updatedAt": "2026-11-20T04:54:19.928Z"
     },
     {
      "id": "s7",
@@ -338002,36 +337291,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:54:31.420Z",
-     "statusAt": "2026-11-20T04:54:31.365Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:54:24.864Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:54:31.365Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s7",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s7"
+     "updatedAt": "2026-11-20T04:54:31.420Z"
     },
     {
      "id": "s8",
@@ -338053,43 +337313,7 @@
      "note": "",
      "rev": 4,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:54:49.381Z",
-     "statusAt": "2026-11-20T04:54:49.320Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:54:36.871Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T04:54:44.470Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "pull main into fable-full-audit-ui-overhaul-conso--s8: error: Unable to create '/opt/axf/.git/worktrees/fable-full-audit-ui-overhaul-conso--s8/index.lock': File exists.\n\nAnother git process seems to be running in this repository, e.g.\nan editor opened by 'git commit'. Please make sure all processes\n"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:54:49.320Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s8",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s8"
+     "updatedAt": "2026-11-20T04:54:49.381Z"
     },
     {
      "id": "s9",
@@ -338111,36 +337335,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:56:08.797Z",
-     "statusAt": "2026-11-20T04:56:08.745Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:54:55.272Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:56:08.745Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s9",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s9"
+     "updatedAt": "2026-11-20T04:56:08.797Z"
     },
     {
      "id": "s10",
@@ -338162,36 +337357,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:56:27.166Z",
-     "statusAt": "2026-11-20T04:56:27.113Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:56:16.780Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:56:27.113Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s10",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s10"
+     "updatedAt": "2026-11-20T04:56:27.166Z"
     },
     {
      "id": "s11",
@@ -338213,36 +337379,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:56:40.348Z",
-     "statusAt": "2026-11-20T04:56:40.292Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:56:32.390Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:56:40.292Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s11",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s11"
+     "updatedAt": "2026-11-20T04:56:40.348Z"
     },
     {
      "id": "s12",
@@ -338264,36 +337401,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:56:52.639Z",
-     "statusAt": "2026-11-20T04:56:52.591Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:56:45.415Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:56:52.591Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s12",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s12"
+     "updatedAt": "2026-11-20T04:56:52.639Z"
     },
     {
      "id": "s13",
@@ -338315,36 +337423,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:57:12.763Z",
-     "statusAt": "2026-11-20T04:57:12.715Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:57:03.588Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:57:12.715Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s13",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s13"
+     "updatedAt": "2026-11-20T04:57:12.763Z"
     },
     {
      "id": "s14",
@@ -338366,36 +337445,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:57:25.966Z",
-     "statusAt": "2026-11-20T04:57:25.916Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:57:19.412Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:57:25.916Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s14",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s14"
+     "updatedAt": "2026-11-20T04:57:25.966Z"
     },
     {
      "id": "s15",
@@ -338417,36 +337467,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:57:41.724Z",
-     "statusAt": "2026-11-20T04:57:41.665Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:57:33.582Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:57:41.665Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s15",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s15"
+     "updatedAt": "2026-11-20T04:57:41.724Z"
     },
     {
      "id": "s16",
@@ -338468,43 +337489,7 @@
      "note": "",
      "rev": 4,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:57:59.674Z",
-     "statusAt": "2026-11-20T04:57:59.603Z",
-     "statusBy": "orchestrator",
-     "attempt": 2,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:57:49.172Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T04:57:55.219Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "worktree for fable-full-audit-ui-overhaul-conso--s16: fatal: 'claude/fable-full-audit-ui-overhaul-conso--s16' is already used by worktree at '/root/axf-builds/fable-full-audit-ui-overhaul-conso--s16'"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:57:59.603Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s16",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s16"
+     "updatedAt": "2026-11-20T04:57:59.674Z"
     },
     {
      "id": "s17",
@@ -338526,36 +337511,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:58:15.824Z",
-     "statusAt": "2026-11-20T04:58:15.771Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:58:08.590Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:58:15.771Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s17",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s17"
+     "updatedAt": "2026-11-20T04:58:15.824Z"
     },
     {
      "id": "s18",
@@ -338577,36 +337533,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:58:30.442Z",
-     "statusAt": "2026-11-20T04:58:30.371Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:58:22.987Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:58:30.371Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      }
-     ],
-     "status": "ready",
-     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s18",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s18"
+     "updatedAt": "2026-11-20T04:58:30.442Z"
     }
    ],
    "profiles": [
@@ -338617,7 +337544,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 142,
+   "rev": 143,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -338626,69 +337553,7 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": [],
-   "flow": "pipeline-2",
-   "statusAt": "2026-11-20T04:59:57.929Z",
-   "statusBy": "orchestrator",
-   "attempt": 1,
-   "statusLog": [
-    {
-     "status": "pending",
-     "at": "2026-11-20T04:51:19.241Z",
-     "by": "plan-studio-2",
-     "attempt": 1,
-     "why": "Send to orchestrator"
-    },
-    {
-     "status": "splitting",
-     "at": "2026-11-20T04:51:29.548Z",
-     "by": "orchestrator",
-     "attempt": 1,
-     "why": "Fable is designing its steps"
-    },
-    {
-     "status": "split",
-     "at": "2026-11-20T04:52:29.711Z",
-     "by": "orchestrator",
-     "attempt": 1,
-     "why": "18 steps for 4 slots"
-    },
-    {
-     "status": "pulling-main",
-     "at": "2026-11-20T04:52:35.167Z",
-     "by": "orchestrator",
-     "attempt": 1,
-     "why": "no other build is active"
-    },
-    {
-     "status": "assigning-models",
-     "at": "2026-11-20T04:58:38.153Z",
-     "by": "orchestrator",
-     "attempt": 1,
-     "why": "every step has main"
-    },
-    {
-     "status": "ready",
-     "at": "2026-11-20T04:58:47.091Z",
-     "by": "orchestrator",
-     "attempt": 1,
-     "why": "models assigned"
-    },
-    {
-     "status": "sending",
-     "at": "2026-11-20T04:59:13.080Z",
-     "by": "orchestrator",
-     "attempt": 1,
-     "why": "sending s1"
-    },
-    {
-     "status": "building",
-     "at": "2026-11-20T04:59:57.929Z",
-     "by": "orchestrator",
-     "attempt": 1,
-     "why": "s1 is in a slot"
-    }
-   ]
+   "copies": []
   }
  ]
 }
