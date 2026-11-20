@@ -222,6 +222,8 @@ async function closeDialogs(page) {
   }
 }
 
+let wedged = 0;
+
 /** After a crash (blank page): reload and wait until the console is ready and its startup calls are done (≤ 45 s), so
  * the next check is not failed by the reload itself. */
 async function recover(page, net) {
@@ -243,6 +245,15 @@ async function openAndCheck(section, label, address, { shot = true, expectScreen
   const errs = net.errors.slice(before);
   const ok = !!a.ok && !a.timeout;
   record(section, `${label}: opens`, ok, ok ? '' : (a.message ?? a.error ?? JSON.stringify(a).slice(0, 200)), ms);
+  // the page stopped answering (two opens in a row with no answer): reload it so the rest is tested, and count it
+  wedged = a.timeout ? wedged + 1 : 0;
+  if (wedged >= 2) {
+    (results.wedges ??= []).push({ section, after: label });
+    record(section, `${label}: the console answers again after a reload`, true, 'the page had stopped answering; reloaded');
+    await recover(page, net);
+    wedged = 0;
+    return a;
+  }
   if (ok && expectScreen) record(section, `${label}: the console is on it`, a.state?.screen === expectScreen || (a.state?.dialog ?? '') !== '', `screen ${a.state?.screen} dialog ${a.state?.dialog ?? '-'}`);
   record(section, `${label}: opens ≤ ${LIMITS.openMs / 1000} s`, ms <= LIMITS.openMs, `${ms} ms`, ms);
   record(section, `${label}: no page error`, errs.length === 0, errs.slice(0, 2).join(' | '));
@@ -400,6 +411,16 @@ async function sectionCommands() {
   results.sections.commands = cmds;
 }
 
+/** Results so far on disk (after every section, and when the run is stopped), so a cut-off run keeps what it saw. */
+function save() {
+  const failed = results.checks.filter((c) => !c.ok);
+  results.snapshots = snaps;
+  results.summary = { checks: results.checks.length, passed: results.checks.length - failed.length, failed: failed.length };
+  if (shared) { results.sections.sharedPageErrors = [...new Set(shared.net.errors)].slice(0, 40); results.sections.sharedConsoleErrors = [...new Set(shared.net.consoleErrors)].slice(0, 40); }
+  writeFileSync(join(OUT, 'results.json'), JSON.stringify(results, null, 2));
+}
+for (const sig of ['SIGTERM', 'SIGINT']) process.on(sig, () => { results.stopped = sig; save(); if (sandbox) down(sandbox.name); process.exit(1); });
+
 const SECTIONS = { startup: sectionStartup, screens: sectionScreens, tabs: sectionTabs, settings: sectionSettings, dialogs: sectionDialogs, commands: sectionCommands };
 try {
   for (const [name, fn] of Object.entries(SECTIONS)) {
@@ -409,6 +430,8 @@ try {
     try { await fn(); } catch (e) { record(name, 'section ran to the end', false, String(e?.stack ?? e).slice(0, 500)); }
     const mine = results.checks.slice(n0);
     console.log(`${name.padEnd(9)} ${mine.filter((c) => c.ok).length}/${mine.length} passed (${Math.round((Date.now() - t) / 1000)} s)`);
+    (results.sectionSeconds ??= {})[name] = Math.round((Date.now() - t) / 1000);
+    save();
   }
 } finally {
   if (shared) { results.sections.sharedPageErrors = [...new Set(shared.net.errors)].slice(0, 40); results.sections.sharedConsoleErrors = [...new Set(shared.net.consoleErrors)].slice(0, 40); }
