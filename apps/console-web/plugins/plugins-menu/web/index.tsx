@@ -13,7 +13,7 @@
  * Server part (archives, credentials, installs) in server/__init__.py; the pure part in web/core.ts.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Chip, IconButton, Icon, ModelBadge, Note, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, IconButton, Icon, ModelBadge, Note, PageToolbar, Segmented, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core/runtime';
 import { placementKey } from '@console/axf/core/engines/placement';
@@ -192,7 +192,7 @@ const setting = <T,>(rt: AxfRuntime, key: string, d: T): T => { const v = rt.set
 function SettingsBrowser({ ask }: { ask?: string }) {
   const rt = useRuntime();
   useAxfState(); // hot render: any settings change re-renders the browser at once
-  const { rows, offline } = usePluginRows();
+  const { rows, offline, reload } = usePluginRows();
   const [q, setQ] = useState('');
   const collapsed = setting(rt, K.collapsed, false);
   const o = {
@@ -205,6 +205,13 @@ function SettingsBrowser({ ask }: { ask?: string }) {
     if (pick === null && rows) setPick(initialPick(list, { onOpen: o.onOpen, remember: o.remember, last: String(rt.settings.get(K.last) ?? ''), asked: ask }));
   }, [rows]); // eslint-disable-line react-hooks/exhaustive-deps
   const choose = (folder: string) => { setPick(folder); if (o.remember) rt.settings.set(K.last, folder); };
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/plugins-menu.json)
+  usePublishPageState('plugins-menu', { listShown: !collapsed });
+  useToolbarHandlers('plugins-menu', {
+    'plugins-menu.list': () => { rt.settings.set(K.collapsed, !collapsed); return { listShown: collapsed }; },
+    'plugins-menu.reload': () => { reload(); return { reloading: true }; },
+    'plugins-menu.settings': () => { choose(FOLDER); return { opened: FOLDER }; },
+  });
   const mode = rt.placementOf(ID) === 'window' ? 'window' : 'dialog';
   const density = setting<string>(rt, K.density, 'regular');
   const width = setting<string>(rt, K.column, 'regular');
@@ -215,13 +222,10 @@ function SettingsBrowser({ ask }: { ask?: string }) {
 
   return (
     <div className={`axp-plugins-menu axp-plugins-menu--${density} ${collapsed ? 'is-collapsed' : ''} ${side === 'right' ? 'is-right' : ''}`}>
-      <div className="axp-plugins-menu__bar" role="toolbar" aria-label="Plugins menu">
-        <IconButton icon={collapsed ? 'chevron-right' : 'chevron-left'} label={collapsed ? 'Show the plugin list' : 'Hide the plugin list'} onClick={() => rt.settings.set(K.collapsed, !collapsed)} />
+      <PageToolbar view="plugins-menu" className="axp-plugins-menu__bar">
         <Segmented size="sm" label="Open as" value={mode} onChange={(v) => rt.settings.set(placementKey(ID), v)}
           options={[{ value: 'dialog', label: 'Dialog', icon: 'box', title: 'Open as a dialog' }, { value: 'window', label: 'Window', icon: 'external', title: 'Open as a floating window' }]} />
-        <span className="axp-plugins-menu__grow" />
-        <IconButton icon="settings" label="This browser's own settings" onClick={() => choose(FOLDER)} />
-      </div>
+      </PageToolbar>
       {offline && <Note tone="warning">The console API isn't reachable: showing the bundled plugins.</Note>}
       <div className={`axp-plugins-menu__body axp-plugins-menu__body--${width}`}>
         {!collapsed && (

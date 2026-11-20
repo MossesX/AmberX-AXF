@@ -7,7 +7,7 @@
  */
 import { useMemo, useState } from 'react';
 import { assetTypeSpecs } from '@console/axf/core';
-import { Button, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Icon, IconButton, Note, PageToolbar, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { buildCategories } from './installer-core';
 import { InstallerView, type Run } from './installer';
 import {
@@ -73,6 +73,14 @@ export function LookDialog() {
   };
 
   const defaults = rt.manifest.defaults as unknown as Partial<Record<LookType, string>>;
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/claude-handoff-look.json)
+  usePublishPageState('claude-handoff-look', { undoable: !!look.undo, treeOpen: !!look.doc.treeOpen });
+  useToolbarHandlers('claude-handoff-look', {
+    'claude-handoff.look-roll': () => { doRoll(); return { rolled: true }; },
+    'claude-handoff.look-undo': () => { undoLast(); return { undone: true }; },
+    'claude-handoff.look-tokens': () => { setTreeOpen(!look.doc.treeOpen); return { treeOpen: !look.doc.treeOpen }; },
+    'claude-handoff.look-reset': () => { resetLook(defaults); return { reset: true }; },
+  });
 
   return (
     <div className="axp-claude-handoff-lookwrap">
@@ -88,12 +96,7 @@ export function LookDialog() {
         </ul>
       </aside>
       <section className="axp-claude-handoff-look__main">
-        <div className="axp-claude-handoff-look__bar" role="toolbar" aria-label="Look roller">
-          {!look.doc.treeOpen && <Button tone="ghost" icon="list" size="sm" onClick={() => setTreeOpen(true)}>Tokens</Button>}
-          <Button tone="primary" icon="shuffle" onClick={doRoll}>Roll</Button>
-          <Button icon="undo" size="sm" disabled={!look.undo} onClick={undoLast}>Undo</Button>
-          <Button tone="quiet" icon="refresh" size="sm" onClick={() => resetLook(defaults)}>Back to the app's look</Button>
-        </div>
+        <PageToolbar view="claude-handoff-look" label="Look roller" className="axp-claude-handoff-look__bar" />
         <div className="axp-claude-handoff-look__picks">
           {pickRow('style-theme')}
           {pickRow('color-theme')}
