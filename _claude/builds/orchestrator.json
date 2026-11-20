@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T19:55:56.559Z",
+ "updatedAt": "2026-11-20T19:56:38.350Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67,17 +67,120 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T19:54:36.404Z",
+   "updatedAt": "2026-11-20T19:55:54.728Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Plan Studio 2.0 item: fix-main-ci-red-after-s16-s7-han-6nk9 (Fix main CI (red after s16 + s7 hand lands)). Passed plan-build@1; sent as one Pipeline 2.0 build with 3 planning steps. The splitting stage designs its build steps.",
      "at": "2026-11-20T19:54:07.251Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-20T19:55:54.728Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpefvmx014dcz",
+     "createdAt": "2026-11-20T19:55:54.728Z"
+    },
+    {
+     "id": "s2",
+     "text": "Run 44801650701 on 7f128689.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpefvmx02vjfu",
+     "createdAt": "2026-11-20T19:55:54.728Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix it, CI green, land.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpefvmx037f4v",
+     "createdAt": "2026-11-20T19:55:54.728Z"
+    },
+    {
+     "id": "s4",
+     "text": "Every step on Fable.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpefvmx04iekt",
+     "createdAt": "2026-11-20T19:55:54.728Z"
+    },
+    {
+     "id": "s5",
+     "text": "Tests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpefvmx05hf5z",
+     "createdAt": "2026-11-20T19:55:54.728Z"
+    }
+   ]
   },
   {
    "id": "nov-20-fix-list-voice-console-cont",
