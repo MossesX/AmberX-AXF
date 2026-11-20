@@ -121,7 +121,9 @@ for name in ("console_open", "console_dialog", "console_settings", "console_back
     a = ctools[name].annotations
     ok(a.read_only_hint is True and a.destructive_hint is not True, f"{name} only navigates or reads: read-only, so it never waits on a veto")
 ok(ctools["console_action"].annotations.read_only_hint is not True, "console_action can change data: it stays a write")
-# console_screenshot (Nov 19 2026): the image comes back as MCP image content, the screen state as JSON beside it
+ok(ctools["console_click_text"].annotations.read_only_hint is not True, "console_click_text can press a button: it is a write")
+# console_screenshot (Nov 19 2026): the image comes back as MCP image content, the screen state as JSON beside it; a
+# description and the clickable list come first as text (Nov 20 2026; tests/test_screen_describe.py covers them)
 import base64 as _b64  # noqa: E402
 png = _b64.b64encode(b"\x89PNG\r\n\x1a\nfake").decode()
 shot_server = mcp_server.build_server(lambda op, **a: {}, console=lambda c: csent.append(c) or {"ok": True, "status": "delivered", "sent": {"id": "cc-1"},
@@ -129,7 +131,8 @@ shot_server = mcp_server.build_server(lambda op, **a: {}, console=lambda c: csen
 res = asyncio.run(shot_server.call_tool("console_screenshot", {"address": "view:settings", "to": "all"}))
 blocks = res.content if hasattr(res, "content") else res[0] if isinstance(res, tuple) else res
 ok(csent[-1] == {"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": {"address": "view:settings", "to": "all"}, "by": "mcp"}, "console_screenshot → console.nav act screenshot with address and to")
-ok(blocks[0].type == "image" and blocks[0].data == png and blocks[0].mime_type == "image/png", "the screenshot is the first content block, as an MCP image")
+ok(blocks[0].type == "text" and "Screen: Settings" in blocks[0].text and "Clickable" in blocks[0].text, "the first content block is text a voice caller can work from: the screen and what can be clicked")
+ok(blocks[1].type == "image" and blocks[1].data == png and blocks[1].mime_type == "image/png", "the screenshot follows as an MCP image")
 meta = json.loads(blocks[-1].text)
 ok(meta["state"]["screen"] == "settings" and meta["state"]["dialog"] == "asset-json" and meta["status"] == "delivered", "the screen state and status come with it")
 ok("data" not in meta["images"][0] and meta["images"][0]["width"] == 800 and "sent" not in meta, "the JSON beside the image carries no image data")

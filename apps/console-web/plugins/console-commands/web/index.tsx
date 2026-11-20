@@ -22,6 +22,9 @@
  * address or a CSS selector names) with ./capture, uploads the PNG to the server, then acks with the screen state
  * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees. It tells the server it is working
  * on it first (a capture takes seconds), works in a background tab too, and always answers within CAPTURE_TIMEOUT_MS.
+ * The ack also carries the screen map (framework screenMap: every clickable thing with its words, place and
+ * console-control@1 address), which the server turns into the numbered clickable list of console_screenshot and
+ * console_click_text, so a voice call that never gets the image can still say what is there and click it by its words.
  *
  * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
@@ -33,7 +36,7 @@ import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { executeControl, describeAnswer, controlState } from '@console/control/executor';
-import { controlRegistry } from '@console/axf/react';
+import { controlRegistry, screenMap, type ScreenMap } from '@console/axf/react';
 import { CAPTURE_TIMEOUT_MS, capturePage, painted, within } from './capture';
 import { appMenu } from './menu';
 import './console-commands.css';
@@ -178,11 +181,14 @@ async function runScreenshot(rt: AxfRuntime, m: ConsoleMessage, client: string):
   if (what && !el) return [false, `${what} is not on the screen`, { state: consoleShotState(controlState(rt), hereOf(rt)) }];
   // so a screen or dialog opened just before is painted (a background tab runs no frames: a short timer then)
   await painted();
+  // what can be clicked, read at the moment of the capture: a caller that cannot see the image clicks by these words
+  let map: ScreenMap | null = null;
+  try { map = screenMap(rt, el); } catch (e) { rt.terminal.warn('console-commands', `screen map failed: ${String((e as Error)?.message ?? e)}`); }
   const shot = await capturePage(el, what || 'page');
   const up = await pluginFetch(FOLDER, `shot?client=${encodeURIComponent(client)}&id=${encodeURIComponent(m.id)}`, { method: 'POST', headers: { 'content-type': 'image/png' }, body: shot.blob });
   if (!up.ok) return [false, `the screenshot could not be uploaded (${up.status})`, {}];
   const state = consoleShotState(controlState(rt), hereOf(rt), { capture: shot.capture, width: shot.width, height: shot.height, scale: shot.scale });
-  return [true, `captured ${what || 'the screen'} (${shot.width}×${shot.height})`, { shot: true, width: shot.width, height: shot.height, scale: shot.scale, capture: shot.capture, state }];
+  return [true, `captured ${what || 'the screen'} (${shot.width}×${shot.height})`, { shot: true, width: shot.width, height: shot.height, scale: shot.scale, capture: shot.capture, state, ...(map ? { map } : {}) }];
 }
 
 /** Run one message; → [ok, what happened]. */

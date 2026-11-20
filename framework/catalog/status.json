@@ -2438,5 +2438,11 @@
     "wave": 1,
     "module": "lib-settings",
     "notes": "settings-iface@1 (core/engines/settings-iface-rules.mjs; build settings-iface-default-all, Brett Nov 18 2026): every settings asset requires data.builtFor (app | asset:<type> | plugin:<name> | chrome:<type>, backfilled); every asset type and console plugin ships a locked default-<name>; Settings shows it greyed with a checkbox on every plugin tab and in Appearance → Asset types; ticking opens a dialog listing only interfaces built for that owner, unticking returns to the default. Actions settings.iface / settings.iface.choose (REST, MCP, CLI, voice). CI framework/spec/check-settings-iface.mjs. Kotlin twin deferred."
+  },
+  "cx.console.screenvoice": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build screen-voice-drive (Nov 20 2026; Brett: on a voice call Amber could not see the console): console_screenshot answers in words first (a literal description from a Claude vision model through axf.llm@1, 30 s give-up, cached 2 min by image hash, cost in describedBy) with a numbered clickable list from the console's screen map (framework/react/screenMap.ts: registered control targets + swept plain controls as button:seen.<words>, reading order, scroll-to-see apart); console_click_text clicks by the visible words or a list number through console-control@1 and answers with the new screen. apps/console-web/server/screen_describe.py; spec framework/spec/CONTROL.md; Kotlin twin deferred (PORTING.md)."
   }
 }

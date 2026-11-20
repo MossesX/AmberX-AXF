@@ -3,11 +3,11 @@
   "id": "ai.amberx.axf.console.console-commands",
   "lazy": { "core": "start" },
   "name": "Console commands",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list, console_clients and console_screenshot (a PNG of what the console shows plus its screen state, read-only) on the console's /mcp (and through axHub), and the CLI `axf console …`. Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the console you used last (or all of them, or one).",
+  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list, console_clients, console_screenshot (what the console shows, read-only: a PNG, the screen state, and for voice calls a written description plus a numbered list of everything clickable with its words and address) and console_click_text (click something by the words it shows, or by its number in that list) on the console's /mcp (and through axHub), and the CLI `axf console …`. Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the console you used last (or all of them, or one).",
   "targets": [
     "axf-console"
   ],
