@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9388,
- "updatedAt": "2026-11-20T00:09:34.664Z",
+ "rev": 9389,
+ "updatedAt": "2026-11-20T00:09:45.042Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -259916,7 +259916,7 @@
    "mergedAt": "2026-11-17T18:58:09Z",
    "priority": "P0",
    "createdAt": "2026-11-16T23:22:58.656Z",
-   "updatedAt": "2026-11-17T19:25:25.129Z",
+   "updatedAt": "2026-11-20T00:09:39Z",
    "builtAt": "2026-11-17T04:40:41.012Z",
    "notes": [
     {
@@ -259986,6 +259986,10 @@
     {
      "text": "Watchdog: Merge queue entry 811 → Complete: The build is complete (not on main; build server-auto-lander-fixes-lands: complete)",
      "at": "2026-11-17T19:25:25.129Z"
+    },
+    {
+     "text": "Shipped manifest sm-server-auto-lander-fixes-lands rev 1 sent to Shipped features (orchestrator): PR #774, 0 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-20T00:09:39Z"
     }
    ],
    "approvals": [
@@ -260061,6 +260065,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-server-auto-lander-fixes-lands",
+    "rev": 1,
+    "at": "2026-11-20T00:09:39Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -260699,7 +260709,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
