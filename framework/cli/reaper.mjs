@@ -15,6 +15,10 @@
  *     reap / sweep run in the same pass.
  *   - test servers (vite preview, uvicorn, …) listening from a build worktree whose build has no live session, and
  *     orphaned listeners from deleted / /tmp folders.
+ *   - test-run ghosts: a `claude -p` (or a test's stand-in script named claude) outside every worktree whose
+ *     /tmp/axf-limit-* folder is gone, or that has run from one longer than tmpMaxAgeMin, or whose /tmp cwd was deleted.
+ *     The hard build limit counts every headless claude on the host, so these held real build places for 10-15 hours
+ *     (Nov 20 2026). The process, what runs under it and its tmux session go.
  *   - stale temp folders: /tmp/axf-limit-* (test runs), /tmp/axf-ctx-* nobody uses, leaked state *.tmp files.
  *
  * Never touched: anything of a build that is genuinely working (its log or meter written within idleMin), this
@@ -187,6 +191,24 @@ export function plan(facts, settings = DEFAULTS) {
     if (settled(b) && !wrapped) add({ type: 'kill-proc', pid: p.pid, startMs: p.startMs, build: b, what: `claude -p for ${b} (pid ${p.pid})`, why: `the build is ${statusOf(b)} and its session ended; nothing written for ${mins(idle)}` });
   }
 
+  // 1b. test-run ghosts: headless claude outside every worktree, left from a /tmp/axf-limit-* test folder (gone, or
+  // older than any test run) or from a deleted /tmp folder; it counts against the hard build limit like a real build
+  const paneOf = new Map(tmux.map((t) => [t.panePid, t.name]));
+  for (const p of procs) {
+    if (p.sameNs === false || protectedPid(p.pid) || !isClaudePrint(p.args) || buildOf(p) || now - p.startMs < s.procGraceMin * MIN) continue;
+    const age = now - p.startMs;
+    let why = '';
+    if (p.tmpLimit && p.tmpLimitGone) why = `its test folder ${p.tmpLimit} is gone; running ${mins(age)}`;
+    else if (p.tmpLimit && age >= s.tmpMaxAgeMin * MIN) why = `a test run from ${p.tmpLimit} running ${mins(age)} (longer than any test)`;
+    else if (!p.tmpLimit && p.cwdDeleted && /^\/(var\/)?tmp\//.test(p.cwd ?? '')) why = `its folder ${p.cwd} was deleted; running ${mins(age)}`;
+    if (!why) continue;
+    add({ type: 'kill-proc', pid: p.pid, startMs: p.startMs, build: '', what: `test-run claude -p (pid ${p.pid}: ${short(p.args)})`, why });
+    for (const c of background(p.pid)) if (!protectedPid(c.pid)) add({ type: 'kill-proc', pid: c.pid, startMs: c.startMs, build: '', what: `task under test-run claude (pid ${c.pid}: ${short(c.args)})`, why: `left under pid ${p.pid}` });
+    let q = p; let pane = paneOf.get(p.pid) || '';
+    for (let i = 0; !pane && q && i < 40; i++) { q = byPid.get(q.ppid); if (q) pane = paneOf.get(q.pid) || ''; }
+    if (pane && !protectedPid(q?.pid)) add({ type: 'kill-tmux', session: pane, build: '', what: `tmux ${pane}`, why: `holds the test-run ghost pid ${p.pid}` });
+  }
+
   // 2. tmux axf-* sessions with no claude left whose run is over
   for (const t of tmux) {
     if (!/^axf-/.test(t.name) || now - (t.createdMs || now) < s.procGraceMin * MIN || t.paneClaude) continue;
@@ -326,7 +348,9 @@ export function processes() {
       buildEnv = (env.find((x) => x.startsWith('AXF_BUILD_ID=')) ?? '').slice(13);
       sessionEnv = (env.find((x) => x.startsWith('AXF_SESSION=')) ?? '').slice(12);
     }
-    out.push({ pid, ppid, args, cwd: cwd.replace(/ \(deleted\)$/, ''), cwdDeleted: / \(deleted\)$/.test(cwd), startMs: procStart(pid, boot), buildEnv, sessionEnv, sameNs: !ns || !pns || ns === pns });
+    // a test run's folder (/tmp/axf-limit-*): in its cwd or its arguments (a stand-in claude script lives there)
+    const tmpLimit = [cwd, ...args].map((a) => /^(\/tmp\/axf-limit-[^/\s]+)/.exec(String(a).replace(/ \(deleted\)$/, ''))?.[1]).find(Boolean) || '';
+    out.push({ pid, ppid, args, cwd: cwd.replace(/ \(deleted\)$/, ''), cwdDeleted: / \(deleted\)$/.test(cwd), startMs: procStart(pid, boot), buildEnv, sessionEnv, sameNs: !ns || !pns || ns === pns, ...(tmpLimit ? { tmpLimit, tmpLimitGone: !existsSync(tmpLimit) } : {}) });
   }
   return out;
 }

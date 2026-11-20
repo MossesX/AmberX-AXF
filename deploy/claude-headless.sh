@@ -91,6 +91,10 @@
 set -uo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ORIG_ARGS=("$@")
+# a launch from a stripped environment (a detached store hook, a systemd unit) may come without HOME: under `set -u` the
+# next line then died with "HOME: unbound variable" and the launch counted as a failed attempt (Nov 20 2026)
+if [[ -z "${HOME:-}" ]]; then HOME="$(getent passwd "$(id -u)" 2>/dev/null | cut -d: -f6)"; HOME="${HOME:-/root}"; fi
+export HOME
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
 
 inner_skip_still="${AXF_STILL_CHECK_OFF:-}"
@@ -597,9 +601,10 @@ if ! command -v tmux >/dev/null; then
 fi
 # One live session per build (framework/cli/build-lock.mjs, Nov 13 2026): a build launch never opens a second tmux
 # session beside a live one (axf-<build>*, or a claude pid in this worktree); other runs keep the -HHMMSS rename.
+# A Pipeline 2.0 step (AXF_BUILD_STEP) asks about its own step only: the build's other steps run beside it on purpose.
 LOCK_CLI="$HERE/../framework/cli/build-lock.mjs"
 if [[ -n "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null && [[ -f "$LOCK_CLI" ]]; then
-  lverdict="$(node "$LOCK_CLI" check "$AXF_BUILD_ID" --dir "$(pwd)" --no-lock 2>&1)"; l_st=$?
+  lverdict="$(node "$LOCK_CLI" check "$AXF_BUILD_ID" ${AXF_BUILD_STEP:+--step "$AXF_BUILD_STEP"} --dir "$(pwd)" --no-lock 2>&1)"; l_st=$?
   if (( l_st == 3 )); then echo "claude-headless: $lverdict" >&2; echo "$lverdict"; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; exit 3; fi
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"

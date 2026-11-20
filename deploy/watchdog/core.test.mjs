@@ -129,3 +129,44 @@ test('pickAccount: most usage left, never an excluded or limited one', () => {
   assert.equal(C.pickAccount([{ name: 'a', left: 0.9, usable: false }, { name: 'b', left: 0.1 }, { name: 'c', left: 0.5 }], ['c']), 'b');
   assert.equal(C.pickAccount([{ name: 'a', left: 0 }]), '');
 });
+
+test('an Opus step out of attempts is raised to Fable once; a Fable step out of attempts gives up for good', () => {
+  const accts = [{ name: 'a', left: 0.9 }, { name: 'b', left: 0.5 }];
+  const store = { builds: [{ id: 'b', status: 'building', statusAt: ago(30), notes: [], steps: [{ id: 's1', status: 'failed', failedFrom: 'building', attempt: C.DEFAULTS.maxAttempts, model: 'Opus', account: 'a', statusAt: ago(5) }] }] };
+  const [i] = C.findIssues(store, { now: NOW });
+  const d = C.plan(i, { now: NOW, accounts: accts, store });
+  assert.deepEqual([d.action, d.to, d.model, d.attempt, d.account], ['escalate', 'ready', 'Fable', C.DEFAULTS.maxAttempts + 1, 'b']);
+  const note = C.applyDecision(store, i, d, { now: NOW });
+  const st = store.builds[0].steps[0];
+  assert.deepEqual([st.status, st.model, st.attempt, st.account], ['ready', 'Fable', C.DEFAULTS.maxAttempts + 1, 'b']);
+  assert.match(note, /raised Opus → Fable/);
+  // the Fable go fails too: final give-up, alerted once, then left alone
+  Object.assign(st, { status: 'failed', failedFrom: 'building', statusAt: ago(5) });
+  const [j] = C.findIssues(store, { now: NOW });
+  const g = C.plan(j, { now: NOW, accounts: accts, store });
+  assert.equal(g.action, 'give-up'); assert.match(g.why, /Fable included/);
+  assert.equal(C.plan(j, { now: NOW, accounts: accts, memory: C.nextMemory({}, [j], [g], NOW) }).action, 'wait');
+  // a step that failed before its slot (pulling-main) is never escalated: plain give-up
+  const pm = { kind: 'step-failed', build: 'x', step: 's1', status: 'failed', failedFrom: 'pulling-main', attempt: 5, model: 'Opus', minutes: 5 };
+  assert.equal(C.plan(pm, { now: NOW, accounts: accts }).action, 'give-up');
+  assert.equal(C.DEFAULTS.maxAttempts, 5, 'the shared cap (pipeline-status MAX_ATTEMPTS)');
+});
+
+test('a completed step waits for its siblings: never stuck while the build builds; failed-from-completed heals back', () => {
+  const store = { builds: [{ id: 'b', status: 'building', statusAt: ago(10), notes: [], steps: [
+    { id: 's1', status: 'completed', statusAt: ago(400) },
+    { id: 's2', status: 'failed', failedFrom: 'completed', attempt: 21, statusAt: ago(10) },
+  ] }] };
+  const issues = C.findIssues(store, { now: NOW });
+  assert.equal(issues.find((i) => i.step === 's1'), undefined, 'a completed step 400 min old is not stuck while the build is building');
+  const i = issues.find((x) => x.step === 's2');
+  const d = C.plan(i, { now: NOW, memory: { alerted: { [C.keyOf(i)]: ago(5) } } });
+  assert.deepEqual([d.action, d.to], ['retry', 'completed'], 'its session ended cleanly: back to completed (cap and earlier alert ignored)');
+  C.applyDecision(store, i, d, { now: NOW });
+  assert.equal(store.builds[0].steps[1].status, 'completed');
+  // once the lander owns the build a late completed step is the lander's: nudged, never failed
+  const late = { builds: [{ id: 'l', status: 'merging-pr', statusAt: ago(5), steps: [{ id: 's1', status: 'completed', statusAt: ago(400) }] }] };
+  const li = C.findIssues(late, { now: NOW }).find((x) => x.step === 's1');
+  assert.equal(li?.lander, true);
+  assert.equal(C.plan(li, { now: NOW }).action, 'nudge');
+});

@@ -54,6 +54,12 @@ export const BUILD_FIELDS = Object.freeze(['flow', 'status', 'statusAt', 'status
 export const STEP_FIELDS = Object.freeze(['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', 'model', 'account', 'slot', 'prNumber', 'worktree', 'branch', 'tmux', 'tried']);
 export const TRIED_MAX = 10;
 export const LOG_MAX = 60;
+/**
+ * Attempts a step or build gets before the watchdog gives up (pipeline-watchdog@2 maxAttempts default). A give-up is
+ * final: a failed record at or past it is never relaunched by the orchestrator (Nov 20 2026: a step relaunched to
+ * "attempt 21" after the watchdog had given up at 5); only the watchdog's own escalation may move it on.
+ */
+export const MAX_ATTEMPTS = 5;
 
 const str = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const flowOf = (kind) => (kind === 'step' ? STEP_FLOW : BUILD_FLOW);
@@ -61,6 +67,10 @@ const statusesOf = (kind) => (kind === 'step' ? STEP_STATUSES : BUILD_STATUSES);
 export const rank = (status, kind = 'build') => flowOf(kind).indexOf(status);
 export const isStatus = (status, kind = 'build') => statusesOf(kind).includes(status);
 export const isP2 = (b) => !!b && (b.flow === FLOW || P2_ONLY.includes(b.status));
+/** Has this record used up its attempts (failed at attempt >= max)? Then the orchestrator leaves it to the watchdog. */
+export const gaveUp = (rec, max = MAX_ATTEMPTS) => !!rec && rec.status === FAILED && Math.max(1, Number(rec.attempt) || 1) >= Math.max(1, Number(max) || MAX_ATTEMPTS);
+/** May the orchestrator send this step to a slot: `ready`, or failed in a slot status with attempts left. */
+export const sendable = (s, max = MAX_ATTEMPTS) => !!s && (s.status === 'ready' || (s.status === FAILED && ['ready', 'sending', 'building'].includes(s.failedFrom) && !gaveUp(s, max)));
 
 /** "Pending", "Pulling in main", "failed, attempt 2". */
 export function labelOf(status, attempt = 1, kind = 'build') {

@@ -44,6 +44,8 @@ export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
   /** Sessions per account at once, when the account has no cap of its own (the Claude setting builds.maxParallel wins when set). */
   parallelPerAccount: 1,
+  /** Pipeline 2.0: steps of one build that run at once (each in its own worktree), under the VPS-wide slot cap. */
+  stepsInParallel: 4,
   /** Plans that run Fable (Brett's Max subscriptions do; Pro ones don't). An account's override or probe beats the plan. */
   fablePlans: ['max'],
   /** Use the console's own (interactive) account when no account is marked as a worker. */
@@ -67,7 +69,7 @@ export const DEFAULTS = Object.freeze({
   /** A launch brief is trimmed to at most this many bytes (Claude setting builds.briefMaxBytes); his words are never cut. */
   briefMaxBytes: 120 * 1024,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
+const LIMITS = { parallelPerAccount: [1, 12], stepsInParallel: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -80,6 +82,7 @@ export function normSettings(raw = {}) {
   return {
     $axf: SCHEMA,
     parallelPerAccount: o.parallelPerAccount === undefined ? DEFAULTS.parallelPerAccount : clamp('parallelPerAccount', o.parallelPerAccount),
+    stepsInParallel: o.stepsInParallel === undefined ? DEFAULTS.stepsInParallel : clamp('stepsInParallel', o.stepsInParallel),
     fablePlans: list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean).length ? list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean) : [...DEFAULTS.fablePlans],
     useConsoleAccount: o.useConsoleAccount !== false,
     maxRuns: o.maxRuns === undefined ? DEFAULTS.maxRuns : clamp('maxRuns', o.maxRuns),
