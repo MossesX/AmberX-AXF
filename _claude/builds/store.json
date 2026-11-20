@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10123,
- "updatedAt": "2026-11-20T20:40:15.801Z",
+ "rev": 10124,
+ "updatedAt": "2026-11-20T20:40:37.965Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344675,7 +344675,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "failed",
+   "status": "pulling-main",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -344683,7 +344683,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T20:40:02.184Z",
+   "updatedAt": "2026-11-20T20:40:33.940Z",
    "builtAt": "",
    "notes": [
     {
@@ -344884,7 +344884,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344895,9 +344895,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T20:40:02.184Z",
-   "statusBy": "watchdog",
-   "attempt": 1,
+   "statusAt": "2026-11-20T20:40:33.940Z",
+   "statusBy": "orchestrator",
+   "attempt": 2,
    "failedFrom": "pulling-main",
    "statusLog": [
     {
@@ -344934,6 +344934,13 @@
      "by": "watchdog",
      "attempt": 1,
      "why": "pulling-main did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-20T20:40:33.940Z",
+     "by": "orchestrator",
+     "attempt": 2,
+     "why": "retrying the main pull"
     }
    ]
   }
