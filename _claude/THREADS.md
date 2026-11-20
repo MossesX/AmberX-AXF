@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:14 UTC · `dispatcher-split-builds-evenly-across` note (all) · watchdog
 - 2026-11-20 01:14 UTC · `move-everything-axhub-web-console` note (all) · watchdog
 - 2026-11-20 01:14 UTC · `one-true-source-for-every-setting` note (all) · watchdog
 - 2026-11-20 01:14 UTC · `vps-sets-every-build-status-manifest` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 09:02 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
 - 2026-11-20 09:04 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
 - 2026-11-20 09:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 09:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 
 ## Token passes (log)
 
