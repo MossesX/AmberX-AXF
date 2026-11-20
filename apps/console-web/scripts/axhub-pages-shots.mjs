@@ -4,7 +4,7 @@
  * (`/api/hub-pages/*`) answered from a fixed fake hub. Nothing reaches a real hub.
  *
  *   node scripts/axhub-pages-shots.mjs <out-dir>        (build first: npm run build)
- *   AXHUB_SHOTS_PORT=7099 · PW_CHROMIUM=<chromium path>
+ *   AXHUB_SHOTS_PORT=7396 · PW_CHROMIUM=<chromium path>
  */
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
@@ -17,7 +17,7 @@ const APP = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = join(APP, '../..');
 const OUT = process.argv[2];
 if (!OUT) { console.error('usage: node scripts/axhub-pages-shots.mjs <out-dir>'); process.exit(2); }
-const PORT = Number(process.env.AXHUB_SHOTS_PORT) || 7099;
+const PORT = Number(process.env.AXHUB_SHOTS_PORT) || 7396;
 let playwright;
 for (const base of [APP, ROOT, process.env.PLAYWRIGHT_DIR, '/tmp/sc-pw'].filter(Boolean)) { try { playwright = createRequire(join(base, 'x.js'))('playwright'); break; } catch { /* next */ } }
 if (!playwright) { console.error('playwright not found'); process.exit(2); }
@@ -64,7 +64,10 @@ process.on('exit', () => { try { server.kill('SIGTERM'); } catch { /* gone */ } 
 let browser;
 try {
   let up = false;
-  for (let i = 0; i < 120 && !up; i++) { try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { /* not yet */ } if (!up) await sleep(500); }
+  // Our own server, not another worktree's on the same port (strictPort makes ours exit when the port is taken).
+  let exited = false; server.on('exit', () => { exited = true; });
+  for (let i = 0; i < 120 && !up && !exited; i++) { await sleep(500); try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { /* not yet */ } }
+  if (exited) throw new Error(`port ${PORT} is taken (set AXHUB_SHOTS_PORT)`);
   if (!up) throw new Error(`vite preview on :${PORT} (is dist/ built?)`);
   browser = await playwright.chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
   mkdirSync(OUT, { recursive: true });

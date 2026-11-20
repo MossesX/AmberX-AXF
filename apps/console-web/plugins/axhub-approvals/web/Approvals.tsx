@@ -196,13 +196,15 @@ function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () =
     if (next) setReplies((r) => ({ ...r, [from.id]: { base: replyBase(from), item: next } }));
     onDone();
   };
+  // Every row is its own CSS grid on one template, so no column may size to its content (max-content differs per row and
+  // the columns drift apart): fixed widths in text sizes (they hold text), the Who / What columns take the rest and cut their text first.
   const columns: GridColumn<ApprovalItem>[] = [
-    { id: 'source', label: 'Source', width: 'minmax(max-content, 1fr)', sortable: true, sortValue: (r) => `${SOURCE_ORDER.indexOf(sourceKind(r) as (typeof SOURCE_ORDER)[number])}`, render: (r) => <SourceCell item={r} /> },
+    { id: 'source', label: 'Source', width: 'calc(var(--fx-font-size) * 8)', sortable: true, sortValue: (r) => `${SOURCE_ORDER.indexOf(sourceKind(r) as (typeof SOURCE_ORDER)[number])}`, render: (r) => <SourceCell item={r} /> },
     { id: 'who', label: 'Who', width: 'minmax(calc(var(--fx-space) * 8), 1.2fr)', sortable: true, sortValue: (r) => sourceWho(r).toLowerCase(), render: (r) => <span className="axp-axhub-who" title={sourceWho(r) || undefined}>{sourceWho(r) || '—'}</span> },
     { id: 'what', label: 'What', width: 'minmax(calc(var(--fx-space) * 14), 4fr)', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(), render: (r) => <WhatCell item={r} /> },
-    { id: 'requested', label: 'Requested', width: 'minmax(max-content, 1fr)', sortable: true, sortValue: requestedKey, render: (r) => <span className="fx-muted" title={new Date(r.createdAt).toLocaleString()}>{relTime(r.createdAt)}</span> },
-    { id: 'countdown', label: 'Countdown', width: 'minmax(max-content, 1fr)', sortable: true, sortValue: (r) => countdownKey(r), render: (r) => <CountdownCell item={r} /> },
-    { id: 'decide', label: 'Decide', width: 'max-content', render: (r) => (isHeld(r) ? <HeldBar item={r} onDone={done(r)} /> : <RowDecideCell item={r} onDone={done(r)} />) },
+    { id: 'requested', label: 'Requested', width: 'calc(var(--fx-font-size) * 6.5)', sortable: true, sortValue: requestedKey, render: (r) => <span className="fx-muted" title={new Date(r.createdAt).toLocaleString()}>{relTime(r.createdAt)}</span> },
+    { id: 'countdown', label: 'Countdown', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (r) => countdownKey(r), render: (r) => <CountdownCell item={r} /> },
+    { id: 'decide', label: 'Decide', width: 'calc(var(--fx-font-size) * 22)', render: (r) => (isHeld(r) ? <HeldBar item={r} onDone={done(r)} /> : <RowDecideCell item={r} onDone={done(r)} />) },
   ];
   const waiting = rows.filter((r) => isHeld(r) || r.status === 'pending');
   const rest = rows.filter((r) => !waiting.includes(r));

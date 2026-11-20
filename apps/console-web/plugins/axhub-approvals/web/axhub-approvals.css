@@ -36,3 +36,6 @@
 .axp-axhub-what__tool { flex: 0 0 auto; font-size: var(--fx-type-root-xs); }
 .axp-axhub-who { display: block; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-axhub-source { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-md); flex-wrap: wrap; min-width: 0; }
+/* Every grid row is its own CSS grid at least as wide as its content: Who and What must not count their text, or a row
+   with a longer title gets wider than the others and its columns drift. They take the room left and cut their text. */
+.axp-axhub-what, .axp-axhub-who { contain: inline-size; flex: 1 1 auto; width: 100%; }
