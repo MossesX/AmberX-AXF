@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9392,
- "updatedAt": "2026-11-20T00:10:59.423Z",
+ "rev": 9393,
+ "updatedAt": "2026-11-20T00:11:38.838Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -279875,7 +279875,7 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-19T02:36:57.062Z",
+   "updatedAt": "2026-11-20T00:11:30Z",
    "builtAt": "2026-11-19T02:36:57.062Z",
    "notes": [
     {
@@ -280241,6 +280241,10 @@
     {
      "text": "Watchdog: Pending build rebuild-every-toolbar-page-specific → Complete: Its PR merged on main (PR #817 merged 2026-11-17T21:34:16Z (8cbff5a700da); build rebuild-every-toolbar-page-specific: pending) (pending → landing)",
      "at": "2026-11-19T02:36:57.062Z"
+    },
+    {
+     "text": "Shipped manifest sm-rebuild-every-toolbar-page-specific rev 1 sent to Shipped features (orchestrator): landed f24310605, 0 file(s), 4 test line(s), 6 open.",
+     "at": "2026-11-20T00:11:30Z"
     }
    ],
    "approvals": [
@@ -280321,6 +280325,12 @@
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
+   },
+   "shipped": {
+    "id": "sm-rebuild-every-toolbar-page-specific",
+    "rev": 1,
+    "at": "2026-11-20T00:11:30Z",
+    "landedCommit": "f24310605dceb2b4250c8e5deb8f5828a977e2fa"
    },
    "steps": [
     {
@@ -281039,18 +281049,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 131,
+   "rev": 132,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-17T18:56:41.307Z",
     "builtAt": "",
+    "createdAt": "2026-11-17T18:56:41.307Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwl2335e0jsmmc": "2026-11-17T18:58:57.805Z",
      "st-mwl2335e0kmecc": "2026-11-17T18:58:57.805Z",
