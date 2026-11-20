@@ -98,11 +98,22 @@ app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
+# Device routes of plugins that own a paired device (manifest "deviceRoutes": true): /api/plugins/<folder>/device/…,
+# filled in as plugins load. Their caller is the device, which holds its own bearer token, never the console's, and
+# every route there authenticates that token itself.
+_DEVICE_PREFIXES: set[str] = set()
+
+
+def _device_route(path: str) -> bool:
+    return any(path.startswith(p) for p in _DEVICE_PREFIXES)
+
+
 @app.middleware("http")
 async def _wall_token_gate(request: Request, call_next):  # type: ignore[no-untyped-def]
     """Behind axHub's sign-in wall, a request let through on a bearer header (X-Auth-Via: token, set by the hub; the
-    proxy strips any client copy) must carry the real console token on every route, reads included."""
-    if request.headers.get("x-auth-via") == "token":
+    proxy strips any client copy) must carry the real console token on every route, reads included. Device routes are
+    the exception: the wall passes a device's bearer the same way, and without it a paired phone could never connect."""
+    if request.headers.get("x-auth-via") == "token" and not _device_route(request.url.path):
         tok = current_token()
         got = request.headers.get("authorization", "")
         if not tok or not _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode()):
@@ -1330,6 +1341,7 @@ def load_plugins() -> None:
                 device_router = getattr(module, "device_router", None)
                 if device_router is not None and m.get("deviceRoutes") is True:
                     app.include_router(device_router, prefix=f"/api/plugins/{folder.name}/device", dependencies=[Depends(_plugin_guard(folder.name))])
+                    _DEVICE_PREFIXES.add(f"/api/plugins/{folder.name}/device/")
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console
