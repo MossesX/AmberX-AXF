@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9758,
- "updatedAt": "2026-11-20T07:15:55.412Z",
+ "rev": 9759,
+ "updatedAt": "2026-11-20T07:16:09.016Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337772,6 +337772,11 @@
      "text": "Watchdog: step s6 failed at building, attempt 3: tmux session axf-fable-full-audit-ui-overhaul-conso-s6 is gone while the step was building.",
      "at": "2026-11-20T07:13:01.445Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:14:01.161Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -340593,7 +340598,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 411,
+   "rev": 412,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
