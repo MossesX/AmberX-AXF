@@ -456,34 +456,6 @@
             "order": 11,
             "items": [
               {
-                "id": "approvals",
-                "label": "Approvals",
-                "icon": "shield",
-                "action": "console.open:axhub-approvals",
-                "order": 20
-              },
-              {
-                "id": "apps",
-                "label": "App catalog",
-                "icon": "download",
-                "action": "console.open:axhub-apps",
-                "order": 21
-              },
-              {
-                "id": "users",
-                "label": "Users",
-                "icon": "user",
-                "action": "console.open:axhub-users",
-                "order": 22
-              },
-              {
-                "id": "account",
-                "label": "Your hub account",
-                "icon": "key",
-                "action": "console.open:axhub-account",
-                "order": 23
-              },
-              {
                 "id": "s1",
                 "separator": true,
                 "order": 40

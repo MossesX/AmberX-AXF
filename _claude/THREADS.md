@@ -836,17 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:16 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `server-safe-mode-one-emergency-button` note (all) · watchdog
-- 2026-11-20 01:27 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:27 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:31 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:32 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
-- 2026-11-20 01:32 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
-- 2026-11-20 01:33 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
-- 2026-11-20 01:33 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-20 01:43 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-20 01:43 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 01:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-20 01:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
@@ -1236,6 +1225,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 15:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 16:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 18:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 19:11 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 19:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 19:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:22 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:25 UTC · `land-round-2` → archived, note (all) · console
+- 2026-11-20 19:25 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · console
 
 ## Token passes (log)
 

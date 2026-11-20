@@ -1232,11 +1232,17 @@ def get_settings(request: Request) -> dict[str, Any]:
 
 
 @router.post("/settings")
-async def set_settings(request: Request) -> dict[str, Any]:
+async def set_settings(request: Request) -> Any:
+    """Two commands share this path (/api/console/settings and /api/plugins/console-commands/settings are one router):
+    a body naming a tab ({tab | path | q, anchor?, to?}) opens that Settings tab in the open console; any other body is a
+    patch of this plugin's own settings (wake, ttlS, browser; the owner only). Two routes on one path left the second
+    (open a tab) unreachable."""
+    b = await _body(request)
+    if any(isinstance(b.get(k), str) and b[k] for k in ("tab", "path", "q")):
+        return await open_settings(request, b)
     _, _, audience = caller(request)
     if audience != OWNER:
         raise HTTPException(403, "only the console's owner changes the console commands settings")
-    b = await _body(request)
     return {"ok": True, "settings": save_settings({k: b[k] for k in DEFAULTS if k in b})}
 
 
@@ -1262,9 +1268,8 @@ async def open_dialog(request: Request) -> JSONResponse:
     return await go(request, {"op": "act", "target": "console.dialogs", "path": path, "action": action, **_to(b, arg=b.get("arg")), **_audit(b)})
 
 
-@router.post("/settings")
-async def open_settings(request: Request) -> JSONResponse:
-    b = await _body(request)
+async def open_settings(request: Request, b: dict[str, Any]) -> JSONResponse:
+    """POST /settings with a tab (routed by set_settings): open that Settings tab in the open console."""
     return await go(request, {"op": "act", "target": "console.settings", "path": b.get("tab") or b.get("path") or b.get("q"), "action": "open", **_to(b, anchor=b.get("anchor")), **_audit(b)})
 
 
