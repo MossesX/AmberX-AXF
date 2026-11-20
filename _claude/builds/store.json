@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9879,
- "updatedAt": "2026-11-20T08:50:13.922Z",
+ "rev": 9880,
+ "updatedAt": "2026-11-20T08:50:27.758Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337241,10 +337241,10 @@
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
+   "branch": "claude/fable-full-audit-ui-overhaul-conso--s11",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:50:09.324Z",
+   "updatedAt": "2026-11-20T08:50:14.598Z",
    "builtAt": "",
    "notes": [
     {
@@ -341549,7 +341549,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 533,
+   "rev": 534,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
