@@ -522,6 +522,10 @@ every page load (see S7-1).
 | S7-6 | A console-control answer showed the state from before the command. Opening a tab answered with the tab row's previous value, so a session reading it would think the tab never switched. | before: 22 tab checks got the previous tab back (after s1-s6: 28); after + s7: 0 | Commands that change something wait two frames (or 60 ms each, for a hidden tab) before the snapshot. (*Console control: an answer's state shows the change it made*) |
 | S7-7 | Open consoles drove the server to 1.5 cores, the biggest share from Wake listener. Each tab polled `GET settings` every 6 s and posted a report on every banner paint (at most every 2 s), and every call started its own `listener.mjs` node process. | before, three open consoles (HTTP/2): 655 processes/min, listener.mjs settings 53/min, report 47/min, state 24/min (after s1-s6: 70, 37, 32). With the fix: 380 processes/min in total, and no listener.mjs command among the top ten (each under 7/min) | Settings (5 s) and state (2 s) are one shared single-flight read for every tab, and any write drops them. A page only reports when its state changed. Test added (70 pass). (*Wake listener: open consoles share its settings and state reads*) |
 
+The three visible fixes (S7-2, S7-4, S7-5) are waiting in UI Review, group "fable-full-audit-ui-overhaul-conso - Nov 20
+11:32 AM" (r-20261120-986bde57, r-20261120-b706bebd, r-20261120-ebabbe47), with desktop and phone shots from the
+after + s7 run. The sandbox has no skin (no axHub), so the shots show the console's built-in look.
+
 No shell-level error boundary exists: a throwing plugin screen or dialog blanks the whole console until a reload
 (S7-2, S7-4, S7-5 all did). Only Follow Amber has one. Recommended for the UI steps: an error boundary around every
 plugin view, dialog and settings panel, so a broken plugin shows a note in its own box.
