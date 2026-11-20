@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9880,
- "updatedAt": "2026-11-20T08:50:27.758Z",
+ "rev": 9881,
+ "updatedAt": "2026-11-20T08:50:34.411Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s11",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:50:14.598Z",
+   "updatedAt": "2026-11-20T08:50:28.056Z",
    "builtAt": "",
    "notes": [
     {
@@ -338101,13 +338101,13 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-20T08:34:16.612Z",
+     "at": "2026-11-20T08:50:28.056Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-fable-full-audit-ui-overhaul-conso--s10--earl",
+     "session": "axf-fable-full-audit-ui-overhaul-conso--s11--gina",
      "phase": ""
     }
    },
@@ -341549,7 +341549,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 534,
+   "rev": 535,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
