@@ -1,7 +1,7 @@
 # axHub web app: archived and retired (Nov 20 2026)
 
 Brett, Nov 19 2026: fold the axHub web UI into the console. Every page this app had is now a console plugin in the
-**axHub** module (nav → axHub, app menu → axHub), each installable and uninstallable on its own:
+**axHub** module (nav → axHub, app menu → Apps → axHub), each installable and uninstallable on its own:
 
 | This app's page | Console plugin | Console view |
 | --- | --- | --- |

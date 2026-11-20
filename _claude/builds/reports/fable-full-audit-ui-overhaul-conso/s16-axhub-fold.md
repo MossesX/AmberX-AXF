@@ -24,7 +24,7 @@ axhub-web.
      (`#/approvals/<id>`, `#/handoff/<run>` …) on the same console page once plugins load (`App.tsx`).
    - `console.open` (`axhub`, `axhub-approvals`, `axhub-apps`, `axhub-users`, `axhub-account`) opens the page in the
      console when its plugin is installed, else the hub in a new tab as before (`menuLibrary.tsx`).
-2. **Module axHub: six plugins** (`60f543a81`) — nav section **axHub** + app menu **axHub**, each plugin with
+2. **Module axHub: six plugins** (`60f543a81`) — nav section **axHub** + app menu **Apps → axHub**, each plugin with
    plugin.json, install.mjs, uninstall.mjs, help.json (entries moved from the app's help), the generic Settings →
    Plugins sub-tab, a README line with its removal marker. `plugin-lifecycle check`: clean for all six.
 
