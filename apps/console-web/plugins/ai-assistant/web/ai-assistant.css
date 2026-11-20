@@ -32,7 +32,7 @@
 
 .axp-ai-assistant__msg { display: flex; gap: var(--fx-dens-gap-xl); align-items: flex-start; max-width: 100% }
 .axp-ai-assistant__msg.is-user { flex-direction: row-reverse }
-.axp-ai-assistant__avatar { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 999px; background: var(--fx-accent-soft); color: var(--fx-accent) }
+.axp-ai-assistant__avatar { flex: none; display: grid; place-items: center; width: calc(var(--fx-font-size) * 2); height: calc(var(--fx-font-size) * 2); border-radius: 999px; background: var(--fx-accent-soft); color: var(--fx-accent) }
 .axp-ai-assistant__msg.is-user .axp-ai-assistant__avatar { background: var(--fx-surface2); color: var(--fx-muted) }
 .axp-ai-assistant__bubble { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; max-width: min(760px, 88%); padding: var(--fx-dens-gap-xl); border-radius: var(--fx-radius-md); background: var(--fx-surface2); border: var(--fx-border-w) solid var(--fx-border) }
 .axp-ai-assistant__msg.is-user .axp-ai-assistant__bubble { background: var(--fx-accent-soft); border-color: transparent }
