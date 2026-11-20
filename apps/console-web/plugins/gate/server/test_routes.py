@@ -92,6 +92,66 @@ try:
     held = hl.held_alerts([{"pr": 1, "rule": "clash", "reason": "code clash", "gate": {"pass": False, "held": False}}, {"pr": 2, "rule": "ci-green", "gate": {"pass": False, "held": True}}])
     ok([a["key"] for a in held] == ["gate:pr-held:1:clash"], "an alert only for a PR that needs a fix")
     ok(hl.paused_alert({"paused": True, "pause": {"by": "b", "why": "w"}})["key"] == "gate:lander-paused" and hl.paused_alert({"paused": False}) is None, "the paused alert")
+    # parallel builds and the host cap, side by side: read live, saved through the owners' services, host cap Brett only
+    import types
+    r = c.get(f"{B}/build-slots").json()
+    ok(r["stepsInParallel"]["available"] is False and r["hostCap"]["available"] is False and "off" in r["hostCap"]["why"], "build-slots: owners off = both unavailable, with the reason")
+    ok(c.put(f"{B}/build-slots", json={"stepsInParallel": 6}).status_code == 503, "build-slots: saving with the owner off is 503")
+
+    class _HTTP(routes.HTTPException):
+        pass
+
+    live = {"steps": 4, "cap": 4, "saves": []}
+
+    class _Pipe:
+        def get(self):
+            return {"ok": True, "settings": {"stepsInParallel": live["steps"]}}
+
+        def set(self, request, body):
+            live["steps"] = body["stepsInParallel"]
+            live["saves"].append(("steps", body))
+            return {"ok": True}
+
+    class _Slots:
+        def hard_limit(self):
+            return {"max": live["cap"], "live": 2}
+
+        def can_edit_hard_limit(self, request):
+            return bool(getattr(getattr(request.state, "axf_user", None), "admin", False))
+
+        def set_hard_limit(self, request, patch):
+            if not self.can_edit_hard_limit(request):
+                raise _HTTP(403, "Only Brett sets the hard build limit, from his own signed-in console.")
+            live["cap"] = patch["maxBuilds"]
+            live["saves"].append(("cap", patch))
+            return self.hard_limit()
+
+    fake = types.ModuleType("plugin_services")
+    fake.get = lambda name: {"axf.pipeline-settings@1": _Pipe(), "axf.agent-slots@1": _Slots()}.get(name)
+    sys.modules["plugin_services"] = fake
+    r = c.get(f"{B}/build-slots").json()
+    ok(r["stepsInParallel"] == {"value": 4, "min": 1, "max": 12, "available": True} and r["hostCap"]["value"] == 4 and r["hostCap"]["live"] == 2, "build-slots: both live values")
+    ok(r["hostCap"]["canEdit"] is False and r["over"] is False and "note" not in r, "build-slots: the console token reads the host cap, cannot edit it; no note at or under the cap")
+    r = c.put(f"{B}/build-slots", json={"input": {"stepsInParallel": 6}, "by": "mcp"})
+    ok(r.status_code == 200 and r.json()["stepsInParallel"]["value"] == 6 and r.json()["saved"] == {"stepsInParallel": 6}, "build-slots: steps in parallel saves (plugin-commands body)")
+    ok(r.json()["over"] is True and "above the host cap (4)" in r.json()["note"], "build-slots: a note when steps in parallel is above the host cap")
+    r = c.put(f"{B}/build-slots", json={"stepsInParallel": 8, "maxBuilds": 8})
+    ok(r.status_code == 403 and "Only Brett" in r.json()["message"] and live["steps"] == 6 and live["cap"] == 4, "build-slots: the host cap from the console token is 403 and nothing is saved, steps included")
+    for bad in ({"stepsInParallel": 13}, {"stepsInParallel": 0}, {"stepsInParallel": "6"}, {"maxBuilds": 0}, {"stepsInParallel": True}, {}):
+        ok(c.put(f"{B}/build-slots", json=bad).status_code == 400, f"build-slots: {bad} is 400")
+    owner_app = FastAPI()
+
+    @owner_app.middleware("http")
+    async def as_brett(request, call_next):  # what the console's auth does for Brett's own signed-in session
+        request.state.axf_user = types.SimpleNamespace(admin=True, name="Brett")
+        return await call_next(request)
+
+    owner_app.include_router(routes.router, prefix="/api/plugins/gate")
+    bc = TestClient(owner_app)
+    ok(bc.get(f"{B}/build-slots").json()["hostCap"]["canEdit"] is True, "build-slots: Brett's session may edit the host cap")
+    r = bc.put(f"{B}/build-slots", json={"maxBuilds": 6})
+    ok(r.status_code == 200 and r.json()["hostCap"]["value"] == 6 and r.json()["over"] is False and live["saves"][-1] == ("cap", {"maxBuilds": 6}), "build-slots: Brett saves the host cap; the note goes")
+    del sys.modules["plugin_services"]
 finally:
     import shutil
     shutil.rmtree(TMP, ignore_errors=True)

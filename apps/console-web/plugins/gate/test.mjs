@@ -203,6 +203,29 @@ try {
   t('the CLI exits 3 when a press needs a confirm, 2 on a usage error', () => {
     seed(); assert.equal(node(['rules', 'reset']).status, 3); assert.equal(node(['rules', 'frobnicate']).status, 2);
   });
+  // ---------------------------------------------------------------- builds at once (web/build-slots-core.mjs)
+  const BS = await import('./web/build-slots-core.mjs');
+  const slots = (canEdit = false, steps = 4, cap = 4) => ({ stepsInParallel: { value: steps, min: 1, max: 12, available: true }, hostCap: { value: cap, min: 1, max: 64, available: true, canEdit, live: 2 }, over: steps > cap });
+  t('builds at once: a field is a whole number inside its range', () => {
+    assert.deepEqual(BS.parseCount('6', { min: 1, max: 12 }), { value: 6 });
+    for (const bad of ['', '0', '13', '2.5', '-1', 'six']) assert.ok(BS.parseCount(bad, { min: 1, max: 12 }).error, `"${bad}" is refused`);
+  });
+  t('builds at once: Save sends only what changed; the host cap only from Brett', () => {
+    assert.deepEqual(BS.patchOf(slots(), { steps: '4', cap: '4' }), { patch: {}, errors: {} });
+    assert.deepEqual(BS.patchOf(slots(), { steps: '6', cap: '8' }).patch, { stepsInParallel: 6 }, 'a read-only host cap is never sent');
+    assert.deepEqual(BS.patchOf(slots(true), { steps: '6', cap: '8' }).patch, { stepsInParallel: 6, maxBuilds: 8 });
+    assert.deepEqual(BS.patchOf(slots(true), { steps: '4', cap: '6' }).patch, { maxBuilds: 6 });
+    assert.ok(BS.patchOf(slots(), { steps: '13', cap: '4' }).errors.steps);
+    const off = { ...slots(true), stepsInParallel: { value: null, min: 1, max: 12, available: false, why: 'off' } };
+    assert.deepEqual(BS.patchOf(off, { steps: '6', cap: '4' }), { patch: {}, errors: {} }, 'a number whose owner is off is not sent');
+  });
+  t('builds at once: a short note when steps in parallel is above the host cap', () => {
+    assert.equal(BS.overNote(4, 4), ''); assert.equal(BS.overNote(2, 4), ''); assert.equal(BS.overNote(null, 4), '');
+    assert.match(BS.overNote(6, 4), /Steps in parallel \(6\) is above the host cap \(4\)/);
+    assert.match(BS.previewOver(slots(), { steps: '6', cap: '4' }), /above the host cap/, 'the note follows what is typed');
+    assert.equal(BS.previewOver(slots(true, 6, 4), { steps: '6', cap: '8' }), '', 'raising the cap clears it');
+    assert.match(BS.previewOver(slots(false, 6, 4), { steps: 'x', cap: '4' }), /\(6\)/, 'a field that does not parse falls back to the saved value');
+  });
 } finally {
   rmSync(TMP, { recursive: true, force: true });
 }

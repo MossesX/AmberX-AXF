@@ -193,12 +193,11 @@ def get_hard_limit(request: Request) -> dict[str, Any]:
     return {**hard_limit(), "canEdit": _owner(request)}
 
 
-@router.put("/hard-limit")
-async def put_hard_limit(request: Request) -> dict[str, Any]:
-    """Brett only: change the hard build limit or the slice / docker caps (his signed-in console, not the console token)."""
+def save_hard_limit(request: Request, body: Any) -> dict[str, Any]:
+    """Brett only: change the hard build limit or the slice / docker caps (his signed-in console, not the console token).
+    The one write path: the route below and the axf.agent-slots@1 service both go through this guard."""
     if not _owner(request):
         raise HTTPException(403, "Only Brett sets the hard build limit, from his own signed-in console (Settings → Plugins → Agent cap). Sessions, MCP and voice can read it.")
-    body = await request.json()
     if not isinstance(body, dict):
         raise HTTPException(400, "send a JSON object")
     patch = {k: v for k, v in body.items() if k in LIMIT_KEYS}
@@ -213,6 +212,12 @@ async def put_hard_limit(request: Request) -> dict[str, Any]:
     return {**hard_limit(), "canEdit": True, "saved": json.loads(out.splitlines()[-1])}
 
 
+@router.put("/hard-limit")
+async def put_hard_limit(request: Request) -> dict[str, Any]:
+    """Brett only: change the hard build limit or the slice / docker caps (his signed-in console, not the console token)."""
+    return save_hard_limit(request, await request.json())
+
+
 class Service:
     """axf.agent-slots@1"""
     version = 1
@@ -222,6 +227,14 @@ class Service:
 
     def hard_limit(self) -> dict[str, Any]:
         return hard_limit()
+
+    def can_edit_hard_limit(self, request: Request) -> bool:
+        """Is this request Brett's own signed-in console session (the only caller that may change the hard limit)?"""
+        return _owner(request)
+
+    def set_hard_limit(self, request: Request, patch: dict[str, Any]) -> dict[str, Any]:
+        """Change the hard limit for another plugin's screen: the same Brett-only guard as PUT hard-limit (403 otherwise)."""
+        return save_hard_limit(request, patch)
 
 
 plugin_services.provide(SELF, Service(), FOLDER)

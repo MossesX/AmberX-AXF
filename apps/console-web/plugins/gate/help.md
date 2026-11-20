@@ -30,3 +30,9 @@ Every rule change and lander action: who, when, what it was before and after, an
 
 ## Settings
 Settings → Plugins → Gate: how often the open tab refreshes, how many History entries are kept, which tab it opens on.
+
+**Builds at once** (same sub-tab) puts two numbers side by side, each with its live value: **Steps in parallel** (how
+many steps of one build run at once, 1 to 12) and **Host cap** (the most builds the VPS runs at once). Anyone may change
+steps in parallel; the host cap is Brett's own signed-in console only and read-only for everyone else. When steps in
+parallel is above the host cap a note says so: only as many as the cap run until it is raised. REST
+`/api/plugins/gate/build-slots` (GET, PUT), MCP `gate_build_slots`, `gate_build_slots_set`.
