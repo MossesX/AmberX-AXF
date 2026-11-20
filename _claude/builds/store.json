@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9999,
- "updatedAt": "2026-11-20T12:09:24.099Z",
+ "rev": 10000,
+ "updatedAt": "2026-11-20T12:09:34.132Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -345847,7 +345847,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T12:08:58.981Z",
+   "updatedAt": "2026-11-20T12:09:24.241Z",
    "builtAt": "",
    "notes": [
     {
@@ -345857,6 +345857,11 @@
     {
      "text": "Split by Fable into 7 steps (200 min, 7 Fable).",
      "at": "2026-11-20T12:08:57.395Z",
+     "by": "orchestrator"
+    },
+    {
+     "text": "Split by Fable into 8 steps (220 min, 8 Fable).",
+     "at": "2026-11-20T12:09:22.575Z",
      "by": "orchestrator"
     }
    ],
@@ -345887,9 +345892,9 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwoxrejq01cqzl",
+     "uid": "st-mwoxry1e01sx7i",
      "title": "",
-     "text": "ci-failure-report@1 engine + lander hook. Add framework/core/ci-failure-report.mjs: given a failed GitHub Actions run (jobs list + per-job step conclusions + raw step logs), produce {runId, runUrl, job, step, errorLines[], likelyCause, causeKey, attempt, at}: pick the first failed job/step, pull the real error lines (strip ::group:: / timestamps / ANSI, keep the N lines around the first error, gradle 'What went wrong', tsc/eslint file:line, pytest FAILED, vitest ✗, 'npm ERR!', OOM/timeouts) and classify the likely cause from a small ordered rule table (flaky network/rate limit, test failure, typecheck, lint/theme/controls check, fixture drift, gradle dependency, out of disk/memory, cancelled). Fixture framework/spec/fixtures/ci-failure-report.json (3+ real-shaped logs) + framework/spec/check-ci-failure-report.mjs. CLI framework/cli/ci-failure-report.mjs run <runId> | pr <n> (GitHub via framework/cli/github-token.mjs, ETag-cached). Wire deploy/lander/run.mjs: when a landing attempt's CI fails, build the report and write it on the build record as ciReport (this exact shape, newest first in ciReports[] history) through the builds store, plus one build note 'CI failed: <job> › <step>: <likely cause>'; no other lander behaviour changes.",
+     "text": "CI failure report engine (ci-failure-report@1): add framework/core/ci-failure-report.mjs that turns a GitHub Actions run (jobs, steps, conclusion, raw log text) into {runId, workflow, job, step, errorLines[], likelyCause, kind, url}, with a cause table (typecheck, vitest/pytest failure, gradle compile/test, pip/npm install, checkout timeout, flaky network/rate limit, disk full) and log trimming that keeps only the real error lines; schema framework/schemas/ci-failure-report.json, fixture framework/spec/fixtures/ci-failure-report.json, check framework/spec/check-ci-failure-report.mjs (wired into the CI check list), Android twin recorded as a deferred gap in framework/spec/PORTING.md. Add framework/cli/ci-failure.mjs with `report --run <id> | --pr <n>` that fetches jobs and logs through framework/cli/github-token.mjs (ETag-cached, rate-limit aware), feeds the engine and prints the report as JSON or markdown. This CLI command and JSON shape are the contract the lander and console steps name.",
      "model": "Fable",
      "why": "",
      "phase": "1",
@@ -345897,168 +345902,10 @@
      "estimate": "30 min",
      "files": [
       "framework/core/ci-failure-report.mjs",
-      "framework/cli/ci-failure-report.mjs",
+      "framework/schemas/ci-failure-report.json",
       "framework/spec/fixtures/ci-failure-report.json",
       "framework/spec/check-ci-failure-report.mjs",
-      "deploy/lander/run.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-20T12:08:58.982Z",
-     "updatedAt": "2026-11-20T12:08:58.982Z",
-     "statusAt": "2026-11-20T12:08:57.395Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T12:08:57.395Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwoxrejq02ptuz",
-     "title": "",
-     "text": "- Show the CI failure report in the console. Read the ciReport / ciReports[] field on a build record (shape: {runId, runUrl, job, step, errorLines[], likelyCause, causeKey, attempt, at}; treat a missing field as 'no CI failure') in the build-orchestrator plugin: a 'CI failure' panel on the build detail view (job › step, likely cause chip, collapsible error lines in a code block, link to the run, attempt number, history of earlier attempts) and a compact line + cause chip on the merge-queue / lander row (view:merge-queue). Server route GET /api/plugins/build-orchestrator/<id>/ci-report in the plu\n- Verify today's Pipeline 2.0 fixes in a real run and pin them with a check. Write framework/spec/check-pipeline-run.mjs that drives apps/console-web/plugins/build-orchestrator/pipeline.mjs and the headless launcher against a scratch builds store (AXF_DATA_DIR=off, temp dir) with a fake claude in HOME/.local/bin: (1) a 4-step build dispatches 4 steps in parallel, each in its own worktree, no 5th while slots are full; (2) the watchdog's give-up is final: after the retry cap the build goes back to Pending with a note and no later tick relaunches it; (3) orchestrator.mjs act step moves through Pipe",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "60 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/",
-      "framework/spec/check-pipeline-run.mjs",
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
-      "_claude/builds/reports/ci-speed-ci-failure-reports-lean-verify.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "Part 2: 2 plan steps in one session (they touch the same files).",
-     "rev": 1,
-     "createdAt": "2026-11-20T12:08:58.982Z",
-     "updatedAt": "2026-11-20T12:08:58.982Z",
-     "statusAt": "2026-11-20T12:08:57.395Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T12:08:57.395Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwoxrejq03wxyk",
-     "title": "",
-     "text": "android.yml: speed. In .github/workflows/android.yml: (a) every job checks out with fetch-depth: 1 and sparse-checkout limited to the paths that job reads (framework/, apps/console, apps/console-web, .github), no LFS, no submodules; (b) a leading 'changes' job computes changed paths for push, pull_request AND workflow_dispatch (for dispatch: diff against origin/main, or an input 'all=true' override) and every job has an if: on its own filter so a console-web-only change never runs the Gradle/Android jobs and an android-only change never builds the web console; (c) Gradle caching with gradle/actions/setup-gradle (read-only on PRs, write on main) and setup-java distribution cache; (d) the framework Gradle job publishes the axf-maven-repo artifact once and the console APK job downloads it and sets AXF_MAVEN_REPO=<path> so the app build reuses the prebuilt modules instead of recompiling framework/android (the Gradle side honours this env; if it is not merged yet the job falls back to the composite build unchanged); (e) node/pip steps use setup-node cache: npm with cache-dependency-path and setup-python cache: pip. Keep every existing artifact name, the 'CI build errors' issue posting and the kernel test reports identical.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      ".github/workflows/android.yml"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-20T12:08:58.982Z",
-     "updatedAt": "2026-11-20T12:08:58.982Z",
-     "statusAt": "2026-11-20T12:08:57.395Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T12:08:57.395Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwoxrejq04krbq",
-     "title": "",
-     "text": "Every other workflow: shallow + sparse checkout, path filters incl. workflow_dispatch, caches. In .github/workflows/deploy.yml, rebuild-shots.yml and every other workflow except android.yml: fetch-depth: 1 + sparse-checkout to the paths the workflow reads (deploy.yml: apps/demo + framework; the site-branch force-push keeps working from a shallow clone by pushing dist/ with a fresh orphan commit), setup-node cache: npm with cache-dependency-path per app, setup-python cache: pip where pip runs, and a path filter per job that also applies to workflow_dispatch (diff against origin/main, 'all' input override). Add .github/CI.md documenting the per-job path filters, the dispatch behaviour, caches and how to force a full run.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "25 min",
-     "files": [
-      ".github/workflows/deploy.yml",
-      ".github/workflows/rebuild-shots.yml",
-      ".github/CI.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-20T12:08:58.982Z",
-     "updatedAt": "2026-11-20T12:08:58.982Z",
-     "statusAt": "2026-11-20T12:08:57.395Z",
-     "statusBy": "orchestrator",
-     "attempt": 1,
-     "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T12:08:57.395Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      }
-     ],
-     "status": "pending"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mwoxrejq05878u",
-     "title": "",
-     "text": "Gradle: let app builds reuse prebuilt framework modules. In framework/android (settings.gradle(.kts) / root build.gradle(.kts) / gradle.properties) make publishToMavenLocal produce the full ai.amberx.axf:* set into a repo dir that can be collected as the axf-maven-repo artifact (AXF_MAVEN_PUBLISH_DIR). In apps/console/settings.gradle(.kts) + app/build.gradle(.kts): when env AXF_MAVEN_REPO (or -PaxfMavenRepo) points at a directory, add it as a maven repository and depend on ai.amberx.axf:<module>:<version> instead of includeBuild('../../framework/android'); when unset, keep today's composite build exactly. Also enable org.gradle.caching=true and configuration cache where the plugins allow. CI-config only: no Kotlin/Compose code changes (Android code is on hold). Document the switch in framework/spec/PORTING.md (build section).",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "framework/android/settings.gradle.kts",
-      "framework/android/build.gradle.kts",
-      "framework/android/gradle.properties",
-      "apps/console/settings.gradle.kts",
-      "apps/console/app/build.gradle.kts",
+      "framework/cli/ci-failure.mjs",
       "framework/spec/PORTING.md"
      ],
      "checks": [],
@@ -346069,15 +345916,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T12:08:58.982Z",
-     "updatedAt": "2026-11-20T12:08:58.982Z",
-     "statusAt": "2026-11-20T12:08:57.395Z",
+     "createdAt": "2026-11-20T12:09:24.242Z",
+     "updatedAt": "2026-11-20T12:09:24.242Z",
+     "statusAt": "2026-11-20T12:09:22.575Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T12:08:57.395Z",
+       "at": "2026-11-20T12:09:22.575Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -346086,21 +345933,20 @@
      "status": "pending"
     },
     {
-     "id": "s6",
-     "uid": "st-mwoxrejq06o3ku",
+     "id": "s2",
+     "uid": "st-mwoxry1e021ko6",
      "title": "",
-     "text": "Tests, docs and the report. Run the check suite (check-ci-failure-report.mjs, check-pipeline-run.mjs, check-landing-line.mjs, check-build-steps.mjs, check-builds-store.mjs, check-theme.mjs, check-controls.mjs, check-console-control.mjs, check-json-data-writes.mjs, tracker --check) and the console typecheck; write _claude/memory/docs/ci-speed.md (CI failure report shape, where it shows, path filters, caches, prebuilt module reuse, how to force a full run, dispatch behaviour) and add the decision line to _claude/memory/decisions.md and the feature line to _claude/memory/STATUS.md; add the two new check scripts to the Build, run, test list in CLAUDE.md; write _claude/builds/reports/ci-speed-ci-failure-reports-lean.md with before/after CI timings (checkout, full run, console-only change, android-only change), what each step changed, test results, and what the lander still cannot see. Note in the report that registering the new checks in android.yml belongs to that workflow and is listed there if not yet present.",
+     "text": "Lander records the failure report: in deploy/lander/run.mjs, when a landing PR's CI run ends red, run `node framework/cli/ci-failure.mjs report --run <id>` (contract from the engine step: JSON {runId, workflow, job, step, errorLines, likelyCause, kind, url}; tolerate the command being absent or failing with a plain note), store the result on the build record as `ciFailure` (lander-state@1 / builds@1 field, written through builds-store.mjs and published by builds-live.mjs) plus a one-line build note 'CI failed: <job> › <step>: <cause>', and put the full report into the fix-session brief and the attempt-N retry decision (flaky kinds re-run, real errors go to a fix session). Add a lander unit test in framework/spec/check-landing-line.mjs covering red CI → report stored → attempt recorded; `--write` regenerates its fixture. No merge behaviour changes.",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "30 min",
      "files": [
-      "_claude/builds/reports/ci-speed-ci-failure-reports-lean.md",
-      "_claude/memory/docs/ci-speed.md",
-      "_claude/memory/decisions.md",
-      "_claude/memory/STATUS.md",
-      "CLAUDE.md"
+      "deploy/lander/run.mjs",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures/landing-line.json",
+      "framework/cli/builds-store.mjs"
      ],
      "checks": [],
      "session": "same",
@@ -346110,15 +345956,177 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T12:08:58.982Z",
-     "updatedAt": "2026-11-20T12:08:58.982Z",
-     "statusAt": "2026-11-20T12:08:57.395Z",
+     "createdAt": "2026-11-20T12:09:24.242Z",
+     "updatedAt": "2026-11-20T12:09:24.242Z",
+     "statusAt": "2026-11-20T12:09:22.575Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T12:08:57.395Z",
+       "at": "2026-11-20T12:09:22.575Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwoxry1e03cjkj",
+     "title": "",
+     "text": "- Show the CI failure on the build and in the auto-lander view: in apps/console-web/plugins/build-orchestrator (build detail view, Pipeline tab row, and the merge-queue / lander view component) add a 'CI failure' section that reads `ciFailure` on the build record (shape ci-failure-report@1: workflow, job, step, errorLines, likelyCause, kind, url) and shows job and step, the error lines in a code block, the likely cause, attempt number and a link to the run; also a tap target to copy the report. Framework controls and asset tokens only (Container, Button, fx-chip tones), registers its console-con\n- Verify today's Pipeline 2.0 fixes in a real run: add deploy/dryrun/pipeline-drill.mjs (fake `claude` installed in a temp HOME/.local/bin, never pkill -f; uses the agent-slots cap and a temp AXF_DATA_DIR) and apps/console-web/plugins/build-orchestrator/test/pipeline-verify.test.mjs that together prove: a queued 4-step build has 4 sessions running at once under pipeline.mjs tick; a step the watchdog gives up on ends `failed` and is never relaunched by a later tick (give-up is final, 3 runs at most); `orchestrator.mjs act step` writes only Pipeline 2.0 statuses (queued / building / built / comple",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "55 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/src/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json",
+      "apps/console-web/plugins/build-orchestrator/test/",
+      "deploy/dryrun/pipeline-drill.mjs",
+      "apps/console-web/plugins/build-orchestrator/test/pipeline-verify.test.mjs",
+      "_claude/builds/reports/ci-speed-ci-failure-reports-lean-drill.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 3: 2 plan steps in one session (they touch the same files).",
+     "rev": 1,
+     "createdAt": "2026-11-20T12:09:24.242Z",
+     "updatedAt": "2026-11-20T12:09:24.242Z",
+     "statusAt": "2026-11-20T12:09:22.575Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T12:09:22.575Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwoxry1e044hoj",
+     "title": "",
+     "text": "- android.yml fast path: in .github/workflows/android.yml give every job `fetch-depth: 1` plus sparse checkout limited to the folders that job reads (framework/android, apps/console, framework/schemas, framework/spec/fixtures, framework/cli, apps/console-web for the web-dist job); add a leading `changes` job (dorny/paths-filter against the PR base, or against the last successful run's SHA on push and workflow_dispatch so manual runs are gated too) and make every downstream job `if:` its own paths, so a console-web-only change never runs the kernel tests, framework assembly or the console APK; ca\n- Every other workflow fast path: for each workflow in .github/workflows except android.yml (deploy.yml, rebuild-shots.yml, and any console-web / framework-checks / lander workflows present) add `fetch-depth: 1` plus sparse checkout of only the paths that job needs (deploy.yml: apps/demo + framework; rebuild-shots.yml: the affected app + framework; web checks: apps/console-web + framework), a paths-filter job that also gates `workflow_dispatch` runs against the last successful run's SHA, `actions/setup-node` with `cache: npm` keyed on each app's package-lock.json, pip cache for apps/console-web/",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "60 min",
+     "files": [
+      ".github/workflows/android.yml",
+      ".github/workflows/deploy.yml",
+      ".github/workflows/rebuild-shots.yml",
+      ".github/workflows/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "Part 4: 2 plan steps in one session (they touch the same files).",
+     "rev": 1,
+     "createdAt": "2026-11-20T12:09:24.242Z",
+     "updatedAt": "2026-11-20T12:09:24.242Z",
+     "statusAt": "2026-11-20T12:09:22.575Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T12:09:22.575Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwoxry1e055zxo",
+     "title": "",
+     "text": "CI workflow lint + doc: add framework/spec/check-ci-workflows.mjs that parses every .github/workflows/*.yml and fails on a checkout without `fetch-depth: 1` (or sparse checkout), a build job with no paths gate (including a workflow_dispatch trigger with no gate), a job that runs gradle/npm/pip with no matching cache step, and an app build that compiles the framework instead of consuming the `axf-maven-repo` artifact; findings are ratcheted by framework/spec/ci-baseline.json (counts only go down, `--write-baseline` after a real fix) so it passes on today's workflows and holds the new ones; register it in the CI check list and in framework/cli/axf.mjs if there is a `check` subcommand. Write framework/spec/CI.md: the CI speed contract (shallow + sparse checkout, path gating incl. dispatch, caches, prebuilt framework modules, failure report flow) with the 11-minute checkout baseline and the target.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/spec/check-ci-workflows.mjs",
+      "framework/spec/ci-baseline.json",
+      "framework/spec/CI.md",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T12:09:24.242Z",
+     "updatedAt": "2026-11-20T12:09:24.242Z",
+     "statusAt": "2026-11-20T12:09:22.575Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T12:09:22.575Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwoxry1e06eqnm",
+     "title": "",
+     "text": "Tests and report: run every check present in the worktree (axf validate --framework, tracker --check, check-build-steps, check-builds-store, check-landing-line, check-json-data-writes, check-theme, check-controls, check-console-control, the build-orchestrator plugin tests) and record output; write _claude/builds/reports/ci-speed-ci-failure-reports-lean.md (what each step ships, the failure report flow engine → lander → build view, per-workflow checkout/gating/cache table with the 11-minute checkout before and the target after, how an app build reuses the prebuilt framework artifact, the drill results, checks added by this PR that only run once landed, known gaps incl. the deferred Kotlin twin); add _claude/memory/docs/ci-speed.md, the matching STATUS.md lines (grep first, edit only those) and one decisions.md line (Nov 20 2026: lean CI speed + failure reports, Pipeline 2.0 not rebuilt). Then claude-sync sync and commit.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/ci-speed-ci-failure-reports-lean.md",
+      "_claude/memory/docs/ci-speed.md",
+      "_claude/memory/STATUS.md",
+      "_claude/memory/decisions.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T12:09:24.242Z",
+     "updatedAt": "2026-11-20T12:09:24.242Z",
+     "statusAt": "2026-11-20T12:09:22.575Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T12:09:22.575Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -346135,12 +346143,12 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-20T12:09:06.377Z",
+   "defaultAt": "2026-11-20T12:08:59.278Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
