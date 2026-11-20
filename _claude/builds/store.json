@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9578,
- "updatedAt": "2026-11-20T06:03:12.009Z",
+ "rev": 9579,
+ "updatedAt": "2026-11-20T06:03:25.962Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:02:55.569Z",
+   "updatedAt": "2026-11-20T06:03:20.010Z",
    "builtAt": "",
    "notes": [
     {
@@ -337180,6 +337180,10 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.19",
      "at": "2026-11-20T06:00:39.022Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--gina, shared account login)",
+     "at": "2026-11-20T06:03:20.010Z"
     }
    ],
    "approvals": [],
@@ -337655,9 +337659,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 43,
+     "rev": 44,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T06:02:46.768Z",
+     "updatedAt": "2026-11-20T06:03:12.789Z",
      "statusAt": "2026-11-20T06:02:46.663Z",
      "statusBy": "orchestrator",
      "attempt": 17,
@@ -337947,7 +337951,7 @@
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
-     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s2--lenny",
+     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s2--gina",
      "tried": [
       "hulu0241"
      ]
@@ -338892,7 +338896,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 194,
+   "rev": 196,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
