@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10192,
- "updatedAt": "2026-11-20T23:52:35.146Z",
+ "rev": 10193,
+ "updatedAt": "2026-11-20T23:52:58.846Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:52:30.183Z",
+   "updatedAt": "2026-11-20T23:52:55.208Z",
    "builtAt": "",
    "notes": [
     {
@@ -345210,11 +345210,11 @@
      "done": true,
      "doneAt": "2026-11-20T23:51:54.493Z",
      "note": "",
-     "rev": 12,
+     "rev": 13,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T23:51:54.874Z",
-     "statusAt": "2026-11-20T23:41:16.257Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T23:52:55.260Z",
+     "statusAt": "2026-11-20T23:52:55.208Z",
+     "statusBy": "headless",
      "attempt": 3,
      "statusLog": [
       {
@@ -345285,9 +345285,16 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "axf-fix-main-ci-red-after-s16-s7-hand---s5--earl on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T23:52:55.208Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5",
      "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
@@ -345302,7 +345309,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 99,
+   "rev": 100,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
