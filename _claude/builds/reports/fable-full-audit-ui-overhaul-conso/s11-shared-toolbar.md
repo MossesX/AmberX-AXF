@@ -67,4 +67,4 @@ check-toolbars (ratchet written), check-theme, check-controls, check-chrome-asse
 check-page-toolbar-voice (181 buttons), every converted plugin's toolbar test, plugin-lifecycle check, help-coverage,
 console-web `tsc --noEmit` (only the existing missing generated `src/control/inventory.json`, which is gitignored).
 
-Not done: UI Review screenshots (see the PR).
+Not done: UI Review screenshots. The headless capture (framework/cli/rebuild-shots.mjs) starts the console but cannot reach axHub from the scratch console ("Waiting for axHub ... Failed to fetch"), so every shot is the hub wait screen. The same blocker stopped the screenshots of build rebuild-every-toolbar-page-specific. The 18 plugins need desktop + phone shots from a console with a hub session before this is called ready.
