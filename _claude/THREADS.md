@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 21:10 UTC · `live-build-status-real-time-grids-15` → pending, note (all) · watchdog
 - 2026-11-19 21:10 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
 - 2026-11-19 21:10 UTC · `right-click-running-build-open-headless` → pending, note (all) · watchdog
 - 2026-11-19 21:10 UTC · `right-click-running-build-pop-open` → pending, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 00:08 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
 - 2026-11-20 00:08 UTC · `every-plugin-screen-gets-a-settings-gear` note (all) · orchestrator
 - 2026-11-20 00:08 UTC · `every-plugin-screen-gets-a-settings-gear` → pending, note (all) · builds-live
+- 2026-11-20 00:09 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 
 ## Token passes (log)
 

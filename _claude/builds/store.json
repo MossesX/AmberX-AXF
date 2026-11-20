@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9387,
- "updatedAt": "2026-11-20T00:08:44.659Z",
+ "rev": 9388,
+ "updatedAt": "2026-11-20T00:09:34.664Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -251754,7 +251754,7 @@
    "mergedAt": "2026-11-17T18:57:50Z",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-17T19:25:25.129Z",
+   "updatedAt": "2026-11-20T00:09:28Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -251864,6 +251864,10 @@
     {
      "text": "Watchdog: Merge queue entry 810 → Complete: The build is complete (not on main; build fable-rebuild-plan-studio-cleared-out: complete)",
      "at": "2026-11-17T19:25:25.129Z"
+    },
+    {
+     "text": "Shipped manifest sm-fable-rebuild-plan-studio-cleared-out rev 1 sent to Shipped features (orchestrator): landed 67a509cfc, 31 file(s), 2 test line(s), 3 open.",
+     "at": "2026-11-20T00:09:28Z"
     }
    ],
    "approvals": [
@@ -251933,6 +251937,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-fable-rebuild-plan-studio-cleared-out",
+    "rev": 1,
+    "at": "2026-11-20T00:09:28Z",
+    "landedCommit": "67a509cfcd586de41950045fd9dccc64a9455b56"
    },
    "steps": [
     {
@@ -252013,18 +252023,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-16T20:25:16.196Z",
     "builtAt": "2026-11-16T23:28:28.907Z",
+    "createdAt": "2026-11-16T20:25:16.196Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "complete",
     "stepAt": {
      "st-mwjpuoio0178or": "2026-11-16T20:28:44.064Z",
      "st-mwjpuoio02tqaw": "2026-11-16T20:28:44.064Z",

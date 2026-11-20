@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T00:08:44.659Z",
+ "updatedAt": "2026-11-20T00:09:34.664Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -162246,7 +162246,7 @@
    "mergedAt": "2026-11-17T18:57:50Z",
    "priority": "P0",
    "createdAt": "2026-11-16T20:25:16.196Z",
-   "updatedAt": "2026-11-17T19:25:25.129Z",
+   "updatedAt": "2026-11-20T00:09:28Z",
    "builtAt": "2026-11-16T23:28:28.907Z",
    "notes": [
     {
@@ -162356,6 +162356,10 @@
     {
      "text": "Watchdog: Merge queue entry 810 → Complete: The build is complete (not on main; build fable-rebuild-plan-studio-cleared-out: complete)",
      "at": "2026-11-17T19:25:25.129Z"
+    },
+    {
+     "text": "Shipped manifest sm-fable-rebuild-plan-studio-cleared-out rev 1 sent to Shipped features (orchestrator): landed 67a509cfc, 31 file(s), 2 test line(s), 3 open.",
+     "at": "2026-11-20T00:09:28Z"
     }
    ],
    "approvals": [
