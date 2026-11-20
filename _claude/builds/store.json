@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10153,
- "updatedAt": "2026-11-20T22:56:21.999Z",
+ "rev": 10154,
+ "updatedAt": "2026-11-20T22:56:34.167Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344675,7 +344675,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "ready",
+   "status": "sending",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -344683,7 +344683,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:56:11.709Z",
+   "updatedAt": "2026-11-20T22:56:30.228Z",
    "builtAt": "",
    "notes": [
     {
@@ -344855,10 +344855,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 4,
+     "rev": 5,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:54:54.879Z",
-     "statusAt": "2026-11-20T22:54:54.825Z",
+     "updatedAt": "2026-11-20T22:56:23.008Z",
+     "statusAt": "2026-11-20T22:56:22.961Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -344881,9 +344881,17 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:56:22.961Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s1",
      "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s1"
     },
@@ -345099,7 +345107,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 47,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -345110,7 +345118,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T22:56:11.709Z",
+   "statusAt": "2026-11-20T22:56:30.228Z",
    "statusBy": "orchestrator",
    "attempt": 7,
    "failedFrom": "pulling-main",
@@ -345240,6 +345248,13 @@
      "by": "orchestrator",
      "attempt": 7,
      "why": "models assigned"
+    },
+    {
+     "status": "sending",
+     "at": "2026-11-20T22:56:30.228Z",
+     "by": "orchestrator",
+     "attempt": 7,
+     "why": "sending s1"
     }
    ]
   }
