@@ -149,6 +149,13 @@
         "target": "the-hubs-approvals-page",
         "title": "The hub's approvals page",
         "text": "Opens the approvals page on the hub."
+      },
+      {
+        "target": "pass",
+        "title": "Pass",
+        "text": "Where you set “Pass”. Change it and the app uses the new value. Part of axHub approvals.",
+        "kind": "field",
+        "draft": true
       }
     ]
   }
