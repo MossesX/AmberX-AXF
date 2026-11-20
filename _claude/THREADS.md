@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:58 UTC · `picker-dialog-plugin-replaces-all` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `axf-data-postgres-real-tables-own` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `attach-widgets-to-any-toolbar-banner` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `icon-packs-with-drag-drop-pack-designer` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 06:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 06:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 
 ## Token passes (log)
 
