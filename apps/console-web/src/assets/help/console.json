@@ -1111,6 +1111,12 @@
         "title": "Open in Plugin Manager",
         "text": "Opens this plugin in the Plugin Manager: its full details, dependencies, files and every log line.",
         "kind": "button"
+      },
+      {
+        "target": "sign-in-on-axhub",
+        "title": "Sign in on axHub",
+        "text": "Opens axHub so you can sign in there. The hub pages in this console use your hub session, never the console token, so until you are signed in they show nothing.",
+        "tryIt": "Sign in on axHub, then tap Check again."
       }
     ],
     "intros": [
