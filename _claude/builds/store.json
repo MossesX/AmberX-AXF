@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10060,
- "updatedAt": "2026-11-20T14:30:20.022Z",
+ "rev": 10061,
+ "updatedAt": "2026-11-20T14:31:09.611Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -347862,14 +347862,14 @@
    "title": "CI speed + CI failure reports (lean)",
    "category": "",
    "detail": "Brett, Nov 20: replaces the bloated Pipeline 2.0 re-send. Pipeline 2.0 itself is already built and live - do NOT rebuild it. Only these items. Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T14:30:04.071Z",
+   "updatedAt": "2026-11-20T14:31:01.086Z",
    "builtAt": "",
    "notes": [
     {
@@ -347957,6 +347957,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (54 min past its budget).",
      "at": "2026-11-20T14:30:04.071Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 5.",
+     "at": "2026-11-20T14:31:01.086Z",
      "by": "watchdog"
     }
    ],
@@ -348246,7 +348251,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -348257,10 +348262,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T14:30:04.071Z",
+   "statusAt": "2026-11-20T14:31:01.086Z",
    "statusBy": "watchdog",
-   "attempt": 4,
-   "failedFrom": "split",
+   "attempt": 5,
    "statusLog": [
     {
      "status": "pending",
@@ -348331,6 +348335,13 @@
      "by": "watchdog",
      "attempt": 4,
      "why": "split did not move after 2 re-run(s) of the transition (54 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-20T14:31:01.086Z",
+     "by": "watchdog",
+     "attempt": 5,
+     "why": "retry forward at split, attempt 5"
     }
    ]
   }
