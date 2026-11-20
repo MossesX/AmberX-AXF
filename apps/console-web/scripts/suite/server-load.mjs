@@ -22,6 +22,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { setTimeout as sleep } from 'node:timers/promises';
 import { up, down } from './sandbox.mjs';
+import { startH2Proxy } from './h2proxy.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const APP = join(HERE, '../..');
@@ -164,13 +165,18 @@ async function main() {
     let clients = null;
     if (pw && CLIENTS > 0) {
       const browser = await pw.chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
+      // over HTTP/2 like the live console (HTTP/1.1's six connections per host would starve the tabs' own calls)
+      const proxy = await startH2Proxy(url);
       clients = await phase(`clients×${CLIENTS}`, name, url, IDLE_S, async () => {
-        const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 } });
-        for (let i = 0; i < CLIENTS; i++) { const p = await ctx.newPage(); void p.goto(`${url}/`).catch(() => undefined); await sleep(1500); }
+        const ctx = await browser.newContext({ viewport: { width: 1400, height: 900 }, ignoreHTTPSErrors: true });
+        const host = new URL(proxy.url).host;
+        await ctx.route((u) => u.host !== host && /^https?:/.test(u.protocol), (r) => r.abort('internetdisconnected'));
+        for (let i = 0; i < CLIENTS; i++) { const p = await ctx.newPage(); void p.goto(`${proxy.url}/`).catch(() => undefined); await sleep(1500); }
         await sleep(Math.max(0, IDLE_S * 1000 - CLIENTS * 1500 - 2000));
         await ctx.close();
       });
       await browser.close();
+      await proxy.close();
       report.phases.push(clients);
     }
     const routes = await getRoutes(url);
