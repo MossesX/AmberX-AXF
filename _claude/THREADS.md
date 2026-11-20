@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `vps-frees-stale-build-slots-every-2` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `watchdog-plugin-owns-every-vps` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `one-landing-line-pull-main-merge-one` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `land-watchdogs-pr-832-fix-two-red-ci` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `server-gate-reject-any-build-without` → failed, note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:09 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
 - 2026-11-20 12:09 UTC · `ci-speed-ci-failure-reports-lean` note (all) · orchestrator
 - 2026-11-20 12:10 UTC · `pipeline-2-0-fully-autonomous-buil` → failed, note (all) · watchdog
+- 2026-11-20 12:11 UTC · `pipeline-2-0-fully-autonomous-buil` → split, note (all) · watchdog
+- 2026-11-20 12:11 UTC · `pipeline-2-0-fully-autonomous-buil` → archived (all) · cli
 
 ## Token passes (log)
 
