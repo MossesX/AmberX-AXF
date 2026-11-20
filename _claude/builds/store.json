@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9626,
- "updatedAt": "2026-11-20T06:25:30.049Z",
+ "rev": 9627,
+ "updatedAt": "2026-11-20T06:25:41.496Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:25:25.733Z",
+   "updatedAt": "2026-11-20T06:25:35.353Z",
    "builtAt": "",
    "notes": [
     {
@@ -337228,6 +337228,10 @@
     {
      "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s3--rhonda: brief only · start 10.1K tokens ($0.02) · cost $1.04 · 31 turns · 6 tools, MCP none",
      "at": "2026-11-20T06:22:06.933Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--earl, shared account login)",
+     "at": "2026-11-20T06:25:31.440Z"
     }
    ],
    "approvals": [],
@@ -338116,13 +338120,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 31,
+     "rev": 32,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:24:00.700Z",
-     "statusAt": "2026-11-20T06:24:00.626Z",
+     "updatedAt": "2026-11-20T06:25:35.405Z",
+     "statusAt": "2026-11-20T06:25:35.353Z",
      "statusBy": "orchestrator",
-     "attempt": 12,
-     "failedFrom": "building",
+     "attempt": 13,
      "statusLog": [
       {
        "status": "pending",
@@ -338333,9 +338336,16 @@
        "by": "orchestrator",
        "attempt": 12,
        "why": "session exit 1"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T06:25:35.353Z",
+       "by": "orchestrator",
+       "attempt": 13,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s3",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
@@ -339151,7 +339161,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 248,
+   "rev": 250,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
