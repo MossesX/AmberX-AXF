@@ -132,7 +132,9 @@ if (hasTmux) {
   L.saveLimit({ maxBuilds: 2 }, { by: 'test', owner: true });
   delete process.env.AXF_SLOTS_TMUX;
   const bin = join(tmp, 'bin'); mkdirSync(bin);
-  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
+  // the stand-in ends when told (go) or when its folder is gone: one that outlived the test used to loop forever from a
+  // deleted /tmp/axf-limit-* folder, counted by the real hard limit as a running build (Nov 20 2026)
+  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ] && [ -d "$PWD" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
   chmodSync(join(bin, 'claude'), 0o755);
   const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_SLOTS: 'off', AXF_WATCH_LIVE: 'off', AXF_AGENT_BOOK: 'off', AXF_OWN_LOGIN: 'off', AXF_WORKERS: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_BUILD_SLICE: 'off', AXF_LOGIN_NOTE: 'off', AXF_BUILD_LIMIT_POLL: '1', AXF_BUILD_ID: '', AXF_AGENT: '', AXF_AGENT_NAME: '', HOME: join(tmp, 'home') }; // HOME: the launcher puts ~/.local/bin (the real claude) first on PATH
   mkdirSync(join(tmp, 'home'), { recursive: true });
@@ -162,7 +164,12 @@ if (hasTmux) {
     ok(c4.status === 0 && /^started axf-limittest-/m.test(c4.stdout), `then a new launch starts: ${c4.stdout}${c4.stderr}`);
     writeFileSync(join(dirs.b, 'go'), ''); if (dirs.d) writeFileSync(join(dirs.d, 'go'), '');
   } finally {
-    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); spawnSync('tmux', ['kill-session', '-t', `=axf-${tag}-${k}`]); }
+    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); }
+    // every stand-in has ended before the folder goes (a session renamed by the launcher is still ours: by prefix)
+    const ours = () => spawnSync('pgrep', ['-f', join(tmp, 'bin', 'claude')], { encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+    await until(() => ours().length === 0, 10_000);
+    for (const pid of ours()) { try { process.kill(Number(pid), 'SIGKILL'); } catch { /* gone */ } }
+    for (const n of (spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout || '').split('\n')) if (n.startsWith(`axf-${tag}-`)) spawnSync('tmux', ['kill-session', '-t', `=${n}`]);
   }
 } else console.log('(tmux or ps missing: skipped the claude-headless.sh end-to-end checks)');
 
