@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 21:10 UTC · `separate-settings-per-plugin-reset` → pending, note (all) · watchdog
 - 2026-11-19 21:10 UTC · `notify-phone-when-queue-starts-building` → pending, note (all) · watchdog
 - 2026-11-19 21:10 UTC · `rebuild-every-context-menu-toolbar-nav` → pending, note (all) · watchdog
 - 2026-11-19 21:10 UTC · `live-build-status-real-time-grids-15` → pending, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 00:07 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · orchestrator
 - 2026-11-20 00:07 UTC · `data-container-axf-data-holds-all` note (all) · orchestrator
 - 2026-11-20 00:07 UTC · `data-container-axf-data-holds-all` note (all) · builds-live
+- 2026-11-20 00:08 UTC · `axf-data-postgres-real-tables-own` note (all) · orchestrator
 
 ## Token passes (log)
 

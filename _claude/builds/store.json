@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9385,
- "updatedAt": "2026-11-20T00:07:44.338Z",
+ "rev": 9386,
+ "updatedAt": "2026-11-20T00:08:34.541Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -239691,7 +239691,7 @@
    "mergedAt": "2026-11-17T02:53:56Z",
    "priority": "P0",
    "createdAt": "2026-11-15T15:12:29.907Z",
-   "updatedAt": "2026-11-19T22:17:01.276Z",
+   "updatedAt": "2026-11-20T00:08:28Z",
    "builtAt": "",
    "notes": [
     {
@@ -239835,6 +239835,20 @@
      "text": "Watchdog: build retried at pending, attempt 5.",
      "at": "2026-11-19T22:17:01.276Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Shipped manifest sm-axf-data-postgres-real-tables-own rev 1 sent to Shipped features (orchestrator): landed 765ca6b51, 34 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-20T00:08:28Z"
     }
    ],
    "approvals": [
@@ -239889,6 +239903,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-axf-data-postgres-real-tables-own",
+    "rev": 1,
+    "at": "2026-11-20T00:08:28Z",
+    "landedCommit": "765ca6b513fb527d478d2faff1f2f1210e8ffd0e"
    },
    "steps": [
     {
@@ -239969,7 +239989,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 105,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": {
