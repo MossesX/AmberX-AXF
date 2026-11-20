@@ -263,7 +263,7 @@ export const plugin: AxfWebLibrary = {
     startDelivery(rt);
   },
   views: { [VIEW]: { title: 'Notifications', icon: 'bell', render: () => <Page /> } },
-  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Notifications', icon: 'bell', view: VIEW }] },
+  nav: { label: 'System', items: [{ id: VIEW, label: 'Notifications', icon: 'bell', view: VIEW }] },
   settingsTabs: [{ id: VIEW, label: 'Notifications', icon: 'bell', order: 13, parent: 'plugins', description: 'Every notification: on or off, channels, priority, quiet hours, test send, groups, triggers and commands.' }],
   settingsPanels: [
     { id: 'notify-control.panel', tab: VIEW, title: 'Notifications', icon: 'bell', order: 1, render: () => <Panel /> },

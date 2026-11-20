@@ -166,7 +166,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('changes-grid.open', () => rt.navigate(VIEW), { label: 'Open the changes & features grid' });
   },
   views: { [VIEW]: { title: 'Changes & features', icon: 'list', keywords: ['changes', 'features', 'grid', 'threads', 'history', 'log', 'built'], render: () => <GridView /> } },
-  nav: { label: 'Builds', items: [{ id: VIEW, label: 'Changes & features', icon: 'list', view: VIEW }] },
+  nav: { label: 'Plan', items: [{ id: VIEW, label: 'Changes & features', icon: 'list', view: VIEW }] },
   contextMenu: [{ id: 'changes-grid.default', target: 'default', order: 93, items: [{ id: 'changes-grid', label: 'Changes & features grid', icon: 'list', action: 'changes-grid.open' }] }],
   settingsTabs: [{ id: 'changes-grid', label: 'Changes & features grid', icon: 'list', parent: 'plugins', order: 45, description: 'One grid of every change and feature.' }],
   settingsPanels: [{ id: 'changes-grid.lifecycle', tab: 'changes-grid', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],

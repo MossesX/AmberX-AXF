@@ -155,7 +155,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plugin-commands.open', () => rt.navigate(FOLDER), { label: 'Open Plugin commands' });
   },
   views: { [FOLDER]: { title: 'Plugin commands', icon: 'terminal', keywords: ['commands', 'mcp', 'api', 'cli', 'plugins', 'tools', 'claude'], render: () => <PluginCommandsView /> } },
-  nav: { label: 'Plugins', items: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', view: FOLDER }] },
+  nav: { label: 'System', items: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', view: FOLDER }] },
   settingsTabs: [{ id: FOLDER, label: 'Plugin commands', icon: 'terminal', order: 93, parent: 'plugins', description: 'Every plugin\'s commands on the REST API, MCP and the CLI' }],
   settingsPanels: [
     { id: 'plugin-commands.settings', tab: FOLDER, title: 'MCP tools and last commands', icon: 'terminal', order: 10, render: () => <SettingsPanel /> },
