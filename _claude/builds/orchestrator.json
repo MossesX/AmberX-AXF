@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T08:58:58.617Z",
+ "updatedAt": "2026-11-20T09:03:04.810Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -935,6 +935,121 @@
     {
      "text": "Watchdog: step s23 stuck at pending (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T08:57:01.853Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z",
      "by": "watchdog"
     }
    ],
