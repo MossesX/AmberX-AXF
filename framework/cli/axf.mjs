@@ -52,8 +52,6 @@
  *   axf plugins [plugin]        every plugin's commands and reads (or one plugin's help)
  *   axf <plugin> <command> [--field value]…   run a plugin command or read (also axf plugin <plugin> <command>; needs
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
- *   axf demo orchestrator start [--pause] | pause | resume | next | stop | state | summary   the guided Orchestrator demo
- *                               (plugin.json "cli" word of orchestrator-demo; same REST routes as the console)  <!-- axf-plugin:orchestrator-demo -->
  *   axf <plugin> <word> …        a plugin's own word commands when its plugin.json names a "cli" script that exports cliWords
  *   axf watchdog status | run [--dry-run] [--force] | log [--kind K] [--action A] [--build B] | settings | set <key> <value>
  *                               the VPS stale-row watchdog (Build orchestrator): what it cleaned, run it, change its settings

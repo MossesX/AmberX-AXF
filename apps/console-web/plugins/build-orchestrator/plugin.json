@@ -55,8 +55,6 @@
       "framework/cli/builds-reconcile.mjs",
       "framework/spec/check-projects.mjs",
       "framework/spec/DONE-MEANS-MERGED.md",
-      "apps/console-web/plugins/orchestrator-demo/deps.mjs",
-      "apps/console-web/plugins/orchestrator-demo/test.mjs",
       "deploy/auto-lander/fix-session.mjs",
       "deploy/test/claude-headless-brief.test.sh",
       "framework/spec/LIVE-DEMO.md",
