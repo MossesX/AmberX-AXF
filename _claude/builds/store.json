@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9383,
- "updatedAt": "2026-11-19T22:20:10.706Z",
+ "rev": 9384,
+ "updatedAt": "2026-11-20T00:07:33.783Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -221422,7 +221422,7 @@
    "pr": "#780",
    "mergedAt": "2026-11-17T18:59:35Z",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-19T22:17:01.276Z",
+   "updatedAt": "2026-11-20T00:07:27Z",
    "builtAt": "",
    "notes": [
     {
@@ -221578,6 +221578,20 @@
      "text": "Watchdog: build retried at pending, attempt 5.",
      "at": "2026-11-19T22:17:01.276Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Shipped manifest sm-orchestrator-stale-row-watchdog-vps rev 1 sent to Shipped features (orchestrator): PR #780, 38 file(s), 0 test line(s), 12 open.",
+     "at": "2026-11-20T00:07:27Z"
     }
    ],
    "approvals": [
@@ -221638,6 +221652,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-orchestrator-stale-row-watchdog-vps",
+    "rev": 1,
+    "at": "2026-11-20T00:07:27Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -222221,7 +222241,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 131,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": {
