@@ -598,8 +598,39 @@ def _cli_chat_args(model: str, system: str | None) -> list[str]:
     return args + (["--system-prompt", system[:100_000]] if system else [])
 
 
+_TEMP_PREFIXES = ("axf-cli-chat-", "axf-cli-jail-", "axf-bridge-")
+_swept_at = 0.0
+
+
+def sweep_stale_temp(now: float | None = None, force: bool = False) -> int:
+    """Remove the CLI's per-turn temp folders (chat/jail folders, MCP bridge sockets) older than the CLI deadline plus a
+    margin. A turn removes its own when it ends; this catches what a console restart or a killed worker left behind.
+    Runs at most once an hour unless forced. → how many it removed."""
+    global _swept_at
+    import tempfile
+    now = time.time() if now is None else now
+    if not force and now - _swept_at < 3600:
+        return 0
+    _swept_at = now
+    cutoff = now - CLI_DEADLINE - 300
+    n = 0
+    try:
+        entries = list(os.scandir(tempfile.gettempdir()))
+    except OSError:
+        return 0
+    for e in entries:
+        try:
+            if e.name.startswith(_TEMP_PREFIXES) and e.is_dir(follow_symlinks=False) and e.stat(follow_symlinks=False).st_mtime < cutoff:
+                shutil.rmtree(e.path, ignore_errors=True)
+                n += 1
+        except OSError:
+            continue
+    return n
+
+
 def _stream_cli(profile, messages, system, model, params, cancel, cwd, tools=None, tool_runner=None, read_files=True, build=None, lean=False):
     import tempfile
+    sweep_stale_temp()
     token = resolve_key(profile)
     if not token:
         raise ProviderError("no Claude Code token: run `claude setup-token` and paste it, or set CLAUDE_CODE_OAUTH_TOKEN", 400)
