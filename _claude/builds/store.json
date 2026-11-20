@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9504,
- "updatedAt": "2026-11-20T05:22:31.825Z",
+ "rev": 9505,
+ "updatedAt": "2026-11-20T05:22:41.975Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336979,7 +336979,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:22:19.082Z",
+   "updatedAt": "2026-11-20T05:22:26.589Z",
    "builtAt": "",
    "notes": [
     {
@@ -337033,6 +337033,10 @@
     {
      "text": "Watchdog: step s1 gave up: attempt 5 of 5 failed at building. Alerted Brett.",
      "at": "2026-11-20T05:14:02.887Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s2--earl: brief only · start 10.0K tokens ($0.02) · cost $1.76 · 48 turns · 6 tools, MCP none",
+     "at": "2026-11-20T05:22:26.589Z"
     }
    ],
    "approvals": [],
@@ -338397,7 +338401,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 108,
+   "rev": 109,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
