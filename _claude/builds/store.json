@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9901,
- "updatedAt": "2026-11-20T09:07:05.819Z",
+ "rev": 9902,
+ "updatedAt": "2026-11-20T09:07:13.088Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -341726,7 +341726,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T07:05:24.694Z",
-   "updatedAt": "2026-11-20T09:04:02.071Z",
+   "updatedAt": "2026-11-20T09:07:01.350Z",
    "builtAt": "",
    "notes": [
     {
@@ -342756,6 +342756,121 @@
     {
      "text": "Watchdog: step s23 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
      "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s3 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s19 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s20 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s21 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s22 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s23 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -342812,13 +342927,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -342861,9 +342975,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s2",
@@ -342888,13 +343009,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -342937,9 +343057,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s3",
@@ -342963,13 +343090,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343012,9 +343138,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s4",
@@ -343037,13 +343170,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343086,9 +343218,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s5",
@@ -343112,13 +343251,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343161,9 +343299,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s6",
@@ -343187,13 +343332,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343236,9 +343380,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s7",
@@ -343261,13 +343412,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343310,9 +343460,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s8",
@@ -343335,13 +343492,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343384,9 +343540,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s9",
@@ -343409,13 +343572,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343458,9 +343620,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s10",
@@ -343483,13 +343652,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343532,9 +343700,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s11",
@@ -343557,13 +343732,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343606,9 +343780,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s12",
@@ -343632,13 +343813,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343681,9 +343861,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s13",
@@ -343707,13 +343894,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343756,9 +343942,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s14",
@@ -343784,13 +343977,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343833,9 +344025,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s15",
@@ -343859,13 +344058,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343908,9 +344106,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s16",
@@ -343935,13 +344140,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -343984,9 +344188,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s17",
@@ -344011,13 +344222,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -344060,9 +344270,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s18",
@@ -344086,13 +344303,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -344135,9 +344351,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s19",
@@ -344159,13 +344382,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.473Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -344208,9 +344430,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s20",
@@ -344234,13 +344463,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.474Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -344283,9 +344511,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s21",
@@ -344309,13 +344544,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.474Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -344358,9 +344592,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s22",
@@ -344383,13 +344624,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.474Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -344432,9 +344672,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     },
     {
      "id": "s23",
@@ -344457,13 +344704,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T07:09:12.474Z",
-     "updatedAt": "2026-11-20T09:04:06.147Z",
-     "statusAt": "2026-11-20T09:04:02.071Z",
+     "updatedAt": "2026-11-20T09:07:08.920Z",
+     "statusAt": "2026-11-20T09:07:01.350Z",
      "statusBy": "watchdog",
-     "attempt": 3,
-     "failedFrom": "pending",
+     "attempt": 4,
      "statusLog": [
       {
        "status": "pending",
@@ -344506,9 +344752,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "pending did not move after 2 re-run(s) of the transition (7 min past its budget)"
+      },
+      {
+       "status": "pending",
+       "at": "2026-11-20T09:07:01.350Z",
+       "by": "watchdog",
+       "attempt": 4,
+       "why": "retry forward at pending, attempt 4"
       }
      ],
-     "status": "failed"
+     "status": "pending"
     }
    ],
    "profiles": [
@@ -344519,7 +344772,7 @@
    },
    "kind": "build",
    "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
