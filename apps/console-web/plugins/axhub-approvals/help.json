@@ -149,6 +149,12 @@
         "target": "the-hubs-approvals-page",
         "title": "The hub's approvals page",
         "text": "Opens the approvals page on the hub."
+      },
+      {
+        "target": "pass",
+        "title": "Pass",
+        "text": "Filters the log by pass: every entry, only calls that ran under a pass, or the one pass you opened this log from.",
+        "kind": "field"
       }
     ]
   }
