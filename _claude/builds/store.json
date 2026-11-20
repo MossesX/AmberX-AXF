@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10064,
- "updatedAt": "2026-11-20T14:45:16.666Z",
+ "rev": 10065,
+ "updatedAt": "2026-11-20T14:46:11.997Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -347869,7 +347869,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T14:45:02.227Z",
+   "updatedAt": "2026-11-20T14:46:02.057Z",
    "builtAt": "",
    "notes": [
     {
@@ -347977,6 +347977,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
      "at": "2026-11-20T14:45:02.227Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-20T14:46:02.057Z",
      "by": "watchdog"
     }
    ],
@@ -348266,7 +348271,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T14:45:16.666Z",
+ "updatedAt": "2026-11-20T14:46:11.997Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67,7 +67,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T14:45:02.227Z",
+   "updatedAt": "2026-11-20T14:46:02.057Z",
    "builtAt": "",
    "notes": [
     {
@@ -175,6 +175,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
      "at": "2026-11-20T14:45:02.227Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-20T14:46:02.057Z",
      "by": "watchdog"
     }
    ],
