@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T20:40:37.965Z",
+ "updatedAt": "2026-11-20T21:01:44.001Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -105,6 +105,11 @@
     {
      "text": "Watchdog: build failed at pulling-main, attempt 1: pulling-main did not move after 2 re-run(s) of the transition (4 min past its budget).",
      "at": "2026-11-20T20:40:02.184Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T21:01:01.979Z",
      "by": "watchdog"
     }
    ],
