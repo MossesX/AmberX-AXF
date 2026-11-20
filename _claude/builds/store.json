@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9631,
- "updatedAt": "2026-11-20T06:26:50.432Z",
+ "rev": 9632,
+ "updatedAt": "2026-11-20T06:27:24.134Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:26:40.491Z",
+   "updatedAt": "2026-11-20T06:27:19.752Z",
    "builtAt": "",
    "notes": [
     {
@@ -337232,6 +337232,10 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--earl, shared account login)",
      "at": "2026-11-20T06:25:31.440Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 15 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T06:27:07.951Z"
     }
    ],
    "approvals": [],
@@ -337704,12 +337708,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T06:27:19.752Z",
      "note": "",
-     "rev": 62,
+     "rev": 63,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T06:25:25.776Z",
+     "updatedAt": "2026-11-20T06:27:20.278Z",
      "statusAt": "2026-11-20T06:24:59.706Z",
      "statusBy": "orchestrator",
      "attempt": 24,
@@ -338120,12 +338124,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 35,
+     "rev": 37,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:26:40.554Z",
-     "statusAt": "2026-11-20T06:26:40.491Z",
+     "updatedAt": "2026-11-20T06:27:04.980Z",
+     "statusAt": "2026-11-20T06:27:04.918Z",
      "statusBy": "orchestrator",
-     "attempt": 14,
+     "attempt": 15,
      "failedFrom": "building",
      "statusLog": [
       {
@@ -338364,6 +338368,20 @@
        "at": "2026-11-20T06:26:40.491Z",
        "by": "orchestrator",
        "attempt": 14,
+       "why": "launch on hulu0241: launcher exit 1: /opt/axf/deploy/claude-headless.sh: line 94: HOME: unbound variable"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T06:26:58.479Z",
+       "by": "orchestrator",
+       "attempt": 15,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T06:27:04.918Z",
+       "by": "orchestrator",
+       "attempt": 15,
        "why": "launch on hulu0241: launcher exit 1: /opt/axf/deploy/claude-headless.sh: line 94: HOME: unbound variable"
       }
      ],
@@ -339183,7 +339201,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 254,
+   "rev": 258,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
