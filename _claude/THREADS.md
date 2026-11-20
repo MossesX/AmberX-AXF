@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:09 UTC · `fable-rebuild-plan-studio-cleared-out` note (all) · orchestrator
 - 2026-11-20 00:09 UTC · `server-auto-lander-fixes-lands` note (all) · orchestrator
 - 2026-11-20 00:09 UTC · `server-auto-lander-fixes-lands` note (all) · builds-live
 - 2026-11-20 00:10 UTC · `every-plugin-screen-gets-a-settings-gear` → landing, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 02:23 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` added (0 steps) (all) · plan-studio-2
 - 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` added (0 steps) (all) · builds-live
+- 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` → splitting (all) · builds-live
 
 ## Token passes (log)
 
