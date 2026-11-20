@@ -1853,11 +1853,25 @@ if DIST.exists():
     _DIST_ROOT = DIST.resolve()
 
     @app.get("/{path:path}")
-    def spa(path: str) -> FileResponse:
+    def spa(path: str) -> Response:
+        # An API path that no route answered is a 404 in JSON, not the console page: a caller's r.json() then fails with
+        # the real cause (a removed or mistyped route) instead of an HTML parse error.
+        if _api_path(path):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
         # Never serve anything outside dist/: the path arrives decoded, so ../ (also as %2e%2e or %2f) must be refused here.
         try:
             f = (_DIST_ROOT / path).resolve()
             is_file = bool(path) and f.is_relative_to(_DIST_ROOT) and f.is_file()
         except (OSError, ValueError, RuntimeError):  # a path too long, with a NUL byte or a symlink loop is simply not a file
             is_file = False
-        return FileResponse(f if is_file else _DIST_ROOT / "index.html")
+        if is_file and f.name != "index.html":
+            return FileResponse(f)
+        # index.html names this build's hashed entry chunk, and a deploy empties dist/assets: it must be revalidated on
+        # every load, or a heuristically cached copy asks for a bundle that no longer exists (a blank console).
+        return FileResponse(_DIST_ROOT / "index.html", headers={"cache-control": "no-cache"})
+
+
+def _api_path(path: str) -> bool:
+    """True for a path under /api or /mcp (the SPA fallback must not answer those with the console page)."""
+    head = path.lstrip("/").split("/", 1)[0]
+    return head in ("api", "mcp")
