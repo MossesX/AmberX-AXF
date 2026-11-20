@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10047,
- "updatedAt": "2026-11-20T14:01:57.892Z",
+ "rev": 10048,
+ "updatedAt": "2026-11-20T14:02:17.755Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337242,9 +337242,9 @@
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
-   "pr": "862",
+   "pr": "863",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T14:01:53.076Z",
+   "updatedAt": "2026-11-20T14:02:06.807Z",
    "builtAt": "",
    "notes": [
     {
@@ -341132,10 +341132,10 @@
      "done": true,
      "doneAt": "2026-11-20T06:31:51.230Z",
      "note": "",
-     "rev": 48,
+     "rev": 49,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T11:35:24.993Z",
-     "statusAt": "2026-11-20T11:35:24.932Z",
+     "updatedAt": "2026-11-20T14:02:06.872Z",
+     "statusAt": "2026-11-20T14:02:06.807Z",
      "statusBy": "lander",
      "attempt": 19,
      "statusLog": [
@@ -341452,6 +341452,12 @@
        "at": "2026-11-20T11:35:24.932Z",
        "by": "lander",
        "attempt": 1
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-20T14:02:06.807Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
      "status": "in-pr",
@@ -341459,7 +341465,7 @@
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s3",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
      "tmux": "axf-fable-full-audit-ui-overhaul-conso--s3--lenny",
-     "prNumber": 860,
+     "prNumber": 863,
      "tried": [
       "hulu0241"
      ]
@@ -343997,7 +344003,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 697,
+   "rev": 699,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
