@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T07:12:19.276Z",
+ "updatedAt": "2026-11-20T07:12:32.047Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -626,7 +626,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:12:12.191Z",
+   "updatedAt": "2026-11-20T07:12:23.736Z",
    "builtAt": "",
    "notes": [
     {
@@ -1136,6 +1136,11 @@
     },
     {
      "text": "Watchdog: step s3 failed at completed, attempt 18: completed did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T07:10:02.933Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at completed (1 min past budget): re-ran the transition (1), the tick exited 1.",
      "at": "2026-11-20T07:10:02.933Z",
      "by": "watchdog"
     }
