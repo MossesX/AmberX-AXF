@@ -5,10 +5,10 @@ current_time                         date, time and time zone of the console ser
 calculator                           arithmetic only (AST-checked, no names, no calls)
 web_fetch                            public http(s) pages as text (private/loopback/link-local addresses refused)
 console_open / console_settings /    drive Brett's open console: open screens, settings tabs and dialogs, go back or home,
-console_dialog / console_back /      run actions that only navigate, see where it is and what it has (capability
-console_action / console_where /     console-commands@1, when the Console commands plugin is on; admins only). Navigation
-console_list                         and reads only: the grants never include control.console.write, so an action that
-                                     changes data is refused by the control@1 gate, whatever the model asks.
+console_dialog / console_back /      see where it is and what it has (capability console-commands@1, when the Console
+console_where / console_list         commands plugin is on; admins only). Navigation and reads only: the grants never
+                                     include control.console.write, so running a console action (any of them: the gate
+                                     asks write for console.actions) is refused, whatever the model asks.
 """
 from __future__ import annotations
 
@@ -55,8 +55,6 @@ SPECS += [
      "parameters": {"type": "object", "properties": {"dialog": {"type": "string"}, "arg": {"type": "string"}, "action": {"type": "string", "enum": ["open", "close"]}, "to": _TO}, "additionalProperties": False}},
     {"name": "console_back", "group": "console", "description": "Move the open console: back (closes an open dialog first, else the screen before), home, or close (the open dialog).",
      "parameters": {"type": "object", "properties": {"move": {"type": "string", "enum": ["back", "home", "close"]}, "to": _TO}, "additionalProperties": False}},
-    {"name": "console_action", "group": "console", "description": "Run a registered console action that only navigates (menus, toolbar and search use them): its id (\"terminal.open\"), id with arguments, or label. Actions that change data are refused here: tell Brett where to tap instead.",
-     "parameters": {"type": "object", "properties": {"action": {"type": "string"}, "args": {"type": "array", "items": {"type": "string"}}, "to": _TO}, "required": ["action"], "additionalProperties": False}},
     {"name": "console_where", "group": "console", "description": "Where Brett's open console is now: screen, open dialog, settings tab, open tabs, selection (as of its last beat, at most 15 s old).",
      "parameters": {"type": "object", "properties": {}, "additionalProperties": False}},
     {"name": "console_list", "group": "console", "description": "What the open console has, best matches for `q` first: its screens, dialogs, settings tabs (and single settings) or actions. Use it to find the right name before opening.",
@@ -206,11 +204,6 @@ def _console_command(name: str, a: dict[str, Any]) -> dict[str, Any]:
         if move not in ("back", "home", "close"):
             raise ValueError("move is back, home or close")
         return {"op": "act", "target": "console.nav", "path": "here", "action": move, "input": inp()}
-    if name == "console_action":
-        if not s("action"):
-            raise ValueError("action is required")
-        args = [str(x) for x in a.get("args") or [] if str(x)] if isinstance(a.get("args"), list) else []
-        return {"op": "act", "target": "console.actions", "path": s("action"), "action": "run", "input": inp(args=args or None)}
     if name == "console_where":
         return {"op": "get", "target": "console.nav", "path": "here"}
     if name == "console_list":

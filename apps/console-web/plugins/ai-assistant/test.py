@@ -952,18 +952,14 @@ tools_mod.run("console_back", {"move": "home"})
 tools_mod.run("console_dialog", {"action": "close"})
 check([x["command"]["target"] for x in fcc.calls[-4:]] == ["console.nav", "console.settings", "console.nav", "console.dialogs"] and fcc.calls[-3]["command"]["select"] == {"q": "text size", "limit": 200}
       and fcc.calls[-2]["command"]["action"] == "home" and fcc.calls[-1]["command"]["path"] == "current", "console tools: where, list (limit capped), home, close the open dialog")
-_e = ""
-try:
-    tools_mod.run("console_action", {"action": "x.reset"})
-except ValueError as e:
-    _e = str(e)
-check(_e.startswith("denied:"), "console_action: an action that changes data is refused by the gate")
+check("console_action" not in tools_mod.BUILTIN_NAMES, "console tools: no action runner (the gate asks control.console.write for every action)")
+fcc.calls.append({"command": {"target": "-"}})
 _e = ""
 try:
     tools_mod.run("console_open", {})
 except ValueError as e:
     _e = str(e)
-check("screen is required" in _e and fcc.calls[-1]["command"]["target"] == "console.actions", "console_open: a missing screen fails before anything is sent")
+check("screen is required" in _e and fcc.calls[-1]["command"]["target"] == "-", "console_open: a missing screen fails before anything is sent")
 
 c.put(f"{P}/config", json={"defaultProfile": oa, "chatMode": {"default": "auto"}})
 _cv = c.post(f"{P}/conversations", json={"settings": {"profileId": oa}}).json()["conversation"]
