@@ -22,8 +22,8 @@
  * address or a CSS selector names) with ./capture, uploads the PNG to the server, then acks with the screen state
  * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees.
  *
- * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
- * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
+ * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through the phone, how long
+ * a command waits, the browser the phone opens, the open consoles, waiting and last commands.
  */
 import { useEffect, useState } from 'react';
 import { Button, Container, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '@console/axf/react';
@@ -371,11 +371,11 @@ function WakePanel() {
   return (
     <div className="fx-stack">
       {err && <Note tone="warning">{err}</Note>}
-      <Switch label="Wake the console through AmberX when it's closed" checked={cfg.wake} disabled={!owner} onChange={(on) => void save({ wake: on })}
-        hint="A command that finds no open console waits here; after a few seconds AmberX on your phone opens the console so it runs. Needs the AmberX app with console wake." />
+      <Switch label="Wake the console through your phone when it's closed" checked={cfg.wake} disabled={!owner} onChange={(on) => void save({ wake: on })}
+        hint="A command that finds no open console waits here; after a few seconds your paired phone (Phone Connect) opens the console so it runs." />
       <SelectField label="How long a command waits for a console" value={String(cfg.ttlS)} options={TTL_CHOICES}
         hint="After this it's dropped and never runs late." onChange={(v) => void save({ ttlS: Number(v) })} />
-      <SelectField label="Browser AmberX opens" value={cfg.browser} options={[{ value: 'chrome', label: 'Chrome (default browser when Chrome is missing)' }, { value: 'default', label: 'The phone\'s default browser' }]}
+      <SelectField label="Browser the phone opens" value={cfg.browser} options={[{ value: 'chrome', label: 'Chrome (default browser when Chrome is missing)' }, { value: 'default', label: 'The phone\'s default browser' }]}
         onChange={(v) => void save({ browser: v as WakeSettings['browser'] })} />
       {!owner && <Note tone="info">Only the console's owner changes these.</Note>}
     </div>
