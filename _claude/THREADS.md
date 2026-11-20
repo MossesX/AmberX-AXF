@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `one-build-time-always-split-split-id` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `out-credits-account-failover-flag-dead` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `orchestrator-master-pause-switch-stop` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `host-phone-connect-apk-axhub-browser` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:12 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci, note (all) · lander
 - 2026-11-20 12:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · lander
+- 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
