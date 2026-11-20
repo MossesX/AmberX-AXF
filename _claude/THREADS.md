@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 22:17 UTC · `vps-frees-stale-build-slots-every-2` → pending, note (all) · watchdog
-- 2026-11-19 22:17 UTC · `watchdog-plugin-owns-every-vps` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `one-landing-line-pull-main-merge-one` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `land-watchdogs-pr-832-fix-two-red-ci` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `server-gate-reject-any-build-without` → pending, note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 01:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 01:48 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
 - 2026-11-20 01:48 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
+- 2026-11-20 01:49 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
+- 2026-11-20 01:49 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
 
 ## Token passes (log)
 
