@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `queue-stall-detector-vps-spots-queued` note (all) · builds-live
-- 2026-11-20 00:11 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `server-safe-mode-one-emergency-button` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-20 00:12 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · builds-live
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:10 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 06:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 06:12 UTC · `fable-full-audit-ui-overhaul-conso` s2 done (all) · orchestrator
+- 2026-11-20 06:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 06:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 
 ## Token passes (log)
 
