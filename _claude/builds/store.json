@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10006,
- "updatedAt": "2026-11-20T12:17:47.329Z",
+ "rev": 10007,
+ "updatedAt": "2026-11-20T12:19:33.738Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -346061,6 +346061,11 @@
     {
      "text": "Split by Fable into 8 steps (220 min, 8 Fable).",
      "at": "2026-11-20T12:09:22.575Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:19:01.976Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -346349,7 +346354,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
