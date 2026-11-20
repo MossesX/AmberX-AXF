@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10023,
- "updatedAt": "2026-11-20T13:03:19.971Z",
+ "rev": 10024,
+ "updatedAt": "2026-11-20T13:04:50.139Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,20 +337237,16 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "merging-pr",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "861",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T13:03:10.225Z",
+   "updatedAt": "2026-11-20T13:03:27.063Z",
    "builtAt": "",
    "notes": [
-    {
-     "text": "Watchdog: step s3 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-20T05:59:01.980Z"
-    },
     {
      "text": "Watchdog: step s4 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (5 min past its budget).",
      "at": "2026-11-20T05:59:01.980Z"
@@ -339524,6 +339520,15 @@
      "by": "lander"
     },
     {
+     "text": "Lander: failed in merging-pr, attempt 5: opening the PR: fetch failed",
+     "at": "2026-11-20T13:03:27.063Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s3 retried at ready, attempt 4 on hulu0241.",
+     "at": "2026-11-20T05:59:01.980Z"
+    },
+    {
      "text": "Plan Studio 2.0 item: fable-full-code-audit-cleanup-sw-cfs5 (Fable full audit + UI overhaul (console)). Passed plan-build@1; sent as one Pipeline 2.0 build with 18 planning steps. The splitting stage designs its build steps.",
      "at": "2026-11-20T04:51:19.241Z"
     },
@@ -339760,6 +339765,16 @@
      "session": "axf-fable-full-audit-ui-overhaul-conso--s7--earl",
      "phase": ""
     }
+   },
+   "failure": {
+    "kind": "infra",
+    "status": "merging-pr",
+    "why": "opening the PR: fetch failed",
+    "head": "",
+    "pr": 0,
+    "at": "2026-11-20T13:01:57.875Z",
+    "retry": "same",
+    "notBefore": "2026-11-20T13:31:57.875Z"
    },
    "landing": {
     "split": true,
@@ -343422,7 +343437,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 678,
+   "rev": 679,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -343433,9 +343448,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T13:03:10.225Z",
+   "statusAt": "2026-11-20T13:03:27.063Z",
    "statusBy": "lander",
-   "attempt": 4,
+   "attempt": 5,
+   "failedFrom": "merging-pr",
    "statusLog": [
     {
      "status": "pending",
@@ -343585,6 +343601,13 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: PR 3 of 19 (s2, split after a failure)"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-20T13:03:27.063Z",
+     "by": "lander",
+     "attempt": 5,
+     "why": "Lander: failed in merging-pr, attempt 5: opening the PR: fetch failed"
     }
    ]
   },
@@ -346751,6 +346774,11 @@
      "text": "Watchdog: build retried at split, attempt 2.",
      "at": "2026-11-20T12:25:01.575Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (29 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T13:04:01.435Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -347039,7 +347067,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
