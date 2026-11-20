@@ -234,7 +234,7 @@ const view = (name) => new URL(`${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
   console.log('Approve now, the waiting count, notice picks');
   const ID = '0f0e0d0c-0b0a-4908-8706-050403020100';
   const held = (veto = {}) => ({ status: 'held', veto: { runsAt: '2026-10-31T12:00:00Z', secondsLeft: 50, countdownSeconds: 90, ...veto } });
-  // A hub from before decision #104 sends no `actions`: Approve now is still offered next to Deny (Brett's screenshot).
+  // A hub from before decision 104 sends no `actions`: Approve now is still offered next to Deny (Brett's screenshot).
   eq(heldActions(held()), ['deny', 'approve-now'], 'an older hub (no actions) still gets Approve now next to Deny');
   eq(heldActions(held({ actions: ['shelve', 'approve-now', 'deny'] })), ['deny', 'approve-now', 'shelve'], "the hub's actions, in the shown order");
   eq(heldActions(held({ state: 'shelved', actions: ['approve-now', 'deny'] })), ['deny', 'approve-now'], 'a shelved call: Deny + Approve now');
@@ -243,7 +243,7 @@ const view = (name) => new URL(`${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
   eq(heldActions(held({ actions: ['deny', 'launch-missiles'] })), ['deny'], 'unknown actions are dropped');
   eq(heldActions({ status: 'pending' }), [], 'a request that asks is not held');
   eq(heldActions({ status: 'ran', veto: { actions: ['deny'] } }), [], 'a call that ran offers nothing');
-  eq(approveNowPaths(ID), [`/auth/api/approvals/${ID}/approve-now`, `/auth/api/approvals/${ID}/approve`], 'Approve now tries /approve-now, then /approve (decision #105)');
+  eq(approveNowPaths(ID), [`/auth/api/approvals/${ID}/approve-now`, `/auth/api/approvals/${ID}/approve`], 'Approve now tries /approve-now, then /approve (decision 105)');
   eq(approveNowPaths('../users'), [], 'no route for something that is not an approval id');
 
   // The header: the hub's `waiting` is pending only; held calls counting down wait too.
@@ -255,7 +255,7 @@ const view = (name) => new URL(`${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
   eq(waitingTitle(0), 'Nothing waiting', '0 → Nothing waiting');
   eq(waitingTitle(1), '1 waiting', '1 → 1 waiting');
 
-  // A notice's button (`?do=`, decision #105) opens the request with that button picked.
+  // A notice's button (`?do=`, decision 105) opens the request with that button picked.
   eq(pickOf('approve-now'), 'approve-now', 'approve-now is a pick');
   eq(pickOf('approve'), 'approve', 'approve is a pick');
   eq(pickOf('rm -rf'), '', 'anything else is no pick');
