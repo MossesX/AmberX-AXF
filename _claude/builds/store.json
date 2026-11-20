@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9854,
- "updatedAt": "2026-11-20T08:26:11.511Z",
+ "rev": 9855,
+ "updatedAt": "2026-11-20T08:26:21.283Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:19:03.490Z",
+   "updatedAt": "2026-11-20T08:26:16.409Z",
    "builtAt": "",
    "notes": [
     {
@@ -340558,12 +340558,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T08:26:16.409Z",
      "note": "",
-     "rev": 9,
+     "rev": 10,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T08:14:06.448Z",
+     "updatedAt": "2026-11-20T08:26:16.938Z",
      "statusAt": "2026-11-20T08:14:06.386Z",
      "statusBy": "orchestrator",
      "attempt": 3,
@@ -341419,7 +341419,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 507,
+   "rev": 508,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341893,348 +341893,279 @@
     },
     {
      "text": "Watchdog: step s1 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s2 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s3 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s4 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s5 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s6 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s7 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s8 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s9 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s10 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s11 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s12 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s13 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s14 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s15 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s16 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s17 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s18 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s19 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s20 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s21 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s22 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s23 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:20:02.097Z"
     },
     {
      "text": "Watchdog: step s1 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s2 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s3 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s4 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s5 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s6 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s7 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s8 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s9 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s10 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s11 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s12 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s13 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s14 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s15 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s16 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s17 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s18 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s19 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s20 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s21 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s22 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s23 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:23:02.151Z"
     },
     {
      "text": "Watchdog: step s1 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s2 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s3 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s4 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s5 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s6 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s7 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s8 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s9 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s10 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s11 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s12 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s13 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s14 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s15 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s16 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s17 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s18 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s19 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s20 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s21 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s22 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     },
     {
      "text": "Watchdog: step s23 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:26:02.199Z"
     }
    ],
    "approvals": [],
@@ -343676,7 +343607,7 @@
    },
    "kind": "build",
    "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
