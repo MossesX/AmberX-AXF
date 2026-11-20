@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9871,
- "updatedAt": "2026-11-20T08:36:11.031Z",
+ "rev": 9872,
+ "updatedAt": "2026-11-20T08:38:40.623Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:36:02.490Z",
+   "updatedAt": "2026-11-20T08:38:36.721Z",
    "builtAt": "",
    "notes": [
     {
@@ -340277,11 +340277,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 44,
+     "rev": 45,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T08:36:06.777Z",
-     "statusAt": "2026-11-20T08:36:02.490Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-20T08:38:36.766Z",
+     "statusAt": "2026-11-20T08:38:36.721Z",
+     "statusBy": "orchestrator",
      "attempt": 21,
      "statusLog": [
       {
@@ -340591,9 +340591,16 @@
        "by": "watchdog",
        "attempt": 21,
        "why": "attempt 20 of 5 failed on Opus at sending: raised to Fable for one more go"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T08:38:36.721Z",
+       "by": "orchestrator",
+       "attempt": 21,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s8",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s8"
@@ -341503,7 +341510,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 525,
+   "rev": 526,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
