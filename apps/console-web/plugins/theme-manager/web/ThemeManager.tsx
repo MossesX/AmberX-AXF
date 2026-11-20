@@ -55,7 +55,8 @@ export function ThemeManager() {
   const narrow = useNarrow();
   // skins only (Nov 10 2026): style, layout and behaviour themes are a skin's sections and are not rolled on their own
   const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => t !== 'uac-policy' && !SKIN_ONLY_TYPES.includes(t)), []);
-  const active = useMemo(() => Object.fromEntries(types.map((t) => [t, (rt.asset(t as never) as unknown as { data: Data }).data])) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
+  // an optional type (banner, clock, badge…) with no active asset is left out: rt.asset() has nothing to give for it
+  const active = useMemo(() => Object.fromEntries(types.flatMap((t) => { const a = rt.assetOrNull(t as never) as unknown as { data: Data } | null; return a ? [[t, a.data]] : []; })) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const assets = useMemo(() => Object.fromEntries(types.map((t) => [t, rt.registry.list(t as never).filter((a) => !String(a.id).startsWith('tm-preview-')) as unknown as { data: Data }[]])), [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const tree = useMemo(() => buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types), [assets, active, types]);
   const [ticked, setTicked] = useState<Set<string>>(() => new Set(read<string[] | null>(LS.ticked, null) ?? PRESETS['colors only']!(buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types))));
@@ -87,7 +88,7 @@ export function ThemeManager() {
     return tree.map(f).filter((x): x is Node => !!x);
   }, [tree, q]);
 
-  const snapshot = (): Snap => Object.fromEntries(types.map((t) => [t, structuredClone(active[t]!)]));
+  const snapshot = (): Snap => Object.fromEntries(Object.keys(active).map((t) => [t, structuredClone(active[t]!)]));
   const push = (s: Snap) => { store.history = [...store.history.slice(0, store.index + 1), s].slice(-50); store.index = store.history.length - 1; emit(); };
   const applySnap = (s: Snap) => {
     const problems: string[] = [];

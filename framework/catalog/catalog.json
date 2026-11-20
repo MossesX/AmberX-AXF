@@ -2687,6 +2687,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.axhubpages",
+              "title": "axHub's pages in the console: module axHub, one removable plugin per hub feature (approvals + held calls + log, passes, apps, users, handoff, account) over a hub-pages relay that takes only a wall admin's browser",
+              "note": "apps/console-web/plugins/axhub-* + src/hubPages + server/hub_pages.py (Nov 20 2026, fold of apps/axhub-web, which is archived); axHub server unchanged",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }
