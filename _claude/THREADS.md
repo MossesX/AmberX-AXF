@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 04:51 UTC · `fable-full-audit-ui-overhaul-conso` → splitting (all) · orchestrator
 - 2026-11-20 04:52 UTC · `fable-full-audit-ui-overhaul-conso` → split, note (all) · orchestrator
 - 2026-11-20 04:52 UTC · `fable-full-audit-ui-overhaul-conso` → pulling-main (all) · orchestrator
 - 2026-11-20 04:58 UTC · `fable-full-audit-ui-overhaul-conso` → assigning-models (all) · orchestrator
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` added (0 steps) (all) · plan-studio-2
 - 2026-11-20 19:54 UTC · `fix-main-ci-red-after-s16-s7-hand-` → splitting (all) · orchestrator
 - 2026-11-20 19:54 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 19:55 UTC · `fix-main-ci-red-after-s16-s7-hand-` → split, note (all) · orchestrator
 
 ## Token passes (log)
 

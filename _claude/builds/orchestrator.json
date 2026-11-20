@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T19:54:57.945Z",
+ "updatedAt": "2026-11-20T19:55:56.559Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -380,103 +380,83 @@
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T12:19:01.976Z",
-     "by": "watchdog"
+     "at": "2026-11-20T12:19:01.976Z"
     },
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T12:23:01.305Z",
-     "by": "watchdog"
+     "at": "2026-11-20T12:23:01.305Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T12:24:01.629Z",
-     "by": "watchdog"
+     "at": "2026-11-20T12:24:01.629Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 2.",
-     "at": "2026-11-20T12:25:01.575Z",
-     "by": "watchdog"
+     "at": "2026-11-20T12:25:01.575Z"
     },
     {
      "text": "Watchdog: build stuck at split (29 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T13:04:01.435Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:04:01.435Z"
     },
     {
      "text": "Watchdog: build stuck at split (32 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T13:07:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:07:01.908Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (33 min past its budget).",
-     "at": "2026-11-20T13:08:01.383Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:08:01.383Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 3.",
-     "at": "2026-11-20T13:09:01.741Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:09:01.741Z"
     },
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T13:20:03.199Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:20:03.199Z"
     },
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T13:24:01.527Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:24:01.527Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T13:25:01.756Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:25:01.756Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 4.",
-     "at": "2026-11-20T13:26:01.981Z",
-     "by": "watchdog"
+     "at": "2026-11-20T13:26:01.981Z"
     },
     {
      "text": "Watchdog: build stuck at split (50 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T14:26:01.416Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:26:01.416Z"
     },
     {
      "text": "Watchdog: build stuck at split (53 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T14:29:02.020Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:29:02.020Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (54 min past its budget).",
-     "at": "2026-11-20T14:30:04.071Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:30:04.071Z"
     },
     {
      "text": "Watchdog: build retried at split, attempt 5.",
-     "at": "2026-11-20T14:31:01.086Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:31:01.086Z"
     },
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T14:41:01.168Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:41:01.168Z"
     },
     {
      "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T14:44:01.882Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:44:01.882Z"
     },
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-20T14:45:02.227Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:45:02.227Z"
     },
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
-     "at": "2026-11-20T14:46:02.057Z",
-     "by": "watchdog"
+     "at": "2026-11-20T14:46:02.057Z"
     }
    ],
    "approvals": [],
@@ -629,1695 +609,6 @@
      "note": "",
      "uid": "st-mwoxry1e06eqnm",
      "createdAt": "2026-11-20T12:09:24.242Z"
-    }
-   ]
-  },
-  {
-   "id": "pipeline-2-0-fully-autonomous-buil",
-   "title": "Pipeline 2.0: fully autonomous build pipeline",
-   "category": "",
-   "detail": "Brett, Nov 18 2026 (voice). Goal: absolutely no human intervention, ever. Brett says \"build this app\" and the next thing he sees is it landed, no matter what. The pipeline fixes, names, stores and logs everything itself. Why: builds piled up for weeks with nothing merging and nobody knew the pipeline was broken (tonight: Postgres part B died on a dead worktree, failed 3 launches, got benched by the 3-fails-per-hour rule, silently).\n\nThe flow itself is in the section \"Brett's flow\" below; it wins over anything here.\n\n## Status lifecycle (forward-only)\n- Everything is status; nothing goes back.\n- All of a build's steps merge into ONE PR (one CI run), then pull main, CI, merge to main. Steps do not merge on their own (saves the CI time of running it once per step).\n- Failed shows the attempt: \"failed, attempt 2\", \"attempt 3\", etc.\n\n## Builds table\n- One table, driven by each build's status, not its location. No tabs at all.\n- Purely filters, carried on the toolbar.\n- Every row: status badge + live timer (elapsed / remaining) for building, polling, CI checking or merging.\n\n## Fail-safes / redundancy (self-healing, not paging Brett)\n- Multiple independent ways to catch stalls and trigger fixes.\n- Layer 1: the pipeline tick does the normal work.\n- Layer 2: a separate watchdog on its own cron with its own code finds anything that hasn't moved in X minutes and fixes it itself (rebuild a dead worktree, requeue, switch account/model).\n- Layer 3: an outside checker (axHub or another box) makes sure the watchdog is alive and restarts it.\n- Never fail silently.\n\n## Landing\n- Postgres parts A/B/C: when all three finish, merge them together in one PR (one CI run); if it fails, split and land one at a time.\n\n## Related\n- Builds store moving off the 14 MB store.json to Postgres row-level writes (Postgres parts A/B/C).\n- Later: separate dedicated build box (console and everything else stay on the Hostinger KVM 8), Postgres primary on the KVM 8, replica on the build box, writes over WireGuard.\n- Visual flow diagrams in Plan Studio 2.0.\n\nOne-PR size cap: Brett, Nov 18 2026 (voice): bundling every step into one PR is better (one CI run instead of each PR waiting, re-pulling main and rerunning CI after the last one lands), as long as it isn't huge.\n\nSize cap: over a certain size, the pieces are combined into two PRs, or three, or however many the size calls for (not one PR per step). Those PRs then land one at a time: each pulls in main, runs CI and merges in turn, etc. Threshold not set yet.\n\nWorktrees cut before launch: Brett, Nov 19 2026 (voice): worktrees are cut BEFORE launch, never at launch. Each step's worktree is created and pulls main during the pending / pulling-main stage, so when a slot frees up, launch only starts the session. Launch must never time out on cutting a worktree under load.",
-   "status": "archived",
-   "hidden": false,
-   "flow": "pipeline-2",
-   "source": "plan-studio-2",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-11-20T07:05:24.694Z",
-   "updatedAt": "2026-11-20T12:11:12.162Z",
-   "builtAt": "",
-   "notes": [
-    {
-     "text": "Plan Studio 2.0 item: pipeline-2-0-fully-autonomous-bu-d8vq (Pipeline 2.0: fully autonomous build pipeline). Passed plan-build@1; sent as one Pipeline 2.0 build with 8 planning steps. The splitting stage designs its build steps.",
-     "at": "2026-11-20T07:05:24.694Z"
-    },
-    {
-     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
-     "at": "2026-11-20T07:06:47.407Z"
-    },
-    {
-     "text": "Split by Fable into 10 steps (285 min, 1 Fable).",
-     "at": "2026-11-20T07:07:41.494Z"
-    },
-    {
-     "text": "Split by Fable into 23 steps (630 min, 3 Fable).",
-     "at": "2026-11-20T07:09:10.161Z"
-    },
-    {
-     "text": "Watchdog: step s1 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s2 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s13 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s14 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s15 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s16 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s17 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s18 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s19 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s20 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s21 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s22 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s23 stuck at pending (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:40:02.205Z"
-    },
-    {
-     "text": "Watchdog: step s1 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s2 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s13 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s14 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s15 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s16 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s17 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s18 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s19 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s20 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s21 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s22 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s23 stuck at pending (5 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:44:02.309Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s3 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s4 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s5 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s6 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s7 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s8 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s9 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s10 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s11 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s12 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s13 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s14 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s15 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s16 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s17 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s18 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s19 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s20 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s21 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s22 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s23 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
-     "at": "2026-11-20T07:49:02.123Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s4 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s5 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s6 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s7 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s8 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s9 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s10 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s11 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s12 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s13 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s14 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s15 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s16 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s17 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s18 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s19 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s20 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s21 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s22 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s23 retried at pending, attempt 2.",
-     "at": "2026-11-20T07:50:01.410Z"
-    },
-    {
-     "text": "Watchdog: step s1 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s2 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s13 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s14 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s15 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s16 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s17 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s18 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s19 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s20 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s21 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s22 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s23 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:20:02.097Z"
-    },
-    {
-     "text": "Watchdog: step s1 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s2 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s13 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s14 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s15 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s16 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s17 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s18 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s19 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s20 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s21 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s22 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s23 stuck at pending (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T08:23:02.151Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s3 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s4 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s5 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s6 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s7 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s8 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s9 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s10 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s11 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s12 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s13 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s14 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s15 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s16 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s17 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s18 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s19 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s20 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s21 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s22 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s23 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T08:26:02.199Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s4 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s5 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s6 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s7 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s8 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s9 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s10 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s11 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s12 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s13 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s14 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s15 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s16 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s17 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s18 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s19 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s20 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s21 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s22 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s23 retried at pending, attempt 3.",
-     "at": "2026-11-20T08:27:01.557Z"
-    },
-    {
-     "text": "Watchdog: step s1 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s2 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s13 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s14 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s15 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s16 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s17 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s18 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s19 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s20 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s21 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s22 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s23 stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T08:57:01.853Z"
-    },
-    {
-     "text": "Watchdog: step s1 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s2 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s3 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s4 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s5 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s6 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s7 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s8 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s9 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s10 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s11 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s12 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s13 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s14 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s15 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s16 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s17 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s18 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s19 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s20 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s21 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s22 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s23 stuck at pending (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T09:01:01.138Z"
-    },
-    {
-     "text": "Watchdog: step s1 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s2 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s3 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s4 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s5 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s6 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s7 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s8 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s9 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s10 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s11 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s12 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s13 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s14 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s15 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s16 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s17 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s18 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s19 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s20 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s21 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s22 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s23 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
-     "at": "2026-11-20T09:04:02.071Z"
-    },
-    {
-     "text": "Watchdog: step s1 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s2 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s3 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s4 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s5 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s6 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s7 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s8 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s9 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s10 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s11 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s12 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s13 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s14 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s15 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s16 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s17 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s18 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s19 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s20 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s21 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s22 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: step s23 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z"
-    },
-    {
-     "text": "Watchdog: build stuck at split (168 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T10:06:01.606Z"
-    },
-    {
-     "text": "Watchdog: build stuck at split (287 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T12:05:02.043Z",
-     "by": "watchdog"
-    },
-    {
-     "text": "Watchdog: build stuck at split (291 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T12:09:02.399Z",
-     "by": "watchdog"
-    },
-    {
-     "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (292 min past its budget).",
-     "at": "2026-11-20T12:10:02.802Z",
-     "by": "watchdog"
-    },
-    {
-     "text": "Watchdog: build retried at split, attempt 2.",
-     "at": "2026-11-20T12:11:01.909Z",
-     "by": "watchdog"
-    }
-   ],
-   "approvals": [],
-   "upgradeRequests": [],
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Status lifecycle (build-pipeline@1): in framework/core/build-pipeline.mjs define the forward-only status list and transition table for builds and steps (pending → pulling-main → queued → building → built → polling → ci-checking → merging → complete; failed carries attempt N and only moves forward to a retry status, never back), the timer fields (startedAt, eta/remaining, lastMovedAt), the land-group field (steps of one build land as ONE PR; a named group like postgres-a/b/c lands together), and a failed label helper ('failed, attempt 2'). Make framework/cli/builds-store.mjs normBuild keep every new field and refuse backward transitions on write. Add unit checks for the transition table.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "framework/core/build-pipeline.mjs",
-      "framework/cli/builds-store.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h011oio",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s2",
-     "text": "Schema + conformance for build-pipeline@1: write framework/schemas/build-pipeline.json (statuses, attempt, timers, landGroup, prs[] with pinned head sha and ci run id), the golden fixture framework/spec/fixtures/build-pipeline.json (legal/illegal transitions, failed-attempt labels, timer projections) and framework/spec/check-build-pipeline.mjs that validates the fixture against the schema and the transition rules; record the Kotlin twin as a deferred gap in framework/spec/PORTING.md. Use the same status list as the core step: pending, pulling-main, queued, building, built, polling, ci-checking, merging, complete, failed.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "25 min",
-     "files": [
-      "framework/schemas/build-pipeline.json",
-      "framework/spec/fixtures/build-pipeline.json",
-      "framework/spec/check-build-pipeline.mjs",
-      "framework/spec/PORTING.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h02ebom",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s3",
-     "text": "Landing-line engine (landing-line@1) in framework/core/landing-line.mjs: group all of a build's step branches into ONE PR; over sizeCapLines split into 2, 3 or N PRs (never one per step) that land one at a time; a land-together group (Postgres parts A/B/C) merges as one PR and on CI failure falls back to landing its parts one at a time; forward-only retry plan per failure class (flaky → re-run once, too big → split, real red → fix session) with attempt N; cancelled runs re-run. Regenerate the fixture with node framework/spec/check-landing-line.mjs --write and extend the checks for size cap, land-together and the retry plan.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "framework/core/landing-line.mjs",
-      "framework/spec/check-landing-line.mjs",
-      "framework/spec/fixtures/landing-line.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h03xaph",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s4",
-     "text": "Lander runner deploy/lander/run.mjs (systemd axf-lander.timer, every minute): at build-complete read the landing-line plan, open ONE PR per group through framework/cli/github-token.mjs (ETag-cached reads), pull main into it, run CI once with the gate's build rules, merge with the head sha pinned, write every status move (polling, ci-checking, merging, complete, failed attempt N) through builds-store.mjs so builds-live pushes it; on failure follow the retry plan forward by itself (dispatch a re-run, split the PR set, or queue a fix session) and never leave a build silent. Add a dry test with a fake GitHub (deploy/lander/test-run.mjs).",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "deploy/lander/run.mjs",
-      "deploy/lander/test-run.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0499wy",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s5",
-     "text": "CI failure report: new deploy/lander/ci-report.mjs that, for a failed run, fetches the failing jobs and their logs (github-token.mjs broker), extracts the real error lines per job and app, classifies the cause (this PR's changed paths vs unrelated: retired app, flaky download, infra), computes how long main/this PR has been failing from run history, and proposes the fix (re-run, exclude job, which file to fix); writes it as markdown into the build's notes (ci-report@1 shape) and returns it. Fixture logs + test in deploy/lander/test-ci-report.mjs.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "deploy/lander/ci-report.mjs",
-      "deploy/lander/test-ci-report.mjs",
-      "deploy/lander/fixtures/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h054yco",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s6",
-     "text": "Never fail silently: declare the pipeline's notifications in apps/console-web/plugins/build-orchestrator/notify.json (notify-types@1: ci-failed with report, build-failed attempt N, stall-fixed, watchdog-dead, landed) and write deploy/lander/alerts.mjs that sends each through the console's alert hub REST with the console token (reaches Brett via Phone Connect) and opens a banner item with the failure text and fix; one send per event, idempotent on (build, attempt, kind). Test with the alert hub mocked.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "25 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/notify.json",
-      "deploy/lander/alerts.mjs",
-      "deploy/lander/test-alerts.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0673v7",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s7",
-     "text": "Show the CI failure report in the Auto-lander: new component apps/console-web/plugins/build-orchestrator/ui/CiFailureReport.tsx (job/app, error lines in a code block, cause badge this-PR / unrelated / flaky, failing-since, fix, attempt N) rendered in the read-only merge-queue / Auto-lander view (view:merge-queue) from the build's ci-report note; tokens only, framework controls, data-axf-target on its actions. Do not touch the builds table or the builds view files.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "25 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/CiFailureReport.tsx",
-      "apps/console-web/plugins/build-orchestrator/ui/MergeQueueView.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h07og2k",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s8",
-     "text": "Worktrees cut before launch: new apps/console-web/plugins/build-orchestrator/worktrees.mjs: during pending/pulling-main create one git worktree per step cut from fresh main under the build-manager sandbox, record its path and base sha on the step, detect a dead worktree (missing dir, bad HEAD, locked index) and rebuild it, pull main again when it is stale, prune on complete; CLI subcommands prepare <build>, check <build>, rebuild <build> <step>, prune; tests on a temp repo. Node modules symlinked from a sibling worktree as the existing sandbox does.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/worktrees.mjs",
-      "apps/console-web/plugins/build-orchestrator/test-worktrees.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h08oz0o",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s9",
-     "text": "Launcher only starts the session: deploy/claude-headless.sh takes --worktree <path> (required for pipeline launches) and starts claude -p in that pre-cut worktree, never cuts, fetches or pulls at launch, no worktree timeout; keeps agent-slots, worker-account routing, model-gate and build-origin capture unchanged; exits 3 with a plain reason when the worktree is missing so the dispatcher rebuilds it. Extend the launcher test harness (fake claude in HOME/.local/bin) for the new flag.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "25 min",
-     "files": [
-      "deploy/claude-headless.sh",
-      "deploy/test-claude-headless.sh"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h09spzz",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s10",
-     "text": "Dispatcher apps/console-web/plugins/build-orchestrator/pipeline.mjs: tick moves builds through the build-pipeline@1 statuses, runs the worktree prepare stage (worktrees.mjs) before queue, launches up to 4 steps of one build at once through claude-headless.sh --worktree when slots and a suitable account are free, requeues a crashed session as failed attempt N (loud: alert + note) instead of the silent 3-fails-per-hour bench, marks built when all steps are done and hands off to the lander; intake ignores Plan Studio steps (kept as planning notes in the brief) and runs its split on Fable per model-policy. Tests for the tick with fake slots and launcher.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/test-pipeline.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0ajf9f",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s11",
-     "text": "orchestrator.mjs uses Pipeline 2.0 statuses: act step / status / next read and write build-pipeline@1 statuses (no legacy names), show 'failed, attempt N', refuse backward transitions with a plain error, and brief <id> carries the step's worktree path and land group; update the orchestrator tests.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "25 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
-      "apps/console-web/plugins/build-orchestrator/test-orchestrator.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0b1eit",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s12",
-     "text": "Plan Studio hands over ONE build: in apps/console-web/plugins/plan-studio/tree.mjs sendToBuild (and Turn into a build) sends the whole plan as one orchestrator build with no steps, Brett's verbatim words in origin.said, and the Plan Studio steps attached as planning notes only; never writes steps or touches pending/queue directly. Update plan-studio tests and README.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "apps/console-web/plugins/plan-studio/tree.mjs",
-      "apps/console-web/plugins/plan-studio/test-tree.mjs",
-      "apps/console-web/plugins/plan-studio/README.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0c8wny",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s13",
-     "text": "Watchdog state in Postgres (no-json-data@1): add a watchdog heartbeat/state table (DocTable: last tick, last fix, give-ups) in services/axf-data/tables.py, the namespace plugins/build-orchestrator/watchdog in framework/schemas/data-store-paths.json, and a small reader/writer apps/console-web/plugins/build-orchestrator/watchdog-state.mjs over framework/core/data-files.mjs; update check-json-data-writes baseline only if a count goes down.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "services/axf-data/tables.py",
-      "framework/schemas/data-store-paths.json",
-      "apps/console-web/plugins/build-orchestrator/watchdog-state.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0dagkh",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s14",
-     "text": "Layer 2 watchdog with its own code: deploy/watchdog/run.mjs + axf-watchdog.timer/.service (own cron, every 2 min) finds any build or step whose lastMovedAt is older than X minutes for its status and fixes it itself: rebuild a dead worktree, requeue with attempt N, switch to the least busy worker account (deploy/claude-workers.mjs route), downgrade the model only (never upgrade), restart a stuck lander or pipeline timer via systemctl; a give-up is final (failed attempt N + alert + banner item, never silently benched); writes its heartbeat through the watchdog state writer and logs every action as a build note. Install lines in deploy/install-console.sh; test with a seeded store.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "deploy/watchdog/run.mjs",
-      "deploy/watchdog/axf-watchdog.timer",
-      "deploy/watchdog/axf-watchdog.service",
-      "deploy/watchdog/test-run.mjs",
-      "deploy/install-console.sh"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0e8rqz",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s15",
-     "text": "Layer 3 outside check: apps/console-web/plugins/build-orchestrator/server/pipeline_health.py registers health@1 checks (pipeline tick alive, watchdog heartbeat fresh, lander timer alive, builds stalled) with auto-fix (restart the timer through the hub's vps.run as a veto call with a reason), exposes GET /api/plugins/build-orchestrator/pipeline/health (read-only, plain JSON) for an outside checker, with plugin.json route/command entries for REST/MCP/axf parity; write deploy/axhub/pipeline-outside-check.md with the axHub cron that polls it and restarts the watchdog when it is dead.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/server/pipeline_health.py",
-      "apps/console-web/plugins/build-orchestrator/plugin.json",
-      "deploy/axhub/pipeline-outside-check.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0fqxnp",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s16",
-     "text": "Builds table components: apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx (one DataGrid of every build driven by status, fixed cell widths), StatusBadge.tsx (status + 'failed, attempt N'), LiveTimer.tsx (elapsed / remaining ticking for building, polling, ci-checking, merging), BuildsFilterToolbar.tsx (a Toolbars plugin toolbar, role=toolbar + aria-label, status/profile/model filters as fx-chip, remembered in settings); tokens only, framework controls, data-axf-target on rows and filters. Do not edit the plugin's main view yet.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx",
-      "apps/console-web/plugins/build-orchestrator/ui/StatusBadge.tsx",
-      "apps/console-web/plugins/build-orchestrator/ui/LiveTimer.tsx",
-      "apps/console-web/plugins/build-orchestrator/ui/BuildsFilterToolbar.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0gqfgw",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s17",
-     "text": "One table, no tabs: wire BuildsTable + the filter toolbar into the build-orchestrator plugin's builds view, remove the Pipeline / Pending / Queue tab rows and their routes (console-control addresses redirect to filters), keep PriorityTag and 'What Brett said' per row; ship 3 UI Review options as assets (toolbar + container/layout variants) in apps/console-web/plugins/build-orchestrator/assets/<type>/ with a choices file and submit desktop + phone shots with review.mjs submit --choices; update check-chrome-assets baseline only downward.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/BuildsView.tsx",
-      "apps/console-web/plugins/build-orchestrator/index.tsx",
-      "apps/console-web/plugins/build-orchestrator/assets/",
-      "apps/console-web/plugins/build-orchestrator/ui-choices.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0hs8oq",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s18",
-     "text": "CI scope: framework/cli/ci-scope.mjs computes changed areas from the diff against the base (outputs console, android, demo, expenses, axf-data, framework, docs-only, full; full only when framework/core, framework/schemas, framework/spec, framework/react or framework/ui change; manual input scope=auto|full) and the reusable workflow .github/workflows/ci-scope.yml exposes them as job outputs for every caller, including workflow_dispatch; tests in framework/spec/check-ci-scope.mjs over fixture diffs.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "framework/cli/ci-scope.mjs",
-      ".github/workflows/ci-scope.yml",
-      "framework/spec/check-ci-scope.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0ir9yt",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s19",
-     "text": "Fast, scoped android.yml: every job gated by the ci-scope outputs (console-only never builds Android or runs unrelated suites, also on workflow_dispatch), actions/checkout with fetch-depth 1 and sparse-checkout per job paths, actions/cache for Gradle, npm and pip keyed on lockfiles, the console job reuses the prebuilt framework modules (axf-maven-repo artifact / cached framework build) instead of recompiling the framework; keep the CI build errors issue posting and artifact names unchanged.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      ".github/workflows/android.yml"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2h0jq5z5",
-     "createdAt": "2026-11-20T07:09:12.473Z"
-    },
-    {
-     "id": "s20",
-     "text": "Other workflows fast and scoped: deploy.yml, rebuild-shots.yml and the remaining .github/workflows files use shallow + sparse checkout, npm/pip caches and the ci-scope gate (demo deploy only on demo or framework changes); document the CI scope and cache rules in .github/workflows/README.md.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      ".github/workflows/deploy.yml",
-      ".github/workflows/rebuild-shots.yml",
-      ".github/workflows/README.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2i0kuykm",
-     "createdAt": "2026-11-20T07:09:12.474Z"
-    },
-    {
-     "id": "s21",
-     "text": "Docs: write framework/spec/PIPELINE.md (Pipeline 2.0 contract: forward-only statuses, one PR per build with size cap, land-together groups, worktrees before launch, 4 slots per build, the three fail-safe layers, never-silent alerts, CI failure report, how Postgres parts A/B/C land) and _claude/memory/docs/pipeline-2-0.md (operator view: timers, where to look, what the watchdog does); update _claude/builds/README.md's pipeline section to point at them.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "25 min",
-     "files": [
-      "framework/spec/PIPELINE.md",
-      "_claude/memory/docs/pipeline-2-0.md",
-      "_claude/builds/README.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2i0lqsa6",
-     "createdAt": "2026-11-20T07:09:12.474Z"
-    },
-    {
-     "id": "s22",
-     "text": "End-to-end dry run deploy/dryrun/pipeline-2-0/run.sh + fixtures: with a fake claude, fake GitHub and a temp store, take one build from pending through worktree prepare, 4 parallel step launches, built, one PR, CI, merge pinned head; kill a worktree mid-run and prove the watchdog rebuilds it and a crashed step comes back as failed attempt 2; prove a final give-up stays final and loud; prove act step only accepts Pipeline 2.0 statuses; print a pass/fail table.",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "deploy/dryrun/pipeline-2-0/run.sh",
-      "deploy/dryrun/pipeline-2-0/fixtures/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2i0mralc",
-     "createdAt": "2026-11-20T07:09:12.474Z"
-    },
-    {
-     "id": "s23",
-     "text": "Tests and report: run node framework/spec/check-build-pipeline.mjs, check-landing-line.mjs, check-ci-scope.mjs, check-builds-store.mjs, check-build-steps.mjs, check-json-data-writes.mjs, check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs, check-console-control.mjs, the plugin tests, the lander/watchdog/launcher tests and the deploy/dryrun/pipeline-2-0 run; fix what they turn up in files no other step owns; regenerate tracker.json; write _claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md (what landed per layer, before/after, test results, UI Review state, gaps: dedicated build box, Postgres parts A/B/C, axHub-side cron).",
-     "model": "Opus",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "_claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md",
-      "tracker.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwon1w2i0nmtk3",
-     "createdAt": "2026-11-20T07:09:12.474Z"
     }
    ]
   },
@@ -7583,6 +5874,1691 @@
      "note": "",
      "uid": "st-mwoi62s00i8avb",
      "createdAt": "2026-11-20T04:52:29.712Z"
+    }
+   ]
+  },
+  {
+   "id": "pipeline-2-0-fully-autonomous-buil",
+   "title": "Pipeline 2.0: fully autonomous build pipeline",
+   "category": "",
+   "detail": "Brett, Nov 18 2026 (voice). Goal: absolutely no human intervention, ever. Brett says \"build this app\" and the next thing he sees is it landed, no matter what. The pipeline fixes, names, stores and logs everything itself. Why: builds piled up for weeks with nothing merging and nobody knew the pipeline was broken (tonight: Postgres part B died on a dead worktree, failed 3 launches, got benched by the 3-fails-per-hour rule, silently).\n\nThe flow itself is in the section \"Brett's flow\" below; it wins over anything here.\n\n## Status lifecycle (forward-only)\n- Everything is status; nothing goes back.\n- All of a build's steps merge into ONE PR (one CI run), then pull main, CI, merge to main. Steps do not merge on their own (saves the CI time of running it once per step).\n- Failed shows the attempt: \"failed, attempt 2\", \"attempt 3\", etc.\n\n## Builds table\n- One table, driven by each build's status, not its location. No tabs at all.\n- Purely filters, carried on the toolbar.\n- Every row: status badge + live timer (elapsed / remaining) for building, polling, CI checking or merging.\n\n## Fail-safes / redundancy (self-healing, not paging Brett)\n- Multiple independent ways to catch stalls and trigger fixes.\n- Layer 1: the pipeline tick does the normal work.\n- Layer 2: a separate watchdog on its own cron with its own code finds anything that hasn't moved in X minutes and fixes it itself (rebuild a dead worktree, requeue, switch account/model).\n- Layer 3: an outside checker (axHub or another box) makes sure the watchdog is alive and restarts it.\n- Never fail silently.\n\n## Landing\n- Postgres parts A/B/C: when all three finish, merge them together in one PR (one CI run); if it fails, split and land one at a time.\n\n## Related\n- Builds store moving off the 14 MB store.json to Postgres row-level writes (Postgres parts A/B/C).\n- Later: separate dedicated build box (console and everything else stay on the Hostinger KVM 8), Postgres primary on the KVM 8, replica on the build box, writes over WireGuard.\n- Visual flow diagrams in Plan Studio 2.0.\n\nOne-PR size cap: Brett, Nov 18 2026 (voice): bundling every step into one PR is better (one CI run instead of each PR waiting, re-pulling main and rerunning CI after the last one lands), as long as it isn't huge.\n\nSize cap: over a certain size, the pieces are combined into two PRs, or three, or however many the size calls for (not one PR per step). Those PRs then land one at a time: each pulls in main, runs CI and merges in turn, etc. Threshold not set yet.\n\nWorktrees cut before launch: Brett, Nov 19 2026 (voice): worktrees are cut BEFORE launch, never at launch. Each step's worktree is created and pulls main during the pending / pulling-main stage, so when a slot frees up, launch only starts the session. Launch must never time out on cutting a worktree under load.",
+   "status": "archived",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-20T07:05:24.694Z",
+   "updatedAt": "2026-11-20T12:11:12.162Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: pipeline-2-0-fully-autonomous-bu-d8vq (Pipeline 2.0: fully autonomous build pipeline). Passed plan-build@1; sent as one Pipeline 2.0 build with 8 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-20T07:05:24.694Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-20T07:06:47.407Z"
+    },
+    {
+     "text": "Split by Fable into 10 steps (285 min, 1 Fable).",
+     "at": "2026-11-20T07:07:41.494Z"
+    },
+    {
+     "text": "Split by Fable into 23 steps (630 min, 3 Fable).",
+     "at": "2026-11-20T07:09:10.161Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:40:02.205Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:44:02.309Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s5 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s6 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s7 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s8 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s9 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s10 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s11 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s12 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s13 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s14 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s15 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s16 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s17 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s18 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s19 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s20 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s21 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s22 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s23 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s6 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s7 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s8 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s9 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s10 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s11 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s12 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s13 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s14 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s15 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s16 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s17 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s18 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s19 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s20 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s21 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s22 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s23 retried at pending, attempt 2.",
+     "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T08:23:02.151Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s5 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s6 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s7 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s8 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s9 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s10 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s11 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s12 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s13 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s14 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s15 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s16 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s17 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s18 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s19 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s20 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s21 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s22 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s23 failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T08:26:02.199Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s6 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s7 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s8 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s9 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s10 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s11 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s12 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s13 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s14 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s15 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s16 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s17 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s18 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s19 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s20 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s21 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s22 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s23 retried at pending, attempt 3.",
+     "at": "2026-11-20T08:27:01.557Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:57:01.853Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T09:01:01.138Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s2 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s3 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s4 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s5 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s6 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s7 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s8 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s9 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s10 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s11 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s12 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s13 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s14 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s15 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s16 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s17 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s18 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s19 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s20 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s21 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s22 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s23 failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
+     "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Watchdog: step s1 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s2 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s3 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s4 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s6 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s7 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s8 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s9 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s10 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s11 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s12 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s13 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s14 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s15 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s16 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s17 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s18 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s19 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s20 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s21 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s22 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: step s23 retried at pending, attempt 4.",
+     "at": "2026-11-20T09:07:01.350Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (168 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T10:06:01.606Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (287 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:05:02.043Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (291 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T12:09:02.399Z"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (292 min past its budget).",
+     "at": "2026-11-20T12:10:02.802Z"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 2.",
+     "at": "2026-11-20T12:11:01.909Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Status lifecycle (build-pipeline@1): in framework/core/build-pipeline.mjs define the forward-only status list and transition table for builds and steps (pending → pulling-main → queued → building → built → polling → ci-checking → merging → complete; failed carries attempt N and only moves forward to a retry status, never back), the timer fields (startedAt, eta/remaining, lastMovedAt), the land-group field (steps of one build land as ONE PR; a named group like postgres-a/b/c lands together), and a failed label helper ('failed, attempt 2'). Make framework/cli/builds-store.mjs normBuild keep every new field and refuse backward transitions on write. Add unit checks for the transition table.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/core/build-pipeline.mjs",
+      "framework/cli/builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h011oio",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s2",
+     "text": "Schema + conformance for build-pipeline@1: write framework/schemas/build-pipeline.json (statuses, attempt, timers, landGroup, prs[] with pinned head sha and ci run id), the golden fixture framework/spec/fixtures/build-pipeline.json (legal/illegal transitions, failed-attempt labels, timer projections) and framework/spec/check-build-pipeline.mjs that validates the fixture against the schema and the transition rules; record the Kotlin twin as a deferred gap in framework/spec/PORTING.md. Use the same status list as the core step: pending, pulling-main, queued, building, built, polling, ci-checking, merging, complete, failed.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/schemas/build-pipeline.json",
+      "framework/spec/fixtures/build-pipeline.json",
+      "framework/spec/check-build-pipeline.mjs",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h02ebom",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s3",
+     "text": "Landing-line engine (landing-line@1) in framework/core/landing-line.mjs: group all of a build's step branches into ONE PR; over sizeCapLines split into 2, 3 or N PRs (never one per step) that land one at a time; a land-together group (Postgres parts A/B/C) merges as one PR and on CI failure falls back to landing its parts one at a time; forward-only retry plan per failure class (flaky → re-run once, too big → split, real red → fix session) with attempt N; cancelled runs re-run. Regenerate the fixture with node framework/spec/check-landing-line.mjs --write and extend the checks for size cap, land-together and the retry plan.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/core/landing-line.mjs",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures/landing-line.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h03xaph",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s4",
+     "text": "Lander runner deploy/lander/run.mjs (systemd axf-lander.timer, every minute): at build-complete read the landing-line plan, open ONE PR per group through framework/cli/github-token.mjs (ETag-cached reads), pull main into it, run CI once with the gate's build rules, merge with the head sha pinned, write every status move (polling, ci-checking, merging, complete, failed attempt N) through builds-store.mjs so builds-live pushes it; on failure follow the retry plan forward by itself (dispatch a re-run, split the PR set, or queue a fix session) and never leave a build silent. Add a dry test with a fake GitHub (deploy/lander/test-run.mjs).",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "deploy/lander/run.mjs",
+      "deploy/lander/test-run.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0499wy",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s5",
+     "text": "CI failure report: new deploy/lander/ci-report.mjs that, for a failed run, fetches the failing jobs and their logs (github-token.mjs broker), extracts the real error lines per job and app, classifies the cause (this PR's changed paths vs unrelated: retired app, flaky download, infra), computes how long main/this PR has been failing from run history, and proposes the fix (re-run, exclude job, which file to fix); writes it as markdown into the build's notes (ci-report@1 shape) and returns it. Fixture logs + test in deploy/lander/test-ci-report.mjs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "deploy/lander/ci-report.mjs",
+      "deploy/lander/test-ci-report.mjs",
+      "deploy/lander/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h054yco",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s6",
+     "text": "Never fail silently: declare the pipeline's notifications in apps/console-web/plugins/build-orchestrator/notify.json (notify-types@1: ci-failed with report, build-failed attempt N, stall-fixed, watchdog-dead, landed) and write deploy/lander/alerts.mjs that sends each through the console's alert hub REST with the console token (reaches Brett via Phone Connect) and opens a banner item with the failure text and fix; one send per event, idempotent on (build, attempt, kind). Test with the alert hub mocked.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "deploy/lander/alerts.mjs",
+      "deploy/lander/test-alerts.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0673v7",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s7",
+     "text": "Show the CI failure report in the Auto-lander: new component apps/console-web/plugins/build-orchestrator/ui/CiFailureReport.tsx (job/app, error lines in a code block, cause badge this-PR / unrelated / flaky, failing-since, fix, attempt N) rendered in the read-only merge-queue / Auto-lander view (view:merge-queue) from the build's ci-report note; tokens only, framework controls, data-axf-target on its actions. Do not touch the builds table or the builds view files.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/CiFailureReport.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/MergeQueueView.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h07og2k",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s8",
+     "text": "Worktrees cut before launch: new apps/console-web/plugins/build-orchestrator/worktrees.mjs: during pending/pulling-main create one git worktree per step cut from fresh main under the build-manager sandbox, record its path and base sha on the step, detect a dead worktree (missing dir, bad HEAD, locked index) and rebuild it, pull main again when it is stale, prune on complete; CLI subcommands prepare <build>, check <build>, rebuild <build> <step>, prune; tests on a temp repo. Node modules symlinked from a sibling worktree as the existing sandbox does.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/worktrees.mjs",
+      "apps/console-web/plugins/build-orchestrator/test-worktrees.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h08oz0o",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s9",
+     "text": "Launcher only starts the session: deploy/claude-headless.sh takes --worktree <path> (required for pipeline launches) and starts claude -p in that pre-cut worktree, never cuts, fetches or pulls at launch, no worktree timeout; keeps agent-slots, worker-account routing, model-gate and build-origin capture unchanged; exits 3 with a plain reason when the worktree is missing so the dispatcher rebuilds it. Extend the launcher test harness (fake claude in HOME/.local/bin) for the new flag.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "deploy/test-claude-headless.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h09spzz",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s10",
+     "text": "Dispatcher apps/console-web/plugins/build-orchestrator/pipeline.mjs: tick moves builds through the build-pipeline@1 statuses, runs the worktree prepare stage (worktrees.mjs) before queue, launches up to 4 steps of one build at once through claude-headless.sh --worktree when slots and a suitable account are free, requeues a crashed session as failed attempt N (loud: alert + note) instead of the silent 3-fails-per-hour bench, marks built when all steps are done and hands off to the lander; intake ignores Plan Studio steps (kept as planning notes in the brief) and runs its split on Fable per model-policy. Tests for the tick with fake slots and launcher.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/test-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0ajf9f",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s11",
+     "text": "orchestrator.mjs uses Pipeline 2.0 statuses: act step / status / next read and write build-pipeline@1 statuses (no legacy names), show 'failed, attempt N', refuse backward transitions with a plain error, and brief <id> carries the step's worktree path and land group; update the orchestrator tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/test-orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0b1eit",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s12",
+     "text": "Plan Studio hands over ONE build: in apps/console-web/plugins/plan-studio/tree.mjs sendToBuild (and Turn into a build) sends the whole plan as one orchestrator build with no steps, Brett's verbatim words in origin.said, and the Plan Studio steps attached as planning notes only; never writes steps or touches pending/queue directly. Update plan-studio tests and README.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/plan-studio/tree.mjs",
+      "apps/console-web/plugins/plan-studio/test-tree.mjs",
+      "apps/console-web/plugins/plan-studio/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0c8wny",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s13",
+     "text": "Watchdog state in Postgres (no-json-data@1): add a watchdog heartbeat/state table (DocTable: last tick, last fix, give-ups) in services/axf-data/tables.py, the namespace plugins/build-orchestrator/watchdog in framework/schemas/data-store-paths.json, and a small reader/writer apps/console-web/plugins/build-orchestrator/watchdog-state.mjs over framework/core/data-files.mjs; update check-json-data-writes baseline only if a count goes down.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "services/axf-data/tables.py",
+      "framework/schemas/data-store-paths.json",
+      "apps/console-web/plugins/build-orchestrator/watchdog-state.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0dagkh",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s14",
+     "text": "Layer 2 watchdog with its own code: deploy/watchdog/run.mjs + axf-watchdog.timer/.service (own cron, every 2 min) finds any build or step whose lastMovedAt is older than X minutes for its status and fixes it itself: rebuild a dead worktree, requeue with attempt N, switch to the least busy worker account (deploy/claude-workers.mjs route), downgrade the model only (never upgrade), restart a stuck lander or pipeline timer via systemctl; a give-up is final (failed attempt N + alert + banner item, never silently benched); writes its heartbeat through the watchdog state writer and logs every action as a build note. Install lines in deploy/install-console.sh; test with a seeded store.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "deploy/watchdog/run.mjs",
+      "deploy/watchdog/axf-watchdog.timer",
+      "deploy/watchdog/axf-watchdog.service",
+      "deploy/watchdog/test-run.mjs",
+      "deploy/install-console.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0e8rqz",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s15",
+     "text": "Layer 3 outside check: apps/console-web/plugins/build-orchestrator/server/pipeline_health.py registers health@1 checks (pipeline tick alive, watchdog heartbeat fresh, lander timer alive, builds stalled) with auto-fix (restart the timer through the hub's vps.run as a veto call with a reason), exposes GET /api/plugins/build-orchestrator/pipeline/health (read-only, plain JSON) for an outside checker, with plugin.json route/command entries for REST/MCP/axf parity; write deploy/axhub/pipeline-outside-check.md with the axHub cron that polls it and restarts the watchdog when it is dead.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/pipeline_health.py",
+      "apps/console-web/plugins/build-orchestrator/plugin.json",
+      "deploy/axhub/pipeline-outside-check.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0fqxnp",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s16",
+     "text": "Builds table components: apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx (one DataGrid of every build driven by status, fixed cell widths), StatusBadge.tsx (status + 'failed, attempt N'), LiveTimer.tsx (elapsed / remaining ticking for building, polling, ci-checking, merging), BuildsFilterToolbar.tsx (a Toolbars plugin toolbar, role=toolbar + aria-label, status/profile/model filters as fx-chip, remembered in settings); tokens only, framework controls, data-axf-target on rows and filters. Do not edit the plugin's main view yet.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/StatusBadge.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/LiveTimer.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/BuildsFilterToolbar.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0gqfgw",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s17",
+     "text": "One table, no tabs: wire BuildsTable + the filter toolbar into the build-orchestrator plugin's builds view, remove the Pipeline / Pending / Queue tab rows and their routes (console-control addresses redirect to filters), keep PriorityTag and 'What Brett said' per row; ship 3 UI Review options as assets (toolbar + container/layout variants) in apps/console-web/plugins/build-orchestrator/assets/<type>/ with a choices file and submit desktop + phone shots with review.mjs submit --choices; update check-chrome-assets baseline only downward.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/BuildsView.tsx",
+      "apps/console-web/plugins/build-orchestrator/index.tsx",
+      "apps/console-web/plugins/build-orchestrator/assets/",
+      "apps/console-web/plugins/build-orchestrator/ui-choices.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0hs8oq",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s18",
+     "text": "CI scope: framework/cli/ci-scope.mjs computes changed areas from the diff against the base (outputs console, android, demo, expenses, axf-data, framework, docs-only, full; full only when framework/core, framework/schemas, framework/spec, framework/react or framework/ui change; manual input scope=auto|full) and the reusable workflow .github/workflows/ci-scope.yml exposes them as job outputs for every caller, including workflow_dispatch; tests in framework/spec/check-ci-scope.mjs over fixture diffs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/cli/ci-scope.mjs",
+      ".github/workflows/ci-scope.yml",
+      "framework/spec/check-ci-scope.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0ir9yt",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s19",
+     "text": "Fast, scoped android.yml: every job gated by the ci-scope outputs (console-only never builds Android or runs unrelated suites, also on workflow_dispatch), actions/checkout with fetch-depth 1 and sparse-checkout per job paths, actions/cache for Gradle, npm and pip keyed on lockfiles, the console job reuses the prebuilt framework modules (axf-maven-repo artifact / cached framework build) instead of recompiling the framework; keep the CI build errors issue posting and artifact names unchanged.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2h0jq5z5",
+     "createdAt": "2026-11-20T07:09:12.473Z"
+    },
+    {
+     "id": "s20",
+     "text": "Other workflows fast and scoped: deploy.yml, rebuild-shots.yml and the remaining .github/workflows files use shallow + sparse checkout, npm/pip caches and the ci-scope gate (demo deploy only on demo or framework changes); document the CI scope and cache rules in .github/workflows/README.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      ".github/workflows/deploy.yml",
+      ".github/workflows/rebuild-shots.yml",
+      ".github/workflows/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2i0kuykm",
+     "createdAt": "2026-11-20T07:09:12.474Z"
+    },
+    {
+     "id": "s21",
+     "text": "Docs: write framework/spec/PIPELINE.md (Pipeline 2.0 contract: forward-only statuses, one PR per build with size cap, land-together groups, worktrees before launch, 4 slots per build, the three fail-safe layers, never-silent alerts, CI failure report, how Postgres parts A/B/C land) and _claude/memory/docs/pipeline-2-0.md (operator view: timers, where to look, what the watchdog does); update _claude/builds/README.md's pipeline section to point at them.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/spec/PIPELINE.md",
+      "_claude/memory/docs/pipeline-2-0.md",
+      "_claude/builds/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2i0lqsa6",
+     "createdAt": "2026-11-20T07:09:12.474Z"
+    },
+    {
+     "id": "s22",
+     "text": "End-to-end dry run deploy/dryrun/pipeline-2-0/run.sh + fixtures: with a fake claude, fake GitHub and a temp store, take one build from pending through worktree prepare, 4 parallel step launches, built, one PR, CI, merge pinned head; kill a worktree mid-run and prove the watchdog rebuilds it and a crashed step comes back as failed attempt 2; prove a final give-up stays final and loud; prove act step only accepts Pipeline 2.0 statuses; print a pass/fail table.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "deploy/dryrun/pipeline-2-0/run.sh",
+      "deploy/dryrun/pipeline-2-0/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2i0mralc",
+     "createdAt": "2026-11-20T07:09:12.474Z"
+    },
+    {
+     "id": "s23",
+     "text": "Tests and report: run node framework/spec/check-build-pipeline.mjs, check-landing-line.mjs, check-ci-scope.mjs, check-builds-store.mjs, check-build-steps.mjs, check-json-data-writes.mjs, check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs, check-console-control.mjs, the plugin tests, the lander/watchdog/launcher tests and the deploy/dryrun/pipeline-2-0 run; fix what they turn up in files no other step owns; regenerate tracker.json; write _claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md (what landed per layer, before/after, test results, UI Review state, gaps: dedicated build box, Postgres parts A/B/C, axHub-side cron).",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "_claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwon1w2i0nmtk3",
+     "createdAt": "2026-11-20T07:09:12.474Z"
     }
    ]
   },
@@ -105103,7 +105079,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123660,7 +123636,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134617,7 +134593,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -140998,7 +140974,7 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -146628,7 +146604,7 @@
    "title": "Group chat audio: hear the agents talk while they build",
    "category": "Console",
    "detail": "Brett: an 'Enable audio' switch on the agents' group chat so you can actually hear the employees building your app. Each cat-named agent gets its own TTS voice (voice, speed, pitch as assets, swappable per agent and per skin). New messages are spoken aloud in order as they arrive; mute, volume, 'only my mentions' and 'summaries only' modes; queue so voices don't overlap. Works in the console and the AmberX Android app (background audio, earbuds). Full API and voice ('turn on group chat audio', 'mute Whiskers'). Token-driven UI. Tests desktop and phone.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172735,7 +172711,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -172744,7 +172720,7 @@
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-17T23:03:41.339Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -177629,7 +177605,7 @@
    "title": "Move server-side console parts onto the VPS host as services, UI stays in console",
    "category": "",
    "detail": "Audit every console plugin. Anything that must keep running when the console is down, or touches Docker, disk or git, moves out of the axf-console container onto the VPS host as systemd services that start on boot and auto-restart, code at /opt/axf, run under a dedicated limited user with a sudo whitelist of only the commands needed (no general root). Candidates: Maintenance (coordinate with maintenance-plugin-clear-docker-cache), Systems check and its Auto fixes, agent-swarm job runner (CI-fix jobs), builds-live publisher, shipped-features watcher, axHub sync. Orchestrator/lander/watchdog are already moving in server-auto-lander-fixes-lands; reuse that, don't duplicate. App-only plugins (settings, skins, etc.) stay in the container. Console UI calls the host services over a local socket/API and shows a clear 'host service down' state. Include install script, health checks in Systems check, migration with rollback, and reachable via UI, REST, MCP, CLI, voice. Write the audit list into the report first.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -177638,7 +177614,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T12:26:40.644Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T06:29:08.928Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -178817,7 +178793,7 @@
    "title": "Rebuild fresh on main: hide any asset (toolbars, tab groups, banners) + see what's hidden",
    "category": "",
    "detail": "Rebuild from current main (do not merge the old branches). Old attempts for reference only: claude/assets-menu-hide-any-asset-visible (PR #583, closed) and claude/assets-menu-hide-any-asset-hidden-list (836 behind main, no PR); read their reports in _claude/builds/reports/ for what was decided. Feature: an Assets menu / right-click Hide on any asset (toolbar, tab group, banner, nav, menu bar, widgets), a Hidden list showing everything hidden with Unhide and Unhide all, hidden state stored per app through the look system so it survives reloads. Works in the console, axHub web and AmberX. Reachable via UI, REST, MCP, CLI, voice. When this lands, archive the two old builds.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178826,7 +178802,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T14:50:33.375Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-17T22:20:39.518Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -192819,7 +192795,7 @@
    "title": "Terminal: a main tab streaming the console's connection to Claude in real time",
    "category": "",
    "detail": "Add a pinned main tab in the console Terminal plugin that streams, in real time, the console's connection to Claude (Brett said 'cloud'; read as Claude: the console's/VPS's Claude traffic, headless session launches, account use, MCP/axHub calls, connect/disconnect and errors). Read-only live log, auto-scroll with pause, filter, clear. Same stream reachable by REST/MCP/CLI/voice and a deep link.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -192828,7 +192804,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T19:34:48.701Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T00:17:10.973Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -194977,7 +194953,7 @@
    "title": "Icon picker for every banner and settings widget",
    "category": "",
    "detail": "Every widget in the banner and in settings gets an icon, chosen with an icon picker on right-click and in its settings. Widgets that show long text strings now show an icon instead, with the text as a tooltip. Console only.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -194986,7 +194962,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T21:20:30.021Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-17T23:31:47.269Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -196947,7 +196923,7 @@
    "title": "Flagship professional skin covering everything (Fable Ultra Code)",
    "category": "",
    "detail": "Build one complete, professional flagship skin on Fable Ultra Code that covers every part of the UI: colours, style, layout, context menus, app menus, navigation menus, tab groups, toolbars, banners and their widgets, grids, dialogs, settings interfaces, animations, behaviour and hooks. Every slot of skin@1 filled; add slots where the skin format can't express something yet. Ship a map showing where every dataset and layout lives and what each part of the skin controls. Must look like one unified product across the console, axHub web and AmberX. Plan it in Plan Studio first.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -196956,7 +196932,7 @@
    "priority": "P1",
    "createdAt": "2026-11-17T21:30:30.893Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T01:10:42.989Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett: full autonomy. Don't wait to be told what's needed or where things go: decide and build it all yourself, including new toolbars, menus, widgets and layouts wherever the app needs them. Think it through first and keep design notes as you go. Bar: genuinely professional, not childish (Brett says the current look feels childish). Benchmark against real top-tier live products and sites, test against them, and meet accessibility (contrast, focus, keyboard, screen reader, reduced motion). Treat console, axHub web and AmberX as one app.",
@@ -197831,7 +197807,7 @@
    "title": "Fix: refreshing the console jumps back instead of staying put",
    "category": "",
    "detail": "After a refresh (pull-down or reload), the console doesn't stay on the screen, tab, scroll position and selection Brett was on; it jumps back. Find the cause and restore the exact place after every refresh, including console refresh pushed from the server. Also check the console locking up so it won't scroll after an update. Console only, small, land when done.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197840,7 +197816,7 @@
    "priority": "P0",
    "createdAt": "2026-11-17T21:36:54.206Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T02:03:51.047Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -200163,7 +200139,7 @@
    "title": "Auto-lander: never wait on a missing UI Review, and test the real lander",
    "category": "",
    "detail": "Bug: PR #816 (guided-live-demo-test-watch-orchestrator) was finished, CI green, but never merged on its own: the auto-lander held it for a UI Review pick whose review item was never posted to the console, so it would wait forever. Brett had to land it by hand. Fix: 1) The lander never holds a PR for a UI Review item that doesn't exist in the console; a missing or unposted review never blocks landing (land when CI is green, flag the review separately). 2) Any held PR older than a set time shows in the systems check banner with the reason and a Land now button. 3) Builds that ship UI Review items must post them to the live console (fail the build step if they can't). 4) The orchestrator demo must run its landing act against the real lander path (self-test before demo), not only a dry run. Tests. Land when green.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "mcp",
    "pendingId": "auto-lander-never-wait-missing-ui-review",
@@ -200171,7 +200147,7 @@
    "pr": "#831",
    "createdAt": "2026-11-17T22:35:36.950Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T01:35:30.472Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Brett: UI Review must NEVER block landing at all, posted or not. Auto-landing means no human step: land as soon as CI is green; UI Review picks happen after, as a follow-up that swaps the chosen asset in. Remove the UI Review hold from the lander entirely.",
@@ -202054,7 +202030,7 @@
    "title": "Fix launcher crash: duplicate steps + brief too big",
    "category": "",
    "detail": "auto-lander-never-wait-missing-ui-review died at launch: deploy/claude-headless.sh line 416 '/root/.local/bin/claude: Argument list too long' (brief ~54,579 tokens). Two causes: (1) the step splitter/re-split appends the same steps again and again (dispatcher-split had 897 steps, vps-sets-every-build-status 750, settings-fix-part-2 84, remove-amberx 63, all repeats of 13-15 real steps). Fix the splitter so a re-split replaces steps, dedupe by text, and clean every existing build's duplicate steps (keep done flags). (2) claude-headless.sh must pass the brief through a file/stdin, never as an argv string, and cap brief size with a trimmed step list. Also: a launch crash must be retried automatically by the VPS after the fix, and a land clash must send the build straight back to the queue with a merge-main fix step on its own (Phone Connect #787 sits with 27/27 steps done and a clash in framework/spec/check-ci-scope.mjs, so the dispatcher has nothing to run). Tests for each. Run on Opus now.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -202064,7 +202040,7 @@
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
    "updatedAt": "2026-11-20T00:12:27Z",
-   "builtAt": "2026-11-19T02:36:57.062Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -205486,7 +205462,7 @@
    "title": "Approval pass covers every call, including VPS commands and stops",
    "category": "",
    "detail": "In axHub, an active approval pass (24-hour or any length) must cover every tool call, including vps.run (veto countdown policy) and always-approve tools like console_terminal_sessions_stop. While a pass is active these run at once with no countdown and no approval prompt, and are logged as run under the pass. Pass settings show which tools it covers and default to all. CI check.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -205495,7 +205471,7 @@
    "priority": "P0",
    "createdAt": "2026-11-18T01:41:28.108Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T07:55:44.837Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -206419,7 +206395,7 @@
    "title": "Plan Studio 2: Open button, working deep links, Ctrl+K command palette",
    "category": "",
    "detail": "Plan Studio 2 opens only its settings. Add an Open button to open plans; make deep links (#/... and ?axf-target=view:...) land on the right view instead of the main page; add a Ctrl+K command palette to the console. Full API/CLI/voice parity, tests.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -206427,7 +206403,7 @@
    "pr": "#843",
    "createdAt": "2026-11-18T12:20:46.628Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T14:29:07.628Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -207282,7 +207258,7 @@
    "title": "Every app gets its own locked default navigation menu and application menu",
    "category": "",
    "detail": "Same model as settings-iface-default-all (landed 810eecf3ca7b): every app gets its own default navigation menu asset and its own default application menu asset (default-<app>-nav, default-<app>-appmenu), locked by default. A checkbox unlocks a picker dialog that lists ONLY the nav menus / app menus built for that app. No shared generic menu is ever offered, because every app is different. Migrate current menus into each app defaults. Full REST/MCP/CLI/voice parity, tests, CI guard that no app points at a shared menu.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -207290,7 +207266,7 @@
    "pr": "#845",
    "createdAt": "2026-11-18T12:27:40.646Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T15:05:21.420Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -207496,7 +207472,7 @@
    "title": "Every plugin gets its own default toolbar; toolbars are generic or screen-specific",
    "category": "",
    "detail": "Brett (Nov 18): every plugin gets its own default toolbar asset (default-<plugin>-toolbar), locked by default like the settings interfaces. Every toolbar asset is marked either generic (usable on any screen) or built for one particular screen. A screen toolbar picker lists only generic toolbars plus the ones built for that screen. The override switch only changes look and style, never the buttons. Migrate existing toolbars, full REST/MCP/CLI/voice parity, tests, CI guard. Coordinate with the toolbar override wiring build queued just before this.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -207504,7 +207480,7 @@
    "pr": "#844",
    "createdAt": "2026-11-18T12:30:23.226Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T14:33:04.937Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -208241,7 +208217,7 @@
    "title": "One build at a time, always split to fill every slot: split-ID gate, Splitting status, expandable queue row with live per-part badges",
    "category": "",
    "detail": "Brett (Nov 18). 1) ONE build at a time on the VPS. The splitter breaks it into as many parallel parts as there are free slots (use every slot it possibly can), parts never touch the same files; each part gets its own branch and slot and starts from current main (main is locked while the build runs, so no re-pull). When all parts finish they are combined into one branch, one CI run, one landing (all or nothing). 2) GATE: the VPS rejects any build start lacking an orchestrator build ID AND a split ID proving it went through the splitter; rejected starts go to the orchestrator Failed tab with the reason. Rule on Gate & rules, on by default. 3) PENDING: one row per build; the orchestrator auto-splits each pending build at once; while splitting, status reads Splitting with an animated split icon. 4) QUEUE: split done = ONE expandable row; parts start in their own slots as soon as the queue receives them. Expanded, every part shows its slot and a live animated badge (waiting, building, testing, rebuilding, failed, done; animated only while working). Main row shows overall status. 5) The queue row keeps updating continuously through combining, running CI, merging, merged, live, Finished. Full REST/MCP/CLI/voice parity, tests, CI checks. Replaces orchestrator-auto-split-tab and the 4-builds rule; coordinate with the server-gate build.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -208250,7 +208226,7 @@
    "priority": "P0",
    "createdAt": "2026-11-18T12:40:40.117Z",
    "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-18T18:10:34.719Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -209176,7 +209152,7 @@
    "title": "Stop the push storm: builds-live pushes at build end only, Expenses rebuilds only on its own changes",
    "category": "orchestrator",
    "detail": "Brett's words: \"We don't need it to do a update main on every fucking little thing. It needs to do it just at the end of the build.\" (about builds-live) and, about Expenses: \"Why is that shit even running? ... I just want to do what it needs to do to fucking update.\"\n\nFound on the VPS (load average 60): framework/cli/builds-live.mjs pushes a status-only [skip ci] commit to main for every store write (step, note, status), rewriting _claude/builds/store.json (over 2 MB), the orchestrator export and a THREADS.md live-log line, roughly every 30 s. apps/expenses/deploy/install.sh then builds a new expenses-axf image tagged with every new main commit (the live container is tagged with a status-only commit), so every status push also triggers a Docker build.\n\nReplaces the Nov 3 2026 'Builds go live to main' rule: store writes stay local/in the build's branch while it runs; one push to main when the build finishes (built/landed/failed). Update CLAUDE.md and _claude/builds/README.md to match.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -210857,7 +210833,7 @@
    "title": "Postgres part B: plan, Plan Studio, catalog, sessions and changes to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 2, 8 and the s4 order). This build does s4.2, s4.3 and s4.6 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, pending, build queue, agent-slots or auto-lander (part A), and never touch console state, settings, alerts, notifications, plugin data dirs (part C). Register new tables in their own module file under services/axf-data (e.g. tables_plan.py) and add only additive entries to shared registries, so merges with the other two builds stay clean. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over (key-level mode). No runtime data in JSON. Branch, PR, CI, merge queue; never push to main.",
-   "status": "fixing",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
