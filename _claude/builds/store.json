@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10086,
- "updatedAt": "2026-11-20T19:25:57.388Z",
+ "rev": 10087,
+ "updatedAt": "2026-11-20T19:26:17.126Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -8484,14 +8484,14 @@
    "title": "Plugin conflict alarm + tracked AI patches + installed add-ons list",
    "category": "Add-on",
    "detail": "Brett, Oct 18 2026 (parked as unsafe: AI patching and cascading uninstalls need design and review before anyone builds it):\n\n1. When a plugin could potentially conflict with another plugin, raise a developer alarm (alerts library, source conflicts) shown as an expandable row grid like the Systems check grid: same kinds of details per row, fix instructions and external links.\n2. Each conflict row has 3 badges/actions: (a) uninstall a plugin - choose which one; (b) ignore; (c) use AI to patch the conflict. The patch must NOT alter any plugin source.\n3. Patches are tracked and listed in an Installed add-ons list that covers plugins, add-ons, modules, libraries and patches. Installing a patch is tracked and the patch can be removed.\n4. Removing a patch uninstalls every conflicting plugin it patched; those plugins must then be reinstalled.\n\nBuilds on: alerts library (conflicts source, diagnostics: same asset id / setting key / settings tab from two named modules; plugins:dup ids on the server), plugin-lifecycle@1 (install/uninstall scripts, backups), plugin-manager (Fable, pending), agent manager add-ons (agent-addon@1 install/uninstall tracking), axf.llm@1 for the AI patch.\nOpen questions for Brett at build time: what counts as a potential conflict beyond the runtime diagnostics (routes, capability services, settings keys, assets, nav ids, CSS prefixes, data dirs?); where patches live (an overlay layer the console applies at load, never the plugin folder); whether removing a patch should back up the plugins first and offer one-tap reinstall.",
-   "status": "blocked",
+   "status": "archived",
    "hidden": false,
    "source": "chat",
    "pendingId": "plugin-conflicts",
    "branch": "",
    "pr": "",
    "createdAt": "2026-10-18T20:15:46.216Z",
-   "updatedAt": "2026-10-22T18:37:50.877Z",
+   "updatedAt": "2026-11-20T19:26:09.288Z",
    "builtAt": "",
    "notes": [
     {
@@ -8501,6 +8501,10 @@
     {
      "text": "Merged from build profile \"main-framework\" into \"all\" (one profile for everything).",
      "at": "2026-11-07T10:19:24.553Z"
+    },
+    {
+     "text": "Moved to the Archive from blocked (console): Brett, Nov 20: only today's builds stay in the pipeline and build manager.",
+     "at": "2026-11-20T19:26:09.288Z"
     }
    ],
    "approvals": [],
@@ -8813,7 +8817,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151384,7 +151388,7 @@
    "title": "Land all 97 built-but-unmerged builds, skins first, in batches of 5",
    "category": "",
    "detail": "Land every build in status 'built' (97, see Nov 10 list). Order: 1) skins and appearance first: #430 Appearance = skins + colour themes, #409 Skins restyle everything, #355 Three layouts per screen, #376 UI asset designer, then the rest of today's (#460 splitter first if not yet landed), then Nov 9, Nov 7-8, Nov 3-5. Batch related PRs up to 5 at a time: merge latest main in, resolve conflicts keeping both intents, CI once, merge. Before each, check main: if already covered or superseded (e.g. #432/#440/#269 by #450), close and archive with the reason instead of merging. Redeploy the console after each batch. Fix any failure and retry; notify on AmberX only per batch landed, and a final summary.",
-   "status": "blocked",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -151394,7 +151398,7 @@
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T20:43:36.267Z",
-   "updatedAt": "2026-11-12T03:31:21Z",
+   "updatedAt": "2026-11-20T19:25:58.645Z",
    "builtAt": "",
    "notes": [
     {
@@ -151452,6 +151456,10 @@
     {
      "text": "Shipped manifest sm-land-all-97-built-but-unmerged-builds-skins-firs rev 1 sent to Shipped features (backfill): landed 654c24ce3, 2 file(s), 0 test line(s), 5 open.",
      "at": "2026-11-12T03:31:21Z"
+    },
+    {
+     "text": "Moved to the Archive from blocked (console): Brett, Nov 20: only today's builds stay in the pipeline and build manager.",
+     "at": "2026-11-20T19:25:58.645Z"
     }
    ],
    "approvals": [],
@@ -151577,7 +151585,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
