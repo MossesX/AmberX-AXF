@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10174,
- "updatedAt": "2026-11-20T23:27:10.679Z",
+ "rev": 10175,
+ "updatedAt": "2026-11-20T23:36:34.024Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:23:08.783Z",
+   "updatedAt": "2026-11-20T23:36:29.276Z",
    "builtAt": "",
    "notes": [
     {
@@ -344863,12 +344863,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T23:36:29.276Z",
      "note": "",
-     "rev": 9,
+     "rev": 10,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:56:55.668Z",
+     "updatedAt": "2026-11-20T23:36:29.669Z",
      "statusAt": "2026-11-20T22:56:55.617Z",
      "statusBy": "orchestrator",
      "attempt": 3,
@@ -345231,7 +345231,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
