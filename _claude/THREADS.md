@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `flagship-professional-skin-covering` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `settings-fix-part-2-blank-toolbars` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `dispatcher-split-builds-evenly-across` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `move-everything-axhub-web-console` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 11:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
