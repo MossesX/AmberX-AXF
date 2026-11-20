@@ -836,19 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 05:47 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 05:47 UTC · `fable-full-audit-ui-overhaul-conso` s1 done (all) · orchestrator
-- 2026-11-20 05:48 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 05:48 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 05:50 UTC · `fable-full-audit-ui-overhaul-conso` s1 undone (all) · orchestrator
-- 2026-11-20 05:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 05:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 05:52 UTC · `fable-full-audit-ui-overhaul-conso` s1 done (all) · orchestrator
-- 2026-11-20 05:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 05:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 05:54 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 05:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 05:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 05:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 05:58 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 05:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
@@ -1236,6 +1223,19 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 22:47 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
 - 2026-11-20 22:48 UTC · `fix-main-ci-red-after-s16-s7-hand-` → failed, note (all) · watchdog
 - 2026-11-20 22:48 UTC · `fix-main-ci-red-after-s16-s7-hand-` → pulling-main (all) · orchestrator
+- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → assigning-models (all) · orchestrator
+- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → ready (all) · orchestrator
+- 2026-11-20 22:56 UTC · `fix-main-ci-red-after-s16-s7-hand-` → sending (all) · orchestrator
+- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` → building (all) · orchestrator
+- 2026-11-20 22:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` → building (all) · builds-live
+- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
+- 2026-11-20 22:57 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
+- 2026-11-20 22:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · builds-live
+- 2026-11-20 22:58 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · orchestrator
+- 2026-11-20 23:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
+- 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` s2 done (all) · orchestrator
+- 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s2 (all) · builds-live
 
 ## Token passes (log)
 
