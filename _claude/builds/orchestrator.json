@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T19:35:54.687Z",
+ "updatedAt": "2026-11-20T19:36:20.647Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Nov 20 fix list + voice console control",
    "category": "",
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
-   "status": "pending",
+   "status": "splitting",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -67,7 +67,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-20T19:35:44.492Z",
+   "updatedAt": "2026-11-20T19:36:13.842Z",
    "builtAt": "",
    "notes": [
     {
