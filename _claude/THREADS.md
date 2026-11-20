@@ -836,9 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `notify-phone-when-queue-starts-building` note (all) · builds-live
-- 2026-11-20 00:11 UTC · `rebuild-every-context-menu-toolbar-nav` note (all) · builds-live
-- 2026-11-20 00:11 UTC · `live-build-status-real-time-grids-15` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `right-click-running-build-open-headless` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `right-click-running-build-pop-open` note (all) · builds-live
@@ -1236,6 +1233,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 05:26 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 05:27 UTC · `remove-amberx-app-code-once-phone` merged, note (all) · reconciler
 - 2026-11-20 05:27 UTC · `fable-full-audit-ui-overhaul-conso` s1 done (all) · orchestrator
+- 2026-11-20 05:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 05:28 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 05:28 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
 
 ## Token passes (log)
 

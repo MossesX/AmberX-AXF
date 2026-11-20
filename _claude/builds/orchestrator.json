@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T05:27:59.663Z",
+ "updatedAt": "2026-11-20T05:28:14.154Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:27:50.344Z",
+   "updatedAt": "2026-11-20T05:28:04.501Z",
    "builtAt": "",
    "notes": [
     {
@@ -144,6 +144,14 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--lenny, shared account login)",
      "at": "2026-11-20T05:26:16.746Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s1--lenny: brief only · start 10.1K tokens ($0.02) · cost $0.08 · 3 turns · 6 tools, MCP none",
+     "at": "2026-11-20T05:27:58.004Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.08",
+     "at": "2026-11-20T05:28:04.501Z"
     }
    ],
    "approvals": [],
@@ -191061,7 +191069,7 @@
    "pr": "#853",
    "mergedAt": "2026-11-19T20:41:14Z",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-20T05:27:09.523Z",
+   "updatedAt": "2026-11-20T05:28:03Z",
    "builtAt": "2026-11-19T17:43:42.350Z",
    "notes": [
     {
@@ -191127,6 +191135,10 @@
     {
      "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-20T05:27:09.524Z"
+    },
+    {
+     "text": "Shipped manifest sm-remove-amberx-app-code-once-phone rev 1 sent to Shipped features (orchestrator): landed 376ef2762, 1429 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-20T05:28:03Z"
     }
    ],
    "approvals": [],
