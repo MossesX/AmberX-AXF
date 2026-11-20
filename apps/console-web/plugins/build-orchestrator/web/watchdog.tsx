@@ -49,10 +49,10 @@ function NumberRow({ label, hint, value, min, max, onSave }: { label: string; hi
 export function WatchdogSettingsPanel() {
   const [s, setS] = useState<WatchdogSettings | null>(null);
   const [err, setErr] = useState('');
-  useEffect(() => { void watchdogApi.call<{ settings: WatchdogSettings }>('watchdog/settings').then((r) => setS(r.settings)).catch((e: Error) => setErr(e.message)); }, []);
+  useEffect(() => { void watchdogApi.call<{ settings: WatchdogSettings }>('recovery-watchdog/settings').then((r) => setS(r.settings)).catch((e: Error) => setErr(e.message)); }, []);
   const save = async (patch: Partial<WatchdogSettings>) => {
     setErr('');
-    try { setS((await watchdogApi.put<{ settings: WatchdogSettings }>('watchdog/settings', patch)).settings); } catch (e) { setErr((e as Error).message); }
+    try { setS((await watchdogApi.put<{ settings: WatchdogSettings }>('recovery-watchdog/settings', patch)).settings); } catch (e) { setErr((e as Error).message); }
   };
   if (!s) return err ? <Note tone="danger">{err}</Note> : <p className="fx-small fx-muted">Loading…</p>;
   return (
@@ -108,19 +108,19 @@ export function WatchdogTab({ focus = '' }: { focus?: string }) {
   const [s, setS] = useState<WatchdogStatus | null>(null);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
-  const load = () => watchdogApi.call<WatchdogStatus>('watchdog/status').then((r) => { setS(r); setErr(''); }).catch((e: Error) => setErr(e.message));
+  const load = () => watchdogApi.call<WatchdogStatus>('recovery-watchdog/status').then((r) => { setS(r); setErr(''); }).catch((e: Error) => setErr(e.message));
   useEffect(() => { void load(); const t = window.setInterval(() => void load(), 20_000); return () => window.clearInterval(t); }, []);
   const runNow = async () => {
     setBusy(true);
     try {
-      const r = await watchdogApi.post<{ requested?: boolean; fixes?: Recovery[]; at?: string }>('watchdog/run', {});
+      const r = await watchdogApi.post<{ requested?: boolean; fixes?: Recovery[]; at?: string }>('recovery-watchdog/run', {});
       rt.toast(r.requested ? 'Asked the VPS for a watchdog pass: it runs within a minute.' : `Watchdog pass done: ${r.fixes?.length ?? 0} fixed.`, 'success');
       await load();
     } catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setBusy(false); }
   };
   const requeue = async (ids: string[]) => {
     setBusy(true);
-    try { const r = await watchdogApi.post<{ requeued: string[] }>('watchdog/requeue', { builds: ids }); rt.toast(`Back in the Queue: ${r.requeued.join(', ') || 'nothing'}`, 'success'); await load(); }
+    try { const r = await watchdogApi.post<{ requeued: string[] }>('recovery-watchdog/requeue', { builds: ids }); rt.toast(`Back in the Queue: ${r.requeued.join(', ') || 'nothing'}`, 'success'); await load(); }
     catch (e) { rt.toast((e as Error).message, 'danger'); } finally { setBusy(false); }
   };
   if (!s) return err ? <Note tone="danger">{err}</Note> : <div className="fx-empty">Loading the watchdog…</div>;
