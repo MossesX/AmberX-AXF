@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `rebuild-fresh-main-collapsible-sections` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `nothing-saved-browser-all-console` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `merge-queue-view-every-build-s-fully` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `grid-filter-plugin-one-filter-search` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s16 (all) · builds-live
 - 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 11:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 11:33 UTC · `fable-full-audit-ui-overhaul-conso` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
