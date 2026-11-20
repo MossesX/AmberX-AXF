@@ -93,7 +93,7 @@ COMPLETE = complete.Completer(data_dir(), FEED.snapshot, FEED.config, FEED.dismi
                               changes=lambda: plugin_services.get(complete.CHANGES),
                               raise_alert=lambda a: cx.raise_alert(a))
 if os.environ.get("AXF_ACTIVITY_WATCH") != "off":
-    complete.start_watcher(COMPLETE)
+    complete.start_watcher(COMPLETE, enabled=lambda: bool(cx.plugin_enabled(FOLDER)))
 
 health.ensure(FEED, data_dir(), changes=lambda: plugin_services.get(complete.CHANGES))
 
