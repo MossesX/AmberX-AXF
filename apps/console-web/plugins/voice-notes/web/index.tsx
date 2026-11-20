@@ -422,7 +422,7 @@ function NotesPage() {
     ...(counts.none ? [{ value: 'none', label: `No list / list removed (${counts.none})` }] : []),
   ];
   return (
-    <div className="fx-stack">
+    <div className="fx-stack fx-stack--lg">
       {!rt.embedded?.page && (
         <header className="fx-pagehead">
           <div>

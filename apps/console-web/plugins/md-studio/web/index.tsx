@@ -43,7 +43,7 @@ function StudioView() {
     'md-studio.reload': async () => { await loadListing(); return { reloaded: true }; },
   });
   return (
-    <div className="fx-stack axp-md-studio" data-view={view} data-column={column}>
+    <div className="fx-stack fx-stack--lg axp-md-studio" data-view={view} data-column={column}>
       <header className="fx-pagehead axp-md-studio__head">
         <div className="axp-md-studio__label"><p className="fx-eyebrow">Claude files · docs</p><h1>MD Studio</h1><p className="fx-muted axp-md-studio__hint">Every Markdown file by scope, opened as tabs you can split, float and edit safely. {v.hint}</p></div>
       </header>

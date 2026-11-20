@@ -99,13 +99,13 @@ export function PlanStudioPage() {
     return () => { openers.delete(take); };
   }, [state]);
 
-  if (!state) return <div className="fx-stack axp-plan-studio"><Head />{error ? <EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => void reload() }}>{error}</EmptyState> : <LoadingSkeleton rows={8} label="Loading plans" />}</div>;
+  if (!state) return <div className="fx-stack fx-stack--lg axp-plan-studio"><Head />{error ? <EmptyState icon="alert" action={{ label: 'Try again', icon: 'refresh', onClick: () => void reload() }}>{error}</EmptyState> : <LoadingSkeleton rows={8} label="Loading plans" />}</div>;
   const openId = (id: string) => { const p = state.plans.find((x) => x.id === id); if (p) setOpen({ plan: p, isNew: false }); };
 
   if (open) return <div className="fx-stack axp-plan-studio"><PlanEditor key={open.plan.id} initial={open.plan} isNew={open.isNew} onClose={() => setOpen(null)} onOpen={openId} /></div>;
 
   return (
-    <div className="fx-stack axp-plan-studio">
+    <div className="fx-stack fx-stack--lg axp-plan-studio">
       <Head count={state.plans.length} />
       <div className="axp-plan-studio__topbar">
         <TabGroup id="plan-studio.tabs" label="Plan Studio" value={tab} onChange={setTab}

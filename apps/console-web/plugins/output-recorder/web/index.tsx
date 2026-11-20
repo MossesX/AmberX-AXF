@@ -189,7 +189,7 @@ function HubList() {
 function OutputRecorderView() {
   const c = controller();
   return (
-    <div className="fx-stack">
+    <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Audio Output Recorder</p>

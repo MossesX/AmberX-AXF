@@ -108,7 +108,7 @@ function GridView() {
   });
 
   return (
-    <div className="fx-stack axp-changes-grid">
+    <div className="fx-stack fx-stack--lg axp-changes-grid">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Builds{data ? ` · ${rows.length} rows · ${n.changes} changes · ${n.features} features` : ' · loading…'}</p>

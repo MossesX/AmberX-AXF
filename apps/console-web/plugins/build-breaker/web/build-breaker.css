@@ -88,3 +88,5 @@
 .axp-build-breaker__bar { gap: var(--fx-dens-gap-sm); }
 .axp-build-breaker__tools { gap: var(--fx-dens-gap-sm); }
 :where([data-fx-small]) .axp-build-breaker .axp-build-breaker__search { flex-basis: 100%; }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-build-breaker > .fx-pagehead { margin-bottom: var(--fx-dens-gap-xl) }

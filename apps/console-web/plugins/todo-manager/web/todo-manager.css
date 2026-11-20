@@ -73,3 +73,5 @@ button.axp-todo__cellbtn:focus-visible { outline: calc(var(--fx-border-w) * 2) s
 
 /* shown alone as a host's tab: no page heading, full height */
 .axp-todo.is-embedded { padding-top: var(--fx-dens-gap-xs) }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-todo > .fx-pagehead { margin-bottom: var(--fx-dens-gap-xl) }

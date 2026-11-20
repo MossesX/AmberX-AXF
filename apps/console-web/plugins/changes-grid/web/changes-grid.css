@@ -18,3 +18,5 @@ select.fx-input.axp-changes-grid__sort { flex: none; width: auto }
 :where([data-fx-small]) .axp-changes-grid__phonehooks { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); margin-top: var(--fx-dens-gap-md) }
 :where([data-fx-small]) .axp-changes-grid__line { flex-direction: column; gap: 0 }
 :where([data-fx-small]) .axp-changes-grid__k { min-width: 0 }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-changes-grid > .fx-pagehead { margin-bottom: calc(var(--fx-dens-gap-3xl) - var(--fx-dens-gap-lg)) }
