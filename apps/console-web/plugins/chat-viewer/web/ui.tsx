@@ -9,7 +9,8 @@ import type { AudioExport, Hit, Job, Message, Row, SyncReport, Version } from '.
 export const FOLDER = 'chat-viewer';
 const api = pluginApi(FOLDER, 'The Chat viewer');
 const enc = encodeURIComponent;
-const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+/** Grid column widths in text units (the columns hold text; a compact spacing preset shrinks space-based tracks). n = the old space count. */
+const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
 
 /** A phone-width screen: fewer columns by default (the title shows the source icon anyway). */
 const narrow = () => typeof window !== 'undefined' && window.matchMedia?.('(max-width: 640px)').matches;
