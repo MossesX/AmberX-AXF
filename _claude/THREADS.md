@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `toolbars-2-5-plan-studio-ui-review-2` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `toolbars-5-5-claude-accounts-glossary` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `fix-banner-settings-interface-tab` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `land-pr-730-reset-all-button-far-right` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 11:48 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 11:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
