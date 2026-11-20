@@ -69,11 +69,13 @@ const res = [
   { id: 'r4', mode: 'run', pid: 500, session: 'axf-limittest-d', at: new Date(now).toISOString() },  // alive, no claude yet: counts
   { id: 'r5', mode: 'run', pid: 999, at: new Date(now).toISOString() },                                // gone: dropped
   { id: 'r6', mode: 'launch', session: 'axf-limittest-old', at: new Date(now - 3600e3).toISOString() }, // expired
+  { id: 'r7', mode: 'launch', pid: 998, session: 'axf-limittest-refused', at: new Date(now).toISOString() }, // launcher gone, no session: dropped
+  { id: 'r8', mode: 'launch', pid: 500, session: 'axf-limittest-starting', at: new Date(now).toISOString() }, // launcher alive: counts
 ];
 c = L.countLive({ ...base, reservations: res }, lim, {});
-eq(c.keep.map((r) => r.id), ['r2', 'r4'], 'reservations: open ones kept');
-eq(c.live, 4, 'run mode: session + loose claude + two reservations');
-eq(L.decide(c, lim), { ok: false, live: 4, max: 3, free: 0 }, 'over the limit: refused');
+eq(c.keep.map((r) => r.id), ['r2', 'r4', 'r8'], 'reservations: open ones kept; a launch whose launcher died with no session is not (a refused launch never holds a place)');
+eq(c.live, 5, 'run mode: session + loose claude + three reservations');
+eq(L.decide(c, lim), { ok: false, live: 5, max: 3, free: 0 }, 'over the limit: refused');
 
 // admit: N pass, N+1 refused, under one lock
 rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
@@ -130,7 +132,9 @@ if (hasTmux) {
   L.saveLimit({ maxBuilds: 2 }, { by: 'test', owner: true });
   delete process.env.AXF_SLOTS_TMUX;
   const bin = join(tmp, 'bin'); mkdirSync(bin);
-  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
+  // the stand-in ends when told (go) or when its folder is gone: one that outlived the test used to loop forever from a
+  // deleted /tmp/axf-limit-* folder, counted by the real hard limit as a running build (Nov 20 2026)
+  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ] && [ -d "$PWD" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
   chmodSync(join(bin, 'claude'), 0o755);
   const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_SLOTS: 'off', AXF_WATCH_LIVE: 'off', AXF_AGENT_BOOK: 'off', AXF_OWN_LOGIN: 'off', AXF_WORKERS: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_BUILD_SLICE: 'off', AXF_LOGIN_NOTE: 'off', AXF_BUILD_LIMIT_POLL: '1', AXF_BUILD_ID: '', AXF_AGENT: '', AXF_AGENT_NAME: '', HOME: join(tmp, 'home') }; // HOME: the launcher puts ~/.local/bin (the real claude) first on PATH
   mkdirSync(join(tmp, 'home'), { recursive: true });
@@ -160,7 +164,12 @@ if (hasTmux) {
     ok(c4.status === 0 && /^started axf-limittest-/m.test(c4.stdout), `then a new launch starts: ${c4.stdout}${c4.stderr}`);
     writeFileSync(join(dirs.b, 'go'), ''); if (dirs.d) writeFileSync(join(dirs.d, 'go'), '');
   } finally {
-    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); spawnSync('tmux', ['kill-session', '-t', `=axf-${tag}-${k}`]); }
+    for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); }
+    // every stand-in has ended before the folder goes (a session renamed by the launcher is still ours: by prefix)
+    const ours = () => spawnSync('pgrep', ['-f', join(tmp, 'bin', 'claude')], { encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+    await until(() => ours().length === 0, 10_000);
+    for (const pid of ours()) { try { process.kill(Number(pid), 'SIGKILL'); } catch { /* gone */ } }
+    for (const n of (spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout || '').split('\n')) if (n.startsWith(`axf-${tag}-`)) spawnSync('tmux', ['kill-session', '-t', `=${n}`]);
   }
 } else console.log('(tmux or ps missing: skipped the claude-headless.sh end-to-end checks)');
 

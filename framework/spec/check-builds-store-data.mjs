@@ -89,6 +89,35 @@ try {
     const h = io.journalOf('b3');
     assert.equal(h.length, 1); assert.equal(h[0].op, 'add');
   });
+  await t('cutover: history pages the journal (SYNC_READ_PAGE per call), so a busy month part never overflows a sync call', async () => {
+    // Nov 20 2026: a 68 MB month part came back as one 5000-entry page and data-call's stdout hit spawnSync ENOBUFS
+    const month = new Date().toISOString().slice(0, 7);
+    const count = files.SYNC_READ_PAGE * 2 + 7;
+    const at = new Date().toISOString();
+    const entries = Array.from({ length: count }, (_, i) => ({ rev: 100000 + i, at, by: 'test', action: 'page', builds: [{ id: 'paged', op: 'update', rev: i + 1, after: { id: 'paged', title: `p${i}` } }] }));
+    files.callSync({ op: 'append', key: `builds/journal/${month}`, entries, idem: `paged-${Date.now()}` });
+    const log = join(dir, 'calls.jsonl');
+    const spy = join(dir, 'spy-data-call.mjs');
+    writeFileSync(spy, `import { appendFileSync } from 'node:fs'; import { execFileSync } from 'node:child_process';
+let input = ''; for await (const c of process.stdin) input += c;
+appendFileSync(${JSON.stringify(log)}, input + '\\n');
+process.stdout.write(execFileSync(process.execPath, [${JSON.stringify(join(ROOT, 'framework/cli/data-call.mjs'))}], { input, maxBuffer: 1 << 30 }));`);
+    process.env.AXF_DATA_CALL_SYNC = spy;
+    let h;
+    try { h = io.journalOf('paged'); } finally { delete process.env.AXF_DATA_CALL_SYNC; }
+    assert.deepEqual(h.map((x) => x.buildRev), entries.map((e) => e.builds[0].rev), 'every entry, in order, across pages');
+    const reads = readFileSync(log, 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((r) => r.op === 'read' && r.key === `builds/journal/${month}`);
+    assert.ok(reads.length >= 3, `paged: ${reads.length} reads`);
+    assert.ok(reads.every((r) => r.limit === files.SYNC_READ_PAGE), 'each read names the page size');
+    assert.ok(files.SYNC_READ_PAGE * 256 * 1024 < files.CALL_SYNC_MAX_BUFFER / 2, 'a full page of the biggest entries fits the buffer with room');
+  });
+  await t('a sync get of a blob past the old 64 MiB buffer comes back whole (no ENOBUFS)', async () => {
+    const big = Buffer.alloc(56 * 1024 * 1024, 7); // base64 in JSON: ~75 MB of stdout
+    const put = await fetch(`${url}/v1/plugins/big-test/blob.bin`, { method: 'PUT', headers: { ...H, 'content-type': 'application/octet-stream', 'if-none-match': '*' }, body: big });
+    assert.equal(put.status < 300, true, `put ${put.status}`);
+    const rec = files.callSync({ op: 'get', key: 'plugins/big-test/blob.bin' });
+    assert.equal(Buffer.from(rec.data.$bytes, 'base64').equals(big), true);
+  });
   await t('cutover: a write is a patch of the changed builds (row-level), not the whole store', async () => {
     const before = await remote('builds/store.json');
     const meta0 = await (await fetch(`${url}/v1/builds/store.json?meta=1`, { headers: H })).json();

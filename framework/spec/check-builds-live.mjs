@@ -153,6 +153,19 @@ async function main() {
   const mu = merge.mergeBuild(base, newerUndo);
   check(!mu.steps[3].done && mu.steps[0].done, 'a newer undo wins for that step only');
   check(mu.branch === base.branch, 'a blank branch never wipes a set one');
+  { // pipeline-2@1: a stale copy that ticked a step (newer rev, no runtime fields) never strips the step's status contract
+    const st = (o) => ({ uid: 'u1', id: 's1', text: 'Part 1', model: 'Opus', estimate: '10 min', ...o });
+    const live = { id: 'p', title: 'p', flow: 'pipeline-2', status: 'building', statusAt: '2026-11-20T06:57:04.000Z', statusLog: [{ status: 'ready', at: '2026-11-20T06:50:00.000Z', by: 'o', attempt: 1 }, { status: 'building', at: '2026-11-20T06:57:04.000Z', by: 'o', attempt: 1 }], attempt: 1, updatedAt: '2026-11-20T06:57:04.000Z', rev: 5, notes: [],
+      steps: [st({ status: 'building', statusAt: '2026-11-20T06:57:04.000Z', attempt: 3, tmux: 'axf-p--s1--earl', worktree: '/w/p--s1', branch: 'claude/p--s1', account: 'a', updatedAt: '2026-11-20T06:57:04.000Z', rev: 4 })] };
+    const ticked = { ...JSON.parse(JSON.stringify(live)), status: 'running', statusLog: live.statusLog.slice(0, 1), updatedAt: '2026-11-20T07:08:34.000Z', rev: 6,
+      steps: [st({ status: 'ready', statusAt: '2026-11-20T04:54:19.000Z', attempt: 1, done: true, doneAt: '2026-11-20T07:08:34.000Z', updatedAt: '2026-11-20T07:08:34.000Z', rev: 5 })] };
+    for (const [m, how] of [[merge.mergeBuild(live, ticked), 'stale copy newer'], [merge.mergeBuild(ticked, live), 'other order']]) {
+      const s1 = m.steps[0];
+      check(s1.done === true && s1.status === 'building' && s1.tmux === 'axf-p--s1--earl' && s1.worktree === '/w/p--s1' && s1.account === 'a' && s1.attempt === 3, `pipeline-2 merge (${how}): the tick survives, status / tmux / worktree / account / attempt kept (${JSON.stringify({ d: s1.done, st: s1.status, t: s1.tmux, a: s1.attempt })})`);
+      check(m.status === 'building', `pipeline-2 merge (${how}): the build keeps its flow status (${m.status})`);
+    }
+    check(merge.liveStatus({ flow: 'pipeline-2', status: 'building', steps: [{ done: true }] }) === 'building', 'liveStatus never derives a builds@1 status for a pipeline-2 build');
+  }
   check(merge.mergeJournalText('{"at":"2"}\n{"at":"1"}\n', '{"at":"1"}\n{"at":"3"}\n') === '{"at":"2"}\n{"at":"1"}\n{"at":"3"}\n', 'journal union: the first file as it is, then each new line once');
   // done-means-merged@1: all done = landing until merged, landed once merged (with or without a PR: never complete without the verify)
   check(merge.liveStatus({ status: 'running', pr: '#5', steps: [{ done: true }] }) === 'landing' && merge.liveStatus({ status: 'running', pr: '#5', mergedAt: 'x', steps: [{ done: true }] }) === 'landed' && merge.liveStatus({ status: 'running', steps: [{ done: true }] }) === 'landing', 'liveStatus: landing until merged, landed once merged, never built or complete');

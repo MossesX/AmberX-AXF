@@ -27,6 +27,7 @@ import tempfile
 from dataclasses import dataclass, field
 from typing import Any
 
+from psycopg import errors as pg_errors
 from psycopg.types.json import Jsonb
 
 from store import canonical, sha
@@ -974,6 +975,10 @@ def _sqlite_tables(db: sqlite3.Connection) -> list[tuple[str, list[dict]]]:
     return out
 
 
+# Every DDL / TRUNCATE a mirror run takes waits at most this long for a table lock (see _copy_table).
+MIRROR_LOCK_TIMEOUT = '5s'
+
+
 def mirror_sqlite_bytes(cur, prefix: str, body: bytes, source: str, at: str) -> dict:
     with tempfile.NamedTemporaryFile(suffix='.sqlite', delete=False) as f:
         f.write(body)
@@ -996,8 +1001,14 @@ def mirror_sqlite_file(cur, prefix: str, path: str, source: str, at: str) -> dic
             try:
                 with cur.connection.transaction():
                     _copy_table(cur, db, name, cols, target, types)
+            except pg_errors.LockNotAvailable:
+                # a backup (pg_dump) holds the table: not a typing problem, so no text-column retry. That retry's DROP
+                # waited on the same lock with no timeout, inside the store's write lock, and stalled every API call
+                # for 13 minutes (Nov 20 2026: builds-store patches timed out client-side). The run fails; the next retries.
+                raise
             except Exception as e:  # noqa: BLE001 — dynamic typing: retry the table with text columns
                 with cur.connection.transaction():
+                    cur.execute(f"SET LOCAL lock_timeout = '{MIRROR_LOCK_TIMEOUT}'")
                     cur.execute(f'DROP TABLE IF EXISTS "{target}"')
                     _copy_table(cur, db, name, cols, target, {c['name']: ('BYTEA' if types[c['name']] == 'BYTEA' else 'TEXT') for c in cols})
                 run['tables'][name] = {'rows': want, 'note': f'text columns ({type(e).__name__})'}
@@ -1020,7 +1031,7 @@ def _copy_table(cur, db: sqlite3.Connection, name: str, cols: list[dict], target
     # TRUNCATE / ALTER need an exclusive lock; a pg_dump (backup) holds a share lock for many minutes. The mirror runs
     # inside the store's write lock, so waiting would stall every API call (Nov 19 2026: a backup + a ledger mirror held
     # axf-data for 10 min). Give up after a few seconds instead: the run fails, is logged, and the next upload retries.
-    cur.execute("SET LOCAL lock_timeout = '5s'")
+    cur.execute(f"SET LOCAL lock_timeout = '{MIRROR_LOCK_TIMEOUT}'")
     pk = [c['name'] for c in sorted((c for c in cols if c['pk']), key=lambda c: c['pk'])]
     ddl = ', '.join(f'"{c["name"]}" {types[c["name"]]}' for c in cols)
     cur.execute(f'CREATE TABLE IF NOT EXISTS "{target}" ({ddl}{", PRIMARY KEY (" + ", ".join(chr(34) + p + chr(34) for p in pk) + ")" if pk else ""})')
