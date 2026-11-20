@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9878,
- "updatedAt": "2026-11-20T08:40:43.759Z",
+ "rev": 9879,
+ "updatedAt": "2026-11-20T08:50:13.922Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:40:31.425Z",
+   "updatedAt": "2026-11-20T08:50:09.324Z",
    "builtAt": "",
    "notes": [
     {
@@ -338048,7 +338048,16 @@
      "at": "2026-11-20T08:40:31.425Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 2,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-20T08:50:09.324Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -340845,12 +340854,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T08:50:09.324Z",
      "note": "",
-     "rev": 9,
+     "rev": 10,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T08:27:45.055Z",
+     "updatedAt": "2026-11-20T08:50:09.859Z",
      "statusAt": "2026-11-20T08:27:44.996Z",
      "statusBy": "orchestrator",
      "attempt": 3,
@@ -341540,7 +341549,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 532,
+   "rev": 533,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
