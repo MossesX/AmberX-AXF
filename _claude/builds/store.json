@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10010,
- "updatedAt": "2026-11-20T12:25:12.738Z",
+ "rev": 10011,
+ "updatedAt": "2026-11-20T12:34:24.622Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,14 +337237,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "failed",
+   "status": "merging-pr",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "860",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T12:17:27.945Z",
+   "updatedAt": "2026-11-20T12:34:20.625Z",
    "builtAt": "",
    "notes": [
     {
@@ -339046,6 +339046,11 @@
      "text": "Watchdog: step s18 stuck at completed (68 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T12:17:01.183Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Lander: attempt 4: split PR #860; its steps land one PR each",
+     "at": "2026-11-20T12:34:20.625Z",
+     "by": "lander"
     }
    ],
    "approvals": [
@@ -339138,10 +339143,10 @@
     ]
    },
    "landing": {
-    "reruns": {
-     "head": "8c53ac893febf1213846ba356b647251d8d06226",
-     "n": 1
-    }
+    "split": true,
+    "closed": [
+     860
+    ]
    },
    "steps": [
     {
@@ -342783,7 +342788,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 661,
+   "rev": 662,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342794,10 +342799,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T12:17:27.945Z",
+   "statusAt": "2026-11-20T12:34:20.625Z",
    "statusBy": "lander",
    "attempt": 4,
-   "failedFrom": "running-ci",
    "statusLog": [
     {
      "status": "pending",
@@ -342915,6 +342919,13 @@
      "by": "lander",
      "attempt": 4,
      "why": "Lander: failed in running-ci, attempt 4: CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)"
+    },
+    {
+     "status": "merging-pr",
+     "at": "2026-11-20T12:34:20.625Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: attempt 4: split PR #860; its steps land one PR each"
     }
    ]
   },

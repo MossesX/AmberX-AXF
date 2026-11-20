@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `deep-links-to-plugin-s-settings-don-t` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `queue-stall-detector-vps-spots-queued` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `load-spike-alarm-vps-detects-cpu-load` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `server-safe-mode-one-emergency-button` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:23 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 - 2026-11-20 12:24 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
 - 2026-11-20 12:25 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
+- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr, note (all) · lander
 
 ## Token passes (log)
 
