@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10170,
- "updatedAt": "2026-11-20T23:06:24.389Z",
+ "rev": 10171,
+ "updatedAt": "2026-11-20T23:14:48.028Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344677,11 +344677,11 @@
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s3",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:00:02.234Z",
+   "updatedAt": "2026-11-20T23:14:42.202Z",
    "builtAt": "",
    "notes": [
     {
@@ -344835,10 +344835,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-20T23:05:48.985Z",
+     "at": "2026-11-20T19:55:57.622Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -344950,12 +344950,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T23:14:42.202Z",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:57:32.903Z",
+     "updatedAt": "2026-11-20T23:14:42.718Z",
      "statusAt": "2026-11-20T22:57:32.851Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -345231,7 +345231,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
