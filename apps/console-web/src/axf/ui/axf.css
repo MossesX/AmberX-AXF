@@ -680,6 +680,9 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   border-radius: 999px; background: var(--fx-accent); color: var(--fx-accent-text);
   font-size: var(--fx-type-root-2xs); font-weight: 700; line-height: 16px; text-align: center; pointer-events: none;
 }
+/* a labelled button keeps its counter in the flow after the label (a corner badge drew over the label's last letters);
+   icon-only buttons keep the corner badge */
+.fx-toolbtn:has(> .fx-toolbtn__label) > .fx-toolbtn__badge { position: static; margin-inline-start: calc(var(--fx-dens-gap-sm) * -1); }
 .fx-search {
   display: flex; align-items: center; gap: var(--fx-dens-gap-lg); margin-left: auto; flex: 0 1 260px; min-width: 150px;
   background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border);
