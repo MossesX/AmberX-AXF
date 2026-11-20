@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T11:08:43.000Z",
+ "updatedAt": "2026-11-20T11:08:54.969Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1734,7 +1734,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s8",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T11:08:39.423Z",
+   "updatedAt": "2026-11-20T11:08:45.700Z",
    "builtAt": "",
    "notes": [
     {
@@ -2708,6 +2708,10 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $1.29",
      "at": "2026-11-20T10:38:54.797Z"
+    },
+    {
+     "text": "Model switch: phase 2 (1) Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-20T11:08:45.700Z"
     }
    ],
    "approvals": [
@@ -2718,6 +2722,16 @@
      "at": "2026-11-20T08:50:09.324Z",
      "by": "auto",
      "kind": "downgrade"
+    },
+    {
+     "phase": 1,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-20T11:08:45.700Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
     }
    ],
    "upgradeRequests": [],
@@ -2880,8 +2894,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T11:08:45.700Z",
      "note": "",
      "uid": "st-mwoi62s00889w8",
      "createdAt": "2026-11-20T04:52:29.712Z"
