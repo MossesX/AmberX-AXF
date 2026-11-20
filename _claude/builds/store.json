@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9390,
- "updatedAt": "2026-11-20T00:10:24.396Z",
+ "rev": 9391,
+ "updatedAt": "2026-11-20T00:10:43.621Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -263439,7 +263439,7 @@
    "mergedAt": "2026-11-17T19:06:28Z",
    "priority": "P0",
    "createdAt": "2026-11-17T00:08:19.686Z",
-   "updatedAt": "2026-11-19T22:17:01.276Z",
+   "updatedAt": "2026-11-20T00:10:37Z",
    "builtAt": "",
    "notes": [
     {
@@ -263583,6 +263583,20 @@
      "text": "Watchdog: build retried at pending, attempt 5.",
      "at": "2026-11-19T22:17:01.276Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (71 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:38:01.267Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (87 min past budget): re-ran the transition (1).",
+     "at": "2026-11-19T23:53:37.736Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Shipped manifest sm-server-rule-done-means-merged-working rev 1 sent to Shipped features (orchestrator): PR #771, 59 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-20T00:10:37Z"
     }
    ],
    "approvals": [
@@ -263643,6 +263657,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-server-rule-done-means-merged-working",
+    "rev": 1,
+    "at": "2026-11-20T00:10:37Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -264075,7 +264095,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 117,
+   "rev": 120,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -270073,7 +270093,7 @@
    "mergedAt": "2026-11-18T02:00:51Z",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-19T22:17:01.276Z",
+   "updatedAt": "2026-11-20T00:10:39Z",
    "builtAt": "",
    "notes": [
     {
@@ -270542,53 +270562,47 @@
     },
     {
      "text": "Watchdog: build stuck at pending (358 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T20:52:35.014Z",
-     "by": "watchdog"
+     "at": "2026-11-19T20:52:35.014Z"
     },
     {
      "text": "Watchdog: build stuck at pending (369 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T21:03:46.519Z",
-     "by": "watchdog"
+     "at": "2026-11-19T21:03:46.519Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 3: pending did not move after 2 re-run(s) of the transition (374 min past its budget).",
-     "at": "2026-11-19T21:09:02.150Z",
-     "by": "watchdog"
+     "at": "2026-11-19T21:09:02.150Z"
     },
     {
      "text": "Watchdog: build retried at pending, attempt 4.",
-     "at": "2026-11-19T21:10:01.739Z",
-     "by": "watchdog"
+     "at": "2026-11-19T21:10:01.739Z"
     },
     {
      "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:20:02.058Z",
-     "by": "watchdog"
+     "at": "2026-11-19T21:20:02.058Z"
     },
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (1).",
-     "at": "2026-11-19T21:25:05.623Z",
-     "by": "watchdog"
+     "at": "2026-11-19T21:25:05.623Z"
     },
     {
      "text": "Watchdog: build stuck at pending (46 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:06:03.379Z",
-     "by": "watchdog"
+     "at": "2026-11-19T22:06:03.379Z"
     },
     {
      "text": "Watchdog: build stuck at pending (51 min past budget): re-ran the transition (2).",
-     "at": "2026-11-19T22:11:03.590Z",
-     "by": "watchdog"
+     "at": "2026-11-19T22:11:03.590Z"
     },
     {
      "text": "Watchdog: build failed at pending, attempt 4: pending did not move after 2 re-run(s) of the transition (56 min past its budget).",
-     "at": "2026-11-19T22:16:01.483Z",
-     "by": "watchdog"
+     "at": "2026-11-19T22:16:01.483Z"
     },
     {
      "text": "Watchdog: build retried at pending, attempt 5.",
-     "at": "2026-11-19T22:17:01.276Z",
-     "by": "watchdog"
+     "at": "2026-11-19T22:17:01.276Z"
+    },
+    {
+     "text": "Shipped manifest sm-rebuild-fresh-main-phone-connect-small rev 1 sent to Shipped features (orchestrator): PR #787, 0 file(s), 0 test line(s), 8 open.",
+     "at": "2026-11-20T00:10:39Z"
     }
    ],
    "approvals": [
@@ -270658,6 +270672,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-rebuild-fresh-main-phone-connect-small",
+    "rev": 1,
+    "at": "2026-11-20T00:10:39Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -271362,7 +271382,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 204,
+   "rev": 205,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -271409,68 +271429,7 @@
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": [],
-   "statusAt": "2026-11-19T22:17:01.276Z",
-   "statusBy": "watchdog",
-   "attempt": 5,
-   "statusLog": [
-    {
-     "status": "failed",
-     "at": "2026-11-19T14:23:01.277Z",
-     "by": "watchdog",
-     "attempt": 1,
-     "why": "pending did not move after 2 re-run(s) of the transition (2169 min past its budget)"
-    },
-    {
-     "status": "pending",
-     "at": "2026-11-19T14:24:01.548Z",
-     "by": "watchdog",
-     "attempt": 2,
-     "why": "retry forward at pending, attempt 2"
-    },
-    {
-     "status": "failed",
-     "at": "2026-11-19T14:44:01.143Z",
-     "by": "watchdog",
-     "attempt": 2,
-     "why": "pending did not move after 2 re-run(s) of the transition (10 min past its budget)"
-    },
-    {
-     "status": "pending",
-     "at": "2026-11-19T14:45:02.399Z",
-     "by": "watchdog",
-     "attempt": 3,
-     "why": "retry forward at pending, attempt 3"
-    },
-    {
-     "status": "failed",
-     "at": "2026-11-19T21:09:02.150Z",
-     "by": "watchdog",
-     "attempt": 3,
-     "why": "pending did not move after 2 re-run(s) of the transition (374 min past its budget)"
-    },
-    {
-     "status": "pending",
-     "at": "2026-11-19T21:10:01.739Z",
-     "by": "watchdog",
-     "attempt": 4,
-     "why": "retry forward at pending, attempt 4"
-    },
-    {
-     "status": "failed",
-     "at": "2026-11-19T22:16:01.483Z",
-     "by": "watchdog",
-     "attempt": 4,
-     "why": "pending did not move after 2 re-run(s) of the transition (56 min past its budget)"
-    },
-    {
-     "status": "pending",
-     "at": "2026-11-19T22:17:01.276Z",
-     "by": "watchdog",
-     "attempt": 5,
-     "why": "retry forward at pending, attempt 5"
-    }
-   ]
+   "copies": []
   },
   {
    "id": "every-grid-select-highlight-all-rows",
