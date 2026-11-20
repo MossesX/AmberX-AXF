@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9993,
- "updatedAt": "2026-11-20T12:04:26.707Z",
+ "rev": 9994,
+ "updatedAt": "2026-11-20T12:05:29.093Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "860",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T12:04:06.696Z",
+   "updatedAt": "2026-11-20T12:05:25.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -338836,6 +338836,66 @@
      "text": "Watchdog: step s18 stuck at completed (55 min past budget): re-ran the transition (9).",
      "at": "2026-11-20T12:04:01.357Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-63a667bb → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-026358d6 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-51d1371f → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-dac3b146 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-3adb4571 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-79852698 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-e652e9b7 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-a7ca99f8 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-dd1ece85 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-3b2eac2b → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-2291077f → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-2c6163c9 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-986bde57 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-b706bebd → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Watchdog: UI Review item r-20261120-ebabbe47 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
+     "at": "2026-11-20T12:05:25.434Z"
     }
    ],
    "approvals": [
@@ -342567,7 +342627,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 655,
+   "rev": 656,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
