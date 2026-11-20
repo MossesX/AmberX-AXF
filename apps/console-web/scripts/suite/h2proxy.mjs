@@ -31,6 +31,12 @@ export async function startH2Proxy(target, port = 0) {
     res.on('close', () => up.destroy()); // the browser went away (or the answer is done)
     req.pipe(up);
   });
+  const sessions = new Set();
+  server.on('session', (x) => { sessions.add(x); x.on('close', () => sessions.delete(x)); });
+  const sockets = new Set();
+  server.on('secureConnection', (x) => { sockets.add(x); x.on('close', () => sockets.delete(x)); });
   await new Promise((r) => server.listen(port, '127.0.0.1', r));
-  return { url: `https://127.0.0.1:${server.address().port}`, close: () => new Promise((r) => server.close(r)) };
+  // close: stop listening and drop what is still open (held-open event streams never end on their own)
+  const close = () => new Promise((r) => { server.close(() => r()); for (const x of sessions) x.destroy(); for (const x of sockets) x.destroy(); setTimeout(r, 2000).unref(); });
+  return { url: `https://127.0.0.1:${server.address().port}`, close };
 }

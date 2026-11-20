@@ -222,6 +222,16 @@ async function closeDialogs(page) {
   }
 }
 
+/** After a crash (blank page): reload and wait until the console is ready and its startup calls are done (≤ 45 s), so
+ * the next check is not failed by the reload itself. */
+async function recover(page, net) {
+  const t = Date.now();
+  await page.reload({ waitUntil: 'commit' }).catch(() => undefined);
+  await waitReady(page, t, 30_000);
+  for (let quiet = 0; Date.now() - t < 45_000 && quiet < 1500;) { await sleep(250); quiet = net.calls.some((c) => !c.stream && c.end === null) ? 0 : quiet + 250; }
+  results.recoveries = (results.recoveries ?? 0) + 1;
+}
+
 /** Open an address through the executor; check the answer, page errors, that it still draws; screenshot. */
 async function openAndCheck(section, label, address, { shot = true, expectScreen, phone } = {}) {
   const { page, net } = await sharedPage();
@@ -238,7 +248,7 @@ async function openAndCheck(section, label, address, { shot = true, expectScreen
   record(section, `${label}: no page error`, errs.length === 0, errs.slice(0, 2).join(' | '));
   const d = await drawn(page).catch(() => false);
   record(section, `${label}: still draws`, d);
-  if (!d) { await page.reload({ waitUntil: 'commit' }).catch(() => undefined); await waitReady(page, Date.now(), 30_000); }
+  if (!d) await recover(page, net);
   if (shot) await snap(page, join(SHOTS, `${section}-${slug(label)}.png`));
   if (phone) {
     await page.setViewportSize({ width: 390, height: 844 }); await sleep(300);
@@ -310,15 +320,16 @@ async function sectionDialogs() {
     const r = await rest('POST', '/dialog', { id, by: 'suite' }, 30_000);
     record('dialogs', `${d.label ?? id}: opens`, delivered(r), why(r), r.ms);
     await sleep(500);
-    const open = await page.evaluate(() => !!document.querySelector('[role="dialog"], .fx-dialog, dialog[open]')).catch(() => false);
-    if (delivered(r)) record('dialogs', `${d.label ?? id}: a dialog is on screen`, open, open ? '' : 'no [role=dialog] in the page');
+    // a dialog shows as a modal ([role=dialog]) or, on its page surface, as the screen; either way the console's state names it
+    const open = await page.evaluate(() => !!window.axfConsoleControlState?.().dialog || !!document.querySelector('[role="dialog"], .fx-dialog, dialog[open], [data-fx-dialog-surface]')).catch(() => false);
+    if (delivered(r)) record('dialogs', `${d.label ?? id}: the dialog is on screen`, open, open ? '' : 'the console says no dialog is open (it closed at once: not registered?)');
     const errs = (await sharedPage()).net.errors.slice(before);
     record('dialogs', `${d.label ?? id}: no page error`, errs.length === 0, errs.join(' | '));
     await snap(page, join(SHOTS, `dialog-${slug(String(id))}.png`));
     const c = await rest('POST', '/dialog', { action: 'close', by: 'suite' }, 30_000);
     record('dialogs', `${d.label ?? id}: closes`, delivered(c) || c.code === 'not_found', why(c), c.ms);
     await closeDialogs(page);
-    if (!(await drawn(page).catch(() => false))) { record('dialogs', `${d.label ?? id}: page still draws`, false); await page.reload(); await waitReady(page, Date.now()); }
+    if (!(await drawn(page).catch(() => false))) { record('dialogs', `${d.label ?? id}: page still draws`, false); await recover(page, (await sharedPage()).net); }
     list.push({ id, ok: delivered(r) });
   }
   results.sections.dialogs = list;
@@ -400,9 +411,9 @@ try {
     console.log(`${name.padEnd(9)} ${mine.filter((c) => c.ok).length}/${mine.length} passed (${Math.round((Date.now() - t) / 1000)} s)`);
   }
 } finally {
-  await proxy?.close().catch(() => undefined);
   if (shared) { results.sections.sharedPageErrors = [...new Set(shared.net.errors)].slice(0, 40); results.sections.sharedConsoleErrors = [...new Set(shared.net.consoleErrors)].slice(0, 40); }
   await browser.close().catch(() => undefined);
+  await proxy?.close().catch(() => undefined); // after the browser: its open streams would hold the proxy open
   if (sandbox && !args.includes('--keep')) down(sandbox.name);
   const failed = results.checks.filter((c) => !c.ok);
   results.snapshots = snaps;
