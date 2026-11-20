@@ -26,7 +26,7 @@
 @container st-page (min-width: 760px) { .st-toolbar > .st-pick { flex: 0 1 calc(var(--fx-font-size) * 11) } .st-toolbar > .st-find { flex: 1 1 calc(var(--fx-font-size) * 12) } }
 .st-page { container: st-page / inline-size }
 
-.st-timer { display: inline-flex; gap: var(--fx-dens-gap-2xs); white-space: nowrap }
+.st-timer { display: inline-flex; gap: var(--fx-dens-gap-md); white-space: nowrap } /* the flex item swallows the leading space before the slash: the gap keeps "5h 09m / 2d 12h" apart */
 .st-live { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); margin: 0 }
 .st-live__dot { inline-size: var(--fx-dens-gap-md); block-size: var(--fx-dens-gap-md); border-radius: var(--fx-radius-lg); background: var(--fx-success) }
 .st-facts { display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); margin: 0 }

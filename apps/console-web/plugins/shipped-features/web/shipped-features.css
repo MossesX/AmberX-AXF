@@ -1,5 +1,6 @@
 /* Shipped features: layout only; every colour, size and radius is a theme token (framework/spec/THEMING.md). */
 .axp-shipped__bar, .axp-shipped__filters, .axp-shipped__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xl); }
+.axp-shipped__bar { align-items: flex-end; } /* the segment lines up with the search input, not with the middle of label + input */
 .axp-shipped__bar > .fx-field { flex: 1 1 calc(var(--fx-space) * 30); min-width: 0; }
 .axp-shipped__statuses, .axp-shipped__chips { display: inline-flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
 .axp-shipped__counts { color: var(--fx-muted); font-size: var(--fx-size-chip-font); }
