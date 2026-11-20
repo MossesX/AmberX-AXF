@@ -1,0 +1,83 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub-passes-help",
+  "name": "axHub passes help",
+  "version": "0.1.0",
+  "description": "axHub passes's Help mode entries (help@1), moved from the axHub web app's help when it folded into the console.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:axhub-passes",
+    "entries": [
+      {
+        "target": "view:axhub-go-pass",
+        "title": "Go pass",
+        "text": "Lets a Claude session that can't reach the hub work anyway, for the hours you pick. When it ends, they stop.",
+        "tryIt": "Pick the hours, add a note, tap Go.",
+        "kind": "screen"
+      },
+      {
+        "target": "note-optional-shown-in-the-pass",
+        "title": "Note",
+        "text": "Optional: what the pass is for. Shown in the pass.",
+        "kind": "field"
+      },
+      {
+        "target": "go-for-h",
+        "title": "Go",
+        "text": "Starts the pass for the hours you picked. Sessions without the hub may work until it ends."
+      },
+      {
+        "target": "view:axhub-passes",
+        "title": "Passes",
+        "text": "Timed veto passes: what each covers, how long it has left, the calls that ran under it, and ending one early.",
+        "kind": "screen"
+      },
+      {
+        "target": "ran-under-a-pass",
+        "title": "Ran under a pass",
+        "text": "Shows “Ran under a pass”. Part of axHub passes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "min-from-now",
+        "title": "min from now",
+        "text": "Shows “min from now”. Part of axHub passes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "its-calls",
+        "title": "Its calls",
+        "text": "Shows “Its calls”. Part of axHub passes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "service",
+        "title": "Service",
+        "text": "Where you set “Service”. Change it and the app uses the new value. Part of axHub passes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "scope-control-target-matches-anything",
+        "title": "Scope (control@1 target; * matches anything)",
+        "text": "Where you set “Scope (control@1 target; * matches anything)”. Change it and the app uses the new value. Part of axHub passes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "tools-empty-every-tool-in-the-scope",
+        "title": "Tools (empty = every tool in the scope)",
+        "text": "Where you set “Tools (empty = every tool in the scope)”. Change it and the app uses the new value. Part of axHub passes.",
+        "kind": "field",
+        "draft": true
+      }
+    ]
+  }
+}

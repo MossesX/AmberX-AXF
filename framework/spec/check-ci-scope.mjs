@@ -16,7 +16,6 @@ t('console-only changes skip Android, AmberX and the other app builds', () => {
 });
 t('each app runs only its own build', () => {
   assert.deepEqual(on(scopeFor(['apps/molly/src/App.tsx'])), ['engine', 'console', 'molly']);
-  assert.deepEqual(on(scopeFor(['apps/axhub-web/src/x.ts'])), ['engine', 'console', 'axhubweb']);
   assert.deepEqual(on(scopeFor(['apps/voicevault/app/x.kt'])), ['engine', 'android']);
   assert.deepEqual(on(scopeFor(['framework/android/axf-kernel/x.kt'])), ['engine', 'android']);
 });
@@ -65,7 +64,7 @@ t('android.yml: runs on queue/**, every heavy job waits on scope and reads its o
     assert.match(block, /needs: (scope|\[scope)/, job);
     assert.match(block, new RegExp(`needs\\.scope\\.outputs\\.${key} == 'true'`), job);
   }
-  for (const k of ['axhubweb', 'molly', 'walkthrough']) assert.match(y, new RegExp(`needs\\.scope\\.outputs\\.${k} == 'true'`));
+  for (const k of ['molly', 'walkthrough']) assert.match(y, new RegExp(`needs\\.scope\\.outputs\\.${k} == 'true'`));
 });
 t('the queue switch: the repo variable wins, else the committed .github/merge-queue.json', () => {
   const f = join(ROOT, '.github/merge-queue.json');

@@ -109,7 +109,8 @@ const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
 /** A new build's id from a title (build-id@1: at most 40 characters). `slug` stays for profile names and old lookups. */
 export const newBuildId = (t) => shortBuildId(str(t, 300));
-const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'demo', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
+// flow: read-only in the projection (pipeline-2@1 builds keep their own statuses; orchestrator-core derivedStatus reads it)
+const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'demo', 'flow', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 
 // ------------------------------------------------------------------ records
@@ -581,7 +582,7 @@ export function absorbOrchestrator(store, profile, orch, { now = nowIso(), by = 
     }
     if (rec.deleted) { rec.deleted = false; rec.deletedAt = ''; }
     if (!rec.profiles.includes(profile)) { rec.profiles.push(profile); rec.order[profile] = nextOrder(s, profile); }
-    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && k !== 'demo' && ob[k] !== undefined) rec[k] = clone(ob[k]); // demo: read-only, from the id
+    for (const k of ORCH_BUILD_KEYS) if (k !== 'steps' && k !== 'id' && k !== 'origin' && k !== 'demo' && k !== 'flow' && ob[k] !== undefined) rec[k] = clone(ob[k]); // demo, flow: read-only
     { const og = mergeOrigin(ob.origin, rec.origin); if (og) rec.origin = og; } // his words are never lost on a write
     mergeSteps(rec, ob.steps ?? [], now, by, 'removed in the orchestrator');
     followDefault(rec, now);

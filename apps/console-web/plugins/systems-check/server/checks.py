@@ -424,5 +424,11 @@ HOST_CHECKS: dict[str, dict[str, Any]] = {
     "host-session-checkin": {"service": "claude", "title": "Session check-in on the VPS", "order": 25, "instructions": ["Nothing to do: sessions start without check-in questions (Oct 26 2026).", "To bring the questions back, set \"ask\": true in the check-in config (Settings → Plugins → Session check-in)."], "links": [{"label": "Claude Code hooks", "url": DOCS["claude_hooks"]}]},
     "host-anthropic-keyfile": {"service": "claude", "title": "API key file (~/.anthropic-key)", "order": 26, "instructions": ["claude-pick --set-key (stores it owner-only)", "chmod 600 ~/.anthropic-key"]},
     "host-git-auth": {"service": "github", "title": "GitHub access from the VPS", "order": 12, "instructions": ["git -C /opt/axf fetch   (should work without a password prompt)", "If it fails: gh auth login, or store a token with git's credential helper."]},
+    "host-axhub-web-retired": {"service": "axhub", "title": "axHub web app retired (VPS clean-up)", "order": 62, "instructions": [
+        "The axHub web app's pages are console plugins now (nav → axHub: Approvals, Passes, Apps, Users, Handoff, Account). Open each once in the console first.",
+        "Then on the VPS: bash /opt/axf/deploy/console-doctor.sh --fix host-axhub-web-retired   (asks, then removes the axhub-web container, /usr/local/bin/axhub-web-update and /etc/cron.d/axhub-web).",
+        "By hand instead: docker rm -f axhub-web && rm -f /etc/cron.d/axhub-web /usr/local/bin/axhub-web-update",
+        "On axHub: point the hub's old page redirects (decision #96: /auth/admin/approvals/<id>, /auth/account, /handoff/<id> …) at the console (https://<console>/#/approvals/<id> …); the console opens the same page from those addresses.",
+        "Rollback: bash /opt/axf/apps/axhub-web/deploy/install.sh brings the old app back (its source stays in the repo, archived)."]},
     "host-axhub-volume": {"service": "axhub", "title": "axhub-projects volume", "order": 61, "instructions": ["Coolify → axHub → Persistent Storage: add a volume named axhub-projects mounted at /projects (axHub repo deploy/coolify.md §5b), then redeploy axHub.", "Then on the VPS: bash /opt/axf/deploy/install-console.sh"]},
 }

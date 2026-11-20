@@ -44,6 +44,8 @@ export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
   /** Sessions per account at once, when the account has no cap of its own (the Claude setting builds.maxParallel wins when set). */
   parallelPerAccount: 1,
+  /** Pipeline 2.0: steps of one build that run at once (each in its own worktree), under the VPS-wide slot cap. */
+  stepsInParallel: 4,
   /** Plans that run Fable (Brett's Max subscriptions do; Pro ones don't). An account's override or probe beats the plan. */
   fablePlans: ['max'],
   /** Use the console's own (interactive) account when no account is marked as a worker. */
@@ -67,7 +69,7 @@ export const DEFAULTS = Object.freeze({
   /** A launch brief is trimmed to at most this many bytes (Claude setting builds.briefMaxBytes); his words are never cut. */
   briefMaxBytes: 120 * 1024,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
+const LIMITS = { parallelPerAccount: [1, 12], stepsInParallel: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -80,6 +82,7 @@ export function normSettings(raw = {}) {
   return {
     $axf: SCHEMA,
     parallelPerAccount: o.parallelPerAccount === undefined ? DEFAULTS.parallelPerAccount : clamp('parallelPerAccount', o.parallelPerAccount),
+    stepsInParallel: o.stepsInParallel === undefined ? DEFAULTS.stepsInParallel : clamp('stepsInParallel', o.stepsInParallel),
     fablePlans: list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean).length ? list(o.fablePlans).map((p) => str(p, 20).toLowerCase()).filter(Boolean) : [...DEFAULTS.fablePlans],
     useConsoleAccount: o.useConsoleAccount !== false,
     maxRuns: o.maxRuns === undefined ? DEFAULTS.maxRuns : clamp('maxRuns', o.maxRuns),
@@ -543,6 +546,8 @@ export function p2SplitPrompt(b, { slots = 1, maxStepMinutes = 30 } = {}) {
     `Each build step is a separate headless Claude Code session in its own git worktree cut from main; up to ${Math.max(1, Number(slots) || 1)} run at the same time and their branches land as one PR. So steps must not depend on each other's unmerged work and must not touch the same files.`,
     `Rules: every step ${maxStepMinutes} minutes or less, estimated in whole minutes; 1 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; the last step covers tests and the report (_claude/builds/reports/<build id>.md).`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Never Sonnet or Haiku.`,
+    // a split asked to "name the files" reached for tools to look at the repo and never answered (Nov 20 2026)
+    'You have no tools and cannot read the repository: design from the plan below alone, in this one reply. Name files or folders from the plan and the AXF layout (apps/console-web/plugins/<plugin>/, apps/console-web/server/, framework/…) as best you can; each step\'s session explores the code itself.',
     'Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","minutes":<n>,"files":["…"]}]}',
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.detail ? `Body:\n${str(b.detail, 8000)}` : '',
     planning.length ? `Planning steps:\n${planning.map((s, i) => `${i + 1}. ${str(s.text, 2000)}${s.model || s.minutes ? ` (noted: ${[s.model, s.minutes ? `${s.minutes} min` : ''].filter(Boolean).join(', ')})` : ''}${list(s.files).length ? ` [files: ${list(s.files).join(', ')}]` : ''}`).join('\n')}` : '',

@@ -400,6 +400,9 @@ check(bid in sent["messages"][0]["content"] and "undone" in sent["messages"][0][
 check(c.get(f"{P}/batches/b-nope").status_code == 404, "unknown batch is 404")
 
 # --- the Claude Code CLI gets the same tools through the MCP bridge -------------------------------------------------
+# The chat's title is written by a background CLI call after the first reply. From here on the checks read what the fake
+# CLI was started with, so that call is switched off: it used to land between a turn and its check now and then.
+mod._auto_title = lambda *a, **k: None
 import os as _os  # noqa: E402
 import stat as _stat  # noqa: E402
 import tempfile as _tf  # noqa: E402

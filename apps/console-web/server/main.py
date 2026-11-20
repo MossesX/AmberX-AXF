@@ -1624,10 +1624,10 @@ def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-# ---- App plugins (plugin-catalog kinds with `into`, e.g. axhub → apps/axhub-web/src/plugins): the console holds the
+# ---- App plugins (plugin-catalog kinds with `into`; none since apps/axhub-web folded into the console, Nov 20 2026): the console holds the
 # repo, so it installs another app's web plugins for it and commits just that folder; the app's own 5-minute update
 # rebuilds with it. Console token; never on MCP.
-_APP_PLUGIN_KINDS = {"axhub"}
+_APP_PLUGIN_KINDS: set[str] = set()  # axhub retired Nov 20 2026 (its web app folded into the console), amberx before it
 # What happens once the change is on GitHub, per kind (default: the app's own 5-minute update rebuilds it).
 _APP_PLUGIN_AFTER: dict[str, tuple[str, str]] = {}
 
@@ -1797,6 +1797,12 @@ app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 import console_control_api  # noqa: E402
 
 app.include_router(console_control_api.router_for(auth))
+
+# ---- The hub's own pages (hub-pages@1, server/hub_pages.py): the axHub plugins' relay to the hub's /auth/api/*.
+# Only a wall admin's browser may use it (it checks that itself); the console token alone never reaches the hub here.
+import hub_pages  # noqa: E402
+
+app.include_router(hub_pages.router_for(STATE.parent))
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 

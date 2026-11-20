@@ -14,6 +14,29 @@ const XHTML = 'http://www.w3.org/1999/xhtml';
 const SKIP = new Set(['SCRIPT', 'NOSCRIPT', 'TEMPLATE', 'LINK', 'META']);
 /** The smallest scale tried when the PNG is over the byte limit. */
 const MIN_SCALE = 0.35;
+/**
+ * The longest a capture may take (find the element, draw, encode, upload) before the console answers that it failed.
+ * Under the server's SHOT_WORK_S, so a console that said it is working always answers before the server moves on.
+ */
+export const CAPTURE_TIMEOUT_MS = 20_000;
+
+/**
+ * Wait until what was opened just before is painted: two animation frames, or a short timer. A tab in the background
+ * runs no animation frames at all, and waiting on them alone left a screenshot there unanswered for good.
+ */
+export function painted(fallbackMs = 150): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const t = setTimeout(resolve, fallbackMs);
+    requestAnimationFrame(() => requestAnimationFrame(() => { clearTimeout(t); resolve(); }));
+  });
+}
+
+/** `work`, or a rejection saying what took too long after `ms`. */
+export function within<T>(work: Promise<T>, ms: number, what: string): Promise<T> {
+  let t: ReturnType<typeof setTimeout> | undefined;
+  const late = new Promise<never>((_, reject) => { t = setTimeout(() => reject(new Error(`${what} took longer than ${Math.round(ms / 1000)} s`)), ms); });
+  return Promise.race([work, late]).finally(() => clearTimeout(t));
+}
 
 export interface Capture { blob: Blob; width: number; height: number; scale: number; capture: string }
 
@@ -105,6 +128,8 @@ export async function capturePage(el: Element | null, capture: string): Promise<
   }
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="${x} ${y} ${w} ${h}"><foreignObject x="0" y="0" width="${vw}" height="${vh}">${pageMarkup(vw, vh)}</foreignObject></svg>`;
   const img = await loadImage(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`);
+  // a decoded image draws at once (some browsers fire onload before an SVG image can be drawn)
+  try { await img.decode(); } catch { /* drawImage still works or the error below says why */ }
   const bg = getComputedStyle(document.body).backgroundColor || getComputedStyle(document.documentElement).backgroundColor;
   let scale = Math.min(window.devicePixelRatio || 1, CONSOLE_SHOT_MAX_WIDTH / w);
   for (;;) {

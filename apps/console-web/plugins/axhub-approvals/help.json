@@ -1,0 +1,162 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub-approvals-help",
+  "name": "axHub approvals help",
+  "version": "0.1.0",
+  "description": "axHub approvals's Help mode entries (help@1), moved from the axHub web app's help when it folded into the console.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:axhub-approvals",
+    "entries": [
+      {
+        "target": "view:axhub-approvals",
+        "title": "Approvals",
+        "text": "Everything waiting on you: held calls counting down (they run by themselves unless you Deny) and straight approvals (they only run if you Approve).",
+        "more": "Each row says who asked (Claude.ai, Claude Code, headless build, console, agent), what it wants to do and why. Deny drops it for good; Approve now runs it at once; Shelve pauses a countdown until you make up your mind.",
+        "tryIt": "Tap a row's caret to see the exact code before you decide.",
+        "related": [
+          "view:approvals-log",
+          "view:approval"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:axhub-approval",
+        "title": "Request",
+        "text": "One call in full: the reason, the exact code, who asked, the tool and its risk, the timeline and the result.",
+        "related": [
+          "view:home"
+        ],
+        "kind": "screen"
+      },
+      {
+        "target": "view:axhub-approvals-log",
+        "title": "Approvals log",
+        "text": "Every call the hub ever held or asked about: decided, denied, timed out — with who asked and what ran.",
+        "kind": "screen"
+      },
+      {
+        "target": "all-requests",
+        "title": "All requests",
+        "text": "Back to every request."
+      },
+      {
+        "target": "how-long",
+        "title": "How long",
+        "text": "How long to put it off.",
+        "kind": "field"
+      },
+      {
+        "target": "amount",
+        "title": "Amount",
+        "text": "How many (minutes, hours…).",
+        "kind": "field"
+      },
+      {
+        "target": "unit",
+        "title": "Unit",
+        "text": "Minutes, hours or days.",
+        "kind": "field"
+      },
+      {
+        "target": "date-and-time-your-time",
+        "title": "Date and time",
+        "text": "When it should run, in your time.",
+        "kind": "field"
+      },
+      {
+        "target": "wait-for",
+        "title": "Wait for",
+        "text": "Put it off for a while, or until a set time.",
+        "kind": "field"
+      },
+      {
+        "target": "postpone",
+        "title": "Postpone",
+        "text": "Puts the call off until the time you picked. It still needs your OK then."
+      },
+      {
+        "target": "requests",
+        "title": "Requests",
+        "text": "The calls in this log.",
+        "kind": "tab"
+      },
+      {
+        "target": "download-json",
+        "title": "Download JSON",
+        "text": "Saves the whole log as a JSON file."
+      },
+      {
+        "target": "decided",
+        "title": "Decided",
+        "text": "How it ended: approved, denied, timed out.",
+        "kind": "column"
+      },
+      {
+        "target": "column:decided",
+        "title": "Decided",
+        "text": "How it ended: approved, denied, timed out. Tap to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "tool",
+        "title": "Tool",
+        "text": "The tool the call uses (vps.run, github.pulls/create…).",
+        "kind": "column"
+      },
+      {
+        "target": "column:tool",
+        "title": "Tool",
+        "text": "The tool the call uses. Tap to sort.",
+        "kind": "column"
+      },
+      {
+        "target": "the-request",
+        "title": "The request",
+        "text": "Opens this call's own page."
+      },
+      {
+        "target": "newer",
+        "title": "Newer",
+        "text": "Shows newer calls."
+      },
+      {
+        "target": "older",
+        "title": "Older",
+        "text": "Shows older calls."
+      },
+      {
+        "target": "stop-now",
+        "title": "Stop now",
+        "text": "Stops this running call."
+      },
+      {
+        "target": "every-source",
+        "title": "Every source",
+        "text": "Shows calls from everyone: Claude.ai, Claude Code, headless builds, the console, agents.",
+        "kind": "field"
+      },
+      {
+        "target": "open-the-request",
+        "title": "Open the request",
+        "text": "Opens this call's own page with everything about it."
+      },
+      {
+        "target": "the-hubs-approvals-page",
+        "title": "The hub's approvals page",
+        "text": "Opens the approvals page on the hub."
+      },
+      {
+        "target": "pass",
+        "title": "Pass",
+        "text": "Where you set “Pass”. Change it and the app uses the new value. Part of axHub approvals.",
+        "kind": "field",
+        "draft": true
+      }
+    ]
+  }
+}

@@ -17,6 +17,7 @@
 import { STATUSES, dedupeSteps, normBuild, normalizeStore, stepKey } from './builds-store-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { markLine } from '../core/demo-build.mjs';
+import { BUILD_FIELDS as P2_BUILD_FIELDS, FLOW as P2_FLOW, STEP_FIELDS as P2_STEP_FIELDS } from '../core/pipeline-status.mjs';
 
 const str = (v) => (typeof v === 'string' ? v : '');
 const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -34,6 +35,7 @@ export function newer(a, b) {
  * 2026: built-awaiting-merge until the PR merges, complete once merged). A build without a PR stays complete.
  */
 export function liveStatus(b) {
+  if (b.flow === P2_FLOW) return b.status; // pipeline-2@1: the flow owns the status, never derived from ticks
   // done-means-merged@1: fixing, escalated and landed are set by the pipeline / lander with their records; steps never override them
   if (['blocked', 'failed', 'archived', 'fixing', 'escalated'].includes(b.status)) return b.status;
   if (b.status === 'complete' && str(b.mergedAt)) return 'complete'; // its PR merged and verified: done, even with steps left unticked
@@ -66,6 +68,24 @@ export function settleStatus(b, now = new Date().toISOString()) {
 }
 
 /**
+ * pipeline-2@1 contract fields of a step or build (status, statusAt, attempt, statusLog, worktree, tmux, account…) come
+ * from the copy whose status changed last (statusAt), whichever copy won on updatedAt / rev; a runtime field the other
+ * copy has and the chosen one lacks is never blanked. Nov 20 2026: a session ticked a step in its stale store copy
+ * (newer rev, no tmux / worktree / account), the merge took that step whole, and the watchdog failed the running step.
+ */
+function keepFlowFields(out, a, b, fields) {
+  // newer statusAt; on a tie the longer status log, then the copy whose status is its own last log line (a copy that
+  // changed status outside the contract, with no stamp, never wins over one that went through it)
+  const rank = (x) => [str(x?.statusAt), Array.isArray(x?.statusLog) ? x.statusLog.length : 0, x?.statusLog?.at?.(-1)?.status === x?.status ? 1 : 0];
+  const ra = rank(a); const rb = rank(b);
+  const bWins = rb[0] !== ra[0] ? rb[0] > ra[0] : rb[1] !== ra[1] ? rb[1] > ra[1] : rb[2] > ra[2];
+  const [st, other] = bWins ? [b, a] : [a, b];
+  for (const k of fields) { if (st?.[k] !== undefined) out[k] = clone(st[k]); else if (other?.[k] !== undefined && !['failedFrom', 'tried'].includes(k)) out[k] = clone(other[k]); else delete out[k]; }
+  return out;
+}
+const isFlow = (x) => x?.flow === P2_FLOW;
+
+/**
  * Merge two copies of one build record. Build-level fields come from the newer copy; steps are merged by uid, each
  * from its newer copy (so session A ticking s2 and session B ticking s3 both survive). Steps only in the newer copy are
  * kept in its order; a step only in the older copy is kept when it was changed after the newer copy was written (added
@@ -87,9 +107,10 @@ export function mergeBuild(a, b) {
     const o = other.get(s.uid) ?? (() => { const t = byText.get(stepKey(s.text)); return t && !matched.has(t.uid) && !win.steps.some((w) => w.uid === t.uid) ? t : null; })();
     if (!o) return clone(s);
     matched.add(o.uid);
-    if (o.uid !== s.uid && o.done && !s.done) { combined = true; return { ...clone(o), id: s.id }; } // the tick survives the uid split
-    if (o.uid === s.uid && newer(o, s) > 0) { combined = true; return clone(o); }
-    return clone(s);
+    const flow = isFlow(a) || isFlow(b);
+    if (o.uid !== s.uid && o.done && !s.done) { combined = true; const t = { ...clone(o), id: s.id }; return flow ? keepFlowFields(t, s, o, P2_STEP_FIELDS) : t; } // the tick survives the uid split
+    if (o.uid === s.uid && newer(o, s) > 0) { combined = true; const t = clone(o); return flow ? keepFlowFields(t, s, o, P2_STEP_FIELDS) : t; }
+    return flow ? keepFlowFields(clone(s), s, o, P2_STEP_FIELDS) : clone(s);
   });
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && !matched.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
@@ -100,6 +121,7 @@ export function mergeBuild(a, b) {
   const key = (n) => `${n.at}|${n.text}`;
   const seenNotes = new Set(out.notes.map(key));
   for (const n of lose.notes ?? []) if (!seenNotes.has(key(n))) { out.notes.push(clone(n)); seenNotes.add(key(n)); combined = true; }
+  if (isFlow(a) || isFlow(b)) keepFlowFields(out, a, b, P2_BUILD_FIELDS);
   out.rev = Math.max(num(a.rev), num(b.rev));
   // a status set by hand on the newer copy stays; one derived from steps that came from both copies is derived again
   if (combined) settleStatus(out, out.updatedAt);

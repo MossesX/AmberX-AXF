@@ -150,6 +150,27 @@ await t('test servers: from a worktree with no live session, or orphaned from /t
   assert.deepEqual(types(acts), ['kill-proc:1', 'kill-proc:4']);
 });
 
+await t('test-run ghosts: headless claude from a gone or ancient /tmp/axf-limit-* folder is killed with its tmux; worktree builds and fresh tests untouched', () => {
+  const procs = [
+    { pid: 70, ppid: 1, args: ['tmux'], cwd: '/', startMs: now - 15 * 60 * MIN, sameNs: true },
+    { pid: 71, ppid: 70, args: ['bash', '-c', 'x'], cwd: '/', startMs: now - 15 * 60 * MIN, sameNs: true },
+    { pid: 72, ppid: 71, args: ['sh', '/tmp/axf-limit-old/bin/claude', '-p', 'x'], cwd: '/tmp/axf-limit-old', cwdDeleted: true, tmpLimit: '/tmp/axf-limit-old', tmpLimitGone: true, startMs: now - 15 * 60 * MIN, sameNs: true },
+    { pid: 73, ppid: 72, args: ['sleep', '99999'], cwd: '/', startMs: now - 15 * 60 * MIN, sameNs: true },
+    { pid: 80, ppid: 1, args: ['claude', '-p', 'x'], cwd: '/tmp/axf-limit-long', tmpLimit: '/tmp/axf-limit-long', tmpLimitGone: false, startMs: now - 3 * 60 * MIN, sameNs: true },
+    { pid: 81, ppid: 1, args: ['claude', '-p', 'x'], cwd: '/tmp/axf-limit-now', tmpLimit: '/tmp/axf-limit-now', tmpLimitGone: false, startMs: now - 10 * MIN, sameNs: true },
+    { pid: 82, ppid: 1, args: ['claude', '-p', 'x'], cwd: '/tmp/gone-dir', cwdDeleted: true, startMs: now - 30 * MIN, sameNs: true },
+    { pid: 83, ppid: 1, args: ['claude', '-p', 'x'], cwd: '/tmp/axf-limit-young', tmpLimit: '/tmp/axf-limit-young', tmpLimitGone: true, startMs: now - 1 * MIN, sameNs: true },
+    { pid: 84, ppid: 1, args: ['claude', '-p', 'x'], cwd: '/w/real', startMs: now - 15 * 60 * MIN, sameNs: true },
+    { pid: 85, ppid: 1, args: ['claude'], cwd: '/tmp/axf-limit-gone2', cwdDeleted: true, tmpLimit: '/tmp/axf-limit-gone2', tmpLimitGone: true, startMs: now - 15 * 60 * MIN, sameNs: true },
+  ];
+  const tmux = [{ name: 'axf-limittest-a', createdMs: now - 15 * 60 * MIN, panePid: 71, paneClaude: true }];
+  const acts = R.plan(base({ procs, tmux, logs: { real: { lastWriteMs: now - 60 * MIN, folder: true } } }), S);
+  const ty = types(acts);
+  for (const k of ['kill-proc:72', 'kill-proc:73', 'kill-tmux:axf-limittest-a', 'kill-proc:80', 'kill-proc:82']) assert.ok(ty.includes(k), `${k} in ${ty}`);
+  for (const k of ['kill-proc:81', 'kill-proc:83', 'kill-proc:84', 'kill-proc:85', 'kill-proc:70', 'kill-proc:71']) assert.ok(!ty.includes(k), `${k} must stay (${ty})`);
+  assert.match(acts.find((a) => a.pid === 72).why, /test folder \/tmp\/axf-limit-old is gone/);
+});
+
 await t('temp folders: old axf-limit-*, unused old axf-ctx-*, leaked state writes', () => {
   const tmp = [
     { path: '/tmp/axf-limit-a', kind: 'limit', mtimeMs: now - 2 * 60 * MIN },
