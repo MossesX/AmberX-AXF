@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9451,
- "updatedAt": "2026-11-20T04:59:58.575Z",
+ "rev": 9452,
+ "updatedAt": "2026-11-20T05:00:18.894Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -332073,14 +332073,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "sending",
+   "status": "building",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T04:59:50.503Z",
+   "updatedAt": "2026-11-20T04:59:57.929Z",
    "builtAt": "",
    "notes": [
     {
@@ -333149,7 +333149,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -333160,7 +333160,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T04:59:13.080Z",
+   "statusAt": "2026-11-20T04:59:57.929Z",
    "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
@@ -333212,6 +333212,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "sending s1"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-20T04:59:57.929Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "s1 is in a slot"
     }
    ]
   }

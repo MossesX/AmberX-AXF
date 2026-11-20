@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `rebuild-every-toolbar-page-specific` note (all) · orchestrator
 - 2026-11-20 00:11 UTC · `plan-blueprints` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `blueprint-notes-tasks` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · builds-live
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 04:58 UTC · `fable-full-audit-ui-overhaul-conso` → assigning-models (all) · orchestrator
 - 2026-11-20 04:58 UTC · `fable-full-audit-ui-overhaul-conso` → ready (all) · orchestrator
 - 2026-11-20 04:59 UTC · `fable-full-audit-ui-overhaul-conso` → sending (all) · orchestrator
+- 2026-11-20 05:00 UTC · `fable-full-audit-ui-overhaul-conso` → building (all) · builds-live
 
 ## Token passes (log)
 
