@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10134,
- "updatedAt": "2026-11-20T21:57:46.471Z",
+ "rev": 10135,
+ "updatedAt": "2026-11-20T21:58:09.175Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344675,7 +344675,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "pulling-main",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -344683,7 +344683,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T21:32:34.390Z",
+   "updatedAt": "2026-11-20T21:58:01.140Z",
    "builtAt": "",
    "notes": [
     {
@@ -344760,6 +344760,11 @@
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T21:57:01.786Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pulling-main, attempt 4: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-20T21:58:01.140Z",
      "by": "watchdog"
     }
    ],
@@ -344924,7 +344929,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344935,8 +344940,8 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T21:32:34.390Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-20T21:58:01.140Z",
+   "statusBy": "watchdog",
    "attempt": 4,
    "failedFrom": "pulling-main",
    "statusLog": [
@@ -345009,6 +345014,13 @@
      "by": "orchestrator",
      "attempt": 4,
      "why": "retrying the main pull"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-20T21:58:01.140Z",
+     "by": "watchdog",
+     "attempt": 4,
+     "why": "pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget)"
     }
    ]
   }
