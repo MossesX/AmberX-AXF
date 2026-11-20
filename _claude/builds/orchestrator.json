@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T11:13:48.988Z",
+ "updatedAt": "2026-11-20T11:14:07.695Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1736,7 +1736,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T11:13:43.063Z",
+   "updatedAt": "2026-11-20T11:13:59.704Z",
    "builtAt": "",
    "notes": [
     {
@@ -2722,6 +2722,14 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $25.21",
      "at": "2026-11-20T11:09:28.319Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s16--sully: brief only · start 10.1K tokens ($0.02) · cost $15.15 · 227 turns · 6 tools, MCP none",
+     "at": "2026-11-20T11:13:55.255Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $15.15",
+     "at": "2026-11-20T11:13:59.704Z"
     }
    ],
    "approvals": [
