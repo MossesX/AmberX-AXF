@@ -836,17 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:43 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:47 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:47 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 01:48 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
-- 2026-11-20 01:48 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
-- 2026-11-20 01:49 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
-- 2026-11-20 01:49 UTC · `guided-live-demo-test-watch-orchestrator` → pending, note (all) · watchdog
-- 2026-11-20 01:59 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 01:59 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
-- 2026-11-20 02:03 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 02:03 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 02:04 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
 - 2026-11-20 02:04 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 - 2026-11-20 02:05 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
@@ -1236,6 +1225,17 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · console
 - 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · console
 - 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `remove-amberx-app-code-once-phone` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `postgres-part-c-console-state-settings` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `rebuild-every-toolbar-page-specific` → archived, note (all) · console
+- 2026-11-20 19:26 UTC · `plugin-conflicts` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `land-round-2` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `land-all-97-built-but-unmerged-builds-skins-firs` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `every-plugin-screen-gets-a-settings-gear` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `rebuild-every-toolbar-page-specific` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `remove-amberx-app-code-once-phone` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `vps-never-gives-up-fix-land-every-build` → archived, note (all) · foreign-write
+- 2026-11-20 19:26 UTC · `postgres-part-c-console-state-settings` → archived, note (all) · foreign-write
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10088,
- "updatedAt": "2026-11-20T19:26:31.646Z",
+ "rev": 10089,
+ "updatedAt": "2026-11-20T19:26:51.439Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -280757,7 +280757,7 @@
    "title": "Rebuild every toolbar with page-specific buttons (Fable)",
    "category": "",
    "detail": "Everywhere there is a toolbar (not tab groups), rebuild that toolbar's asset for its specific page/plugin, with useful, deeply integrated buttons made for that page's actual functions. Build on Fable for high integration.",
-   "status": "landing",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -280766,8 +280766,8 @@
    "mergedAt": "2026-11-17T21:34:16Z",
    "priority": "P1",
    "createdAt": "2026-11-17T18:56:41.307Z",
-   "updatedAt": "2026-11-20T00:11:30Z",
-   "builtAt": "2026-11-19T02:36:57.062Z",
+   "updatedAt": "2026-11-20T19:26:40.398Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Split by Claude into 28 steps (7 Fable).",
@@ -281136,6 +281136,10 @@
     {
      "text": "Shipped manifest sm-rebuild-every-toolbar-page-specific rev 1 sent to Shipped features (orchestrator): landed f24310605, 0 file(s), 4 test line(s), 6 open.",
      "at": "2026-11-20T00:11:30Z"
+    },
+    {
+     "text": "Moved to the Archive from landing (console): Brett, Nov 20: only today's builds stay in the pipeline and build manager.",
+     "at": "2026-11-20T19:26:40.398Z"
     }
    ],
    "approvals": [
@@ -281205,17 +281209,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "landed": {
-    "pr": 817,
-    "sha": "8cbff5a700daa7f33f57a00b4449be9fb8fd60b6",
-    "mergedAt": "2026-11-17T21:34:16Z",
-    "ci": "unknown",
-    "ciAt": "",
-    "ciRun": "",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-rebuild-every-toolbar-page-specific",
@@ -281940,7 +281933,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 135,
+   "rev": 136,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -298267,7 +298260,7 @@
    "title": "Remove the AmberX app code once Phone Connect is paired",
    "category": "",
    "detail": "Follow-up of rebuild-fresh-main-phone-connect-small s24 (decision Nov 17 2026, _claude/memory/decisions.md → Phone Connect replaces the AmberX app). AmberX is retired in policy; its code goes only after Phone Connect is installed and paired on Brett's phone so approvals and pushes never go dark.",
-   "status": "landing",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -298275,8 +298268,8 @@
    "pr": "#853",
    "mergedAt": "2026-11-19T20:41:14Z",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-20T05:28:03Z",
-   "builtAt": "2026-11-19T17:43:42.350Z",
+   "updatedAt": "2026-11-20T19:26:27.833Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Repeated steps collapsed: 224 → 7 (step-dedupe cleanup).",
@@ -298345,6 +298338,10 @@
     {
      "text": "Shipped manifest sm-remove-amberx-app-code-once-phone rev 1 sent to Shipped features (orchestrator): landed 376ef2762, 1429 file(s), 0 test line(s), 4 open.",
      "at": "2026-11-20T05:28:03Z"
+    },
+    {
+     "text": "Moved to the Archive from landing (console): Brett, Nov 20: only today's builds stay in the pipeline and build manager.",
+     "at": "2026-11-20T19:26:27.833Z"
     }
    ],
    "approvals": [],
@@ -298561,7 +298558,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 86,
+   "rev": 87,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -335321,15 +335318,15 @@
    "title": "Postgres part C: console state, settings, alerts and plugin data dirs to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 3, 4, 5, 6, 7 and the s4 order). This build does s4.4 and s4.5 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, build-live / build-progress / build-hooks, pending, build queue, agent-slots or auto-lander (part A), and never touch plan, plan-studio, catalog, tracker, sessions or changes (part B). Register new tables in their own module files under services/axf-data (e.g. tables_console.py, tables_plugins.py) and add only additive entries to shared registries. Secrets never go in the database. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over. Branch, PR, CI, merge queue; never push to main.",
-   "status": "landing",
+   "status": "archived",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/postgres-part-c-console-state-settings",
    "pr": "#849",
    "createdAt": "2026-11-19T00:11:19.627Z",
-   "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-19T03:10:17.211Z",
+   "updatedAt": "2026-11-20T19:26:33.497Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Launch failed on hulu0241: worktree for postgres-part-c-console-state-settings: fatal: not a git repository (or any of the parent directories): .git",
@@ -335362,6 +335359,10 @@
     {
      "text": "Watchdog: Merge queue entry 849 → Remove: The build was cancelled (PR #849 open; not on main; build postgres-part-c-console-state-settings: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Moved to the Archive from landing (console): Brett, Nov 20: only today's builds stay in the pipeline and build manager.",
+     "at": "2026-11-20T19:26:33.497Z"
     }
    ],
    "approvals": [],
@@ -335393,11 +335394,11 @@
      "at": "2026-11-19T03:11:30.314Z",
      "exit": 0,
      "outcome": "finished",
-     "reason": "all-done",
+     "reason": "",
      "stepsLeft": 0,
      "account": "hulu0241",
      "session": "axf-postgres-part-c-console-state-settings--paulie",
-     "phase": "Phase 1"
+     "phase": ""
     },
     "split": null,
     "splitRequested": "",
@@ -335415,17 +335416,7 @@
     "pickedAt": "2026-11-19T00:14:28.826Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-19T03:09:36.133Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-postgres-part-c-console-state-settings--paulie",
-     "phase": "Phase 1"
-    }
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -335525,7 +335516,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
