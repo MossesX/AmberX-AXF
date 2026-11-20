@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10030,
- "updatedAt": "2026-11-20T13:24:42.756Z",
+ "rev": 10031,
+ "updatedAt": "2026-11-20T13:25:15.284Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -346733,14 +346733,14 @@
    "title": "CI speed + CI failure reports (lean)",
    "category": "",
    "detail": "Brett, Nov 20: replaces the bloated Pipeline 2.0 re-send. Pipeline 2.0 itself is already built and live - do NOT rebuild it. Only these items. Every step on Fable.",
-   "status": "split",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T13:09:01.741Z",
+   "updatedAt": "2026-11-20T13:25:01.756Z",
    "builtAt": "",
    "notes": [
     {
@@ -346803,6 +346803,11 @@
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T13:24:01.527Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T13:25:01.756Z",
      "by": "watchdog"
     }
    ],
@@ -347092,7 +347097,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -347103,9 +347108,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T13:09:01.741Z",
+   "statusAt": "2026-11-20T13:25:01.756Z",
    "statusBy": "watchdog",
    "attempt": 3,
+   "failedFrom": "split",
    "statusLog": [
     {
      "status": "pending",
@@ -347155,6 +347161,13 @@
      "by": "watchdog",
      "attempt": 3,
      "why": "retry forward at split, attempt 3"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-20T13:25:01.756Z",
+     "by": "watchdog",
+     "attempt": 3,
+     "why": "split did not move after 2 re-run(s) of the transition (6 min past its budget)"
     }
    ]
   }
