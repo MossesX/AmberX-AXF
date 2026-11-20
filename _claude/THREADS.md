@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `orchestrator-master-pause-switch-stop` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `host-phone-connect-apk-axhub-browser` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `console-app-text-way-too-big-system-font` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `deep-links-to-plugin-s-settings-don-t` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · lander
 - 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 12:19 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 12:23 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 
 ## Token passes (log)
 
