@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T08:06:20.015Z",
+ "updatedAt": "2026-11-20T08:07:11.375Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1086,7 +1086,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:06:15.227Z",
+   "updatedAt": "2026-11-20T08:07:02.105Z",
    "builtAt": "",
    "notes": [
     {
@@ -1898,6 +1898,11 @@
     {
      "text": "Watchdog: step s8 gave up: attempt 16 of 5 failed at sending. Alerted Brett.",
      "at": "2026-11-20T08:05:01.472Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 gave up: attempt 17 of 5 failed at sending. Alerted Brett.",
+     "at": "2026-11-20T08:07:02.105Z",
      "by": "watchdog"
     }
    ],
