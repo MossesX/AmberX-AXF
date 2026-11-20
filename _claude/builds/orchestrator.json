@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T23:36:34.024Z",
+ "updatedAt": "2026-11-20T23:36:48.335Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -68,7 +68,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:36:29.276Z",
+   "updatedAt": "2026-11-20T23:36:36.966Z",
    "builtAt": "",
    "notes": [
     {
@@ -182,6 +182,10 @@
     {
      "text": "Watchdog: step s5 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-20T23:00:02.234Z"
+    },
+    {
+     "text": "s1 (Fable): main was red because the axHub fold (module axHub, apps/axhub-web retired) left seven checks behind and both CI jobs stop at the first failure, so later checks had not run since 6154cac83. Fixed on claude/fix-main-ci-red-after-s16-s7-hand---s1: check-plugin-catalog (axhub kind has no app folder; app-install path on a scratch kind), token-registry block for axhub-approvals, settings-iface defaults for the six axhub-* plugins, help for 8 new controls (coverage back to 100%), hub-pages relay log via data_store.append_jsonl (no-json-data@1), request page head description (check-plugin-pages), '#104/#105' decision numbers in src/hubPages/test.mjs read as hex colours (check-theme). Both CI jobs replayed locally (Node 22 parts in docker node:22, axf-data Postgres test on a throwaway container): green. Follow-up, not from this landing: apps/console-web/plugins/ai-assistant/test.py is timing-dependent (the auto-title thread's CLI call can overwrite the fake's argv.json before the test reads it); green in CI so far.",
+     "at": "2026-11-20T23:36:36.966Z"
     }
    ],
    "approvals": [],
