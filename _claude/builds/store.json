@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9958,
- "updatedAt": "2026-11-20T11:09:20.631Z",
+ "rev": 9959,
+ "updatedAt": "2026-11-20T11:09:31.491Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s8",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T11:09:15.428Z",
+   "updatedAt": "2026-11-20T11:09:24.444Z",
    "builtAt": "",
    "notes": [
     {
@@ -338222,6 +338222,10 @@
     {
      "text": "Model switch: phase 2 (1) Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-20T11:08:45.700Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s8--gina: brief only · start 11.9K tokens ($0.09) · cost $25.21 · 384 turns · 6 tools, MCP none",
+     "at": "2026-11-20T11:09:24.444Z"
     }
    ],
    "approvals": [
@@ -341944,7 +341948,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 617,
+   "rev": 618,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

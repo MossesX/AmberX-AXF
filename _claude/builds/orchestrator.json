@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T11:09:20.631Z",
+ "updatedAt": "2026-11-20T11:09:31.491Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1736,7 +1736,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s8",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T11:09:15.428Z",
+   "updatedAt": "2026-11-20T11:09:24.444Z",
    "builtAt": "",
    "notes": [
     {
@@ -2714,6 +2714,10 @@
     {
      "text": "Model switch: phase 2 (1) Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-20T11:08:45.700Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s8--gina: brief only · start 11.9K tokens ($0.09) · cost $25.21 · 384 turns · 6 tools, MCP none",
+     "at": "2026-11-20T11:09:24.444Z"
     }
    ],
    "approvals": [
