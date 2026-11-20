@@ -836,10 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:58 UTC · `live-hot-refresh-every-grid-list-re` note (all) · watchdog
-- 2026-11-20 00:58 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 00:58 UTC · `grids-layout-control-voice-controlled` note (all) · watchdog
-- 2026-11-20 00:58 UTC · `change-asset-only-assets-built-screen` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `rebuild-fresh-main-collapsible-sections` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `nothing-saved-browser-all-console` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `merge-queue-view-every-build-s-fully` note (all) · watchdog
@@ -1236,6 +1232,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:40 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:41 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 06:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 06:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 06:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 06:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
