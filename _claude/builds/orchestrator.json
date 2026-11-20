@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T13:08:11.412Z",
+ "updatedAt": "2026-11-20T13:09:10.216Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "CI speed + CI failure reports (lean)",
    "category": "",
    "detail": "Brett, Nov 20: replaces the bloated Pipeline 2.0 re-send. Pipeline 2.0 itself is already built and live - do NOT rebuild it. Only these items. Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -67,7 +67,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T13:08:01.383Z",
+   "updatedAt": "2026-11-20T13:09:01.741Z",
    "builtAt": "",
    "notes": [
     {
@@ -115,6 +115,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (33 min past its budget).",
      "at": "2026-11-20T13:08:01.383Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 3.",
+     "at": "2026-11-20T13:09:01.741Z",
      "by": "watchdog"
     }
    ],
