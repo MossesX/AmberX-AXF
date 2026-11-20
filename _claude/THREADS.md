@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:16 UTC · `auto-lander-drag-rows-to-set-merge-order` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `live-hot-refresh-every-grid-list-re` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `rebuild-fresh-main-phone-connect-small` → pending, note (all) · watchdog
 - 2026-11-20 01:16 UTC · `grids-layout-control-voice-controlled` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 13:08 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
 - 2026-11-20 13:09 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
 - 2026-11-20 13:20 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-20 13:24 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 
 ## Token passes (log)
 
