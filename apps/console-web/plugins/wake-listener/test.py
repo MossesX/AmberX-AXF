@@ -275,4 +275,16 @@ check(t["dryRun"] and t["mode"] == "claude" and t["command"] == "project-wizard/
 check(mod.claude_status().data["lastMode"] == "", "a dry run is not recorded as the last command")
 check(c.post("/p/claude/test", json={}).status_code == 400, "claude/test needs text")
 
+# every tab polls settings every 6 s: the reads share one node run, a write drops it
+runs: list[tuple[str, ...]] = []
+real_cli = mod._cli
+mod._cli = lambda *a, **k: (runs.append(a), real_cli(*a, **k))[1]
+mod.readcache.invalidate("wake-listener:")
+for _ in range(5):
+    c.get("/p/settings")
+check([a for a in runs if a == ("settings",)] == [("settings",)], f"five settings reads in a row start one node run ({runs})")
+c.post("/p/settings", json={"awakeSec": 9})
+check(c.get("/p/settings").json()["settings"]["awakeSec"] == 9, "a write is read back at once (the shared read is dropped)")
+mod._cli = real_cli
+
 print(f"{ok} checks passed")
