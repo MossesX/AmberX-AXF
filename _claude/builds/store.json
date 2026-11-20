@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10092,
- "updatedAt": "2026-11-20T19:34:08.122Z",
+ "rev": 10093,
+ "updatedAt": "2026-11-20T19:35:54.687Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349344,6 +349344,95 @@
      "by": "watchdog",
      "attempt": 5,
      "why": "split did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    }
+   ]
+  },
+  {
+   "id": "nov-20-fix-list-voice-console-cont",
+   "title": "Nov 20 fix list + voice console control",
+   "category": "",
+   "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
+   "status": "pending",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-20T19:35:44.492Z",
+   "updatedAt": "2026-11-20T19:35:44.492Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: nov-20-fix-list-voice-console-co-em42 (Nov 20 fix list + voice console control). Passed plan-build@1; sent as one Pipeline 2.0 build with 8 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-20T19:35:44.492Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "planning": [
+    {
+     "text": "stepsInParallel = 6: build-orchestrator/server/__init__.py pipeline_settings_set allowlist is missing stepsInParallel (and check briefMaxBytes, healthEveryMin, autoQueue); add them with a test, then set 6 live and confirm it reads back 6. Never change the host cap (agent_slots maxBuilds) yourself",
+     "model": "Fable"
+    },
+    {
+     "text": "Side-by-side settings in the Rules plugin: allowed parallel builds (stepsInParallel) and the host cap (maxBuilds) next to each other with live values; host cap keeps its Brett-only guard; note when parallel is above the cap",
+     "model": "Fable"
+    },
+    {
+     "text": "Manifest fields for Send to orchestrator: steps (number or null) and models (allowed models or null). null = the orchestrator decides; a number forces the split into exactly that many steps/slots; a models list limits which models it may assign. Schema, Plan Studio fields, validation, tests",
+     "model": "Fable"
+    },
+    {
+     "text": "Lander: sizeCapLines 20000 in deploy/lander/config.json and any host config the running lander reads; find why PR #863 (part 4, s3) stalled and fix it",
+     "model": "Fable"
+    },
+    {
+     "text": "Fix the 'refused building -> running' status bug: the orchestrator sends status running, which is not a Pipeline 2.0 status",
+     "model": "Fable"
+    },
+    {
+     "text": "Voice console control, part 1: console_screenshot returns a detailed text description (vision model through the console's existing Claude route) plus a numbered map of every visible interactive element (rows, expanders, context-menu and app-menu items, tabs, buttons) with words, state, address and b",
+     "model": "Fable"
+    },
+    {
+     "text": "Voice console control, part 2: tools console_click, console_right_click (anything, by words, number, address or x,y), console_context_menu, console_menu (app menu path), console_expand/collapse, console_jump (any screen/tab/plugin/build/row, loading unloaded plugin chunks), console_double_click, con",
+     "model": "Fable"
+    },
+    {
+     "text": "Voice console control, part 3: tests (mock the model), help, docs, and a live proof through axHub on the Build orchestrator: right-click a row and pick a menu item, expand a row, open the app menu to Settings, jump back",
+     "model": "Fable"
+    }
+   ],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "nov-20-fix-list-voice-console-co-em42",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-20T19:35:44.492Z",
+   "statusBy": "plan-studio-2",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-20T19:35:44.492Z",
+     "by": "plan-studio-2",
+     "attempt": 1,
+     "why": "Send to orchestrator"
     }
    ]
   }
