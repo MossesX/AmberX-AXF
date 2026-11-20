@@ -42,6 +42,12 @@ test('size cap: steps grouped in order into as few PRs as fit; a big step alone;
   assert.deepEqual(L.groupSteps(steps, sizes, 1000).map((g) => g.map((s) => s.id)), [['s1', 's2'], ['s3', 's4']]);
   assert.deepEqual(L.groupSteps(steps, sizes, 250).map((g) => g.map((s) => s.id)), [['s1'], ['s2'], ['s3'], ['s4']]);
   assert.deepEqual(L.groupSteps(steps, sizes, 5000, { split: true }).length, 4);
+  // a split names the steps of the PR that failed: those land alone, the steps after them are grouped under the cap again
+  assert.deepEqual(L.groupSteps(steps, sizes, 5000, { split: ['s1', 's2'] }).map((g) => g.map((s) => s.id)), [['s1'], ['s2'], ['s3', 's4']]);
+  assert.deepEqual(L.groupSteps(steps, sizes, 5000, { split: ['s2'] }).map((g) => g.map((s) => s.id)), [['s1'], ['s2'], ['s3', 's4']], 'order is kept around a step that lands alone');
+  assert.equal(L.splitOf({ landing: { split: true } }), true, 'a split recorded without its steps still means every step');
+  assert.deepEqual(L.splitOf({ landing: { split: true, splitSteps: ['s1'] } }), ['s1']);
+  assert.equal(L.splitOf({}), false);
 });
 
 test('steps on one branch stay in one group and count once', () => {

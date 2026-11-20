@@ -193,15 +193,15 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       const branchOf = (st) => L.stepBranch(b, st);
       const sizes = {};
       for (const st of g.waiting) sizes[st.id] = Math.max(0, G.diffLines({ s, git, br: branchOf(st) }));
-      const split = L.landingOf(b).split;
+      const split = L.splitOf(b);
       const groups = L.groupSteps(g.waiting, sizes, cfg.sizeCapLines, { split, branchOf });
       const steps = groups[0];
       const k = openedCount(b) + 1; const branch = branchFor(b, k);
       const total = openedCount(b) + groups.length;
-      if (b.status !== 'merging-pr' && !write({ status: 'merging-pr', group: k > 1, note: `Lander: PR ${k} of ${total} (${steps.map((x) => x.id).join(', ')}${split ? ', split after a failure' : ''})` })) return 'stop';
+      if (b.status !== 'merging-pr' && !write({ status: 'merging-pr', group: k > 1, note: `Lander: PR ${k} of ${total} (${steps.map((x) => x.id).join(', ')}${split === true || (split && steps.some((x) => split.includes(x.id))) ? ', split after a failure' : ''})` })) return 'stop';
       act(`merging ${steps.length} step branch(es) into ${branch} (${steps.reduce((t, x) => t + sizes[x.id], 0)} lines; cap ${cfg.sizeCapLines}; ${groups.length} PR(s) left)`);
       const c = G.combineSteps({ s, git, branch, branches: steps.map(branchOf), dry, log });
-      if (c.conflicts) return fail('clash-steps', { why: `${c.between.join(' and ')} conflict in code (${c.conflicts.slice(0, 4).join(', ')})`, groupSize: steps.length });
+      if (c.conflicts) return fail('clash-steps', { why: `${c.between.join(' and ')} conflict in code (${c.conflicts.slice(0, 4).join(', ')})`, groupSize: steps.length, steps: steps.map((x) => x.id) });
       if (!c.ok) return fail('infra', { why: c.error });
       let pr = null;
       try {
@@ -325,7 +325,11 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
     if (fr.retry === 'split') {
       if (g.inFlight && !dry) { try { await gh('PATCH', `/repos/${s.slug}/pulls/${g.inFlight.pr}`, { state: 'closed' }); } catch (e) { log(`close #${g.inFlight.pr}: ${e.message}`); } }
       const closed = g.inFlight ? [...L.landingOf(b).closed, g.inFlight.pr] : L.landingOf(b).closed;
-      if (!write({ status: 'merging-pr', landing: { split: true, closed, reruns: null, rules: null, ciKick: null, fullKick: null }, note: `Lander: attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''}; its steps land one PR each` })) return 'stop';
+      // only the steps of the group that failed land one PR each; the steps after them are grouped under the cap again
+      const was = L.landingOf(b);
+      const ids = g.inFlight ? g.inFlight.steps.map((x) => x.id) : fr.steps || [];
+      const splitSteps = was.split && !was.splitSteps.length ? [] : [...new Set([...was.splitSteps, ...ids])];
+      if (!write({ status: 'merging-pr', landing: { split: true, splitSteps, closed, reruns: null, rules: null, ciKick: null, fullKick: null }, note: `Lander: attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''}; its steps land one PR each` })) return 'stop';
       act(`attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''} into one PR per step`); return 'merging-pr';
     }
     if (fr.retry === 'fix') {
@@ -337,8 +341,15 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       }
       if (dry) { out.waiting = `would start a fix session on ${branch}`; return 'stop'; }
       const job = agentJob(L.fixJob(b, fr, branch));
-      write({ failure: { ...fr, fix: { at, head, session: job.session || '', exit: job.exit, why: job.why || '' } } });
-      act(job.exit === 0 ? `attempt ${b.attempt}: fix session ${job.session || 'started'} on ${branch}` : `attempt ${b.attempt}: the fix session did not start (${job.why}); tries again after the timeout`);
+      if (job.exit !== 0) {
+        // no session started, so there is nothing to wait for: the start is tried again after the backoff
+        const again = new Date(Date.parse(at) + L.backoffMinutes(b.attempt, cfg) * 60000).toISOString();
+        write({ failure: { ...fr, notBefore: again, fixStart: { at, exit: job.exit, why: job.why || '' } } });
+        act(`attempt ${b.attempt}: the fix session did not start (${job.why}); tries again at ${again}`);
+        out.waiting = `no fix session started; the next try is at ${again}`; return 'stop';
+      }
+      write({ failure: { ...fr, fix: { at, head, session: job.session || '', exit: job.exit, why: '' } } });
+      act(`attempt ${b.attempt}: fix session ${job.session || 'started'} on ${branch}`);
       out.waiting = 'a fix session works on it'; return 'stop';
     }
     const to = L.retryStatus(fr);

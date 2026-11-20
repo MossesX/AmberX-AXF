@@ -1,6 +1,6 @@
 {
   "$axf": "lander-config@1",
-  "sizeCapLines": 4000,
+  "sizeCapLines": 20000,
   "flakyReruns": 1,
   "backoffBaseMin": 2,
   "backoffFactor": 2,

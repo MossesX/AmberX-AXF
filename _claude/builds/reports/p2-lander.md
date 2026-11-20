@@ -11,7 +11,7 @@ Branch `claude/p2-lander` (pushed, not merged, no PR of its own: the four parts 
    changes, with `at` and `by`.
    Files: `lander-core.mjs` (pure rules), `git.mjs` (git and GitHub), `store.mjs` (the one seam to the store),
    `land-rules.mjs` (merge rules ported from push-banner `land-core.mjs`), `config.json`, tests in `test/`.
-2. **Size cap**: `sizeCapLines` (default 4000 lines, insertions + deletions, tracking files left out) in
+2. **Size cap**: `sizeCapLines` (default 20000 lines, insertions + deletions, tracking files left out) in
    `deploy/lander/config.json`. The data folder's `config.json`, the env var `AXF_LANDER_SIZE_CAP`, the Gate settings
    panel and MCP `gate_auto_lander_settings_set` can override it. Over the cap, steps are grouped in order into as few
    PRs as fit (`lander/<build>-2`, `-3`, …). Those PRs land one at a time, in order. Steps that share a branch always
