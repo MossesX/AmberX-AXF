@@ -48,6 +48,7 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 import plugin_services
+import readcache  # server/readcache.py: one shared, single-flight read for every tab
 
 from . import claude_intent
 
@@ -102,7 +103,23 @@ def run_understand(text: str, context: dict[str, Any] | None = None, pending: di
     return res
 
 
+# Reads every open console makes on a timer (settings every 6 s, state with each banner paint): one node run serves
+# every tab for a few seconds. Before, each poll of each tab started its own node process: 3 open consoles made the
+# server start ~100 of them a minute (the console suite's load test). Writes drop the cached reads.
+SHARED_READS = {"settings": 5.0, "state": 2.0}
+WRITES = {"set", "on", "off", "report"}
+
+
 def cli(*args: str, stdin: str | None = None, timeout: int = 30) -> dict[str, Any]:
+    if len(args) == 1 and args[0] in SHARED_READS and stdin is None:
+        return readcache.cached(f"wake-listener:{args[0]}", lambda: _cli(*args, timeout=timeout), ttl=SHARED_READS[args[0]], max_stale=0)
+    r = _cli(*args, stdin=stdin, timeout=timeout)
+    if args and args[0] in WRITES:
+        readcache.invalidate("wake-listener:")
+    return r
+
+
+def _cli(*args: str, stdin: str | None = None, timeout: int = 30) -> dict[str, Any]:
     try:
         p = subprocess.run(["node", str(CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout, input=stdin)
     except (OSError, subprocess.TimeoutExpired) as e:

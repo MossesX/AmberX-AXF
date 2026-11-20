@@ -42,6 +42,8 @@ let focused: { address: string; view: string } | null = null;
 
 const nextFrame = () => new Promise<void>((r) => (typeof requestAnimationFrame === 'function' ? requestAnimationFrame(() => r()) : setTimeout(r, 16)));
 const wait = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+/** A frame, or 60 ms when no frame comes (a hidden tab gets none). */
+const settle = () => Promise.race([nextFrame(), wait(60)]);
 
 /** The screen, its tabs, its scroll and what is focused, read now. */
 export function controlState(rt: AxfRuntime): ControlStateSnapshot {
@@ -105,6 +107,10 @@ export async function executeControl(rt: AxfRuntime, raw: unknown): Promise<Cont
   if (res.ok && (cmd.verb === 'focus' || cmd.verb === 'open') && typeof res.address === 'string') {
     focused = { address: String((res as { focused?: string; opened?: string }).focused ?? (res as { opened?: string }).opened ?? res.address), view: rt.getState().view };
   }
+  // A command that changed something: let the change render before the snapshot, or the answer reports the tab (or
+  // value) from before it (found by the console suite). A frame or 60 ms, whichever comes first: a hidden tab gets no
+  // animation frames and must still answer.
+  if (res.ok && cmd.verb !== 'state' && cmd.verb !== 'search' && cmd.verb !== 'list') { await settle(); await settle(); }
   return withState(rt, res);
 }
 
