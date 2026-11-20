@@ -35,6 +35,42 @@
         "title": "Passes",
         "text": "Timed veto passes: what each covers, how long it has left, the calls that ran under it, and ending one early.",
         "kind": "screen"
+      },
+      {
+        "target": "ran-under-a-pass",
+        "title": "Ran under a pass",
+        "text": "Opens the approvals log narrowed to the calls that ran under any pass.",
+        "kind": "button"
+      },
+      {
+        "target": "min-from-now",
+        "title": "min from now",
+        "text": "Extends the pass so it ends that many minutes from now.",
+        "kind": "button"
+      },
+      {
+        "target": "its-calls",
+        "title": "Its calls",
+        "text": "Opens the approvals log narrowed to the calls that ran under this pass.",
+        "kind": "button"
+      },
+      {
+        "target": "service",
+        "title": "Service",
+        "text": "The service the pass covers, for example axf-console. Calls from other services still wait for approval.",
+        "kind": "field"
+      },
+      {
+        "target": "scope-control-target-matches-anything",
+        "title": "Scope (control@1 target; * matches anything)",
+        "text": "The control@1 target the pass covers, for example tokens.theme or tokens.*. A star matches anything.",
+        "kind": "field"
+      },
+      {
+        "target": "tools-empty-every-tool-in-the-scope",
+        "title": "Tools (empty = every tool in the scope)",
+        "text": "The tools the pass covers, comma separated. Leave it empty to cover every tool in the scope.",
+        "kind": "field"
       }
     ]
   }
