@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T09:06:44.480Z",
+ "updatedAt": "2026-11-20T09:07:05.819Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1640,7 +1640,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s11",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T09:05:20.434Z",
+   "updatedAt": "2026-11-20T09:07:00.299Z",
    "builtAt": "",
    "notes": [
     {
@@ -2473,28 +2473,23 @@
     },
     {
      "text": "Watchdog: step s14 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T09:04:02.071Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:04:02.071Z"
     },
     {
      "text": "Watchdog: step s15 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T09:04:02.071Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:04:02.071Z"
     },
     {
      "text": "Watchdog: step s16 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T09:04:02.071Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:04:02.071Z"
     },
     {
      "text": "Watchdog: step s17 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T09:04:02.071Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:04:02.071Z"
     },
     {
      "text": "Watchdog: step s18 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T09:04:02.071Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:04:02.071Z"
     }
    ],
    "approvals": [
@@ -2762,8 +2757,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T09:07:00.299Z",
      "note": "",
      "uid": "st-mwoi62s00doucz",
      "createdAt": "2026-11-20T04:52:29.712Z"
