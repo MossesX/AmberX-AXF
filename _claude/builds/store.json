@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10146,
- "updatedAt": "2026-11-20T22:54:47.081Z",
+ "rev": 10172,
+ "updatedAt": "2026-11-20T23:15:14.444Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336244,292 +336244,291 @@
     },
     {
      "text": "Watchdog: step s5 stuck at completed (711 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (711 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (474 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (498 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (661 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (652 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (636 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (632 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (619 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (619 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (610 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (493 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (537 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (529 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (715 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (715 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (478 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (502 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (665 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (657 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (640 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (636 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (623 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (623 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (614 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (497 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (541 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (533 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (719 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (719 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (482 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (506 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (669 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (661 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (644 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (640 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (627 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (627 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (618 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (501 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (545 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (537 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (723 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (723 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (486 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (510 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (673 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (664 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (648 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (644 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (631 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (631 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (622 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (505 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (549 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (541 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: build stuck at running-ci (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:12:01.824Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:12:01.824Z"
     },
     {
      "text": "Moved to the Archive from running-ci (console): Brett, Nov 20: all 18 steps built; it sat as the active build while half-landed and blocked the main CI fix. Branches kept; remaining steps tracked in the 'Waiting to merge' plan..",
      "at": "2026-11-20T20:14:37.092Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (727 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (727 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (490 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (514 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (677 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (668 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (652 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (648 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at completed (635 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at completed (635 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at completed (626 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at completed (509 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at completed (553 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at completed (545 min past budget): re-ran the transition (18).",
+     "at": "2026-11-20T20:14:01.901Z"
     }
    ],
    "approvals": [
@@ -340296,7 +340295,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 754,
+   "rev": 756,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344189,8 +344188,7 @@
     },
     {
      "text": "Watchdog: build stuck at split (27 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:15:01.288Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:15:01.288Z"
     }
    ],
    "approvals": [],
@@ -344632,7 +344630,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344675,15 +344673,15 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "pulling-main",
+   "status": "building",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s2",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:54:40.917Z",
+   "updatedAt": "2026-11-20T23:14:49.474Z",
    "builtAt": "",
    "notes": [
     {
@@ -344704,102 +344702,115 @@
     },
     {
      "text": "Watchdog: build stuck at split (9 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:15:01.288Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:15:01.288Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:36:01.243Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:36:01.243Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T20:39:01.319Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:39:01.319Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 1: pulling-main did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-20T20:40:02.184Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:40:02.184Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T21:01:01.979Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:01:01.979Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T21:05:02.611Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:05:02.611Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 2: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T21:06:01.751Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:06:01.751Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T21:27:01.229Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:27:01.229Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T21:30:01.385Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:30:01.385Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 3: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T21:32:01.136Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:32:01.136Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T21:53:01.999Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:53:01.999Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T21:57:01.786Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:57:01.786Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 4: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T21:58:01.140Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:58:01.140Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T22:19:01.661Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:19:01.661Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T22:22:02.204Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:22:02.204Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 5: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T22:23:01.208Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:23:01.208Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T22:44:01.747Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:44:01.747Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T22:47:01.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:47:01.857Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 6: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T22:48:01.354Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:48:01.354Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s1--gina, shared account login)",
+     "at": "2026-11-20T22:57:04.681Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s2--lenny, shared account login)",
+     "at": "2026-11-20T22:57:37.469Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s3--joey, shared account login)",
+     "at": "2026-11-20T22:57:57.674Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s4--paulie, shared account login)",
+     "at": "2026-11-20T22:58:36.098Z"
+    },
+    {
+     "text": "Watchdog: step s5 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T23:00:02.234Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "fix-main-ci-red-after-s16-s7-hand---s5",
+    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s5\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s5 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s5.\n\n## Your step\nTests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR\n\nFiles: _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, _claude/THREADS.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
@@ -344855,12 +344866,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 3,
+     "rev": 9,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:54:40.970Z",
-     "statusAt": "2026-11-20T22:54:40.917Z",
+     "updatedAt": "2026-11-20T22:56:55.668Z",
+     "statusAt": "2026-11-20T22:56:55.617Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -344874,11 +344885,55 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T22:54:54.825Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:56:22.961Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T22:56:37.498Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: fix-main-ci-red-after-s16-s7-hand---s1 already has a live session: lock launching (heartbeat 2026-11-20T22:56:32.515Z)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:56:48.138Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T22:56:52.617Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: refused: fix-main-ci-red-after-s16-s7-hand---s1 already has a live session: lock launching (heartbeat 2026-11-20T22:56:32.515Z)"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T22:56:55.617Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-fix-main-ci-red-after-s16-s7-hand---s1--gina on hulu0241"
       }
      ],
-     "status": "pulling-main",
+     "status": "building",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s1",
-     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s1"
+     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s1",
+     "tmux": "axf-fix-main-ci-red-after-s16-s7-hand---s1--gina"
     },
     {
      "id": "s2",
@@ -344895,14 +344950,14 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T23:14:42.202Z",
      "note": "",
-     "rev": 2,
+     "rev": 7,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:54:33.811Z",
-     "statusAt": "2026-11-20T22:54:33.772Z",
-     "statusBy": "amber",
+     "updatedAt": "2026-11-20T23:14:42.718Z",
+     "statusAt": "2026-11-20T22:57:32.851Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -344910,9 +344965,41 @@
        "at": "2026-11-20T22:54:33.772Z",
        "by": "amber",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T22:54:59.333Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T22:55:11.840Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:57:10.042Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T22:57:32.851Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-fix-main-ci-red-after-s16-s7-hand---s2--lenny on hulu0241"
       }
      ],
-     "status": "pending"
+     "status": "building",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s2",
+     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s2",
+     "tmux": "axf-fix-main-ci-red-after-s16-s7-hand---s2--lenny"
     },
     {
      "id": "s3",
@@ -344932,11 +345019,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 6,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:54:33.811Z",
-     "statusAt": "2026-11-20T22:54:33.772Z",
-     "statusBy": "amber",
+     "updatedAt": "2026-11-20T22:57:42.829Z",
+     "statusAt": "2026-11-20T22:57:42.780Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -344944,9 +345031,41 @@
        "at": "2026-11-20T22:54:33.772Z",
        "by": "amber",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T22:55:16.753Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T22:55:25.358Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:57:16.014Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T22:57:42.780Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-fix-main-ci-red-after-s16-s7-hand---s3--joey on hulu0241"
       }
      ],
-     "status": "pending"
+     "status": "building",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s3",
+     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s3",
+     "tmux": "axf-fix-main-ci-red-after-s16-s7-hand---s3--joey"
     },
     {
      "id": "s4",
@@ -344966,11 +345085,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 6,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:54:33.811Z",
-     "statusAt": "2026-11-20T22:54:33.772Z",
-     "statusBy": "amber",
+     "updatedAt": "2026-11-20T22:58:28.762Z",
+     "statusAt": "2026-11-20T22:58:28.710Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -344978,9 +345097,41 @@
        "at": "2026-11-20T22:54:33.772Z",
        "by": "amber",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T22:55:30.071Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T22:55:39.719Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:57:49.286Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T22:58:28.710Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "axf-fix-main-ci-red-after-s16-s7-hand---s4--paulie on hulu0241"
       }
      ],
-     "status": "pending"
+     "status": "building",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s4",
+     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s4",
+     "tmux": "axf-fix-main-ci-red-after-s16-s7-hand---s4--paulie"
     },
     {
      "id": "s5",
@@ -345003,21 +345154,73 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 9,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:54:33.811Z",
-     "statusAt": "2026-11-20T22:54:33.772Z",
-     "statusBy": "amber",
-     "attempt": 1,
+     "updatedAt": "2026-11-20T23:00:15.477Z",
+     "statusAt": "2026-11-20T23:00:02.234Z",
+     "statusBy": "watchdog",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
        "at": "2026-11-20T22:54:33.772Z",
        "by": "amber",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T22:55:44.206Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T22:56:00.355Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:58:11.985Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T22:58:31.866Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (4/4 builds running). Nothing started. Running: axf-fix-main-ci-red-after-s16-s7-hand---s1--gina, axf-fix-main-ci-red-after-s16-s7-hand---s2--lenny, axf-fix-main-ci-red-after-s16-s7-hand---s3--joey, ax"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:58:41.056Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T22:58:56.902Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (4/4 builds running). Nothing started. Running: axf-fix-main-ci-red-after-s16-s7-hand---s1--gina, axf-fix-main-ci-red-after-s16-s7-hand---s2--lenny, axf-fix-main-ci-red-after-s16-s7-hand---s3--joey, ax"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T23:00:02.234Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at sending, attempt 3"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "account": "hulu0241",
+     "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5",
+     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5"
     }
    ],
    "profiles": [
@@ -345028,7 +345231,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 36,
+   "rev": 77,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -345039,7 +345242,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T22:48:26.878Z",
+   "statusAt": "2026-11-20T22:57:00.214Z",
    "statusBy": "orchestrator",
    "attempt": 7,
    "failedFrom": "pulling-main",
@@ -345155,6 +345358,34 @@
      "by": "orchestrator",
      "attempt": 7,
      "why": "retrying the main pull"
+    },
+    {
+     "status": "assigning-models",
+     "at": "2026-11-20T22:56:06.723Z",
+     "by": "orchestrator",
+     "attempt": 7,
+     "why": "every step has main"
+    },
+    {
+     "status": "ready",
+     "at": "2026-11-20T22:56:11.709Z",
+     "by": "orchestrator",
+     "attempt": 7,
+     "why": "models assigned"
+    },
+    {
+     "status": "sending",
+     "at": "2026-11-20T22:56:30.228Z",
+     "by": "orchestrator",
+     "attempt": 7,
+     "why": "sending s1"
+    },
+    {
+     "status": "building",
+     "at": "2026-11-20T22:57:00.214Z",
+     "by": "orchestrator",
+     "attempt": 7,
+     "why": "s1 is in a slot"
     }
    ]
   }
