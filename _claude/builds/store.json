@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9830,
- "updatedAt": "2026-11-20T08:03:00.919Z",
+ "rev": 9831,
+ "updatedAt": "2026-11-20T08:03:18.226Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:01:40.488Z",
+   "updatedAt": "2026-11-20T08:03:02.959Z",
    "builtAt": "",
    "notes": [
     {
@@ -337971,6 +337971,56 @@
     {
      "text": "Watchdog: step s18 stuck at ready (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T07:59:01.249Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (9 min past its budget).",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (9 min past its budget).",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (9 min past its budget).",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 failed at ready, attempt 3: ready did not move after 2 re-run(s) of the transition (9 min past its budget).",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (9 min past its budget).",
+     "at": "2026-11-20T08:03:02.959Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (9 min past its budget).",
+     "at": "2026-11-20T08:03:02.959Z",
      "by": "watchdog"
     }
    ],
@@ -340523,13 +340573,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:59:06.388Z",
-     "statusAt": "2026-11-20T07:59:01.249Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
-     "attempt": 2,
-     "failedFrom": "ready",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -340572,9 +340621,16 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "ready did not move after 2 re-run(s) of the transition (8 min past its budget)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at ready, attempt 3"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s9",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s9",
@@ -340600,13 +340656,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:59:06.388Z",
-     "statusAt": "2026-11-20T07:59:01.249Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
-     "attempt": 2,
-     "failedFrom": "ready",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -340649,9 +340704,16 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "ready did not move after 2 re-run(s) of the transition (8 min past its budget)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at ready, attempt 3"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s10",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s10",
@@ -340677,13 +340739,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:59:06.388Z",
-     "statusAt": "2026-11-20T07:59:01.249Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
-     "attempt": 2,
-     "failedFrom": "ready",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -340726,9 +340787,16 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "ready did not move after 2 re-run(s) of the transition (8 min past its budget)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at ready, attempt 3"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s11",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s11",
@@ -340754,13 +340822,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:59:06.388Z",
-     "statusAt": "2026-11-20T07:59:01.249Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
-     "attempt": 2,
-     "failedFrom": "ready",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -340803,9 +340870,16 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "ready did not move after 2 re-run(s) of the transition (8 min past its budget)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at ready, attempt 3"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s12",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s12",
@@ -340831,12 +340905,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:54:09.300Z",
-     "statusAt": "2026-11-20T06:54:02.149Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
      "attempt": 2,
+     "failedFrom": "ready",
      "statusLog": [
       {
        "status": "pending",
@@ -340872,12 +340947,22 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at ready, attempt 2"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "ready did not move after 2 re-run(s) of the transition (9 min past its budget)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s13",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s13"
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s13",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s14",
@@ -340897,12 +340982,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:54:09.300Z",
-     "statusAt": "2026-11-20T06:54:02.149Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
      "attempt": 2,
+     "failedFrom": "ready",
      "statusLog": [
       {
        "status": "pending",
@@ -340938,12 +341024,22 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at ready, attempt 2"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "ready did not move after 2 re-run(s) of the transition (9 min past its budget)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s14",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s14"
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s14",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s15",
@@ -340963,12 +341059,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:54:09.300Z",
-     "statusAt": "2026-11-20T06:54:02.149Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
      "attempt": 2,
+     "failedFrom": "ready",
      "statusLog": [
       {
        "status": "pending",
@@ -341004,12 +341101,22 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at ready, attempt 2"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "ready did not move after 2 re-run(s) of the transition (9 min past its budget)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s15",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s15"
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s15",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s16",
@@ -341029,12 +341136,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:54:09.300Z",
-     "statusAt": "2026-11-20T06:54:02.149Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
      "attempt": 3,
+     "failedFrom": "ready",
      "statusLog": [
       {
        "status": "pending",
@@ -341077,12 +341185,22 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "retry forward at ready, attempt 3"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "ready did not move after 2 re-run(s) of the transition (9 min past its budget)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s16",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s16"
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s17",
@@ -341102,12 +341220,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:54:09.300Z",
-     "statusAt": "2026-11-20T06:54:02.149Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
      "attempt": 2,
+     "failedFrom": "ready",
      "statusLog": [
       {
        "status": "pending",
@@ -341143,12 +341262,22 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at ready, attempt 2"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "ready did not move after 2 re-run(s) of the transition (9 min past its budget)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s17",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s17"
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s17",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s18",
@@ -341168,12 +341297,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:54:09.300Z",
-     "statusAt": "2026-11-20T06:54:02.149Z",
+     "updatedAt": "2026-11-20T08:03:08.710Z",
+     "statusAt": "2026-11-20T08:03:02.959Z",
      "statusBy": "watchdog",
      "attempt": 2,
+     "failedFrom": "ready",
      "statusLog": [
       {
        "status": "pending",
@@ -341209,12 +341339,22 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "retry forward at ready, attempt 2"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T08:03:02.959Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "ready did not move after 2 re-run(s) of the transition (9 min past its budget)"
       }
      ],
-     "status": "ready",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s18",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s18"
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s18",
+     "tried": [
+      "hulu0241"
+     ]
     }
    ],
    "profiles": [
@@ -341225,7 +341365,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 485,
+   "rev": 486,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
