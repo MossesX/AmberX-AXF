@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9709,
- "updatedAt": "2026-11-20T06:55:34.262Z",
+ "rev": 9710,
+ "updatedAt": "2026-11-20T06:56:11.601Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:54:46.776Z",
+   "updatedAt": "2026-11-20T06:56:01.271Z",
    "builtAt": "",
    "notes": [
     {
@@ -337471,6 +337471,11 @@
     {
      "text": "Watchdog: step s6 stuck at sending (3 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T06:55:02.461Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 failed at sending, attempt 2: sending did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-20T06:56:01.271Z",
      "by": "watchdog"
     }
    ],
@@ -339066,12 +339071,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:42:01.463Z",
-     "statusAt": "2026-11-20T06:42:01.367Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T06:56:07.319Z",
+     "statusAt": "2026-11-20T06:56:01.271Z",
+     "statusBy": "watchdog",
      "attempt": 2,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -339114,12 +339120,22 @@
        "by": "orchestrator",
        "attempt": 2,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T06:56:01.271Z",
+       "by": "watchdog",
+       "attempt": 2,
+       "why": "sending did not move after 2 re-run(s) of the transition (4 min past its budget)"
       }
      ],
-     "status": "sending",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s6",
-     "branch": "claude/fable-full-audit-ui-overhaul-conso--s6"
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s6",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s7",
@@ -340091,7 +340107,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 364,
+   "rev": 365,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
