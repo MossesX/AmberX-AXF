@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9601,
- "updatedAt": "2026-11-20T06:12:37.447Z",
+ "rev": 9602,
+ "updatedAt": "2026-11-20T06:12:51.970Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:12:33.664Z",
+   "updatedAt": "2026-11-20T06:12:47.237Z",
    "builtAt": "",
    "notes": [
     {
@@ -337207,8 +337207,7 @@
     },
     {
      "text": "Watchdog: step s3 gave up: attempt 9 of 5 failed at sending. Alerted Brett.",
-     "at": "2026-11-20T06:11:01.697Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:11:01.697Z"
     }
    ],
    "approvals": [],
@@ -337681,12 +337680,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T06:12:47.237Z",
      "note": "",
-     "rev": 48,
+     "rev": 49,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T06:10:47.279Z",
+     "updatedAt": "2026-11-20T06:12:47.733Z",
      "statusAt": "2026-11-20T06:10:20.536Z",
      "statusBy": "orchestrator",
      "attempt": 18,
@@ -339018,7 +339017,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 220,
+   "rev": 221,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
