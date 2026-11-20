@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 02:21 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
-- 2026-11-20 02:21 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 02:22 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
 - 2026-11-20 02:22 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 - 2026-11-20 02:23 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 19:35 UTC · `nov-20-fix-list-voice-console-cont` added (0 steps) (all) · plan-studio-2
 - 2026-11-20 19:36 UTC · `nov-20-fix-list-voice-console-cont` → splitting (all) · orchestrator
 - 2026-11-20 19:38 UTC · `nov-20-fix-list-voice-console-cont` → split, note (all) · orchestrator
+- 2026-11-20 19:38 UTC · `nov-20-fix-list-voice-console-cont` note (all) · orchestrator
+- 2026-11-20 19:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 

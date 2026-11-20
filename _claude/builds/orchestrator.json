@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T19:38:41.471Z",
+ "updatedAt": "2026-11-20T19:39:03.498Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67,7 +67,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-20T19:38:07.542Z",
+   "updatedAt": "2026-11-20T19:38:36.742Z",
    "builtAt": "",
    "notes": [
     {
@@ -78,6 +78,11 @@
      "text": "Split by Fable into 12 steps (340 min, 12 Fable).",
      "at": "2026-11-20T19:37:44.403Z",
      "by": "orchestrator"
+    },
+    {
+     "text": "Split by Fable into 10 steps (290 min, 10 Fable).",
+     "at": "2026-11-20T19:38:30.677Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -85,7 +90,7 @@
    "steps": [
     {
      "id": "s1",
-     "text": "stepsInParallel setting: in apps/console-web/plugins/build-orchestrator/server/__init__.py add stepsInParallel (and confirm briefMaxBytes, healthEveryMin, autoQueue) to the pipeline_settings_set allowlist, with the same typing/bounds the other keys get. Add a pytest in apps/console-web/plugins/build-orchestrator/server/test_pipeline_settings.py (new file) covering accept/refuse per key. Then set stepsInParallel=6 live through the console API and confirm pipeline_settings_get reads back 6. Never touch agent_slots maxBuilds or the agent-slots plugin. Cherry-pick from branch claude/fix-slots-lander-plans-v2 where it already has this.",
+     "text": "stepsInParallel setting: in apps/console-web/plugins/build-orchestrator/server/__init__.py the pipeline_settings_set allowlist is missing stepsInParallel; add it, and make sure briefMaxBytes, healthEveryMin and autoQueue are allowed too (each with its type/range check). Add a pytest (apps/console-web/plugins/build-orchestrator/server/test_pipeline_settings.py) that sets each key and reads it back. Then set stepsInParallel to 6 live through the existing route/CLI (pipeline.mjs settings or the REST route against the console) and confirm it reads back 6; if the live console is unreachable from the worktree, say so in the commit note. Never change the host cap (agent_slots maxBuilds). Reuse branch claude/fix-slots-lander-plans-v2 as a reference for already-written code. Commit.",
      "model": "Fable",
      "why": "",
      "phase": "1",
@@ -102,20 +107,19 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06v01nnl7",
-     "createdAt": "2026-11-20T19:38:07.543Z"
+     "uid": "st-mwpdtmpz01ry0y",
+     "createdAt": "2026-11-20T19:38:36.743Z"
     },
     {
      "id": "s2",
-     "text": "Side-by-side parallel settings in the Rules plugin (Builds -> Gate & rules, apps/console-web/plugins/gate/ web UI; if the settings UI lives in a 'rules' plugin folder use that): one row showing allowed parallel builds (pipeline stepsInParallel, editable, read/written through the build-orchestrator plugin's pipeline-settings route) next to the host cap (agent-slots maxBuilds, read live from the agent-slots plugin route, kept Brett-only: owner guard stays, console token can't change it). Show a themed note when parallel is above the cap. Tokens only, framework controls, data-axf-target on both fields. Touch only the gate plugin's web files + its plugin.json; no server allowlist changes (step 1 owns them).",
+     "text": "Side-by-side parallel settings in the Rules plugin (Builds → Gate & rules, apps/console-web/plugins/gate/): show 'Allowed parallel builds' (pipeline stepsInParallel, editable, read and written through the build-orchestrator plugin's existing pipeline settings route) next to 'Host cap' (agent_slots maxBuilds, read from the agent-slots plugin's status route) with live values that refresh; the host cap keeps its Brett-only guard (disabled control with the reason unless the signed-in person is Brett, never settable from a session); when parallel is above the cap show an inline note ('only N run at once'). Framework controls and tokens only (NumberField/Field, fx classes), register the two settings with data-axf-target addresses for console control. Add a small test (plugin test.mts or test.py) covering the note logic. Do not touch build-orchestrator/server/__init__.py.",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      "apps/console-web/plugins/gate/web/",
-      "apps/console-web/plugins/gate/plugin.json"
+      "apps/console-web/plugins/gate/"
      ],
      "checks": [],
      "session": "same",
@@ -124,23 +128,64 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06v02gfax",
-     "createdAt": "2026-11-20T19:38:07.543Z"
+     "uid": "st-mwpdtmpz02hk71",
+     "createdAt": "2026-11-20T19:38:36.743Z"
     },
     {
      "id": "s3",
-     "text": "- Manifest fields for Send to orchestrator, contract side: add `steps` (integer >= 1 or null) and `models` (array of allowed model ids or null) to the plan@1 schema (framework/schemas/plan.json or wherever plan@1 is defined) and to build-pipeline@1 (framework/core/build-pipeline.mjs: normalise, validate, defaults null = orchestrator decides). Regenerate framework/schemas/json/ with `node framework/cli/axf.mjs schemas`, add fixtures for valid/invalid values under framework/spec/fixtures/, extend framework/spec/check-build-pipeline (or the matching check) so a models list outside framework/core/mo\n- Lander: set sizeCapLines to 20000 in deploy/lander/config.json and in any host config the running lander reads (check the systemd unit axf-lander and the data-store namespace for lander settings; change it through data-store@1, not a JSON write). Then read the lander state and journal for PR #863 (build part 4, s3), find why it stalled (CI never seen, head pin drift, gate verdict, size split loop) and fix the cause in deploy/lander/run.mjs with a regression case in framework/spec/check-landing-line.mjs (--write the fixture if the landing-line contract changed). Cherry-pick from claude/fix-slot",
+     "text": "Plan manifest fields for Send to orchestrator, schema + Plan Studio side: add optional `split: { steps: number|null, models: string[]|null }` to plan@1 (framework/schemas/plan.json or the plan schema the plan-studio plugin owns; null = the orchestrator decides, a number forces exactly that many steps, a models list limits assignable models to entries of framework/core/model-policy.mjs, never Sonnet/Haiku). Validation in apps/console-web/plugins/plan-studio/plans.mjs (add/update/validate, CLI flags --steps N|null --models fable,opus), two fields in the Plan Studio UI (framework NumberField + multi-select, tokens only, data-axf-target), and 'Turn into a build' passes `split` through on the build it creates (field on the record only; the intake change is a separate step). Tests in the plugin's test file + a schema fixture. Reuse anything useful from branch claude/fix-slots-lander-plans-v2.",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
-     "estimate": "60 min",
+     "estimate": "30 min",
      "files": [
+      "apps/console-web/plugins/plan-studio/",
       "framework/schemas/plan.json",
-      "framework/schemas/json/",
+      "framework/spec/fixtures/plan.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdtmpz03zzzp",
+     "createdAt": "2026-11-20T19:38:36.743Z"
+    },
+    {
+     "id": "s4",
+     "text": "Orchestrator honors `split` on intake: in framework/core/build-pipeline.mjs add `split: { steps, models }` to the build-pipeline@1 record (normBuild must keep it, default nulls) and in apps/console-web/plugins/build-orchestrator/pipeline.mjs `intake` read it: steps = a number → the one Opus split call is told to produce exactly that many steps (pad/merge to the count, each ≤30 min), models = a list → every step's model is coerced into the list (upward only per model-policy, never Sonnet/Haiku), null = today's behaviour. Add checks to framework/spec/check-builds-store.mjs or a new framework/spec/check-pipeline-split.mjs (fixture-free, pure functions) and run check-build-steps.mjs. Do not touch plan-studio, orchestrator.mjs or server/__init__.py.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
       "framework/core/build-pipeline.mjs",
-      "framework/spec/fixtures/",
-      "framework/spec/check-build-pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "framework/spec/check-pipeline-split.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpdtmpz046xdm",
+     "createdAt": "2026-11-20T19:38:36.743Z"
+    },
+    {
+     "id": "s5",
+     "text": "Lander: set sizeCapLines to 20000 in deploy/lander/config.json and in any host config the running lander reads (find where deploy/lander/run.mjs loads its config: config.json, env, or the gate-rules@1 store via lander-state; make the repo default and the loader agree so the live timer sees 20000). Then find why PR #863 (build part 4, step s3) stalled in the lander (read the lander's state/journal and the PR's checks via the broker token from framework/cli/github-token.mjs: size cap hit, CI never triggered, pinned head mismatch, retry counter exhausted) and fix the cause in run.mjs so that class of stall retries forward by itself; add a case to framework/spec/check-landing-line.mjs (regenerate the fixture with --write if needed). Reuse branch claude/fix-slots-lander-plans-v2 if it has this.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
       "deploy/lander/config.json",
       "deploy/lander/run.mjs",
       "framework/spec/check-landing-line.mjs",
@@ -152,56 +197,13 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Part 3: 2 plan steps in one session (they touch the same files).",
-     "uid": "st-mwpdt06v03vz2h",
-     "createdAt": "2026-11-20T19:38:07.543Z"
-    },
-    {
-     "id": "s4",
-     "text": "Plan Studio side of the manifest fields: in apps/console-web/plugins/plan-studio/ add Steps (number or Auto) and Models (multi-pick from the model policy or Auto) fields to the plan editor and to Turn into a build, write them on the plan record and pass `steps` / `models` on the orchestrator add call; plans.mjs gets `--steps N|auto` and `--models fable,opus|auto`; the plugin's own server routes accept and validate the two fields (null allowed). Add a test under the plugin folder. Tokens only, framework controls, data-axf-target on the new fields.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/plan-studio/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06v04g3az",
-     "createdAt": "2026-11-20T19:38:07.543Z"
-    },
-    {
-     "id": "s5",
-     "text": "Orchestrator honours the manifest fields at intake: in apps/console-web/plugins/build-orchestrator/pipeline.mjs (intake + the split prompt) a `steps` number forces the split into exactly that many steps (fill or merge to hit it, cap still 30 min each) and a `models` list limits assignable models (refuse others, coerce per model-policy, never Sonnet/Haiku); null leaves today's behaviour. Record both on the build record and the brief. Add a node test next to pipeline.mjs (mock the model call). Do not edit orchestrator.mjs or server/__init__.py (other steps own them).",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "30 min",
-     "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/pipeline.test.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwpdt06v05xgtm",
-     "createdAt": "2026-11-20T19:38:07.543Z"
+     "uid": "st-mwpdtmpz0543kg",
+     "createdAt": "2026-11-20T19:38:36.743Z"
     },
     {
      "id": "s6",
-     "text": "Fix the 'refused building -> running' status bug: find where the orchestrator sends status `running` (apps/console-web/plugins/build-orchestrator/orchestrator.mjs act/launch paths and the headless launcher's status call in deploy/claude-headless.sh) and map it to the Pipeline 2.0 status set (building / queued / built / complete / failed as framework/core/build-pipeline.mjs defines); make framework/cli/builds-store.mjs translate a legacy `running` write to `building` instead of refusing, journalled, and extend framework/spec/check-builds-store.mjs with the case. Do not edit pipeline.mjs or server/__init__.py.",
+     "text": "Fix the 'refused building -> running' status bug: the orchestrator (apps/console-web/plugins/build-orchestrator/orchestrator.mjs `act status` / phase start, and deploy/claude-headless.sh when it marks a launched build) still sends `running`, which is not a Pipeline 2.0 status, so the store refuses the transition. Map every writer to the builds@1 / build-pipeline@1 vocabulary (pending, queued, building, built, complete, failed…): `running` → `building`, log a one-line deprecation when the legacy word arrives, and make builds-live.mjs tolerate records already carrying it. Add a check in framework/spec/check-builds-store.mjs for the transition table (building accepted, running coerced). Do not touch framework/core/build-pipeline.mjs, pipeline.mjs or server/__init__.py (other steps own them).",
      "model": "Fable",
      "why": "",
      "phase": "1",
@@ -210,7 +212,7 @@
      "files": [
       "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
       "deploy/claude-headless.sh",
-      "framework/cli/builds-store.mjs",
+      "framework/cli/builds-live.mjs",
       "framework/spec/check-builds-store.mjs"
      ],
      "checks": [],
@@ -220,21 +222,24 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06v06y991",
-     "createdAt": "2026-11-20T19:38:07.543Z"
+     "uid": "st-mwpdtmpz0685cq",
+     "createdAt": "2026-11-20T19:38:36.743Z"
     },
     {
      "id": "s7",
-     "text": "Voice console control part 1, console_screenshot: in the console-control plugin (apps/console-web/plugins/console-control/) make console_screenshot return the image plus a detailed text description from a vision model through the console's existing Claude route (new server/vision.py, model from model-policy, never Sonnet/Haiku) and a numbered map of every visible interactive element (grid rows, expanders, context-menu and app-menu items, tabs, buttons, fields): words, state (open/selected/disabled), console-control address, bounding box and number. Browser side: new web/elementMap.ts collecting from data-axf-target / framework controls / open menus. Reuse branch claude/voice-console-control where it already has this. Only touch the screenshot tool's handler plus the two new files.",
+     "text": "Voice console control part 1a, the UI map contract and browser scanner: new engine framework/core/engines/ui-map.ts (ui-map@1: from a flat list of visible interactive nodes produce a numbered map, entries {n, words, role, state (expanded/selected/checked/disabled/open), address (console-control address when the node or an ancestor has data-axf-target, else a generated css path), bounds {x,y,w,h}}; rows, expanders, context-menu and app-menu items, tabs, buttons, menu bars; deterministic order top-left to bottom-right), fixture framework/spec/fixtures/ui-map.json via gen-fixtures.mts, Kotlin twin recorded as a deferred gap in framework/spec/PORTING.md. Browser side framework/react/uiMap.ts walks the live DOM (including open popups/context menus) into that engine and self-registers as console-control browser command `ui.map` and `window.AXF.uiMap()`; one import line in framework/react/AxfProvider.tsx. Test with check-widgets-style tsx test framework/spec/check-ui-map.mts. Reuse branch claude/voice-console-control where useful.",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      "apps/console-web/plugins/console-control/server/vision.py",
-      "apps/console-web/plugins/console-control/web/elementMap.ts",
-      "apps/console-web/plugins/console-control/server/screenshot.py"
+      "framework/core/engines/ui-map.ts",
+      "framework/react/uiMap.ts",
+      "framework/react/AxfProvider.tsx",
+      "framework/spec/fixtures/ui-map.json",
+      "framework/spec/check-ui-map.mts",
+      "framework/spec/PORTING.md"
      ],
      "checks": [],
      "session": "same",
@@ -243,23 +248,21 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06w07h72k",
-     "createdAt": "2026-11-20T19:38:07.544Z"
+     "uid": "st-mwpdtmpz07hdv5",
+     "createdAt": "2026-11-20T19:38:36.743Z"
     },
     {
      "id": "s8",
-     "text": "Voice console control part 2a, pointer tools: new apps/console-web/plugins/console-control/server/actions.py and web/actions.ts implementing console_click, console_double_click, console_right_click (target by words, element number from the last map, address, or x,y), console_context_menu (open and pick an item path), console_menu (app menu path), console_expand / console_collapse. Register them as MCP tools and REST routes under /api/console-control in a new routes file and as `axf console click|right-click|menu|expand|collapse` in the plugin's CLI; declare them in plugin.json commands. Approve/Deny and owner-only settings stay refused (personOnly), destructive presses need confirm. Register targets so framework/cli/check-console-control.mjs passes. Cherry-pick from claude/voice-console-control where useful.",
+     "text": "Voice console control part 1b, console_screenshot server side: find the module that defines the console_screenshot MCP tool (console-control plugin server, follow-amber, or apps/console-web/server/mcp_server.py) and extend only that tool: capture as today, send the image to a vision model through the console's existing Claude route (capability axf.llm@1, model from model-policy, Opus/Fable only) for a detailed text description of the screen, fetch the numbered element map from the browser through the existing console-control relay command `ui.map` (fall back to the control registry's targets list from /api/console-control when the browser command is absent), and return {description, elements:[{n, words, state, address, bounds}], image}. Put the describe/merge logic in a new sibling file ui_describe.py with a unit test that mocks the model and the relay (test_ui_describe.py). Edit only inside the console_screenshot function body of the existing module plus one import; a new server file for anything else.",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      "apps/console-web/plugins/console-control/server/actions.py",
-      "apps/console-web/plugins/console-control/web/actions.ts",
-      "apps/console-web/plugins/console-control/server/routes_actions.py",
-      "apps/console-web/plugins/console-control/plugin.json",
-      "apps/console-web/plugins/console-control/console-control.mjs"
+      "apps/console-web/plugins/console-control/server/ui_describe.py",
+      "apps/console-web/plugins/console-control/server/test_ui_describe.py",
+      "apps/console-web/server/mcp_server.py"
      ],
      "checks": [],
      "session": "same",
@@ -268,21 +271,24 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06w08jhi8",
-     "createdAt": "2026-11-20T19:38:07.544Z"
+     "uid": "st-mwpdtmq20832e5",
+     "createdAt": "2026-11-20T19:38:36.746Z"
     },
     {
      "id": "s9",
-     "text": "Voice console control part 2b, console_jump: in the console's plugin loader and router (apps/console-web/src/, the console-control runtime hooks in framework/react/ if the address resolver lives there) add console_jump to any screen, tab, plugin, build or grid row, loading an unloaded plugin chunk first and waiting for its targets to register before resolving the address; expose it as a new MCP tool / route in its own new file apps/console-web/plugins/console-control/server/jump.py and `axf console jump <address>`. Add a browser-side wait-for-target helper (web/jump.ts). Do not edit actions.py, routes_actions.py or elementMap.ts.",
+     "text": "Voice console control part 2, action tools: new browser executor framework/react/uiActions.ts (resolves a target by words, map number, console-control address or x,y against the live DOM; dispatches real pointer/keyboard events: click, double-click, right-click/contextmenu, open and pick from a context menu, walk the app-menu path, expand/collapse a row or disclosure, jump to any screen/tab/plugin/build/row loading not-yet-loaded plugin chunks through the router and waiting for the target to appear) registered as console-control browser commands ui.click, ui.rightClick, ui.contextMenu, ui.menu, ui.expand, ui.collapse, ui.jump, ui.doubleClick from apps/console-web/plugins/console-control/web.ts (one import). Server side: new file apps/console-web/plugins/console-control/server/voice_actions.py defining MCP tools console_click, console_right_click, console_context_menu, console_menu, console_expand, console_collapse, console_jump, console_double_click (navigate/press grants, destructive presses need confirm, approve/deny and owner-only settings refused), registered by one import line in the plugin server entry and listed in plugin.json commands. Unit tests with a mocked relay (test_voice_actions.py, check-ui-actions.mts). Do not edit uiMap.ts, AxfProvider.tsx or ui_describe.py.",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      "apps/console-web/plugins/console-control/server/jump.py",
-      "apps/console-web/plugins/console-control/web/jump.ts",
-      "apps/console-web/src/"
+      "framework/react/uiActions.ts",
+      "apps/console-web/plugins/console-control/web.ts",
+      "apps/console-web/plugins/console-control/server/voice_actions.py",
+      "apps/console-web/plugins/console-control/server/test_voice_actions.py",
+      "apps/console-web/plugins/console-control/plugin.json",
+      "framework/spec/check-ui-actions.mts"
      ],
      "checks": [],
      "session": "same",
@@ -291,44 +297,23 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06w09bjsf",
-     "createdAt": "2026-11-20T19:38:07.544Z"
+     "uid": "st-mwpdtmq2094nb0",
+     "createdAt": "2026-11-20T19:38:36.746Z"
     },
     {
      "id": "s10",
-     "text": "Voice console control part 3, help and docs: help stubs for every new tool in the console-control plugin's help/ folder, a Voice section in apps/console-web/plugins/console-control/README.md, update _claude/memory/docs/console-control.md and framework/spec/CONSOLE-CONTROL.md (tool list, element map format, target by words/number/address/xy, personOnly refusals), and the build's catalog descriptions so apps/console-web/plugins/glossary-index/catalog.mjs --check passes. No code files.",
-     "model": "Fable",
-     "why": "",
-     "phase": "1",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "apps/console-web/plugins/console-control/help/",
-      "apps/console-web/plugins/console-control/README.md",
-      "_claude/memory/docs/console-control.md",
-      "framework/spec/CONSOLE-CONTROL.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwpdt06w0amwht",
-     "createdAt": "2026-11-20T19:38:07.544Z"
-    },
-    {
-     "id": "s11",
-     "text": "Tests, live proof and report: pytest + node tests for the new console-control tools with the vision model mocked (apps/console-web/plugins/console-control/tests/, new), run the CI sweep (axf validate, check-console-control.mjs, check-theme.mjs, check-controls.mjs, check-json-data-writes.mjs, check-builds-store.mjs, check-landing-line.mjs, check-build-pipeline, plugin lifecycle check, catalog --check, console typecheck). Live proof through axHub on the Build orchestrator: console_screenshot map, right-click a row and pick a menu item, expand a row, open the app menu to Settings, console_jump back; save the shots with axf shot --group 'nov-20-fix-list-voice-console-cont - <date>'. Confirm stepsInParallel reads 6 and the lander cap is 20000 live. Write _claude/builds/reports/nov-20-fix-list-voice-console-cont.md: what was fixed, before/after, what each tool does, tests, gaps, and that both stopped direct builds were absorbed.",
+     "text": "Tests, help, docs, live proof and report. Run the whole CI set (check-theme, check-controls, check-console-control, check-builds-store, check-build-steps, check-landing-line, check-ui-map, check-ui-actions, plugin pytest with the model mocked) and fix anything red. Help entries for the new tools in the console-control plugin's help folder, update _claude/memory/docs/console-control.md and framework/spec/CONSOLE-CONTROL.md with ui-map@1 and the action tools, and the plugin README. Live proof through axHub on the Build orchestrator view: console_screenshot (description + numbered map), right-click a build row and pick a context-menu item, expand a row, open the app menu to Settings, console_jump back; save the shots with axf shot --group 'nov-20-fix-list-voice-console-cont - <date>' (not the review queue). Write _claude/builds/reports/nov-20-fix-list-voice-console-cont.md: what each step changed, before/after for the four fixes (stepsInParallel readback 6, lander cap and #863, status bug, split fields), the proof transcript, known gaps (Kotlin twin deferred).",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      "apps/console-web/plugins/console-control/tests/",
-      "_claude/builds/reports/nov-20-fix-list-voice-console-cont.md"
+      "_claude/builds/reports/nov-20-fix-list-voice-console-cont.md",
+      "_claude/memory/docs/console-control.md",
+      "framework/spec/CONSOLE-CONTROL.md",
+      "apps/console-web/plugins/console-control/help/",
+      "apps/console-web/plugins/console-control/README.md"
      ],
      "checks": [],
      "session": "same",
@@ -337,8 +322,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpdt06w0bbg86",
-     "createdAt": "2026-11-20T19:38:07.544Z"
+     "uid": "st-mwpdtmq20am9bi",
+     "createdAt": "2026-11-20T19:38:36.746Z"
     }
    ]
   },
@@ -6777,6 +6762,76 @@
     {
      "text": "Watchdog: step s18 stuck at completed (504 min past budget): re-ran the transition (7).",
      "at": "2026-11-20T19:33:02.648Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (690 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (690 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (453 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (477 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (640 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (631 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (615 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (611 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at completed (598 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at completed (598 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at completed (589 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at completed (472 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at completed (516 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at completed (508 min past budget): re-ran the transition (8).",
+     "at": "2026-11-20T19:37:01.548Z",
      "by": "watchdog"
     }
    ],
