@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10003,
- "updatedAt": "2026-11-20T12:11:16.561Z",
+ "rev": 10004,
+ "updatedAt": "2026-11-20T12:15:11.717Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,14 +337237,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "failed",
+   "status": "running-ci",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "860",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T12:05:25.434Z",
+   "updatedAt": "2026-11-20T12:12:50.726Z",
    "builtAt": "",
    "notes": [
     {
@@ -338896,6 +338896,81 @@
     {
      "text": "Watchdog: UI Review item r-20261120-ebabbe47 → Remove: The build failed (PR #860 open; not on main; build fable-full-audit-ui-overhaul-conso: failed)",
      "at": "2026-11-20T12:05:25.434Z"
+    },
+    {
+     "text": "Lander: attempt 3: re-running the failed CI jobs on 8c53ac893 (flaky check)",
+     "at": "2026-11-20T12:12:50.726Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (246 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (246 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (9 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (33 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (196 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (187 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (171 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (167 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at completed (154 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at completed (154 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at completed (145 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at completed (28 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at completed (72 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at completed (64 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T12:13:02.033Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -338986,6 +339061,12 @@
     "runIds": [
      44728889828
     ]
+   },
+   "landing": {
+    "reruns": {
+     "head": "8c53ac893febf1213846ba356b647251d8d06226",
+     "n": 1
+    }
    },
    "steps": [
     {
@@ -342627,7 +342708,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 657,
+   "rev": 659,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342638,10 +342719,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T12:04:06.696Z",
+   "statusAt": "2026-11-20T12:12:50.726Z",
    "statusBy": "lander",
    "attempt": 3,
-   "failedFrom": "running-ci",
    "statusLog": [
     {
      "status": "pending",
@@ -342745,6 +342825,13 @@
      "by": "lander",
      "attempt": 3,
      "why": "Lander: failed in running-ci, attempt 3: CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-20T12:12:50.726Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: attempt 3: re-running the failed CI jobs on 8c53ac893 (flaky check)"
     }
    ]
   },
