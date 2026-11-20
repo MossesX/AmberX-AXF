@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9864,
- "updatedAt": "2026-11-20T08:34:23.739Z",
+ "rev": 9865,
+ "updatedAt": "2026-11-20T08:34:35.735Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:34:16.612Z",
+   "updatedAt": "2026-11-20T08:34:28.940Z",
    "builtAt": "",
    "notes": [
     {
@@ -338026,6 +338026,10 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s11--gina, shared account login)",
      "at": "2026-11-20T08:27:49.862Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s10--earl: brief only · start 10.1K tokens ($0.02) · cost $3.23 · 97 turns · 6 tools, MCP none",
+     "at": "2026-11-20T08:34:28.940Z"
     }
    ],
    "approvals": [],
@@ -341463,7 +341467,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 518,
+   "rev": 519,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
