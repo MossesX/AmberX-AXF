@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `api-fully-drives-every-field-type-forms` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `active-tab-add-stop-button-per-running` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `active-tab-stop-button-grid-alignment` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `fix-ci-red-main-watchdog-test-vs-done` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 12:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 12:05 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 12:07 UTC · `ci-speed-ci-failure-reports-lean` added (0 steps) (all) · plan-studio-2
 
 ## Token passes (log)
 

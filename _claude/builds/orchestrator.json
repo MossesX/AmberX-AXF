@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T12:05:43.772Z",
+ "updatedAt": "2026-11-20T12:07:23.604Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -52,6 +52,31 @@
     "from": "report",
     "addenda": []
    },
+   "steps": []
+  },
+  {
+   "id": "ci-speed-ci-failure-reports-lean",
+   "title": "CI speed + CI failure reports (lean)",
+   "category": "",
+   "detail": "Brett, Nov 20: replaces the bloated Pipeline 2.0 re-send. Pipeline 2.0 itself is already built and live - do NOT rebuild it. Only these items. Every step on Fable.",
+   "status": "pending",
+   "hidden": false,
+   "flow": "pipeline-2",
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-20T12:07:17.619Z",
+   "updatedAt": "2026-11-20T12:07:17.619Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: ci-speed-ci-failure-reports-lean-tn38 (CI speed + CI failure reports (lean)). Passed plan-build@1; sent as one Pipeline 2.0 build with 5 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-20T12:07:17.619Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
    "steps": []
   },
   {
