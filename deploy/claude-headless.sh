@@ -425,8 +425,17 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
   run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
-  # killed from outside (tmux kill-session = HUP, kill = TERM): leave the evidence, then go
-  [[ -n "$gate_ok" ]] && trap 'record_run_end 129 HUP; exit 129' HUP && trap 'record_run_end 143 TERM; exit 143' TERM
+  # killed from outside (tmux kill-session = HUP, kill = TERM): end the run's pipeline, leave the evidence, then go.
+  # The pipeline runs in the background and is waited for: bash runs a trap only after a foreground command returns, and
+  # nothing in the pipeline gets the pane's HUP, so a quiet claude kept running after its session was killed, held a
+  # hard build-limit place and kept this pane alive (Nov 20 2026: test stand-ins from deleted /tmp/axf-limit-* folders).
+  run_pid=""
+  on_kill() {   # $1 = exit code, $2 = signal name
+    trap '' HUP TERM
+    if [[ -n "$run_pid" ]]; then pkill -"$2" -P "$run_pid" 2>/dev/null; kill -"$2" "$run_pid" 2>/dev/null; fi
+    record_run_end "$1" "$2"; exit "$1"
+  }
+  [[ -n "$gate_ok" ]] && trap 'on_kill 129 HUP' HUP && trap 'on_kill 143 TERM' TERM
   # The prompt reaches claude on stdin from a file, never as one argv string: Linux refuses a single argument over
   # 128 KB (MAX_ARG_STRLEN) with E2BIG, and a big brief crashed the launch before claude started (Nov 17 2026).
   prompt_file="$(mktemp "${TMPDIR:-/tmp}/axf-brief.XXXXXX")"
@@ -436,11 +445,13 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
       hdir_ready && meter=(--meter "$HDIR/$ses.meter.json" --chain "$HDIR/$ses.chain.json" --session "$ses" --name "$name" --agent "$agent" --model "$model" --build "${run_build:-}")
-      claude -p "$@" --output-format stream-json --verbose < "$prompt_file" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; [[ -n "$ctx_line" ]] && printf '%s\n' "$ctx_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"
+      ( claude -p "$@" --output-format stream-json --verbose < "$prompt_file" 2>&1 | tee "$raw" | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; [[ -n "$ctx_line" ]] && printf '%s\n' "$ctx_line"; node "$HERE/claude-stream.mjs" "${meter[@]}"; } | tee "$log"; exit "${PIPESTATUS[0]}" ) &
     else
-      claude -p "$@" < "$prompt_file" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"
+      ( claude -p "$@" < "$prompt_file" 2>&1 | { [[ -n "$agent_line" ]] && printf '%s\n' "$agent_line"; [[ -n "$login_line" ]] && printf '%s\n' "$login_line"; cat; } | tee "$log"; exit "${PIPESTATUS[0]}" ) &
     fi
-    st=${PIPESTATUS[0]}
+    run_pid=$!
+    wait "$run_pid"; st=$?   # claude's exit code (the subshell exits with it); a trapped HUP / TERM interrupts the wait
+    run_pid=""
     # vps-reaper@1: the reaper closed a run whose result was already in (its log ended "■ done", nothing left running):
     # that is a clean finish, not a crash. The marker is written just before the kill; an old one never counts.
     if (( st != 0 )) && [[ -n "$(find .axf-reaped.json -mmin -5 2>/dev/null)" ]] && grep -q '"kind":"phase-done"' .axf-reaped.json 2>/dev/null; then st=0; fi
