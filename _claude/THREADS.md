@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `settings-opened-banners-nav-menu` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `edit-ui-mode-inline-edit-anything-active` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `auto-lander-drag-rows-to-set-merge-order` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `live-hot-refresh-every-grid-list-re` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` s18 done (all) · orchestrator
 - 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s18 (all) · builds-live
 - 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 11:08 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s8 (all) · builds-live
 
 ## Token passes (log)
 
