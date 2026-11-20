@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9475,
- "updatedAt": "2026-11-20T05:11:12.593Z",
+ "rev": 9476,
+ "updatedAt": "2026-11-20T05:11:29.646Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336979,7 +336979,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s1",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:11:01.431Z",
+   "updatedAt": "2026-11-20T05:11:20.742Z",
    "builtAt": "",
    "notes": [
     {
@@ -337235,13 +337235,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 16,
+     "rev": 17,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:10:30.785Z",
-     "statusAt": "2026-11-20T05:10:30.734Z",
+     "updatedAt": "2026-11-20T05:11:20.812Z",
+     "statusAt": "2026-11-20T05:11:20.742Z",
      "statusBy": "orchestrator",
-     "attempt": 5,
-     "failedFrom": "sending",
+     "attempt": 6,
      "statusLog": [
       {
        "status": "pending",
@@ -337354,9 +337353,16 @@
        "by": "orchestrator",
        "attempt": 5,
        "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s1--earl"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T05:11:20.742Z",
+       "by": "orchestrator",
+       "attempt": 6,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2"
@@ -338229,7 +338235,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 79,
+   "rev": 80,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
