@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10147,
- "updatedAt": "2026-11-20T22:54:58.416Z",
+ "rev": 10148,
+ "updatedAt": "2026-11-20T22:55:10.088Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344683,7 +344683,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:54:54.825Z",
+   "updatedAt": "2026-11-20T22:54:59.333Z",
    "builtAt": "",
    "notes": [
     {
@@ -344905,11 +344905,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:54:33.811Z",
-     "statusAt": "2026-11-20T22:54:33.772Z",
-     "statusBy": "amber",
+     "updatedAt": "2026-11-20T22:54:59.381Z",
+     "statusAt": "2026-11-20T22:54:59.333Z",
+     "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
@@ -344917,9 +344917,18 @@
        "at": "2026-11-20T22:54:33.772Z",
        "by": "amber",
        "attempt": 1
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T22:54:59.333Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
       }
      ],
-     "status": "pending"
+     "status": "pulling-main",
+     "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s2",
+     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s2"
     },
     {
      "id": "s3",
@@ -345035,7 +345044,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
