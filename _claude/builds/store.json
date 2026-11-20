@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9389,
- "updatedAt": "2026-11-20T00:09:45.042Z",
+ "rev": 9390,
+ "updatedAt": "2026-11-20T00:10:24.396Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -245816,7 +245816,7 @@
    "title": "Every plugin screen gets a settings gear",
    "category": "",
    "detail": "Audit found 44 plugins with a screen: 10 have no settings tab at all (brand-library, build-breaker, builds-page, demonstration-designer, gate, mcp-client, md-studio, plan-studio, shipped-features, ui-review) and hub-sync's screen has no gear. Give each a Settings → Plugins sub-tab (even if it only holds enable/disable, logs and info) and put the same gear button in every plugin screen's header that opens its own settings tab. Add a CI check that fails when a plugin with a view has no settingsTab or no gear. Full API parity.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -245825,8 +245825,8 @@
    "mergedAt": "2026-11-17T19:07:28Z",
    "priority": "P1",
    "createdAt": "2026-11-16T18:27:11.774Z",
-   "updatedAt": "2026-11-20T00:08:39Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-20T00:10:20.403Z",
+   "builtAt": "2026-11-20T00:10:20.403Z",
    "notes": [
     {
      "text": "Split by Claude into 20 steps (0 Fable).",
@@ -246115,6 +246115,10 @@
     {
      "text": "Shipped manifest sm-every-plugin-screen-gets-a-settings-gear rev 1 sent to Shipped features (orchestrator): PR #767, 0 file(s), 3 test line(s), 0 open.",
      "at": "2026-11-20T00:08:39Z"
+    },
+    {
+     "text": "Watchdog: Pending build every-plugin-screen-gets-a-settings-gear → Complete: Its PR merged on main (PR #767 merged 2026-11-17T19:07:28Z (887cb0cfb47a); not on main; build every-plugin-screen-gets-a-settings-gear: pending) (pending → landing)",
+     "at": "2026-11-20T00:10:20.403Z"
     }
    ],
    "approvals": [],
@@ -246175,6 +246179,17 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "landed": {
+    "pr": 767,
+    "sha": "887cb0cfb47ab716459191232f52f840aa869add",
+    "mergedAt": "2026-11-17T19:07:28Z",
+    "ci": "unknown",
+    "ciAt": "",
+    "ciRun": "",
+    "verifiedAt": "",
+    "verifyHow": "",
+    "verifyLog": ""
    },
    "shipped": {
     "id": "sm-every-plugin-screen-gets-a-settings-gear",
@@ -246717,18 +246732,18 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 96,
+   "rev": 97,
    "deleted": false,
    "deletedAt": "",
    "pending": {
-    "model": "Opus",
-    "status": "pending",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-16T18:27:11.774Z",
     "builtAt": "",
+    "createdAt": "2026-11-16T18:27:11.774Z",
+    "estimate": "",
+    "model": "Opus",
+    "planId": "",
     "prefixSteps": true,
+    "source": "console",
+    "status": "pending",
     "stepAt": {
      "st-mwjllivx01gf6e": "2026-11-16T18:29:38.397Z",
      "st-mwjllivx02v321": "2026-11-16T18:29:38.397Z",
