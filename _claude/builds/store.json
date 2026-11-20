@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9974,
- "updatedAt": "2026-11-20T11:35:17.316Z",
+ "rev": 9975,
+ "updatedAt": "2026-11-20T11:35:33.283Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337242,9 +337242,9 @@
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
-   "pr": "",
+   "pr": "860",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T11:34:56.551Z",
+   "updatedAt": "2026-11-20T11:35:24.932Z",
    "builtAt": "",
    "notes": [
     {
@@ -338420,11 +338420,11 @@
      "done": true,
      "doneAt": "2026-11-20T05:52:06.661Z",
      "note": "",
-     "rev": 54,
+     "rev": 55,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T07:36:59.662Z",
-     "statusAt": "2026-11-20T07:36:59.588Z",
-     "statusBy": "ops-slots-watchdog-cleanup",
+     "updatedAt": "2026-11-20T11:35:24.993Z",
+     "statusAt": "2026-11-20T11:35:24.932Z",
+     "statusBy": "lander",
      "attempt": 22,
      "statusLog": [
       {
@@ -338755,13 +338755,20 @@
        "by": "ops-slots-watchdog-cleanup",
        "attempt": 22,
        "why": "its session had ended cleanly; failed only by the watchdog's completed-step budget (fixed in PR #857)"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-20T11:35:24.932Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s1",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s1",
      "tmux": "axf-fable-full-audit-ui-overhaul-conso--s1--earl",
+     "prNumber": 860,
      "tried": [
       "hulu0241"
      ]
@@ -338784,69 +338791,13 @@
      "done": true,
      "doneAt": "2026-11-20T06:27:19.752Z",
      "note": "",
-     "rev": 66,
+     "rev": 67,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T07:37:06.483Z",
-     "statusAt": "2026-11-20T07:37:06.413Z",
-     "statusBy": "ops-slots-watchdog-cleanup",
+     "updatedAt": "2026-11-20T11:35:24.993Z",
+     "statusAt": "2026-11-20T11:35:24.932Z",
+     "statusBy": "lander",
      "attempt": 25,
      "statusLog": [
-      {
-       "status": "pending",
-       "at": "2026-11-20T04:52:28.145Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "split"
-      },
-      {
-       "status": "pulling-main",
-       "at": "2026-11-20T04:52:54.179Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "cutting its worktree and pulling main"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T04:53:00.933Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "main is in"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:00:32.981Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:00:45.284Z",
-       "by": "orchestrator",
-       "attempt": 1,
-       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock launching (heartbeat 2026-11-20T05:00:38.981Z)"
-      },
-      {
-       "status": "ready",
-       "at": "2026-11-20T05:02:02.832Z",
-       "by": "watchdog",
-       "attempt": 2,
-       "why": "retry forward at sending, attempt 2"
-      },
-      {
-       "status": "sending",
-       "at": "2026-11-20T05:04:39.242Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "to hulu0241"
-      },
-      {
-       "status": "failed",
-       "at": "2026-11-20T05:05:08.831Z",
-       "by": "orchestrator",
-       "attempt": 2,
-       "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s1--earl; claude pid 3232233"
-      },
       {
        "status": "ready",
        "at": "2026-11-20T05:06:02.096Z",
@@ -339189,13 +339140,20 @@
        "by": "ops-slots-watchdog-cleanup",
        "attempt": 25,
        "why": "its session had ended cleanly; failed only by the watchdog's completed-step budget (fixed in PR #857)"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-20T11:35:24.932Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
      "tmux": "axf-fable-full-audit-ui-overhaul-conso--s2--earl",
+     "prNumber": 860,
      "tried": [
       "hulu0241"
      ]
@@ -339218,11 +339176,11 @@
      "done": true,
      "doneAt": "2026-11-20T06:31:51.230Z",
      "note": "",
-     "rev": 47,
+     "rev": 48,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:37:11.795Z",
-     "statusAt": "2026-11-20T07:37:11.743Z",
-     "statusBy": "ops-slots-watchdog-cleanup",
+     "updatedAt": "2026-11-20T11:35:24.993Z",
+     "statusAt": "2026-11-20T11:35:24.932Z",
+     "statusBy": "lander",
      "attempt": 19,
      "statusLog": [
       {
@@ -339532,13 +339490,20 @@
        "by": "ops-slots-watchdog-cleanup",
        "attempt": 19,
        "why": "its session had ended cleanly; failed only by the watchdog's completed-step budget (fixed in PR #857)"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-20T11:35:24.932Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s3",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
      "tmux": "axf-fable-full-audit-ui-overhaul-conso--s3--lenny",
+     "prNumber": 860,
      "tried": [
       "hulu0241"
      ]
@@ -339561,11 +339526,11 @@
      "done": true,
      "doneAt": "2026-11-20T06:37:39.457Z",
      "note": "",
-     "rev": 24,
+     "rev": 25,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:37:16.653Z",
-     "statusAt": "2026-11-20T07:37:16.609Z",
-     "statusBy": "ops-slots-watchdog-cleanup",
+     "updatedAt": "2026-11-20T11:35:24.993Z",
+     "statusAt": "2026-11-20T11:35:24.932Z",
+     "statusBy": "lander",
      "attempt": 10,
      "statusLog": [
       {
@@ -339728,13 +339693,20 @@
        "by": "ops-slots-watchdog-cleanup",
        "attempt": 10,
        "why": "its session had ended cleanly; failed only by the watchdog's completed-step budget (fixed in PR #857)"
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-20T11:35:24.932Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
-     "status": "completed",
+     "status": "in-pr",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s4",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s4",
      "tmux": "axf-fable-full-audit-ui-overhaul-conso--s4--earl",
+     "prNumber": 860,
      "tried": [
       "hulu0241"
      ]
@@ -342069,7 +342041,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 634,
+   "rev": 635,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
