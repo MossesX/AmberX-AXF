@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T00:12:47.525Z",
+ "updatedAt": "2026-11-20T00:13:33.237Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -202592,7 +202592,7 @@
    "pr": "#851",
    "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-19T05:17:20.124Z",
+   "updatedAt": "2026-11-20T00:13:27Z",
    "builtAt": "",
    "notes": [
     {
@@ -202662,6 +202662,10 @@
     {
      "text": "Headless run axf-postgres-part-b-plan-plan-studio-catalog--sully: brief only · start 14.2K tokens ($0.04) · cost $14.36 · 226 turns · 6 tools, MCP none",
      "at": "2026-11-19T05:17:20.124Z"
+    },
+    {
+     "text": "Shipped manifest sm-postgres-part-b-plan-plan-studio-catalog rev 1 sent to Shipped features (orchestrator): landed b348a81fb, 13 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-20T00:13:27Z"
     }
    ],
    "approvals": [],
