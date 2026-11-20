@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T10:30:34.715Z",
+ "updatedAt": "2026-11-20T10:31:05.114Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1736,7 +1736,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s17",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T10:30:14.868Z",
+   "updatedAt": "2026-11-20T10:30:45.852Z",
    "builtAt": "",
    "notes": [
     {
@@ -2690,6 +2690,10 @@
     {
      "text": "Watchdog: step s18 retried at ready, attempt 5 on hulu0241.",
      "at": "2026-11-20T10:16:01.229Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s17--earl: brief only · start 10.1K tokens ($0.02) · cost $8.38 · 153 turns · 6 tools, MCP none",
+     "at": "2026-11-20T10:30:45.852Z"
     }
    ],
    "approvals": [

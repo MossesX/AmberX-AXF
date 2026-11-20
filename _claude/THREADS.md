@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `icon-packs-with-drag-drop-pack-designer` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `auto-lander-status-tab-rest-mcp-settings` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `gate-auto-lander-tab-and-controls` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `server-rule-done-means-merged-working` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 10:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 10:29 UTC · `fable-full-audit-ui-overhaul-conso` s17 done (all) · orchestrator
 - 2026-11-20 10:29 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s17 (all) · builds-live
+- 2026-11-20 10:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 
 ## Token passes (log)
 
