@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T11:40:13.605Z",
+ "updatedAt": "2026-11-20T11:42:09.575Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2877,6 +2877,61 @@
     {
      "text": "Watchdog: step s8 stuck at completed (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T11:40:01.456Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (215 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (215 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (165 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (156 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (140 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (136 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at completed (123 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at completed (123 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at completed (114 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at completed (41 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at completed (33 min past budget): re-ran the transition (3).",
+     "at": "2026-11-20T11:42:02.070Z",
      "by": "watchdog"
     }
    ],
