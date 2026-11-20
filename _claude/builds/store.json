@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9928,
- "updatedAt": "2026-11-20T09:20:22.331Z",
+ "rev": 9929,
+ "updatedAt": "2026-11-20T09:56:43.257Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s14",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T09:20:18.237Z",
+   "updatedAt": "2026-11-20T09:56:39.266Z",
    "builtAt": "",
    "notes": [
     {
@@ -340409,11 +340409,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 47,
+     "rev": 48,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T09:20:18.290Z",
-     "statusAt": "2026-11-20T09:20:18.237Z",
-     "statusBy": "ops-slots-watchdog-cleanup",
+     "updatedAt": "2026-11-20T09:56:39.325Z",
+     "statusAt": "2026-11-20T09:56:39.266Z",
+     "statusBy": "orchestrator",
      "attempt": 22,
      "statusLog": [
       {
@@ -340744,9 +340744,16 @@
        "by": "ops-slots-watchdog-cleanup",
        "attempt": 22,
        "why": "never ran: all 21 attempts were launch refusals from the slot / model-gate bugs fixed in #857 and #858; one go on Fable (the watchdog's raise)"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T09:56:39.266Z",
+       "by": "orchestrator",
+       "attempt": 22,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s8",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s8"
@@ -341816,7 +341823,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 586,
+   "rev": 587,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
