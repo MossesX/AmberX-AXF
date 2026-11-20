@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T06:10:44.492Z",
+ "updatedAt": "2026-11-20T06:10:58.391Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:10:31.950Z",
+   "updatedAt": "2026-11-20T06:10:53.512Z",
    "builtAt": "",
    "notes": [
     {
@@ -268,6 +268,10 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.12",
      "at": "2026-11-20T06:07:38.546Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--sully, shared account login)",
+     "at": "2026-11-20T06:10:53.512Z"
     }
    ],
    "approvals": [],

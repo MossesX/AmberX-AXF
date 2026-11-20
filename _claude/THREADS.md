@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `orchestrator-master-pause-switch-stop` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `host-phone-connect-apk-axhub-browser` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `console-app-text-way-too-big-system-font` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · builds-live
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:07 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:10 UTC · `fable-full-audit-ui-overhaul-conso` s2 undone (all) · orchestrator
 - 2026-11-20 06:10 UTC · `fable-full-audit-ui-overhaul-conso` s2 undone (all) · builds-live
+- 2026-11-20 06:10 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 
 ## Token passes (log)
 
