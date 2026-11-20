@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10080,
- "updatedAt": "2026-11-20T19:11:22.023Z",
+ "rev": 10081,
+ "updatedAt": "2026-11-20T19:11:41.739Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,21 +337237,16 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "failed",
+   "status": "running-ci",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "863",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T19:11:17.197Z",
+   "updatedAt": "2026-11-20T19:11:23.052Z",
    "builtAt": "",
    "notes": [
-    {
-     "text": "Watchdog: step s5 stuck at completed (413 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T15:00:01.970Z",
-     "by": "watchdog"
-    },
     {
      "text": "Watchdog: step s6 stuck at completed (413 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T15:00:01.970Z",
@@ -339505,6 +339500,16 @@
      "text": "Lander: the split after PR #860 no longer covers the steps after it; they are grouped again under the 20000-line cap (Brett, Nov 20).",
      "at": "2026-11-20T19:11:17.197Z",
      "by": "fix-slots-lander-plans-v2"
+    },
+    {
+     "text": "Lander: the fix pushed b51511934; CI runs on it",
+     "at": "2026-11-20T19:11:23.052Z",
+     "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (413 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T15:00:01.970Z",
+     "by": "watchdog"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (183 min past budget): re-ran the transition (9).",
@@ -344963,7 +344968,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 728,
+   "rev": 730,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344974,10 +344979,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T15:15:48.693Z",
+   "statusAt": "2026-11-20T19:11:23.052Z",
    "statusBy": "lander",
-   "attempt": 7,
-   "failedFrom": "running-ci",
+   "attempt": 9,
    "statusLog": [
     {
      "status": "pending",
@@ -345199,6 +345203,13 @@
      "by": "lander",
      "attempt": 7,
      "why": "Lander: failed in running-ci, attempt 7: CI is red on 351656f94 (Web Dev Console (React/TS) + Python API)"
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-20T19:11:23.052Z",
+     "by": "lander",
+     "attempt": 1,
+     "why": "Lander: the fix pushed b51511934; CI runs on it"
     }
    ]
   },
