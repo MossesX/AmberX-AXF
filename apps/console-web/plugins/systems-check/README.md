@@ -5,7 +5,9 @@
 Two banners at the top of every view, one dialog, one settings sub-tab (Settings → Plugins → **Systems check**).
 
 ## Systems check banner + dialog
-Runs when the console loads (and when the token changes). Anything blocking or worth a look shows in the banner;
+Runs when the console loads (and when the token changes): a load tests the keys and tokens live and reads the rest
+from the server's shared run (at most a minute old), so reloads and extra tabs never re-run every check; Check again
+and a token change force a full run. Anything blocking or worth a look shows in the banner;
 the dialog has Grid, By service and Guided setup views and **Fix all**. Checks come from three places:
 1. **Built-in** (`server/checks.py`): console token, credentials, GitHub, Anthropic, Hostinger, Coolify, axHub, repo
    clone, manifest, shared data, Claude files, and VPS host items from `deploy/console-doctor.sh`.
