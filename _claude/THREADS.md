@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:16 UTC · `one-true-source-for-every-setting` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `vps-sets-every-build-status-manifest` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `api-fully-drives-every-field-type-forms` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `active-tab-add-stop-button-per-running` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` → failed (all) · lander
 - 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 14:26 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 
 ## Token passes (log)
 
