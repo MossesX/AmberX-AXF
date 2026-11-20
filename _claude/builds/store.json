@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10077,
- "updatedAt": "2026-11-20T18:25:09.953Z",
+ "rev": 10078,
+ "updatedAt": "2026-11-20T18:25:26.690Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344952,7 +344952,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 725,
+   "rev": 726,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
