@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10154,
- "updatedAt": "2026-11-20T22:56:34.167Z",
+ "rev": 10155,
+ "updatedAt": "2026-11-20T22:56:46.503Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344683,7 +344683,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:56:30.228Z",
+   "updatedAt": "2026-11-20T22:56:37.498Z",
    "builtAt": "",
    "notes": [
     {
@@ -344855,12 +344855,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:56:23.008Z",
-     "statusAt": "2026-11-20T22:56:22.961Z",
+     "updatedAt": "2026-11-20T22:56:37.545Z",
+     "statusAt": "2026-11-20T22:56:37.498Z",
      "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "sending",
      "statusLog": [
       {
        "status": "pending",
@@ -344888,9 +344889,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T22:56:37.498Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "launch on hulu0241: refused: fix-main-ci-red-after-s16-s7-hand---s1 already has a live session: lock launching (heartbeat 2026-11-20T22:56:32.515Z)"
       }
      ],
-     "status": "sending",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s1",
      "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s1"
@@ -345107,7 +345115,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
