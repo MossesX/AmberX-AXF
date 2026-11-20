@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9582,
- "updatedAt": "2026-11-20T06:04:32.925Z",
+ "rev": 9583,
+ "updatedAt": "2026-11-20T06:05:16.010Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:04:24.565Z",
+   "updatedAt": "2026-11-20T06:05:01.781Z",
    "builtAt": "",
    "notes": [
     {
@@ -337184,6 +337184,16 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--gina, shared account login)",
      "at": "2026-11-20T06:03:20.010Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 6 of 5 failed at sending. Alerted Brett.",
+     "at": "2026-11-20T06:05:01.781Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T06:05:01.781Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -338125,13 +338135,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T05:59:06.183Z",
-     "statusAt": "2026-11-20T05:59:01.980Z",
+     "updatedAt": "2026-11-20T06:05:11.529Z",
+     "statusAt": "2026-11-20T06:05:01.781Z",
      "statusBy": "watchdog",
-     "attempt": 2,
-     "failedFrom": "ready",
+     "attempt": 3,
      "statusLog": [
       {
        "status": "pending",
@@ -338167,9 +338176,17 @@
        "by": "watchdog",
        "attempt": 2,
        "why": "ready did not move after 2 re-run(s) of the transition (5 min past its budget)"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T06:05:01.781Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "retry forward at ready, attempt 3"
       }
      ],
-     "status": "failed",
+     "status": "ready",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s4",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s4"
     },
@@ -338910,7 +338927,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 199,
+   "rev": 200,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

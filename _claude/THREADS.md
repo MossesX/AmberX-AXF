@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `watchdog-plugin-owns-every-vps` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `one-landing-line-pull-main-merge-one` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `server-gate-reject-any-build-without` note (all) · builds-live
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:02 UTC · `fable-full-audit-ui-overhaul-conso` s2 undone (all) · orchestrator
 - 2026-11-20 06:03 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:03 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
+- 2026-11-20 06:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
