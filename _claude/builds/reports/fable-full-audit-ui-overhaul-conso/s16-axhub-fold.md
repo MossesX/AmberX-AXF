@@ -95,3 +95,18 @@ Rollback: `bash /opt/axf/apps/axhub-web/deploy/install.sh` brings the old app ba
 - `tsc --noEmit` + `vite build` of the console — clean
 - `test_wall_users.py` fails at "the page itself" in this worktree only because `dist/` isn't served there (it needs a
   built console, as in CI); unrelated to this step.
+
+## Later in the step
+
+- **App menu:** the module's pages sit in the console's own **Apps → axHub** submenu (each plugin's entries,
+  `nav:<view>`, gone with its plugin); the four old `console.open` links there were replaced, "Open axHub in a new
+  tab" stays. `scripts/menu-reach.mts`: ok (425 checks). Not mine, noticed: `output-recorder` contributes to a
+  top-level menu id `axhub` with no label, which shows as a stray **Axhub** menu holding only "Audio out".
+- **Grid fix (inherited bug):** every DataGrid row is its own CSS grid at least as wide as its content, so the
+  content-sized columns and long Who / What text made rows drift and pushed Deny / Approve now past the card. Fixed
+  in the plugin: text-sized fixed widths, Who / What size-contained.
+- **UI Review:** five screens (Approvals, Passes, Users, Apps, axHub), desktop + phone, group
+  "fable-full-audit-ui-overhaul-conso - Nov 20 11:15 AM" (r-20261120-a7ca99f8, -dd1ece85, -3b2eac2b, -2291077f,
+  -2c6163c9) — waiting for Brett there. Shots from `scripts/axhub-pages-shots.mjs` against a fake hub.
+- Shots script first hit another worktree's preview server on a shared port (7099) and showed its console; it now
+  uses its own port and fails when the port is taken.
