@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T00:12:33.494Z",
+ "updatedAt": "2026-11-20T00:12:47.525Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -198828,7 +198828,7 @@
    "title": "VPS never gives up: fix and land every build until all options are exhausted",
    "category": "",
    "detail": "The VPS keeps fixing and landing a build (merge main, fix clashes, fix red CI, retry with other strategies) until every option is used up. Only then does it go back to the orchestrator, which marks it Failed straight away. FYI notification to Brett on each attempt. Tests.",
-   "status": "landing",
+   "status": "pending",
    "hidden": false,
    "source": "Brett",
    "pendingId": "",
@@ -198836,8 +198836,8 @@
    "pr": "#842",
    "mergedAt": "2026-11-18T14:15:52Z",
    "createdAt": "2026-11-18T12:21:38.935Z",
-   "updatedAt": "2026-11-19T02:36:57.062Z",
-   "builtAt": "2026-11-19T02:36:57.062Z",
+   "updatedAt": "2026-11-20T00:12:39Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by Brett.",
@@ -198962,6 +198962,10 @@
     {
      "text": "Watchdog: Pending build vps-never-gives-up-fix-land-every-build → Complete: Its PR merged on main (PR #842 merged 2026-11-18T14:15:52Z (50089ad59ae1); on main by merge-commit 50089ad59ae1; build vps-never-gives-up-fix-land-every-build: pending; branch claude/vps-never-gives-up-fix-land-every-build deleted) (pending → landing)",
      "at": "2026-11-19T02:36:57.062Z"
+    },
+    {
+     "text": "Shipped manifest sm-vps-never-gives-up-fix-land-every-build rev 1 sent to Shipped features (orchestrator): PR #842, 0 file(s), 4 test line(s), 0 open.",
+     "at": "2026-11-20T00:12:39Z"
     }
    ],
    "approvals": [],
