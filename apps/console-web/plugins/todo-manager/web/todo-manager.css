@@ -27,7 +27,6 @@ button.axp-todo__listrow:focus-visible { outline: calc(var(--fx-border-w) * 2) s
 .axp-todo__bar { flex-wrap: nowrap; gap: var(--fx-dens-gap-sm) }
 .axp-todo__bar > * { flex: none }
 .axp-todo__bar > .axp-todo__search { flex: 1 1 0; min-width: 0; width: auto }
-.axp-todo__bar .fx-iconbtn.is-on { color: var(--fx-accent) }
 .axp-todo__listpick { align-items: center; gap: var(--fx-dens-gap-sm) }
 :where([data-fx-narrow]) .axp-todo__listpick { display: flex }
 .axp-todo__listpick > select { flex: 1; min-width: 0 }
@@ -37,7 +36,7 @@ button.axp-todo__listrow:focus-visible { outline: calc(var(--fx-border-w) * 2) s
 select.fx-input.axp-todo__tone { width: auto; min-width: 0 }
 .axp-todo__filters { align-items: flex-end; padding: var(--fx-dens-gap-md) 0; border-block: var(--fx-border-w) solid var(--fx-border) }
 .axp-todo__filters > .fx-field { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0 }
-.axp-todo__selbar { position: sticky; top: 0; z-index: 1; padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-accent); background: var(--fx-surface) }
+.axp-todo__selbar { position: sticky; top: 0; z-index: 1 }
 .axp-todo__selbar select.fx-input { width: auto }
 
 .axp-todo__entries { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
