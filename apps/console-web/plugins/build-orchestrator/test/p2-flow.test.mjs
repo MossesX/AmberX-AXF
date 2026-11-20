@@ -154,6 +154,23 @@ echo 'Here you go: {"steps":[{"text":"Add the plan-build schema field","model":"
   const prompt = readFileSync(join(tmp, 'fable-prompt'), 'utf8');
   ok(/Planning steps:\n1\. Schema field\n2\. Dialog \(noted: Opus, 45 min\)/.test(prompt) && /never share|must not touch the same files/.test(prompt), 'Fable gets the planning steps (with their hints) as context and the parallel-steps rule');
   eq(P.planning.length, 2, 'the planning context stays on the build');
+  ok(/You have no tools and cannot read the repository/.test(prompt), 'Fable is told it has no tools: design from the plan in this one reply (a tool call ends the turn unanswered)');
+  { // the real one-shot call: no built-in tools and no MCP servers (the repo's .mcp.json, the login's own)
+    const PL = await import('../pipeline.mjs');
+    const home = join(tmp, 'home'); const bin = join(home, '.local', 'bin'); mkdirSync(bin, { recursive: true }); // askSplitter puts ~/.local/bin first
+    writeFileSync(join(bin, 'claude'), `#!/bin/bash\ncat >/dev/null; printf '%s\\n' "$@" > "${tmp}/claude-args"; echo '{"result":"{}"}'\n`); chmodSync(join(bin, 'claude'), 0o755);
+    const realHome = process.env.HOME; process.env.HOME = home;
+    let a; try { a = PL.askSplitter('design', { splitProvider: 'claude' }, { ...process.env, AXF_PIPELINE_SPLITTER: '', PATH: `${bin}:${process.env.PATH}` }, { model: 'fable' }); } finally { process.env.HOME = realHome; }
+    const args = readFileSync(join(tmp, 'claude-args'), 'utf8').trim().split('\n');
+    eq(a.error, '', 'the split call answered');
+    ok(args.includes('--strict-mcp-config') && args[args.indexOf('--tools') + 1] === '' && args[args.indexOf('--max-turns') + 1] === '1', `the split call has no tools at all (${args.join(' ')})`);
+    eq(JSON.parse(args[args.indexOf('--settings') + 1]), { disableAllHooks: true }, 'and no hooks (a SessionEnd hook held the answer past the timeout)');
+    // an answer printed before a late exit is kept
+    writeFileSync(join(bin, 'claude'), `#!/bin/bash\ncat >/dev/null; echo '{"type":"result","subtype":"success","is_error":false,"result":"{\\"steps\\":[]}"}'; exit 143\n`);
+    process.env.HOME = home;
+    let late; try { late = PL.askSplitter('design', { splitProvider: 'claude' }, { ...process.env, AXF_PIPELINE_SPLITTER: '' }, { model: 'fable' }); } finally { process.env.HOME = realHome; }
+    eq([late.error, late.text], ['', '{"steps":[]}'], 'an answer already printed survives a late exit');
+  }
 
   const broke = join(tmp, 'broke.sh'); writeFileSync(broke, '#!/bin/bash\ncat >/dev/null; echo "Credit balance is too low" >&2; exit 1\n'); chmodSync(broke, 0o755);
   sendPlan('plan-nocredit', [{ text: 'Write the engine contract' }, { text: 'Toolbar button', minutes: 10 }]);

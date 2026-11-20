@@ -781,7 +781,7 @@ function remoteJournalOf(id) {
   for (const path of keys) {
     let since = 0;
     for (;;) {
-      const r = files.callSync({ op: 'read', key: `builds/${path}`, since });
+      const r = files.callSync({ op: 'read', key: `builds/${path}`, since, limit: files.SYNC_READ_PAGE });
       for (const x of r.entries) {
         let e = x.entry;
         if (e.large) { const big = files.callSync({ op: 'get', key: e.large }); if (big) e = big.data; }
