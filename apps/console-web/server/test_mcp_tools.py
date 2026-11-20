@@ -266,5 +266,7 @@ except Exception as e:  # noqa: BLE001
     ok("not_implemented" in str(e), "a failed show raises with its wire code")
 mcp_server.follow_call = real_follow
 ok("console_show" in mcp_server.INSTRUCTIONS and "console_follow" in mcp_server.INSTRUCTIONS, "the server instructions tell Amber to call console_show")
+ok(all(t in mcp_server.INSTRUCTIONS for t in ("console_click", "console_right_click", "console_context_menu", "console_menu", "console_expand", "console_jump")) and "never guess" in mcp_server.INSTRUCTIONS,
+   "the server instructions tell a voice session how to see and drive the console")
 
 print(f"✓ console MCP tools — {checks} checks, {len(tools)} tools, {len(READ_TOOLS)} read-only")

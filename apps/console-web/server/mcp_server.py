@@ -62,7 +62,15 @@ Chat and voice sessions (claude.ai, Amber): whenever you act, post one short lin
 live in the Terminal's sessions nav and jumps in from there.
 
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
-console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
+console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console.
+
+Voice calls: you cannot see images, so `console_screenshot` answers in words first (a literal description, then a numbered
+list of everything that can be pressed). When Brett points at something ("click that", "right-click the second row",
+"expand row 3", "open the app menu, go to Settings", "jump to the queue"), act with `console_click`,
+`console_right_click`, `console_context_menu`, `console_menu`, `console_expand` / `console_collapse`, `console_jump`,
+`console_scroll`, `console_type`, `console_key`: the target is his words, a number from the list, an address or x,y.
+Several matches come back as numbered choices: ask him which, never guess. confirmation_required = it deletes, stops or
+merges: tell him what it will do, then call again with confirm=true. Approve / deny are his own tap, never yours."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
