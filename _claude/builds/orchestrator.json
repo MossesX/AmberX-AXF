@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T08:55:51.999Z",
+ "updatedAt": "2026-11-20T08:56:06.766Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1364,7 +1364,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s11",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:55:46.604Z",
+   "updatedAt": "2026-11-20T08:55:56.312Z",
    "builtAt": "",
    "notes": [
     {
@@ -2182,6 +2182,10 @@
     {
      "text": "s12 skin pass pushed (claude/fable-full-audit-ui-overhaul-conso--s12): banner day/night switch now stays inside the AmberX pair (Saffron Day <-> Carbon Amber); AmberX packages no longer replace each app's nav with the amber-signature demo nav; 15 light colour themes raised to WCAG AA (status/accent/muted); new CI check spec/check-theme-contrast.mjs. UI Review NOT submitted: this session had no AXF_CONSOLE_URL/AXF_TOKEN. Shots (day/night, desktop/phone) are in /root/axf-builds/_shots/fable-full-audit-ui-overhaul-conso-s12/; submit with review.mjs submit --console --kind skin --single-option. Found, not fixed (s8 territory): Settings > Appearance 'Visible parts' rows sit flush left while the rows around them are padded.",
      "at": "2026-11-20T08:55:24.968Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s12--rhonda: brief only · start 10.1K tokens ($0.02) · cost $4.10 · 130 turns · 6 tools, MCP none",
+     "at": "2026-11-20T08:55:56.312Z"
     }
    ],
    "approvals": [
