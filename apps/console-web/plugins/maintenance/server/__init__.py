@@ -366,7 +366,8 @@ def _loop() -> None:
     time.sleep(15)
     while True:
         try:
-            tick()
+            if cx.plugin_enabled(FOLDER):  # turned off: no disk/swap alerts, no nightly run
+                tick()
         except Exception as e:  # noqa: BLE001 — the monitor never dies
             cx.log("maintenance", f"monitor: {type(e).__name__}: {e}"[:300], "warn")
         time.sleep(TICK_S)
