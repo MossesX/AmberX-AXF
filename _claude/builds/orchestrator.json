@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T23:15:14.444Z",
+ "updatedAt": "2026-11-20T23:44:24.044Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -64,11 +64,11 @@
    "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s2",
+   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s4",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:14:49.474Z",
+   "updatedAt": "2026-11-20T23:44:14.690Z",
    "builtAt": "",
    "notes": [
     {
@@ -182,6 +182,26 @@
     {
      "text": "Watchdog: step s5 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-20T23:00:02.234Z"
+    },
+    {
+     "text": "s1 (Fable): main was red because the axHub fold (module axHub, apps/axhub-web retired) left seven checks behind and both CI jobs stop at the first failure, so later checks had not run since 6154cac83. Fixed on claude/fix-main-ci-red-after-s16-s7-hand---s1: check-plugin-catalog (axhub kind has no app folder; app-install path on a scratch kind), token-registry block for axhub-approvals, settings-iface defaults for the six axhub-* plugins, help for 8 new controls (coverage back to 100%), hub-pages relay log via data_store.append_jsonl (no-json-data@1), request page head description (check-plugin-pages), '#104/#105' decision numbers in src/hubPages/test.mjs read as hex colours (check-theme). Both CI jobs replayed locally (Node 22 parts in docker node:22, axf-data Postgres test on a throwaway container): green. Follow-up, not from this landing: apps/console-web/plugins/ai-assistant/test.py is timing-dependent (the auto-title thread's CLI call can overwrite the fake's argv.json before the test reads it); green in CI so far.",
+     "at": "2026-11-20T23:36:36.966Z"
+    },
+    {
+     "text": "Headless run axf-fix-main-ci-red-after-s16-s7-hand---s1--gina: brief only · start 11.2K tokens ($0.08) · cost $11.20 · 170 turns · 6 tools, MCP none",
+     "at": "2026-11-20T23:37:21.583Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $11.20",
+     "at": "2026-11-20T23:37:27.991Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s5--earl, shared account login)",
+     "at": "2026-11-20T23:41:23.318Z"
+    },
+    {
+     "text": "Headless run axf-fix-main-ci-red-after-s16-s7-hand---s4--paulie: brief only · start 11.2K tokens ($0.04) · cost $7.18 · 109 turns · 6 tools, MCP none",
+     "at": "2026-11-20T23:44:14.690Z"
     }
    ],
    "approvals": [],
@@ -212,8 +232,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T23:36:29.276Z",
      "note": "",
      "uid": "st-mwpefvmx014dcz",
      "createdAt": "2026-11-20T19:55:54.728Z"
@@ -269,8 +289,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T23:43:32.724Z",
      "note": "",
      "uid": "st-mwpefvmx04iekt",
      "createdAt": "2026-11-20T19:55:54.728Z"
