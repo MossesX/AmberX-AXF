@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9771,
- "updatedAt": "2026-11-20T07:23:16.276Z",
+ "rev": 9772,
+ "updatedAt": "2026-11-20T07:24:10.754Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:23:11.926Z",
+   "updatedAt": "2026-11-20T07:24:02.270Z",
    "builtAt": "",
    "notes": [
     {
@@ -337801,6 +337801,11 @@
     {
      "text": "Watchdog: step s6 gave up: attempt 8 of 5 failed at building. Alerted Brett.",
      "at": "2026-11-20T07:20:01.949Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 gave up: attempt 10 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T07:24:02.270Z",
      "by": "watchdog"
     }
    ],
@@ -340690,7 +340695,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 425,
+   "rev": 426,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
