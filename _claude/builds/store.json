@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9823,
- "updatedAt": "2026-11-20T07:58:04.953Z",
+ "rev": 9824,
+ "updatedAt": "2026-11-20T07:58:47.240Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337872,6 +337872,56 @@
      "text": "Watchdog: step s8 gave up: attempt 11 of 5 failed at sending. Alerted Brett.",
      "at": "2026-11-20T07:55:03.119Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at ready (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at ready (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at ready (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at ready (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T07:55:03.119Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -341053,7 +341103,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 478,
+   "rev": 479,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
