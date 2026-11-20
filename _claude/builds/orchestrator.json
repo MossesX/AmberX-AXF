@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T01:49:09.626Z",
+ "updatedAt": "2026-11-20T01:59:35.935Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -174396,6 +174396,11 @@
      "text": "Watchdog: build retried at pending, attempt 4.",
      "at": "2026-11-20T01:49:01.412Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T01:59:01.955Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -184307,6 +184312,11 @@
     {
      "text": "Watchdog: build retried at pending, attempt 4.",
      "at": "2026-11-20T01:49:01.412Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T01:59:01.955Z",
      "by": "watchdog"
     }
    ],
