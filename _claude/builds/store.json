@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10180,
- "updatedAt": "2026-11-20T23:37:56.003Z",
+ "rev": 10181,
+ "updatedAt": "2026-11-20T23:40:53.319Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:37:46.102Z",
+   "updatedAt": "2026-11-20T23:40:48.348Z",
    "builtAt": "",
    "notes": [
     {
@@ -345183,11 +345183,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 9,
+     "rev": 10,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T23:00:15.477Z",
-     "statusAt": "2026-11-20T23:00:02.234Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-20T23:40:48.409Z",
+     "statusAt": "2026-11-20T23:40:48.348Z",
+     "statusBy": "orchestrator",
      "attempt": 3,
      "statusLog": [
       {
@@ -345244,9 +345244,16 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "retry forward at sending, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T23:40:48.348Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5",
      "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5"
@@ -345260,7 +345267,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
