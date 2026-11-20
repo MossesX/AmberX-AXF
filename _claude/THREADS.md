@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `right-click-running-build-open-headless` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `right-click-running-build-pop-open` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `auto-lander-settings-log-placeholder` note (all) · builds-live
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 05:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 05:28 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 05:28 UTC · `remove-amberx-app-code-once-phone` note (all) · orchestrator
+- 2026-11-20 05:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 

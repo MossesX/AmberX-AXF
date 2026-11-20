@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9526,
- "updatedAt": "2026-11-20T05:29:51.455Z",
+ "rev": 9527,
+ "updatedAt": "2026-11-20T05:30:24.324Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:29:41.500Z",
+   "updatedAt": "2026-11-20T05:30:02.343Z",
    "builtAt": "",
    "notes": [
     {
@@ -337084,6 +337084,11 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $0.08",
      "at": "2026-11-20T05:28:04.501Z"
+    },
+    {
+     "text": "Watchdog: step s1 failed at building, attempt 15: tmux session axf-fable-full-audit-ui-overhaul-conso--s1--lenny is gone while the step was building.",
+     "at": "2026-11-20T05:30:02.343Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -337209,12 +337214,13 @@
      "done": true,
      "doneAt": "2026-11-20T05:27:30.537Z",
      "note": "",
-     "rev": 35,
+     "rev": 36,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:27:31.002Z",
-     "statusAt": "2026-11-20T05:25:41.248Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T05:30:18.565Z",
+     "statusAt": "2026-11-20T05:30:02.343Z",
+     "statusBy": "watchdog",
      "attempt": 15,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -337439,9 +337445,16 @@
        "by": "orchestrator",
        "attempt": 15,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T05:30:02.343Z",
+       "by": "watchdog",
+       "attempt": 15,
+       "why": "tmux session axf-fable-full-audit-ui-overhaul-conso--s1--lenny is gone while the step was building"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s1",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s1",
@@ -338557,7 +338570,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 134,
+   "rev": 135,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
