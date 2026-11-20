@@ -35,6 +35,48 @@
         "title": "Passes",
         "text": "Timed veto passes: what each covers, how long it has left, the calls that ran under it, and ending one early.",
         "kind": "screen"
+      },
+      {
+        "target": "ran-under-a-pass",
+        "title": "Ran under a pass",
+        "text": "Shows “Ran under a pass”. Part of axHub passes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "min-from-now",
+        "title": "min from now",
+        "text": "Shows “min from now”. Part of axHub passes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "its-calls",
+        "title": "Its calls",
+        "text": "Shows “Its calls”. Part of axHub passes.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "service",
+        "title": "Service",
+        "text": "Where you set “Service”. Change it and the app uses the new value. Part of axHub passes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "scope-control-target-matches-anything",
+        "title": "Scope (control@1 target; * matches anything)",
+        "text": "Where you set “Scope (control@1 target; * matches anything)”. Change it and the app uses the new value. Part of axHub passes.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "tools-empty-every-tool-in-the-scope",
+        "title": "Tools (empty = every tool in the scope)",
+        "text": "Where you set “Tools (empty = every tool in the scope)”. Change it and the app uses the new value. Part of axHub passes.",
+        "kind": "field",
+        "draft": true
       }
     ]
   }
