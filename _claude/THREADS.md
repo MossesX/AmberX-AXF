@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 05:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 05:08 UTC · `fable-full-audit-ui-overhaul-conso` s1 done (all) · orchestrator
 - 2026-11-20 05:09 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s1 (all) · builds-live
 - 2026-11-20 05:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 05:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 20:10 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 20:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 20:14 UTC · `fable-full-audit-ui-overhaul-conso` → archived, note (all) · console
+- 2026-11-20 20:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 20:14 UTC · `fable-full-audit-ui-overhaul-conso` → archived, note (all) · foreign-write
 
 ## Token passes (log)
 
