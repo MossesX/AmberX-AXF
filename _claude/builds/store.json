@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9570,
- "updatedAt": "2026-11-20T05:59:38.844Z",
+ "rev": 9571,
+ "updatedAt": "2026-11-20T05:59:55.999Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:59:35.005Z",
+   "updatedAt": "2026-11-20T05:59:51.322Z",
    "builtAt": "",
    "notes": [
     {
@@ -337127,63 +337127,51 @@
     },
     {
      "text": "Watchdog: step s4 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:54:01.815Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:54:01.815Z"
     },
     {
      "text": "Watchdog: step s4 stuck at ready (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s5 stuck at ready (3 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s6 stuck at ready (3 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s7 stuck at ready (3 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s8 stuck at ready (2 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s9 stuck at ready (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s10 stuck at ready (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s11 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s12 stuck at ready (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T05:57:02.286Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:57:02.286Z"
     },
     {
      "text": "Watchdog: step s3 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-20T05:59:01.980Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:59:01.980Z"
     },
     {
      "text": "Watchdog: step s4 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T05:59:01.980Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:59:01.980Z"
     }
    ],
    "approvals": [],
@@ -337656,12 +337644,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T05:59:51.322Z",
      "note": "",
-     "rev": 40,
+     "rev": 41,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:54:56.119Z",
+     "updatedAt": "2026-11-20T05:59:51.842Z",
      "statusAt": "2026-11-20T05:54:36.810Z",
      "statusBy": "orchestrator",
      "attempt": 16,
@@ -338860,7 +338848,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 184,
+   "rev": 185,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
