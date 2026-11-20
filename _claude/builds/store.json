@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9737,
- "updatedAt": "2026-11-20T07:09:11.188Z",
+ "rev": 9738,
+ "updatedAt": "2026-11-20T07:09:22.084Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:08:59.174Z",
+   "updatedAt": "2026-11-20T07:09:12.655Z",
    "builtAt": "",
    "notes": [
     {
@@ -337738,6 +337738,14 @@
     {
      "text": "Watchdog: step s2 gave up: attempt 24 of 5 failed at completed. Alerted Brett.",
      "at": "2026-11-20T07:06:01.367Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s6--earl: brief only · start 10.0K tokens ($0.02) · cost $3.38 · 103 turns · 6 tools, MCP none",
+     "at": "2026-11-20T07:09:08.233Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.38",
+     "at": "2026-11-20T07:09:12.655Z"
     }
    ],
    "approvals": [],
@@ -340460,7 +340468,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 388,
+   "rev": 390,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -340545,7 +340553,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T07:05:24.694Z",
-   "updatedAt": "2026-11-20T07:07:43.252Z",
+   "updatedAt": "2026-11-20T07:09:12.472Z",
    "builtAt": "",
    "notes": [
     {
@@ -340559,6 +340567,11 @@
     {
      "text": "Split by Fable into 10 steps (285 min, 1 Fable).",
      "at": "2026-11-20T07:07:41.494Z"
+    },
+    {
+     "text": "Split by Fable into 23 steps (630 min, 3 Fable).",
+     "at": "2026-11-20T07:09:10.161Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -340592,26 +340605,17 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwomzz85010efe",
+     "uid": "st-mwon1w2h011oio",
      "title": "",
-     "text": "- Pipeline 2.0 status contract (build-pipeline@1): make the lifecycle forward-only in framework/core/build-pipeline.mjs (pending -> pulling-main (worktrees cut, main pulled) -> queued -> building -> built -> landing (polling / ci-checking / merging) -> complete; failed carries attempt N and only ever moves forward to a retry attempt N+1, never back to a prior stage), add the landing record: one PR for all steps, split into 2..n PRs over sizeCapLines, a landing group that lands related builds (Postgres parts A/B/C) together with a fall-back to one at a time, pre-cut worktree paths per step, and t\n- Verify and report: run the suite (check-build-pipeline, check-landing-line, check-builds-store, deploy/lander/test.mjs, deploy/watchdog/test.mjs, plugin tests, check-json-data-writes, check-theme/check-controls/check-toolbars/check-console-control) and fix what is red in test files only; verify the ops-build fixes in a real dispatcher run on the VPS: 4 parallel slots per build from pre-cut worktrees, the watchdog's give-up is final (benched builds show failed attempt N with a fix, never silent), act step and the dispatcher use the Pipeline 2.0 statuses; capture the Builds table and a failed-at",
+     "text": "Status lifecycle (build-pipeline@1): in framework/core/build-pipeline.mjs define the forward-only status list and transition table for builds and steps (pending → pulling-main → queued → building → built → polling → ci-checking → merging → complete; failed carries attempt N and only moves forward to a retry status, never back), the timer fields (startedAt, eta/remaining, lastMovedAt), the land-group field (steps of one build land as ONE PR; a named group like postgres-a/b/c lands together), and a failed label helper ('failed, attempt 2'). Make framework/cli/builds-store.mjs normBuild keep every new field and refuse backward transitions on write. Add unit checks for the transition table.",
      "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
-     "estimate": "60 min",
+     "estimate": "30 min",
      "files": [
       "framework/core/build-pipeline.mjs",
-      "framework/core/landing-line.mjs",
-      "framework/spec/fixtures/build-pipeline.json",
-      "framework/spec/fixtures/landing-line.json",
-      "framework/spec/check-build-pipeline.mjs",
-      "framework/spec/check-landing-line.mjs",
-      "framework/spec/BUILD-PIPELINE.md",
-      "_claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md",
-      "framework/spec/",
-      "deploy/lander/test.mjs",
-      "deploy/watchdog/test.mjs"
+      "framework/cli/builds-store.mjs"
      ],
      "checks": [],
      "session": "same",
@@ -340619,17 +340623,17 @@
      "skip": false,
      "done": false,
      "doneAt": "",
-     "note": "Part 1: 2 plan steps in one session (they touch the same files).",
+     "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.253Z",
-     "updatedAt": "2026-11-20T07:07:43.253Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340639,19 +340643,19 @@
     },
     {
      "id": "s2",
-     "uid": "st-mwomzz8502xpbn",
+     "uid": "st-mwon1w2h02ebom",
      "title": "",
-     "text": "Lander landing behaviour: in deploy/lander/run.mjs (plus a new deploy/lander/bundle.mjs) merge all of a build's step branches into ONE PR at build-complete, pull main in, run CI once, merge with the head pinned; when the combined diff exceeds the gate setting sizeCapLines, bundle the steps into as few PRs as the size allows (2, 3, ...), never one per step, and land them strictly one at a time (pull main, CI, merge, next). Land a landing group (Postgres parts A/B/C or any builds tagged with the same landingGroup) as one PR when all members are built; on a red CI split the group and land its members one at a time. Every failure writes status failed with attempt N (+1 on each retry) and retries forward by itself; nothing ever asks a human. Extend deploy/lander/test.mjs with size-cap bundling, one-at-a-time landing, group landing and the split-on-failure path.",
-     "model": "Opus",
+     "text": "Schema + conformance for build-pipeline@1: write framework/schemas/build-pipeline.json (statuses, attempt, timers, landGroup, prs[] with pinned head sha and ci run id), the golden fixture framework/spec/fixtures/build-pipeline.json (legal/illegal transitions, failed-attempt labels, timer projections) and framework/spec/check-build-pipeline.mjs that validates the fixture against the schema and the transition rules; record the Kotlin twin as a deferred gap in framework/spec/PORTING.md. Use the same status list as the core step: pending, pulling-main, queued, building, built, polling, ci-checking, merging, complete, failed.",
+     "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "25 min",
      "files": [
-      "deploy/lander/run.mjs",
-      "deploy/lander/bundle.mjs",
-      "deploy/lander/test.mjs",
-      "deploy/lander/README.md"
+      "framework/schemas/build-pipeline.json",
+      "framework/spec/fixtures/build-pipeline.json",
+      "framework/spec/check-build-pipeline.mjs",
+      "framework/spec/PORTING.md"
      ],
      "checks": [],
      "session": "same",
@@ -340661,15 +340665,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.253Z",
-     "updatedAt": "2026-11-20T07:07:43.253Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340679,19 +340683,18 @@
     },
     {
      "id": "s3",
-     "uid": "st-mwomzz8503tm43",
+     "uid": "st-mwon1w2h03xaph",
      "title": "",
-     "text": "Worktrees cut before launch: add apps/console-web/plugins/build-orchestrator/worktrees.mjs (create a step's worktree from main, pull main, record the path and sha on the step, reuse or rebuild a dead one, prune on complete) and have pipeline.mjs tick do it in the pending / pulling-main stage for every step of a queued build, under a lock and bounded per tick so a tick never times out. Teach deploy/claude-headless.sh a --worktree <path> option that skips cutting and only starts the session; the dispatcher passes the pre-cut path, so a freed slot launches instantly and launch never cuts a worktree under load. Run up to 4 step sessions of one build in parallel from their own worktrees. Add tests in the plugin's test file for pre-cut, dead-worktree rebuild and launch-without-cut.",
-     "model": "Opus",
+     "text": "Landing-line engine (landing-line@1) in framework/core/landing-line.mjs: group all of a build's step branches into ONE PR; over sizeCapLines split into 2, 3 or N PRs (never one per step) that land one at a time; a land-together group (Postgres parts A/B/C) merges as one PR and on CI failure falls back to landing its parts one at a time; forward-only retry plan per failure class (flaky → re-run once, too big → split, real red → fix session) with attempt N; cancelled runs re-run. Regenerate the fixture with node framework/spec/check-landing-line.mjs --write and extend the checks for size cap, land-together and the retry plan.",
+     "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
-      "apps/console-web/plugins/build-orchestrator/worktrees.mjs",
-      "apps/console-web/plugins/build-orchestrator/test.mjs",
-      "deploy/claude-headless.sh"
+      "framework/core/landing-line.mjs",
+      "framework/spec/check-landing-line.mjs",
+      "framework/spec/fixtures/landing-line.json"
      ],
      "checks": [],
      "session": "same",
@@ -340701,15 +340704,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.253Z",
-     "updatedAt": "2026-11-20T07:07:43.253Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340719,21 +340722,17 @@
     },
     {
      "id": "s4",
-     "uid": "st-mwomzz8704snhb",
+     "uid": "st-mwon1w2h0499wy",
      "title": "",
-     "text": "Layer 2 watchdog with its own code and cron: new deploy/watchdog/run.mjs + axf-watchdog.service/.timer (every 2 minutes), installed by deploy/install-console.sh. It reads the builds store (builds-store.mjs) and finds anything that has not moved in X minutes per stage (building, pulling-main, landing, polling, ci-checking; X from Claude settings pipeline.stallMinutes with sane defaults), then fixes it itself through the existing CLIs: rebuild a dead worktree, requeue the build, switch to another worker account or a lower model, kick a stuck lander run, re-run a cancelled CI; it never gives up silently: every stall and every fix is a build note, a line in the watchdog log table via data-store@1, and a phone alert through axf.notify@1 declared in apps/console-web/plugins/build-orchestrator/notify.json. Writes a heartbeat row (watchdog-heartbeat) on every run for the outside checker. Unit test with a fake store in deploy/watchdog/test.mjs.",
+     "text": "Lander runner deploy/lander/run.mjs (systemd axf-lander.timer, every minute): at build-complete read the landing-line plan, open ONE PR per group through framework/cli/github-token.mjs (ETag-cached reads), pull main into it, run CI once with the gate's build rules, merge with the head sha pinned, write every status move (polling, ci-checking, merging, complete, failed attempt N) through builds-store.mjs so builds-live pushes it; on failure follow the retry plan forward by itself (dispatch a re-run, split the PR set, or queue a fix session) and never leave a build silent. Add a dry test with a fake GitHub (deploy/lander/test-run.mjs).",
      "model": "Opus",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      "deploy/watchdog/run.mjs",
-      "deploy/watchdog/axf-watchdog.service",
-      "deploy/watchdog/axf-watchdog.timer",
-      "deploy/watchdog/test.mjs",
-      "deploy/install-console.sh",
-      "apps/console-web/plugins/build-orchestrator/notify.json"
+      "deploy/lander/run.mjs",
+      "deploy/lander/test-run.mjs"
      ],
      "checks": [],
      "session": "same",
@@ -340743,15 +340742,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.255Z",
-     "updatedAt": "2026-11-20T07:07:43.255Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340761,19 +340760,18 @@
     },
     {
      "id": "s5",
-     "uid": "st-mwomzz87059vi6",
+     "uid": "st-mwon1w2h054yco",
      "title": "",
-     "text": "Layer 3 outside checker: a health@1 check in apps/console-web/plugins/systems-check (new file checks/pipeline_watchdog.py or .mjs, registered in the plugin's check list) that reads the watchdog heartbeat and the axf-pipeline cron and turns red with an auto-fix that restarts axf-watchdog.timer / axf-pipeline through the existing vps run path; plus an off-box checker deploy/axhub/watchdog-check.sh + deploy/axhub/WATCHDOG-CHECKER.md that axHub or another box runs every 5 minutes (curl the console heartbeat route, restart via the hub's vps.run veto call with a reason, alert on failure). Add a read-only route in apps/console-web/server/routes/pipeline_health.py exposing heartbeat age and last fixes. Tests for red/green and the auto-fix call.",
+     "text": "CI failure report: new deploy/lander/ci-report.mjs that, for a failed run, fetches the failing jobs and their logs (github-token.mjs broker), extracts the real error lines per job and app, classifies the cause (this PR's changed paths vs unrelated: retired app, flaky download, infra), computes how long main/this PR has been failing from run history, and proposes the fix (re-run, exclude job, which file to fix); writes it as markdown into the build's notes (ci-report@1 shape) and returns it. Fixture logs + test in deploy/lander/test-ci-report.mjs.",
      "model": "Opus",
      "why": "",
      "phase": "1",
      "group": "",
-     "estimate": "25 min",
+     "estimate": "30 min",
      "files": [
-      "apps/console-web/plugins/systems-check/",
-      "apps/console-web/server/routes/pipeline_health.py",
-      "deploy/axhub/watchdog-check.sh",
-      "deploy/axhub/WATCHDOG-CHECKER.md"
+      "deploy/lander/ci-report.mjs",
+      "deploy/lander/test-ci-report.mjs",
+      "deploy/lander/fixtures/"
      ],
      "checks": [],
      "session": "same",
@@ -340783,15 +340781,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.255Z",
-     "updatedAt": "2026-11-20T07:07:43.255Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340801,20 +340799,18 @@
     },
     {
      "id": "s6",
-     "uid": "st-mwomzz8706yvby",
+     "uid": "st-mwon1w2h0673v7",
      "title": "",
-     "text": "Detailed CI failure report every time CI fails: new deploy/lander/ci-report.mjs (own cron entry axf-ci-report.timer, 1 min) that scans builds in failed / ci-checking with a PR, pulls the failed check runs and job logs through framework/cli/github-token.mjs, and produces a report naming the failed workflow job and app, the real error lines, whether this PR's files caused it (diff vs the failing path) or it is unrelated (retired app, flaky download, main already red), how long and how many attempts it has been failing, and the fix it will apply; writes it as a ci-failure build note through builds-store.mjs (status data only), sends one phone alert via axf.notify@1 (declared in deploy/lander/notify.json or the lander's existing registry entry) and feeds the lander's retry choice (flaky re-run vs split vs fix session) by note kind. Tests with recorded GitHub fixtures in deploy/lander/ci-report.test.mjs.",
+     "text": "Never fail silently: declare the pipeline's notifications in apps/console-web/plugins/build-orchestrator/notify.json (notify-types@1: ci-failed with report, build-failed attempt N, stall-fixed, watchdog-dead, landed) and write deploy/lander/alerts.mjs that sends each through the console's alert hub REST with the console token (reaches Brett via Phone Connect) and opens a banner item with the failure text and fix; one send per event, idempotent on (build, attempt, kind). Test with the alert hub mocked.",
      "model": "Opus",
      "why": "",
      "phase": "1",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "25 min",
      "files": [
-      "deploy/lander/ci-report.mjs",
-      "deploy/lander/ci-report.test.mjs",
-      "deploy/lander/axf-ci-report.timer",
-      "deploy/lander/axf-ci-report.service",
-      "deploy/lander/notify.json"
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "deploy/lander/alerts.mjs",
+      "deploy/lander/test-alerts.mjs"
      ],
      "checks": [],
      "session": "same",
@@ -340824,15 +340820,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.255Z",
-     "updatedAt": "2026-11-20T07:07:43.255Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340842,19 +340838,17 @@
     },
     {
      "id": "s7",
-     "uid": "st-mwomzz8707fla6",
+     "uid": "st-mwon1w2h07og2k",
      "title": "",
-     "text": "One Builds table in the Build orchestrator plugin UI: no tabs, one table driven by each build's status, filters (status, profile, model, stalled, failed attempt N) carried on its toolbar (a Toolbars plugin toolbar with role=toolbar + aria-label), every row a status badge plus a live elapsed / remaining timer for building, pulling-main, polling, ci-checking and merging, failed rows reading 'failed, attempt N', ci-failure notes shown inline, control@1 targets registered (append-only). New component apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx replaces the tabbed lists in the plugin's view; tokens only, framework controls, TabGroup nowhere. Ship 3 looks as table / toolbar assets in apps/console-web/plugins/build-orchestrator/assets/ and submit desktop + phone shots to UI Review with --choices.",
+     "text": "Show the CI failure report in the Auto-lander: new component apps/console-web/plugins/build-orchestrator/ui/CiFailureReport.tsx (job/app, error lines in a code block, cause badge this-PR / unrelated / flaky, failing-since, fix, attempt N) rendered in the read-only merge-queue / Auto-lander view (view:merge-queue) from the build's ci-report note; tokens only, framework controls, data-axf-target on its actions. Do not touch the builds table or the builds view files.",
      "model": "Opus",
      "why": "",
      "phase": "1",
      "group": "",
-     "estimate": "30 min",
+     "estimate": "25 min",
      "files": [
-      "apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx",
-      "apps/console-web/plugins/build-orchestrator/ui/",
-      "apps/console-web/plugins/build-orchestrator/assets/",
-      "apps/console-web/plugins/build-orchestrator/plugin.json"
+      "apps/console-web/plugins/build-orchestrator/ui/CiFailureReport.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/MergeQueueView.tsx"
      ],
      "checks": [],
      "session": "same",
@@ -340864,15 +340858,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.255Z",
-     "updatedAt": "2026-11-20T07:07:43.255Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340882,9 +340876,161 @@
     },
     {
      "id": "s8",
-     "uid": "st-mwomzz870847ae",
+     "uid": "st-mwon1w2h08oz0o",
      "title": "",
-     "text": "Plan Studio hands over ONE build: fix sendToBuild in apps/console-web/plugins/plan-studio/tree.mjs (and plans.mjs 'Turn into a build') so the plan goes to the orchestrator as a single build with Brett's verbatim words, the plan body and its planning steps as a 'Planning notes' section in the brief, and NO steps, so the orchestrator's intake split (Fable designs steps, estimates minutes, picks models) runs; the Plan Studio steps are never written as build steps. Update the plugin README and tests (apps/console-web/plugins/plan-studio/test.mjs) for the new payload.",
+     "text": "Worktrees cut before launch: new apps/console-web/plugins/build-orchestrator/worktrees.mjs: during pending/pulling-main create one git worktree per step cut from fresh main under the build-manager sandbox, record its path and base sha on the step, detect a dead worktree (missing dir, bad HEAD, locked index) and rebuild it, pull main again when it is stale, prune on complete; CLI subcommands prepare <build>, check <build>, rebuild <build> <step>, prune; tests on a temp repo. Node modules symlinked from a sibling worktree as the existing sandbox does.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/worktrees.mjs",
+      "apps/console-web/plugins/build-orchestrator/test-worktrees.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwon1w2h09spzz",
+     "title": "",
+     "text": "Launcher only starts the session: deploy/claude-headless.sh takes --worktree <path> (required for pipeline launches) and starts claude -p in that pre-cut worktree, never cuts, fetches or pulls at launch, no worktree timeout; keeps agent-slots, worker-account routing, model-gate and build-origin capture unchanged; exits 3 with a plain reason when the worktree is missing so the dispatcher rebuilds it. Extend the launcher test harness (fake claude in HOME/.local/bin) for the new flag.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "deploy/test-claude-headless.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwon1w2h0ajf9f",
+     "title": "",
+     "text": "Dispatcher apps/console-web/plugins/build-orchestrator/pipeline.mjs: tick moves builds through the build-pipeline@1 statuses, runs the worktree prepare stage (worktrees.mjs) before queue, launches up to 4 steps of one build at once through claude-headless.sh --worktree when slots and a suitable account are free, requeues a crashed session as failed attempt N (loud: alert + note) instead of the silent 3-fails-per-hour bench, marks built when all steps are done and hands off to the lander; intake ignores Plan Studio steps (kept as planning notes in the brief) and runs its split on Fable per model-policy. Tests for the tick with fake slots and launcher.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/test-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwon1w2h0b1eit",
+     "title": "",
+     "text": "orchestrator.mjs uses Pipeline 2.0 statuses: act step / status / next read and write build-pipeline@1 statuses (no legacy names), show 'failed, attempt N', refuse backward transitions with a plain error, and brief <id> carries the step's worktree path and land group; update the orchestrator tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/test-orchestrator.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwon1w2h0c8wny",
+     "title": "",
+     "text": "Plan Studio hands over ONE build: in apps/console-web/plugins/plan-studio/tree.mjs sendToBuild (and Turn into a build) sends the whole plan as one orchestrator build with no steps, Brett's verbatim words in origin.said, and the Plan Studio steps attached as planning notes only; never writes steps or touches pending/queue directly. Update plan-studio tests and README.",
      "model": "Opus",
      "why": "",
      "phase": "1",
@@ -340892,8 +341038,7 @@
      "estimate": "20 min",
      "files": [
       "apps/console-web/plugins/plan-studio/tree.mjs",
-      "apps/console-web/plugins/plan-studio/plans.mjs",
-      "apps/console-web/plugins/plan-studio/test.mjs",
+      "apps/console-web/plugins/plan-studio/test-tree.mjs",
       "apps/console-web/plugins/plan-studio/README.md"
      ],
      "checks": [],
@@ -340904,15 +341049,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.255Z",
-     "updatedAt": "2026-11-20T07:07:43.255Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340921,20 +341066,293 @@
      "status": "pending"
     },
     {
-     "id": "s9",
-     "uid": "st-mwomzz87097tzr",
+     "id": "s13",
+     "uid": "st-mwon1w2h0dagkh",
      "title": "",
-     "text": "Fast, scoped CI without splitting the repo: in .github/workflows/android.yml (and deploy.yml, rebuild-shots.yml where relevant) make the 'CI scope (what changed)' job (framework/cli/ci-scope.mjs, new if missing) gate every job through outputs, including workflow_dispatch and manual re-runs (a console-only change never builds Android or runs unrelated suites; everything runs only when framework/core, schemas, spec or shared deploy code change); use a shallow (fetch-depth 1) + sparse checkout per job through a new composite action .github/actions/axf-checkout/action.yml; cache Gradle, npm and pip keyed on lockfiles; app jobs download the axf-maven-repo artifact from the framework job instead of recompiling the framework. Keep check jobs' names stable for the lander's gate rules. Document the scope rules in .github/workflows/README.md.",
+     "text": "Watchdog state in Postgres (no-json-data@1): add a watchdog heartbeat/state table (DocTable: last tick, last fix, give-ups) in services/axf-data/tables.py, the namespace plugins/build-orchestrator/watchdog in framework/schemas/data-store-paths.json, and a small reader/writer apps/console-web/plugins/build-orchestrator/watchdog-state.mjs over framework/core/data-files.mjs; update check-json-data-writes baseline only if a count goes down.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "services/axf-data/tables.py",
+      "framework/schemas/data-store-paths.json",
+      "apps/console-web/plugins/build-orchestrator/watchdog-state.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwon1w2h0e8rqz",
+     "title": "",
+     "text": "Layer 2 watchdog with its own code: deploy/watchdog/run.mjs + axf-watchdog.timer/.service (own cron, every 2 min) finds any build or step whose lastMovedAt is older than X minutes for its status and fixes it itself: rebuild a dead worktree, requeue with attempt N, switch to the least busy worker account (deploy/claude-workers.mjs route), downgrade the model only (never upgrade), restart a stuck lander or pipeline timer via systemctl; a give-up is final (failed attempt N + alert + banner item, never silently benched); writes its heartbeat through the watchdog state writer and logs every action as a build note. Install lines in deploy/install-console.sh; test with a seeded store.",
      "model": "Opus",
      "why": "",
      "phase": "1",
      "group": "",
      "estimate": "30 min",
      "files": [
-      ".github/workflows/android.yml",
-      ".github/workflows/deploy.yml",
-      ".github/actions/axf-checkout/action.yml",
+      "deploy/watchdog/run.mjs",
+      "deploy/watchdog/axf-watchdog.timer",
+      "deploy/watchdog/axf-watchdog.service",
+      "deploy/watchdog/test-run.mjs",
+      "deploy/install-console.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwon1w2h0fqxnp",
+     "title": "",
+     "text": "Layer 3 outside check: apps/console-web/plugins/build-orchestrator/server/pipeline_health.py registers health@1 checks (pipeline tick alive, watchdog heartbeat fresh, lander timer alive, builds stalled) with auto-fix (restart the timer through the hub's vps.run as a veto call with a reason), exposes GET /api/plugins/build-orchestrator/pipeline/health (read-only, plain JSON) for an outside checker, with plugin.json route/command entries for REST/MCP/axf parity; write deploy/axhub/pipeline-outside-check.md with the axHub cron that polls it and restarts the watchdog when it is dead.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/pipeline_health.py",
+      "apps/console-web/plugins/build-orchestrator/plugin.json",
+      "deploy/axhub/pipeline-outside-check.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwon1w2h0gqfgw",
+     "title": "",
+     "text": "Builds table components: apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx (one DataGrid of every build driven by status, fixed cell widths), StatusBadge.tsx (status + 'failed, attempt N'), LiveTimer.tsx (elapsed / remaining ticking for building, polling, ci-checking, merging), BuildsFilterToolbar.tsx (a Toolbars plugin toolbar, role=toolbar + aria-label, status/profile/model filters as fx-chip, remembered in settings); tokens only, framework controls, data-axf-target on rows and filters. Do not edit the plugin's main view yet.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/BuildsTable.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/StatusBadge.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/LiveTimer.tsx",
+      "apps/console-web/plugins/build-orchestrator/ui/BuildsFilterToolbar.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwon1w2h0hs8oq",
+     "title": "",
+     "text": "One table, no tabs: wire BuildsTable + the filter toolbar into the build-orchestrator plugin's builds view, remove the Pipeline / Pending / Queue tab rows and their routes (console-control addresses redirect to filters), keep PriorityTag and 'What Brett said' per row; ship 3 UI Review options as assets (toolbar + container/layout variants) in apps/console-web/plugins/build-orchestrator/assets/<type>/ with a choices file and submit desktop + phone shots with review.mjs submit --choices; update check-chrome-assets baseline only downward.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui/BuildsView.tsx",
+      "apps/console-web/plugins/build-orchestrator/index.tsx",
+      "apps/console-web/plugins/build-orchestrator/assets/",
+      "apps/console-web/plugins/build-orchestrator/ui-choices.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwon1w2h0ir9yt",
+     "title": "",
+     "text": "CI scope: framework/cli/ci-scope.mjs computes changed areas from the diff against the base (outputs console, android, demo, expenses, axf-data, framework, docs-only, full; full only when framework/core, framework/schemas, framework/spec, framework/react or framework/ui change; manual input scope=auto|full) and the reusable workflow .github/workflows/ci-scope.yml exposes them as job outputs for every caller, including workflow_dispatch; tests in framework/spec/check-ci-scope.mjs over fixture diffs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
       "framework/cli/ci-scope.mjs",
+      ".github/workflows/ci-scope.yml",
+      "framework/spec/check-ci-scope.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwon1w2h0jq5z5",
+     "title": "",
+     "text": "Fast, scoped android.yml: every job gated by the ci-scope outputs (console-only never builds Android or runs unrelated suites, also on workflow_dispatch), actions/checkout with fetch-depth 1 and sparse-checkout per job paths, actions/cache for Gradle, npm and pip keyed on lockfiles, the console job reuses the prebuilt framework modules (axf-maven-repo artifact / cached framework build) instead of recompiling the framework; keep the CI build errors issue posting and artifact names unchanged.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.473Z",
+     "updatedAt": "2026-11-20T07:09:12.473Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwon1w2i0kuykm",
+     "title": "",
+     "text": "Other workflows fast and scoped: deploy.yml, rebuild-shots.yml and the remaining .github/workflows files use shallow + sparse checkout, npm/pip caches and the ci-scope gate (demo deploy only on demo or framework changes); document the CI scope and cache rules in .github/workflows/README.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      ".github/workflows/deploy.yml",
+      ".github/workflows/rebuild-shots.yml",
       ".github/workflows/README.md"
      ],
      "checks": [],
@@ -340945,15 +341363,130 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:07:43.255Z",
-     "updatedAt": "2026-11-20T07:07:43.255Z",
-     "statusAt": "2026-11-20T07:07:41.494Z",
+     "createdAt": "2026-11-20T07:09:12.474Z",
+     "updatedAt": "2026-11-20T07:09:12.474Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-20T07:07:41.494Z",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s21",
+     "uid": "st-mwon1w2i0lqsa6",
+     "title": "",
+     "text": "Docs: write framework/spec/PIPELINE.md (Pipeline 2.0 contract: forward-only statuses, one PR per build with size cap, land-together groups, worktrees before launch, 4 slots per build, the three fail-safe layers, never-silent alerts, CI failure report, how Postgres parts A/B/C land) and _claude/memory/docs/pipeline-2-0.md (operator view: timers, where to look, what the watchdog does); update _claude/builds/README.md's pipeline section to point at them.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/spec/PIPELINE.md",
+      "_claude/memory/docs/pipeline-2-0.md",
+      "_claude/builds/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.474Z",
+     "updatedAt": "2026-11-20T07:09:12.474Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s22",
+     "uid": "st-mwon1w2i0mralc",
+     "title": "",
+     "text": "End-to-end dry run deploy/dryrun/pipeline-2-0/run.sh + fixtures: with a fake claude, fake GitHub and a temp store, take one build from pending through worktree prepare, 4 parallel step launches, built, one PR, CI, merge pinned head; kill a worktree mid-run and prove the watchdog rebuilds it and a crashed step comes back as failed attempt 2; prove a final give-up stays final and loud; prove act step only accepts Pipeline 2.0 statuses; print a pass/fail table.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "deploy/dryrun/pipeline-2-0/run.sh",
+      "deploy/dryrun/pipeline-2-0/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.474Z",
+     "updatedAt": "2026-11-20T07:09:12.474Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s23",
+     "uid": "st-mwon1w2i0nmtk3",
+     "title": "",
+     "text": "Tests and report: run node framework/spec/check-build-pipeline.mjs, check-landing-line.mjs, check-ci-scope.mjs, check-builds-store.mjs, check-build-steps.mjs, check-json-data-writes.mjs, check-theme.mjs, check-controls.mjs, check-toolbars.mjs, check-chrome-assets.mjs, check-console-control.mjs, the plugin tests, the lander/watchdog/launcher tests and the deploy/dryrun/pipeline-2-0 run; fix what they turn up in files no other step owns; regenerate tracker.json; write _claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md (what landed per layer, before/after, test results, UI Review state, gaps: dedicated build box, Postgres parts A/B/C, axHub-side cron).",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "_claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-20T07:09:12.474Z",
+     "updatedAt": "2026-11-20T07:09:12.474Z",
+     "statusAt": "2026-11-20T07:09:10.161Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-20T07:09:10.161Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -340970,7 +341503,7 @@
    },
    "kind": "build",
    "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
