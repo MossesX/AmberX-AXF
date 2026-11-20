@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9417,
- "updatedAt": "2026-11-20T02:22:16.358Z",
+ "rev": 9418,
+ "updatedAt": "2026-11-20T02:23:11.786Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -270923,7 +270923,7 @@
    "mergedAt": "2026-11-18T02:00:51Z",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-20T02:22:01.667Z",
+   "updatedAt": "2026-11-20T02:23:01.229Z",
    "builtAt": "",
    "notes": [
     {
@@ -271542,6 +271542,11 @@
     {
      "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
      "at": "2026-11-20T02:22:01.667Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T02:23:01.229Z",
      "by": "watchdog"
     }
    ],
@@ -272322,7 +272327,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 227,
+   "rev": 228,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -284364,7 +284369,7 @@
    "mergedAt": "2026-11-17T22:34:43Z",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-20T02:22:01.667Z",
+   "updatedAt": "2026-11-20T02:23:01.229Z",
    "builtAt": "",
    "notes": [
     {
@@ -284807,6 +284812,11 @@
     {
      "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
      "at": "2026-11-20T02:22:01.667Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T02:23:01.229Z",
      "by": "watchdog"
     }
    ],
@@ -285488,7 +285498,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 197,
+   "rev": 198,
    "deleted": false,
    "deletedAt": "",
    "pending": {

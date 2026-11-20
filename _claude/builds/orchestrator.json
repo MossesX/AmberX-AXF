@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T02:22:16.358Z",
+ "updatedAt": "2026-11-20T02:23:11.786Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -173811,7 +173811,7 @@
    "mergedAt": "2026-11-18T02:00:51Z",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-20T02:22:01.667Z",
+   "updatedAt": "2026-11-20T02:23:01.229Z",
    "builtAt": "",
    "notes": [
     {
@@ -174430,6 +174430,11 @@
     {
      "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
      "at": "2026-11-20T02:22:01.667Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T02:23:01.229Z",
      "by": "watchdog"
     }
    ],
@@ -183934,7 +183939,7 @@
    "mergedAt": "2026-11-17T22:34:43Z",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-20T02:22:01.667Z",
+   "updatedAt": "2026-11-20T02:23:01.229Z",
    "builtAt": "",
    "notes": [
     {
@@ -184377,6 +184382,11 @@
     {
      "text": "Watchdog: build failed at pending, attempt 5: pending did not move after 2 re-run(s) of the transition (7 min past its budget).",
      "at": "2026-11-20T02:22:01.667Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at pending. Alerted Brett.",
+     "at": "2026-11-20T02:23:01.229Z",
      "by": "watchdog"
     }
    ],
