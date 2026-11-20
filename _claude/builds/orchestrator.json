@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T05:05:19.394Z",
+ "updatedAt": "2026-11-20T05:06:14.177Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:05:08.831Z",
+   "updatedAt": "2026-11-20T05:06:02.096Z",
    "builtAt": "",
    "notes": [
     {
@@ -89,6 +89,11 @@
     {
      "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
      "at": "2026-11-20T05:02:02.832Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 retried at ready, attempt 3 on hulu0241.",
+     "at": "2026-11-20T05:06:02.096Z",
      "by": "watchdog"
     }
    ],
