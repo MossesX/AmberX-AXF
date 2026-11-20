@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9572,
- "updatedAt": "2026-11-20T06:00:19.978Z",
+ "rev": 9573,
+ "updatedAt": "2026-11-20T06:00:43.816Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:59:57.220Z",
+   "updatedAt": "2026-11-20T06:00:32.916Z",
    "builtAt": "",
    "notes": [
     {
@@ -337172,6 +337172,10 @@
     {
      "text": "Watchdog: step s4 failed at ready, attempt 2: ready did not move after 2 re-run(s) of the transition (5 min past its budget).",
      "at": "2026-11-20T05:59:01.980Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s2--lenny: brief only · start 10.0K tokens ($0.02) · cost $0.19 · 12 turns · 6 tools, MCP none",
+     "at": "2026-11-20T06:00:32.916Z"
     }
    ],
    "approvals": [],
@@ -337212,13 +337216,13 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-20T05:52:20.407Z",
+     "at": "2026-11-20T06:00:13.484Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-fable-full-audit-ui-overhaul-conso--s1--earl",
+     "session": "axf-fable-full-audit-ui-overhaul-conso--s2--lenny",
      "phase": ""
     }
    },
@@ -338856,7 +338860,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 186,
+   "rev": 188,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
