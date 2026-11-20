@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9510,
- "updatedAt": "2026-11-20T05:24:11.481Z",
+ "rev": 9511,
+ "updatedAt": "2026-11-20T05:25:14.124Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336979,7 +336979,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:23:59.438Z",
+   "updatedAt": "2026-11-20T05:25:01.372Z",
    "builtAt": "",
    "notes": [
     {
@@ -337045,6 +337045,11 @@
     {
      "text": "Watchdog: step s1 gave up: attempt 13 of 5 failed at building. Alerted Brett.",
      "at": "2026-11-20T05:23:01.701Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 6: tmux session axf-fable-full-audit-ui-overhaul-conso--s2--earl is gone while the step was building.",
+     "at": "2026-11-20T05:25:01.372Z",
      "by": "watchdog"
     }
    ],
@@ -337424,12 +337429,13 @@
      "done": true,
      "doneAt": "2026-11-20T05:21:35.233Z",
      "note": "",
-     "rev": 19,
+     "rev": 20,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:21:35.890Z",
-     "statusAt": "2026-11-20T05:11:41.070Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T05:25:09.082Z",
+     "statusAt": "2026-11-20T05:25:01.372Z",
+     "statusBy": "watchdog",
      "attempt": 6,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -337556,13 +337562,23 @@
        "by": "orchestrator",
        "attempt": 6,
        "why": "axf-fable-full-audit-ui-overhaul-conso--s2--earl on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T05:25:01.372Z",
+       "by": "watchdog",
+       "attempt": 6,
+       "why": "tmux session axf-fable-full-audit-ui-overhaul-conso--s2--earl is gone while the step was building"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
-     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s2--earl"
+     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s2--earl",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s3",
@@ -338432,7 +338448,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 115,
+   "rev": 116,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

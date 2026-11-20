@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T05:24:11.481Z",
+ "updatedAt": "2026-11-20T05:25:14.124Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:23:59.438Z",
+   "updatedAt": "2026-11-20T05:25:01.372Z",
    "builtAt": "",
    "notes": [
     {
@@ -132,6 +132,11 @@
     {
      "text": "Watchdog: step s1 gave up: attempt 13 of 5 failed at building. Alerted Brett.",
      "at": "2026-11-20T05:23:01.701Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 failed at building, attempt 6: tmux session axf-fable-full-audit-ui-overhaul-conso--s2--earl is gone while the step was building.",
+     "at": "2026-11-20T05:25:01.372Z",
      "by": "watchdog"
     }
    ],
