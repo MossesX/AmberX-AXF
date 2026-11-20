@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9429,
- "updatedAt": "2026-11-20T04:54:35.575Z",
+ "rev": 9430,
+ "updatedAt": "2026-11-20T04:54:48.602Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338444,7 +338444,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T04:54:31.365Z",
+   "updatedAt": "2026-11-20T04:54:44.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -338898,12 +338898,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:52:29.712Z",
-     "statusAt": "2026-11-20T04:52:28.145Z",
+     "updatedAt": "2026-11-20T04:54:44.528Z",
+     "statusAt": "2026-11-20T04:54:44.470Z",
      "statusBy": "orchestrator",
      "attempt": 1,
+     "failedFrom": "pulling-main",
      "statusLog": [
       {
        "status": "pending",
@@ -338911,9 +338912,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T04:54:36.871Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T04:54:44.470Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "pull main into fable-full-audit-ui-overhaul-conso--s8: error: Unable to create '/opt/axf/.git/worktrees/fable-full-audit-ui-overhaul-conso--s8/index.lock': File exists.\n\nAnother git process seems to be running in this repository, e.g.\nan editor opened by 'git commit'. Please make sure all processes\n"
       }
      ],
-     "status": "pending"
+     "status": "failed",
+     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s8",
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s8"
     },
     {
      "id": "s9",
@@ -339274,7 +339291,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
