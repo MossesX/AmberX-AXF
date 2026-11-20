@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T05:55:00.908Z",
+ "updatedAt": "2026-11-20T05:55:24.250Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:54:56.066Z",
+   "updatedAt": "2026-11-20T05:55:03.784Z",
    "builtAt": "",
    "notes": [
     {
@@ -187,8 +187,11 @@
     },
     {
      "text": "Watchdog: step s2 gave up: attempt 15 of 5 failed at building. Alerted Brett.",
-     "at": "2026-11-20T05:54:01.815Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:54:01.815Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--lenny, shared account login)",
+     "at": "2026-11-20T05:55:03.784Z"
     }
    ],
    "approvals": [],
