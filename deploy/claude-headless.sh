@@ -608,6 +608,9 @@ for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUIL
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 envs+=(-e "AXF_BUILD_ID=${AXF_BUILD_ID:-}")   # always set: never the tmux server's stale value from an older launch
+# the Pipeline 2.0 step: the exit call (pipeline.mjs exit --step) needs it, or the step's clean end is never recorded and
+# the watchdog fails a finished step as "session gone" (Nov 20 2026: s1 relaunched 18 times). Always set, like the id.
+envs+=(-e "AXF_BUILD_STEP=${AXF_BUILD_STEP:-}")
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
 # never passed before, so pushes from a headless build failed) and the axHub token (env, else the console's env file).
 secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
