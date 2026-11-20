@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T05:00:18.894Z",
+ "updatedAt": "2026-11-20T05:00:30.659Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T04:59:57.929Z",
+   "updatedAt": "2026-11-20T05:00:10.850Z",
    "builtAt": "",
    "notes": [
     {
@@ -75,8 +75,11 @@
     },
     {
      "text": "Fable could not split it (claude exit 1: {\"duration_api_ms\":16003,\"stop_reason\":\"tool_use\",\"session_id\":\"096458a8-ba4f-40f6-9c9c-20eeb6f3050a\",\"total_cost_usd\":1.10801075,\"usage\":{\"input_tokens\":2,\"cache_creation_input_tokens\":53223,\"cache_read_input_tokens\":5923,\"output_tokens\":841,\"output_tokens_details\":{\"thinking_tokens\"): one step per planning step instead (18, 540 min). Review the steps.",
-     "at": "2026-11-20T04:52:28.145Z",
-     "by": "orchestrator"
+     "at": "2026-11-20T04:52:28.145Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s1--earl, shared account login)",
+     "at": "2026-11-20T05:00:10.850Z"
     }
    ],
    "approvals": [],
