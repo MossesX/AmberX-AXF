@@ -1,0 +1,63 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub-account-help",
+  "name": "axHub account help",
+  "version": "0.1.0",
+  "description": "axHub account's Help mode entries (help@1), moved from the axHub web app's help when it folded into the console.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:axhub-account",
+    "entries": [
+      {
+        "target": "view:axhub-account",
+        "title": "Account",
+        "text": "Your hub account: name, password, signed-in devices.",
+        "kind": "screen"
+      },
+      {
+        "target": "sign-out-the-others",
+        "title": "Sign out the others",
+        "text": "Signs out every other device using your account. This one stays signed in."
+      },
+      {
+        "target": "current-password",
+        "title": "Current password",
+        "text": "Your password now.",
+        "kind": "field"
+      },
+      {
+        "target": "new-password",
+        "title": "New password",
+        "text": "The one you want.",
+        "kind": "field"
+      },
+      {
+        "target": "new-password-again",
+        "title": "New password again",
+        "text": "Same again, to catch typos.",
+        "kind": "field"
+      },
+      {
+        "target": "change-password",
+        "title": "Change password",
+        "text": "Saves the new password."
+      },
+      {
+        "target": "pick-a-password",
+        "title": "Pick a password",
+        "text": "Choose the password for this account.",
+        "kind": "field"
+      },
+      {
+        "target": "view:axhub-hub",
+        "title": "axHub",
+        "text": "Which hub the console belongs to, which session its pages use here (your browser's own or the console's owner sign-in), and a tap to each hub page.",
+        "kind": "screen"
+      }
+    ]
+  }
+}

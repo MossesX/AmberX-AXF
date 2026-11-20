@@ -1,0 +1,323 @@
+/**
+ * Approvals — every request axHub has asked about (decision #95 grid, moved here from the hub's own page by #96):
+ * pending first, then postponed, newest first; a filter per status, pages of 20, the auto-approve window
+ * (decision #94) and the log.
+ *
+ * Deciding happens here now, through the hub's `/auth/api/approvals/<id>` with this browser's admin session, the
+ * hub's Origin and the session's CSRF value, the revision this page showed (a request that changed meanwhile is
+ * refused) — never with a token, so an AI client can't approve its own call. Approve sits on a row only when the row
+ * shows the complete call; a longer one opens its page first.
+ */
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Button, Chip, Container, Note, TabGroup, useRuntime } from '@console/axf/react';
+import { checkHubNow } from '@console/axf/libs/hub/react';
+import { hubPost, hub } from '@console/hubPages/api';
+import { countdownKey, nextSort, relTime, replyBase, requestedKey, sameJson, showReading, shownRow, sourceChips, sourceKind, sourceWho, SOURCE_LABEL, SOURCE_ORDER, waitingCount, waitingTitle, type KeptReply } from '@console/hubPages/core';
+import { clearDatasetTransform, DataGrid, setDatasetTransform, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
+import { go, useRouteParams } from '@console/hubPages/route';
+import { ACTION_LABELS, SOURCE_TONE, STATUS_TONE, type ActionReply, type ApprovalAction, type ApprovalGrid, type ApprovalItem, type AutoState } from '@console/hubPages/types';
+import { ApprovalDetailsPanel } from '@console/axf/libs/approvals/react';
+import { approvalsOpenStore, detailsOfHubEntry, type ApprovalDecision } from '@console/axf/libs/approvals';
+import { HubGate, TapTwice, useHubJson } from '@console/hubPages/page';
+import { actHeld, HeldBar, HeldChip, isHeld } from './HeldCall';
+
+export function Approvals() {
+  return (
+    <HubGate admin what="approvals">
+      {() => <ApprovalsGrid />}
+    </HubGate>
+  );
+}
+
+function ApprovalsGrid() {
+  const rt = useRuntime();
+  const params = useRouteParams('home');
+  const status = params.status ?? 'all';
+  const [page, setPage] = useState(1);
+  const path = `/auth/api/approvals?status=${encodeURIComponent(status)}&page=${page}`;
+  const [fast, setFast] = useState(false);
+  // A held call counts down: read the hub every 3 s while one is on the page, so a run or a Deny elsewhere shows quickly.
+  const grid = useHubJson<ApprovalGrid>(path, fast ? 3_000 : 10_000);
+  const g = grid.data;
+  const anyHeld = !!g && g.items.some(isHeld);
+  useEffect(() => setFast(anyHeld), [anyHeld]);
+  // Pending requests + held calls counting down (the hub's `waiting` is pending only): matches the banner's count.
+  const waiting = waitingCount(g);
+
+  const reload = grid.reload;
+  // One function for the page's life (per address), so the rows (memo) don't re-render because the parent did.
+  const after = useCallback(async () => { await reload(); checkHubNow(); }, [reload]);
+  const onRowDone = useCallback(() => void after(), [after]);
+
+  return (
+    <div className="fx-stack fx-stack--lg">
+      <header className="fx-pagehead">
+        <div>
+          <p className="fx-eyebrow">axHub · {hub().replace(/^https:\/\//, '')}</p>
+          <h1>{g ? waitingTitle(waiting) : 'Approvals'}</h1>
+          <p className="fx-muted">
+            Every call that changes something waits here for you. Approve or decline it here; a long call opens its own
+            page so you see all of it first.
+            {g && g.postponed > 0 ? ` ${g.postponed} postponed.` : ''}
+          </p>
+        </div>
+        <div className="fx-row fx-row--wrap">
+          <Button icon="refresh" onClick={() => void after()}>Check now</Button>
+          {g?.log && <Button icon="list" onClick={() => go(rt, 'approvals-log')}>Log</Button>}
+        </div>
+      </header>
+
+      {grid.error && <Note tone="danger" icon="alert">{grid.error}</Note>}
+      {g && g.auto.available && <AutoApprove auto={g.auto} onChange={() => void after()} />}
+
+      {g && (
+        <TabGroup id="axhub-approvals.status" label="Show" value={g.filter} tabs={g.filters.map((f) => ({ value: f.id, label: f.label }))}
+          onChange={(id) => { setPage(1); go(rt, 'home', id === 'all' ? {} : { status: id }); }} />
+      )}
+
+      {/* Only before the first answer: a refresh keeps the list on screen and updates its rows in place. */}
+      {showReading(g, grid.error) && <p className="fx-muted">Reading the hub…</p>}
+      {g && g.items.length === 0 && <Note tone="success" icon="check">{g.filter === 'all' ? 'No requests yet.' : 'None with this status.'}</Note>}
+      {g && g.items.length > 0 && <ApprovalsTable items={g.items} onDone={onRowDone} />}
+
+      {g && g.pages > 1 && (
+        <div className="fx-row fx-row--wrap">
+          <Button size="sm" icon="chevron-left" disabled={g.page <= 1} onClick={() => setPage(g.page - 1)}>Newer</Button>
+          <span className="fx-muted">Page {g.page} of {g.pages} · {g.total} requests</span>
+          <Button size="sm" icon="chevron-right" disabled={g.page >= g.pages} onClick={() => setPage(g.page + 1)}>Older</Button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** The 5 / 10 / 30 minute window that approves everything (decision #94). Deny policies still deny; Stop any time. */
+function AutoApprove({ auto, onChange }: { auto: AutoState; onChange: () => void }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  const send = async (path: string, body: unknown) => {
+    setBusy(true);
+    try { const r = await hubPost<{ message: string }>(path, body); rt.toast(r.message || 'Done.', 'success'); onChange(); }
+    catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); }
+    finally { setBusy(false); }
+  };
+  const w = auto.window;
+  return (
+    <Container title="Approve everything automatically" icon="clock">
+      {w ? (
+        <div className="fx-stack">
+          <Note tone="warning" icon="alert">
+            Approving every request until {new Date(w.until).toLocaleTimeString()} ({relTime(w.until)}), started by {w.by}.
+            {' '}{w.approvedCount} approved so far.
+          </Note>
+          <div className="fx-row"><Button tone="danger" icon="x" disabled={busy} onClick={() => void send('/auth/api/approvals/auto/stop', {})}>Stop now</Button></div>
+        </div>
+      ) : (
+        <div className="fx-stack">
+          <p className="fx-muted">For a few minutes, every call that asks is approved by itself, what's waiting now too. Services set to deny stay denied. Tap twice.</p>
+          <div className="fx-row fx-row--wrap">
+            {auto.minutes.map((m) => (
+              <TapTwice key={m} label={`${m} min`} again={`Approve all for ${m} min`} icon="clock" disabled={busy} onConfirm={() => void send('/auth/api/approvals/auto', { minutes: m })} />
+            ))}
+          </div>
+        </div>
+      )}
+    </Container>
+  );
+}
+
+/** Sends one action with the revision the page showed. */
+export async function act(item: ApprovalItem, action: ApprovalAction, extra: Record<string, unknown> = {}): Promise<ActionReply> {
+  return hubPost<ActionReply>(`/auth/api/approvals/${item.id}`, { action, rev: item.revision, ...extra });
+}
+
+/**
+ * Deny / Approve now on the collapsed row (Brett, Oct 30 + 31 2026): one pair, the same size, big targets, red Deny (the
+ * hub's decline) and green Approve now; Approve now sends straight away only when the row has the complete call, else
+ * it opens the request's page with Approve now picked (the whole call first, then one tap).
+ */
+function RowDecide({ item, busy, run }: { item: ApprovalItem; busy: boolean; run: (a: ApprovalAction) => void }) {
+  const rt = useRuntime();
+  const can = (a: ApprovalAction) => item.actions.includes(a);
+  if (!can('approve') && !can('decline')) return <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>;
+  return (
+    <div className="axp-axhub-pair">
+      {can('decline') && <Button tone="danger" icon="x-circle" disabled={busy} aria-label={`Deny: ${item.title}`} onClick={() => run('decline')}>Deny</Button>}
+      {can('approve') && (item.whole
+        ? <Button tone="success" icon="check" disabled={busy} aria-label={`Approve now: ${item.title}`} onClick={() => run('approve')}>Approve now</Button>
+        : <Button tone="success" icon="chevron-right" disabled={busy} aria-label={`Approve now: ${item.title} (see the whole call first)`} title="The call is long: see all of it first" onClick={() => go(rt, 'approval', { id: item.id, do: 'approve' })}>Approve now</Button>)}
+    </div>
+  );
+}
+
+/** Grid id = dataset id: plugins may attach filters and sorts to it too (lib-datagrid datasets). */
+export const APPROVALS_GRID = 'axhub-approvals';
+const SOURCE_FILTER_OWNER = 'axhub-approvals.source';
+
+/**
+ * Every request in the framework grid (Brett, Nov 1 2026: "WHO asked and WHAT it is"): Source badge, Who (session,
+ * build or agent name), What (the reason title first, the tool as a small chip), Requested, Countdown, and the row's
+ * Deny / Approve now. Columns sort from their header and hide from its menu; the source chips filter through the grid's
+ * dataset. Rows are keyed by request id and every cell reads the latest read, so a poll updates them in place.
+ */
+function ApprovalsTable({ items, onDone }: { items: ApprovalItem[]; onDone: () => void }) {
+  const [sort, setSort] = useState<GridSort>(null);
+  const [hidden, setHidden] = useState<string[]>([]);
+  // Open rows live in lib-approvals' open-row store (scope 'axhub'): a poll, a re-render or coming back to the page keeps
+  // them open (Brett, Nov 1 2026: every approval row expandable, stays open on refresh).
+  const [expanded, setExpanded] = useState<string[]>(() => items.filter((i) => approvalsOpenStore.isOpen('axhub', i.id)).map((i) => i.id));
+  const toggleRow = useCallback((id: string) => setExpanded((e) => { const on = !e.includes(id); approvalsOpenStore.set('axhub', id, on); return on ? [...e, id] : e.filter((x) => x !== id); }), []);
+  const [only, setOnly] = useState<string>('');
+  const [replies, setReplies] = useState<Record<string, KeptReply<ApprovalItem>>>({});
+  // Same JSON as the last read = the same object (flicker fix, Nov 1 2026): memoised cells of unchanged rows don't redraw.
+  const kept = useRef(new Map<string, ApprovalItem>());
+  const rows = useMemo(() => {
+    const next = new Map<string, ApprovalItem>();
+    const out = items.map((i) => {
+      const was = kept.current.get(i.id);
+      const base = was && sameJson(was, i) ? was : i;
+      next.set(i.id, base);
+      return shownRow(base, replies[i.id]);
+    });
+    kept.current = next;
+    return out;
+  }, [items, replies]);
+  const chips = sourceChips(items);
+
+  // The source filter is a transform on the grid's dataset, so the grid (and anything else showing it) agrees.
+  useEffect(() => {
+    if (!only) { clearDatasetTransform(APPROVALS_GRID, SOURCE_FILTER_OWNER); return; }
+    setDatasetTransform<ApprovalItem>(APPROVALS_GRID, SOURCE_FILTER_OWNER, { filter: (r) => sourceKind(r) === only, active: true, label: `Source: ${SOURCE_LABEL[only] ?? only}` });
+  }, [only]);
+  useEffect(() => () => clearDatasetTransform(APPROVALS_GRID, SOURCE_FILTER_OWNER), []);
+  useEffect(() => { if (only && !chips.some((c) => c.kind === only)) setOnly(''); }, [only, chips]);
+
+  const done = (from: ApprovalItem) => (next?: ApprovalItem) => {
+    if (next) setReplies((r) => ({ ...r, [from.id]: { base: replyBase(from), item: next } }));
+    onDone();
+  };
+  const columns: GridColumn<ApprovalItem>[] = [
+    { id: 'source', label: 'Source', width: 'minmax(max-content, 1fr)', sortable: true, sortValue: (r) => `${SOURCE_ORDER.indexOf(sourceKind(r) as (typeof SOURCE_ORDER)[number])}`, render: (r) => <SourceCell item={r} /> },
+    { id: 'who', label: 'Who', width: 'minmax(calc(var(--fx-space) * 8), 1.2fr)', sortable: true, sortValue: (r) => sourceWho(r).toLowerCase(), render: (r) => <span className="axp-axhub-who" title={sourceWho(r) || undefined}>{sourceWho(r) || '—'}</span> },
+    { id: 'what', label: 'What', width: 'minmax(calc(var(--fx-space) * 14), 4fr)', fixed: true, sortable: true, sortValue: (r) => r.title.toLowerCase(), render: (r) => <WhatCell item={r} /> },
+    { id: 'requested', label: 'Requested', width: 'minmax(max-content, 1fr)', sortable: true, sortValue: requestedKey, render: (r) => <span className="fx-muted" title={new Date(r.createdAt).toLocaleString()}>{relTime(r.createdAt)}</span> },
+    { id: 'countdown', label: 'Countdown', width: 'minmax(max-content, 1fr)', sortable: true, sortValue: (r) => countdownKey(r), render: (r) => <CountdownCell item={r} /> },
+    { id: 'decide', label: 'Decide', width: 'max-content', render: (r) => (isHeld(r) ? <HeldBar item={r} onDone={done(r)} /> : <RowDecideCell item={r} onDone={done(r)} />) },
+  ];
+  const waiting = rows.filter((r) => isHeld(r) || r.status === 'pending');
+  const rest = rows.filter((r) => !waiting.includes(r));
+  const groups: GridGroup<ApprovalItem>[] = [
+    ...(waiting.length ? [{ id: 'waiting', title: 'Waiting on you', icon: 'shield', rows: waiting, groups: [], fixed: true }] : []),
+    ...(rest.length ? [{ id: 'earlier', title: 'Earlier', icon: 'list', rows: rest, groups: [], fixed: true }] : []),
+  ];
+  return (
+    <div className="fx-stack">
+      {chips.length > 1 && (
+        <TabGroup id="axhub-approvals.source" label="Source" value={only || 'all'}
+          tabs={[{ value: 'all', label: 'Every source' }, ...chips.map((c) => ({ value: c.kind, label: `${c.label} · ${c.count}` }))]}
+          onChange={(k) => setOnly(k === 'all' ? '' : k)} />
+      )}
+      <DataGrid<ApprovalItem>
+        id={APPROVALS_GRID}
+        label="Approvals"
+        groups={groups}
+        columns={columns}
+        rowId={(r) => r.id}
+        rowLabel={(r) => `${r.title} ${sourceWho(r)} ${r.tool}`}
+        hidden={hidden}
+        onToggleColumn={(c, show) => setHidden((h) => (show ?? h.includes(c) ? h.filter((x) => x !== c) : [...h, c]))}
+        onShowAll={() => setHidden([])}
+        sort={sort}
+        onSort={(c) => setSort((s0) => nextSort(s0, c))}
+        expanded={expanded}
+        onToggleExpand={toggleRow}
+        // A tap on the row opens it in place (no navigation); taps on its buttons and links do their own thing.
+        onRowClick={(r, e) => { if (!(e.target as Element).closest?.('button, a, input, select, textarea')) toggleRow(r.id); }}
+        renderDetail={(r) => <RowDetail item={r} onDone={onDone} />}
+        rowTone={(r) => (isHeld(r) ? 'warning' : r.status === 'pending' ? 'accent' : STATUS_TONE[r.status] ?? 'muted')}
+        empty="No requests."
+      />
+    </div>
+  );
+}
+
+/** Source badge (Claude.ai / Claude Code / Headless / Console / Agent / System); the client in its tooltip. */
+const SourceCell = memo(function SourceCell({ item }: { item: ApprovalItem }) {
+  const kind = sourceKind(item);
+  const label = item.source?.label || SOURCE_LABEL[kind]!;
+  const client = [item.source?.client, item.source?.clientVersion].filter(Boolean).join(' ');
+  return <span title={client ? `${label} · ${client}` : label} data-source={kind}><Chip tone={SOURCE_TONE[kind]}>{label}</Chip></span>;
+});
+
+/** The reason title first (truncates first), then the tool as a small chip. The row opens below (or Details). */
+const WhatCell = memo(function WhatCell({ item }: { item: ApprovalItem }) {
+  return (
+    <span className="axp-axhub-what">
+      <strong className="axp-axhub-what__title" title={item.title}>{item.title}</strong>
+      <span className="axp-axhub-what__tool"><Chip>{item.tool}</Chip></span>
+    </span>
+  );
+});
+
+/** Held: the live countdown; waiting: the time left; decided: its status. */
+const CountdownCell = memo(function CountdownCell({ item }: { item: ApprovalItem }) {
+  if (isHeld(item)) return <HeldChip item={item} />;
+  if (item.showExpires) return <Chip tone={STATUS_TONE[item.status]}>{relTime(item.expiresAt)}</Chip>;
+  return <Chip tone={STATUS_TONE[item.status]}>{item.statusLabel}</Chip>;
+});
+
+/** Deny / Approve now on a waiting row (the hub's reply shows at once). */
+function RowDecideCell({ item, onDone }: { item: ApprovalItem; onDone: (next?: ApprovalItem) => void }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState(false);
+  const run = async (a: ApprovalAction) => {
+    setBusy(true);
+    try { const r = await act(item, a); rt.toast(r.message || 'Done.', a === 'approve' ? 'success' : 'info'); onDone(r.item); }
+    catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); onDone(); }
+    finally { setBusy(false); }
+  };
+  return <RowDecide item={item} busy={busy} run={(a) => void run(a)} />;
+}
+
+/** An opened row: what it does, the code, who and when, and the rest of its actions. */
+function RowDetail({ item, onDone }: { item: ApprovalItem; onDone: () => void }) {
+  const rt = useRuntime();
+  const [busy, setBusy] = useState('');
+  const held = isHeld(item);
+  // The open row (Brett, Nov 1 2026): lib-approvals' shared details panel (the reason, the exact call + copy, who asked,
+  // tool / policy / risk, the timeline, the result + output tail, Deny / Approve inside), then this app's own extras.
+  const details = useMemo(() => detailsOfHubEntry(hub(), item), [item]);
+  // Approve / Deny sit on the row and inside; the rest (postpone, ignore, revoke, reopen) here. A held call has only its own buttons.
+  const quick = held ? [] : item.actions.filter((a) => a !== 'approve' && a !== 'decline');
+  const run = async (a: ApprovalAction) => {
+    if (a === 'postpone') { go(rt, 'approval', { id: item.id, postpone: '1' }); return; }
+    setBusy(`${item.id}:${a}`);
+    try { const r = await act(item, a); rt.toast(r.message || 'Done.', a === 'approve' ? 'success' : 'info'); }
+    catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); }
+    finally { setBusy(''); onDone(); }
+  };
+  const decide = async (d: ApprovalDecision) => {
+    if (!held) { await run(d === 'approve' ? 'approve' : 'decline'); return; }
+    setBusy(`${item.id}:${d}`);
+    try { const r = await actHeld(item.id, d === 'approve' ? 'approve-now' : 'deny'); rt.toast(r.message || (d === 'approve' ? 'Approved: the hub runs it now.' : 'Denied: it will not run.'), d === 'approve' ? 'success' : 'info'); checkHubNow(); }
+    catch (e) { rt.toast(e instanceof Error ? e.message : String(e), 'danger'); }
+    finally { setBusy(''); onDone(); }
+  };
+  if (!details) return null;
+  return (
+    <ApprovalDetailsPanel className="axp-axhub-detail" details={details} hub={hub()} busy={busy} onDecide={(d) => void decide(d)} openPage={() => go(rt, 'approval', { id: item.id })}>
+      {item.postponed && (
+        <p className="fx-muted">Waiting for {item.postponed.waitingFor}{item.postponed.lastNote ? ` · ${item.postponed.lastNote}` : ''}</p>
+      )}
+      {item.reviewRequired && <Note tone="warning" icon="alert">Postponed for over 2 hours: look at it again.</Note>}
+      <div className="fx-row fx-row--wrap">
+        {quick.map((a) => (
+          <Button key={a} size="sm" disabled={!!busy} tone={a === 'revoke' ? 'danger' : 'neutral'} onClick={() => void run(a)}>
+            {ACTION_LABELS[a]}
+          </Button>
+        ))}
+        <Button size="sm" tone="ghost" icon="chevron-right" onClick={() => go(rt, 'approval', { id: item.id })}>Open the request</Button>
+      </div>
+    </ApprovalDetailsPanel>
+  );
+}
