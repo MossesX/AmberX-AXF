@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10028,
- "updatedAt": "2026-11-20T13:09:10.216Z",
+ "rev": 10029,
+ "updatedAt": "2026-11-20T13:20:52.934Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -346794,6 +346794,11 @@
      "text": "Watchdog: build retried at split, attempt 3.",
      "at": "2026-11-20T13:09:01.741Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T13:20:03.199Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -347082,7 +347087,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
