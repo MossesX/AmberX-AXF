@@ -146,6 +146,12 @@ eq(phone_got[-1]["$axf"], "console-command@1", "message frame")
 # ---- whole command, settings sub-tab with anchor, back
 j = client.post("/api/console", json={"op": "act", "target": "console.settings", "path": "plugins/sample-tools", "action": "open", "input": {"anchor": "settings-group:x"}}).json()
 ok(j["ok"] and phone_got[-1]["kind"] == "settings" and phone_got[-1]["anchor"] == "settings-group:x", "settings sub-tab through the whole-command route")
+# POST /api/console/settings with a tab opens it (it shares the path with the wake-settings save, which once shadowed it)
+n_before = len(phone_got)
+j = client.post("/api/console/settings", json={"tab": "plugins/sample-tools", "anchor": "settings-group:x", "by": "claude"}).json()
+ok(j["ok"] and len(phone_got) == n_before + 1 and phone_got[-1]["kind"] == "settings" and phone_got[-1]["anchor"] == "settings-group:x", f"POST /settings with a tab opens it ({j})")
+j = client.post("/api/console/settings", json={"ttlS": 120}).json()
+ok(j["ok"] and j["settings"]["ttlS"] == 120 and len(phone_got) == n_before + 1, "POST /settings without a tab still saves the wake settings (nothing sent)")
 ok(client.post("/api/console/back", json={}).json()["ok"] and phone_got[-1]["op"] == "back", "back")
 ok(client.post("/api/console/home", json={}).json()["ok"] and phone_got[-1]["op"] == "home", "home")
 
