@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9751,
- "updatedAt": "2026-11-20T07:12:41.584Z",
+ "rev": 9752,
+ "updatedAt": "2026-11-20T07:13:11.075Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:12:33.732Z",
+   "updatedAt": "2026-11-20T07:13:01.445Z",
    "builtAt": "",
    "notes": [
     {
@@ -337762,6 +337762,16 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s7--earl, shared account login)",
      "at": "2026-11-20T07:12:33.732Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 18 of 5 failed at completed. Alerted Brett.",
+     "at": "2026-11-20T07:13:01.445Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 failed at building, attempt 3: tmux session axf-fable-full-audit-ui-overhaul-conso-s6 is gone while the step was building.",
+     "at": "2026-11-20T07:13:01.445Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -339375,12 +339385,13 @@
      "done": true,
      "doneAt": "2026-11-20T07:08:34.197Z",
      "note": "",
-     "rev": 11,
+     "rev": 12,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:10:13.833Z",
-     "statusAt": "2026-11-20T06:57:04.169Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T07:13:06.937Z",
+     "statusAt": "2026-11-20T07:13:01.445Z",
+     "statusBy": "watchdog",
      "attempt": 3,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -339444,9 +339455,16 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "axf-fable-full-audit-ui-overhaul-conso--s6--earl on hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T07:13:01.445Z",
+       "by": "watchdog",
+       "attempt": 3,
+       "why": "tmux session axf-fable-full-audit-ui-overhaul-conso-s6 is gone while the step was building"
       }
      ],
-     "status": "building"
+     "status": "failed"
     },
     {
      "id": "s7",
@@ -340530,7 +340548,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 403,
+   "rev": 404,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
