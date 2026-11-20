@@ -20,7 +20,8 @@
  *
  * Screenshots (op `screenshot`): the tab captures what it shows (the whole viewport, or the element a console-control@1
  * address or a CSS selector names) with ./capture, uploads the PNG to the server, then acks with the screen state
- * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees.
+ * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees. It tells the server it is working
+ * on it first (a capture takes seconds), works in a background tab too, and always answers within CAPTURE_TIMEOUT_MS.
  *
  * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
@@ -33,7 +34,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { executeControl, describeAnswer, controlState } from '@console/control/executor';
 import { controlRegistry } from '@console/axf/react';
-import { capturePage } from './capture';
+import { CAPTURE_TIMEOUT_MS, capturePage, painted, within } from './capture';
 import { appMenu } from './menu';
 import './console-commands.css';
 import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, consoleShotState, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
@@ -175,8 +176,8 @@ async function runScreenshot(rt: AxfRuntime, m: ConsoleMessage, client: string):
   if (m.address) el = await controlRegistry(rt).elementFor(m.address);
   else if (m.selector) { try { el = document.querySelector(m.selector); } catch { return [false, `"${m.selector}" is not a CSS selector`, {}]; } }
   if (what && !el) return [false, `${what} is not on the screen`, { state: consoleShotState(controlState(rt), hereOf(rt)) }];
-  // two frames, so a screen or dialog opened just before is painted
-  await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+  // so a screen or dialog opened just before is painted (a background tab runs no frames: a short timer then)
+  await painted();
   const shot = await capturePage(el, what || 'page');
   const up = await pluginFetch(FOLDER, `shot?client=${encodeURIComponent(client)}&id=${encodeURIComponent(m.id)}`, { method: 'POST', headers: { 'content-type': 'image/png' }, body: shot.blob });
   if (!up.ok) return [false, `the screenshot could not be uploaded (${up.status})`, {}];
@@ -327,7 +328,9 @@ function ConsoleCommandsClient() {
         }
         // a screenshot: capture, upload, then ack with the screen state (no toast: it changes nothing on screen)
         if (m.op === 'screenshot') {
-          void runScreenshot(rt, m, id).catch((e: unknown) => [false, String((e as Error)?.message ?? e), {}] as [boolean, string, Record<string, unknown>]).then(([ok, line, result]) => {
+          // say at once that this tab is on it: a capture takes seconds, and the server would try the next console
+          void post('seen', { client: id, working: m.id }).catch(() => undefined);
+          void within(runScreenshot(rt, m, id), CAPTURE_TIMEOUT_MS, 'the capture').catch((e: unknown) => [false, String((e as Error)?.message ?? e), {}] as [boolean, string, Record<string, unknown>]).then(([ok, line, result]) => {
             markDone(m.id, [ok, line]);
             void post('ack', { client: id, id: m.id, ok, message: line, result, here: hereOf(rt), ...where() }).catch(() => undefined);
           });
