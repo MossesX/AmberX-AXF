@@ -18,7 +18,7 @@
         "id": "registry",
         "label": "Registry",
         "items": [
-          { "id": "skin-editor", "icon": "palette", "label": "Skin editor", "action": "handler:token-registry.skin-editor", "priority": 300, "overflow": "never" }
+          { "id": "skin-editor", "icon": "palette", "label": "Edit skins", "action": "handler:token-registry.skin-editor", "priority": 300, "overflow": "never" }
         ]
       }
     ]

@@ -13,7 +13,7 @@
  * Server part (archives, credentials, installs) in server/__init__.py; the pure part in web/core.ts.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Chip, IconButton, Icon, ModelBadge, Note, PageToolbar, Segmented, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, ModelBadge, Note, PageToolbar, Segmented, SelectField, Switch, TextField, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core/runtime';
 import { placementKey } from '@console/axf/core/engines/placement';

@@ -18,7 +18,7 @@
         "id": "pick",
         "label": "Pick",
         "items": [
-          { "id": "pick-screen", "icon": "eye", "label": "Pick on screen", "action": "handler:skin-editor.pick-screen", "priority": 300, "overflow": "never" },
+          { "id": "pick-screen", "icon": "eye", "label": "Pick a screen", "action": "handler:skin-editor.pick-screen", "priority": 300, "overflow": "never" },
           { "id": "pick-element", "icon": "layers", "label": "Pick element", "action": "handler:skin-editor.pick-element", "checked": "state:picking", "enabledWhen": "ui", "priority": 280 },
           { "id": "every-element", "icon": "x", "label": "Every element", "action": "handler:skin-editor.every-element", "visibleWhen": "element", "priority": 260 }
         ]
@@ -28,7 +28,7 @@
         "label": "Skin",
         "items": [
           { "id": "undo", "icon": "undo", "label": "Undo", "action": "handler:skin-editor.undo", "enabledWhen": "undoable", "priority": 240 },
-          { "id": "registry", "icon": "list", "label": "Token registry", "action": "handler:skin-editor.registry", "priority": 150 }
+          { "id": "registry", "icon": "list", "label": "Browse tokens", "action": "handler:skin-editor.registry", "priority": 150 }
         ]
       }
     ]

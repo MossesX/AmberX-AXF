@@ -4,7 +4,7 @@
  * Skin editor on the current UI.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Note, PageToolbar, Segmented, SelectField, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { Chip, Container, Note, PageToolbar, Segmented, SelectField, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { RegistrySummary } from '@console/axf/core/engines/token-registry.mjs';
 import { ELEMENT_LABELS, TOKEN_AREAS, TOKEN_STATES } from '@console/axf/core/engines/token-registry.mjs';
 import { registry as fetchRegistry, registrySummary } from './api';

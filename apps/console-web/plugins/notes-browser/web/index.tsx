@@ -5,7 +5,7 @@
  * Small on purpose: no window or dock engine, framework controls only, theme tokens only.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, IconButton, Icon, Markdown, Note, PageToolbar, Segmented, SelectField, Switch, TextField, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
+import { Button, Icon, Markdown, Note, PageToolbar, Segmented, SelectField, TextField, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';

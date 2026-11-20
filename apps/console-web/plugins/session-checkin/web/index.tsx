@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, PageToolbar, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { Button, Chip, Icon, PageToolbar, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';

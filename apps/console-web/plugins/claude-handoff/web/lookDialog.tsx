@@ -7,7 +7,7 @@
  */
 import { useMemo, useState } from 'react';
 import { assetTypeSpecs } from '@console/axf/core';
-import { Button, Icon, IconButton, Note, PageToolbar, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { Icon, IconButton, Note, PageToolbar, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { buildCategories } from './installer-core';
 import { InstallerView, type Run } from './installer';
 import {
