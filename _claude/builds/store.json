@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9788,
- "updatedAt": "2026-11-20T07:36:10.376Z",
+ "rev": 9789,
+ "updatedAt": "2026-11-20T07:36:54.377Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:35:58.853Z",
+   "updatedAt": "2026-11-20T07:36:49.666Z",
    "builtAt": "",
    "notes": [
     {
@@ -339459,16 +339459,15 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T07:36:49.666Z",
      "note": "",
-     "rev": 39,
+     "rev": 40,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T07:35:58.919Z",
-     "statusAt": "2026-11-20T07:35:58.853Z",
-     "statusBy": "orchestrator",
-     "attempt": 16,
-     "failedFrom": "building",
+     "updatedAt": "2026-11-20T07:36:49.710Z",
+     "statusAt": "2026-11-20T07:36:49.666Z",
+     "statusBy": "ops-slots-watchdog-cleanup",
+     "attempt": 17,
      "statusLog": [
       {
        "status": "pending",
@@ -339721,9 +339720,16 @@
        "by": "orchestrator",
        "attempt": 16,
        "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s7--earl; claude pid 4029629"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T07:36:49.666Z",
+       "by": "ops-slots-watchdog-cleanup",
+       "attempt": 17,
+       "why": "its session ended cleanly at 07:08:56 (exit 0, work pushed as 7f3d1c274); the exit was lost when a stale store copy stripped the step's tmux"
       }
      ],
-     "status": "failed",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s6",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s6"
@@ -340810,7 +340816,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 442,
+   "rev": 443,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
