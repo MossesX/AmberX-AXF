@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9567,
- "updatedAt": "2026-11-20T05:57:06.365Z",
+ "rev": 9568,
+ "updatedAt": "2026-11-20T05:58:41.037Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337129,6 +337129,51 @@
      "text": "Watchdog: step s4 stuck at ready (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T05:54:01.815Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at ready (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at ready (3 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at ready (3 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at ready (3 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at ready (2 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at ready (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at ready (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T05:57:02.286Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -338784,7 +338829,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 181,
+   "rev": 182,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
