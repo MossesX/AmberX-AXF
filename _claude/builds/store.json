@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9646,
- "updatedAt": "2026-11-20T06:32:23.774Z",
+ "rev": 9647,
+ "updatedAt": "2026-11-20T06:32:35.073Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:32:12.983Z",
+   "updatedAt": "2026-11-20T06:32:30.322Z",
    "builtAt": "",
    "notes": [
     {
@@ -337248,6 +337248,14 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s3--lenny, shared account login)",
      "at": "2026-11-20T06:29:58.147Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s3--lenny: brief only · start 10.0K tokens ($0.02) · cost $0.12 · 5 turns · 6 tools, MCP none",
+     "at": "2026-11-20T06:32:25.944Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.12",
+     "at": "2026-11-20T06:32:30.322Z"
     }
    ],
    "approvals": [],
@@ -337288,13 +337296,13 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-20T06:27:34.741Z",
+     "at": "2026-11-20T06:32:12.600Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-fable-full-audit-ui-overhaul-conso--s2--earl",
+     "session": "axf-fable-full-audit-ui-overhaul-conso--s3--lenny",
      "phase": ""
     }
    },
@@ -339297,7 +339305,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 279,
+   "rev": 282,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

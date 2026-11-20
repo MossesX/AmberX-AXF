@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:58 UTC · `auto-lander-status-tab-rest-mcp-settings` note (all) · watchdog
-- 2026-11-20 00:58 UTC · `gate-auto-lander-tab-and-controls` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `server-rule-done-means-merged-working` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `shrink-git-history-drop-old-builds` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `builds-keep-their-slot-across-phases` note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:29 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 06:31 UTC · `fable-full-audit-ui-overhaul-conso` s3 done (all) · orchestrator
 - 2026-11-20 06:31 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s3 (all) · builds-live
+- 2026-11-20 06:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 06:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 
 ## Token passes (log)
 
