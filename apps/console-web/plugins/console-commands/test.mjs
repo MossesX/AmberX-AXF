@@ -136,4 +136,23 @@ t('screenshot: CLI words, saved image, one-line state', () => {
   assert.ok(formatAnswer({ ...r, images: [], status: 'pending', queued: true }).startsWith('pending: screenshot'));
 });
 
+t('voice: describe a screenshot, drive the screen by words (console-screen@1)', () => {
+  assert.deepEqual(commandFromArgv(['screenshot', '--describe']).command.input, { describe: true });
+  assert.deepEqual(commandFromArgv(['screenshot', '--question', 'which build failed?']).command.input, { describe: true, question: 'which build failed?' });
+  assert.deepEqual(commandFromArgv(['console', 'drive', 'click', 'the', 'retry', 'button']).command, { op: 'act', target: 'console.screen', action: 'click', input: { target: 'the retry button' } });
+  assert.deepEqual(commandFromArgv(['drive', 'context_menu', 'row', '2', '--item', 'Retry', '--confirm']).command.input, { target: 'row 2', item: 'Retry', confirm: true });
+  assert.deepEqual(commandFromArgv(['drive', 'menu', '--path', 'Settings > Plugins']).command, { op: 'act', target: 'console.screen', action: 'menu', input: { path: 'Settings > Plugins' } });
+  assert.deepEqual(commandFromArgv(['drive', 'scroll', '--scroll-to', 'queue', '--to', 'cc-1']).command.input, { to: 'queue', client: 'cc-1' });
+  assert.deepEqual(commandFromArgv(['drive', 'map']).command, { op: 'act', target: 'console.screen', action: 'map' });
+  assert.ok(commandFromArgv(['drive', 'fly']).error.includes('right_click'));
+  const el = { n: 4, label: 'Retry', kind: 'button', box: { x: 10, y: 20, w: 70, h: 28 }, visible: true };
+  const line = formatAnswer({ ok: true, target: 'console.screen', action: 'click', data: { did: 'clicked "Retry"', elements: [el] } });
+  assert.ok(line.startsWith('✓ clicked "Retry"') && line.includes('4. [button] Retry · at 10,20 70×28'), line);
+  const many = formatAnswer({ ok: false, target: 'console.screen', code: 'ambiguous', message: '"retry" matches 2 elements', candidates: [el, { ...el, n: 9 }] });
+  assert.ok(many.startsWith('ambiguous:') && many.includes('9. [button] Retry'), many);
+  const shot = formatAnswer({ ok: true, op: 'act', target: 'console.nav', action: 'screenshot', status: 'delivered', images: [{ file: 'x.png', width: 800, height: 600 }], state: { screen: 'home' },
+    description: 'The Home screen.', describedBy: { model: 'claude-opus-5-5', ms: 4200, usage: { input: 2000, output: 300 } }, elements: [el] });
+  assert.ok(shot.includes('The Home screen.') && shot.includes('described by claude-opus-5-5 in 4200 ms, 2000 + 300 tokens') && shot.includes('4. [button] Retry'), shot);
+});
+
 console.log(`✓ console-commands: ${n} tests passed`);

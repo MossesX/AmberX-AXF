@@ -3,17 +3,20 @@
   "id": "ai.amberx.axf.console.console-commands",
   "lazy": { "core": "start" },
   "name": "Console commands",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list, console_clients and console_screenshot (a PNG of what the console shows plus its screen state, read-only) on the console's /mcp (and through axHub), and the CLI `axf console …`. Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the console you used last (or all of them, or one).",
+  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list, console_clients and console_screenshot (a PNG of what the console shows plus its screen state, read-only) on the console's /mcp (and through axHub), and the CLI `axf console …`. For voice calls, where a picture never reaches Amber: console_screenshot also describes the screen in words (a vision-capable Claude model through the AI assistant's providers) and lists every element that can be pressed, numbered, and console_click, console_right_click, console_double_click, console_context_menu, console_menu, console_expand, console_collapse, console_jump, console_scroll, console_type and console_key act on a target named by words, a number, an address or coordinates (console-screen@1). Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the console you used last (or all of them, or one).",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "settings-tab:console-commands",
     "service:console-commands@1"
+  ],
+  "optional": [
+    "service:axf.llm@1"
   ],
   "scopes": [
     "ROUTES"

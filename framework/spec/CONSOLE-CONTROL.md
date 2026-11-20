@@ -175,5 +175,13 @@ table; writes carry `audit { by, reason, at }`. Failure: `{ $axf, ok: false, cod
   `console.toolbars` (list / get / act press | open); CLI `axf console toolbar list [--view v] | get <id> | press <id> <button> [--confirm]`;
   voice "press run now on the auto-lander toolbar", "what's on the gate rules toolbar".
 
+- By words, without an address (console-screen@1, Nov 20 2026; CONTROL.md → Seeing and driving the screen by words): a
+  console screenshot lists every interactive element with its address (when it has one) and its box, and
+  `console_click` / `console_right_click` / `console_context_menu` / `console_menu` / `console_expand` take words, a
+  number from that list, an address or coordinates. `console_jump` opens anything by name through the commands above.
+- Screens of plugins that load on demand: an address under `view:<id>` whose plugin chunk is not installed yet loads
+  the chunk first (the shell registers the loader with the executor's `setViewLoader`), then resolves, so `open`,
+  `focus`, `press`, `set` and `state` on its tabs, grids and buttons work before anyone opened the screen by hand.
+
 Delivery, mailbox, `recent` / `all`, acks, wake through AmberX and the `status` field are console-commands' (CONTROL.md →
 Console). A console acks a console-control command with its answer envelope, so the caller gets the state it asked for.

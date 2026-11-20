@@ -1,5 +1,7 @@
 import { installConsoleSearch } from './consoleSearch';
 import { installConsoleControl } from './control';
+import { setViewLoader } from './control/executor';
+import { inventory } from './control/inventory';
 import { installNative } from './native/axfNative';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
@@ -139,6 +141,15 @@ function usePlugins() {
     folders.forEach((f) => tried.current.add(f));
     void Promise.all(folders.map((f) => post(`plugins/${f}/enabled`, { enabled: true }).catch(() => null))).then(() => reload());
   }, [managed, status, hostIds, reload]);
+  // console-control: a screen of a plugin whose chunk is not in yet is loaded before an address under it is resolved
+  useEffect(() => {
+    setViewLoader(async (view) => {
+      const owner = inventory.views.find((v) => v.id === view)?.plugin;
+      const folder = owner ? bundledPlugins.find((p) => p.manifest.id === owner)?.folder : undefined;
+      return folder && loader.enabledNow.has(folder) ? loader.ensure(folder) : false;
+    });
+    return () => setViewLoader(null);
+  }, []);
   useEffect(() => {
     if (!loaded && !managed) return;
     const on = managed ? (hostIds ?? []).map((id) => bundledPlugins.find((p) => p.manifest.id === id)?.folder).filter((f): f is string => !!f) : enabledFolders(status);

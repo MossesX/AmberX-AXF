@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` · `console.pluginsettings` · `console.toolbars` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` · `console.pluginsettings` · `console.toolbars` · `console.screen` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -132,6 +132,57 @@ data); REST `POST /api/console/screenshot`; CLI `axf console screenshot [--addre
 image, prints the state in one line). Limits: fonts and images loaded from URLs inside the clone may fall back, and a browser that
 taints foreignObject canvases (Safari) answers failed with the reason. `console.nav get here` (`console_where`) also reports the
 open tabs and the selection now, as of the console's last beat.
+
+Seeing and driving the screen by words (build voice-console-control, Nov 20 2026; console-screen@1,
+`framework/core/engines/console-screen.mjs`). On a voice call the image of a tool result never reaches Amber, so a
+screenshot answers in words too:
+
+- **Element map.** Every screenshot ack carries `elements`: every interactive element on the screen (grid and list rows,
+  row expanders, context-menu and menu items, app-menu and side-menu entries, tabs, toolbar buttons, inputs, dropdowns,
+  dialog buttons), numbered in reading order, each `{ n, label, kind, group?, state?, address?, box: {x, y, w, h}, visible }`:
+  its visible words, its kind (`row`, `expander`, `menuitem`, `menu`, `tab`, `button`, `link`, `input`, `checkbox`, `switch`,
+  `select`, `option`, `item`), where it sits (`app menu`, `toolbar <name>`, `dialog <title>`, `row <words>`), its state
+  (expanded / collapsed, selected, disabled, checked, pressed, destructive, value), its console-control@1 address when
+  the control registry knows it, and its box in the image's pixels. Elements under a dialog or another layer are left
+  out; ones that need a scroll are listed last with `visible: false` ("scroll to see").
+- **Description.** With `input.describe` (the MCP tool's default) the console server sends the PNG to a vision-capable
+  Claude model through the console's own model route (capability `axf.llm@1`: the AI assistant's provider profiles, keys
+  and usage accounting; the first ready Anthropic-protocol profile, model `describeModel` in the plugin's server
+  settings, `claude-opus-5-5` by default, Opus or Fable only) and adds `description`: literal and complete (screen,
+  headings, tabs, buttons, labels, rows with their text and status, banners, errors, dialogs, open menus, numbers), no
+  guessing. `input.question` asks one thing about the screen. `describedBy` = `{ model, profile, usage: {input, output},
+  ms, cached }`. It gives up after `CONSOLE_DESCRIBE_TIMEOUT_MS` (30 s): the image and the map still come, with
+  `describeNote`; a description is kept `CONSOLE_DESCRIBE_CACHE_MS` (2 min) per image hash and question, so an unchanged
+  screen costs one model call.
+- **MCP content order** (`console_screenshot {selector?, address?, describe = true, question?, to?}`): the description
+  (text), the numbered map (text), the image, then the answer as JSON (with `description`; the map is in the structured
+  answer).
+- **Actions** (control@1 target `console.screen`, appended last; sent live as console-command@1 op `drive`, never queued):
+  `act click | right_click | double_click` with `input.target`; `context_menu` (`input.target`, then `input.item` from the
+  menu that opens); `menu` (`input.path`: "Settings > Plugins > Agent cap", each name clicked in turn: an open menu's
+  items first, then menus, tabs and links on the screen, then inside each app menu); `expand` / `collapse` (a row, a note,
+  any folded section); `scroll` (`input.dir` or `input.to` = a target to bring into view); `type` (`input.text` into
+  `input.target` or the focused field, `input.submit` presses Enter); `key` (`input.keys`: "ctrl+s", "Escape", "down down
+  enter"); `map` (or `get`) reads the map. A **target** is words (case-insensitive; every word must match the label; one
+  slipped letter in a short word, two in a long one still match; "row 3", "the second tab", "last row" count the visible
+  ones of that kind; "top" / "lower" / "left" / "right" break a tie), a number from the last map, a console-control@1
+  address (full or short), or `x,y` in the screenshot's pixels (anywhere). The console acts as a person does (pointer,
+  mouse, click, contextmenu and keyboard events on the element at that point), so every screen works without code of
+  its own, and answers `{ ok, action, did, target?, elements, viewport, state }`.
+- **Never a guess, never a silent delete.** Several matches answer `ambiguous` with the numbered `candidates`; nothing
+  matching answers `not_found` with the nearest. A control whose words or address say it deletes, stops or merges (or
+  that is drawn as dangerous) answers `confirmation_required` until `input.confirm` is true; approve / deny / reject /
+  veto answer `denied` (`personOnly`): Brett's own tap. Reading the map needs `control.console.read`, `scroll`
+  `control.console.navigate`, everything else `control.console.write`.
+- **MCP tools** (for voice; each returns what happened, then the new screen as description + numbered map + image):
+  `console_click {target, confirm?}`, `console_right_click {target}`, `console_double_click {target, confirm?}`,
+  `console_context_menu {target, item, confirm?}`, `console_menu {path, confirm?}`, `console_expand {row}`,
+  `console_collapse {row}`, `console_scroll {direction | to_target}`, `console_type {text, target?, submit?}`,
+  `console_key {keys}`, `console_jump {to_name}` (a screen, "screen tab", `build:<id>`, a settings tab, an address, or
+  words: console.screens, then console.settings, then the best console-control search hit; a plugin screen whose chunk is
+  not loaded yet is loaded first). Each takes `describe` (default true) and `to`. REST `POST /api/console/drive {action, …}`;
+  CLI `axf console drive <action> [target] [--item i] [--path p] [--text t] [--keys k] [--dir d] [--scroll-to t]
+  [--submit] [--confirm]` and `axf console screenshot --describe [--question q]`.
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
 pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
 The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's
@@ -335,7 +386,9 @@ for token set / reset, `all` for every other write, `null` for the pass target) 
 |---|---|---|
 | `readOnlyHint: true` (every `*_list`, `*_get`, `*_status`, `*_find`, `overview`, `build_queue`, `build_next`, `pending_list`, `pending_steps`, `project_*` reads, `tracker_summary`, `libraries`, `build_options`, `app_validate`, `terminal_tail`, `pass_status`, `token_pass_status`) | **allow**: run at once, no veto | they change nothing; `apps/console-web/server/test_mcp_tools.py` fails CI if a read tool loses the hint |
 | navigation (`console_open`, `console_dialog`, `console_settings`, `console_back`, `console_refresh`, `console_show`, `console_follow`: `readOnlyHint: true`) | **allow**: run at once, no veto | they only open or move the screen, never change data (Brett, Nov 3 2026: navigation never waits 90 s); `console_action` stays a write because an action can change data |
-| `console_screenshot` (`readOnlyHint: true`) | **allow**: run at once, no veto | it only reads what the console shows (a PNG and the screen state) and changes nothing |
+| `console_screenshot` (`readOnlyHint: true`) | **allow**: run at once, no veto | it only reads what the console shows (a PNG, the screen state, the element map and its description) and changes nothing |
+| `console_right_click`, `console_expand`, `console_collapse`, `console_scroll`, `console_jump` (`readOnlyHint: true`) | **allow**: run at once, no veto | they open a menu, fold a row or move the screen; nothing is chosen and no data changes |
+| `console_click`, `console_double_click`, `console_context_menu`, `console_menu`, `console_type`, `console_key` | **veto** (90 s), skipped while a pass is on | a click or a key can change data; a control that deletes, stops or merges also needs `confirm=true` from the console itself, and approve / deny are refused whatever the policy says |
 | writes (`readOnlyHint: false`, `destructiveHint: false`) | **veto** (90 s), skipped while an `all` pass (or a narrow pass covering the call) is on | normal changes |
 | `destructiveHint: true` (`control_remove`, `amberx_remove`) | **confirm**; skipped while an `all` pass is on, unless the call is irreversible and the pass doesn't include irreversible | deletes; the runner applies the same rule to its confirm token |
 | `pass_grant`, `token_pass_grant` | **approval** (straight, not veto), forwarded as the signed approval above; never skipped | a pass must trace to Brett |

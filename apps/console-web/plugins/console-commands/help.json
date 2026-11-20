@@ -3,8 +3,8 @@
   "type": "help",
   "id": "console-commands-help",
   "name": "Console commands help",
-  "version": "0.1.0",
-  "description": "Help mode entries for the Console commands plugin (help@1): its settings tab, the open consoles list and the last commands.",
+  "version": "0.2.0",
+  "description": "Help mode entries for the Console commands plugin (help@1): its settings tab, the open consoles list, the last commands, and seeing and driving the console by voice.",
   "author": "Brett",
   "tags": [
     "help"
@@ -56,6 +56,24 @@
         "target": "browser-amberx-opens",
         "title": "Browser AmberX opens",
         "text": "Which browser AmberX uses when it wakes the console: Chrome, or the phone's default browser."
+      },
+      {
+        "target": "console-commands.voice",
+        "title": "Seeing and driving the console on a voice call",
+        "text": "On a voice call a picture never reaches Amber, so console_screenshot also answers in words: a literal description of the screen and a numbered list of everything that can be pressed, with where each one is. Say \"click Retry\", \"right-click that row\", \"expand row 3\", \"open the app menu, go to Settings\" or \"jump to the queue\" and Amber does it, then tells you what the screen shows now.",
+        "more": "The description covers headings, tabs, buttons, rows with their text and status, banners, errors, dialogs, open menus and numbers, with no guessing. The tools: console_click, console_right_click, console_double_click, console_context_menu, console_menu, console_expand, console_collapse, console_jump, console_scroll, console_type and console_key. Each takes words (a transcription slip still matches), a number from the list, a console-control address or x,y on the screenshot."
+      },
+      {
+        "target": "console-commands.voice.safety",
+        "title": "What Amber will not press by voice",
+        "text": "When several things match your words Amber gets the numbered choices and asks which one; she never guesses. A control that deletes, stops or merges is only pressed after she told you what it will do and sent the call again with confirm. Approve and deny are never pressed by a command: they stay your own tap.",
+        "more": "A click that can change data waits for the usual veto unless a pass is on; right-click, expand, collapse, scroll and jump run at once."
+      },
+      {
+        "target": "console-commands.describe",
+        "title": "Who describes the screenshot",
+        "text": "The console server sends the PNG to Claude through the AI assistant's own providers (the Anthropic key set up in Settings › Plugins › AI assistant; no other route), Opus by default. One description is one model call, counted in the AI assistant's usage.",
+        "more": "The model is describeModel in this plugin's server settings: claude-opus-5-5 or claude-fable-5-2. It gives up after 30 seconds (the list and the image still come, with a note) and the same unchanged screen is not described again for 2 minutes."
       }
     ]
   }

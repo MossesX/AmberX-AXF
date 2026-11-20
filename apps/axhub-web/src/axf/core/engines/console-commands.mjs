@@ -22,10 +22,15 @@
  *            the console runs the screen's own `<screen>.focus:<focus>` action when it has one.
  *            op screenshot: the console captures what it shows (the whole page, or the element a console-control@1 `address`
  *            or a CSS `selector` names) as a PNG no wider than CONSOLE_SHOT_MAX_WIDTH, uploads it, and acks with the screen
- *            state (consoleShotState); the server hands the image to the caller once and deletes it.
+ *            state (consoleShotState) and the numbered element map (console-screen.mjs); the server hands the image to
+ *            the caller once and deletes it.
+ *            op drive (build voice-console-control, Nov 20 2026): message.command = a console-screen@1 command (click, right-click,
+ *            menu path, expand, type, key … on a target named by words, a map number, an address or coordinates); the console
+ *            runs it on its own DOM and acks with what it did and the new element map. Never queued, like op control.
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
+import { CONSOLE_SCREEN_TOOLS } from './console-screen.mjs';
 import { CONTROL_WIRE, controlConfirmToken, controlConfirmValid, controlGranted, CONTROL_CONFIRM_TTL_MS } from './control-rules.mjs';
 
 export const CONSOLE_CATALOG_FRAME = 'console-catalog@1';
@@ -50,7 +55,8 @@ export const CONSOLE_HEARTBEAT_MS = 15_000;
 /** A command a console receives later than this after it was sent live is skipped (it went to a tab that was asleep). */
 export const CONSOLE_LATE_MS = 30_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
-export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh', 'console_screenshot'];
+export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh', 'console_screenshot',
+  ...CONSOLE_SCREEN_TOOLS];
 /** Console screenshots (op screenshot): the widest image a console sends, the largest upload the server takes, how long it keeps one. */
 export const CONSOLE_SHOT_MAX_WIDTH = 1600;
 export const CONSOLE_SHOT_MAX_BYTES = 4_000_000;
@@ -360,12 +366,14 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!['open', 'run', 'back', 'home', 'close', 'refresh', 'screenshot', 'control'].includes(m.op)) errors.push('op must be open, run, back, home, close, refresh, screenshot or control');
+  if (!['open', 'run', 'back', 'home', 'close', 'refresh', 'screenshot', 'control', 'drive'].includes(m.op)) errors.push('op must be open, run, back, home, close, refresh, screenshot, control or drive');
   if (m.op === 'screenshot' && m.selector && m.address) errors.push('screenshot takes a selector or an address, not both');
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
   // a console-control@1 command (spec/CONSOLE-CONTROL.md); the console's executor validates the command itself
   if (m.op === 'control' && !isObj(m.command)) errors.push('control needs a console-control@1 command');
+  // a console-screen@1 command (console-screen.mjs); the console's driver validates the command itself
+  if (m.op === 'drive' && !isObj(m.command)) errors.push('drive needs a console-screen@1 command');
   return errors;
 }
 

@@ -22,6 +22,11 @@
  * address or a CSS selector names) with ./capture, uploads the PNG to the server, then acks with the screen state
  * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees. It tells the server it is working
  * on it first (a capture takes seconds), works in a background tab too, and always answers within CAPTURE_TIMEOUT_MS.
+ * The ack also carries the numbered element map of the screen (./screen), in the screenshot's pixels.
+ *
+ * Driving the screen (op `drive`, console-screen@1): click, right-click, walk a menu, expand a row, type, press keys on
+ * a target named by words, a number from the last map, an address or coordinates (./screen); the ack says what
+ * happened and carries the new map.
  *
  * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
@@ -36,6 +41,7 @@ import { executeControl, describeAnswer, controlState } from '@console/control/e
 import { controlRegistry } from '@console/axf/react';
 import { CAPTURE_TIMEOUT_MS, capturePage, painted, within } from './capture';
 import { appMenu } from './menu';
+import { driveScreen, screenMap } from './screen';
 import './console-commands.css';
 import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, consoleShotState, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
@@ -182,7 +188,10 @@ async function runScreenshot(rt: AxfRuntime, m: ConsoleMessage, client: string):
   const up = await pluginFetch(FOLDER, `shot?client=${encodeURIComponent(client)}&id=${encodeURIComponent(m.id)}`, { method: 'POST', headers: { 'content-type': 'image/png' }, body: shot.blob });
   if (!up.ok) return [false, `the screenshot could not be uploaded (${up.status})`, {}];
   const state = consoleShotState(controlState(rt), hereOf(rt), { capture: shot.capture, width: shot.width, height: shot.height, scale: shot.scale });
-  return [true, `captured ${what || 'the screen'} (${shot.width}×${shot.height})`, { shot: true, width: shot.width, height: shot.height, scale: shot.scale, capture: shot.capture, state }];
+  // the element map in this image's pixels (a panel capture starts at the panel's corner)
+  const corner = el?.getBoundingClientRect();
+  const map = screenMap(rt, { scale: shot.scale, origin: corner ? { x: Math.max(0, corner.left), y: Math.max(0, corner.top) } : undefined });
+  return [true, `captured ${what || 'the screen'} (${shot.width}×${shot.height})`, { shot: true, width: shot.width, height: shot.height, scale: shot.scale, capture: shot.capture, state, elements: map.elements, viewport: map.viewport }];
 }
 
 /** Run one message; → [ok, what happened]. */
@@ -311,7 +320,7 @@ function ConsoleCommandsClient() {
         if (m?.$axf === 'console-hello@1') { catalogKey = ''; void announce(document.visibilityState === 'visible'); return; }
         if (!m || !('id' in m) || !m.id) return;
         const again = doneOf(m.id);
-        if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt), ...(m.op === 'control' ? { repeated: true } : {}) }).catch(() => undefined); return; }
+        if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt), ...(m.op === 'control' || m.op === 'drive' ? { repeated: true } : {}) }).catch(() => undefined); return; }
         // this tab was asleep when it was sent: the server has moved on (another console or a wake), so don't run it twice
         if (consoleMessageLate(m)) { markDone(m.id, [false, 'skipped: arrived too late']); void post('ack', { client: id, id: m.id, ok: false, skipped: true, message: 'arrived too late (the tab was asleep)', here: hereOf(rt) }).catch(() => undefined); return; }
         // inside a host, bring this console's frame to the front first, so Brett sees the command happen
@@ -323,6 +332,17 @@ function ConsoleCommandsClient() {
             markDone(m.id, [answer.ok, line]);
             if (answer.ok && answer.verb !== 'state' && answer.verb !== 'search' && answer.verb !== 'list' && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${line}`, 'info', 'Console control');
             void post('ack', { client: id, id: m.id, ok: answer.ok, message: line, result: answer, here: hereOf(rt), ...where() }).catch(() => undefined);
+          });
+          return;
+        }
+        // a console-screen@1 command: click / right-click / menu / expand / type / keys, answered with what happened and the new map
+        if (m.op === 'drive') {
+          void post('seen', { client: id, working: m.id }).catch(() => undefined); // a menu walk takes a few seconds
+          void driveScreen(rt, m.command).then((answer) => {
+            const line = answer.ok ? answer.did ?? answer.action : answer.message ?? 'failed';
+            markDone(m.id, [answer.ok, line]);
+            if (answer.ok && answer.action !== 'map' && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${line}`, 'info', 'Console screen');
+            void post('ack', { client: id, id: m.id, ok: answer.ok, message: line, result: { ...answer, state: consoleShotState(controlState(rt), hereOf(rt)) }, here: hereOf(rt), ...where() }).catch(() => undefined);
           });
           return;
         }
@@ -346,8 +366,13 @@ function ConsoleCommandsClient() {
       // a deploy restarts the server: come back within seconds, not after a minute of back-off
       { maxDelayMs: 10_000, idleTimeoutMs: STREAM_IDLE_MS },
     );
+    // the same driver on the page (the e2e test and the devtools console), like window.axfConsoleControl
+    const w = window as unknown as { axfConsoleScreen?: (command: unknown) => ReturnType<typeof driveScreen> };
+    const onPage = (command: unknown) => driveScreen(rt, command);
+    w.axfConsoleScreen = onPage;
     const stop = stream;
-    return () => { stop(); offState(); offFront(); offSettings(); clearTimeout(soon); clearInterval(beat); window.removeEventListener('focus', used); window.removeEventListener('online', onVisible); window.removeEventListener('pageshow', onShow); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
+    // only its own hook: a remount installs the next one before this cleanup runs
+    return () => { if (w.axfConsoleScreen === onPage) delete w.axfConsoleScreen; stop(); offState(); offFront(); offSettings(); clearTimeout(soon); clearInterval(beat); window.removeEventListener('focus', used); window.removeEventListener('online', onVisible); window.removeEventListener('pageshow', onShow); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
   }, [rt, on]);
   return null;
 }

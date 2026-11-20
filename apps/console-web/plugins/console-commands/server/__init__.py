@@ -43,15 +43,28 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
   POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}
-       · screenshot {selector?, address?}   (each takes `to`)
+       · screenshot {selector?, address?, describe?, question?}   (each takes `to`)
+  POST drive {action, target?, item?, path?, text?, keys?, dir?, to?, confirm?}   a console-screen@1 command (click, right_click,
+       double_click, menu, context_menu, expand, collapse, scroll, type, key, map) on the open console
 
 Screenshots (console.nav act screenshot): the console captures what it shows as a PNG (at most 1600 px wide), uploads it
 to `shot` and acks with the screen state. The answer carries `images` [{client, mime, data (base64), bytes, width,
 height}] and `state` (screen, tabs, dialog, selection, scroll). An upload lives in a temp folder (AXF_CONSOLE_SHOT_DIR,
 default <tmp>/axf-console-shots) only until the answer reads it, and is swept after SHOT_TTL_S whatever happens.
+The ack also carries the numbered element map (`elements`: every interactive element with its words, kind, state,
+console-control@1 address and box in the image's pixels). With `input.describe` the server also reads the image with a
+vision model through the console's model route (describe.py) and adds `description` (literal, no guessing; `question`
+asks one thing about the screen); it gives up after 30 s with a `describeNote` and keeps a description 2 minutes per image.
 A capture takes seconds, so the console says `seen {working: <id>}` as soon as it gets one and then has SHOT_WORK_S to ack
 before the next console is tried; an ack that lands after the call moved on (a late ack) still brings its image back.
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
+
+Driving the screen (control@1 target `console.screen`, console-screen@1, core/engines/console-screen.mjs; build
+voice-console-control, Nov 20 2026): act click | right_click | double_click | menu | context_menu | expand | collapse |
+scroll | type | key | map with input {target, item, path, text, keys, dir, to, confirm}. The target is words (fuzzy), a
+number from the last map, an address or x,y in screenshot pixels. Sent live as op `drive` (never queued); the console
+answers with what it did and the new map. Anything but `map` needs control.console.write; a control that deletes, stops
+or merges answers confirmation_required until input.confirm is true, and approve / deny are never pressed.
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
 """
@@ -77,12 +90,15 @@ from fastapi.responses import JSONResponse, StreamingResponse
 
 import plugin_services
 
+from . import describe as describer
+
 router = APIRouter()
 FOLDER = "console-commands"
 RUNNER = Path(__file__).resolve().parent.parent / "console.mjs"
 ROOT = RUNNER.parents[4]
 POLICY = ROOT / "apps" / "console-web" / "src" / "assets" / "uac-policy" / "console-access.json"
-STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "confirmation_required": 409, "not_implemented": 501, "unexpected": 500}
+STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "confirmation_required": 409, "not_implemented": 501, "unexpected": 500,
+          "ambiguous": 409, "unavailable": 503}
 CLIENT_RE = re.compile(r"^[A-Za-z0-9_-]{6,64}$")
 STALE_S = 45.0          # = CONSOLE_CLIENT_STALE_MS in core/engines/console-commands.mjs
 ACK_RESULT_MAX = 256_000  # bytes of a console-control answer kept from an ack (search hits, a long target list)
@@ -101,7 +117,9 @@ FALLBACK_KEY = "console:wake-fallback"
 WAKE_AGAIN_S = 45.0     # one wake per this long per user (Chrome takes a moment to open)
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 DATA_DIR = Path(os.environ.get("AXF_CONSOLE_COMMANDS_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
-DEFAULTS: dict[str, Any] = {"wake": True, "ttlS": 120, "browser": "chrome"}
+DEFAULTS: dict[str, Any] = {"wake": True, "ttlS": 120, "browser": "chrome", "describeModel": "claude-opus-5-5"}
+DRIVE_WORK_S = 20.0         # a menu walk or a context-menu pick takes a few seconds: how long a console that said it is on it gets
+SCREEN_ACTIONS = ("map", "click", "right_click", "double_click", "menu", "context_menu", "expand", "collapse", "scroll", "type", "key")  # = CONSOLE_SCREEN_ACTIONS
 SHOT_DIR = Path(os.environ.get("AXF_CONSOLE_SHOT_DIR") or Path(tempfile.gettempdir()) / "axf-console-shots")
 SHOT_MAX_BYTES = 4_000_000  # = CONSOLE_SHOT_MAX_BYTES in core/engines/console-commands.mjs
 SHOT_TTL_S = 120.0          # = CONSOLE_SHOT_TTL_MS: an upload nobody read is deleted after this
@@ -334,6 +352,8 @@ def clean_settings(raw: dict[str, Any]) -> dict[str, Any]:
         pass
     if raw.get("browser") in BROWSERS:
         out["browser"] = raw["browser"]
+    if raw.get("describeModel") in describer.DESCRIBE_MODELS:
+        out["describeModel"] = raw["describeModel"]
     return out
 
 
@@ -628,7 +648,10 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     connected: queued, and the call waits up to `wait` seconds. A screenshot answer also carries `images` and `state`."""
     r = _run(command, grants, by, audience, wait)
     # every way a screenshot can come back (live, after retry, a late ack, from the queue) carries the image
-    return attach_shots(r) if _is_shot(command or {}) and (r.get("sent") or r.get("delivered")) else r
+    if not (_is_shot(command or {}) and (r.get("sent") or r.get("delivered"))):
+        return r
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    return attach_shots(r, describe=inp.get("describe") is True, question=str(inp.get("question") or ""))
 
 
 def _run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None) -> dict[str, Any]:
@@ -637,6 +660,8 @@ def _run(command: dict[str, Any], grants: list[str] | None = None, by: str = "",
     by = by or str(command.get("by") or "")
     if command.get("target") == "console.control":
         return control_target(command, grants, by, audience)
+    if command.get("target") == "console.screen":
+        return screen_target(command, grants, by, audience)
     if command.get("target") == "console.pluginsettings":
         return plugin_settings_target(command, grants, by, audience)
     if command.get("target") == "console.toolbars":
@@ -751,24 +776,26 @@ async def _body(request: Request) -> dict[str, Any]:
         return {}
 
 
-def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent", op: str = "control") -> dict[str, Any]:
     """A console-control@1 command (spec/CONSOLE-CONTROL.md) for the open console: sent as console-command@1 op
     `control`, answered with the console's own envelope (result + live state) and `client` / `delivery`. Nothing is
-    queued: no console open answers `unavailable` with `openUrl` (open the console, then send it again)."""
-    mid = "ctl-" + os.urandom(8).hex()
-    message = {"$axf": "console-command@1", "id": mid, "op": "control", "command": command, "by": by or "api", "at": _iso(_now())}
+    queued: no console open answers `unavailable` with `openUrl` (open the console, then send it again).
+    op `drive` sends a console-screen@1 command the same way (the console's screen driver answers)."""
+    frame = "console-screen@1" if op == "drive" else "console-control@1"
+    mid = ("drv-" if op == "drive" else "ctl-") + os.urandom(8).hex()
+    message = {"$axf": "console-command@1", "id": mid, "op": op, "command": command, "by": by or "api", "at": _iso(_now())}
     now = _now()
     with _lock:
         live = [c for c in _clients.values() if c["audience"] == audience and _ready(c) and _live(c, now)]
     live.sort(key=lambda c: (c.get("front", True) is False, -float(c.get("lastUsed") or 0)))
-    no_console = {"$axf": "console-control@1", "ok": False, "code": "unavailable", "because": "no console open",
+    no_console = {"$axf": frame, "ok": False, "code": "unavailable", "because": "no console open",
                   "message": "no console open: open the console (openUrl), then send the command again", "openUrl": CONSOLE_URL + "/"}
     if to == "all":
         if not live:
             return no_console
         acks = deliver([c["id"] for c in live], message, audience)
         results = [a.get("result") or {"ok": False, "code": "unavailable", "message": a.get("message") or "no answer", "client": a.get("client")} for a in acks]
-        return {"$axf": "console-control@1", "ok": any(r.get("ok") for r in results), "verb": command.get("verb"), "results": results, "delivery": {"how": "all", "clients": [c["id"] for c in live]}}
+        return {"$axf": frame, "ok": any(r.get("ok") for r in results), "verb": command.get("verb") or command.get("action"), "results": results, "delivery": {"how": "all", "clients": [c["id"] for c in live]}}
     if to != "recent":
         with _lock:
             c = _clients.get(to)
@@ -780,17 +807,58 @@ def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: st
         if not live:
             return no_console
         order = _turn_order(audience, live[0]["id"], str(live[0].get("app") or "console-web"))
-    tried, acks = try_in_turn(order, message, audience)
+    tried, acks = try_in_turn(order, message, audience, work=DRIVE_WORK_S if op == "drive" else 0.0)
     with _lock:
         _late.pop(mid, None)  # a control command is never queued: a late ack has nothing to stop
     who = next((c for c in tried if c in acks), "")
     if not who:
         return {**no_console, "message": f"no console answered (tried {', '.join(tried)}): open the console (openUrl), then send the command again", "tried": tried}
     a = acks[who]
-    res = a.get("result") if isinstance(a.get("result"), dict) else {"$axf": "console-control@1", "ok": bool(a.get("ok")), **({} if a.get("ok") else {"code": "unexpected"}), "message": a.get("message") or ""}
+    res = a.get("result") if isinstance(a.get("result"), dict) else {"$axf": frame, "ok": bool(a.get("ok")), **({} if a.get("ok") else {"code": "unexpected"}), "message": a.get("message") or ""}
     out = {**res, "client": who, "delivery": {"how": "live" if who == tried[0] else "after retry", "tried": tried}}
-    _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.control", "path": command.get("address") or "", "action": command.get("verb"), "ok": bool(out.get("ok")),
+    _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.screen" if op == "drive" else "console.control",
+                        "path": str(command.get("address") or command.get("target") or command.get("path") or command.get("keys") or ""),
+                        "action": command.get("verb") or command.get("action"), "ok": bool(out.get("ok")),
                         "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": out["delivery"]["how"], "delivered": [{"client": who, "ok": bool(out.get("ok")), "message": a.get("message", "")}]})
+    return out
+
+
+def _granted(grants: list[str], perm: str) -> bool:
+    """`*`, the permission itself, or a wildcard above it (`control.*`, `control.console.*`)."""
+    if "*" in grants or perm in grants:
+        return True
+    parts = perm.split(".")
+    return any(".".join(parts[:i]) + ".*" in grants for i in range(1, len(parts)))
+
+
+def screen_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.screen` (console-screen@1): act <action> with input = the command's fields. Reading the map
+    needs control.console.read, everything else control.console.write. The console itself refuses a control that only
+    Brett presses and asks for input.confirm before one that deletes, stops or merges. → the console's answer as `data`
+    (did, target, elements, viewport, state), with its code and message lifted on a failure."""
+    op, action = str(command.get("op") or ""), str(command.get("action") or "")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+
+    def fail(code: str, message: str, **more: Any) -> dict[str, Any]:
+        return {"$axf": "control@1", "ok": False, "target": "console.screen", "op": op, "code": code, "message": message, **more}
+
+    if op == "get":
+        action = "map"
+    elif op != "act" or action not in SCREEN_ACTIONS:
+        return fail("invalid", f"console.screen takes get, or act with one of {', '.join(SCREEN_ACTIONS)}")
+    need = "control.console.read" if action == "map" else "control.console.write"
+    if not _granted(grants, need):
+        return fail("denied", f"{action} on the console screen needs {need}", requires=need)
+    body = {"$axf": "console-screen@1", "action": action, **{k: inp[k] for k in ("target", "item", "path", "text", "keys", "dir", "to", "submit", "scale") if inp.get(k) not in (None, "")}}
+    if "to" in body and action != "scroll":
+        body.pop("to")  # elsewhere `to` is the delivery, not a scroll target
+    if inp.get("confirm") is True or command.get("confirm") is True:
+        body["confirm"] = True
+    delivery = str(inp.get("client") or (inp.get("to") if action != "scroll" else "") or "recent")
+    r = control(body, by or "control", audience, delivery, op="drive")
+    out = {"$axf": "control@1", "ok": bool(r.get("ok")), "target": "console.screen", "op": op, "action": action, "data": r}
+    if not r.get("ok"):
+        out.update({k: r[k] for k in ("code", "message", "openUrl", "candidates") if k in r})
     return out
 
 
@@ -992,12 +1060,16 @@ def _is_shot(command: dict[str, Any]) -> bool:
     return command.get("target") == "console.nav" and command.get("op") == "act" and command.get("action") == "screenshot"
 
 
-def attach_shots(r: dict[str, Any]) -> dict[str, Any]:
+def attach_shots(r: dict[str, Any], describe: bool = False, question: str = "") -> dict[str, Any]:
     """A screenshot answer: each console's upload read once into `images` (base64) and deleted, the first console's screen
-    state as `state`. A console that acked without an image says why in its ack message."""
+    state as `state` and its numbered element map as `elements`. A console that acked without an image says why in its
+    ack message. `describe`: the first image is read by a vision model (describe.py) into `description`, with
+    `describedBy` (model, profile, tokens, ms, cached); no description in time → `describeNote`, image and map still here."""
     mid = str((r.get("sent") or {}).get("id") or "")
     images: list[dict[str, Any]] = []
     state: dict[str, Any] | None = None
+    elements: list[Any] | None = None
+    first_png = b""
     for a in r.get("delivered") or []:
         if not isinstance(a, dict) or not a.get("client"):
             continue
@@ -1015,6 +1087,12 @@ def attach_shots(r: dict[str, Any]) -> dict[str, Any]:
                 pass
         if state is None and isinstance(res.get("state"), dict):
             state = res["state"]
+        if elements is None and isinstance(res.get("elements"), list):
+            elements = res["elements"]
+            if isinstance(res.get("viewport"), dict):
+                r = {**r, "viewport": res["viewport"]}
+        if a.get("ok") and data and not first_png:
+            first_png = data
         if a.get("ok") and data:
             images.append({"client": a["client"], "mime": "image/png", "data": base64.b64encode(data).decode(), "bytes": len(data),
                            **{k: res[k] for k in ("width", "height", "scale", "capture") if k in res}})
@@ -1024,6 +1102,17 @@ def attach_shots(r: dict[str, Any]) -> dict[str, Any]:
     out = {**r, "images": images}
     if state is not None:
         out["state"] = state
+    if elements is not None:
+        out["elements"] = elements
+    if describe and first_png:
+        d = describer.describe(first_png, question, state, settings())
+        out["description"] = d.get("description") or ""
+        out["describedBy"] = {k: d[k] for k in ("model", "profile", "usage", "ms", "cached") if k in d}
+        if d.get("note"):
+            out["describeNote"] = d["note"]
+    elif describe:
+        out["description"] = ""
+        out["describeNote"] = "no description: no image came back"
     if r.get("ok") and not r.get("queued"):
         out["status"] = _status_of(out)
         if not images and out["status"] != "pending":
@@ -1193,10 +1282,20 @@ async def shot(request: Request, client: str = "", id: str = "") -> dict[str, An
 
 @router.post("/screenshot")
 async def screenshot(request: Request) -> JSONResponse:
-    """Capture what the open console shows: {selector?, address?, to?} → images + state."""
+    """Capture what the open console shows: {selector?, address?, describe?, question?, to?} → images + state + elements
+    (+ description when describe is true)."""
     b = await _body(request)
     return await go(request, {"op": "act", "target": "console.nav", "path": "here", "action": "screenshot",
-                              **_to(b, selector=b.get("selector"), address=b.get("address")), **_audit(b)})
+                              **_to(b, selector=b.get("selector"), address=b.get("address"), describe=True if b.get("describe") is True else None, question=b.get("question")), **_audit(b)})
+
+
+@router.post("/drive")
+async def drive(request: Request) -> JSONResponse:
+    """Drive the open console's screen: {action, target?, item?, path?, text?, keys?, dir?, to?, submit?, confirm?, client?}
+    (console-screen@1). `to` is the scroll target here; `client` picks the console."""
+    b = await _body(request)
+    inp = {k: b[k] for k in ("target", "item", "path", "text", "keys", "dir", "to", "submit", "confirm", "client", "scale") if b.get(k) not in (None, "")}
+    return await go(request, {"op": "act", "target": "console.screen", "action": str(b.get("action") or ""), "input": inp, **_audit(b)})
 
 
 @router.get("/clients")
@@ -1364,6 +1463,10 @@ class ConsoleCommands:
     def control(self, command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
         """A console-control@1 command for the open console → its answer (result + live state), or unavailable + openUrl."""
         return control(command, by, audience, to)
+
+    def drive(self, command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+        """A console-screen@1 command for the open console → what it did and the new element map, or unavailable + openUrl."""
+        return control(command, by, audience, to, op="drive")
 
     def queue_for_owner(self, command: dict[str, Any], grants: list[str], by: str = "") -> dict[str, Any]:
         e = queue_for_owner(command, grants, by)
