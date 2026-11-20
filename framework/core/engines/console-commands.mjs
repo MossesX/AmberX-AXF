@@ -50,7 +50,7 @@ export const CONSOLE_HEARTBEAT_MS = 15_000;
 /** A command a console receives later than this after it was sent live is skipped (it went to a tab that was asleep). */
 export const CONSOLE_LATE_MS = 30_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
-export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh', 'console_screenshot'];
+export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh', 'console_screenshot', 'console_click_text'];
 /** Console screenshots (op screenshot): the widest image a console sends, the largest upload the server takes, how long it keeps one. */
 export const CONSOLE_SHOT_MAX_WIDTH = 1600;
 export const CONSOLE_SHOT_MAX_BYTES = 4_000_000;

@@ -6,7 +6,8 @@
  *
  * Commands reach it over the console-command@1 relay (the console-commands plugin's stream: op `control`), so REST,
  * MCP, the CLI and voice all land here the same way. In the page it is `executeControl(rt, cmd)` and
- * `window.axfConsoleControl(cmd)` (the e2e tests and the devtools console).
+ * `window.axfConsoleControl(cmd)` (the e2e tests and the devtools console); `window.axfScreenMap()` is the screen map a
+ * screenshot carries (every clickable thing with its words and address).
  *
  * What the registry does not know yet (a tab of a screen that is not open, a row of a grid on another screen) is
  * reached by opening the screen the static inventory names for the address, then asking again.
@@ -16,7 +17,7 @@ import {
   CONSOLE_CONTROL_FRAME, CONSOLE_CONTROL_WIRE, consoleControlFailure, normalizeConsoleControl, parseAddress,
   type ConsoleControlResult, type ScrollState,
 } from '../axf/core/engines/console-control';
-import { controlRegistry } from '../axf/react';
+import { controlRegistry, screenMap, type ScreenMap } from '../axf/react';
 import { inventoryViewLabel, inventoryViewOf } from './inventory';
 import { loadedItemFor } from './search';
 
@@ -146,11 +147,12 @@ export function describeAnswer(a: ControlAnswer): string {
 /** Expose the executor on the page (tests, devtools). Returns a remover. */
 export function installControlExecutor(rt: AxfRuntime): () => void {
   if (typeof window === 'undefined') return () => {};
-  const w = window as unknown as { axfConsoleControl?: (cmd: unknown) => Promise<ControlAnswer>; axfConsoleControlState?: () => ControlStateSnapshot };
+  const w = window as unknown as { axfConsoleControl?: (cmd: unknown) => Promise<ControlAnswer>; axfConsoleControlState?: () => ControlStateSnapshot; axfScreenMap?: () => ScreenMap };
   w.axfConsoleControl = (cmd) => executeControl(rt, cmd);
   w.axfConsoleControlState = () => controlState(rt);
+  w.axfScreenMap = () => screenMap(rt); // what a screenshot says can be clicked (words, place, address)
   const off = rt.subscribe(() => { if (focused && focused.view !== rt.getState().view) focused = null; });
-  return () => { off(); delete w.axfConsoleControl; delete w.axfConsoleControlState; };
+  return () => { off(); delete w.axfConsoleControl; delete w.axfConsoleControlState; delete w.axfScreenMap; };
 }
 
 /** A failure envelope with state, for a relay message that could not be run at all. */

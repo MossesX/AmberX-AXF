@@ -510,6 +510,7 @@ eq(awake_got[-1].get("focus"), "queue", "input.focus")
 cc.SHOT_DIR = Path(tempfile.mkdtemp()) / "shots"
 PNG = b"\x89PNG\r\n\x1a\n" + b"\0" * 32
 STATE = {"screen": "settings", "screenLabel": "Settings", "tabs": {"view:settings/tab:settings.tabs": "appearance"}, "dialog": "asset-json", "selection": "grid:queue/row:b1", "scroll": {"top": 120, "fraction": 0.25}}
+SHOT_MAP = {"view": "settings", "width": 800, "height": 600, "items": [{"address": "view:settings/button:seen.save", "kind": "button", "role": "button", "text": "Save", "x": 10, "y": 10, "w": 60, "h": 30, "on": "screen"}]}
 shot_got: list[dict] = []
 shot_mode = {"upload": True}
 
@@ -534,7 +535,7 @@ def shot_console(cid: str) -> None:
                     up = client.post(f"/api/console/shot?client={cid}&id={m['id']}", content=PNG, headers={"content-type": "image/png"})
                     shot_mode["upload_status"] = up.status_code
                 client.post("/api/console/ack", json={"client": cid, "id": m["id"], "ok": True, "message": "captured the screen (800×600)",
-                                                      "result": {"shot": True, "width": 800, "height": 600, "scale": 1, "capture": m.get("address") or m.get("selector") or "page", "state": STATE}})
+                                                      "result": {"shot": True, "width": 800, "height": 600, "scale": 1, "capture": m.get("address") or m.get("selector") or "page", "state": STATE, "map": SHOT_MAP}})
     threading.Thread(target=loop, daemon=True).start()
 
 
@@ -550,6 +551,7 @@ import base64  # noqa: E402
 eq(base64.b64decode(j["images"][0]["data"]), PNG, "the answer carries the PNG")
 eq((j["images"][0]["client"], j["images"][0]["width"], j["images"][0]["mime"]), ("shot-0001", 800, "image/png"), "with its console, size and type")
 eq(j["state"], STATE, "and the screen state: screen, tabs, dialog, selection, scroll")
+eq(j.get("map"), SHOT_MAP, "and the screen map: what can be clicked, with words and addresses")
 eq(list(cc.SHOT_DIR.glob("*")), [], "the upload is deleted once the answer has read it")
 r = client.post("/api/console/screenshot", json={"address": "view:settings", "selector": "#main"})
 eq(r.status_code, 422, "a selector and an address together are refused")

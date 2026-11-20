@@ -994,10 +994,12 @@ def _is_shot(command: dict[str, Any]) -> bool:
 
 def attach_shots(r: dict[str, Any]) -> dict[str, Any]:
     """A screenshot answer: each console's upload read once into `images` (base64) and deleted, the first console's screen
-    state as `state`. A console that acked without an image says why in its ack message."""
+    state as `state` and its screen map (what can be clicked, with words and addresses) as `map`. A console that acked
+    without an image says why in its ack message."""
     mid = str((r.get("sent") or {}).get("id") or "")
     images: list[dict[str, Any]] = []
     state: dict[str, Any] | None = None
+    screen_map: dict[str, Any] | None = None
     for a in r.get("delivered") or []:
         if not isinstance(a, dict) or not a.get("client"):
             continue
@@ -1015,6 +1017,8 @@ def attach_shots(r: dict[str, Any]) -> dict[str, Any]:
                 pass
         if state is None and isinstance(res.get("state"), dict):
             state = res["state"]
+        if screen_map is None and isinstance(res.get("map"), dict):
+            screen_map = res["map"]
         if a.get("ok") and data:
             images.append({"client": a["client"], "mime": "image/png", "data": base64.b64encode(data).decode(), "bytes": len(data),
                            **{k: res[k] for k in ("width", "height", "scale", "capture") if k in res}})
@@ -1024,6 +1028,8 @@ def attach_shots(r: dict[str, Any]) -> dict[str, Any]:
     out = {**r, "images": images}
     if state is not None:
         out["state"] = state
+    if screen_map is not None:
+        out["map"] = screen_map
     if r.get("ok") and not r.get("queued"):
         out["status"] = _status_of(out)
         if not images and out["status"] != "pending":

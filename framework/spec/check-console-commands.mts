@@ -161,7 +161,7 @@ ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action',
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
-eq(CONSOLE_TOOLS.length, 10, 'ten MCP shortcut tools');
+eq(CONSOLE_TOOLS.length, 11, 'eleven MCP shortcut tools');
 
 /* ---- focus on a screen (console-commands-reliable, Nov 11 2026): a tab or an item after the screen's name ---- */
 {
@@ -215,6 +215,7 @@ eq(CONSOLE_TOOLS.length, 10, 'ten MCP shortcut tools');
 /* ---- screenshots (console.nav act screenshot) ---- */
 {
   ok(CONSOLE_TOOLS.includes('console_screenshot'), 'console_screenshot is a console MCP tool');
+  ok(CONSOLE_TOOLS.includes('console_click_text'), 'console_click_text (click by the words on the screen) is a console MCP tool');
   ok(CONSOLE_SHOT_MAX_WIDTH <= 1600, 'screenshots stay small');
   const shot = (input?: Record<string, unknown>) => runConsoleCommand({ op: 'act', target: 'console.nav', path: 'here', action: 'screenshot', ...(input ? { input } : {}) }, ctx);
   const w = shot();

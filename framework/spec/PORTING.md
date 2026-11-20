@@ -289,6 +289,13 @@ Web only (Android on hold, build `console-screenshot`), Kotlin twins when the An
 `normalizeHere` (`core/engines/console-commands.mjs`, `core/engines/control-rules.mjs`). A Compose console would capture its
 own view (a `PixelCopy` of the window or one composable) instead of the DOM capture in the console-commands plugin.
 
+## Deferred: screen map and click by words (Nov 20 2026)
+Web only (Android on hold, build `screen-voice-drive`), Kotlin twins when the Android side resumes: the screen map a console
+sends with a screenshot (`react/screenMap.ts`: `screenMap`, `screenMapOrder`, `screenMapText`, `seenTargetId`, `screenMapRole`,
+the `seen.` button targets, `ControlRegistry.rendered` / `registerAll`) and `console_click_text` in `CONSOLE_TOOLS`
+(`core/engines/console-commands.mjs`). A Compose console would walk its semantics tree (clickable nodes, their text and bounds)
+instead of the DOM. The description, the matching and the click command run on the console server and need no twin.
+
 ## Deferred: single settings as console fields (Nov 13 2026)
 Web only (Android on hold, build `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`), Kotlin twins when
 the Android side resumes: catalog kind `field` (`type`, `value`, `options`, `min`, `max`, `secret`), `consoleResolveField`,

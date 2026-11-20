@@ -334,6 +334,7 @@ jobs:
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
             npx -y tsx framework/spec/check-control.mts                # control@1: one command schema for tokens, AmberX entities and the planner: registry, gate (roles × ops), confirm flow, errors, projections, snapshot, fixture
             npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages, screen focus, late commands
+            npx -y tsx framework/spec/check-screen-map.mts            # screen map: reading order, seen.<words> targets, on screen / scroll to see / covered (jsdom), press through console-control@1
             npx -y tsx framework/spec/check-console-control.mts        # console-control@1: address grammar, verbs, resolve against a target snapshot, search, scroll maths, wire codes, schemas + snapshot + fixture current
             npx -y tsx framework/spec/check-orchestrator-focus.mts  # a build asked for by a console command: kept for the tab that mounts later, settled once shown, its row selector  # axf-plugin:build-orchestrator
             node framework/spec/check-nightly-deploy.mjs
@@ -409,6 +410,7 @@ jobs:
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
+            python apps/console-web/server/tests/test_screen_describe.py  # screen descriptions + click by words: clickable list, description (fake model: cache, 30 s give-up, cost), matching, console_screenshot / console_click_text
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate

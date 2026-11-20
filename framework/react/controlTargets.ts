@@ -90,6 +90,8 @@ export const CONTROL_SCOPE_ATTR = 'data-axf-scope';
 export const SETTINGS_VIEW_ADDRESS = 'view:settings';
 export const SETTINGS_TAB_ROW = 'settings.tabs';
 export const SETTINGS_SUBTAB_ROW = 'settings.subtabs';
+/** Id prefix of the buttons a screen map registers for controls that have no address of their own (screenMap.ts). */
+export const SEEN_TARGET_PREFIX = 'seen.';
 /** The scroll container of the main pane. */
 export const MAIN_SCROLL_ADDRESS = 'scroll:main';
 
@@ -128,6 +130,30 @@ export class ControlRegistry {
   private searcher: ControlSearcher | null = null;
   setSearcher(s: ControlSearcher | null): void { this.searcher = s; }
   get hasScroller(): boolean { return !!this.scroller; }
+
+  /** Register several targets with one change notice (a screen map's on-screen buttons). Returns a remover for all of them. */
+  registerAll(defs: ControlTargetDef[], scope?: string | null): () => void {
+    const added: Entry[] = [];
+    for (const def of defs) {
+      try { const parsed = parseAddress(composeAddress(scope, def.address)); const entry: Entry = { def, address: formatAddress(parsed), parsed }; this.entries.set(entry.address, entry); added.push(entry); } catch { /* a refused address is left out */ }
+    }
+    if (added.length) this.changed();
+    return () => { let n = 0; for (const e of added) if (this.entries.get(e.address) === e) { this.entries.delete(e.address); n++; } if (n) this.changed(); };
+  }
+
+  /** Every target that draws an element in the document right now, with that element (what a screen map places). */
+  rendered(): { target: ControlTarget; el: Element }[] {
+    const out: { target: ControlTarget; el: Element }[] = [];
+    const seen = new Set<string>();
+    for (const e of [...this.entries.values(), ...this.derivedSettings()]) {
+      if (seen.has(e.address) || e.def.virtual) continue;
+      seen.add(e.address);
+      let el: Element | null = null;
+      try { el = e.def.element?.() ?? null; } catch { /* an element getter may run before render */ }
+      if (el?.isConnected) out.push({ target: toTarget(e), el });
+    }
+    return out;
+  }
 
   /** One registered entry by full address, else null. */
   entry(address: string): Entry | null { return this.entries.get(address) ?? null; }
@@ -623,6 +649,7 @@ export function installControlRegistry(rt: AxfRuntime): () => void {
   const offs: (() => void)[] = [];
   offs.push(rt.search.add('axf.control-targets', () => reg.snapshot().targets
     .filter((t) => t.kind !== 'view' && t.kind !== 'setting' && t.kind !== 'tab' && t.kind !== 'panel' && t.kind !== 'function') // those kinds are listed by their own providers
+    .filter((t) => !t.address.includes(`/button:${SEEN_TARGET_PREFIX}`)) // a screen map's on-screen buttons live only as long as the screen does
     .map((t) => ({ id: `target:${t.address}`, kind: 'target', label: t.label, detail: t.detail ?? targetKindLabel(t.kind), icon: t.icon ?? 'crosshair', keywords: [...(t.keywords ?? []), t.address], ...(t.requires ? { requires: t.requires } : {}), focus: { kind: 'control', address: t.address } }))));
   const act = (spec: unknown) => { void reg.run(spec).then((r) => { if (!r.ok) rt.terminal.warn('control', `${r.code}: ${r.message}`); }); return true; };
   offs.push(rt.actions.register(CONTROL_ACTION, (args) => { void reg.run_text(args.join(':')); return true; }, { label: 'Console control command (console-control@1)', params: true, module: 'axf.framework' }));

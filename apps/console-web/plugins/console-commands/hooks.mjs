@@ -19,6 +19,6 @@ export async function checks(ctx) {
   return [
     { id: 'data-folder', ok: existsSync(ctx.dataDir), detail: ctx.dataDir },
     { id: 'contract', ok: targets.length === 6, detail: `${targets.length} console targets: ${targets.join(', ')}` },
-    { id: 'mcp-tools', ok: CONSOLE_TOOLS.length === 8, detail: CONSOLE_TOOLS.join(', ') },
+    { id: 'mcp-tools', ok: CONSOLE_TOOLS.length === 11, detail: CONSOLE_TOOLS.join(', ') },
   ];
 }

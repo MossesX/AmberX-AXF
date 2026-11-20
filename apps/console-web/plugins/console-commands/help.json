@@ -15,7 +15,7 @@
       {
         "target": "console-commands",
         "title": "Console commands settings",
-        "text": "Lets a Claude session (Amber), the REST API or the CLI open screens, dialogs and settings tabs in this console, run its actions and go back. Opening only moves the screen; an action that changes data still needs its own permission, and one that deletes or resets needs a confirm."
+        "text": "Lets a Claude session (Amber), the REST API or the CLI open screens, dialogs and settings tabs in this console, run its actions and go back. Opening only moves the screen; an action that changes data still needs its own permission, and one that deletes or resets needs a confirm. A session can also ask what this console shows: it gets a picture, a written description and a numbered list of everything that can be clicked, and can click one by the words on it (on a voice call: \"click Pending\")."
       },
       {
         "target": "console-commands.enabled",

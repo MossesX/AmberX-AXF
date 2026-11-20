@@ -17,6 +17,7 @@ any grid row or build step pulled into focus, all by address. Build
 | Console actions | `apps/console-web/src/actions/console-control.ts` (`console.control.open/focus/scroll/search/state/press/set/plugin`), `voice-control.ts` |
 | Server | `apps/console-web/server/console_control.py` (inventory, search, plugins, voice twin), `console_control_api.py` (REST, guards, audit, rate limit) |
 | MCP | `console_control_targets`, `_state`, `_do`, `_search`, `_focus`, `_scroll`, `_plugin`, `_voice`; `console_open` / `console_show` take an address |
+| See and click by words (voice) | `framework/react/screenMap.ts` (the screen map a screenshot carries: every clickable thing, words, place, address; plain controls get `button:seen.<words>` targets), `apps/console-web/server/screen_describe.py` (numbered clickable list, description through `axf.llm@1`, matching), MCP `console_screenshot {describe, question}` and `console_click_text {text, nth, kind, confirm}`; spec in `framework/spec/CONTROL.md` → "Seeing and clicking by words" |
 | CLI | `axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice … [--json]` (`framework/cli/console-control.mjs`) |
 | Checks | `framework/cli/check-console-control.mjs` (ratchet `framework/spec/console-control-baseline.json`), `server/tests/test_console_control.py`, `scripts/console-control.e2e.mjs`, `scripts/console-control-parity.mjs` |
 

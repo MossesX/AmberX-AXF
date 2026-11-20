@@ -62,7 +62,11 @@ Chat and voice sessions (claude.ai, Amber): whenever you act, post one short lin
 live in the Terminal's sessions nav and jumps in from there.
 
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
-console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
+console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console.
+
+Voice calls: images in tool results do not reach you. To know what Brett's console shows, call `console_screenshot` and
+read its first text part (a description of the screen, then a numbered list of everything clickable). When he says
+"click <words>" or "click number 4", call `console_click_text`; it answers with the new screen the same way."""
 
 
 def _compact(f: dict[str, Any]) -> dict[str, Any]:
@@ -954,7 +958,7 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
 CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh",
-                 "console_screenshot")
+                 "console_screenshot", "console_click_text")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -1045,15 +1049,75 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         to="all" reloads every open console. Reloading loses nothing saved; an unsaved form on screen is gone."""
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": "refresh", "input": inp(to, **({"hard": True} if hard else {}))})
 
+    async def shoot(to: str, selector: str = "", address: str = "") -> dict[str, Any]:
+        return await go({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": inp(to, selector=selector.strip(), address=address.strip())})
+
     @mcp.tool(annotations=READ)
-    async def console_screenshot(selector: str = "", address: str = "", to: Delivery = "recent") -> CallToolResult:
-        """See what Brett's open Dev Console shows: a PNG of the screen (at most 1600 px wide) plus its state (screen id
-        and label, open tab of each tab row, open dialog, selection, scroll). Whole page by default; one panel or dialog
-        with `address` (a console-control@1 address: "view:settings/panel:appearance", "grid:queue") or `selector` (CSS).
-        Read-only: nothing on screen changes. `status` as console_open: delivered, pending (no console answered yet: it is
-        captured when one opens) or failed. to="all" captures every open console."""
-        r = await go({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": inp(to, selector=selector.strip(), address=address.strip())})
-        return shot_result(r)
+    async def console_screenshot(selector: str = "", address: str = "", to: Delivery = "recent", describe: bool = True, question: str = "") -> CallToolResult:
+        """See what Brett's open Dev Console shows, in words as well as pixels. Made for voice calls, where the image
+        never reaches you: the FIRST text part is everything you need to tell Brett what is on his screen and to click it.
+        It holds (1) a literal description written from the image by a Claude vision model (screen name, headings, tabs,
+        buttons, labels, rows with their status, banners, errors, dialogs, numbers; "unreadable" where it cannot read),
+        and (2) the clickable list: every tab, button, row, link, menu item and input the console draws, numbered in
+        reading order (top to bottom, left to right) with its exact words, its kind and its console-control@1 address,
+        then the ones scrolled out of sight under "Scroll to see". Click one with console_click_text (its words or number).
+        `question` = something to answer about the screen ("is the build failing?"): answered first. describe=false skips
+        the model call (the clickable list still comes). The description gives up after 30 s (image and list still
+        returned, with a note) and is cached for 2 minutes per image. Also returned: the PNG (at most 1600 px wide) and
+        JSON with `description`, `clickable`, `describedBy` (model, seconds, cost) and the screen state. Whole page by
+        default; one panel or dialog with `address` ("view:settings/panel:appearance", "grid:queue") or `selector` (CSS).
+        Read-only: nothing on screen changes. `status`: delivered, pending (no console answered yet) or failed.
+        to="all" captures every open console (the first one is described)."""
+        r = await shoot(to, selector, address)
+        return await shot_answer(r, describe=describe, question=question, to=to)
+
+    @mcp.tool(annotations=WRITE)
+    async def console_click_text(text: str, nth: int = 0, kind: str = "", confirm: bool = False, to: Delivery = "recent") -> CallToolResult:
+        """Click something in Brett's open Dev Console by the words it shows. Made for voice: Brett says "click Pending"
+        or "click that Retry button" and you pass text="Pending" / text="Retry", kind="button". `text` = the visible
+        words (case does not matter; a small transcription slip still matches) or a number from the last
+        console_screenshot / console_click_text list ("4", "click 4"). `kind` narrows it: tab, button, row, step, link,
+        menu item, input, switch. One match: it is clicked through console-control (a button is pressed, a tab opened, a
+        row focused and expanded) and the answer is the NEW screen, described the same way as console_screenshot. Several
+        matches: nothing is clicked and you get them numbered: ask Brett which, then call again with `nth` (1 = the first
+        of those matches). No match: the nearest words on the screen. A button that deletes or resets answers
+        confirmation_required: tell Brett what it will do, then call again with confirm=true. Approve / deny buttons are
+        never pressed for him."""
+        import screen_describe as sd  # noqa: PLC0415 — beside this module
+        said = text.strip()
+        if not said:
+            raise ToolError("validation: text is the words to click, or a number from the last list")
+        before = await shoot(to)
+        if not before.get("images") and not isinstance(before.get("map"), dict):
+            return await shot_answer(before, describe=False, to=to)  # pending or failed: the answer says which
+        cm = await clickable_of(before)
+        found = sd.find(cm, said, nth=max(0, nth), kind=kind, by_number=sd.last(to))
+        if "pick" not in found:
+            sd.remember(to, cm)
+            rows = found.get("matches") or found.get("nearest") or []
+            for n, it in enumerate(rows, 1):
+                it["nth"] = n
+            lines = [found.get("message") or "no match", *(f'{it["nth"]}. "{it["text"]}" | {it["kind"]} | list number {it["n"]} | {it["address"]}' for it in rows)]
+            if found.get("none") and rows:
+                lines.insert(1, "Nearest on the screen:")
+            meta = {"ok": True, "clicked": None, "status": "ambiguous" if found.get("matches") else "not_found", "message": lines[0],
+                    **({"matches": rows} if found.get("matches") else {"nearest": rows}), "state": before.get("state")}
+            return CallToolResult(content=[TextContent(type="text", text="\n".join(lines))], structured_content=meta)
+        item = found["pick"]
+        if item.get("disabled"):
+            raise ToolError(f'unavailable: "{item["text"]}" is disabled right now')
+        run = _control_run or console_control_runner()
+        body = {**sd.click_command(item, confirm=confirm, reason=f'voice: click "{said}"', to=to), "by": "mcp"}
+        ans = await anyio.to_thread.run_sync(lambda: run(body))
+        if not ans.get("ok"):
+            if ans.get("code") == "confirmation_required":
+                meta = {"ok": False, "code": "confirmation_required", "clicked": None, "item": item, "message": ans.get("message"), "confirm": "call again with confirm=true"}
+                return CallToolResult(content=[TextContent(type="text", text=f'"{item["text"]}" was not clicked: {ans.get("message")}. Tell Brett, then call again with confirm=true.')], structured_content=meta)
+            raise ToolError(f"{ans.get('code', 'unexpected')}: {ans.get('message', 'failed')}")
+        await anyio.sleep(CLICK_SETTLE_S)  # let the screen the click opened render before it is captured
+        after = await shoot(to)
+        clicked = {"text": item["text"], "kind": item["kind"], "address": item["address"], "verb": body["verb"], "matched": found.get("how")}
+        return await shot_answer(after, describe=True, to=to, lead=f'Clicked "{item["text"]}" ({item["kind"]}). The screen now:', extra={"clicked": clicked})
 
     @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:
@@ -1105,13 +1169,51 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await follow("state")
 
 
-def shot_result(r: dict[str, Any]) -> CallToolResult:
-    """A console screenshot answer as MCP content: one image block per console, then the answer as JSON without the
-    image data (status, state, delivery). No image (pending, or the console could not capture): the JSON alone."""
+CLICK_SETTLE_S = 0.7
+
+
+async def clickable_of(r: dict[str, Any]) -> dict[str, Any]:
+    """The numbered clickable list of a screenshot answer: the screen map the console sent with it, else (a console page
+    from before the map) the console's live control targets."""
+    import screen_describe as sd  # noqa: PLC0415 — beside this module
+    if isinstance(r.get("map"), dict):
+        return sd.clickables(r["map"])
+    targets: Any = None
+    if r.get("images"):
+        run = _control_run or console_control_runner()
+        try:
+            live = await anyio.to_thread.run_sync(lambda: run({"verb": "targets", "source": "console", "by": "mcp"}))
+            targets = live.get("targets") if live.get("ok") else None
+        except Exception:  # noqa: BLE001 — the screenshot still goes back, without a list
+            targets = None
+    return sd.clickables(None, targets, view=str((r.get("state") or {}).get("screen") or ""))
+
+
+async def shot_answer(r: dict[str, Any], *, describe: bool = True, question: str = "", to: str = "recent", lead: str = "", extra: dict[str, Any] | None = None) -> CallToolResult:
+    """A console screenshot answer as MCP content. First a text part a caller that drops images can work from (the
+    description, then the numbered clickable list), then one image block per console, then the answer as JSON without
+    the image data (status, state, delivery, description, clickable, describedBy). No image (pending, or the console
+    could not capture): the JSON alone."""
+    import screen_describe as sd  # noqa: PLC0415 — beside this module
     images = [i for i in r.get("images") or [] if isinstance(i, dict) and i.get("data")]
-    meta = {**{k: v for k, v in r.items() if k not in ("images", "sent")},
-            "images": [{k: v for k, v in i.items() if k != "data"} for i in images]}
-    blocks: list[Any] = [ImageContent(type="image", data=str(i["data"]), mime_type=str(i.get("mime") or "image/png")) for i in images]
+    meta = {**{k: v for k, v in r.items() if k not in ("images", "sent", "map")},
+            "images": [{k: v for k, v in i.items() if k != "data"} for i in images], **(extra or {})}
+    blocks: list[Any] = []
+    if images:
+        state = r.get("state") if isinstance(r.get("state"), dict) else None
+        cm = await clickable_of(r)
+        sd.remember(to, cm)
+        desc: dict[str, Any] | None = None
+        if describe:
+            first = images[0]
+            desc = await anyio.to_thread.run_sync(lambda: sd.describe(str(first["data"]), str(first.get("mime") or "image/png"), state, cm, question))
+        text = sd.screen_text(state, cm, desc, lead)
+        meta["description"] = text
+        meta["clickable"] = {k: cm[k] for k in ("source", "visible", "scroll") if k in cm}
+        if desc is not None:
+            meta["describedBy"] = desc.get("by") or {"note": desc.get("note")}
+        blocks.append(TextContent(type="text", text=text))
+    blocks += [ImageContent(type="image", data=str(i["data"]), mime_type=str(i.get("mime") or "image/png")) for i in images]
     blocks.append(TextContent(type="text", text=json.dumps(meta, default=str)))
     return CallToolResult(content=blocks, structured_content=meta)
 
