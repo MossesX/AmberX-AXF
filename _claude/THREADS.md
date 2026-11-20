@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 22:17 UTC · `dispatcher-split-builds-evenly-across` → pending, note (all) · watchdog
-- 2026-11-19 22:17 UTC · `move-everything-axhub-web-console` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `one-true-source-for-every-setting` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `vps-sets-every-build-status-manifest` → pending, note (all) · watchdog
 - 2026-11-19 22:17 UTC · `api-fully-drives-every-field-type-forms` → pending, note (all) · watchdog
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 01:27 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
 - 2026-11-20 01:31 UTC · `rebuild-fresh-main-phone-connect-small` note (all) · watchdog
 - 2026-11-20 01:31 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · watchdog
+- 2026-11-20 01:32 UTC · `rebuild-fresh-main-phone-connect-small` → failed, note (all) · watchdog
+- 2026-11-20 01:32 UTC · `guided-live-demo-test-watch-orchestrator` → failed, note (all) · watchdog
 
 ## Token passes (log)
 

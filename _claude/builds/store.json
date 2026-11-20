@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9404,
- "updatedAt": "2026-11-20T01:31:35.638Z",
+ "rev": 9405,
+ "updatedAt": "2026-11-20T01:32:09.081Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -270914,7 +270914,7 @@
    "title": "Rebuild fresh on main: Phone Connect (small Android companion + console plugin, retire AmberX)",
    "category": "",
    "detail": "Rebuild fresh from current main; do not merge the old branch. Old attempt for reference only: claude/phone-connect-small-android-companion (PR #712, ~1084 commits behind main, never landed); read _claude/builds/reports/phone-connect-small-android-companion.md for what it decided. Feature: a small Android companion app (Phone Connect) plus a console plugin that pairs the phone with the console/axHub and replaces AmberX for phone features: open_url to bring pages to the front, push notifications/FYIs, approvals, recorder, voice. Then retire AmberX and amberx-web once Phone Connect covers them. APK built in CI. Reachable via UI, REST, MCP, CLI, voice. When it lands, close #712 and archive the old build.",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -270923,7 +270923,7 @@
    "mergedAt": "2026-11-18T02:00:51Z",
    "priority": "P1",
    "createdAt": "2026-11-17T16:53:25.340Z",
-   "updatedAt": "2026-11-20T01:16:01.941Z",
+   "updatedAt": "2026-11-20T01:32:01.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -271477,6 +271477,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T01:31:02.068Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T01:32:01.563Z",
      "by": "watchdog"
     }
    ],
@@ -272257,7 +272262,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 214,
+   "rev": 215,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -272305,9 +272310,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-20T01:16:01.941Z",
+   "statusAt": "2026-11-20T01:32:01.563Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -272322,6 +272328,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-20T01:32:01.563Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (6 min past its budget)"
     }
    ]
   },
@@ -284240,7 +284253,7 @@
    "title": "Guided live demo test: watch the orchestrator do everything in real time, with an overlay, focus and Next/Pause",
    "category": "",
    "detail": "A guided live demo test of the orchestrator that Brett watches in real time, run on throwaway test builds (never real ones). Before it starts, an overlay with Continue and Pause buttons and a 'Pause between steps' switch. The test walks through everything the orchestrator can do, one thing at a time: queue, launch, steps ticking off/crossed out as they finish, running animation, a deliberate crash, the watchdog catching it, retry, red CI, auto-fix, merge-main, landing, a build dying and showing what failed (red row + alert dialog), stale-row cleanup, phone notifications. For each one: bring the console to focus on the exact grid/row/dialog to watch (console_open / focus), show a caption of what is about to happen, run it live, then wait. With pause on, wait until Brett clicks Next, then wait at least 30 seconds before the next one; with pause off, at least 30 seconds between each. A summary at the end of what passed/failed. Deep link, REST, MCP, CLI and voice to start/pause/next/stop it. Depends on the live build status build (real-time grids, animated rows, break alerts).",
-   "status": "pending",
+   "status": "failed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -284249,7 +284262,7 @@
    "mergedAt": "2026-11-17T22:34:43Z",
    "priority": "P1",
    "createdAt": "2026-11-17T19:31:58.777Z",
-   "updatedAt": "2026-11-20T01:16:01.941Z",
+   "updatedAt": "2026-11-20T01:32:01.563Z",
    "builtAt": "",
    "notes": [
     {
@@ -284627,6 +284640,11 @@
     {
      "text": "Watchdog: build stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T01:31:02.068Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at pending, attempt 2: pending did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T01:32:01.563Z",
      "by": "watchdog"
     }
    ],
@@ -285308,7 +285326,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 184,
+   "rev": 185,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -285353,9 +285371,10 @@
    "removedSteps": [],
    "legacy": [],
    "copies": [],
-   "statusAt": "2026-11-20T01:16:01.941Z",
+   "statusAt": "2026-11-20T01:32:01.563Z",
    "statusBy": "watchdog",
    "attempt": 2,
+   "failedFrom": "pending",
    "statusLog": [
     {
      "status": "failed",
@@ -285370,6 +285389,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "retry forward at pending, attempt 2"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-20T01:32:01.563Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "pending did not move after 2 re-run(s) of the transition (6 min past its budget)"
     }
    ]
   },
