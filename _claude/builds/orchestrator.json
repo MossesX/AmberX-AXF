@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T07:48:29.583Z",
+ "updatedAt": "2026-11-20T07:49:11.870Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T07:05:24.694Z",
-   "updatedAt": "2026-11-20T07:09:12.472Z",
+   "updatedAt": "2026-11-20T07:49:02.123Z",
    "builtAt": "",
    "notes": [
     {
@@ -313,6 +313,121 @@
     {
      "text": "Watchdog: step s23 stuck at pending (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T07:44:02.309Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s1 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s3 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s19 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s20 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s21 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s22 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s23 failed at pending, attempt 1: pending did not move after 2 re-run(s) of the transition (10 min past its budget).",
+     "at": "2026-11-20T07:49:02.123Z",
      "by": "watchdog"
     }
    ],
@@ -856,7 +971,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:48:07.205Z",
+   "updatedAt": "2026-11-20T07:49:02.123Z",
    "builtAt": "",
    "notes": [
     {
@@ -1443,6 +1558,11 @@
     {
      "text": "Watchdog: step s8 retried at ready, attempt 4 on hulu0241.",
      "at": "2026-11-20T07:39:01.218Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 gave up: attempt 8 of 5 failed at sending. Alerted Brett.",
+     "at": "2026-11-20T07:49:02.123Z",
      "by": "watchdog"
     }
    ],
