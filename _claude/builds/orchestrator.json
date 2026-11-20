@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T23:15:14.444Z",
+ "updatedAt": "2026-11-20T23:23:15.039Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -64,11 +64,11 @@
    "flow": "pipeline-2",
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s2",
+   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s1",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:14:49.474Z",
+   "updatedAt": "2026-11-20T23:23:08.783Z",
    "builtAt": "",
    "notes": [
     {

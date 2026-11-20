@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 05:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 05:58 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 05:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 05:59 UTC · `fable-full-audit-ui-overhaul-conso` s2 done (all) · orchestrator
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 23:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · watchdog
 - 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` s2 done (all) · orchestrator
 - 2026-11-20 23:14 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s2 (all) · builds-live
+- 2026-11-20 23:23 UTC · `fix-main-ci-red-after-s16-s7-hand-` branch claude/fix-main-ci-red-after-s16-s7-hand---s1 (all) · builds-live
 
 ## Token passes (log)
 
