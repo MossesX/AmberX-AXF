@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `skin-animations-animated-colour-swatches` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `grid-token-set-colours-hover-selected` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `orchestrator-stale-row-watchdog-vps` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `picker-dialog-plugin-replaces-all` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 10:05 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · watchdog
 - 2026-11-20 10:06 UTC · `fable-full-audit-ui-overhaul-conso` → building, note (all) · watchdog
 - 2026-11-20 10:06 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
+- 2026-11-20 10:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
