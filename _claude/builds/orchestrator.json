@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T22:57:15.361Z",
+ "updatedAt": "2026-11-20T22:57:22.786Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -68,7 +68,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:57:00.214Z",
+   "updatedAt": "2026-11-20T22:57:16.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -89,98 +89,83 @@
     },
     {
      "text": "Watchdog: build stuck at split (9 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:15:01.288Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:15:01.288Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:36:01.243Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:36:01.243Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (3 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T20:39:01.319Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:39:01.319Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 1: pulling-main did not move after 2 re-run(s) of the transition (4 min past its budget).",
-     "at": "2026-11-20T20:40:02.184Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:40:02.184Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T21:01:01.979Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:01:01.979Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T21:05:02.611Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:05:02.611Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 2: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T21:06:01.751Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:06:01.751Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T21:27:01.229Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:27:01.229Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T21:30:01.385Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:30:01.385Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 3: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T21:32:01.136Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:32:01.136Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (0 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T21:53:01.999Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:53:01.999Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T21:57:01.786Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:57:01.786Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 4: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T21:58:01.140Z",
-     "by": "watchdog"
+     "at": "2026-11-20T21:58:01.140Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T22:19:01.661Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:19:01.661Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T22:22:02.204Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:22:02.204Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 5: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T22:23:01.208Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:23:01.208Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T22:44:01.747Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:44:01.747Z"
     },
     {
      "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T22:47:01.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:47:01.857Z"
     },
     {
      "text": "Watchdog: build failed at pulling-main, attempt 6: pulling-main did not move after 2 re-run(s) of the transition (5 min past its budget).",
-     "at": "2026-11-20T22:48:01.354Z",
-     "by": "watchdog"
+     "at": "2026-11-20T22:48:01.354Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s1--gina, shared account login)",
+     "at": "2026-11-20T22:57:04.681Z"
     }
    ],
    "approvals": [],
@@ -332,8 +317,7 @@
     },
     {
      "text": "Watchdog: build stuck at split (27 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:15:01.288Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:15:01.288Z"
     }
    ],
    "approvals": [],
@@ -6651,288 +6635,231 @@
     },
     {
      "text": "Watchdog: step s5 stuck at completed (711 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (711 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (474 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (498 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (661 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (652 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (636 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (632 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (619 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (619 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (610 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (493 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (537 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (529 min past budget): re-ran the transition (14).",
-     "at": "2026-11-20T19:58:01.908Z",
-     "by": "watchdog"
+     "at": "2026-11-20T19:58:01.908Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (715 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (715 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (478 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (502 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (665 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (657 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (640 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (636 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (623 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (623 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (614 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (497 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (541 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (533 min past budget): re-ran the transition (15).",
-     "at": "2026-11-20T20:02:02.857Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:02:02.857Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (719 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (719 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (482 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (506 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (669 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (661 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (644 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (640 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (627 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (627 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (618 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (501 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (545 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (537 min past budget): re-ran the transition (16).",
-     "at": "2026-11-20T20:06:02.427Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:06:02.427Z"
     },
     {
      "text": "Watchdog: step s5 stuck at completed (723 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (723 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (486 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (510 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (673 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (664 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (648 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (644 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (631 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (631 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (622 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (505 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (549 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (541 min past budget): re-ran the transition (17).",
-     "at": "2026-11-20T20:10:01.477Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:10:01.477Z"
     },
     {
      "text": "Watchdog: build stuck at running-ci (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T20:12:01.824Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:12:01.824Z"
     },
     {
      "text": "Moved to the Archive from running-ci (console): Brett, Nov 20: all 18 steps built; it sat as the active build while half-landed and blocked the main CI fix. Branches kept; remaining steps tracked in the 'Waiting to merge' plan..",
@@ -6940,73 +6867,59 @@
     },
     {
      "text": "Watchdog: step s5 stuck at completed (727 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s6 stuck at completed (727 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s7 stuck at completed (490 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s8 stuck at completed (514 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s9 stuck at completed (677 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s10 stuck at completed (668 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s11 stuck at completed (652 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s12 stuck at completed (648 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s13 stuck at completed (635 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s14 stuck at completed (635 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s15 stuck at completed (626 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s16 stuck at completed (509 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s17 stuck at completed (553 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     },
     {
      "text": "Watchdog: step s18 stuck at completed (545 min past budget): re-ran the transition (18).",
-     "at": "2026-11-20T20:14:01.901Z",
-     "by": "watchdog"
+     "at": "2026-11-20T20:14:01.901Z"
     }
    ],
    "approvals": [
