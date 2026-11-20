@@ -170,3 +170,13 @@ test('a completed step waits for its siblings: never stuck while the build build
   assert.equal(li?.lander, true);
   assert.equal(C.plan(li, { now: NOW }).action, 'nudge');
 });
+
+test('a build waiting its turn: its pending and ready steps are never late, the active build\'s are', () => {
+  const store = { builds: [
+    { id: 'act', status: 'building', statusAt: ago(10), steps: [{ id: 's1', status: 'pending', statusAt: ago(120) }] },
+    { id: 'wait', status: 'split', statusAt: ago(120), steps: [{ id: 's1', status: 'pending', statusAt: ago(400) }, { id: 's2', status: 'ready', statusAt: ago(400) }] },
+  ] };
+  const issues = C.findIssues(store, { now: NOW });
+  assert.equal(issues.filter((i) => i.build === 'wait').length, 0, 'the waiting build is left alone');
+  assert.ok(issues.some((i) => i.build === 'act' && i.step === 's1'), 'a pending step of the active build is still watched');
+});

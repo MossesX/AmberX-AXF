@@ -150,8 +150,10 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
         if (late > 0 && (p.logAgeMin == null || p.logAgeMin >= S.logIdleMin)) { out.push({ kind: 'step-hung', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), account: s.account || '', attempt: attemptOf(s), session: p.session || '' }); continue; }
         continue;
       }
-      // a step waiting for a slot is only late while its build is the active one (one active build at a time)
-      if (s.status === 'ready' && !isActive(b)) continue;
+      // a step waiting for a slot is only late while its build is the active one (one active build at a time); a
+      // pending step of a build that waits its turn (split) is not late either: main is pulled into it only once the
+      // build is active (Nov 20 2026: a waiting build's pending steps were failed and retried towards a give-up)
+      if ((s.status === 'ready' || s.status === 'pending') && !isActive(b)) continue;
       // a completed step waits for its siblings: only the lander moves it on (in-pr), after build-complete. Never late
       // before that (Nov 20 2026: finished steps were failed and given up on while the rest of the build still ran);
       // late after it = the lander's, nudged only
