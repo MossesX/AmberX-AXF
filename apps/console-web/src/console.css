@@ -132,6 +132,8 @@
 .bm-feat { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-xs) 0 }
 .bm-rework { padding: var(--fx-dens-gap-xl) 0; border-top: var(--fx-border-w) solid var(--fx-border) } .bm-rework:first-child { border-top: 0; padding-top: 0 } .bm-rework ul { margin: var(--fx-dens-gap-md) 0 var(--fx-dens-gap-lg); padding-left: var(--fx-dens-gap-3xl) }
 .bm-list { margin: 0; padding-left: var(--fx-dens-gap-3xl); max-height: 40vh; overflow: auto } .bm-list li { margin: var(--fx-dens-gap-md) 0 }
+.bm-filters { gap: var(--fx-dens-gap-lg) var(--fx-dens-gap-3xl) } .bm-filters > label { gap: var(--fx-dens-gap-lg) }
+.cx-screens .fx-chip { gap: var(--fx-dens-gap-lg) }
 :where([data-fx-small]) .bm-progress, :where([data-fx-small]) .bm-state { display: none } :where([data-fx-small]) .bm-step__body { padding-left: var(--fx-dens-gap-3xl) }
 .bm-dialog { max-width: 100%; overflow-wrap: anywhere } .bm-dialog .fx-row { flex-wrap: wrap }
 
@@ -184,7 +186,7 @@
 .st-card.is-bad { border-color: var(--fx-danger) }
 .st-card.is-off { opacity: var(--fx-opacity-muted) }
 .st-card__top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--fx-dens-gap-xl); flex-wrap: wrap }
-.st-card__title { margin: 0; font-size: var(--fx-type-root-lg); font-weight: 600; flex: 1 1 calc(var(--fx-space) * 24); min-width: 0; overflow-wrap: anywhere; display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap }
+.st-card__title { margin: 0; font-size: var(--fx-type-root-lg); font-weight: 600; flex: 1 1 calc(var(--fx-space) * 24); min-width: 0; overflow-wrap: anywhere; display: flex; align-items: baseline; gap: var(--fx-dens-gap-lg); flex-wrap: wrap }
 .st-badge { font-size: var(--fx-type-root-xs); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-text) }
 .st-badge.is-ok { background: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-success) }
 .st-badge.is-warn { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-warning) }

@@ -46,7 +46,7 @@ export function PreviewPane({ b }: { b: Boilerplate }) {
   const screen = b.screens[i] ?? b.screens[0];
   return (
     <div className="fx-stack">
-      <div className="fx-row fx-row--wrap">{b.screens.map((sc, k) => <button key={sc.id} className={`fx-chip ${k === i ? 'is-selected' : ''}`} onClick={() => setI(k)}>{sc.label} <span className="fx-muted fx-small">{sc.kind}</span></button>)}</div>
+      <div className="fx-row fx-row--wrap cx-screens">{b.screens.map((sc, k) => <button key={sc.id} className={`fx-chip ${k === i ? 'is-selected' : ''}`} onClick={() => setI(k)}>{sc.label} <span className="fx-muted fx-small">{sc.kind}</span></button>)}</div>
       <div className="cx-phone">{screen ? <ScreenKindPreview s={screen} /> : <div className="fx-empty">No screens</div>}</div>
       <p className="fx-muted fx-small" style={{ margin: 0 }}>Features: {b.features.join(', ') || '—'} · modules: {b.modules.join(', ') || '—'} · defaults: {Object.entries(b.defaults).map(([k, v]) => `${k}=${v}`).join(' ') || 'framework'}</p>
     </div>
