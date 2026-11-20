@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9724,
- "updatedAt": "2026-11-20T07:03:23.103Z",
+ "rev": 9725,
+ "updatedAt": "2026-11-20T07:04:11.017Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:02:59.511Z",
+   "updatedAt": "2026-11-20T07:04:01.961Z",
    "builtAt": "",
    "notes": [
     {
@@ -337481,6 +337481,11 @@
     {
      "text": "Watchdog: step s2 stuck at completed (4 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T07:02:02.257Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 failed at completed, attempt 24: completed did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-20T07:04:01.961Z",
      "by": "watchdog"
     }
    ],
@@ -337965,12 +337970,13 @@
      "done": true,
      "doneAt": "2026-11-20T06:27:19.752Z",
      "note": "",
-     "rev": 64,
+     "rev": 65,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T06:28:26.734Z",
-     "statusAt": "2026-11-20T06:28:26.680Z",
-     "statusBy": "headless",
+     "updatedAt": "2026-11-20T07:04:06.461Z",
+     "statusAt": "2026-11-20T07:04:01.961Z",
+     "statusBy": "watchdog",
      "attempt": 24,
+     "failedFrom": "completed",
      "statusLog": [
       {
        "status": "pending",
@@ -338356,9 +338362,16 @@
        "by": "headless",
        "attempt": 24,
        "why": "session ended cleanly"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T07:04:01.961Z",
+       "by": "watchdog",
+       "attempt": 24,
+       "why": "completed did not move after 2 re-run(s) of the transition (6 min past its budget)"
       }
      ],
-     "status": "completed",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
@@ -340168,7 +340181,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 378,
+   "rev": 379,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
