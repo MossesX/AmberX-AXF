@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:16 UTC · `land-project-create-mcp-resolve-clash` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `skin-animations-animated-colour-swatches` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `grid-token-set-colours-hover-selected` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `orchestrator-stale-row-watchdog-vps` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:35 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 12:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 12:42 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
