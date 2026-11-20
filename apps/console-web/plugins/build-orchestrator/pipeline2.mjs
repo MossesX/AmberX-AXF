@@ -14,10 +14,14 @@
  *                                        claude/<build>--<step> from fresh origin/main (cut BEFORE launch, never at launch)
  *   assigning-models → ready             Fable where needed, Opus otherwise
  *   ready → sending → building           steps go out one at a time to each free slot (never waiting for every slot), on
- *                                        the account with usage left that has the fewest of this build's steps
+ *                                        the account with usage left that has the fewest of this build's steps; up to
+ *                                        stepsInParallel (default 4) steps of the build run at once, each in its own
+ *                                        worktree, under the VPS-wide slot cap
  *   building → build-complete            every step completed (a step exit is written the moment it happens)
  *   failed (attempt N)                   a launch failure or a usage-limit exit retries forward at once on another
- *                                        account as attempt N + 1; there is no bench
+ *                                        account as attempt N + 1; there is no bench. At maxAttempts (the watchdog's
+ *                                        setting, default P2.MAX_ATTEMPTS) the give-up is final: the step stays failed
+ *                                        and only the watchdog (its Fable escalation, or Brett) moves it on
  *
  * Triggers (more than one, so ready can never sit): the orchestrator tick (cron, every minute: orchestrator.mjs tick
  * runs pipeline.mjs tick, which calls advance(); `tick --build <id>` runs advance() for one build), the store change
@@ -30,10 +34,12 @@
  *
  * Environment (tests): AXF_PIPELINE_LAUNCHER, AXF_PIPELINE_WORKTREES, AXF_PIPELINE_WORKTREE_MODE=mkdir, AXF_P2_SLOTS
  * (slot count instead of agent-slots), AXF_P2_ACCOUNTS (JSON rows instead of the logins), AXF_P2_ALIVE (comma list of
- * live tmux sessions instead of tmux).
+ * live tmux sessions instead of tmux), AXF_P2_PARALLEL (steps at once instead of the stepsInParallel setting),
+ * AXF_P2_MAX_ATTEMPTS (instead of the watchdog's maxAttempts).
  */
 import { spawnSync } from 'node:child_process';
-import { appendFileSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P2 from '../../../../framework/core/pipeline-status.mjs';
@@ -210,6 +216,17 @@ function accountRows(env) {
   const rows = new Map((read.rows ?? []).map((r) => [r.name, r]));
   return read.accounts.filter((a) => a.kind !== 'api').map((a) => ({ ...a, usageLeft: rows.get(a.name)?.usageLeft ?? 1, limited: a.limited || rows.get(a.name)?.limited || null }));
 }
+/** Steps of one build that may run at once: the stepsInParallel setting (default 4); the slot cap still applies. */
+export function parallelCap(env = process.env) {
+  if (env.AXF_P2_PARALLEL) return Math.max(1, Number(env.AXF_P2_PARALLEL) || 1);
+  try { return Math.max(1, Number(PL.loadSettings(env).stepsInParallel) || PC.DEFAULTS.stepsInParallel); } catch { return PC.DEFAULTS.stepsInParallel; }
+}
+/** The watchdog's attempt cap (pipeline-watchdog@2 maxAttempts, its settings file next to the dispatcher's), else P2.MAX_ATTEMPTS. */
+export function attemptCap(env = process.env) {
+  if (env.AXF_P2_MAX_ATTEMPTS) return Math.max(1, Number(env.AXF_P2_MAX_ATTEMPTS) || P2.MAX_ATTEMPTS);
+  try { const j = JSON.parse(readFileSync(join(env.AXF_WATCHDOG2_DIR || join(PL.pipeDir(), 'watchdog2'), 'settings.json'), 'utf8')); const n = Number(j?.maxAttempts); return Number.isFinite(n) && n >= 1 ? Math.floor(n) : P2.MAX_ATTEMPTS; } catch { return P2.MAX_ATTEMPTS; }
+}
+const inSlot = (s) => ['sending', 'building'].includes(s.status);
 function freeSlots(env) {
   if (env.AXF_P2_SLOTS) {
     const used = p2Builds(loadStore()).flatMap((b) => b.steps).filter((s) => ['sending', 'building'].includes(s.status)).length;
@@ -247,7 +264,8 @@ export function launchStep(b, s, { account, model }, { env = process.env, launch
   const token = issueDispatch(name, { account, model, env });
   const key = modelKey(model) || 'opus';
   const args = ['--name', name, '--account', account, '--brief', '.axf-brief.md', '--log', `${name}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
-  const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_BUILD_STEP: s.id, AXF_CLAUDE_ACCOUNT: account, AXF_ACCOUNT_SWITCHES: '0' };
+  // a stripped environment (a detached store hook) has no HOME: the launcher needs it (and its PATH entry)
+  const e = { ...env, HOME: env.HOME || homedir() || '/root', AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_BUILD_STEP: s.id, AXF_CLAUDE_ACCOUNT: account, AXF_ACCOUNT_SWITCHES: '0' };
   let r;
   try { r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 120e3, env: e }); }
   catch (err) { lock.release(name, { dir }); throw err; }
@@ -265,23 +283,29 @@ export function launchStep(b, s, { account, model }, { env = process.env, launch
 /** Accounts a step failed on before (its log: launch refusals and limit exits), newest attempts only. */
 const failedOn = (s) => (s.statusLog ?? []).filter((l) => l.status === P2.FAILED).slice(-4).map((l) => /^launch on ([a-z0-9-]+):/.exec(l.why || '')?.[1] ?? /^([a-z0-9-]+) hit its/.exec(l.why || '')?.[1] ?? '').filter(Boolean);
 
-/** Send every sendable step of the active build to a free slot, one at a time; a failed launch retries on another account at once. */
+/**
+ * Send every sendable step of the active build to a free slot, one at a time, up to stepsInParallel of them at once; a
+ * failed launch retries on another account at once. A step that used up its attempts is left failed (the give-up is final).
+ */
 function dispatch(b, env, out, { launch = launchStep } = {}) {
-  let free = freeSlots(env);
-  if (free <= 0) { out.waits.push({ id: b.id, why: 'no free slot: the next step goes out when one frees' }); return; }
+  const cap = parallelCap(env); const maxAttempts = attemptCap(env);
+  const running = b.steps.filter(inSlot).length;
+  let free = Math.min(freeSlots(env), cap - running);
+  for (const s of b.steps.filter((x) => P2.gaveUp(x, maxAttempts) && ['ready', 'sending', 'building'].includes(x.failedFrom))) out.waits.push({ id: b.id, step: s.id, why: `gave up after attempt ${s.attempt} of ${maxAttempts}: the watchdog escalates it or Brett decides; never relaunched here` });
+  if (free <= 0) { out.waits.push({ id: b.id, why: running >= cap ? `${running} of ${cap} steps already running (stepsInParallel)` : 'no free slot: the next step goes out when one frees' }); return; }
   let accounts = accountRows(env);
   const refusedNow = new Set(); // an account that refused a launch in this pass gets no other step of it
   for (const s0 of b.steps) {
     if (free <= 0) break;
     const cur = loadStore().builds.find((x) => x.id === b.id);
     const s = stepOf(cur, s0.id);
-    const sendable = s.status === 'ready' || (s.status === P2.FAILED && ['ready', 'sending', 'building'].includes(s.failedFrom));
-    if (!sendable) continue;
+    if (!P2.sendable(s, maxAttempts)) continue;
     const tried = [];
     // a retry goes to another account: never the one it just failed on, nor one that refused this step before
     const avoid = new Set([...(s.status === P2.FAILED && s.account ? [s.account] : []), ...failedOn(s), ...(s.tried ?? [])]);
     for (;;) {
       const fresh = stepOf(loadStore().builds.find((x) => x.id === b.id), s.id);
+      if (!P2.sendable(fresh, maxAttempts)) { if (P2.gaveUp(fresh, maxAttempts)) logLine({ event: 'gave-up', build: b.id, step: s.id, attempt: fresh.attempt, max: maxAttempts }); break; }
       const onBuild = {}; for (const x of loadStore().builds.find((y) => y.id === b.id).steps) if (['sending', 'building'].includes(x.status) && x.account) onBuild[x.account] = (onBuild[x.account] ?? 0) + 1;
       // a step at `ready` with an `account` is pinned (the watchdog's relaunch chose it): that account, unless it is
       // marked out, full, or refused this step in this pass; otherwise the normal pick (never an out account)

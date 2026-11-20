@@ -123,7 +123,9 @@ function normBuild(b) {
     title: str(o.title, 300) || 'Untitled build',
     category: str(o.category, 60),
     detail: str(o.detail, 8000),
-    status: STATUSES.includes(o.status) ? o.status : 'pending',
+    // a Pipeline 2.0 build keeps its flow's status as it is (building, build-complete…): never read as builds@1
+    status: o.flow === 'pipeline-2' && /^[a-z-]{1,40}$/.test(str(o.status)) ? o.status : STATUSES.includes(o.status) ? o.status : 'pending',
+    ...(o.flow === 'pipeline-2' ? { flow: 'pipeline-2' } : {}),
     hidden: o.hidden === true,
     source: str(o.source, 40) || 'console',
     pendingId: str(o.pendingId, 80),
@@ -220,6 +222,9 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
 
 /** Status the build should show, from its steps (explicit blocked/failed/archived stay). */
 export function derivedStatus(build, rules) {
+  // Pipeline 2.0 (pipeline-2@1): the flow owns the status (building, then build-complete when every step's session has
+  // ended). A ticked step never derives a builds@1 status: `act step` tried `running` and the store refused it.
+  if (build.flow === 'pipeline-2') return build.status;
   if (['blocked', 'failed', 'archived', 'fixing', 'escalated', 'landed', 'complete'].includes(build.status)) return build.status; // done-means-merged@1: set with their records, never from the steps
   if (!build.steps.length) return build.status; // nothing to derive from (e.g. a Pending item built before it had steps)
   if (isFinished(build.status) && !build.steps.some((s) => s.done)) return build.mergedAt ? 'landed' : 'landing'; // built without ticking its steps
@@ -232,7 +237,7 @@ export function derivedStatus(build, rules) {
 
 export function counts(builds) {
   const c = Object.fromEntries(STATUSES.map((s) => [s, 0]));
-  for (const b of builds) c[b.status] += 1;
+  for (const b of builds) if (b.status in c) c[b.status] += 1; // a Pipeline 2.0 status is not a builds@1 count
   return c;
 }
 

@@ -1,6 +1,7 @@
 import { installConsoleSearch } from './consoleSearch';
 import { installConsoleControl } from './control';
 import { installNative } from './native/axfNative';
+import { followHubHash, installRouteSync } from './hubPages/route';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
@@ -123,6 +124,10 @@ function usePlugins() {
   useEffect(() => installConsoleControl(rt), [rt]);
   // the Android console app (apps/console-droid): native bridge, safe area, floating toolbar, ?axf-open= deep links
   useEffect(() => installNative(rt), [rt]);
+  // The hub's pages (hub-pages@1, src/hubPages): keep each page's parameters in step with the open view, and once the
+  // plugins have loaded, open an old axHub web address (`#/approvals/<id>` …) on the same console page.
+  useEffect(() => installRouteSync(rt), [rt]);
+  useEffect(() => { if (loaded) followHubHash(rt); }, [rt, loaded]);
   // Inside a host that manages plugins (embed@1 take `plugins`): tell it which plugins the console has, and run
   // only the ones it enabled for the console (Brett, Oct 22 2026). The console's own switches stay as they are for when
   // it runs on its own.

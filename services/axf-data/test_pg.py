@@ -523,6 +523,57 @@ def test_sqlite_upload_becomes_rows():
         assert not [t for t in st.table_names() if t.startswith('other_')]
 
 
+def test_sqlite_mirror_never_waits_on_a_backup_lock():
+    """A pg_dump holds ACCESS SHARE on every table for its whole run. A ledger upload then needs ALTER / TRUNCATE on
+    ledger_*: it gives up after the mirror's lock_timeout and fails, instead of falling into the text-column retry, whose
+    DROP TABLE waited with no timeout inside the store lock and stalled every API call (Nov 20 2026, 13 minutes).
+    The mirror table is left as it was (not dropped) and the next upload succeeds once the backup is done."""
+    import threading
+    import psycopg
+    from psycopg.rows import dict_row
+    from pg import _dsn_with_schema
+    with PgEnv() as c:
+        st = c.app.state.store
+        with tempfile.TemporaryDirectory() as d:
+            f = Path(d) / 'ledger.sqlite'
+            _ledger_like(f)
+            body = f.read_bytes()
+            f2 = Path(d) / 'ledger2.sqlite'
+            _ledger_like(f2, n=2)
+            body2 = f2.read_bytes()
+        ct = {'content-type': 'application/vnd.sqlite3'}
+        r = c.put('/v1/plugins/shipped-features/ledger.sqlite', content=body, headers=H(**ct, **{'if-none-match': '*'})).json()
+        assert st.fetchone('SELECT COUNT(*) AS n FROM ledger_features')['n'] == 3
+        backup = psycopg.connect(_dsn_with_schema(st.dsn, st.schema), row_factory=dict_row)
+        backup.execute('BEGIN')
+        # what pg_dump takes, on the first table the mirror copies (no earlier table's lock_timeout is still in force:
+        # live it was ledger_builds)
+        backup.execute('LOCK TABLE ledger_feature_history IN ACCESS SHARE MODE')  # the first of _ledger_like's tables by name
+        out = {}
+
+        def upload():
+            t0 = time.monotonic()
+            try:
+                out['status'] = c.put('/v1/plugins/shipped-features/ledger.sqlite', content=body2, headers=H(**ct, **{'if-match': r['etag']})).status_code
+            except Exception as e:  # noqa: BLE001 — the TestClient re-raises the server error
+                out['error'] = f'{type(e).__name__}: {e}'
+            out['seconds'] = time.monotonic() - t0
+        th = threading.Thread(target=upload)
+        th.start()
+        th.join(timeout=40)
+        waited = th.is_alive()
+        backup.execute('ROLLBACK')  # the backup ends (unblocks the old code so the test can report it)
+        th.join()
+        backup.close()
+        assert not waited, f'the upload waited on the backup lock ({out})'
+        assert out.get('error') or out.get('status', 200) >= 400, f'the mirror run failed, not half-applied: {out}'
+        assert st.fetchone('SELECT COUNT(*) AS n FROM ledger_features')['n'] == 3, 'the mirror table is kept, not dropped'
+        cur = c.get('/v1/plugins/shipped-features/ledger.sqlite?meta=1', headers=H()).json()
+        ok = c.put('/v1/plugins/shipped-features/ledger.sqlite', content=body2, headers=H(**ct, **{'if-match': cur['etag']}))
+        assert ok.status_code < 300, ok.text
+        assert st.fetchone('SELECT COUNT(*) AS n FROM ledger_features')['n'] == 2, 'the next upload after the backup refreshes'
+
+
 def test_mirror_sync_from_mounted_file():
     """The Chat viewer db is bigger than a blob may be: mirror_sync.py / POST /v1/_meta/tables/sync read the mounted file."""
     import mirror_sync
