@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10116,
- "updatedAt": "2026-11-20T20:14:17.536Z",
+ "rev": 10117,
+ "updatedAt": "2026-11-20T20:14:41.628Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -332124,14 +332124,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "running-ci",
+   "status": "archived",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "863",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T20:14:12.665Z",
+   "updatedAt": "2026-11-20T20:14:37.092Z",
    "builtAt": "",
    "notes": [
     {
@@ -336526,6 +336526,10 @@
      "text": "Watchdog: build stuck at running-ci (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T20:12:01.824Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Moved to the Archive from running-ci (console): Brett, Nov 20: all 18 steps built; it sat as the active build while half-landed and blocked the main CI fix. Branches kept; remaining steps tracked in the 'Waiting to merge' plan..",
+     "at": "2026-11-20T20:14:37.092Z"
     }
    ],
    "approvals": [
@@ -340292,7 +340296,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 753,
+   "rev": 754,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -340303,8 +340307,8 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T19:11:23.052Z",
-   "statusBy": "lander",
+   "statusAt": "2026-11-20T20:14:37.094Z",
+   "statusBy": "console",
    "attempt": 9,
    "statusLog": [
     {
@@ -340534,6 +340538,12 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: the fix pushed b51511934; CI runs on it"
+    },
+    {
+     "status": "archived",
+     "at": "2026-11-20T20:14:37.094Z",
+     "by": "console",
+     "attempt": 9
     }
    ]
   },
