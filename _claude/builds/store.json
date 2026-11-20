@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10108,
- "updatedAt": "2026-11-20T19:56:38.350Z",
+ "rev": 10109,
+ "updatedAt": "2026-11-20T19:56:58.735Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -345133,7 +345133,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "splitting",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -345150,6 +345150,16 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-20T19:55:54.728Z"
+    },
+    {
+     "text": "Split by Fable into 3 steps (90 min, 3 Fable).",
+     "at": "2026-11-20T19:55:10.098Z",
+     "by": "orchestrator"
+    },
+    {
+     "text": "Split by Fable into 3 steps (85 min, 3 Fable).",
+     "at": "2026-11-20T19:55:17.483Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -345313,7 +345323,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -345324,7 +345334,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T19:54:36.404Z",
+   "statusAt": "2026-11-20T19:55:45.100Z",
    "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
@@ -345341,6 +345351,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "Fable is designing its steps"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-20T19:55:45.100Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "2 steps for 4 slots"
     }
    ]
   }
