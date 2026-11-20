@@ -35,7 +35,7 @@
  *
  * `<item>` is an id, or the title / words in it ("the step about deploy"): tree-core resolve().
  */
-import { appendFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as tc from './web/tree-core.mjs';
@@ -72,8 +72,7 @@ export function save(state) { const s = tc.normalize(state); writeJson(file(), s
 export const DELETED_FILE = 'deleted.jsonl';
 /** Append what a delete removed (the trash entry: the item and everything under it) before the tree is saved without it. */
 export function backupDeleted(entry) {
-  mkdirSync(storeDir(), { recursive: true });
-  appendFileSync(join(storeDir(), DELETED_FILE), `${JSON.stringify({ $axf: 'plan-tree-deleted@1', ...entry })}\n`);
+  dataFiles.appendJsonlSync(join(storeDir(), DELETED_FILE), { $axf: 'plan-tree-deleted@1', ...entry });
   return DELETED_FILE;
 }
 
