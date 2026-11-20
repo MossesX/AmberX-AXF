@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T22:58:12.975Z",
+ "updatedAt": "2026-11-20T22:58:22.247Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -68,7 +68,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:57:57.674Z",
+   "updatedAt": "2026-11-20T22:58:15.777Z",
    "builtAt": "",
    "notes": [
     {
@@ -184,8 +184,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "fix-main-ci-red-after-s16-s7-hand---s3",
-    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s3\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s3 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s3 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s3.\n\n## Your step\nFix it, CI green, land.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "fix-main-ci-red-after-s16-s7-hand---s4",
+    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s4\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s4 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s4 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s4.\n\n## Your step\nEvery step on Fable.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []

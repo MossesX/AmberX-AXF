@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10163,
- "updatedAt": "2026-11-20T22:58:12.975Z",
+ "rev": 10164,
+ "updatedAt": "2026-11-20T22:58:22.247Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T22:57:57.674Z",
+   "updatedAt": "2026-11-20T22:58:15.777Z",
    "builtAt": "",
    "notes": [
     {
@@ -344797,8 +344797,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "fix-main-ci-red-after-s16-s7-hand---s3",
-    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s3\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s3 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s3 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s3.\n\n## Your step\nFix it, CI green, land.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "fix-main-ci-red-after-s16-s7-hand---s4",
+    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s4\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s4 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s4 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s4.\n\n## Your step\nEvery step on Fable.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -345138,10 +345138,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 4,
+     "rev": 5,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:56:00.445Z",
-     "statusAt": "2026-11-20T22:56:00.355Z",
+     "updatedAt": "2026-11-20T22:58:12.039Z",
+     "statusAt": "2026-11-20T22:58:11.985Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -345164,9 +345164,17 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "main is in"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T22:58:11.985Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "to hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "sending",
+     "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5",
      "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5"
     }
@@ -345179,7 +345187,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 65,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
