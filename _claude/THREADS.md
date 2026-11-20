@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-19 21:29 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · watchdog
 - 2026-11-19 21:29 UTC · `toolbars-3-5-settings-appearance-systems` note (all) · watchdog
 - 2026-11-19 21:29 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · watchdog
 - 2026-11-19 21:29 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 00:11 UTC · `server-safe-mode-one-emergency-button` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · orchestrator
 - 2026-11-20 00:12 UTC · `guided-live-demo-test-watch-orchestrator` note (all) · builds-live
+- 2026-11-20 00:12 UTC · `fix-launcher-crash-duplicate-steps-brief` note (all) · orchestrator
 
 ## Token passes (log)
 

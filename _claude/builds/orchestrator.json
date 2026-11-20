@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T00:12:15.791Z",
+ "updatedAt": "2026-11-20T00:12:33.494Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -193930,7 +193930,7 @@
    "mergedAt": "2026-11-18T09:06:06Z",
    "priority": "P0",
    "createdAt": "2026-11-17T23:19:42.353Z",
-   "updatedAt": "2026-11-19T02:36:57.062Z",
+   "updatedAt": "2026-11-20T00:12:27Z",
    "builtAt": "2026-11-19T02:36:57.062Z",
    "notes": [
     {
@@ -194068,6 +194068,10 @@
     {
      "text": "Watchdog: Pending build fix-launcher-crash-duplicate-steps-brief → Complete: Its PR merged on main (PR #827 merged 2026-11-18T09:06:06Z (cf08a0b8c204); on main by merge-commit cf08a0b8c204; build fix-launcher-crash-duplicate-steps-brief: pending) (pending → landing)",
      "at": "2026-11-19T02:36:57.062Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-launcher-crash-duplicate-steps-brief rev 1 sent to Shipped features (orchestrator): landed cf08a0b8c, 63 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-20T00:12:27Z"
     }
    ],
    "approvals": [],
