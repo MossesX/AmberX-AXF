@@ -151,6 +151,15 @@ try:
     ok(bc.get(f"{B}/build-slots").json()["hostCap"]["canEdit"] is True, "build-slots: Brett's session may edit the host cap")
     r = bc.put(f"{B}/build-slots", json={"maxBuilds": 6})
     ok(r.status_code == 200 and r.json()["hostCap"]["value"] == 6 and r.json()["over"] is False and live["saves"][-1] == ("cap", {"maxBuilds": 6}), "build-slots: Brett saves the host cap; the note goes")
+    # the systems-check item: amber with Brett's exact steps while steps in parallel is above the host cap
+    live.update(steps=6, cap=4)
+    v = hl.slots_check(routes.build_slots(None))
+    ok(v["status"] == "warn" and "host cap is 4" in v["summary"] and "Host cap → 6 → Save" in v["details"][0], "systems check: amber, with what Brett presses")
+    live.update(cap=6)
+    ok(hl.slots_check(routes.build_slots(None))["status"] == "ok", "systems check: fine once the cap covers it")
+    ok(hl.slots_check({"stepsInParallel": {"available": False}, "hostCap": {"available": True, "value": 4}})["status"] == "ok", "systems check: nothing to compare is not a warning")
+    seen = []
+    ok(hl.ensure_slots(types.SimpleNamespace(get=lambda name: types.SimpleNamespace(register=lambda item, owner: seen.append(item))), lambda: routes.build_slots(None)) and seen[0]["id"] == "gate-build-slots" and seen[0]["run"]()["status"] == "ok", "systems check: registered with axf.health@1")
     del sys.modules["plugin_services"]
 finally:
     import shutil

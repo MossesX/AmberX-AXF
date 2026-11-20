@@ -203,7 +203,8 @@ def ensure_health() -> None:
             return
         lander = health.ensure(plugin_services, _status_for_health)
         server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))  # axf-not-plugin:systems-check (actor name)
-        _health_on["done"] = lander and server
+        slots = health.ensure_slots(plugin_services, lambda: build_slots(None))
+        _health_on["done"] = lander and server and slots
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
@@ -394,8 +395,9 @@ def _int(v: Any) -> int | None:
     return v if isinstance(v, int) and not isinstance(v, bool) else None
 
 
-def build_slots(request: Request) -> dict[str, Any]:
-    """Both numbers as they are live. A number whose owner is off or silent comes back unavailable with the reason."""
+def build_slots(request: Request | None) -> dict[str, Any]:
+    """Both numbers as they are live. A number whose owner is off or silent comes back unavailable with the reason.
+    Without a request (the systems check) nobody may edit."""
     out: dict[str, Any] = {"ok": True}
     steps: dict[str, Any] = {"value": None, "min": STEPS_RANGE[0], "max": STEPS_RANGE[1], "available": False}
     pipe = _service(PIPELINE_SETTINGS)
@@ -416,7 +418,7 @@ def build_slots(request: Request) -> dict[str, Any]:
         cap["value"] = _int(hard.get("max"))
         cap["available"] = cap["value"] is not None
         cap["live"] = _int(hard.get("live"))
-        cap["canEdit"] = cap["available"] and bool(slots.can_edit_hard_limit(request))
+        cap["canEdit"] = cap["available"] and request is not None and bool(slots.can_edit_hard_limit(request))
         if not cap["available"]:
             cap["why"] = str(hard.get("error") or "The hard build limit did not answer.")[:300]
     over = steps["available"] and cap["available"] and steps["value"] > cap["value"]
