@@ -30,7 +30,7 @@ export function AgentManagerView() {
   useEditorSync({ onRefresh: () => { void refresh().catch(() => undefined); } });
   const wizard = (kind: string, agentId?: string) => rt.openDialog('agent-manager.wizard', { kind, agentId });
   return (
-    <div className="axp-agent-manager fx-stack">
+    <div className="axp-agent-manager fx-stack fx-stack--lg">
       <header className="fx-pagehead axp-agent-manager__head">
         <div><p className="fx-eyebrow">AI · agents</p><h1>Agent manager</h1><p className="fx-muted axp-agent-manager__lede" title="Build agents from personas, skills and tools, train them, and run them in workflows — each with its own memory.">Agents from personas, skills and tools, each with its own memory.</p></div>
         <div className="fx-row axp-agent-manager__acts">

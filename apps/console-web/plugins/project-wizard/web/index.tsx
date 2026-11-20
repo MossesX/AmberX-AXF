@@ -81,7 +81,7 @@ function ProjectWizardView() {
   const { st, err, reload } = useStatus();
   const [wizardKey, setWizardKey] = useState(0);
   return (
-    <div className="fx-stack">
+    <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Projects</p>

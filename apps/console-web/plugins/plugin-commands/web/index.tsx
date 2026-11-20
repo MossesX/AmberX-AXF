@@ -86,7 +86,7 @@ function PluginCommandsView() {
   }, [plugins, q, kind]);
   const total = (plugins ?? []).reduce((n, p) => n + p.commands.length, 0);
   return (
-    <div className="fx-stack axf-pc">
+    <div className="fx-stack fx-stack--lg axf-pc">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugin · control@1</p><h1>Plugin commands</h1><p className="fx-muted">Everything every plugin can do, as an API call, an MCP tool and a CLI line.</p></div></header>
       <Note tone="info">
         Made from what each plugin already has (its routes, its actions, its data folder and plugin.json). Claude reaches them through axHub as MCP tools named <code>&lt;plugin&gt;_&lt;command&gt;</code> (or <code>plugin_commands</code>, <code>plugin_read</code>, <code>plugin_run</code>), the REST API at <code>/api/control/&lt;plugin&gt;/&lt;command&gt;</code>, and the CLI <code>axf &lt;plugin&gt; &lt;command&gt;</code>. A new plugin shows up here by itself.

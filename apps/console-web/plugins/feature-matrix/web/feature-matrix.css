@@ -41,3 +41,5 @@ select.fx-input.axp-feature-matrix__profile { width: auto; flex: none; }
 .axp-feature-matrix__totals { gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-xl); }
 .axp-feature-matrix__morebtn { display: inline-flex; flex: none; }
 .axp-feature-matrix__more { z-index: 82; max-width: calc(100vw - var(--fx-space) * 2); }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-feature-matrix > .fx-pagehead { margin-bottom: calc(var(--fx-dens-gap-3xl) - var(--fx-dens-gap-lg)) }

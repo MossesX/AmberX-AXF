@@ -263,7 +263,7 @@ export function ShippedFeaturesPage() {
   const toggle = (id: string) => set({ expanded: view.expanded.includes(id) ? view.expanded.filter((x) => x !== id) : [...view.expanded, id] });
   const m = ledger.meta ?? {};
   return (
-    <div className="fx-stack axp-shipped">
+    <div className="fx-stack fx-stack--lg axp-shipped">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">AmberX-AXF + axHub · {shown.length} of {total.all} features · {total.pending} pending · {total.live} live{total.editing ? ` · ${total.editing} being edited` : ''}{m.syncing ? ' · syncing…' : ''}{m.importing ? ' · importing history…' : ''}</p>

@@ -113,7 +113,7 @@ function PluginUpdate() {
 
   const list = u.rows;
   return (
-    <div className="fx-stack axp-plugin-update">
+    <div className="fx-stack fx-stack--lg axp-plugin-update">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Plugins · updates</p>
