@@ -196,8 +196,8 @@
       {
         "id": "gizmo.console",
         "name": "Drive the console",
-        "description": "Opens console pages, plugins, settings and themes for Brett, or plays them as a walkthrough.",
-        "instructions": "1. Find the view id or action in apps/console-web/src and plugins/*/web.\n2. To take him somewhere, answer with a one-step walkthrough block (skill gizmo.walkthrough) whose `do` opens it.\n3. To change a console setting, use a walkthrough with a step per change so he sees each one.",
+        "description": "Opens console pages, plugins, settings and dialogs for Brett (the console tools), or plays them as a walkthrough.",
+        "instructions": "1. In the console chat, take him there yourself: console_open (screens), console_settings (settings tabs and single settings), console_dialog (dialogs), console_back; console_list finds the right name and console_where says where he is. Say in a few words what you opened.\n2. Without those tools (another app), find the view id or action in apps/console-web/src and plugins/*/web and answer with a one-step walkthrough block (skill gizmo.walkthrough) whose `do` opens it.\n3. To change a console setting, open it and say what to tap, or use a walkthrough with a step per change so he sees each one: the console tools only navigate.",
         "triggers": [
           "open",
           "take me to",

@@ -21,6 +21,9 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SERVER_DIR = HERE.parents[1] / "server"
 os.environ["AXF_AI_ASSISTANT_DIR"] = tempfile.mkdtemp(prefix="axf-ai-test-")
+# A temp folder of its own: the "folders removed" checks never see what other runs on this machine left in /tmp.
+tempfile.tempdir = tempfile.mkdtemp(prefix="axf-ai-test-tmp-")
+os.environ["TMPDIR"] = tempfile.tempdir
 sys.path.insert(0, str(SERVER_DIR))  # plugin_services lives next to the console's main.py
 
 import plugin_services  # noqa: E402
@@ -61,6 +64,9 @@ class Fake(BaseHTTPRequestHandler):
             if body.get("tools") and not any(m["role"] == "tool" for m in msgs) and "write it" in json.dumps(msgs[-1]):
                 args = json.dumps({"container": "web", "path": "/app/a.ts", "content": "new", "reason": "fix"})
                 w(f'data: {json.dumps({"choices": [{"delta": {"tool_calls": [{"index": 0, "id": "w1", "function": {"name": "container_write", "arguments": args}}]}, "finish_reason": "tool_calls"}]})}\n\n')
+            elif body.get("tools") and not any(m["role"] == "tool" for m in msgs) and "go to settings" in json.dumps(msgs[-1]):
+                args = json.dumps({"tab": "appearance"})
+                w(f'data: {json.dumps({"choices": [{"delta": {"tool_calls": [{"index": 0, "id": "n1", "function": {"name": "console_settings", "arguments": args}}]}, "finish_reason": "tool_calls"}]})}\n\n')
             elif body.get("tools") and not any(m["role"] == "tool" for m in msgs) and "calc" in json.dumps(msgs[-1]):
                 w('data: {"choices":[{"delta":{"tool_calls":[{"index":0,"id":"c1","function":{"name":"calculator","arguments":"{\\"expr"}}]}}]}\n\n')
                 w('data: {"choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"ession\\": \\"6*7\\"}"}}]},"finish_reason":"tool_calls"}]}\n\n')
@@ -917,5 +923,69 @@ check(c.get(f"{P}/status").json()["defaultToolMode"] == "auto", "status: says wh
 check(c.put(f"{P}/config", json={"chatMode": {"default": "chat", "historyMessages": 8}}).json()["chatMode"]["default"] == "chat" and c.get(f"{P}/config").json()["chatMode"]["historyMessages"] == 8, "chat mode settings save")
 c.put(f"{P}/config", json={"chatMode": {"default": "auto", "historyMessages": 16}})
 plugin_services.withdraw("fake-agent-manager")
+
+# --- driving the console (console-commands@1): navigation and reads only, the owner only
+print("console tools")
+store_mod = sys.modules["axf_console_plugins.ai_assistant.store"]
+check(not {t["name"] for t in tools_mod.specs({"console": True})} & tools_mod.CONSOLE_NAMES, "console tools: not offered while no plugin provides console-commands@1")
+
+
+class FakeConsole:
+    def __init__(self):
+        self.calls = []
+
+    def run(self, command, grants=None, by="", audience="owner"):
+        self.calls.append({"command": command, "grants": grants, "by": by})
+        if command.get("target") == "console.actions" and "control.console.write" not in (grants or []):
+            return {"ok": False, "code": "denied", "message": "running Reset (x.reset) changes data and needs control.console.write"}
+        return {"$axf": "control@1", "ok": True, "status": "delivered", "delivered": [{"client": "k1", "ok": True, "message": "opened Appearance settings"}]}
+
+
+fcc = FakeConsole()
+plugin_services.provide("console-commands@1", fcc, "fake-console-commands")
+check(tools_mod.CONSOLE_NAMES <= {t["name"] for t in tools_mod.specs({"console": True})} and not tools_mod.CONSOLE_NAMES & {t["name"] for t in tools_mod.specs({"console": False})}, "console tools: offered with the capability, off with the switch")
+_r = json.loads(tools_mod.run("console_open", {"screen": "plan studio", "focus": "pending", "to": "all"}, by="assistant:Amber"))
+_cc = fcc.calls[-1]
+check(_r["status"] == "delivered" and _cc["command"] == {"op": "act", "target": "console.screens", "path": "plan studio", "action": "open", "input": {"focus": "pending", "to": "all"}, "by": "assistant:Amber"},
+      "console_open: the same control@1 command as the console's MCP tool")
+check(_cc["grants"] == ["control.console.read", "control.console.navigate"], "console tools: granted read + navigate only, never write")
+tools_mod.run("console_where", {})
+tools_mod.run("console_list", {"kind": "settings", "q": "text size", "limit": 9999})
+tools_mod.run("console_back", {"move": "home"})
+tools_mod.run("console_dialog", {"action": "close"})
+check([x["command"]["target"] for x in fcc.calls[-4:]] == ["console.nav", "console.settings", "console.nav", "console.dialogs"] and fcc.calls[-3]["command"]["select"] == {"q": "text size", "limit": 200}
+      and fcc.calls[-2]["command"]["action"] == "home" and fcc.calls[-1]["command"]["path"] == "current", "console tools: where, list (limit capped), home, close the open dialog")
+check("console_action" not in tools_mod.BUILTIN_NAMES, "console tools: no action runner (the gate asks control.console.write for every action)")
+fcc.calls.append({"command": {"target": "-"}})
+_e = ""
+try:
+    tools_mod.run("console_open", {})
+except ValueError as e:
+    _e = str(e)
+check("screen is required" in _e and fcc.calls[-1]["command"]["target"] == "-", "console_open: a missing screen fails before anything is sent")
+
+c.put(f"{P}/config", json={"defaultProfile": oa, "chatMode": {"default": "auto"}})
+_cv = c.post(f"{P}/conversations", json={"settings": {"profileId": oa}}).json()["conversation"]
+CALLS.clear()
+ev = turn(_cv["id"], content="go to settings, the appearance tab")
+_tools_sent = {t["function"]["name"] for t in CALLS[0]["body"].get("tools") or []}
+check(next(d for e, d in ev if e == "start")["mode"]["mode"] == "tools" and "console_settings" in _tools_sent, "go to …: a tools turn with the console tools loaded")
+check(any(e == "tool" and d.get("name") == "console_settings" and d.get("ok") for e, d in ev) and fcc.calls[-1]["command"]["target"] == "console.settings" and fcc.calls[-1]["by"] == "assistant:Amber",
+      "go to …: the model's console_settings call reaches the open console")
+check("drive Brett's open console" in json.dumps(CALLS[0]["body"]["messages"]), "the system prompt says to drive the console, not describe taps")
+_uc = c.post(f"{P}/conversations", json={}, headers=signed("ann", perms="assistant.tools")).json()["conversation"]
+CALLS.clear()
+turn(_uc["id"], content="go to settings", **{})
+_ut = {t["function"]["name"] for t in (CALLS[0]["body"].get("tools") or [])} if CALLS else set()
+check(bool(CALLS) and not _ut & tools_mod.CONSOLE_NAMES, "a hub user never gets the console tools")
+plugin_services.withdraw("fake-console-commands")
+check(cm.needs_tools("go to settings", cm.normalize({})) == "go to" and cm.needs_tools("hey amber, go back", cm.normalize({})) == "go back" and cm.needs_tools("i would go to bed", cm.normalize({})) == "",
+      "chat mode: a lead word that starts an action still counts (go to, go back), mid-sentence it doesn't")
+_mig = store_mod._console_words({"chatMode": {"actionWords": ["check", "Go To"]}}, Path("."))
+check(_mig["chatMode"]["actionWords"] == ["check", "Go To", "take me", "go back", "go home", "navigate", "where am i"] and store_mod._console_words({}, Path(".")) == {}, "migration 1→2: a saved word list gains the console words once")
+check(prov.sweep_stale_temp(force=True) == 0, "stale temp sweep: nothing of a live run is touched")
+_old = tempfile.mkdtemp(prefix="axf-cli-chat-")
+os.utime(_old, (1, 1))
+check(prov.sweep_stale_temp(force=True) == 1 and not os.path.exists(_old), "stale temp sweep: a folder a restart left behind is removed")
 
 print(f"all {ok} checks passed")

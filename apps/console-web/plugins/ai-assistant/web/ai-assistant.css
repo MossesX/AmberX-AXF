@@ -28,7 +28,6 @@
 .axp-ai-assistant__welcome, .axp-ai-assistant__empty { align-items: center; text-align: center; margin: auto; max-width: 520px; padding: var(--fx-dens-gap-3xl) }
 .axp-ai-assistant__welcome h3, .axp-ai-assistant__empty h3 { margin: 0 }
 .axp-ai-assistant__suggest { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); justify-content: center }
-.axp-ai-assistant__suggest .fx-chip { cursor: pointer; border: 0; font: inherit }
 
 .axp-ai-assistant__msg { display: flex; gap: var(--fx-dens-gap-xl); align-items: flex-start; max-width: 100% }
 .axp-ai-assistant__msg.is-user { flex-direction: row-reverse }
