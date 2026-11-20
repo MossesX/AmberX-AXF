@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9708,
- "updatedAt": "2026-11-20T06:55:11.338Z",
+ "rev": 9709,
+ "updatedAt": "2026-11-20T06:55:34.262Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337467,6 +337467,11 @@
      "text": "Watchdog: step s18 retried at ready, attempt 2 on hulu0241.",
      "at": "2026-11-20T06:54:02.149Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at sending (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T06:55:02.461Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -340086,7 +340091,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 363,
+   "rev": 364,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
