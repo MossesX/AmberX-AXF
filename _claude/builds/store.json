@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9904,
- "updatedAt": "2026-11-20T09:07:29.280Z",
+ "rev": 9905,
+ "updatedAt": "2026-11-20T09:07:41.606Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s13",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T09:07:23.773Z",
+   "updatedAt": "2026-11-20T09:07:33.593Z",
    "builtAt": "",
    "notes": [
     {
@@ -338094,6 +338094,10 @@
     {
      "text": "Watchdog: step s18 stuck at ready (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T09:04:02.071Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s13--lenny: brief only · start 10.1K tokens ($0.02) · cost $2.18 · 45 turns · 6 tools, MCP none",
+     "at": "2026-11-20T09:07:33.593Z"
     }
    ],
    "approvals": [
@@ -341641,7 +341645,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 556,
+   "rev": 557,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -342759,118 +342763,95 @@
     },
     {
      "text": "Watchdog: step s1 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s2 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s3 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s4 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s5 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s6 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s7 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s8 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s9 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s10 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s11 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s12 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s13 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s14 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s15 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s16 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s17 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s18 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s19 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s20 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s21 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s22 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     },
     {
      "text": "Watchdog: step s23 retried at pending, attempt 4.",
-     "at": "2026-11-20T09:07:01.350Z",
-     "by": "watchdog"
+     "at": "2026-11-20T09:07:01.350Z"
     }
    ],
    "approvals": [],
@@ -344772,7 +344753,7 @@
    },
    "kind": "build",
    "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
