@@ -132,6 +132,46 @@ test('CI red: failed attempt 1 → flaky re-run; red again: attempt 2 → split,
   assert.ok(onMain(r, 'a.txt') && onMain(r, 'b.txt'));
 });
 
+test('a split covers only the PR that failed: the steps after it are grouped under the cap again', async () => {
+  const big = (n) => Array.from({ length: n }, (_, i) => `line ${i}`).join('\n') + '\n';
+  const r = repo({ 'claude/b-s1': { 'a.txt': big(60) }, 'claude/b-s2': { 'b.txt': big(60) }, 'claude/b-s3': { 'c.txt': big(60) }, 'claude/b-s4': { 'd.txt': big(60) } });
+  let red = true; const gh = github(r, () => (red ? 'failure' : 'success'));
+  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1'], ['s2', 'claude/b-s2'], ['s3', 'claude/b-s3'], ['s4', 'claude/b-s4']])], { now });
+  const opts = base(r, gh, store, now, { cfg: L.normConfig({ sizeCapLines: 130 }) });
+  await tick(opts); await tick(opts); await tick(opts); // red, the flaky re-run, red again: split
+  assert.equal(store.list[0].failure.retry, 'split');
+  red = false; now.add(L.backoffMinutes(2) + 1);
+  await tick(opts);
+  const b = store.list[0];
+  assert.equal(b.status, 'landed');
+  assert.deepEqual(b.landing.splitSteps, ['s1', 's2']);
+  assert.deepEqual(b.steps.map((s) => s.prNumber), [2, 3, 4, 4], 's1 and s2 land alone, s3 and s4 share one PR');
+  assert.deepEqual(b.landing.merged, [2, 3, 4]);
+  for (const f of ['a.txt', 'b.txt', 'c.txt', 'd.txt']) assert.ok(onMain(r, f), `${f} on main`);
+});
+
+test('a fix session that does not start is tried again after the backoff, never waited on', async () => {
+  const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
+  let red = true; const gh = github(r, () => (red ? 'failure' : 'success'));
+  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
+  let starts = 0; let up = false;
+  const agentJob = () => { starts++; return up ? { exit: 0, session: 'fixer-2' } : { exit: 1, session: '', why: 'no agent is free' }; };
+  const opts = base(r, gh, store, now, { agentJob });
+  await tick(opts); await tick(opts); await tick(opts); // red, the flaky re-run, red again: one step, so a fix session
+  assert.equal(store.list[0].failure.retry, 'fix');
+  now.add(L.backoffMinutes(2) + 1);
+  const out = await tick(opts);
+  let b = store.list[0];
+  assert.equal(starts, 1); assert.ok(!b.failure.fix, 'no session is recorded as working');
+  assert.equal(b.failure.fixStart.why, 'no agent is free'); assert.match(out.waiting, /no fix session started/);
+  assert.ok(Date.parse(b.failure.notBefore) > Date.parse(now()), 'the next try waits its backoff');
+  await tick(opts); assert.equal(starts, 1, 'not before the backoff');
+  up = true; now.add(L.backoffMinutes(2) + 1);
+  await tick(opts);
+  b = store.list[0];
+  assert.equal(starts, 2); assert.equal(b.failure.fix.session, 'fixer-2');
+});
+
 test('two steps clash in code: split; then main clashes with the second: a fix session, CI on its push, landed', async () => {
   const r = repo({ 'claude/b-s1': { 'shared.txt': 'one\nTWO by s1\nthree\n' }, 'claude/b-s2': { 'shared.txt': 'one\nTWO by s2\nthree\n' } });
   const gh = github(r); const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1'], ['s2', 'claude/b-s2']])], { now });

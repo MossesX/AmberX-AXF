@@ -130,6 +130,7 @@ try:
         check(e.status_code == 400 and "only a Pending build" in e.detail, "a refused move is a 400 with the reason")
     # one way to start builds: the dispatch service every other plugin uses; API switches are Brett's own click
     import asyncio
+    import re
     import plugin_services
 
     class _Req:
@@ -154,6 +155,34 @@ try:
             code = e.status_code
         check(code == want, f"API overflow {'on' if body['apiOverflow'] else 'off'} by {'Brett' if brett else 'a session'}: {want}")
     check(_calls[-1][-2] == "apiOverflow=true", "a Python bool reaches the CLI as true/false")
+    # every pipeline-settings@1 key is settable through the route (stepsInParallel once answered "nothing to change")
+    asyncio.run(srv.pipeline_settings_set(_Req({"stepsInParallel": 6})))
+    check(_calls[-1][2] == "set" and "stepsInParallel=6" in _calls[-1], "stepsInParallel reaches the CLI as stepsInParallel=6")
+    asyncio.run(srv.pipeline_settings_set(_Req({"healthEveryMin": 10, "briefMaxBytes": 65536, "autoQueue": False})))
+    check({"healthEveryMin=10", "briefMaxBytes=65536", "autoQueue=false"} <= set(_calls[-1]), "healthEveryMin, briefMaxBytes and autoQueue off reach the CLI")
+    for brett, want in ((False, 403), (True, 200)):
+        try:
+            asyncio.run(srv.pipeline_settings_set(_Req({"autoQueue": True}, brett)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"launch without asking on by {'Brett' if brett else 'a session'}: {want}")
+    # axf.pipeline-settings@1: another plugin's screen saves through the same guards
+    psvc = plugin_services.get("axf.pipeline-settings@1")
+    psvc.set(_Req({}), {"stepsInParallel": 5})
+    check(_calls[-1][2] == "set" and "stepsInParallel=5" in _calls[-1], "the settings service saves stepsInParallel")
+    try:
+        psvc.set(_Req({}), {"apiOverflow": True})
+        code = 200
+    except srv.HTTPException as e:
+        code = e.status_code
+    check(code == 403, "the settings service keeps the Brett-only guard")
+    core = (HERE / "pipeline-core.mjs").read_text()
+    defaults = set(re.findall(r"^  (\w+):", core[core.index("export const DEFAULTS"):core.index("const LIMITS")], re.M))
+    check(defaults == set(srv.PIPELINE_SETTING_KEYS), "the route's allowlist is exactly the keys of pipeline-core.mjs DEFAULTS")
+    manifest = json.loads((HERE / "plugin.json").read_text())
+    tool = next(c for c in manifest["commands"]["items"] if c.get("id") == "pipeline-settings-set")
+    check(set(tool["input"]["properties"]) == set(srv.PIPELINE_SETTING_KEYS), "the MCP tool's input lists every settable key")
     for route, brett, want in (("api", False, 403), ("api", True, 200), ("subscription", False, 200), ("nowhere", True, 400)):
         try:
             asyncio.run(srv.pipeline_route(_Req({"id": "alpha", "route": route}, brett)))

@@ -57,6 +57,13 @@
         "title": "axHub",
         "text": "Which hub the console belongs to, which session its pages use here (your browser's own or the console's owner sign-in), and a tap to each hub page.",
         "kind": "screen"
+      },
+      {
+        "target": "sign-in-on-axhub",
+        "title": "Sign in on axHub",
+        "text": "Signs in on axHub. Part of axHub account.",
+        "kind": "button",
+        "draft": true
       }
     ]
   }

@@ -17,7 +17,9 @@
  *   … add <kind> "<title>" [--in <item>] [--at n] [--body …] [--model Opus] [--minutes 20] [--priority P1] [--tags a,b]
  *   … rename <item> "<title>" · edit <item> --title … --status … --done true --priority … --model … --minutes … --kind …
  *   … move <item> [--in <item>|--top] [--at n] · up <item> · down <item> · indent <item> · outdent <item>
- *   … duplicate <item> · delete <item> · undo [<trash id>] · trash
+ *   … duplicate <item> · delete|remove <item> [<id>…] · undo [<trash id>] · trash     delete takes any item (plan, section,
+ *                                                                 step, note …) with everything under it to the trash; undo brings it back.
+ *                                                                 Every delete is also appended to deleted.jsonl in the store folder
  *   … link <item> <todo|build|note|shipped|plan|url> <ref> [--label …] · unlink <item> <type> <ref>
  *   … collapse [<item>|--all] · expand [<item>|--all]
  *   … export [<item>] [--json] [--out file] · import <file.json> [--in <item>]
@@ -65,6 +67,14 @@ const file = () => join(storeDir(), FILE);
 
 export function load() { return tc.normalize(readJson(file(), tc.emptyState())); }
 export function save(state) { const s = tc.normalize(state); writeJson(file(), s); return s; }
+
+/** Every delete, one JSON line each (the trash keeps only the newest TRASH_MAX; this file keeps them all). */
+export const DELETED_FILE = 'deleted.jsonl';
+/** Append what a delete removed (the trash entry: the item and everything under it) before the tree is saved without it. */
+export function backupDeleted(entry) {
+  dataFiles.appendJsonlSync(join(storeDir(), DELETED_FILE), { $axf: 'plan-tree-deleted@1', ...entry });
+  return DELETED_FILE;
+}
 
 /* ------------------------------------------------------------------ the build orchestrator (explicit hand-off) */
 
@@ -159,7 +169,7 @@ export function api(r, { by = '' } = {}) {
     case 'indent': { const res = tc.indent(s, r.id); return done(res, res.changed === false ? 'It is already first; nothing to indent into.' : `Indented "${res.item.title}".`); }
     case 'outdent': { const res = tc.outdent(s, r.id); return done(res, res.changed === false ? 'It is already at the top level.' : `Outdented "${res.item.title}".`); }
     case 'duplicate': { const res = tc.duplicate(s, r.id, who); return done(res, `Duplicated it as "${res.item.title}" (${res.count} items).`); }
-    case 'delete': { const res = tc.remove(s, r.id, who); return done(res, `Deleted "${res.item.title}" (${res.removed} items). Say undo to bring it back.`); }
+    case 'delete': { const res = tc.remove(s, r.id, who); const backup = backupDeleted(res.state.trash.find((t) => t.id === res.trashId)); return done({ ...res, backup }, `Deleted "${res.item.title}" (${res.removed} items). Say undo to bring it back.`); }
     case 'undo': { const res = tc.undo(s, r.trashId ?? ''); return done(res, res.item ? `Brought back "${res.item.title}".` : `Brought ${res.restored} items back.`); }
     case 'link': { const res = tc.link(s, r.id, { type: r.type, ref: r.ref, label: r.label }); return done(res, res.changed ? `Linked "${res.item.title}" to the ${r.type} ${r.label || r.ref}.` : 'That link is already there.'); }
     case 'unlink': { const res = tc.unlink(s, r.id, { type: r.type, ref: r.ref }); return done(res, res.changed ? 'Link removed.' : 'No such link.'); }
@@ -216,7 +226,15 @@ export async function main(argv = process.argv.slice(2)) {
       case 'indent': return out(api({ op: 'indent', id: a[0] }), 'indented');
       case 'outdent': return out(api({ op: 'outdent', id: a[0] }), 'outdented');
       case 'duplicate': { const r = api({ op: 'duplicate', id: a[0] }); return out(r, `${r.say} id ${r.item.id}`); }
-      case 'delete': { const r = api({ op: 'delete', id: a[0] }); return out(r, `${r.say} (trash ${r.trashId})`); }
+      case 'delete': case 'remove': case 'rm': {
+        if (!a.length) throw new tc.TreeError('validation', `usage: ${cmd} <item> [<id>…]`);
+        // every item is resolved before anything goes, so a typo deletes nothing; several items are given by id only
+        // (an unquoted title would otherwise read as several items)
+        const st = load(); const ids = a.map((ref) => { const it = a.length > 1 ? tc.byId(st, ref) : tc.resolve(st, ref); if (!it) throw new tc.TreeError('not_found', `no item "${ref}"${a.length > 1 ? ' (several items are deleted by id; nothing was deleted)' : ''}`); return it.id; });
+        const done = [...new Set(ids)].filter((id, _i, all) => !tc.ancestors(st, id).some((x) => all.includes(x.id))).map((id) => api({ op: 'delete', id }));
+        if (done.length === 1) return out(done[0], `${done[0].say} (trash ${done[0].trashId})`);
+        return out({ ok: true, rev: done.at(-1).rev, deleted: done.map((r) => ({ id: r.item.id, title: r.item.title, removed: r.removed, trashId: r.trashId })) }, done.map((r) => `${r.say} (trash ${r.trashId})`).join('\n'));
+      }
       case 'undo': { const r = api({ op: 'undo', trashId: a[0] }); return out(r, r.say); }
       case 'trash': { const r = api({ op: 'trash' }); return out(r, r.trash.map((t) => `${t.id}  ${t.at}  ${t.title} (${t.items})`).join('\n') || 'the trash is empty'); }
       case 'link': return out(api({ op: 'link', id: a[0], type: a[1], ref: a[2], label: flags.label }), 'linked');
@@ -230,7 +248,7 @@ export async function main(argv = process.argv.slice(2)) {
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }
       case 'api': { const raw = a[0] ?? readFileSync(0, 'utf8'); const r = api(JSON.parse(raw)); return console.log(JSON.stringify(r)); }
-      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|say|clear|api|where'); process.exitCode = 2;
+      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|remove|undo|trash|link|unlink|collapse|expand|export|import|build|say|clear|api|where'); process.exitCode = 2;
     }
   } catch (e) {
     const err = { ok: false, error: e.message, code: e.code ?? 'error' };

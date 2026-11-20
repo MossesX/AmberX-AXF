@@ -24,6 +24,29 @@
         "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
       },
       {
+        "target": "gate-build-slots",
+        "title": "Builds at once",
+        "text": "Two numbers side by side under Settings → Plugins → Gate. Steps in parallel: how many steps of one build run at once (1 to 12). Host cap: the most builds the VPS runs at once, whoever asks. Each shows its live value. A note appears when steps in parallel is above the host cap: only as many as the cap run until it is raised."
+      },
+      {
+        "target": "steps-in-parallel",
+        "title": "Steps in parallel",
+        "text": "How many steps of one build run at once, from 1 to 12. The hint shows the live value. Anyone may change it. Above the host cap, only as many as the cap run.",
+        "kind": "field"
+      },
+      {
+        "target": "host-cap",
+        "title": "Host cap",
+        "text": "The most builds the VPS runs at once, whoever asks, with how many are running now. Only Brett changes it, from his own signed-in console; everyone else sees it read-only.",
+        "kind": "field"
+      },
+      {
+        "target": "button:gate-build-slots-save",
+        "title": "Save",
+        "text": "Saves the number that changed. Steps in parallel is saved by the Build Orchestrator; the host cap by the Agent cap plugin, and only from Brett's own signed-in console (everyone else sees it read-only).",
+        "kind": "control"
+      },
+      {
         "target": "rules",
         "title": "Rules",
         "text": "Every gate rule with its on/off switch, severity and settings."

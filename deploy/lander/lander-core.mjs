@@ -12,7 +12,8 @@
  * Size cap: when the combined diff is over `sizeCapLines`, the steps are grouped in order into as few PRs as the cap
  * allows (never one PR per step unless the steps are that big). The PRs land one at a time, in order: each group runs
  * merging-pr → … → merging-main before the next group starts. The build status always shows the phase of the group in
- * flight; per group it only moves forward.
+ * flight; per group it only moves forward. After a split only the steps of the PR that failed land one PR each: the
+ * steps after them are grouped under the cap again.
  *
  * Failures (ported from the retired auto-land rules: push-banner land.mjs + deploy/auto-lander decide()): the build goes
  * `failed` with `attempt: N` and a `failure` record, and the next tick retries forward by itself after a backoff:
@@ -41,7 +42,7 @@ export const FAILURE_KINDS = Object.freeze(['clash-steps', 'clash-main', 'ci-red
 export const DEFAULTS = Object.freeze({
   enabled: true,
   /** Lines changed (insertions + deletions, tracking files left out) one PR may carry before the steps are grouped. */
-  sizeCapLines: 4000,
+  sizeCapLines: 20000,
   /** Re-runs of the failed CI jobs per head before a red CI counts as real. */
   flakyReruns: 1,
   /** Minutes to wait before retry N: min(backoffMaxMin, backoffBaseMin × backoffFactor^(N−1)). */
@@ -136,11 +137,16 @@ export const stepBranch = (b, s) => str(s?.branch, 200) || str(b?.branch, 200);
 /** The steps the lander lands: every step that isn't skipped. */
 export const landSteps = (b) => (Array.isArray(b?.steps) ? b.steps : []).filter((s) => s && !s.skip && !s.removed);
 
-/** The build's landing record (contract addition, flagged for review): { split, merged: [pr], closed: [pr] }. */
+/**
+ * The build's landing record (contract addition, flagged for review): { split, splitSteps: [step id], merged: [pr],
+ * closed: [pr] }. `splitSteps` = the steps of the PRs that were split; `split` with none listed (a record from before
+ * the list existed) means every step.
+ */
 export function landingOf(b) {
   const l = obj(b?.landing);
   const nums = (v) => (Array.isArray(v) ? v.map((x) => num(x)).filter((x) => x > 0) : []);
-  return { split: l.split === true, merged: nums(l.merged), closed: nums(l.closed) };
+  const splitSteps = (Array.isArray(l.splitSteps) ? l.splitSteps : []).map((x) => str(x, 80)).filter(Boolean);
+  return { split: l.split === true, splitSteps, merged: nums(l.merged), closed: nums(l.closed) };
 }
 
 /**
@@ -176,8 +182,9 @@ export function groupState(b) {
 
 /**
  * Group steps in order under the size cap: each group as big as fits; a step bigger than the cap alone. `sizes` maps
- * step id → lines changed. `split` (after a combined PR failed): one step per group. Steps that share a branch always
- * stay together (one branch can't be in two PRs). → [[step, …], …]
+ * step id → lines changed. `split` (after a combined PR failed): true = one step per group; a list of step ids = those
+ * steps one per group, the others grouped under the cap around them (order kept). Steps that share a branch always stay
+ * together (one branch can't be in two PRs). → [[step, …], …]
  */
 export function groupSteps(steps, sizes = {}, cap = DEFAULTS.sizeCapLines, { split = false, branchOf = (s) => s.branch || '' } = {}) {
   // steps sharing a branch are one unit
@@ -187,13 +194,21 @@ export function groupSteps(steps, sizes = {}, cap = DEFAULTS.sizeCapLines, { spl
     if (u) u.steps.push(s); else units.push({ branch: br, steps: [s], size: 0 });
   }
   for (const u of units) u.size = u.branch ? Math.max(...u.steps.map((s) => num(sizes[s.id]))) : u.steps.reduce((t, s) => t + num(sizes[s.id]), 0);
-  if (split) return units.map((u) => u.steps);
+  if (split === true) return units.map((u) => u.steps);
+  const alone = new Set(Array.isArray(split) ? split : []);
   const groups = []; let cur = null;
   for (const u of units) {
+    if (u.steps.some((s) => alone.has(s.id))) { groups.push({ steps: [...u.steps], size: u.size }); cur = null; continue; }
     if (cur && cur.size + u.size <= cap) { cur.steps.push(...u.steps); cur.size += u.size; continue; }
     cur = { steps: [...u.steps], size: u.size }; groups.push(cur);
   }
   return groups.map((g) => g.steps);
+}
+
+/** The `split` option of groupSteps for a build: false, true (every step: an old record) or the listed step ids. */
+export function splitOf(b) {
+  const l = landingOf(b);
+  return l.splitSteps.length ? l.splitSteps : l.split;
 }
 
 /** Total lines of a diff --numstat text, tracking files (and binary "-" lines) left out. */
@@ -250,7 +265,7 @@ export function backoffMinutes(n, cfg = DEFAULTS) {
 
 /**
  * The failure record and the retry it calls for. `ctx` = { status (the phase it failed in), groupSize, reruns (on this
- * head), head, pr, why, at }. → { attempt, failure: { kind, status, why, head, pr, at, retry, notBefore } }
+ * head), head, pr, why, at, steps (the ids of a group that never became a PR) }. → { attempt, failure: { kind, status, why, head, pr, at, retry, notBefore } }
  * retry: rerun | split | fix | pull-main | same.
  */
 export function failure(b, kind, ctx = {}, cfg = DEFAULTS) {
@@ -269,7 +284,7 @@ export function failure(b, kind, ctx = {}, cfg = DEFAULTS) {
   const wait = retry === 'rerun' && attempt === 1 ? 0 : backoffMinutes(attempt, c);
   return {
     attempt,
-    failure: { kind: k, status: str(ctx.status, 40) || failedIn(b), why: str(ctx.why, 600), head: str(ctx.head, 64), pr: num(ctx.pr) || 0, at, retry, notBefore: plusMin(at, wait), ...(ctx.failing?.length ? { failing: ctx.failing.slice(0, 10).map((x) => str(x, 120)) } : {}), ...(ctx.runIds?.length ? { runIds: ctx.runIds.slice(0, 10).map((x) => num(x)).filter(Boolean) } : {}) },
+    failure: { kind: k, status: str(ctx.status, 40) || failedIn(b), why: str(ctx.why, 600), head: str(ctx.head, 64), pr: num(ctx.pr) || 0, at, retry, notBefore: plusMin(at, wait), ...(ctx.failing?.length ? { failing: ctx.failing.slice(0, 10).map((x) => str(x, 120)) } : {}), ...(ctx.runIds?.length ? { runIds: ctx.runIds.slice(0, 10).map((x) => num(x)).filter(Boolean) } : {}), ...(ctx.steps?.length ? { steps: ctx.steps.slice(0, 200).map((x) => str(x, 80)) } : {}) },
   };
 }
 

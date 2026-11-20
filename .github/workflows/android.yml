@@ -412,6 +412,9 @@ jobs:
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate
+            python apps/console-web/plugins/gate/server/test_routes.py  # gate REST routes: rules, lander, settings, build-slots (steps in parallel + host cap, host cap Brett only)  # axf-plugin:gate
+            python apps/console-web/plugins/build-orchestrator/test.py  # orchestrator REST routes: pipeline settings allowlist = pipeline-core DEFAULTS, Brett-only switches, groups  # axf-plugin:build-orchestrator
+            python apps/console-web/plugins/agent-slots/test.py  # agent cap REST routes: queue, hard limit read by all and set by Brett only (route and service)  # axf-plugin:agent-slots
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue
         if: failure()

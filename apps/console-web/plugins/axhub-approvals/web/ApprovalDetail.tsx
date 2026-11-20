@@ -61,6 +61,7 @@ function Detail() {
         <div>
           <p className="fx-eyebrow">Approval request</p>
           <h1>{item ? item.title : 'Request'}</h1>
+          <p className="fx-muted">One call in full before you decide: the reason, the exact code, who asked and what it changes.</p>
           {item && <SourceLine item={item} asked={when(item.createdAt)} />}
           {/* Brett (Oct 27 2026): the decision buttons are on the first screen, right under the title, before any
               description or code, so Approve never needs a scroll on a phone. */}

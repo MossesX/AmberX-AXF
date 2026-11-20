@@ -94,6 +94,19 @@ bc = TestClient(owner_app)
 r = bc.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 5, "dockerCpus": 1.5, "nope": 1})
 ok(r.status_code == 200 and r.json().get("max") == 5 and r.json().get("canEdit") is True and r.json()["limit"]["setBy"] == "Brett", f"Brett sets it ({r.status_code} {r.text[:200]})")
 ok(bc.put("/api/plugins/agent-slots/hard-limit", json={"nope": 1}).status_code == 400, "nothing to save = 400")
+# the capability another plugin's screen saves through: the same guard, whoever calls
+svc = plugin_services.get("axf.agent-slots@1")
+token_req = types.SimpleNamespace(state=types.SimpleNamespace(axf_user=None))
+brett_req = types.SimpleNamespace(state=types.SimpleNamespace(axf_user=types.SimpleNamespace(admin=True, name="Brett")))
+ok(svc.can_edit_hard_limit(token_req) is False and svc.can_edit_hard_limit(brett_req) is True, "service: only Brett's session may edit")
+try:
+    svc.set_hard_limit(token_req, {"maxBuilds": 9})
+    refused = 0
+except mod.HTTPException as e:
+    refused = e.status_code
+ok(refused == 403 and svc.hard_limit().get("max") == 5, "service: the console token is refused and nothing changes")
+ok(svc.set_hard_limit(brett_req, {"maxBuilds": 6}).get("max") == 6, "service: Brett's session saves")
+ok(bc.put("/api/plugins/agent-slots/hard-limit", json={"maxBuilds": 5}).json().get("max") == 5, "back to 5 for the checks below")
 ok(json.loads(cli("settings", "--json"))["maxAgents"] == 1 and c.get("/api/plugins/agent-slots/status").json()["settings"].get("hardMax") == 5, "the soft cap sees the hard limit")
 
 # systems-check probe

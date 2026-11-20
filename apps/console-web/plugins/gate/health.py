@@ -3,6 +3,8 @@
   gate-lander   red when the lander is stuck: a PR has been landing for more than STUCK_MIN minutes, or the last run
                 ended in an error; amber while it is paused for more than PAUSED_H hours or switched off. The lander's
                 state comes from the plugin's own `lander_status` (the same record as GET lander and lander_status).
+  gate-build-slots   amber when steps in parallel (pipeline setting) is above the host cap (the VPS hard build limit):
+                the extra steps wait. Only Brett raises the host cap, so the item carries his exact steps.
 Alerts (raised by the server part): `gate:lander-paused` while the lander is paused; `gate:pr-held:<pr>:<rule>` once per
 PR and rule when a waiting PR fails a gate rule and needs a fix; both resolve by themselves.
 Pure functions here (test_routes.py drives them); the server part registers and calls them.
@@ -21,6 +23,37 @@ PAUSED_H = 12
 SOURCE = "gate"
 PAUSED_KEY = "gate:lander-paused"
 HELD_PREFIX = "gate:pr-held:"
+
+
+SLOTS_CHECK_ID = "gate-build-slots"
+
+
+def slots_check(slots: dict[str, Any]) -> dict[str, Any]:
+    """The verdict from one build-slots answer (GET build-slots): amber when more steps are allowed than the host runs."""
+    steps, cap = slots.get("stepsInParallel") or {}, slots.get("hostCap") or {}
+    if not steps.get("available") or not cap.get("available"):
+        return {"status": "ok", "summary": "Steps in parallel or the host cap can't be read right now; nothing to compare."}
+    if steps["value"] <= cap["value"]:
+        return {"status": "ok", "summary": f"Steps in parallel is {steps['value']}, the host cap is {cap['value']}."}
+    return {"status": "warn", "summary": f"Steps in parallel is {steps['value']} but the host cap is {cap['value']}: at most {cap['value']} run at once.",
+            "details": [f"Brett: Settings → Plugins → Gate → Builds at once → Host cap → {steps['value']} → Save (your own signed-in console).",
+                        "Or lower Steps in parallel there to match the host cap."]}
+
+
+def ensure_slots(services: Any, read: Callable[[], dict[str, Any]]) -> bool:
+    """Register the build-slots check once the systems check provides axf.health@1."""
+    reg = services.get(CAPABILITY) if services is not None else None
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": SLOTS_CHECK_ID, "label": "Steps in parallel fit under the host cap", "service": "builds", "order": 57, "severity": "warn",
+                      "run": lambda: slots_check(read()),
+                      "breaks": "Steps beyond the host cap wait for a free place, so a build runs fewer steps at once than its setting says.",
+                      "instructions": ["Brett only: Settings → Plugins → Gate → Builds at once → raise Host cap to the Steps in parallel number → Save, from your own signed-in console.",
+                                       "Anyone: lower Steps in parallel there (or `pipeline.mjs set stepsInParallel=<n>`) to the host cap."]}, OWNER)
+    except Exception:  # noqa: BLE001 — the plugin works without its check
+        return False
+    return True
 
 
 def _ms(iso: str) -> float:

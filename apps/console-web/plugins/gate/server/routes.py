@@ -17,6 +17,7 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   POST lander/land-now {pr, confirm?}   two-step: puts the PR at the head of the line in the current mode
   POST lander/pause {why?} · POST lander/resume
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
+  GET  build-slots · PUT build-slots {stepsInParallel?, maxBuilds?}    parallel builds and the host cap, side by side
   The lander (lander@1, deploy/lander/run.mjs; the same routes the auto-lander@1 runner answered before Nov 19 2026):
   GET  auto-lander                      service up, current build, queue, per-build state and attempts, escalations
   GET  auto-lander/builds/<build>       one build's record and attempt log
@@ -46,7 +47,7 @@ import threading
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
@@ -61,7 +62,7 @@ _spec_al = importlib.util.spec_from_file_location("axf_gate_auto_lander_health",
 al_health = importlib.util.module_from_spec(_spec_al)  # the server auto-lander's systems-check item (pure)
 _spec_al.loader.exec_module(al_health)  # type: ignore[union-attr]
 AL_CLI = ROOT / "deploy" / "lander" / "run.mjs"  # the Pipeline 2.0 lander (replaced deploy/auto-lander, Nov 19 2026)
-STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
+STATUS = {"invalid": 400, "forbidden": 403, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
 
 
@@ -202,7 +203,8 @@ def ensure_health() -> None:
             return
         lander = health.ensure(plugin_services, _status_for_health)
         server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))  # axf-not-plugin:systems-check (actor name)
-        _health_on["done"] = lander and server
+        slots = health.ensure_slots(plugin_services, lambda: build_slots(None))
+        _health_on["done"] = lander and server and slots
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
@@ -368,6 +370,100 @@ async def build_rules_toggle(rule_id: str, request: Request) -> JSONResponse:
 async def build_rules_delete(rule_id: str, request: Request) -> JSONResponse:
     """Delete a build rule; the first call answers confirmation_required with a token, the second sends confirm."""
     return await _write("build_rules_delete", request, {"id": rule_id})
+
+
+# ---------------------------------------------------------------------- parallel builds and the host cap, side by side
+# Two numbers that belong together (Brett, Nov 20 2026): how many steps of one build may run at once (pipeline-settings@1
+# stepsInParallel) and how many builds the VPS runs at all (build-limit@1 maxBuilds). Each stays with its owner and is
+# read and saved through that owner's capability service, guards included: the host cap is Brett's own signed-in click.
+
+PIPELINE_SETTINGS = "axf.pipeline-settings@1"
+AGENT_SLOTS = "axf.agent-slots@1"
+STEPS_RANGE = (1, 12)  # pipeline-core.mjs LIMITS.stepsInParallel
+CAP_RANGE = (1, 64)    # framework/cli/build-limit.mjs maxBuilds
+
+
+def _service(name: str) -> Any:
+    try:
+        import plugin_services
+        return plugin_services.get(name)
+    except Exception:  # noqa: BLE001 - no registry (a test, a bare server) means the owner is not there
+        return None
+
+
+def _int(v: Any) -> int | None:
+    return v if isinstance(v, int) and not isinstance(v, bool) else None
+
+
+def build_slots(request: Request | None) -> dict[str, Any]:
+    """Both numbers as they are live. A number whose owner is off or silent comes back unavailable with the reason.
+    Without a request (the systems check) nobody may edit."""
+    out: dict[str, Any] = {"ok": True}
+    steps: dict[str, Any] = {"value": None, "min": STEPS_RANGE[0], "max": STEPS_RANGE[1], "available": False}
+    pipe = _service(PIPELINE_SETTINGS)
+    if pipe is None:
+        steps["why"] = "The Build Orchestrator plugin is off."
+    else:
+        try:
+            steps["value"] = _int((pipe.get().get("settings") or {}).get("stepsInParallel"))
+            steps["available"] = steps["value"] is not None
+        except HTTPException as e:
+            steps["why"] = str(e.detail)[:300]
+    cap: dict[str, Any] = {"value": None, "min": CAP_RANGE[0], "max": CAP_RANGE[1], "available": False, "canEdit": False}
+    slots = _service(AGENT_SLOTS)
+    if slots is None:
+        cap["why"] = "The Agent cap plugin is off."
+    else:
+        hard = slots.hard_limit()
+        cap["value"] = _int(hard.get("max"))
+        cap["available"] = cap["value"] is not None
+        cap["live"] = _int(hard.get("live"))
+        cap["canEdit"] = cap["available"] and request is not None and bool(slots.can_edit_hard_limit(request))
+        if not cap["available"]:
+            cap["why"] = str(hard.get("error") or "The hard build limit did not answer.")[:300]
+    over = steps["available"] and cap["available"] and steps["value"] > cap["value"]
+    out.update(stepsInParallel=steps, hostCap=cap, over=bool(over))
+    if over:
+        out["note"] = f"Steps in parallel ({steps['value']}) is above the host cap ({cap['value']}): at most {cap['value']} run at once until the cap is raised."
+    return out
+
+
+@router.get("/build-slots")
+async def build_slots_get(request: Request) -> JSONResponse:
+    """Steps in parallel (1-12) and the host cap (max builds on the VPS) with their live values; canEdit says whether this
+    caller may change the host cap (Brett's own signed-in console only)."""
+    return answer(await run_in_threadpool(build_slots, request))
+
+
+def _save_build_slots(request: Request, body: dict[str, Any]) -> dict[str, Any]:
+    steps, cap = body.get("stepsInParallel"), body.get("maxBuilds")
+    if steps is None and cap is None:
+        return {"ok": False, "code": "invalid", "message": "Send stepsInParallel (1 to 12), maxBuilds, or both."}
+    for label, v, (lo, hi) in (("stepsInParallel", steps, STEPS_RANGE), ("maxBuilds", cap, CAP_RANGE)):
+        if v is not None and (_int(v) is None or not lo <= v <= hi):
+            return {"ok": False, "code": "invalid", "message": f"{label} is a whole number from {lo} to {hi}."}
+    pipe, slots = _service(PIPELINE_SETTINGS), _service(AGENT_SLOTS)
+    if steps is not None and pipe is None:
+        return {"ok": False, "code": "unavailable", "message": "The Build Orchestrator plugin is off, so steps in parallel can't be saved."}
+    if cap is not None and slots is None:
+        return {"ok": False, "code": "unavailable", "message": "The Agent cap plugin is off, so the host cap can't be saved."}
+    try:
+        # the guarded one first: a refused host cap saves nothing
+        if cap is not None:
+            slots.set_hard_limit(request, {"maxBuilds": cap})
+        if steps is not None:
+            pipe.set(request, {"stepsInParallel": steps})
+    except HTTPException as e:
+        return {"ok": False, "code": "forbidden" if e.status_code == 403 else "invalid", "message": str(e.detail)[:400]}
+    return {**build_slots(request), "saved": {k: v for k, v in (("stepsInParallel", steps), ("maxBuilds", cap)) if v is not None}}
+
+
+@router.put("/build-slots")
+async def build_slots_set(request: Request) -> JSONResponse:
+    """{stepsInParallel?, maxBuilds?}: save one or both through their owners. maxBuilds (the host cap) is Brett only: his
+    own signed-in console session; every other caller gets 403 and nothing is saved."""
+    body = await _body(request)
+    return answer(await run_in_threadpool(_save_build_slots, request, body))
 
 
 # ---------------------------------------------------------------------- the server auto-lander (auto-lander@1)

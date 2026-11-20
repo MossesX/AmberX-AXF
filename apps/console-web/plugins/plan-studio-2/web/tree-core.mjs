@@ -144,14 +144,19 @@ export function flatten(s, { collapsed = null, parent = null, depth = 0, out = [
   return out;
 }
 
-/** Words → matching items, best first (title hits over body hits; every word must appear somewhere). */
+/**
+ * Words → matching items, best first (title hits over body hits; every word must appear somewhere). A query that is
+ * exactly an item's id finds that item first, so `find <id>` answers whether the item is still there.
+ */
 export function find(s, q, { kind = '', limit = 20, under = '' } = {}) {
   const words = str(q, 400).toLowerCase().split(/\s+/).filter(Boolean);
   let pool = under ? descendants(s, under) : s.items;
   if (kind) pool = pool.filter((i) => i.kind === kind);
   if (!words.length) return pool.slice(0, limit).map((i) => hit(s, i, 0));
   const hits = [];
+  const asId = str(q, 400).trim();
   for (const i of pool) {
+    if (i.id === asId) { hits.push(hit(s, i, 1000)); continue; }
     const t = i.title.toLowerCase();
     const all = `${t} ${i.body.toLowerCase()} ${i.tags.join(' ').toLowerCase()}`;
     if (!words.every((w) => all.includes(w))) continue;

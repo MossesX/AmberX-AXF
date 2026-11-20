@@ -14,7 +14,8 @@
     "view:build-orchestrator",
     "settings-tab:build-orchestrator",
     "service:orchestrator@1",
-    "service:axf.build-dispatch@1"
+    "service:axf.build-dispatch@1",
+    "service:axf.pipeline-settings@1"
   ],
   "scopes": [
     "ROUTES"
@@ -628,7 +629,7 @@
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. stepsInParallel = steps of one build that run at once (1-12, under the VPS slot cap). apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
         "input": {
           "type": "object",
           "properties": {
@@ -652,6 +653,29 @@
             },
             "idleAfterMin": {
               "type": "integer"
+            },
+            "probeDays": {
+              "type": "integer"
+            },
+            "healthEveryMin": {
+              "type": "integer",
+              "description": "Minutes between account health sweeps (0 = off)"
+            },
+            "briefMaxBytes": {
+              "type": "integer"
+            },
+            "fablePlans": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "useConsoleAccount": {
+              "type": "boolean"
+            },
+            "autoQueue": {
+              "type": "boolean",
+              "description": "New builds go straight to the Queue (turning it on is Brett's own click)"
             },
             "splitProvider": {
               "type": "string",

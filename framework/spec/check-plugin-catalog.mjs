@@ -127,7 +127,7 @@ throws('symlinked plugin folder not touched', () => cat.unpack(pkg, linkPlugins,
 check('console server skips dot folders', /startswith\(\("_", "\."\)\)/.test(readFileSync(join(REPO, 'apps/console-web/server/main.py'), 'utf8')));
 
 
-// axhub kind (axHub web plugins): web files only, installed into the app folder in this repo (app-install/app-uninstall)
+// axhub kind (axHub web plugins): web files only; app-install / app-uninstall work for a kind with an app folder (`into`)
 {
   const asrc = join(tmp, 'src', 'hub-hello');
   mkdirSync(join(asrc, 'web'), { recursive: true });
@@ -140,6 +140,11 @@ check('console server skips dot folders', /startswith\(\("_", "\."\)\)/.test(rea
   throws('axhub package with a server file refused', () => cat.verifyPackage({ ...ap, files: [...ap.files, { path: 'server.py', b64: '' }] }), /may only carry/);
   throws('axhub package needs axhub-plugin@1', () => cat.pack(src, 'axhub'), /axhub-plugin@1/);
   check('axhub published', cat.publishPackage(ap).published === true);
+  // No kind installs into an app today (apps/axhub-web folded into the console, Nov 20 2026): the axhub kind has no
+  // `into`. The app-install path stays for a kind that gets one, and is exercised here with `into` set for the test.
+  check('the repo kind registry has axhub, with no app folder', !!cat.KINDS.axhub && !cat.KINDS.axhub.into);
+  throws('axhub plugins install into no app', () => cat.listAppPlugins('axhub'), /don't install into an app/);
+  cat.KINDS.axhub.into = 'apps/axhub-web/src/plugins';
   throws('app folder missing in the clone', () => cat.listAppPlugins('axhub'), /missing/);
   throws('console kind has no app folder', () => cat.appPluginsDir('console'), /don't install into an app/);
   mkdirSync(join(root, 'apps/axhub-web/src/plugins/_template'), { recursive: true });
@@ -156,7 +161,7 @@ check('console server skips dot folders', /startswith\(\("_", "\."\)\)/.test(rea
   check('uninstall refuses a folder without an axhub plugin', /doesn't hold/.test(nap?.message ?? '') && existsSync(join(root, 'apps/axhub-web/src/plugins/not-a-plugin')));
   const u = await cat.uninstallAppPlugin('axhub', 'hub-hello');
   check('app-uninstall removes it', u.removed === 'hub-hello' && !existsSync(join(root, 'apps/axhub-web/src/plugins/hub-hello')));
-  check('the repo kind registry has axhub', cat.KINDS.axhub?.into === 'apps/axhub-web/src/plugins');
+  delete cat.KINDS.axhub.into;
 }
 
 console.log(`plugin catalog: ${ok} passed, ${fail} failed`);

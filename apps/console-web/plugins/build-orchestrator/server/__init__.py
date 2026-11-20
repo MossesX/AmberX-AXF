@@ -826,6 +826,11 @@ async def pipeline_account(request: Request) -> dict[str, Any]:
     return _pipeline(*args)
 
 
+# The keys POST /pipeline/settings passes on: one per key of pipeline-core.mjs DEFAULTS (test.py holds the two in step).
+PIPELINE_SETTING_KEYS = frozenset({"parallelPerAccount", "stepsInParallel", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin",
+                                   "probeDays", "splitProvider", "autoQueue", "apiOverflow", "apiAccounts", "healthEveryMin", "briefMaxBytes"})
+
+
 @router.get("/pipeline/settings")
 def pipeline_settings() -> dict[str, Any]:
     return _pipeline("settings")
@@ -833,23 +838,45 @@ def pipeline_settings() -> dict[str, Any]:
 
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
-    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
-    does that (a session, MCP or voice may turn it off)."""
-    body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
-    if body.get("apiOverflow") is True and not brett_click(request):
+    """{key: value…} for pipeline-settings@1: every key of pipeline-core.mjs DEFAULTS (parallelPerAccount, stepsInParallel,
+    fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays, splitProvider, autoQueue, apiOverflow, apiAccounts,
+    healthEveryMin, briefMaxBytes); the CLI clamps numbers to its LIMITS. Turning the API overflow rule on spends money per
+    token and turning autoQueue on launches builds without asking: only Brett's own click does either (a session, MCP or
+    voice may turn them off)."""
+    return pipeline_settings_apply(await _json_body(request), bool(brett_click(request)))
+
+
+def pipeline_settings_apply(body: dict[str, Any], brett: bool) -> dict[str, Any]:
+    """Save pipeline-settings@1 keys (the route above and the axf.pipeline-settings@1 service). `brett` = the request is
+    Brett's own click in the console: only that turns apiOverflow or autoQueue on."""
+    if body.get("apiOverflow") is True and not brett:
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
+    if body.get("autoQueue") is True and not brett:
+        raise HTTPException(403, "turning launch-without-asking on is Brett's own click in the console")
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
             return "true" if v else "false"
         return ",".join(map(str, v)) if isinstance(v, list) else str(v)
 
-    pairs = [f"{k}={val(v)}" for k, v in body.items() if k in allowed]
+    pairs = [f"{k}={val(v)}" for k, v in body.items() if k in PIPELINE_SETTING_KEYS]
     if not pairs:
         raise HTTPException(400, "nothing to change")
     return _pipeline("set", *pairs)
+
+
+class PipelineSettingsService:
+    """axf.pipeline-settings@1: the dispatcher's settings for other plugins' screens. get() → {ok, settings};
+    set(request, {key: value…}) saves through the same guards as POST pipeline/settings."""
+
+    def get(self) -> dict[str, Any]:
+        return _pipeline("settings")
+
+    def set(self, request: Request, body: dict[str, Any]) -> dict[str, Any]:
+        return pipeline_settings_apply(body, bool(brett_click(request)))
+
+
+plugin_services.provide("axf.pipeline-settings@1", PipelineSettingsService(), Path(__file__).resolve().parents[1].name)
 
 
 @router.post("/pipeline/route")

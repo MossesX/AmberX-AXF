@@ -18,6 +18,8 @@
   ],
   "optional": [
     "service:axf.merge-queue@1",
+    "service:axf.pipeline-settings@1",
+    "service:axf.agent-slots@1",
     "service:axf.health@1",
     "service:axf.alerts@1"
   ],
@@ -299,6 +301,33 @@
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
         "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history)."
+      },
+      {
+        "id": "build-slots",
+        "route": "GET /build-slots",
+        "title": "Gate: parallel builds and the host cap",
+        "readOnly": true,
+        "description": "Steps in parallel (pipeline setting stepsInParallel, 1-12) and the host cap (the VPS hard build limit, maxBuilds) side by side with their live values; over = steps in parallel is above the host cap; hostCap.canEdit = this caller may change the host cap."
+      },
+      {
+        "id": "build-slots-set",
+        "route": "PUT /build-slots",
+        "title": "Gate: change parallel builds or the host cap",
+        "description": "Save stepsInParallel (1-12), maxBuilds (the host cap), or both, through their owners. maxBuilds is Brett only (his own signed-in console session); any other caller is refused and nothing is saved.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "stepsInParallel": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "maxBuilds": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        }
       },
       {
         "id": "build-rules-list",
