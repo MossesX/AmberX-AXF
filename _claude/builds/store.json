@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9980,
- "updatedAt": "2026-11-20T11:45:13.977Z",
+ "rev": 9981,
+ "updatedAt": "2026-11-20T11:46:29.198Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338451,6 +338451,61 @@
      "text": "Watchdog: step s16 stuck at completed (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T11:45:01.892Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (219 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (219 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (169 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (160 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (144 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (140 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at completed (127 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at completed (127 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at completed (118 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at completed (45 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at completed (37 min past budget): re-ran the transition (4).",
+     "at": "2026-11-20T11:46:01.385Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -342166,7 +342221,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 642,
+   "rev": 643,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
