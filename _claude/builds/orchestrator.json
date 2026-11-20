@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T05:08:52.655Z",
+ "updatedAt": "2026-11-20T05:09:02.100Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -66,7 +66,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:08:48.059Z",
+   "updatedAt": "2026-11-20T05:08:55.457Z",
    "builtAt": "",
    "notes": [
     {
@@ -83,23 +83,19 @@
     },
     {
      "text": "Watchdog: step s2 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T05:02:02.832Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:02:02.832Z"
     },
     {
      "text": "Watchdog: step s3 retried at ready, attempt 2 on hulu0241.",
-     "at": "2026-11-20T05:02:02.832Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:02:02.832Z"
     },
     {
      "text": "Watchdog: step s2 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-20T05:06:02.096Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:06:02.096Z"
     },
     {
      "text": "Watchdog: step s2 retried at ready, attempt 4 on hulu0241.",
-     "at": "2026-11-20T05:08:01.519Z",
-     "by": "watchdog"
+     "at": "2026-11-20T05:08:01.519Z"
     }
    ],
    "approvals": [],
@@ -130,8 +126,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T05:08:55.456Z",
      "note": "",
      "uid": "st-mwoi62rz015y9r",
      "createdAt": "2026-11-20T04:52:29.711Z"
