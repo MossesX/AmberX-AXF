@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9877,
- "updatedAt": "2026-11-20T08:40:33.220Z",
+ "rev": 9878,
+ "updatedAt": "2026-11-20T08:40:43.759Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:40:24.226Z",
+   "updatedAt": "2026-11-20T08:40:31.425Z",
    "builtAt": "",
    "notes": [
     {
@@ -338037,13 +338037,15 @@
     },
     {
      "text": "Watchdog: step s8 raised Opus → Fable after 20 failed attempts; relaunched at ready, attempt 21 on hulu0241.",
-     "at": "2026-11-20T08:36:02.490Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:36:02.490Z"
     },
     {
      "text": "Watchdog: step s8 gave up: attempt 21 of 5 failed at sending (Fable included). Alerted Brett.",
-     "at": "2026-11-20T08:39:01.567Z",
-     "by": "watchdog"
+     "at": "2026-11-20T08:39:01.567Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s12--rhonda, shared account login)",
+     "at": "2026-11-20T08:40:31.425Z"
     }
    ],
    "approvals": [],
@@ -341538,7 +341540,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 531,
+   "rev": 532,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
