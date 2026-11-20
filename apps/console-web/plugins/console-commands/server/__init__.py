@@ -38,10 +38,17 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   POST bye   {client}                                              the tab closed
   GET  stream?client=<id>                                          server-sent events: one console-command@1 per `data:`
   POST ack   {client, id, ok, message, here?}                      what the console did with a command
+  POST shot?client=<id>&id=<command id>  (image/png body)          a console's screenshot for a screenshot command it was sent
   GET  clients · GET recent · GET queue                           the caller's open consoles · the last commands · what waits
   GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
-  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}   (each takes `to`)
+  POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}
+       · screenshot {selector?, address?}   (each takes `to`)
+
+Screenshots (console.nav act screenshot): the console captures what it shows as a PNG (at most 1600 px wide), uploads it
+to `shot` and acks with the screen state. The answer carries `images` [{client, mime, data (base64), bytes, width,
+height}] and `state` (screen, tabs, dialog, selection, scroll). An upload lives in a temp folder (AXF_CONSOLE_SHOT_DIR,
+default <tmp>/axf-console-shots) only until the answer reads it, and is swept after SHOT_TTL_S whatever happens.
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -49,10 +56,12 @@ Capability console-commands@1: plugin_services.get("console-commands@1").run(com
 from __future__ import annotations
 
 import asyncio
+import base64
 import json
 import os
 import re
 import subprocess
+import tempfile
 import threading
 import time
 from collections import deque
@@ -91,6 +100,11 @@ WAKE_AGAIN_S = 45.0     # one wake per this long per user (Chrome takes a moment
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
 DATA_DIR = Path(os.environ.get("AXF_CONSOLE_COMMANDS_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
 DEFAULTS: dict[str, Any] = {"wake": True, "ttlS": 120, "browser": "chrome"}
+SHOT_DIR = Path(os.environ.get("AXF_CONSOLE_SHOT_DIR") or Path(tempfile.gettempdir()) / "axf-console-shots")
+SHOT_MAX_BYTES = 4_000_000  # = CONSOLE_SHOT_MAX_BYTES in core/engines/console-commands.mjs
+SHOT_TTL_S = 120.0          # = CONSOLE_SHOT_TTL_MS: an upload nobody read is deleted after this
+SHOT_ID_RE = re.compile(r"^[A-Za-z0-9_-]{1,80}$")
+PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
 BROWSERS = ("chrome", "default")
 
 _lock = threading.Lock()
@@ -595,7 +609,12 @@ def focus_rewrite(command: dict[str, Any], audience: str) -> dict[str, Any]:
 def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None) -> dict[str, Any]:
     """One console command for a caller → the control@1 answer, with `delivered` (the consoles' acks), `delivery` (how it
     got there, which consoles were tried) and `status` (delivered / pending / failed) on a sent command. No console
-    connected: queued, and the call waits up to `wait` seconds."""
+    connected: queued, and the call waits up to `wait` seconds. A screenshot answer also carries `images` and `state`."""
+    r = _run(command, grants, by, audience, wait)
+    return attach_shots(r) if _is_shot(command or {}) and r.get("sent") else r
+
+
+def _run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", audience: str = OWNER, wait: float | None = None) -> dict[str, Any]:
     command = {k: v for k, v in (command or {}).items() if v not in (None, "")}
     grants = grants if grants is not None else ["*"]
     by = by or str(command.get("by") or "")
@@ -903,6 +922,97 @@ def _to(b: dict[str, Any], **more: Any) -> dict[str, Any]:
     return {"input": inp} if inp else {}
 
 
+# ---------------------------------------------------------------------- screenshots
+
+def _shot_file(mid: str, cid: str) -> Path:
+    return SHOT_DIR / f"{mid}--{cid}.png"
+
+
+def sweep_shots(max_age: float = SHOT_TTL_S) -> int:
+    """Delete uploads older than `max_age` seconds (nobody read them). → how many were removed."""
+    cut, n = _now() - max_age, 0
+    try:
+        files = list(SHOT_DIR.glob("*.png"))
+    except OSError:
+        return 0
+    for f in files:
+        try:
+            if f.stat().st_mtime < cut:
+                f.unlink()
+                n += 1
+        except OSError:
+            pass
+    return n
+
+
+def _awaited(mid: str, cid: str) -> bool:
+    """A command this console was sent and the server still waits on (or records a late ack for)."""
+    with _lock:
+        a = _acks.get(mid)
+        return (a is not None and cid in a["want"]) or mid in _late
+
+
+def save_shot(mid: str, cid: str, data: bytes) -> int:
+    """Keep one console's PNG for one command until the answer reads it. → bytes written."""
+    if not SHOT_ID_RE.match(mid) or not CLIENT_RE.match(cid):
+        raise HTTPException(400, "bad command or client id")
+    if len(data) > SHOT_MAX_BYTES:
+        raise HTTPException(413, f"a screenshot is at most {SHOT_MAX_BYTES} bytes")
+    if not data.startswith(PNG_MAGIC):
+        raise HTTPException(415, "a screenshot is a PNG")
+    sweep_shots()
+    SHOT_DIR.mkdir(parents=True, exist_ok=True, mode=0o700)
+    f = _shot_file(mid, cid)
+    tmp = f.with_suffix(".part")
+    tmp.write_bytes(data)
+    os.chmod(tmp, 0o600)
+    tmp.replace(f)
+    return len(data)
+
+
+def _is_shot(command: dict[str, Any]) -> bool:
+    return command.get("target") == "console.nav" and command.get("op") == "act" and command.get("action") == "screenshot"
+
+
+def attach_shots(r: dict[str, Any]) -> dict[str, Any]:
+    """A screenshot answer: each console's upload read once into `images` (base64) and deleted, the first console's screen
+    state as `state`. A console that acked without an image says why in its ack message."""
+    mid = str((r.get("sent") or {}).get("id") or "")
+    images: list[dict[str, Any]] = []
+    state: dict[str, Any] | None = None
+    for a in r.get("delivered") or []:
+        if not isinstance(a, dict) or not a.get("client"):
+            continue
+        res = a.get("result") if isinstance(a.get("result"), dict) else {}
+        f = _shot_file(mid, str(a["client"])) if mid and SHOT_ID_RE.match(mid) and CLIENT_RE.match(str(a["client"])) else None
+        data = b""
+        if f is not None:
+            try:
+                data = f.read_bytes()
+            except OSError:
+                data = b""
+            try:
+                f.unlink()
+            except OSError:
+                pass
+        if state is None and isinstance(res.get("state"), dict):
+            state = res["state"]
+        if a.get("ok") and data:
+            images.append({"client": a["client"], "mime": "image/png", "data": base64.b64encode(data).decode(), "bytes": len(data),
+                           **{k: res[k] for k in ("width", "height", "scale", "capture") if k in res}})
+        elif a.get("ok"):
+            a["ok"] = False
+            a["message"] = a.get("message") or "the console said it captured the screen, but no image arrived"
+    out = {**r, "images": images}
+    if state is not None:
+        out["state"] = state
+    if r.get("ok") and not r.get("queued"):
+        out["status"] = _status_of(out)
+        if not images and out["status"] != "pending":
+            out["message"] = "; ".join(str(a.get("message") or "") for a in r.get("delivered") or [] if isinstance(a, dict)) or "no screenshot came back"
+    return out
+
+
 # ---------------------------------------------------------------------- routes: the consoles' side
 
 @router.post("/hello")
@@ -1037,6 +1147,34 @@ async def ack(request: Request) -> dict[str, Any]:
             e["state"] = "delivered" if res["ok"] else "failed"
             e["event"].set()
     return {"ok": True, **({"late": True} if late else {})}
+
+
+@router.post("/shot")
+async def shot(request: Request, client: str = "", id: str = "") -> dict[str, Any]:
+    """A console's PNG for a screenshot command it was sent (the body is the image). Kept until the answer reads it."""
+    _, _, audience = caller(request)
+    with _lock:
+        c = _clients.get(client)
+        if not c or c["audience"] != audience:
+            raise HTTPException(404, "no such console")
+    try:
+        if int(request.headers.get("content-length") or 0) > SHOT_MAX_BYTES:
+            raise HTTPException(413, f"a screenshot is at most {SHOT_MAX_BYTES} bytes")
+    except ValueError:
+        raise HTTPException(400, "bad content-length") from None
+    if not _awaited(id, client):
+        raise HTTPException(409, "no screenshot is waited for from this console under that id")
+    data = await request.body()
+    n = await run_in_threadpool(save_shot, id, client, data)
+    return {"ok": True, "bytes": n}
+
+
+@router.post("/screenshot")
+async def screenshot(request: Request) -> JSONResponse:
+    """Capture what the open console shows: {selector?, address?, to?} → images + state."""
+    b = await _body(request)
+    return await go(request, {"op": "act", "target": "console.nav", "path": "here", "action": "screenshot",
+                              **_to(b, selector=b.get("selector"), address=b.get("address")), **_audit(b)})
 
 
 @router.get("/clients")

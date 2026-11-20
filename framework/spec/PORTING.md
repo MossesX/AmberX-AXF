@@ -282,6 +282,13 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
 
+## Deferred: console screenshots (Nov 19 2026)
+Web only (Android on hold, build `console-screenshot`), Kotlin twins when the Android side resumes: `console.nav` act
+`screenshot` (effect `read`), `console-command@1` op `screenshot` with `selector` / `address`, `consoleShotState`,
+`CONSOLE_SHOT_MAX_WIDTH` / `CONSOLE_SHOT_MAX_BYTES` / `CONSOLE_SHOT_TTL_MS`, and `here.tabs` / `here.selection` in
+`normalizeHere` (`core/engines/console-commands.mjs`, `core/engines/control-rules.mjs`). A Compose console would capture its
+own view (a `PixelCopy` of the window or one composable) instead of the DOM capture in the console-commands plugin.
+
 ## Deferred: single settings as console fields (Nov 13 2026)
 Web only (Android on hold, build `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`), Kotlin twins when
 the Android side resumes: catalog kind `field` (`type`, `value`, `options`, `min`, `max`, `secret`), `consoleResolveField`,

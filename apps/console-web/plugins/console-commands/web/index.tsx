@@ -18,6 +18,10 @@
  * after it was sent (the tab was asleep and the server moved on) is skipped, not run twice. A screen command can carry
  * `focus` (a tab or an item); the screen's own `<screen>.focus:<focus>` action brings it forward.
  *
+ * Screenshots (op `screenshot`): the tab captures what it shows (the whole viewport, or the element a console-control@1
+ * address or a CSS selector names) with ./capture, uploads the PNG to the server, then acks with the screen state
+ * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees.
+ *
  * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
@@ -27,10 +31,12 @@ import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { executeControl, describeAnswer } from '@console/control/executor';
+import { executeControl, describeAnswer, controlState } from '@console/control/executor';
+import { controlRegistry } from '@console/axf/react';
+import { capturePage } from './capture';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, consoleShotState, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
@@ -88,10 +94,16 @@ const ongoing = (msg: string) => msg.replace(/^opened /, 'opening ').replace(/^r
 const device = () => (typeof matchMedia === 'function' && matchMedia('(pointer: coarse)').matches ? 'phone' : 'desktop');
 const post = (path: string, body: unknown, keepalive = false) => pluginFetch(FOLDER, path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), keepalive });
 
-/** Where this console is now. */
+/** Where this console is now: screen, dialog, settings tab, the open tab of each tab row and the selection. */
 function hereOf(rt: AxfRuntime): ConsoleHere {
   const s = rt.getState();
   const here: ConsoleHere = { screen: s.view };
+  try {
+    const live = controlState(rt);
+    if (Object.keys(live.tabs).length) here.tabs = live.tabs;
+    const selection = live.focusedRow ?? live.focused;
+    if (selection) here.selection = selection;
+  } catch { /* the control registry is not installed yet */ }
   const label = rt.search.entries().find((e) => e.kind === 'view' && (e.focus as { view?: string }).view === s.view)?.label;
   if (label) here.screenLabel = label;
   if (s.dialog) here.dialog = s.dialog.id;
@@ -149,6 +161,27 @@ async function reloadPage(hard: boolean): Promise<void> {
     return;
   }
   location.reload();
+}
+
+/**
+ * Capture what this console shows for a screenshot command and upload it. → [ok, what happened, the ack's result]. The
+ * image goes up first, so the server holds it when the ack arrives.
+ */
+async function runScreenshot(rt: AxfRuntime, m: ConsoleMessage, client: string): Promise<[boolean, string, Record<string, unknown>]> {
+  const errors = consoleMessageErrors(m);
+  if (errors.length) return [false, errors.join('; '), {}];
+  let el: Element | null = null;
+  const what = m.address || m.selector || '';
+  if (m.address) el = await controlRegistry(rt).elementFor(m.address);
+  else if (m.selector) { try { el = document.querySelector(m.selector); } catch { return [false, `"${m.selector}" is not a CSS selector`, {}]; } }
+  if (what && !el) return [false, `${what} is not on the screen`, { state: consoleShotState(controlState(rt), hereOf(rt)) }];
+  // two frames, so a screen or dialog opened just before is painted
+  await new Promise<void>((r) => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+  const shot = await capturePage(el, what || 'page');
+  const up = await pluginFetch(FOLDER, `shot?client=${encodeURIComponent(client)}&id=${encodeURIComponent(m.id)}`, { method: 'POST', headers: { 'content-type': 'image/png' }, body: shot.blob });
+  if (!up.ok) return [false, `the screenshot could not be uploaded (${up.status})`, {}];
+  const state = consoleShotState(controlState(rt), hereOf(rt), { capture: shot.capture, width: shot.width, height: shot.height, scale: shot.scale });
+  return [true, `captured ${what || 'the screen'} (${shot.width}×${shot.height})`, { shot: true, width: shot.width, height: shot.height, scale: shot.scale, capture: shot.capture, state }];
 }
 
 /** Run one message; → [ok, what happened]. */
@@ -292,6 +325,14 @@ function ConsoleCommandsClient() {
           });
           return;
         }
+        // a screenshot: capture, upload, then ack with the screen state (no toast: it changes nothing on screen)
+        if (m.op === 'screenshot') {
+          void runScreenshot(rt, m, id).catch((e: unknown) => [false, String((e as Error)?.message ?? e), {}] as [boolean, string, Record<string, unknown>]).then(([ok, line, result]) => {
+            markDone(m.id, [ok, line]);
+            void post('ack', { client: id, id: m.id, ok, message: line, result, here: hereOf(rt), ...where() }).catch(() => undefined);
+          });
+          return;
+        }
         let res: [boolean, string];
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
@@ -396,7 +437,7 @@ function ConsolesPanel() {
         )}
       </Container>
       <Note tone="info">
-        Claude sessions call <code>console_open</code>, <code>console_settings</code>, <code>console_dialog</code>, <code>console_action</code>, <code>console_back</code>, <code>console_where</code>, <code>console_list</code> and <code>console_clients</code> (the console's MCP, also through axHub). REST: <code>POST /api/console/open</code> with <code>{'{"screen": "plan studio"}'}</code>. CLI: <code>axf console open plan studio</code>.
+        Claude sessions call <code>console_open</code>, <code>console_settings</code>, <code>console_dialog</code>, <code>console_action</code>, <code>console_back</code>, <code>console_where</code>, <code>console_list</code>, <code>console_clients</code> and <code>console_screenshot</code> (the console's MCP, also through axHub). REST: <code>POST /api/console/open</code> with <code>{'{"screen": "plan studio"}'}</code>. CLI: <code>axf console open plan studio</code>.
       </Note>
     </div>
   );

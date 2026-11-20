@@ -114,6 +114,24 @@ Find by content (same build): Plan Studio's `plan-studio.focus:<focus>` opens a 
 hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`, <!-- axf-plugin:plan-studio -->
 `axf plan-studio find`), CLI `plans.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio <focus or words>"` /
 `console_show` open it. <!-- axf-plugin:plan-studio -->
+Screenshots (build console-screenshot, Nov 19 2026): `console.nav` `act screenshot` lets a Claude session see what Brett's open
+console shows. The console captures its current view as a PNG (the whole viewport, or the element `input.address` (a
+console-control@1 address: one panel, dialog, grid) or `input.selector` (CSS) covers; not both), at most
+`CONSOLE_SHOT_MAX_WIDTH` = 1600 px wide and `CONSOLE_SHOT_MAX_BYTES` = 4 MB (drawn smaller until it fits), with a small
+DOM-to-canvas capture in the console (no library: the page cloned with form values and inner scroll offsets
+carried over, its stylesheets, an SVG foreignObject; password inputs never copied). It uploads the PNG to the console server
+(`POST …/shot?client=&id=`, accepted only for a screenshot that console was sent and is waited for), then acks with the
+screen state (`consoleShotState`: `screen`, `screenLabel`, `tabs` (row address → open tab), `dialog`, `settings`, `selection`
+(the focused row or target), `scroll`, plus `capture`, `width`, `height`, `scale`). The answer carries `images`
+[{client, mime, data (base64), bytes, width, height}] and `state`; the upload lives in a private temp folder
+(`AXF_CONSOLE_SHOT_DIR`, default `<tmp>/axf-console-shots`) only until the answer reads it, and anything unread is swept after
+`CONSOLE_SHOT_TTL_MS` (2 min). Delivery, `to` and `status` are console_open's (delivered · pending · failed: an ack without
+an uploaded image is failed). The effect is `read` (permission `control.console.read`): nothing on screen changes. MCP
+`console_screenshot {selector?, address?, to?}` returns the image as MCP image content followed by the answer as JSON (no image
+data); REST `POST /api/console/screenshot`; CLI `axf console screenshot [--address a | --selector css] [--out file.png]` (saves the
+image, prints the state in one line). Limits: fonts and images loaded from URLs inside the clone may fall back, and a browser that
+taints foreignObject canvases (Safari) answers failed with the reason. `console.nav get here` (`console_where`) also reports the
+open tabs and the selection now, as of the console's last beat.
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
 pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
 The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's
@@ -317,6 +335,7 @@ for token set / reset, `all` for every other write, `null` for the pass target) 
 |---|---|---|
 | `readOnlyHint: true` (every `*_list`, `*_get`, `*_status`, `*_find`, `overview`, `build_queue`, `build_next`, `pending_list`, `pending_steps`, `project_*` reads, `tracker_summary`, `libraries`, `build_options`, `app_validate`, `terminal_tail`, `pass_status`, `token_pass_status`) | **allow**: run at once, no veto | they change nothing; `apps/console-web/server/test_mcp_tools.py` fails CI if a read tool loses the hint |
 | navigation (`console_open`, `console_dialog`, `console_settings`, `console_back`, `console_refresh`, `console_show`, `console_follow`: `readOnlyHint: true`) | **allow**: run at once, no veto | they only open or move the screen, never change data (Brett, Nov 3 2026: navigation never waits 90 s); `console_action` stays a write because an action can change data |
+| `console_screenshot` (`readOnlyHint: true`) | **allow**: run at once, no veto | it only reads what the console shows (a PNG and the screen state) and changes nothing |
 | writes (`readOnlyHint: false`, `destructiveHint: false`) | **veto** (90 s), skipped while an `all` pass (or a narrow pass covering the call) is on | normal changes |
 | `destructiveHint: true` (`control_remove`, `amberx_remove`) | **confirm**; skipped while an `all` pass is on, unless the call is irreversible and the pass doesn't include irreversible | deletes; the runner applies the same rule to its confirm token |
 | `pass_grant`, `token_pass_grant` | **approval** (straight, not veto), forwarded as the signed approval above; never skipped | a pass must trace to Brett |

@@ -29,7 +29,7 @@ import contextvars
 import time
 from mcp.server.mcpserver import MCPServer
 from mcp.server.mcpserver.exceptions import ToolError
-from mcp.types import ToolAnnotations
+from mcp.types import CallToolResult, ImageContent, TextContent, ToolAnnotations
 
 Call = Callable[..., dict[str, Any]]
 
@@ -953,7 +953,8 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
-CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh")
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh",
+                 "console_screenshot")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -1045,8 +1046,19 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": "refresh", "input": inp(to, **({"hard": True} if hard else {}))})
 
     @mcp.tool(annotations=READ)
+    async def console_screenshot(selector: str = "", address: str = "", to: Delivery = "recent") -> CallToolResult:
+        """See what Brett's open Dev Console shows: a PNG of the screen (at most 1600 px wide) plus its state (screen id
+        and label, open tab of each tab row, open dialog, selection, scroll). Whole page by default; one panel or dialog
+        with `address` (a console-control@1 address: "view:settings/panel:appearance", "grid:queue") or `selector` (CSS).
+        Read-only: nothing on screen changes. `status` as console_open: delivered, pending (no console answered yet: it is
+        captured when one opens) or failed. to="all" captures every open console."""
+        r = await go({"op": "act", "target": "console.nav", "path": "here", "action": "screenshot", "input": inp(to, selector=selector.strip(), address=address.strip())})
+        return shot_result(r)
+
+    @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:
-        """Where Brett's open console is now: screen, open dialog, settings tab, and which console that is."""
+        """Where Brett's open console is now: screen, open dialog, settings tab, the open tab of each tab row and the
+        selection (as of its last beat, at most 15 s old), and which console that is. To see it: console_screenshot."""
         return await go({"op": "get", "target": "console.nav", "path": "here"})
 
     @mcp.tool(annotations=READ)
@@ -1091,6 +1103,17 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         """Is Follow Amber on? {on, by, at, clients}. On: call console_show whenever you mention something in the
         console, and Brett's approvals pop up there. Only Brett switches it (in the console)."""
         return await follow("state")
+
+
+def shot_result(r: dict[str, Any]) -> CallToolResult:
+    """A console screenshot answer as MCP content: one image block per console, then the answer as JSON without the
+    image data (status, state, delivery). No image (pending, or the console could not capture): the JSON alone."""
+    images = [i for i in r.get("images") or [] if isinstance(i, dict) and i.get("data")]
+    meta = {**{k: v for k, v in r.items() if k not in ("images", "sent")},
+            "images": [{k: v for k, v in i.items() if k != "data"} for i in images]}
+    blocks: list[Any] = [ImageContent(type="image", data=str(i["data"]), mime_type=str(i.get("mime") or "image/png")) for i in images]
+    blocks.append(TextContent(type="text", text=json.dumps(meta, default=str)))
+    return CallToolResult(content=blocks, structured_content=meta)
 
 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
