@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:16 UTC · `right-click-running-build-pop-open` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `auto-lander-settings-log-placeholder` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `toolbars-1-5-build-orchestrator-incl` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `toolbars-2-5-plan-studio-ui-review` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 13:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 14:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 14:01 UTC · `fable-full-audit-ui-overhaul-conso` → merging-main (all) · lander
+- 2026-11-20 14:01 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr (all) · lander
 
 ## Token passes (log)
 
