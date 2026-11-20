@@ -836,9 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:58 UTC · `toolbars-4-5-chat-viewer-codebase` note (all) · watchdog
-- 2026-11-20 00:58 UTC · `toolbars-2-5-plan-studio-ui-review-2` note (all) · watchdog
-- 2026-11-20 00:58 UTC · `toolbars-5-5-claude-accounts-glossary` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `fix-banner-settings-interface-tab` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `land-pr-730-reset-all-button-far-right` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `flagship-professional-skin-covering` note (all) · watchdog
@@ -1236,6 +1233,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 07:05 UTC · `pipeline-2-0-fully-autonomous-buil` → splitting (all) · orchestrator
 - 2026-11-20 07:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 07:06 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 07:06 UTC · `fable-full-audit-ui-overhaul-conso` → building, note (all) · foreign-write
+- 2026-11-20 07:06 UTC · `pipeline-2-0-fully-autonomous-buil` added (0 steps) (all) · foreign-write
+- 2026-11-20 07:06 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · orchestrator
 
 ## Token passes (log)
 
