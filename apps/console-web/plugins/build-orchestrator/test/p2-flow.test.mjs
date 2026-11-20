@@ -99,7 +99,12 @@ console.log('the store change event: a second trigger');
   ok(H.onBuildEvents([{ event: 'status', to: 'ready' }], { env, run: (a) => ran.push(a) }).woke && ran[0].includes('advance'), 'ready wakes a pass at once');
   ok(H.onBuildEvents([{ event: 'status', to: 'landed' }], { env, run: (a) => ran.push(a) }).woke, 'landed wakes a pass (the next build may become active)');
   ok(!H.onBuildEvents([{ event: 'status', to: 'queued' }], { env, run: (a) => ran.push(a) }).woke, 'a builds@1 status does not');
-  ok(!H.onBuildEvents([{ event: 'status', to: 'ready' }], { env: { ...env, AXF_P2_HOOK: 'off' }, run: (a) => ran.push(a) }).woke, 'AXF_P2_HOOK=off'); }
+  ok(!H.onBuildEvents([{ event: 'status', to: 'ready' }], { env: { ...env, AXF_P2_HOOK: 'off' }, run: (a) => ran.push(a) }).woke, 'AXF_P2_HOOK=off');
+  // the pass runs the live checkout's dispatcher, never the writer's (an old build worktree)
+  const live = join(tmp, 'live'); mkdirSync(join(live, 'apps/console-web/plugins/build-orchestrator'), { recursive: true }); writeFileSync(join(live, 'apps/console-web/plugins/build-orchestrator/pipeline2.mjs'), '');
+  ran = []; const w = H.onBuildEvents([{ event: 'status', to: 'ready' }], { env: { ...env, AXF_DISPATCHER_ROOT: live }, run: (a, cwd) => ran.push([a, cwd]) });
+  eq([w.root, ran[0][0][0], ran[0][1]], [live, join(live, 'apps/console-web/plugins/build-orchestrator/pipeline2.mjs'), live], 'the hook runs the live checkout\'s pipeline2.mjs in that checkout');
+  eq(H.dispatcherRoot({ AXF_DISPATCHER_ROOT: join(tmp, 'nowhere') }), join(HERE, '..', '..', '..', '..', '..'), 'a live root without this plugin: this checkout'); }
 
 console.log('integration: orchestrator.mjs tick [--build] (layer 1) and the watchdog\'s pinned relaunch');
 { const { spawnSync } = await import('node:child_process');
