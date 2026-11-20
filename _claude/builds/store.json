@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9870,
- "updatedAt": "2026-11-20T08:35:39.716Z",
+ "rev": 9871,
+ "updatedAt": "2026-11-20T08:36:11.031Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:35:32.371Z",
+   "updatedAt": "2026-11-20T08:36:02.490Z",
    "builtAt": "",
    "notes": [
     {
@@ -338034,6 +338034,11 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $3.23",
      "at": "2026-11-20T08:34:32.890Z"
+    },
+    {
+     "text": "Watchdog: step s8 raised Opus → Fable after 20 failed attempts; relaunched at ready, attempt 21 on hulu0241.",
+     "at": "2026-11-20T08:36:02.490Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -340259,7 +340264,7 @@
      "uid": "st-mwoi62s00889w8",
      "title": "",
      "text": "Full UI suite pass: touch up and patch every screen, tighten spacing, alignment and sizing everywhere",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
@@ -340272,13 +340277,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 43,
+     "rev": 44,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T08:35:20.719Z",
-     "statusAt": "2026-11-20T08:35:20.665Z",
-     "statusBy": "orchestrator",
-     "attempt": 20,
-     "failedFrom": "sending",
+     "updatedAt": "2026-11-20T08:36:06.777Z",
+     "statusAt": "2026-11-20T08:36:02.490Z",
+     "statusBy": "watchdog",
+     "attempt": 21,
      "statusLog": [
       {
        "status": "pending",
@@ -340580,9 +340584,16 @@
        "by": "orchestrator",
        "attempt": 20,
        "why": "launch on hulu0241: launcher exit 3: claude-headless: refused: fable-full-audit-ui-overhaul-conso already has a live session: tmux axf-fable-full-audit-ui-overhaul-conso--s10--earl, axf-fable-full-audit-ui-overhaul-conso--s11--gina, axf-fable-full-audit-ui-overhaul-conso--s7--earl; claude pid 399201"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T08:36:02.490Z",
+       "by": "watchdog",
+       "attempt": 21,
+       "why": "attempt 20 of 5 failed on Opus at sending: raised to Fable for one more go"
       }
      ],
-     "status": "failed",
+     "status": "ready",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s8",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s8"
@@ -341492,7 +341503,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 524,
+   "rev": 525,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

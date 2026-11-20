@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T08:35:39.716Z",
+ "updatedAt": "2026-11-20T08:36:11.031Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1364,7 +1364,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:35:32.371Z",
+   "updatedAt": "2026-11-20T08:36:02.490Z",
    "builtAt": "",
    "notes": [
     {
@@ -2154,6 +2154,11 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $3.23",
      "at": "2026-11-20T08:34:32.890Z"
+    },
+    {
+     "text": "Watchdog: step s8 raised Opus → Fable after 20 failed attempts; relaunched at ready, attempt 21 on hulu0241.",
+     "at": "2026-11-20T08:36:02.490Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -2307,7 +2312,7 @@
     {
      "id": "s8",
      "text": "Full UI suite pass: touch up and patch every screen, tighten spacing, alignment and sizing everywhere",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "1",
      "group": "",
