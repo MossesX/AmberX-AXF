@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9929,
- "updatedAt": "2026-11-20T09:56:43.257Z",
+ "rev": 9930,
+ "updatedAt": "2026-11-20T09:56:54.135Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s14",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T09:56:39.266Z",
+   "updatedAt": "2026-11-20T09:56:47.556Z",
    "builtAt": "",
    "notes": [
     {
@@ -338181,8 +338181,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "fable-full-audit-ui-overhaul-conso--s17",
-    "brief": "# Fable full audit + UI overhaul (console): step s17\n\nBuild fable-full-audit-ui-overhaul-conso (Pipeline 2.0), step s17 of 18. Model Opus. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fable-full-audit-ui-overhaul-conso--s17 (already cut from main) · branch claude/fable-full-audit-ui-overhaul-conso--s17.\n\n## Your step\nPatch up the console AI assistant (Amber): chatting with Claude and driving the console by command both work reliably; fix its bugs and tighten its UI (the full Amber assistant plan stays its own build)\n\n## The build\nBrett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "fable-full-audit-ui-overhaul-conso--s8",
+    "brief": "# Fable full audit + UI overhaul (console): step s8\n\nBuild fable-full-audit-ui-overhaul-conso (Pipeline 2.0), step s8 of 18. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fable-full-audit-ui-overhaul-conso--s8 (already cut from main) · branch claude/fable-full-audit-ui-overhaul-conso--s8.\n\n## Your step\nFull UI suite pass: touch up and patch every screen, tighten spacing, alignment and sizing everywhere\n\n## The build\nBrett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -341823,7 +341823,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 587,
+   "rev": 588,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
