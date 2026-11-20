@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9992,
- "updatedAt": "2026-11-20T12:04:10.599Z",
+ "rev": 9993,
+ "updatedAt": "2026-11-20T12:04:26.707Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338781,6 +338781,61 @@
      "text": "Lander: failed in running-ci, attempt 3: CI is red on 8c53ac893 (Web Dev Console (React/TS) + Python API)",
      "at": "2026-11-20T12:04:06.696Z",
      "by": "lander"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (237 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (237 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (187 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (178 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (162 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (158 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at completed (145 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at completed (145 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at completed (136 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at completed (63 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at completed (55 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T12:04:01.357Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -342512,7 +342567,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 654,
+   "rev": 655,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
