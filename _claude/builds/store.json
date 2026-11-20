@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9440,
- "updatedAt": "2026-11-20T04:58:05.354Z",
+ "rev": 9441,
+ "updatedAt": "2026-11-20T04:58:14.860Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -332080,7 +332080,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T04:57:49.172Z",
+   "updatedAt": "2026-11-20T04:57:59.603Z",
    "builtAt": "",
    "notes": [
     {
@@ -332949,12 +332949,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 2,
+     "rev": 4,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:57:49.228Z",
-     "statusAt": "2026-11-20T04:57:49.172Z",
+     "updatedAt": "2026-11-20T04:57:59.674Z",
+     "statusAt": "2026-11-20T04:57:59.603Z",
      "statusBy": "orchestrator",
-     "attempt": 1,
+     "attempt": 2,
      "statusLog": [
       {
        "status": "pending",
@@ -332969,9 +332969,23 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T04:57:55.219Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "worktree for fable-full-audit-ui-overhaul-conso--s16: fatal: 'claude/fable-full-audit-ui-overhaul-conso--s16' is already used by worktree at '/root/axf-builds/fable-full-audit-ui-overhaul-conso--s16'"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T04:57:59.603Z",
+       "by": "orchestrator",
+       "attempt": 2,
+       "why": "main is in"
       }
      ],
-     "status": "pulling-main",
+     "status": "ready",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s16",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s16"
     },
@@ -333054,7 +333068,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 38,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
