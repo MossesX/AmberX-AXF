@@ -428,7 +428,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
               <Icon name={activeAgent?.icon || 'sparkles'} size={28} />
               <h3>{activeAgent ? `Ask ${activeAgent.name}` : `Ask ${name} anything`}</h3>
               <p className="fx-muted fx-small">{activeAgent?.description || 'Ask about the framework and its code (it reads the real repository), or say "open plan studio" or "go to settings" and the console goes there. Type / for prompts and commands; paste or drop images and files. Replies keep running if you leave.'}</p>
-              <div className="axp-ai-assistant__suggest">{(status?.suggestions ?? []).map((s) => <Button key={s} size="sm" tone="quiet" onClick={() => { setText(s); inputRef.current?.focus(); }}>{s}</Button>)}</div>
+              <div className="axp-ai-assistant__suggest">{(status?.suggestions ?? []).map((s) => <Button key={s} size="sm" onClick={() => { setText(s); inputRef.current?.focus(); }}>{s}</Button>)}</div>
             </div>
           )}
           {visible.map((m) => (
