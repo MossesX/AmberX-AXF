@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T23:52:20.517Z",
+ "updatedAt": "2026-11-20T23:52:35.146Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -68,7 +68,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:52:14.609Z",
+   "updatedAt": "2026-11-20T23:52:30.183Z",
    "builtAt": "",
    "notes": [
     {
@@ -206,6 +206,14 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $7.18",
      "at": "2026-11-20T23:44:20.803Z"
+    },
+    {
+     "text": "Headless run axf-fix-main-ci-red-after-s16-s7-hand---s5--earl: brief only · start 11.3K tokens ($0.04) · cost $3.72 · 60 turns · 6 tools, MCP none",
+     "at": "2026-11-20T23:52:25.468Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $3.72",
+     "at": "2026-11-20T23:52:30.183Z"
     }
    ],
    "approvals": [],
