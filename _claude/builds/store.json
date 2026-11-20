@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9518,
- "updatedAt": "2026-11-20T05:27:45.524Z",
+ "rev": 9519,
+ "updatedAt": "2026-11-20T05:27:59.663Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336988,7 +336988,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:27:41.039Z",
+   "updatedAt": "2026-11-20T05:27:50.344Z",
    "builtAt": "",
    "notes": [
     {
@@ -337106,13 +337106,13 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-20T05:21:58.204Z",
+     "at": "2026-11-20T05:27:44.615Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-fable-full-audit-ui-overhaul-conso--s2--earl",
+     "session": "axf-fable-full-audit-ui-overhaul-conso--s1--lenny",
      "phase": ""
     }
    },
@@ -337450,12 +337450,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 23,
+     "rev": 24,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:27:41.098Z",
-     "statusAt": "2026-11-20T05:27:41.039Z",
+     "updatedAt": "2026-11-20T05:27:50.414Z",
+     "statusAt": "2026-11-20T05:27:50.344Z",
      "statusBy": "orchestrator",
      "attempt": 8,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -337610,9 +337611,16 @@
        "by": "orchestrator",
        "attempt": 8,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T05:27:50.344Z",
+       "by": "orchestrator",
+       "attempt": 8,
+       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s2--earl (heartbeat 2026-11-20T05:11:38.969Z)"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
@@ -338489,7 +338497,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 124,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
