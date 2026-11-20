@@ -836,10 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `load-spike-alarm-vps-detects-cpu-load` → failed, note (all) · watchdog
-- 2026-11-20 01:15 UTC · `server-safe-mode-one-emergency-button` → failed, note (all) · watchdog
-- 2026-11-20 01:16 UTC · `plan-blueprints` note (all) · watchdog
-- 2026-11-20 01:16 UTC · `blueprint-notes-tasks` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `land-project-create-mcp-resolve-clash` note (all) · watchdog
 - 2026-11-20 01:16 UTC · `skin-animations-animated-colour-swatches` note (all) · watchdog
@@ -1236,6 +1232,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:25 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
 - 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr, note (all) · lander
 - 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` PR 861 (all) · lander
+- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
+- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
+- 2026-11-20 12:35 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 12:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 
