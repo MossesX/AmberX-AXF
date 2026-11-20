@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9525,
- "updatedAt": "2026-11-20T05:29:40.413Z",
+ "rev": 9526,
+ "updatedAt": "2026-11-20T05:29:51.455Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:29:36.649Z",
+   "updatedAt": "2026-11-20T05:29:41.500Z",
    "builtAt": "",
    "notes": [
     {
@@ -337468,12 +337468,13 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 29,
+     "rev": 30,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T05:29:36.698Z",
-     "statusAt": "2026-11-20T05:29:36.649Z",
+     "updatedAt": "2026-11-20T05:29:41.553Z",
+     "statusAt": "2026-11-20T05:29:41.500Z",
      "statusBy": "orchestrator",
      "attempt": 11,
+     "failedFrom": "building",
      "statusLog": [
       {
        "status": "pending",
@@ -337670,9 +337671,16 @@
        "by": "orchestrator",
        "attempt": 11,
        "why": "to hulu0241"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T05:29:41.500Z",
+       "by": "orchestrator",
+       "attempt": 11,
+       "why": "launch on hulu0241: refused: fable-full-audit-ui-overhaul-conso--s2 already has a live session: lock axf-fable-full-audit-ui-overhaul-conso--s2--earl (heartbeat 2026-11-20T05:11:38.969Z)"
       }
      ],
-     "status": "building",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
@@ -338549,7 +338557,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 133,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
