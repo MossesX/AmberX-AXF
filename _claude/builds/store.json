@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10182,
- "updatedAt": "2026-11-20T23:41:20.570Z",
+ "rev": 10183,
+ "updatedAt": "2026-11-20T23:41:31.157Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:41:16.257Z",
+   "updatedAt": "2026-11-20T23:41:23.318Z",
    "builtAt": "",
    "notes": [
     {
@@ -344807,6 +344807,10 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $11.20",
      "at": "2026-11-20T23:37:27.991Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s5--earl, shared account login)",
+     "at": "2026-11-20T23:41:23.318Z"
     }
    ],
    "approvals": [],
@@ -345275,7 +345279,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 87,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
