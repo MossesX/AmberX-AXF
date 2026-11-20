@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T10:11:34.792Z",
+ "updatedAt": "2026-11-20T10:14:38.032Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -2683,6 +2683,11 @@
     {
      "text": "Watchdog: step s18 stuck at ready (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T10:11:01.932Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at ready (3 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T10:14:02.471Z",
      "by": "watchdog"
     }
    ],
