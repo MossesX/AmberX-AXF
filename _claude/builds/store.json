@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9867,
- "updatedAt": "2026-11-20T08:35:03.968Z",
+ "rev": 9868,
+ "updatedAt": "2026-11-20T08:35:19.354Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T08:34:58.134Z",
+   "updatedAt": "2026-11-20T08:35:10.167Z",
    "builtAt": "",
    "notes": [
     {
@@ -338044,8 +338044,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "fable-full-audit-ui-overhaul-conso--s11",
-    "brief": "# Fable full audit + UI overhaul (console): step s11\n\nBuild fable-full-audit-ui-overhaul-conso (Pipeline 2.0), step s11 of 18. Model Opus. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fable-full-audit-ui-overhaul-conso--s11 (already cut from main) · branch claude/fable-full-audit-ui-overhaul-conso--s11.\n\n## Your step\nOne shared toolbar: every plugin uses the same framework toolbar, no plugin-specific toolbars\n\n## The build\nBrett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "by": "Earl the Ear",
+    "brief": "# Fable full audit + UI overhaul (console): step s8\n\nBuild fable-full-audit-ui-overhaul-conso (Pipeline 2.0), step s8 of 18. Model Opus. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fable-full-audit-ui-overhaul-conso--s8 (already cut from main) · branch claude/fable-full-audit-ui-overhaul-conso--s8.\n\n## Your step\nFull UI suite pass: touch up and patch every screen, tighten spacing, alignment and sizing everywhere\n\n## The build\nBrett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -341477,7 +341477,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 521,
+   "rev": 522,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
