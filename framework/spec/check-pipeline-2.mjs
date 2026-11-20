@@ -2,7 +2,8 @@
 /**
  * pipeline-2@1 checks (framework/spec/PIPELINE-2.md): the status contract engine (framework/core/pipeline-status.mjs)
  * against its fixture, the JSON Schemas' enums against the engine, the store guard (forward-only, at / by stamped,
- * refusals logged), the split, the model pick, the account pick and the one-active rule.
+ * refusals logged), the split, the model pick, the account pick, the one-active rule, plan-build@1 (planning steps) and
+ * the splitting stage's design checks (normDesign, fallbackDesign).
  *   node framework/spec/check-pipeline-2.mjs            check
  *   node framework/spec/check-pipeline-2.mjs --write    regenerate framework/spec/fixtures/pipeline-2.json from the engine
  */
@@ -46,9 +47,22 @@ const fixture = {
   models: ['Write the JSON schema', 'Fix the toolbar padding', 'Kernel scheduler', 'Add a button'].map((text) => ({ text, model: P.modelFor({ text }) })),
   plans: [
     { $axf: 'plan-build@1', id: 'good-plan', title: 'Good', steps: [{ text: 'a', model: 'Opus', minutes: 20 }] },
+    { $axf: 'plan-build@1', id: 'planning-only', title: 'No hints', steps: [{ text: 'a' }, { text: 'b', minutes: 90 }] },
+    { $axf: 'plan-build@1', id: 'body-only', title: 'Body', detail: 'Do the thing.', steps: [] },
     { $axf: 'plan-build@1', id: 'Bad Id', title: '', steps: [{ text: 'a', model: 'Sonnet', minutes: 45 }, { text: 'a', model: 'Opus', minutes: 0 }] },
     { $axf: 'plan-build@1', id: 'no-steps', title: 'x', steps: [] },
   ].map((p) => ({ plan: p, errors: P.validatePlan(p).map((x) => x.path) })),
+  normPlan: P.normPlan({ id: 'x', title: ' T ', steps: [{ text: 'a', model: 'sonnet', estimate: '45 min' }, { text: 'b', model: 'fable' }, { text: 'c', model: '' }] }),
+  designs: [
+    { steps: [{ text: 'Schema', model: 'fable', minutes: 20, files: ['a'] }, { text: 'UI', model: 'Opus', minutes: 30 }] },
+    { steps: [{ text: 'x', model: 'Sonnet', minutes: 90 }, { text: '', model: 'Opus' }] },
+    [{ text: 'list form', model: 'Opus', minutes: 5 }],
+    { steps: [] }, null,
+  ].map((answer) => ({ answer, ...P.normDesign(answer), errors: P.normDesign(answer).errors.map((x) => x.path) })),
+  fallbacks: [
+    { title: 'T', planning: [{ text: 'Write the contract' }, { text: 'Button', minutes: 10 }, { text: 'Big', minutes: 90 }] },
+    { title: 'Engine work', detail: 'Body only.' },
+  ].map((b) => ({ build: b, steps: P.fallbackDesign(b) })),
 };
 if (process.argv.includes('--write')) { writeFileSync(FIX, `${JSON.stringify(fixture, null, 1)}\n`); console.log(`wrote ${FIX}`); process.exit(0); }
 let fx = null; try { fx = JSON.parse(readFileSync(FIX, 'utf8')); } catch { ok(false, `fixture ${FIX} missing: run with --write`); }
@@ -111,8 +125,13 @@ const S = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/json/pipeline-2.
 eq(S.$defs.buildStatus.enum, [...P.BUILD_STATUSES], 'schema build statuses = engine');
 eq(S.$defs.stepStatus.enum, [...P.STEP_STATUSES], 'schema step statuses = engine');
 const PS = JSON.parse(readFileSync(join(ROOT, 'framework/schemas/json/plan-build.schema.json'), 'utf8'));
-eq(PS.properties.steps.items.properties.minutes.maximum, P.STEP_MAX_MINUTES, 'plan schema step cap = engine');
-eq(PS.properties.steps.items.properties.model.enum, [...P.PLAN_MODELS], 'plan schema models = engine');
+eq(PS.properties.steps.items.required, ['text'], 'plan schema: planning steps need only text (no minutes, no model)');
+eq(PS.properties.steps.maxItems, P.PLANNING_MAX, 'plan schema planning cap = engine');
+eq(PS.properties.steps.items.properties.model.enum, [...P.PLAN_MODELS], 'plan schema model hints = engine');
+eq(S.properties.planning.maxItems, P.PLANNING_MAX, 'pipeline-2 schema planning cap = engine');
+ok(P.validatePlan(P.normPlan({ id: 'p', title: 'P', steps: [{ text: 'a' }] })).length === 0, 'a plan with planning steps and no minutes or models may be sent');
+ok(P.normDesign({ steps: [{ text: 'a', model: 'Opus', minutes: P.STEP_MAX_MINUTES + 1 }] }).errors.length === 1, 'a designed build step over the cap is refused');
+ok(P.fallbackDesign({ planning: [{ text: 'a', minutes: 99 }] })[0].minutes === P.STEP_MAX_MINUTES, 'the fallback caps minutes');
 eq(PS.properties.id.pattern, P.PLAN_ID_RE.source, 'plan schema id = build-id@1');
 
 // ---- the store layer end to end (a scratch store): forward-only enforced on every write, refusals logged

@@ -304,38 +304,92 @@ export function activeBuild(builds = []) {
 
 /* ------------------------------------------------------------------ plan-build@1: what Plan Studio may send */
 
+/*
+ * Plan Studio's steps are planning only (Brett, Nov 19 2026). Send hands the orchestrator ONE build: the plan as a whole
+ * (title, body, and its steps as planning context). The orchestrator's splitting stage designs the real build steps
+ * (Fable: each estimated in minutes, each with its model); a plan never needs per-step minutes or models to be sent.
+ */
 export const PLAN_SCHEMA = 'plan-build@1';
 export const PLAN_ID_RE = /^[a-z0-9][a-z0-9-]{0,39}$/; // build-id@1
 export const PLAN_MODELS = Object.freeze(['Fable', 'Opus']);
 export const STEP_MAX_MINUTES = 30;
+export const PLANNING_MAX = 100;
+export const DESIGN_MAX_STEPS = 40;
 
-/** The plan manifest in its one shape (model names capitalised, minutes as numbers), before validation. */
+const capModel = (m) => { const x = str(m, 20).toLowerCase(); return x === 'fable' ? 'Fable' : x === 'opus' ? 'Opus' : str(m, 20); };
+const minutesHint = (s) => (Number.isFinite(Number(s?.minutes)) && Number(s?.minutes) > 0 ? Math.round(Number(s.minutes)) : (parseInt(str(s?.estimate), 10) || 0));
+const pathList = (v) => (Array.isArray(v) ? v.map((f) => str(f, 300)).filter(Boolean) : []);
+
+/** One planning step: its text, and the model / minutes Brett noted, when he did (hints for the split, never required). */
+function planningStep(s) {
+  const model = capModel(s?.model); const minutes = minutesHint(s); const files = pathList(s?.files);
+  return { text: str(s?.text, 2000).trim(), ...(PLAN_MODELS.includes(model) ? { model } : {}), ...(minutes ? { minutes } : {}), ...(files.length ? { files } : {}) };
+}
+
+/** The plan manifest in its one shape (planning steps with their hints only), before validation. */
 export function normPlan(p) {
   const o = p && typeof p === 'object' ? p : {};
-  const cap = (m) => { const x = str(m, 20).toLowerCase(); return x === 'fable' ? 'Fable' : x === 'opus' ? 'Opus' : str(m, 20); };
   return {
     $axf: PLAN_SCHEMA, id: str(o.id, 80), title: str(o.title, 300).trim(), detail: str(o.detail, 8000), source: str(o.source, 40) || 'plan-studio-2',
     planItem: str(o.planItem, 80), ...(str(o.said) ? { said: str(o.said, 2000) } : {}),
-    steps: (Array.isArray(o.steps) ? o.steps : []).map((s) => ({ text: str(s?.text, 2000).trim(), model: cap(s?.model || 'Opus'), minutes: Number.isFinite(Number(s?.minutes)) && Number(s?.minutes) > 0 ? Math.round(Number(s.minutes)) : (parseInt(str(s?.estimate), 10) || 0), files: Array.isArray(s?.files) ? s.files.map((f) => str(f, 300)).filter(Boolean) : [] })),
+    steps: (Array.isArray(o.steps) ? o.steps : []).map(planningStep),
   };
 }
 
-/** Every reason a plan may not be sent (empty = valid). Nothing invalid moves on. */
+/** Every reason a plan may not be sent (empty = valid). Steps are planning context: no minutes or model needed. */
 export function validatePlan(p) {
   const errs = []; const e = (path, why) => errs.push({ path, why });
   if (!p || typeof p !== 'object') return [{ path: '', why: 'not an object' }];
   if (p.$axf !== PLAN_SCHEMA) e('$axf', `must be ${PLAN_SCHEMA}`);
   if (!PLAN_ID_RE.test(p.id ?? '')) e('id', 'a build id: a-z, 0-9 and -, at most 40 characters (build-id@1)');
   if (!str(p.title).trim()) e('title', 'a plan needs a title');
-  if (!Array.isArray(p.steps) || !p.steps.length) e('steps', 'a plan needs at least one open step');
-  (Array.isArray(p.steps) ? p.steps : []).forEach((s, i) => {
-    if (!str(s?.text).trim()) e(`steps[${i}].text`, 'a step needs text');
-    if (!PLAN_MODELS.includes(s?.model)) e(`steps[${i}].model`, `Fable or Opus, not ${s?.model || 'nothing'} (never Sonnet or Haiku)`);
-    if (!(Number(s?.minutes) > 0)) e(`steps[${i}].minutes`, 'every step needs an estimate in minutes');
-    else if (Number(s.minutes) > STEP_MAX_MINUTES) e(`steps[${i}].minutes`, `a step is ${STEP_MAX_MINUTES} minutes or less (split it): ${s.minutes}`);
+  if (p.steps !== undefined && !Array.isArray(p.steps)) e('steps', 'a list of planning steps');
+  const steps = Array.isArray(p.steps) ? p.steps : [];
+  if (!steps.length && !str(p.detail).trim()) e('steps', 'nothing to build: add open steps or a body');
+  if (steps.length > PLANNING_MAX) e('steps', `at most ${PLANNING_MAX} planning steps`);
+  const seen = new Set();
+  steps.forEach((s, i) => {
+    const k = str(s?.text).trim().toLowerCase();
+    if (!k) e(`steps[${i}].text`, 'a step needs text');
+    else if (seen.has(k)) e(`steps[${i}].text`, 'the same step twice');
+    seen.add(k);
     if (s?.files !== undefined && !Array.isArray(s.files)) e(`steps[${i}].files`, 'a list of paths');
   });
-  const seen = new Set();
-  (Array.isArray(p.steps) ? p.steps : []).forEach((s, i) => { const k = str(s?.text).trim().toLowerCase(); if (k && seen.has(k)) e(`steps[${i}].text`, 'the same step twice'); seen.add(k); });
   return errs;
+}
+
+/** The planning context a Pipeline 2.0 build carries (the plan's steps as Plan Studio sent them; never build steps). */
+export const normPlanning = (list) => (Array.isArray(list) ? list : []).slice(0, PLANNING_MAX).map(planningStep).filter((s) => s.text);
+
+/**
+ * The splitting stage's answer for a build sent without build steps (Fable's design) → { steps, errors }. Each step
+ * needs text, minutes (1..STEP_MAX_MINUTES) and a model (Fable or Opus, never Sonnet or Haiku); `files` is optional.
+ * Accepts `{ steps: [...] }` or the list itself. Any error = the design is not used.
+ */
+export function normDesign(answer) {
+  const errs = []; const e = (path, why) => errs.push({ path, why });
+  const list = Array.isArray(answer) ? answer : Array.isArray(answer?.steps) ? answer.steps : null;
+  if (!list) return { steps: [], errors: [{ path: 'steps', why: 'no list of steps' }] };
+  if (!list.length) e('steps', 'no steps');
+  if (list.length > DESIGN_MAX_STEPS) e('steps', `at most ${DESIGN_MAX_STEPS} steps`);
+  const steps = list.slice(0, DESIGN_MAX_STEPS).map((s, i) => {
+    const text = str(s?.text, 4000).trim(); const model = capModel(s?.model); const minutes = Number(s?.minutes);
+    if (!text) e(`steps[${i}].text`, 'a step needs text');
+    if (!PLAN_MODELS.includes(model)) e(`steps[${i}].model`, `Fable or Opus, not ${s?.model || 'nothing'} (never Sonnet or Haiku)`);
+    if (!(Number.isInteger(minutes) && minutes > 0)) e(`steps[${i}].minutes`, 'every build step needs an estimate in whole minutes');
+    else if (minutes > STEP_MAX_MINUTES) e(`steps[${i}].minutes`, `a build step is ${STEP_MAX_MINUTES} minutes or less: ${minutes}`);
+    if (s?.files !== undefined && !Array.isArray(s.files)) e(`steps[${i}].files`, 'a list of paths');
+    return { text, model, minutes, files: pathList(s?.files) };
+  });
+  return { steps: errs.length ? [] : steps, errors: errs };
+}
+
+/**
+ * The split without Fable (no credits, no answer, an answer that does not pass normDesign): one build step per planning
+ * step, its noted minutes (capped) or the cap, its model by modelFor; a plan with no planning steps is one step.
+ */
+export function fallbackDesign(b = {}) {
+  const planning = normPlanning(b.planning);
+  const rows = planning.length ? planning : [{ text: [str(b.title, 300).trim(), str(b.detail, 3000).trim()].filter(Boolean).join('\n\n') || 'The build' }];
+  return rows.map((s) => ({ text: s.text, model: modelFor({ text: s.text, model: s.model, title: planning.length ? '' : b.title }), minutes: Math.min(STEP_MAX_MINUTES, s.minutes || STEP_MAX_MINUTES), files: s.files ?? [] }));
 }

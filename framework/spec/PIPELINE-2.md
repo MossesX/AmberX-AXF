@@ -6,7 +6,8 @@ One source of truth: the builds store (builds@1, on Postgres via axf-data in cut
 
 - Engine (pure, shared): `framework/core/pipeline-status.mjs`
 - JSON Schema: `framework/schemas/json/pipeline-2.schema.json` (the contract fields of a build and its steps)
-- Plan schema (what Plan Studio may send): `framework/schemas/json/plan-build.schema.json` (plan-build@1)
+- Plan schema (what Plan Studio may send): `framework/schemas/json/plan-build.schema.json` (plan-build@1: one build; its
+  steps are planning context, not build steps)
 - Fixture: `framework/spec/fixtures/pipeline-2.json`, checker `framework/spec/check-pipeline-2.mjs`
 - Enforced in the store layer: `framework/cli/builds-store.mjs` → `withStore` runs `enforceFlow` on every write
 
@@ -15,6 +16,18 @@ One source of truth: the builds store (builds@1, on Postgres via axf-data in cut
 A build is in the contract when `flow: "pipeline-2"`. Plan Studio's Send to orchestrator sets it; any write that gives a
 build a Pipeline 2.0-only status (`splitting` … `merging-main`) sets it too. Builds made before keep their builds@1
 statuses (`queued`, `running`, …) and the old dispatcher path; nothing migrates them.
+
+## What Plan Studio sends (plan-build@1)
+
+Brett, Nov 19 2026: Plan Studio steps are for planning only. Send to orchestrator hands the orchestrator ONE build: the
+plan as a whole (title, body, and its open steps as planning context). The plan's steps are never turned into build
+steps and need no minutes or model; a model or minutes noted on a step goes along only as a hint for the split.
+
+- Send checks (`validatePlan` plus Plan Studio's own): a valid build id (build-id@1) that is not taken, a title,
+  something to build (open steps or a body), no repeated or empty step text, and no other build from the same plan item
+  that is still pending, split, active or failed (it must land or be archived first).
+- Send writes one build: `flow: pipeline-2`, status `pending`, `steps: []`, `planning: [{ text, model?, minutes?,
+  files? }]` (the store keeps `planning` on Pipeline 2.0 builds, `normPlanning`).
 
 ## Build statuses (in order)
 
@@ -75,8 +88,18 @@ status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged
 
 ## Orchestrator flow (status core)
 
-- `pending` → `splitting`: the steps are cut into as many parts as there are free slots, parts never sharing files
-  (`splitParts`). Each part is one step row (its steps' text joined, files merged).
+- `pending` → `splitting`, a build with no build steps (every build Plan Studio sends): Fable designs the build steps
+  from the title, body and `planning` (`p2SplitPrompt` in the orchestrator's pipeline-core, asked once on Fable through
+  the orchestrator's splitter). Each step has text, minutes (1 to 30) and a model (Fable or Opus); the answer must pass
+  `normDesign` or none of it is used. Steps run at the same time in their own worktrees, so designed steps that share
+  files are joined into one row (`splitParts`). The build's note says how it was split.
+- Fallback, when Fable cannot answer (no credits, no login, the split provider off, an answer that does not pass):
+  `fallbackDesign`, one build step per planning step (its noted minutes, capped at 30, else 30; model by `modelFor`), or
+  one step for the whole plan when it has no planning steps. The note says why. Away from the VPS host (no logins) a
+  planning-only build waits at `pending` for the host's tick instead of falling back.
+- `pending` → `splitting`, a build that already has steps (sent before this change): the steps are cut into as many
+  parts as there are free slots, parts never sharing files (`splitParts`). Each part is one step row (its steps' text
+  joined, files merged).
 - `split`: every step row exists (`pending`).
 - `pulling-main` (only when no other build is active): one step at a time, its worktree is cut at
   `<worktrees>/<build>--<step>` on branch `claude/<build>--<step>` from fresh `origin/main`. Step: `pulling-main` →
