@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9515,
- "updatedAt": "2026-11-20T05:26:32.954Z",
+ "rev": 9516,
+ "updatedAt": "2026-11-20T05:27:14.035Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -298083,15 +298083,16 @@
    "title": "Remove the AmberX app code once Phone Connect is paired",
    "category": "",
    "detail": "Follow-up of rebuild-fresh-main-phone-connect-small s24 (decision Nov 17 2026, _claude/memory/decisions.md → Phone Connect replaces the AmberX app). AmberX is retired in policy; its code goes only after Phone Connect is installed and paired on Brett's phone so approvals and pushes never go dark.",
-   "status": "pending",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fix-main-ci-p2",
    "pr": "#853",
+   "mergedAt": "2026-11-19T20:41:14Z",
    "createdAt": "2026-11-17T21:58:19.848Z",
-   "updatedAt": "2026-11-19T17:43:42.350Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-20T05:27:09.523Z",
+   "builtAt": "2026-11-19T17:43:42.350Z",
    "notes": [
     {
      "text": "Repeated steps collapsed: 224 → 7 (step-dedupe cleanup).",
@@ -298148,6 +298149,14 @@
     {
      "text": "PR #853 CI run 44575424837 green on d30881983 (scope, engine sweep, web console, Gradle). Not merged: the merge queue lands it.",
      "at": "2026-11-19T17:43:34.170Z"
+    },
+    {
+     "text": "Reconciler: PR #853 merged",
+     "at": "2026-11-20T05:27:09.523Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-20T05:27:09.524Z"
     }
    ],
    "approvals": [],
@@ -298358,7 +298367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 82,
+   "rev": 83,
    "deleted": false,
    "deletedAt": "",
    "pending": {
