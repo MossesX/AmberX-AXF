@@ -733,5 +733,73 @@
     }
    ]
   }
+ ],
+ "maxAttempts": 5,
+ "sendable": [
+  {
+   "step": {
+    "status": "ready"
+   },
+   "sendable": true,
+   "gaveUp": false
+  },
+  {
+   "step": {
+    "status": "ready",
+    "attempt": 9
+   },
+   "sendable": true,
+   "gaveUp": false
+  },
+  {
+   "step": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 4
+   },
+   "sendable": true,
+   "gaveUp": false
+  },
+  {
+   "step": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 5
+   },
+   "sendable": false,
+   "gaveUp": true
+  },
+  {
+   "step": {
+    "status": "failed",
+    "failedFrom": "sending",
+    "attempt": 21
+   },
+   "sendable": false,
+   "gaveUp": true
+  },
+  {
+   "step": {
+    "status": "failed",
+    "failedFrom": "pulling-main",
+    "attempt": 1
+   },
+   "sendable": false,
+   "gaveUp": false
+  },
+  {
+   "step": {
+    "status": "building"
+   },
+   "sendable": false,
+   "gaveUp": false
+  },
+  {
+   "step": {
+    "status": "completed"
+   },
+   "sendable": false,
+   "gaveUp": false
+  }
  ]
 }

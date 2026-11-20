@@ -243,7 +243,7 @@ function putLatestSync(key, text) {
 function remoteTextSync(key) {
   if (kindOfKey(key) === 'journal') {
     const lines = []; let since = 0;
-    for (;;) { let r; try { r = callSync({ op: 'read', key, since }); } catch (e) { if (e.code === 'not_found') return lines.length ? lines.join('') : null; throw e; } for (const x of r.entries) lines.push(`${JSON.stringify(x.entry)}\n`); if (!r.next) break; since = r.next; }
+    for (;;) { let r; try { r = callSync({ op: 'read', key, since, limit: SYNC_READ_PAGE }); } catch (e) { if (e.code === 'not_found') return lines.length ? lines.join('') : null; throw e; } for (const x of r.entries) lines.push(`${JSON.stringify(x.entry)}\n`); if (!r.next) break; since = r.next; }
     return lines.join('');
   }
   const rec = callSync({ op: 'get', key });
@@ -379,6 +379,16 @@ export async function appendJsonl(p, entry) {
 }
 
 /**
+ * The biggest answer one sync call may print: a blob at the store's limit, base64 in JSON (4/3), plus room for the
+ * frame. A fixed 64 MiB failed with ENOBUFS on a 207 MB SQLite blob and on a 68 MB journal page (Nov 20 2026).
+ */
+export const CALL_SYNC_MAX_BUFFER = Math.ceil((Math.max(LIMITS.blobBytes, LIMITS.recordBytes) * 4) / 3) + 16 * 1024 * 1024;
+/**
+ * Journal entries per sync `read`: each entry is at most LIMITS.entryBytes (256 KiB), so a page stays near 25 MiB
+ * whatever the journal holds. The server's default page (journalPage, 5000) of a busy month part is over 60 MB.
+ */
+export const SYNC_READ_PAGE = 100;
+/**
  * One data-store@1 call, synchronously (a child node process runs framework/cli/data-call.mjs): for sync code that
  * must work in cutover (builds-store.mjs). Throws DataStoreError with the server's code. AXF_DATA_CALL_SYNC may name
  * another helper (tests point it at an in-process store).
@@ -386,7 +396,7 @@ export async function appendJsonl(p, entry) {
 export function callSync(req) {
   const helper = process.env.AXF_DATA_CALL_SYNC || join(REPO, 'framework/cli/data-call.mjs');
   let text;
-  try { text = execFileSync(process.execPath, [helper], { input: JSON.stringify(req), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 60000 }); }
+  try { text = execFileSync(process.execPath, [helper], { input: JSON.stringify(req), encoding: 'utf8', maxBuffer: CALL_SYNC_MAX_BUFFER, timeout: 60000 }); }
   catch (e) { throw new DataStoreError('unavailable', `data-call failed: ${String(e.message).slice(0, 200)}`); }
   const r = JSON.parse(text.trim().split('\n').pop());
   if (!r.ok) throw new DataStoreError(r.code, r.message, { rev: r.rev, etag: r.etag });

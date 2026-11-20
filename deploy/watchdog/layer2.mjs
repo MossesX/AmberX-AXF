@@ -73,11 +73,22 @@ export function tmuxHas(name) {
 
 /** Where a step runs: the step's own fields first (tmux, worktree, log), then the build-id naming the launcher uses. */
 export function placeOf(b, s, env = process.env) {
-  const name = s.worktree || (s.branch ? String(s.branch).replace(/^claude\//, '') : '') || `${b.id}-${s.id}`;
+  // the dispatcher names a step <build>--<step> (pipeline2.mjs stepName): worktree, branch claude/<name>, tmux axf-<name>[--agent]
+  const name = s.worktree || (s.branch ? String(s.branch).replace(/^claude\//, '') : '') || `${b.id}--${s.id}`;
   const wt = name.startsWith('/') ? name : join(worktreesRoot(env), name);
   const base = wt.split('/').pop();
-  // pipeline-2@1 keeps the tmux session name in `tmux` (`session` is the builds@1 same/new field)
-  return { session: s.tmux || `axf-${base}`, worktree: wt, log: s.log || join(wt, `${base}.log`), jsonl: join(wt, `${base}.jsonl`) };
+  // pipeline-2@1 keeps the tmux session name in `tmux` (`session` is the builds@1 same/new field); without it the
+  // session is found by its prefix (guessed: never a reason on its own to call the step dead)
+  return { session: s.tmux || '', prefix: `axf-${base}`, worktree: wt, log: s.log || join(wt, `${base}.log`), jsonl: join(wt, `${base}.jsonl`) };
+}
+const escRe = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+/** tmux sessions named <prefix>, <prefix>--<agent>, either with the launcher's -HHMMSS suffix; null without tmux. */
+export function tmuxByPrefix(prefix) {
+  const r = spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8', timeout: 10000 });
+  if (r.error) return null;
+  if (r.status !== 0) return /no server running|error connecting/.test(r.stderr || '') ? [] : null;
+  const re = new RegExp(`^${escRe(prefix)}(--[A-Za-z0-9._:-]+?)?(-\\d{6})?$`);
+  return r.stdout.split('\n').filter((n) => re.test(n));
 }
 
 /** What is alive for every `building` step: tmux, the log tail (limit text), how long the log has been silent. */
@@ -89,7 +100,9 @@ export function probe(store, env = process.env) {
     const p = placeOf(b, s, env);
     const log = tail(p.log); const js = tail(p.jsonl, 8192);
     const ages = [log?.ageMin, js?.ageMin].filter((x) => x != null);
-    out[`${b.id}/${s.id}`] = { session: p.session, tmux: tmuxHas(p.session), logTail: `${log?.text ?? ''}\n${js?.text ?? ''}`, logAgeMin: ages.length ? Math.min(...ages) : null };
+    let session = p.session; let tmux = session ? tmuxHas(session) : null;
+    if (!session) { const found = tmuxByPrefix(p.prefix); if (found?.length) { session = found[0]; tmux = true; } else if (found) { session = p.prefix; tmux = false; } }
+    out[`${b.id}/${s.id}`] = { session, tmux, logTail: `${log?.text ?? ''}\n${js?.text ?? ''}`, logAgeMin: ages.length ? Math.min(...ages) : null };
   }
   return out;
 }
