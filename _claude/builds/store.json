@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9734,
- "updatedAt": "2026-11-20T07:08:31.637Z",
+ "rev": 9735,
+ "updatedAt": "2026-11-20T07:08:39.270Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:08:27.555Z",
+   "updatedAt": "2026-11-20T07:08:34.197Z",
    "builtAt": "",
    "notes": [
     {
@@ -337721,28 +337721,23 @@
     },
     {
      "text": "Watchdog: step s2 stuck at completed (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T06:59:02.140Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:59:02.140Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:02:02.257Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:02:02.257Z"
     },
     {
      "text": "Watchdog: step s2 failed at completed, attempt 24: completed did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T07:04:01.961Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:04:01.961Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:04:01.961Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:04:01.961Z"
     },
     {
      "text": "Watchdog: step s2 gave up: attempt 24 of 5 failed at completed. Alerted Brett.",
-     "at": "2026-11-20T07:06:01.367Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:06:01.367Z"
     }
    ],
    "approvals": [],
@@ -339342,12 +339337,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T07:08:34.197Z",
      "note": "",
-     "rev": 9,
+     "rev": 10,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:57:04.222Z",
+     "updatedAt": "2026-11-20T07:08:34.888Z",
      "statusAt": "2026-11-20T06:57:04.169Z",
      "statusBy": "orchestrator",
      "attempt": 3,
@@ -340457,7 +340452,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 385,
+   "rev": 386,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -340555,8 +340550,7 @@
     },
     {
      "text": "Split by Fable into 10 steps (285 min, 1 Fable).",
-     "at": "2026-11-20T07:07:41.494Z",
-     "by": "orchestrator"
+     "at": "2026-11-20T07:07:41.494Z"
     }
    ],
    "approvals": [],
@@ -340968,7 +340962,7 @@
    },
    "kind": "build",
    "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

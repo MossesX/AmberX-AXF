@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T07:08:31.637Z",
+ "updatedAt": "2026-11-20T07:08:39.270Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79,8 +79,7 @@
     },
     {
      "text": "Split by Fable into 10 steps (285 min, 1 Fable).",
-     "at": "2026-11-20T07:07:41.494Z",
-     "by": "orchestrator"
+     "at": "2026-11-20T07:07:41.494Z"
     }
    ],
    "approvals": [],
@@ -327,7 +326,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:08:27.555Z",
+   "updatedAt": "2026-11-20T07:08:34.197Z",
    "builtAt": "",
    "notes": [
     {
@@ -804,28 +803,23 @@
     },
     {
      "text": "Watchdog: step s2 stuck at completed (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T06:59:02.140Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:59:02.140Z"
     },
     {
      "text": "Watchdog: step s2 stuck at completed (4 min past budget): re-ran the transition (2).",
-     "at": "2026-11-20T07:02:02.257Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:02:02.257Z"
     },
     {
      "text": "Watchdog: step s2 failed at completed, attempt 24: completed did not move after 2 re-run(s) of the transition (6 min past its budget).",
-     "at": "2026-11-20T07:04:01.961Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:04:01.961Z"
     },
     {
      "text": "Watchdog: step s3 stuck at completed (1 min past budget): re-ran the transition (1).",
-     "at": "2026-11-20T07:04:01.961Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:04:01.961Z"
     },
     {
      "text": "Watchdog: step s2 gave up: attempt 24 of 5 failed at completed. Alerted Brett.",
-     "at": "2026-11-20T07:06:01.367Z",
-     "by": "watchdog"
+     "at": "2026-11-20T07:06:01.367Z"
     }
    ],
    "approvals": [],
@@ -951,8 +945,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T07:08:34.197Z",
      "note": "",
      "uid": "st-mwoi62s006hwsf",
      "createdAt": "2026-11-20T04:52:29.712Z"
