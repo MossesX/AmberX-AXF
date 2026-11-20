@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9512,
- "updatedAt": "2026-11-20T05:26:05.792Z",
+ "rev": 9513,
+ "updatedAt": "2026-11-20T05:26:15.935Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336979,7 +336979,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T05:25:59.338Z",
+   "updatedAt": "2026-11-20T05:26:01.682Z",
    "builtAt": "",
    "notes": [
     {
@@ -337050,6 +337050,11 @@
     {
      "text": "Watchdog: step s2 failed at building, attempt 6: tmux session axf-fable-full-audit-ui-overhaul-conso--s2--earl is gone while the step was building.",
      "at": "2026-11-20T05:25:01.372Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 gave up: attempt 6 of 5 failed at building. Alerted Brett.",
+     "at": "2026-11-20T05:26:01.682Z",
      "by": "watchdog"
     }
    ],
@@ -338454,7 +338459,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
