@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 01:15 UTC · `active-tab-stop-button-grid-alignment` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `fix-ci-red-main-watchdog-test-vs-done` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `axhub-routes-for-console-hub` → failed, note (all) · watchdog
 - 2026-11-20 01:15 UTC · `vps-frees-stale-build-slots-every-minute` → failed, note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 12:05 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
 - 2026-11-20 12:07 UTC · `ci-speed-ci-failure-reports-lean` added (0 steps) (all) · plan-studio-2
 - 2026-11-20 12:07 UTC · `ci-speed-ci-failure-reports-lean` → splitting (all) · orchestrator
+- 2026-11-20 12:08 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · orchestrator
 
 ## Token passes (log)
 
