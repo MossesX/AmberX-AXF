@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9587,
- "updatedAt": "2026-11-20T06:07:27.367Z",
+ "rev": 9588,
+ "updatedAt": "2026-11-20T06:07:44.969Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:07:21.010Z",
+   "updatedAt": "2026-11-20T06:07:38.546Z",
    "builtAt": "",
    "notes": [
     {
@@ -337192,6 +337192,14 @@
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-20T06:05:01.781Z"
+    },
+    {
+     "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s2--gina: brief only · start 10.0K tokens ($0.00) · cost $0.12 · 11 turns · 6 tools, MCP none",
+     "at": "2026-11-20T06:07:33.984Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $0.12",
+     "at": "2026-11-20T06:07:38.546Z"
     }
    ],
    "approvals": [],
@@ -338939,7 +338947,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 204,
+   "rev": 206,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -836,8 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:11 UTC · `land-watchdogs-pr-832-fix-two-red-ci` note (all) · builds-live
-- 2026-11-20 00:11 UTC · `server-gate-reject-any-build-without` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `one-build-time-always-split-split-id` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `out-credits-account-failover-flag-dead` note (all) · builds-live
 - 2026-11-20 00:11 UTC · `orchestrator-master-pause-switch-stop` note (all) · builds-live
@@ -1236,6 +1234,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 06:03 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 06:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 06:07 UTC · `fable-full-audit-ui-overhaul-conso` s2 done (all) · orchestrator
+- 2026-11-20 06:07 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
+- 2026-11-20 06:07 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 
 ## Token passes (log)
 
