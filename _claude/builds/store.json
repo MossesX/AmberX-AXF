@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9434,
- "updatedAt": "2026-11-20T04:57:07.843Z",
+ "rev": 9435,
+ "updatedAt": "2026-11-20T04:57:21.337Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -332080,7 +332080,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T04:56:52.591Z",
+   "updatedAt": "2026-11-20T04:57:12.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -332796,10 +332796,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 3,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T04:52:29.712Z",
-     "statusAt": "2026-11-20T04:52:28.145Z",
+     "updatedAt": "2026-11-20T04:57:12.763Z",
+     "statusAt": "2026-11-20T04:57:12.715Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -332809,9 +332809,25 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T04:57:03.588Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
+      },
+      {
+       "status": "ready",
+       "at": "2026-11-20T04:57:12.715Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "main is in"
       }
      ],
-     "status": "pending"
+     "status": "ready",
+     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s13",
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s13"
     },
     {
      "id": "s14",
@@ -332997,7 +333013,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 31,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
