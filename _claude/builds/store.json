@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9851,
- "updatedAt": "2026-11-20T08:19:16.595Z",
+ "rev": 9852,
+ "updatedAt": "2026-11-20T08:22:50.078Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338047,79 +338047,19 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-20T08:20:43.369Z",
+     "why": "subscription account hulu0241"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "runEnd": {
-     "at": "2026-11-20T07:08:50.382Z",
-     "exit": 0,
-     "signal": "",
-     "kind": "phase-done",
-     "limit": "",
-     "account": "hulu0241",
-     "session": "axf-fable-full-audit-ui-overhaul-conso--s6--earl",
-     "phase": ""
-    }
+    "heldWhy": ""
    },
-   "planning": [
-    {
-     "text": "Audit: Fable reads the whole console (web, server, plugins) and writes a findings report ranked by impact"
-    },
-    {
-     "text": "Fix console_screenshot so the open console actually captures and answers"
-    },
-    {
-     "text": "Fix the refresh hang: lazy-load plugin calls on startup, nothing blocks first paint"
-    },
-    {
-     "text": "Remove demo and dead code from the live console (orchestrator-demo and similar)"
-    },
-    {
-     "text": "Kill runaway background loops/timers in the console server"
-    },
-    {
-     "text": "Fix the remaining audit findings, each as its own small change"
-    },
-    {
-     "text": "Extensive tests (Brett, Nov 19): end-to-end browser tests of every console screen, tab, dialog and console command (open, screenshot, refresh/startup), plus server load tests for background loops; run before and after the fixes, results in the report. Brett wants Ultra effort (pipeline has no effort"
-    },
-    {
-     "text": "Full UI suite pass: touch up and patch every screen, tighten spacing, alignment and sizing everywhere"
-    },
-    {
-     "text": "Rebuild the navigation menu from scratch, clean and consistent"
-    },
-    {
-     "text": "Rebuild the context menu (Search anywhere at the bottom, overflow items in the toolbar not the panel)"
-    },
-    {
-     "text": "One shared toolbar: every plugin uses the same framework toolbar, no plugin-specific toolbars"
-    },
-    {
-     "text": "Skin pass: go through the skin and make it really good, light and dark, every token used consistently"
-    },
-    {
-     "text": "Watchdog pipeline audit: why ghost build processes (pids in deleted /tmp/axf-limit-* folders) survive and hold build slots; fix the watchdog/reaper and build-limit so dead slots are always freed, with tests"
-    },
-    {
-     "text": "Run with at least 4 slots in parallel (Brett, Nov 19)"
-    },
-    {
-     "text": "Remove redundant and stale references to the retired AmberX app (apps/amberx-droid etc.) across code, CI, docs and settings; keep the AmberX brand and framework name"
-    },
-    {
-     "text": "Fold the axHub web UI into the console (Brett, Nov 19 - un-holds the earlier 'Fold every axHub app feature into the console' plan): every axHub web feature becomes a console plugin, grouped in modules, plugins stay uninstallable; axHub server stays; archive then retire axhub-web"
-    },
-    {
-     "text": "Patch up the console AI assistant (Amber): chatting with Claude and driving the console by command both work reliably; fix its bugs and tighten its UI (the full Amber assistant plan stays its own build)"
-    },
-    {
-     "text": "When done: save the whole finished look as a skin named AmberX and make it the default skin"
-    }
-   ],
    "steps": [
     {
      "id": "s1",
@@ -341479,7 +341419,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 506,
+   "rev": 507,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -341950,6 +341890,121 @@
     {
      "text": "Watchdog: step s23 retried at pending, attempt 2.",
      "at": "2026-11-20T07:50:01.410Z"
+    },
+    {
+     "text": "Watchdog: step s1 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s2 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s3 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s4 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s19 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s20 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s21 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s22 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s23 stuck at pending (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-20T08:20:02.097Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -343207,7 +343262,7 @@
    },
    "kind": "build",
    "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
