@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-20T21:06:13.710Z",
+ "updatedAt": "2026-11-20T21:06:35.841Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "failed",
+   "status": "pulling-main",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -68,7 +68,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T21:06:01.751Z",
+   "updatedAt": "2026-11-20T21:06:31.299Z",
    "builtAt": "",
    "notes": [
     {
