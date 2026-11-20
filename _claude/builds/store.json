@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9731,
- "updatedAt": "2026-11-20T07:06:59.195Z",
+ "rev": 9732,
+ "updatedAt": "2026-11-20T07:07:14.014Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -340550,46 +340550,36 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "phase": "",
-    "launchedAt": "",
-    "runs": 0,
-    "crashes": 0,
-    "lastRun": null,
-    "split": {
-     "at": "2026-11-20T07:06:47.407Z",
-     "by": "orchestrator",
-     "provider": "rules",
-     "steps": 20,
-     "note": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps."
+   "planning": [
+    {
+     "text": "Detailed CI failure report every time CI fails: which job and app failed, the real error lines, whether it's caused by this PR's changes or something unrelated (like a retired app or a flaky download), how long it's been failing, and the fix. Shown in the Auto-lander and sent to Brett."
     },
-    "splitRequested": "",
-    "note": "steps made by rules: review them",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "hulu0241",
-     "kind": "subscription",
-     "at": "2026-11-20T07:06:50.084Z",
-     "why": "subscription account hulu0241"
+    {
+     "text": "Plan Studio steps are for planning only. Send to orchestrator hands over ONE build (the plan as a whole); the orchestrator ignores the Plan Studio steps and Fable does its own split: designs the steps, estimates each in minutes, picks models. Fix: today sendToBuild (tree.mjs) turns Plan Studio steps"
     },
-    "tried": [],
-    "pickedAt": "",
-    "heldAt": "",
-    "heldBy": "",
-    "heldWhy": ""
-   },
+    {
+     "text": "CI only tests what a change touches (Brett, Nov 19): a console-only change (like the screenshot command) must not build the Android app or run unrelated suites. Make the 'CI scope (what changed)' step actually gate every job, including manual/full runs; full run of everything only when shared/core c"
+    },
+    {
+     "text": "CI speed (Brett, Nov 20): don't split the repo; make CI fast instead"
+    },
+    {
+     "text": "Shallow/sparse checkout in every CI job - checkout alone took 11 minutes on an ~840 MB repo"
+    },
+    {
+     "text": "Every job runs only when its own paths change, including manual workflow_dispatch runs; a console-only change never builds Android"
+    },
+    {
+     "text": "Cache Gradle, npm and pip between runs; app builds reuse prebuilt framework modules instead of recompiling the framework"
+    },
+    {
+     "text": "Verify the ops-build fixes hold in a real run: 4 parallel slots per build, watchdog give-up is final, act step uses Pipeline 2.0 statuses"
+    }
+   ],
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwomys4v01864f",
+     "uid": "st-mwomyzl8012u5k",
      "title": "",
      "text": "Brett, Nov 18 2026 (voice). Goal: absolutely no human intervention, ever. Brett says \"build this app\" and the next thing he sees is it landed, no matter what. The pipeline fixes, names, stores and logs everything itself. Why: builds piled up for weeks with nothing merging and nobody knew the pipeline was broken (tonight: Postgres part B died on a dead worktree, failed 3 launches, got benched by the 3-fails-per-hour rule, silently).",
      "model": "Opus",
@@ -340606,12 +340596,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwomys4v02usgh",
+     "uid": "st-mwomyzl802es69",
      "title": "",
      "text": "The flow itself is in the section \"Brett's flow\" below; it wins over anything here.",
      "model": "Opus",
@@ -340628,12 +340618,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwomys4v03l514",
+     "uid": "st-mwomyzl803itzs",
      "title": "",
      "text": "## Status lifecycle (forward-only)",
      "model": "Opus",
@@ -340650,12 +340640,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwomys4v04z4f5",
+     "uid": "st-mwomyzl804vvmp",
      "title": "",
      "text": "Everything is status; nothing goes back.",
      "model": "Opus",
@@ -340672,12 +340662,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwomys4v05i3xv",
+     "uid": "st-mwomyzl805xmvl",
      "title": "",
      "text": "All of a build's steps merge into ONE PR (one CI run), then pull main, CI, merge to main. Steps do not merge on their own (saves the CI time of running it once per step).",
      "model": "Opus",
@@ -340694,12 +340684,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwomys4v068qc7",
+     "uid": "st-mwomyzl806hohy",
      "title": "",
      "text": "Failed shows the attempt: \"failed, attempt 2\", \"attempt 3\", etc.",
      "model": "Opus",
@@ -340716,12 +340706,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwomys4v072f4v",
+     "uid": "st-mwomyzl80732hk",
      "title": "",
      "text": "## Builds table",
      "model": "Opus",
@@ -340738,12 +340728,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwomys4v08eedm",
+     "uid": "st-mwomyzl808om2r",
      "title": "",
      "text": "One table, driven by each build's status, not its location. No tabs at all.",
      "model": "Opus",
@@ -340760,12 +340750,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwomys4v09yszz",
+     "uid": "st-mwomyzl8095xn8",
      "title": "",
      "text": "Purely filters, carried on the toolbar.",
      "model": "Opus",
@@ -340782,12 +340772,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwomys4v0ajk65",
+     "uid": "st-mwomyzl80aaz8a",
      "title": "",
      "text": "Every row: status badge + live timer (elapsed / remaining) for building, polling, CI checking or merging.",
      "model": "Opus",
@@ -340804,12 +340794,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwomys4v0bps45",
+     "uid": "st-mwomyzl80bnge0",
      "title": "",
      "text": "## Fail-safes / redundancy (self-healing, not paging Brett)",
      "model": "Opus",
@@ -340826,12 +340816,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s12",
-     "uid": "st-mwomys4v0cm86t",
+     "uid": "st-mwomyzl80ch5yy",
      "title": "",
      "text": "Multiple independent ways to catch stalls and trigger fixes.",
      "model": "Opus",
@@ -340848,12 +340838,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s13",
-     "uid": "st-mwomys4v0d932d",
+     "uid": "st-mwomyzl80dtbts",
      "title": "",
      "text": "Layer 1: the pipeline tick does the normal work.",
      "model": "Opus",
@@ -340870,12 +340860,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s14",
-     "uid": "st-mwomys4v0eo153",
+     "uid": "st-mwomyzl80e5bl0",
      "title": "",
      "text": "Layer 2: a separate watchdog on its own cron with its own code finds anything that hasn't moved in X minutes and fixes it itself (rebuild a dead worktree, requeue, switch account/model).",
      "model": "Opus",
@@ -340892,12 +340882,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s15",
-     "uid": "st-mwomys4v0ft2n6",
+     "uid": "st-mwomyzl80f4x6c",
      "title": "",
      "text": "Layer 3: an outside checker (axHub or another box) makes sure the watchdog is alive and restarts it.",
      "model": "Opus",
@@ -340914,12 +340904,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s16",
-     "uid": "st-mwomys4v0gx27u",
+     "uid": "st-mwomyzl80g9kak",
      "title": "",
      "text": "Never fail silently.",
      "model": "Opus",
@@ -340936,12 +340926,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s17",
-     "uid": "st-mwomys4v0hgkcm",
+     "uid": "st-mwomyzl80hf5xb",
      "title": "",
      "text": "Postgres parts A/B/C: when all three finish, merge them together in one PR (one CI run); if it fails, split and land one at a time.",
      "model": "Opus",
@@ -340958,12 +340948,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s18",
-     "uid": "st-mwomys4v0impg5",
+     "uid": "st-mwomyzl80icxkx",
      "title": "",
      "text": "Builds store moving off the 14 MB store.json to Postgres row-level writes (Postgres parts A/B/C).",
      "model": "Opus",
@@ -340980,12 +340970,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s19",
-     "uid": "st-mwomys4v0je6u9",
+     "uid": "st-mwomyzl80jwmgy",
      "title": "",
      "text": "Later: separate dedicated build box (console and everything else stay on the Hostinger KVM 8), Postgres primary on the KVM 8, replica on the build box, writes over WireGuard.",
      "model": "Opus",
@@ -341002,12 +340992,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     },
     {
      "id": "s20",
-     "uid": "st-mwomys4v0kd0tq",
+     "uid": "st-mwomyzl80koiji",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/pipeline-2-0-fully-autonomous-buil.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -341027,28 +341017,48 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-20T07:06:47.407Z",
-     "updatedAt": "2026-11-20T07:06:47.407Z"
+     "createdAt": "2026-11-20T07:06:56.709Z",
+     "updatedAt": "2026-11-20T07:06:57.068Z"
     }
    ],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 1019
+    "all": 1
    },
    "kind": "build",
-   "planRef": "",
-   "rev": 3,
+   "planRef": "pipeline-2-0-fully-autonomous-bu-d8vq",
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-20T07:06:47.407Z",
+   "defaultAt": "2026-11-20T07:06:56.709Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
-   "copies": []
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-20T07:05:35.140Z",
+   "statusBy": "orchestrator",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-20T07:05:24.694Z",
+     "by": "plan-studio-2",
+     "attempt": 1,
+     "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-20T07:05:35.140Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
+    }
+   ]
   }
  ]
 }
