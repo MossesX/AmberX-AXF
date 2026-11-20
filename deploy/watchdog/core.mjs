@@ -152,8 +152,12 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
       }
       // a step waiting for a slot is only late while its build is the active one (one active build at a time)
       if (s.status === 'ready' && !isActive(b)) continue;
+      // a completed step waits for its siblings: only the lander moves it on (in-pr), after build-complete. Never late
+      // before that (Nov 20 2026: finished steps were failed and given up on while the rest of the build still ran);
+      // late after it = the lander's, nudged only
+      if (s.status === 'completed' && !landerOwned(b)) continue;
       const late = over(s, S.budgets.step, now);
-      if (late > 0) out.push({ kind: 'step-stuck', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), attempt: attemptOf(s) });
+      if (late > 0) out.push({ kind: 'step-stuck', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), attempt: attemptOf(s), ...(s.status === 'completed' ? { lander: true } : {}) });
     }
     if (WAITING_BUILD.includes(b.status) && anyActive) continue;
     const late = over(b, S.budgets.build, now);
@@ -212,6 +216,9 @@ export function plan(issue, { memory = {}, settings = normSettings(), now = Date
       return { action: 'fail-dead', key: k, kill: true, why: `building ${issue.minutes} min past its budget with a silent log: session killed` };
     case 'build-failed':
     case 'step-failed': {
+      // a step failed after its session ended cleanly (failedFrom completed: older passes failed finished steps as
+      // "stuck"): its work is done, so it goes back to completed whatever its attempt count or alert
+      if (issue.kind === 'step-failed' && issue.failedFrom === 'completed') return { action: 'retry', key: k, attempt: issue.attempt + 1, to: 'completed', why: 'its session had ended cleanly: back to completed' };
       if (memory.alerted?.[k]) return { action: 'wait', key: k, why: 'gave up already (alerted)' };
       if (!issue.failedFrom) return { action: 'give-up', key: k, why: 'failed with no failedFrom: the watchdog cannot tell where to continue' };
       const inSlot = issue.kind === 'step-failed' && STEP_FLOW.indexOf(issue.failedFrom) >= STEP_FLOW.indexOf('ready') && STEP_FLOW.indexOf(issue.failedFrom) <= STEP_FLOW.indexOf('building');
