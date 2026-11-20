@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9909,
- "updatedAt": "2026-11-20T09:08:19.348Z",
+ "rev": 9910,
+ "updatedAt": "2026-11-20T09:08:36.949Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s14",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T09:08:10.873Z",
+   "updatedAt": "2026-11-20T09:08:23.056Z",
    "builtAt": "",
    "notes": [
     {
@@ -338157,13 +338157,13 @@
     "heldBy": "",
     "heldWhy": "",
     "runEnd": {
-     "at": "2026-11-20T09:07:23.773Z",
+     "at": "2026-11-20T09:08:15.555Z",
      "exit": 0,
      "signal": "",
      "kind": "phase-done",
      "limit": "",
      "account": "hulu0241",
-     "session": "axf-fable-full-audit-ui-overhaul-conso--s13--lenny",
+     "session": "axf-fable-full-audit-ui-overhaul-conso--s14--joey",
      "phase": ""
     }
    },
@@ -341319,10 +341319,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 8,
+     "rev": 9,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T09:07:53.154Z",
-     "statusAt": "2026-11-20T09:07:53.100Z",
+     "updatedAt": "2026-11-20T09:08:23.103Z",
+     "statusAt": "2026-11-20T09:08:23.056Z",
      "statusBy": "orchestrator",
      "attempt": 3,
      "statusLog": [
@@ -341381,12 +341381,20 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T09:08:23.056Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-fable-full-audit-ui-overhaul-conso--s15--paulie on hulu0241"
       }
      ],
-     "status": "sending",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s15",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s15",
+     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s15--paulie",
      "tried": [
       "hulu0241"
      ]
@@ -341656,7 +341664,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 562,
+   "rev": 564,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
