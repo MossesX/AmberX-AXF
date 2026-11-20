@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9954,
- "updatedAt": "2026-11-20T10:38:57.653Z",
+ "rev": 9955,
+ "updatedAt": "2026-11-20T10:39:11.175Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s18",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T10:38:49.970Z",
+   "updatedAt": "2026-11-20T10:39:05.111Z",
    "builtAt": "",
    "notes": [
     {
@@ -338214,6 +338214,10 @@
     {
      "text": "Headless run axf-fable-full-audit-ui-overhaul-conso--s18--rhonda: brief only · start 10.1K tokens ($0.02) · cost $1.29 · 49 turns · 6 tools, MCP none",
      "at": "2026-11-20T10:38:49.970Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $1.29",
+     "at": "2026-11-20T10:38:54.797Z"
     }
    ],
    "approvals": [
@@ -341802,11 +341806,11 @@
      "done": true,
      "doneAt": "2026-11-20T10:38:17.355Z",
      "note": "",
-     "rev": 14,
+     "rev": 15,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T10:38:17.876Z",
-     "statusAt": "2026-11-20T10:32:53.686Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T10:39:05.173Z",
+     "statusAt": "2026-11-20T10:39:05.111Z",
+     "statusBy": "headless",
      "attempt": 5,
      "statusLog": [
       {
@@ -341899,9 +341903,16 @@
        "by": "orchestrator",
        "attempt": 5,
        "why": "axf-fable-full-audit-ui-overhaul-conso--s18--rhonda on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T10:39:05.111Z",
+       "by": "headless",
+       "attempt": 5,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s18",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s18",
@@ -341919,7 +341930,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 612,
+   "rev": 614,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
