@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9585,
- "updatedAt": "2026-11-20T06:06:06.367Z",
+ "rev": 9586,
+ "updatedAt": "2026-11-20T06:07:10.534Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:06:00.784Z",
+   "updatedAt": "2026-11-20T06:07:04.537Z",
    "builtAt": "",
    "notes": [
     {
@@ -337187,13 +337187,11 @@
     },
     {
      "text": "Watchdog: step s3 gave up: attempt 6 of 5 failed at sending. Alerted Brett.",
-     "at": "2026-11-20T06:05:01.781Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:05:01.781Z"
     },
     {
      "text": "Watchdog: step s4 retried at ready, attempt 3 on hulu0241.",
-     "at": "2026-11-20T06:05:01.781Z",
-     "by": "watchdog"
+     "at": "2026-11-20T06:05:01.781Z"
     }
    ],
    "approvals": [],
@@ -337666,12 +337664,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T06:07:04.537Z",
      "note": "",
-     "rev": 44,
+     "rev": 45,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T06:03:12.789Z",
+     "updatedAt": "2026-11-20T06:07:05.198Z",
      "statusAt": "2026-11-20T06:02:46.663Z",
      "statusBy": "orchestrator",
      "attempt": 17,
@@ -338941,7 +338939,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 202,
+   "rev": 203,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
