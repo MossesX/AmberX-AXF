@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10141,
- "updatedAt": "2026-11-20T22:44:45.337Z",
+ "rev": 10142,
+ "updatedAt": "2026-11-20T22:48:00.829Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344786,6 +344786,11 @@
      "text": "Watchdog: build stuck at pulling-main (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T22:44:01.747Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at pulling-main (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-20T22:47:01.857Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -344949,7 +344954,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
