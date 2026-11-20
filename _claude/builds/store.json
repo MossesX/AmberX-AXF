@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9649,
- "updatedAt": "2026-11-20T06:33:04.348Z",
+ "rev": 9650,
+ "updatedAt": "2026-11-20T06:33:15.845Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:32:54.221Z",
+   "updatedAt": "2026-11-20T06:33:02.868Z",
    "builtAt": "",
    "notes": [
     {
@@ -338151,11 +338151,11 @@
      "done": true,
      "doneAt": "2026-11-20T06:31:51.230Z",
      "note": "",
-     "rev": 44,
+     "rev": 45,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:31:51.739Z",
-     "statusAt": "2026-11-20T06:29:36.818Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T06:33:02.926Z",
+     "statusAt": "2026-11-20T06:33:02.868Z",
+     "statusBy": "headless",
      "attempt": 18,
      "statusLog": [
       {
@@ -338444,9 +338444,16 @@
        "by": "orchestrator",
        "attempt": 18,
        "why": "to hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T06:33:02.868Z",
+       "by": "headless",
+       "attempt": 18,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s3",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
@@ -339319,7 +339326,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 284,
+   "rev": 285,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
