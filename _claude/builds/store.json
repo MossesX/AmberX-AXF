@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9596,
- "updatedAt": "2026-11-20T06:10:58.391Z",
+ "rev": 9597,
+ "updatedAt": "2026-11-20T06:11:18.424Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:10:53.512Z",
+   "updatedAt": "2026-11-20T06:11:01.697Z",
    "builtAt": "",
    "notes": [
     {
@@ -337204,6 +337204,11 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s2--sully, shared account login)",
      "at": "2026-11-20T06:10:53.512Z"
+    },
+    {
+     "text": "Watchdog: step s3 gave up: attempt 9 of 5 failed at sending. Alerted Brett.",
+     "at": "2026-11-20T06:11:01.697Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -338993,7 +338998,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 215,
+   "rev": 216,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
