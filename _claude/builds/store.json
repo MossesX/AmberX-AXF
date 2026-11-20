@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10048,
- "updatedAt": "2026-11-20T14:02:17.755Z",
+ "rev": 10049,
+ "updatedAt": "2026-11-20T14:04:43.826Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337237,14 +337237,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "merging-pr",
+   "status": "running-ci",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
    "pr": "863",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T14:02:06.807Z",
+   "updatedAt": "2026-11-20T14:02:36.142Z",
    "builtAt": "",
    "notes": [
     {
@@ -340261,6 +340261,76 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-full-audit-ui-overhaul-conso--s18--rhonda, shared account login)",
      "at": "2026-11-20T10:33:11.367Z"
+    },
+    {
+     "text": "Watchdog: step s5 stuck at completed (357 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s6 stuck at completed (357 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s7 stuck at completed (120 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s8 stuck at completed (144 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s9 stuck at completed (307 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s10 stuck at completed (298 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s11 stuck at completed (282 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s12 stuck at completed (278 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s13 stuck at completed (265 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s14 stuck at completed (265 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s15 stuck at completed (256 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s16 stuck at completed (139 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s17 stuck at completed (183 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s18 stuck at completed (175 min past budget): re-ran the transition (9).",
+     "at": "2026-11-20T14:04:02.203Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [
@@ -344003,7 +344073,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 699,
+   "rev": 702,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -344014,7 +344084,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T14:01:53.076Z",
+   "statusAt": "2026-11-20T14:02:36.142Z",
    "statusBy": "lander",
    "attempt": 5,
    "statusLog": [
@@ -344205,6 +344275,18 @@
      "by": "lander",
      "attempt": 1,
      "why": "Lander: PR 4 of 19 (s3, split after a failure)"
+    },
+    {
+     "status": "pr-pulling-main",
+     "at": "2026-11-20T14:02:17.871Z",
+     "by": "lander",
+     "attempt": 1
+    },
+    {
+     "status": "running-ci",
+     "at": "2026-11-20T14:02:36.142Z",
+     "by": "lander",
+     "attempt": 1
     }
    ]
   },
