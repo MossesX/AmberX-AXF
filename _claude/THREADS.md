@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 00:58 UTC · `console-app-text-way-too-big-system-font` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `deep-links-to-plugin-s-settings-don-t` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `queue-stall-detector-vps-spots-queued` note (all) · watchdog
 - 2026-11-20 00:58 UTC · `load-spike-alarm-vps-detects-cpu-load` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-20 07:24 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 07:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 07:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
+- 2026-11-20 07:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 
 ## Token passes (log)
 

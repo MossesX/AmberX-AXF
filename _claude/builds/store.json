@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9782,
- "updatedAt": "2026-11-20T07:31:10.544Z",
+ "rev": 9783,
+ "updatedAt": "2026-11-20T07:32:11.698Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337244,7 +337244,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T07:30:51.035Z",
+   "updatedAt": "2026-11-20T07:32:01.968Z",
    "builtAt": "",
    "notes": [
     {
@@ -337816,6 +337816,11 @@
     {
      "text": "Watchdog: step s5 stuck at completed (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-20T07:29:01.461Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: step s5 failed at completed, attempt 9: completed did not move after 2 re-run(s) of the transition (8 min past its budget).",
+     "at": "2026-11-20T07:32:01.968Z",
      "by": "watchdog"
     }
    ],
@@ -339255,12 +339260,13 @@
      "done": true,
      "doneAt": "2026-11-20T06:52:46.689Z",
      "note": "",
-     "rev": 23,
+     "rev": 24,
      "createdAt": "2026-11-20T04:52:29.712Z",
-     "updatedAt": "2026-11-20T06:54:12.846Z",
-     "statusAt": "2026-11-20T06:54:12.795Z",
-     "statusBy": "headless",
+     "updatedAt": "2026-11-20T07:32:06.964Z",
+     "statusAt": "2026-11-20T07:32:01.968Z",
+     "statusBy": "watchdog",
      "attempt": 9,
+     "failedFrom": "completed",
      "statusLog": [
       {
        "status": "pending",
@@ -339415,13 +339421,23 @@
        "by": "headless",
        "attempt": 9,
        "why": "session ended cleanly"
+      },
+      {
+       "status": "failed",
+       "at": "2026-11-20T07:32:01.968Z",
+       "by": "watchdog",
+       "attempt": 9,
+       "why": "completed did not move after 2 re-run(s) of the transition (8 min past its budget)"
       }
      ],
-     "status": "completed",
+     "status": "failed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s5",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s5",
-     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s5--joey"
+     "tmux": "axf-fable-full-audit-ui-overhaul-conso--s5--joey",
+     "tried": [
+      "hulu0241"
+     ]
     },
     {
      "id": "s6",
@@ -340761,7 +340777,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 436,
+   "rev": 437,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
