@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9624,
- "updatedAt": "2026-11-20T06:24:24.049Z",
+ "rev": 9625,
+ "updatedAt": "2026-11-20T06:25:09.626Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -336998,7 +336998,7 @@
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s3",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T06:24:19.369Z",
+   "updatedAt": "2026-11-20T06:24:59.706Z",
    "builtAt": "",
    "notes": [
     {
@@ -337703,13 +337703,12 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 60,
+     "rev": 61,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T06:24:19.425Z",
-     "statusAt": "2026-11-20T06:24:19.369Z",
+     "updatedAt": "2026-11-20T06:24:59.754Z",
+     "statusAt": "2026-11-20T06:24:59.706Z",
      "statusBy": "orchestrator",
-     "attempt": 23,
-     "failedFrom": "building",
+     "attempt": 24,
      "statusLog": [
       {
        "status": "pending",
@@ -338081,9 +338080,16 @@
        "by": "orchestrator",
        "attempt": 23,
        "why": "launch on hulu0241: launcher exit 1: /opt/axf/deploy/claude-headless.sh: line 94: HOME: unbound variable"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T06:24:59.706Z",
+       "by": "orchestrator",
+       "attempt": 24,
+       "why": "to hulu0241"
       }
      ],
-     "status": "failed",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
@@ -339145,7 +339151,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 246,
+   "rev": 247,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
