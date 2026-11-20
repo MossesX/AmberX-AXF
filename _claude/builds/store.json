@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10033,
- "updatedAt": "2026-11-20T13:32:30.407Z",
+ "rev": 10034,
+ "updatedAt": "2026-11-20T13:32:50.945Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -337242,9 +337242,9 @@
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "claude/fable-full-audit-ui-overhaul-conso--s16",
-   "pr": "861",
+   "pr": "862",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T13:32:24.916Z",
+   "updatedAt": "2026-11-20T13:32:40.365Z",
    "builtAt": "",
    "notes": [
     {
@@ -340192,20 +340192,13 @@
      "done": true,
      "doneAt": "2026-11-20T06:27:19.752Z",
      "note": "",
-     "rev": 67,
+     "rev": 68,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T11:35:24.993Z",
-     "statusAt": "2026-11-20T11:35:24.932Z",
+     "updatedAt": "2026-11-20T13:32:40.418Z",
+     "statusAt": "2026-11-20T13:32:40.365Z",
      "statusBy": "lander",
      "attempt": 25,
      "statusLog": [
-      {
-       "status": "ready",
-       "at": "2026-11-20T05:06:02.096Z",
-       "by": "watchdog",
-       "attempt": 3,
-       "why": "retry forward at sending, attempt 3"
-      },
       {
        "status": "sending",
        "at": "2026-11-20T05:06:46.540Z",
@@ -340547,6 +340540,12 @@
        "at": "2026-11-20T11:35:24.932Z",
        "by": "lander",
        "attempt": 1
+      },
+      {
+       "status": "in-pr",
+       "at": "2026-11-20T13:32:40.365Z",
+       "by": "lander",
+       "attempt": 1
       }
      ],
      "status": "in-pr",
@@ -340554,7 +340553,7 @@
      "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s2",
      "branch": "claude/fable-full-audit-ui-overhaul-conso--s2",
      "tmux": "axf-fable-full-audit-ui-overhaul-conso--s2--earl",
-     "prNumber": 860,
+     "prNumber": 862,
      "tried": [
       "hulu0241"
      ]
@@ -343442,7 +343441,7 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 681,
+   "rev": 683,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
