@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 9421,
- "updatedAt": "2026-11-20T04:52:33.959Z",
+ "rev": 9422,
+ "updatedAt": "2026-11-20T04:52:44.507Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -338437,14 +338437,14 @@
    "title": "Fable full audit + UI overhaul (console)",
    "category": "",
    "detail": "Brett, Nov 19: Fable at max effort audits the whole Dev Console codebase, then fixes. Must cover: (1) console_screenshot never answers - console takes open commands but not screenshot captures; (2) console hangs/stalls on refresh - startup fires a pile of plugin calls at once; (3) remove dead/demo code running on the live console (orchestrator-demo etc.) and any leftover junk; (4) runaway background processes and loops in the console server (earlier seen at ~99% of a core); (5) other bugs the audit finds. Small, separately landable changes; no feature removal without a reason in the report; detailed report of what was found and fixed.",
-   "status": "split",
+   "status": "pulling-main",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T04:51:19.241Z",
-   "updatedAt": "2026-11-20T04:52:29.711Z",
+   "updatedAt": "2026-11-20T04:52:40.657Z",
    "builtAt": "",
    "notes": [
     {
@@ -338534,10 +338534,10 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-20T04:52:29.711Z",
-     "updatedAt": "2026-11-20T04:52:29.711Z",
-     "statusAt": "2026-11-20T04:52:28.145Z",
+     "updatedAt": "2026-11-20T04:52:40.710Z",
+     "statusAt": "2026-11-20T04:52:40.657Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
@@ -338547,9 +338547,18 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
+      },
+      {
+       "status": "pulling-main",
+       "at": "2026-11-20T04:52:40.657Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "cutting its worktree and pulling main"
       }
      ],
-     "status": "pending"
+     "status": "pulling-main",
+     "worktree": "/root/axf-builds/fable-full-audit-ui-overhaul-conso--s1",
+     "branch": "claude/fable-full-audit-ui-overhaul-conso--s1"
     },
     {
      "id": "s2",
@@ -339155,18 +339164,18 @@
    },
    "kind": "build",
    "planRef": "fable-full-code-audit-cleanup-sw-cfs5",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-20T04:52:33.933Z",
+   "defaultAt": "2026-11-20T04:52:29.935Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T04:52:29.711Z",
+   "statusAt": "2026-11-20T04:52:35.167Z",
    "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
@@ -339190,6 +339199,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "18 steps for 4 slots"
+    },
+    {
+     "status": "pulling-main",
+     "at": "2026-11-20T04:52:35.167Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "no other build is active"
     }
    ]
   }
