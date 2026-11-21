@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10207,
- "updatedAt": "2026-11-21T00:38:26.103Z",
+ "rev": 10208,
+ "updatedAt": "2026-11-21T00:38:37.155Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -345571,14 +345571,14 @@
    "title": "Plan Studio live progress: one store, steps check off in place",
    "category": "",
    "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
-   "status": "pending",
+   "status": "splitting",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:38:20.767Z",
-   "updatedAt": "2026-11-21T00:38:20.767Z",
+   "updatedAt": "2026-11-21T00:38:30.526Z",
    "builtAt": "",
    "notes": [
     {
@@ -345627,7 +345627,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -345638,8 +345638,8 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T00:38:20.767Z",
-   "statusBy": "plan-studio-2",
+   "statusAt": "2026-11-21T00:38:30.526Z",
+   "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
     {
@@ -345648,6 +345648,13 @@
      "by": "plan-studio-2",
      "attempt": 1,
      "why": "Send to orchestrator"
+    },
+    {
+     "status": "splitting",
+     "at": "2026-11-21T00:38:30.526Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "Fable is designing its steps"
     }
    ]
   }
