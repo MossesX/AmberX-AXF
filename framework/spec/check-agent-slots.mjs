@@ -157,6 +157,39 @@ eq(r4.adopted, ['axf-slotstest-live'], 'old session with a live claude is adopte
 const sm = S.status({ tmux: new Map() });
 ok(['used', 'cap', 'queued', 'queue', 'heavy', 'memory', 'guard', 'swap', 'settings'].every((k) => k in sm), 'status has every field the console reads');
 
+// emergency slots: a second pool with its own line and its own cap; the pools never lend
+{
+  const L = await import('../cli/build-limit.mjs');
+  reset({ maxAgents: 2 });
+  L.grantEmergency('rush', { by: 'brett', owner: true });
+  eq([S.loadSettings().emergencySlots, S.loadSettings().emergencyBuilds], [2, ['rush']], 'settings carry the emergency pool and its grants');
+  const n1 = S.enqueue({ name: 'n1' }, alive); const n2 = S.enqueue({ name: 'n2' }, alive); const n3 = S.enqueue({ name: 'n3' }, alive);
+  eq([n1.started, n2.started, n3.started], [true, true, false], 'the orchestrator pool is full: an ordinary run queues');
+  const r1 = S.enqueue({ name: 'rush--s1', build: 'rush' }, { ...alive, mayTake: () => true });
+  const r2 = S.enqueue({ name: 'rush--s2' }, alive);
+  eq([r1.started, r2.started, r2.cap], [true, true, 2], 'emergency runs start at once beside a full orchestrator pool');
+  const r3 = S.enqueue({ name: 'rush--s3' }, alive);
+  eq([r3.started, r3.position, r3.reason], [false, 1, 'cap'], 'emergency 2 of 2: the third waits, first in the emergency line (not behind n3)');
+  let st = S.status({ ...alive, hard: false });
+  eq([st.used, st.cap, st.free, st.queued], [2, 2, 0, 1], 'status: the orchestrator pool counts only its own');
+  eq(st.emergency, { used: 2, cap: 2, free: 0, queued: 1 }, 'status: the emergency pool, counted apart');
+  eq(st.running.filter((r) => r.pool === 'emergency').map((r) => r.name), ['rush--s1', 'rush--s2'], 'running emergency entries are tagged');
+  S.release(n1.id);
+  eq(S.claim(r3.id, {}, alive).started, false, 'a freed orchestrator slot is not an emergency slot');
+  eq(S.claim(n3.id, {}, alive).started, true, 'it goes to the ordinary line');
+  S.release(r1.id);
+  eq(S.claim(r3.id, {}, alive).started, true, 'a freed emergency slot starts the waiting emergency run');
+  // ordinary runs never take an emergency place, even with the emergency pool empty
+  S.release(r2.id); S.release(r3.id);
+  const n4 = S.enqueue({ name: 'n4' }, alive);
+  st = S.status({ ...alive, hard: false });
+  eq([n4.started, st.emergency.used, st.emergency.free], [false, 0, 2], 'the orchestrator never uses the emergency slots');
+  // the grant goes: the same name is an ordinary run again
+  L.revokeEmergency('rush');
+  eq(S.enqueue({ name: 'rush--s9' }, alive).started, false, 'no grant: it queues with everyone else');
+  eq(S.poolOfEntry({ name: 'rush--s9' }, S.loadSettings()), 'builds', 'and counts in the orchestrator pool');
+}
+
 // claude-headless.sh end to end: real tmux, fake claude, cap 1
 const hasTmux = !spawnSync('tmux', ['-V']).error;
 if (hasTmux) {

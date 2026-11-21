@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "feature-matrix",
+  "name": "Feature matrix",
+  "version": "1.0.0",
+  "description": "The Feature matrix toolbar: reload the matrices, import a matrix for every open build of the active profile (only adds) and collapse every open matrix. The Show switch and the profile pick ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "feature-matrix", "builds"],
+  "data": {
+    "scope": "view:feature-matrix",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "matrices",
+        "label": "Matrices",
+        "items": [
+          { "id": "import", "icon": "download", "label": "Import open builds", "action": "handler:feature-matrix.import", "enabledWhen": "!busy", "priority": 300, "overflow": "never" },
+          { "id": "reload", "icon": "refresh", "label": "Reload", "action": "handler:feature-matrix.reload", "enabledWhen": "!busy", "priority": 260 },
+          { "id": "collapse", "icon": "chevron-up", "label": "Collapse all", "action": "handler:feature-matrix.collapse", "badge": "state:expanded", "enabledWhen": "expanded", "priority": 200 }
+        ]
+      }
+    ]
+  }
+}

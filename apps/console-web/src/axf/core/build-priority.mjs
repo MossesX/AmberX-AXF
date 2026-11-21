@@ -36,7 +36,7 @@ export function markedUrgent(b) {
 }
 export const effectivePriority = (b) => normPriority(b?.priority) || (markedUrgent(b) ? 'P0' : PRIORITY_DEFAULT);
 
-const FINISHED = ['complete', 'archived'];
+const FINISHED = ['complete', 'landed', 'archived'];
 const prNumber = (pr) => Number(/(\d+)\s*$/.exec(String(pr ?? ''))?.[1] ?? 0);
 const entryOf = (e, id) => e.build === id || e.name === id;
 
@@ -96,7 +96,7 @@ export function waitingOn(id, sources = {}) {
     if (hit && open) add({ kind: 'ui', id: u.id, title: u.name || u.title || u.id, why: 'In UI Review', route: 'ui-review', highlight: u.name || u.title || '' });
   }
   for (const p of sources.plans ?? []) {
-    if (p.build?.id === id) add({ kind: 'plan', id: p.id, title: p.title, why: 'Plan linked to it', route: 'plan-studio', highlight: p.title });
+    if (p.build?.id === id) add({ kind: 'plan', id: p.id, title: p.title, why: 'Plan linked to it', route: 'plan-studio-2', highlight: p.title });
   }
   return rows;
 }

@@ -83,6 +83,12 @@
         "draft": true
       },
       {
+        "target": "device-voice",
+        "title": "Device voice",
+        "text": "The agent speaks with this browser's or phone's own voice: free, offline and instant. Part of Agent voice.",
+        "kind": "tab"
+      },
+      {
         "target": "cloud-voice",
         "title": "Cloud voice",
         "text": "Shows the “Cloud voice” part of this screen. Part of Agent voice.",
@@ -443,13 +449,6 @@
         "target": "pressing-the-mic-stops-the-agent-talking",
         "title": "Pressing the mic stops the agent talking",
         "text": "Turns “Pressing the mic stops the agent talking” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
-        "kind": "toggle",
-        "draft": true
-      },
-      {
-        "target": "hands-free-listening-steps-aside-while-this-listens-amberx",
-        "title": "Hands-free listening steps aside while this listens (AmberX)",
-        "text": "Turns “Hands-free listening steps aside while this listens (AmberX)” on or off. It takes effect straight away and is remembered. Part of Agent voice.",
         "kind": "toggle",
         "draft": true
       },

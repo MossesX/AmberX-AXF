@@ -1,0 +1,67 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "axhub-users-help",
+  "name": "axHub users help",
+  "version": "0.1.0",
+  "description": "axHub users's Help mode entries (help@1), moved from the axHub web app's help when it folded into the console.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:axhub-users",
+    "entries": [
+      {
+        "target": "view:axhub-users",
+        "title": "Users",
+        "text": "Who can sign in to the hub, their role and their permissions.",
+        "kind": "screen"
+      },
+      {
+        "target": "username",
+        "title": "Username",
+        "text": "What they sign in with.",
+        "kind": "field"
+      },
+      {
+        "target": "temporary-password",
+        "title": "Temporary password",
+        "text": "A password they must change the first time they sign in.",
+        "kind": "field"
+      },
+      {
+        "target": "save-name-and-email",
+        "title": "Save name and email",
+        "text": "Saves the user's name and email."
+      },
+      {
+        "target": "change-role",
+        "title": "Change role",
+        "text": "Gives the user another role (admin, member…)."
+      },
+      {
+        "target": "another-permission",
+        "title": "Another permission",
+        "text": "Adds a permission to this user.",
+        "kind": "field"
+      },
+      {
+        "target": "save-permissions",
+        "title": "Save permissions",
+        "text": "Saves what this user may do."
+      },
+      {
+        "target": "set-a-temporary-password",
+        "title": "Set a temporary password",
+        "text": "Gives the user a password they must change on first sign-in.",
+        "kind": "toggle"
+      },
+      {
+        "target": "set-password",
+        "title": "Set password",
+        "text": "Saves the password."
+      }
+    ]
+  }
+}

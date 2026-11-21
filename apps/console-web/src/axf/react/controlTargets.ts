@@ -176,6 +176,8 @@ export class ControlRegistry {
         }
       }
     }
+    // targets other parts of the framework derive from state (chrome instance settings, …): addDerivedTargets
+    for (const fn of derivedProviders.get(rt) ?? []) { try { for (const def of fn(this.resolving)) push(def); } catch { /* a provider may run before its data */ } }
     return out;
   }
 
@@ -216,10 +218,13 @@ export class ControlRegistry {
     return this.run(cmd);
   }
 
+  /** The address being resolved, a hint to derived providers (a chrome instance not on screen yet is still addressable). */
+  private resolving: string | undefined;
+
   private resolveEntry(address: string, verb: ConsoleControlVerb): { entry: Entry; target: ControlTarget; address: string } {
-    const snap = this.snapshot();
-    const r = resolveForVerb(snap, address, verb);
-    const entry = this.entryFor(r.target.address);
+    this.resolving = address;
+    let snap: ReturnType<ControlRegistry['snapshot']>, r: ReturnType<typeof resolveForVerb>, entry: Entry | null;
+    try { snap = this.snapshot(); r = resolveForVerb(snap, address, verb); entry = this.entryFor(r.target.address); } finally { this.resolving = undefined; }
     if (!entry) throw new ConsoleControlError(CONSOLE_CONTROL_WIRE.NOT_FOUND, `${r.target.address} is no longer on the screen`, { nearest: [] });
     const gate = this.rt.gate(entry.def.requires);
     if (gate !== 'allow' && verb !== 'state' && verb !== 'list') throw new ConsoleControlError(CONSOLE_CONTROL_WIRE.DENIED, `${r.target.address} needs ${entry.def.requires}`, { requires: entry.def.requires });
@@ -374,6 +379,11 @@ export class ControlRegistry {
 
   /* ---------------- DOM helpers ---------------- */
 
+  /** The element a registered address draws into (what a console screenshot of one panel captures), or null. */
+  async elementFor(address: string): Promise<Element | null> {
+    try { return await this.elementOf(this.resolveEntry(address, 'state').entry); } catch { return null; }
+  }
+
   private async elementOf(entry: Entry): Promise<Element | null> {
     let el = entry.def.element?.() ?? null;
     if (!el) { await nextFrame(); el = entry.def.element?.() ?? null; }
@@ -414,7 +424,8 @@ export class ControlRegistry {
     scan();
     let pending: ReturnType<typeof setTimeout> | null = null;
     const mo = new MutationObserver(() => { if (pending) return; pending = setTimeout(() => { pending = null; scan(); }, 60); });
-    mo.observe(root instanceof Document ? root.documentElement : (root as Node), { childList: true, subtree: true, attributes: true, attributeFilter: [CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR] });
+    // a document by its node type, not `instanceof Document`: that needs a global constructor jsdom hosts don't install
+    mo.observe((root as Node).nodeType === 9 ? (root as Document).documentElement : (root as Node), { childList: true, subtree: true, attributes: true, attributeFilter: [CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR] });
     return () => { mo.disconnect(); if (pending) clearTimeout(pending); for (const off of owned.values()) off(); owned.clear(); };
   }
 }
@@ -450,6 +461,19 @@ function toTarget(e: Entry): ControlTarget {
   if (d.destructive) t.destructive = true;
   if (d.virtual) t.virtual = true;
   return t;
+}
+
+const derivedProviders = new WeakMap<AxfRuntime, Array<(hint?: string) => ControlTargetDef[]>>();
+/**
+ * Add targets derived from state on every lookup (not mounted elements): the chrome instance settings
+ * (`setting:chrome.<type>.<instance>.<field>`, ChromeContext.tsx) use it. `hint` is the address a command is resolving,
+ * so a provider can answer for an instance it doesn't list. Returns the remover.
+ */
+export function addDerivedTargets(rt: AxfRuntime, fn: (hint?: string) => ControlTargetDef[]): () => void {
+  const list = derivedProviders.get(rt) ?? [];
+  list.push(fn);
+  derivedProviders.set(rt, list);
+  return () => { const l = derivedProviders.get(rt); if (l) l.splice(l.indexOf(fn) >>> 0, 1); };
 }
 
 /** A single setting as a target: open = its tab scrolled to it; get / set through the settings registry with the value parser. */

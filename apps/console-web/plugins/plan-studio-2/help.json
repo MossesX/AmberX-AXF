@@ -129,7 +129,7 @@
       {
         "target": "send-to-build",
         "title": "Send to build…",
-        "text": "Turns this item's open steps into a pending build in the Build orchestrator.",
+        "text": "Sends this item to the Build orchestrator as one pending build; its open steps go along as planning notes and Fable designs the build steps.",
         "kind": "button"
       },
       {
@@ -369,7 +369,7 @@
       {
         "target": "action:plan-studio-2.build",
         "title": "Send to build orchestrator",
-        "text": "Its open steps become a pending build.",
+        "text": "It becomes one pending build; Fable designs its build steps.",
         "kind": "menu-item"
       },
       {
@@ -390,6 +390,12 @@
         "text": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator).",
         "kind": "screen",
         "draft": true
+      },
+      {
+        "target": "plan-studio",
+        "title": "Plan Studio 2.0",
+        "text": "Opens Plan Studio 2.0, the planning tree.",
+        "kind": "button"
       }
     ],
     "intros": [

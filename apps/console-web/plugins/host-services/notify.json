@@ -1,0 +1,25 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "host-services.api-down",
+      "label": "Host API down",
+      "group": "health",
+      "app": "console",
+      "source": "Host services",
+      "description": "The console cannot reach the host API: every part that runs on the VPS host can't be seen or driven (the units keep running).",
+      "match": { "source": "system", "keyPrefix": "system:host-api" },
+      "priority": "high"
+    },
+    {
+      "id": "host-services.service-down",
+      "label": "Host service down",
+      "group": "health",
+      "app": "console",
+      "source": "Host services",
+      "description": "A console part that runs on the VPS host (builds-live, shipped-features, hub sync, agent jobs, host checks, maintenance, the lander or a watchdog) stopped; its Auto fix restarts the unit.",
+      "match": { "source": "system", "keyPrefix": "system:host-service:" },
+      "priority": "high"
+    }
+  ]
+}

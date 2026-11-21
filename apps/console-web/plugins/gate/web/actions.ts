@@ -1,7 +1,8 @@
 /**
  * The gate plugin's console actions: what voice (AmberX, the wake listener), the action bus, control@1 and
  * plugin-commands run in the open console. Each calls the same REST route as the page, the CLI and MCP.
- *   gate.open[:tab]              open Builds → Gate & rules (tab rules | auto-lander | history)
+ *   vps.open[:tab]               open Builds → VPS Configuration (tab rules | build-rules | auto-lander | history)
+ *   gate.open[:tab]              the same, under the screen's old name (Gate & rules)
  *   gate.rule:<id>[:on|off]      switch one gate rule (no on/off = flip it)
  *   lander.land-now:<pr>         land a PR next (destructive: the console confirms first)
  *   lander.pause[:why] · lander.resume
@@ -12,27 +13,30 @@
  *   gate.build-rules.add:<id>:<title>     add a session rule (judgement, dispatch, Rules block); edit it in the tab
  *   gate.build-rules.run:<build>:<phase>  run a phase's rules for a build now (before | after | gate)
  *   gate.auto-lander.status                 say what the server auto-lander is doing (auto-lander@1)
- *   gate.auto-lander.open[:build]           open Gate → Auto-lander (and one build's attempt log)
+ *   gate.auto-lander.open[:build]           open VPS Configuration → Auto-lander (and one build's attempt log)
  *   gate.auto-lander.run                    ask the service for a tick now
  *   gate.auto-lander.retry:<build> · gate.auto-lander.fix:<build>   reset a build (fix = and start a fix session)
  *   gate.auto-lander.pause · gate.auto-lander.resume
- *   gate.auto-lander.set:<key>:<value>      one setting (enabled, maxAttempts, backoffBaseMin, …, pushOnEscalation)
+ *   gate.auto-lander.set:<key>:<value>      one setting (enabled, sizeCapLines, flakyReruns, backoffBaseMin, …, notifyAfterAttempts)
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { confirmed, gateCall, isTab, showTab, type BuildRule, type BuildRuleList, type GateRule, type LanderStatus } from './api';
 import { showBuildRule } from './buildRulesState';
 import { autoLanderPath, showAutoLanderBuild, type AutoLanderStatus } from './autoLanderState';
 
-const fail = (rt: AxfRuntime) => (e: Error) => rt.toast(e.message, 'danger', 'Gate & rules');
+const fail = (rt: AxfRuntime) => (e: Error) => rt.toast(e.message, 'danger', 'VPS Configuration');
 
 export function registerGateActions(rt: AxfRuntime): void {
-  rt.actions.register('gate.open', ([tab]) => { rt.navigate('gate'); if (isTab(tab)) showTab(tab); }, { label: 'Open Gate & rules', effect: 'navigate' });
+  const open = ([tab]: string[]) => { rt.navigate('gate'); if (isTab(tab)) showTab(tab); };
+  rt.actions.register('vps.open', open, { label: 'Open VPS Configuration', params: true, effect: 'navigate' });
+  // the address from when the screen was named Gate & rules: kept, so saved links, phrases and scripts still work
+  rt.actions.register('gate.open', open, { label: 'Open VPS Configuration (Gate & rules)', params: true, effect: 'navigate' });
   rt.actions.register('gate.rule', ([id = '', want = '']) => {
-    if (!id) { rt.toast('Say which rule, for example gate.rule:ui-review:off.', 'warning', 'Gate & rules'); return; }
+    if (!id) { rt.toast('Say which rule, for example gate.rule:ui-review:off.', 'warning', 'VPS Configuration'); return; }
     void gateCall<{ rule: GateRule }>(`rules/${encodeURIComponent(id)}`).then((cur) => {
       const enabled = want === 'on' ? true : want === 'off' ? false : !cur.rule.enabled;
       return gateCall<{ rule: GateRule }>(`rules/${encodeURIComponent(id)}/toggle`, 'POST', { enabled, by: 'voice' });
-    }).then((r) => rt.toast(`${r.rule.title || r.rule.id} is ${r.rule.enabled ? 'on' : 'off'}.`, 'success', 'Gate & rules'), fail(rt));
+    }).then((r) => rt.toast(`${r.rule.title || r.rule.id} is ${r.rule.enabled ? 'on' : 'off'}.`, 'success', 'VPS Configuration'), fail(rt));
   }, { label: 'Switch a gate rule on or off', params: true, effect: 'write' });
   rt.actions.register('lander.land-now', ([pr = '']) => {
     if (!pr) { rt.toast('Say which PR, for example lander.land-now:705.', 'warning', 'Auto-lander'); return; }
@@ -76,10 +80,11 @@ export function registerGateActions(rt: AxfRuntime): void {
   const AL = 'Auto-lander';
   rt.actions.register('gate.auto-lander.status', () => {
     void gateCall<AutoLanderStatus>(autoLanderPath()).then((s) => {
-      const esc = s.escalations.length ? ` ${s.escalations.length} gave up: ${s.escalations.map((e) => e.build).join(', ')}.` : '';
-      rt.toast(`The server auto-lander is ${s.service.paused ? 'paused' : s.service.up ? 'up' : 'down'}${s.current ? `, working on ${s.current}` : ''}; ${s.builds.length} builds tracked.${esc}`, s.escalations.length || !s.service.up ? 'warning' : 'info', AL);
+      const up = !!s.service.lastTick && Date.now() - Date.parse(s.service.lastTick) < 5 * 60000;
+      const failing = s.failing.length ? ` ${s.failing.length} failing (it retries by itself): ${s.failing.map((f) => `${f.build}, attempt ${f.attempt}`).join('; ')}.` : '';
+      rt.toast(`The lander is ${s.service.paused ? 'paused' : up ? 'up' : 'down'}${s.current ? `, landing ${s.current}` : ''}; ${s.builds.length} waiting to land.${failing}`, s.failing.length || !up ? 'warning' : 'info', AL);
     }, fail(rt));
-  }, { label: 'What the server auto-lander is doing', effect: 'read' });
+  }, { label: 'What the lander is doing', effect: 'read' });
   rt.actions.register('gate.auto-lander.open', ([build = '']) => { rt.navigate('gate'); showTab('auto-lander'); if (build) showAutoLanderBuild(build); }, { label: 'Open the server auto-lander', params: true, effect: 'navigate' });
   rt.actions.register('gate.auto-lander.run', () => {
     void gateCall(autoLanderPath('run'), 'POST', { by: 'voice' }).then(() => rt.toast('The auto-lander runs within a minute.', 'success', AL), fail(rt));
@@ -97,7 +102,7 @@ export function registerGateActions(rt: AxfRuntime): void {
     void gateCall(autoLanderPath('resume'), 'POST', { by: 'voice' }).then(() => rt.toast('The server auto-lander is back on.', 'success', AL), fail(rt));
   }, { label: 'Resume the server auto-lander', effect: 'write' });
   rt.actions.register('gate.auto-lander.set', ([key = '', value = '']) => {
-    if (!key || !value) { rt.toast('Say a setting and a value, for example gate.auto-lander.set:maxAttempts:5.', 'warning', AL); return; }
+    if (!key || !value) { rt.toast('Say a setting and a value, for example gate.auto-lander.set:sizeCapLines:3000.', 'warning', AL); return; }
     void gateCall<{ settings: Record<string, unknown> }>(autoLanderPath('settings'), 'POST', { key, value, by: 'voice' }).then((r) => rt.toast(`${key} is ${String(r.settings[key])}.`, 'success', AL), fail(rt));
   }, { label: 'Change a server auto-lander setting', params: true, effect: 'write' });
 }

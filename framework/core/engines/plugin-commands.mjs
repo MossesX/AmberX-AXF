@@ -331,7 +331,7 @@ export function derivePluginCommands(plugin) {
 
 /**
  * The registry: one entry per plugin, the console's first. `plugins` = [{ folder, app, manifest, routes, unread, actions, hasData, enabled }].
- * `app` names where the plugin runs (console-web, amberx-droid, axhub-web); only the console's plugins run here.
+ * `app` names where the plugin runs (console-web, axhub-web); only the console's plugins run here.
  */
 export function pluginCommandRegistry(plugins) {
   const entries = (plugins ?? []).map((p) => {
@@ -344,7 +344,7 @@ export function pluginCommandRegistry(plugins) {
   return { $axf: PLUGIN_COMMANDS_FRAME, plugins: entries };
 }
 
-/** `<plugin>/<command>` → { plugin, command } in the registry, or null. App-qualified paths (`amberx-droid:notes/…`) too. */
+/** `<plugin>/<command>` → { plugin, command } in the registry, or null. App-qualified paths (`axhub-web:notes/…`) too. */
 export function resolvePluginCommand(registry, path) {
   const m = /^(?:([a-z0-9-]+):)?([a-z0-9][a-z0-9-]*)\/([a-z0-9][a-z0-9-]*)$/.exec(String(path ?? '').trim());
   if (!m) return null;

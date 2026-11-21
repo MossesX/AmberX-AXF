@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "whats-shipped",
+  "name": "What's shipped",
+  "version": "1.0.0",
+  "description": "The What's shipped panel toolbar: mark every shipped item read, check the feed now and open the plugin's settings. The group switch and the search ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "whats-shipped", "shipped"],
+  "data": {
+    "scope": "view:whats-shipped",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "feed",
+        "label": "Feed",
+        "items": [
+          { "id": "mark-read", "icon": "check", "label": "Mark all read", "action": "handler:whats-shipped.mark-read", "badge": "state:unread", "enabledWhen": "unread", "priority": 300, "overflow": "never" },
+          { "id": "check", "icon": "refresh", "label": "Check now", "action": "handler:whats-shipped.check", "enabledWhen": "!loading", "priority": 260 },
+          { "id": "settings", "icon": "settings", "label": "Settings", "action": "handler:whats-shipped.settings", "priority": 100 }
+        ]
+      }
+    ]
+  }
+}

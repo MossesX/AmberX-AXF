@@ -5,6 +5,7 @@
 import type { AxfRuntime } from '../axf/core';
 import { installActionTargets } from './actions';
 import { installPluginTargets } from './plugins';
+import { installToolbarTargets } from './toolbars';
 import { installControlSearch } from './search';
 import { installControlExecutor } from './executor';
 import { installVoiceControl } from '../actions/voice-control';
@@ -14,10 +15,11 @@ import { installSearchPalette } from './SearchPalette';
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
   const plugins = installPluginTargets(rt);
+  const toolbars = installToolbarTargets(rt);
   const search = installControlSearch(rt);
   const executor = installControlExecutor(rt);
   const voice = installVoiceControl(rt);
   const verbs = installConsoleControlActions(rt);
   const palette = installSearchPalette(rt);
-  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); };
+  return () => { actions.off(); plugins(); toolbars(); search(); executor(); voice(); verbs(); palette(); };
 }

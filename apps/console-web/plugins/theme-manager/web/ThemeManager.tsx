@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, HubSkinLockArea, Icon, IconButton, Switch, SwatchFan, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, CHROME_PICK_DIALOG, Chip, HubSkinLockArea, Icon, IconButton, PageToolbar, Switch, SwatchFan, useAxfState, useEditorSync, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -55,7 +55,8 @@ export function ThemeManager() {
   const narrow = useNarrow();
   // skins only (Nov 10 2026): style, layout and behaviour themes are a skin's sections and are not rolled on their own
   const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => t !== 'uac-policy' && !SKIN_ONLY_TYPES.includes(t)), []);
-  const active = useMemo(() => Object.fromEntries(types.map((t) => [t, (rt.asset(t as never) as unknown as { data: Data }).data])) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
+  // an optional type (banner, clock, badge…) with no active asset is left out: rt.asset() has nothing to give for it
+  const active = useMemo(() => Object.fromEntries(types.flatMap((t) => { const a = rt.assetOrNull(t as never) as unknown as { data: Data } | null; return a ? [[t, a.data]] : []; })) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const assets = useMemo(() => Object.fromEntries(types.map((t) => [t, rt.registry.list(t as never).filter((a) => !String(a.id).startsWith('tm-preview-')) as unknown as { data: Data }[]])), [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const tree = useMemo(() => buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types), [assets, active, types]);
   const [ticked, setTicked] = useState<Set<string>>(() => new Set(read<string[] | null>(LS.ticked, null) ?? PRESETS['colors only']!(buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types))));
@@ -87,7 +88,7 @@ export function ThemeManager() {
     return tree.map(f).filter((x): x is Node => !!x);
   }, [tree, q]);
 
-  const snapshot = (): Snap => Object.fromEntries(types.map((t) => [t, structuredClone(active[t]!)]));
+  const snapshot = (): Snap => Object.fromEntries(Object.keys(active).map((t) => [t, structuredClone(active[t]!)]));
   const push = (s: Snap) => { store.history = [...store.history.slice(0, store.index + 1), s].slice(-50); store.index = store.history.length - 1; emit(); };
   const applySnap = (s: Snap) => {
     const problems: string[] = [];
@@ -159,9 +160,43 @@ export function ThemeManager() {
   const shownNodes = narrow && current ? current.children : filtered;
   const selNode = sel ? byId.get(sel) : null;
 
+  // the Theme manager toolbar (page-toolbar@1, assets/toolbar/theme-manager.json): the runtime's skin@1 actions
+  const look = rt.appLook();
+  const skins = rt.skinList();
+  const skinId = look?.skin.id ?? '';
+  const overrides = rt.skinOverrides();
+  const SCOPE_HERE = 'ui:theme-manager';
+  const scoped = rt.skinScopes().some((x) => x.key === SCOPE_HERE && x.use === 'on');
+  const previewing = rt.previewedSkin();
+  usePublishPageState('theme-manager', {
+    skins: skins.length, overrides: overrides.length, locked: rt.gate('assets.swap') !== 'allow' || !!rt.appearanceLockReason(),
+    skin: { id: skinId, on: !!look?.skin.use }, previewing: !!previewing, scoped,
+    selection: selNode ? { id: selNode.id, type: selNode.type } : null,
+  });
+  useToolbarHandlers('theme-manager', {
+    'theme-manager.use-skin': () => { const on = !look?.skin.use; rt.useSkin(on, skinId || undefined); return { use: on, skin: skinId }; },
+    'theme-manager.back-to-skin': () => { for (const slot of overrides) rt.backToSkin(slot); return { back: overrides }; },
+    'theme-manager.restore': () => { rt.restoreDefaultAppearance(); return { restored: true }; },
+    'theme-manager.preview': () => {
+      if (previewing) { rt.previewSkin(null); return { preview: null }; }
+      const ids = skins.map((x) => x.id);
+      const next = ids[(ids.indexOf(skinId) + 1) % Math.max(1, ids.length)] ?? null;
+      rt.previewSkin(next);
+      return { preview: next };
+    },
+    'theme-manager.scope-here': () => { rt.scopeSkin(SCOPE_HERE, scoped ? 'inherit' : 'on', skinId || undefined); return { scope: SCOPE_HERE, on: !scoped }; },
+    'theme-manager.pick-asset': () => {
+      const type = selNode?.type;
+      if (type) rt.openDialog(CHROME_PICK_DIALOG, { type });
+      else rt.dispatch('settings.open:appearance');
+      return { type: type ?? 'appearance' };
+    },
+  });
+
   return (
     <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
+      <PageToolbar view="theme-manager" />
       {/* one toolbar: the two rolls used most, undo / redo / pin, the rest behind ⋯ (compact pages, Oct 30 2026) */}
       <div className={`${P}__bar ${P}__toolbar`} role="toolbar" aria-label="Roll">
         <Button tone="primary" size="sm" icon="shuffle" onClick={() => roll(types.filter(rollable))}>Roll ticked</Button>

@@ -55,7 +55,7 @@
         "id": "set-hard-limit",
         "route": "PUT /hard-limit",
         "title": "Set the VPS hard build limit (Brett only)",
-        "description": "Brett only, from his own signed-in console: change maxBuilds (default 8), cpuQuotaPct, memoryMaxGb, memoryHighGb, tasksMax, dockerCpus, dockerMemoryGb, dockerImages. Sessions, MCP and voice (the console token) get 403.",
+        "description": "Brett only, from his own signed-in console: change maxBuilds (default 8), emergencySlots (the separate emergency pool, default 2), cpuQuotaPct, memoryMaxGb, memoryHighGb, tasksMax, dockerCpus, dockerMemoryGb, dockerImages. Sessions, MCP and voice (the console token) get 403.",
         "input": {
           "type": "object",
           "properties": {
@@ -63,6 +63,11 @@
               "type": "integer",
               "minimum": 1,
               "maximum": 64
+            },
+            "emergencySlots": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 8
             },
             "cpuQuotaPct": {
               "type": "integer"

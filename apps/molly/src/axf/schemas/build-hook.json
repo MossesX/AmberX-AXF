@@ -19,10 +19,14 @@
     "queued",
     "running",
     "waiting",
+    "fixing",
     "blocked",
     "failed",
     "built",
+    "landing",
+    "landed",
     "complete",
+    "escalated",
     "archived"
   ],
   "repos": [

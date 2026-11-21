@@ -46,12 +46,17 @@
       "AXF_NO_TTY_APPROVAL"
     ],
     "mentions": [
+      "apps/console-web/plugins/gate/web/passesState.ts",
+      "apps/console-web/plugins/gate/README.md",
+      "apps/console-web/plugins/gate/test.mjs",
+      "apps/console-web/scripts/vps-config-shots.mjs",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "_claude/THREADS.md",
       "apps/console-web/plugins/README.md",
       "framework/spec/CONTROL.md",
       "framework/cli/axf.mjs",
+      "framework/cli/reaper.mjs",
       "apps/console-web/server/mcp_server.py",
       ".github/workflows/android.yml",
       "apps/console-web/server/test_mcp_tools.py",

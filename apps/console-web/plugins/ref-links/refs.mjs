@@ -19,6 +19,8 @@ import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findRefs, normalizeRefTarget, refIndex, refTargetFromBuild, resolveRef } from '../../../../framework/core/engines/refs.mjs';
+import { loadStore } from '../../../../framework/cli/builds-store.mjs';
+import { readText } from '../../../../framework/core/clip.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(process.env.AXF_REPO_ROOT || resolve(HERE, '../../../..'));
@@ -28,9 +30,17 @@ const HOWS = ['open', 'window', 'review', 'build', 'copy'];
 
 const readJson = (p) => { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return null; } };
 
-/** Builds-store builds (not archived) → targets, plus a PR target per build that has one. */
+/**
+ * Builds-store builds (not archived) → targets, plus a PR target per build that has one. The builds come from the
+ * builds store itself (builds-store.mjs loadStore: the axf-data tables once cut over; Pipeline 2.0, no store.json
+ * projection); another root (a test checkout) is read from its own file.
+ */
+function readBuilds(root) {
+  if (resolve(root) !== ROOT) return readJson(join(root, '_claude', 'builds', 'store.json'));
+  try { return loadStore(); } catch { return null; }
+}
 export function buildTargets(root = ROOT) {
-  const store = readJson(join(root, '_claude', 'builds', 'store.json'));
+  const store = readBuilds(root);
   const out = [];
   for (const b of store?.builds ?? []) {
     if (!b || b.status === 'archived' || b.hidden) continue;
@@ -104,7 +114,7 @@ async function main(argv) {
   const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && /^--(touches|how|to)$/.test(argv[i - 1])));
   const [cmd, ...rest] = pos;
   const say = (r, text) => { console.log(json ? JSON.stringify(r) : text); if (!r.ok) process.exitCode = r.code === 'not_found' ? 4 : 1; };
-  if (cmd === 'run') { let s = ''; for await (const c of process.stdin) s += c; let req = {}; try { req = JSON.parse(s || '{}'); } catch { /* empty */ } console.log(JSON.stringify(run(req))); return; }
+  if (cmd === 'run') { const s = await readText(process.stdin); let req = {}; try { req = JSON.parse(s || '{}'); } catch { /* empty */ } console.log(JSON.stringify(run(req))); return; }
   if (cmd === 'targets') { const r = run({ op: 'targets' }); return say(r, r.targets.map((t) => `${t.id.padEnd(48)} ${t.label}`).join('\n')); }
   if (cmd === 'find') {
     const r = run({ op: 'find', text: rest.join(' '), touches: opt('touches') });

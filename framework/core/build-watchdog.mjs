@@ -121,6 +121,7 @@ export const lastProgressAt = (b) => list(b?.steps).map((s) => iso(s?.doneAt)).f
  */
 export function isMarkedRunning(b) {
   if (!b || typeof b !== 'object' || b.deleted) return false;
+  if (b.flow === 'pipeline-2') return false; // a Pipeline 2.0 build is the Pipeline 2.0 watchdog's (deploy/watchdog), never this one's
   if (RUNNING_STATUSES.includes(b.status)) return true;
   if (b.status !== 'queued') return false;
   const p = b.pipeline ?? {};

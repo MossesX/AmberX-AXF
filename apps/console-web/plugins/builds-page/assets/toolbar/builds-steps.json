@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "builds-steps",
+  "name": "Steps selection",
+  "version": "1.0.0",
+  "description": "The Steps view toolbar of the Builds page: select every step (or none), divide the one selected step further, harvest the selected steps into a new build and put rearranged builds back to the orchestrator's breakdown. The scope pick, the priority pick and the build name ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "builds-page", "builds", "steps"],
+  "data": {
+    "scope": "view:builds",
+    "slot": "steps",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "selection",
+        "label": "Selection",
+        "items": [
+          { "id": "select-all", "icon": "check-circle", "label": "Select all", "action": "handler:builds.select-all", "checked": "state:steps.allSelected", "badge": "state:steps.selected", "enabledWhen": "steps.total", "priority": 300, "overflow": "never" },
+          { "id": "divide", "icon": "layout", "label": "Divide", "action": "handler:builds.divide", "enabledWhen": "steps.one", "priority": 260 },
+          { "id": "harvest", "icon": "cut", "label": "Harvest", "action": "handler:builds.harvest", "enabledWhen": "steps.selected", "priority": 250 }
+        ]
+      },
+      {
+        "id": "breakdown",
+        "label": "Breakdown",
+        "items": [
+          { "id": "restore", "icon": "refresh", "label": "Restore default", "action": "handler:builds.restore", "enabledWhen": "steps.restorable", "priority": 200 }
+        ]
+      }
+    ]
+  }
+}

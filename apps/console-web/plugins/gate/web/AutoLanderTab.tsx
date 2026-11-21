@@ -1,9 +1,9 @@
 /**
- * Gate → Auto-lander: two tabs in one framework TabGroup (settings id `gate.auto-lander.tabs`):
- *   Server       the server auto-lander (auto-lander@1, deploy/auto-lander/auto-lander.mjs on the VPS): service status, the
- *                build it works on, every build it tracks (`grid:gate.auto-lander`, one row a build:
- *                `grid:gate.auto-lander/row:<build>`) with its state, attempts and last decision, and the attempt log
- *                under each row. Toolbar (role="toolbar", `gate.auto-lander`): Run now, Retry and Fix (the selected
+ * VPS Configuration → Auto-lander: two tabs in one framework TabGroup (settings id `gate.auto-lander.tabs`):
+ *   Server       the lander (lander@1, deploy/lander/run.mjs on the VPS): service status, the build landing, every build
+ *                waiting to land, read from the builds store (`grid:gate.auto-lander`, one row a build:
+ *                `grid:gate.auto-lander/row:<build>`) with its live status (failed shows the attempt), its PRs, and its
+ *                steps under each row ("added to PR #N"). Toolbar (role="toolbar", `gate.auto-lander`): Run now, Retry and Fix (the selected
  *                build; Fix asks first), Pause / Resume (`button:gate-al-run | gate-al-retry | gate-al-fix | gate-al-pause |
  *                gate-al-resume`).
  *   Merge line   the landing line and its Merge queue switch (LanderTab).
@@ -17,16 +17,17 @@ import type { GridColumn } from '@console/axf/libs/datagrid';
 import { GateList } from './GateList';
 import { LanderTab } from './LanderTab';
 import { gateCall } from './api';
-import { autoLanderPath, onShowAutoLanderBuild, takeAutoLanderBuild, type AutoLanderAttempt, type AutoLanderBuild, type AutoLanderStatus } from './autoLanderState';
+import { autoLanderPath, onShowAutoLanderBuild, takeAutoLanderBuild, type AutoLanderBuild, type AutoLanderStatus } from './autoLanderState';
 import { useGridRows } from './rows';
 import { usePoll } from './usePoll';
 
 type Sub = 'server' | 'line';
 const when = (iso?: string) => (iso ? new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '');
-const STATE_LABEL: Record<string, string> = { waiting: 'waiting', 'merging-main': 'merging main', fixing: 'fixing', 'ci-running': 'CI running', landing: 'landing', landed: 'landed', escalated: 'needs a hand' };
-const stateTone = (s: string) => (s === 'escalated' ? 'danger' : s === 'fixing' || s === 'merging-main' ? 'warning' : s === 'landing' || s === 'ci-running' ? 'accent' : s === 'landed' ? 'success' : undefined);
-const resultTone = (r: string) => (r === 'ok' ? 'success' : r === 'failed' || r === 'timeout' ? 'danger' : r === 'started' ? 'accent' : undefined);
-const KIND: Record<string, string> = { clash: 'merge main', 'red-ci': 'fix red CI', land: 'land' };
+const STATUS_LABEL: Record<string, string> = { 'build-complete': 'build complete', 'merging-pr': 'merging to one PR', 'pr-pulling-main': 'pulling in main', 'running-ci': 'running CI', 'merging-main': 'merging into main', landed: 'landed', failed: 'failed', building: 'building' };
+const label = (b: AutoLanderBuild) => (b.status === 'failed' ? `failed, attempt ${b.attempt || 1}` : STATUS_LABEL[b.status] ?? b.status);
+const statusTone = (s: string) => (s === 'failed' ? 'danger' : s === 'landed' ? 'success' : s === 'merging-main' || s === 'running-ci' || s === 'pr-pulling-main' || s === 'merging-pr' ? 'accent' : undefined);
+const RETRY: Record<string, string> = { rerun: 'flaky check: re-run the failed jobs', split: 'split: one PR per step', fix: 'fix session on the PR branch', 'pull-main': 'pull main again', same: 'the same phase again' };
+const minutesSince = (iso: string) => (iso ? (Date.now() - Date.parse(iso)) / 60000 : Infinity);
 
 export function AutoLanderTab({ refreshSec }: { refreshSec: number }) {
   const [sub, setSub] = useState<Sub>('server');
@@ -51,45 +52,46 @@ function ServerPanel({ refreshSec }: { refreshSec: number }) {
   const [busy, setBusy] = useState('');
   useEffect(() => onShowAutoLanderBuild((b) => { setSelected(b); setExpanded((cur) => (cur.includes(b) ? cur : [...cur, b])); }), []);
   const s = st.data;
-  const builds = useMemo(() => [...(s?.builds ?? [])].sort((a, b) => Number(b.state === 'escalated') - Number(a.state === 'escalated') || b.since.localeCompare(a.since)), [s]);
+  const builds = useMemo(() => [...(s?.builds ?? [])], [s]);
+  const up = !!s && minutesSince(s.service.lastTick) < 5;
 
   const act = async (key: string, path: string, done: string) => {
     setBusy(key);
-    try { await gateCall(autoLanderPath(path), 'POST', {}); rt.toast(done, 'success', 'Auto-lander'); await st.reload(); }
-    catch (e) { rt.toast((e as Error).message, 'danger', 'Auto-lander'); } finally { setBusy(''); }
+    try { await gateCall(autoLanderPath(path), 'POST', {}); rt.toast(done, 'success', 'Lander'); await st.reload(); }
+    catch (e) { rt.toast((e as Error).message, 'danger', 'Lander'); } finally { setBusy(''); }
   };
-  const run = () => act('run', 'run', 'The auto-lander runs within a minute.');
-  const retry = (b: string) => act(`retry-${b}`, `retry/${encodeURIComponent(b)}`, `${b}: attempts reset, it tries again.`);
-  const fix = (b: string) => act(`fix-${b}`, `fix/${encodeURIComponent(b)}`, `${b}: a fix session starts within a minute.`);
-  const pause = () => act('pause', 'pause', 'The server auto-lander is paused.');
-  const resume = () => act('resume', 'resume', 'The server auto-lander is running again.');
+  const run = () => act('run', 'run', 'The lander runs within a minute.');
+  const retry = (b: string) => act(`retry-${b}`, `retry/${encodeURIComponent(b)}`, `${b}: its next attempt is due now.`);
+  const fix = (b: string) => act(`fix-${b}`, `fix/${encodeURIComponent(b)}`, `${b}: its next attempt starts within a minute.`);
+  const pause = () => act('pause', 'pause', 'The lander is paused.');
+  const resume = () => act('resume', 'resume', 'The lander is running again.');
 
   const targets = useMemo<ControlTargetDef[]>(() => [
-    { address: 'panel:gate.auto-lander', kind: 'panel', label: 'Server auto-lander status', keywords: ['auto-lander', 'server', 'service', 'escalated', 'fix'], get: () => (s ? { up: s.service.up, paused: s.service.paused, current: s.current, builds: s.builds.length, escalated: s.escalated } : null) },
-  ], [s]);
-  useControlTargets(targets, s?.at ?? '');
+    { address: 'panel:gate.auto-lander', kind: 'panel', label: 'Lander status', keywords: ['auto-lander', 'lander', 'server', 'service', 'failed', 'fix'], get: () => (s ? { up, paused: s.service.paused, current: s.current, builds: s.builds.length, failing: s.failing.map((f) => f.build) } : null) },
+  ], [s, up]);
+  useControlTargets(targets, s?.at ?? s?.service.lastTick ?? '');
 
   const cols: GridColumn<AutoLanderBuild>[] = [
     { id: 'build', label: 'Build', width: 'calc(var(--fx-space) * 80)', fixed: true, sortable: true, sortValue: (b) => b.build, render: (b) => (
-      <span className="axp-gate__cell"><strong>{b.build}</strong>{rows === 2 && <span className="axp-gate__sub">{b.pr ? `#${b.pr} · ` : ''}{b.branch}</span>}</span>
+      <span className="axp-gate__cell"><strong>{b.build}</strong>{rows === 2 && <span className="axp-gate__sub">{b.title}</span>}</span>
     ) },
-    { id: 'state', label: 'State', width: 'calc(var(--fx-space) * 28)', sortable: true, sortValue: (b) => b.state, render: (b) => <Chip tone={stateTone(b.state)}>{STATE_LABEL[b.state] ?? b.state}</Chip> },
-    { id: 'attempts', label: 'Attempts', width: 'calc(var(--fx-space) * 30)', sortable: true, sortValue: (b) => b.count.total, render: (b) => (
-      <span className="axp-gate__cell"><span>{b.count.total} ({b.count.clash.failures + b.count['red-ci'].failures + b.count.land.failures} failed)</span>{rows === 2 && <span className="axp-gate__sub">merge {b.count.clash.attempts} · fix {b.count['red-ci'].attempts} · land {b.count.land.attempts}</span>}</span>
+    { id: 'state', label: 'Status', width: 'calc(var(--fx-space) * 36)', sortable: true, sortValue: (b) => b.status, render: (b) => <Chip tone={statusTone(b.status)}>{label(b)}</Chip> },
+    { id: 'attempts', label: 'PRs', width: 'calc(var(--fx-space) * 30)', sortable: true, sortValue: (b) => b.prs.length, render: (b) => (
+      <span className="axp-gate__cell"><span>{b.prs.length ? b.prs.map((p) => `#${p.pr}`).join(' ') : 'none yet'}</span>{rows === 2 && <span className="axp-gate__sub">{b.prs.filter((p) => p.state === 'merged').length} merged · {b.waiting.length} step(s) waiting</span>}</span>
     ) },
     { id: 'reason', label: 'Last result', width: 'calc(var(--fx-space) * 110)', render: (b) => (
-      <span className="axp-gate__cell">{b.reason}{rows === 2 && b.last && <span className="axp-gate__sub">{when(b.last.at)}: {b.last.action}{b.last.notBefore ? `, next try ${when(b.last.notBefore)}` : ''}</span>}</span>
+      <span className="axp-gate__cell">{b.failure ? b.failure.why : b.statusAt ? `${label(b)} since ${when(b.statusAt)}` : ''}{rows === 2 && b.failure && <span className="axp-gate__sub">next: {RETRY[b.failure.retry] ?? b.failure.retry}{b.failure.notBefore ? ` at ${when(b.failure.notBefore)}` : ''}</span>}</span>
     ) },
   ];
-  const attemptLog = (b: AutoLanderBuild) => (
+  const detail = (b: AutoLanderBuild) => (
     <div className="axp-gate__cell" data-axf-target={`panel:gate.auto-lander.log=${b.build}`}>
-      {!b.attempts.length ? <span className="axp-gate__sub">No attempts yet.</span> : b.attempts.slice().reverse().map((a: AutoLanderAttempt) => (
-        <div key={`${a.kind}-${a.n}-${a.at}`} className="axp-gate__detail">
-          <span className="axp-gate__cell axp-gate__cell--row"><Chip tone={resultTone(a.result)}>{a.result}</Chip><strong>{KIND[a.kind] ?? a.kind} #{a.n}</strong></span>
-          <span className="axp-gate__sub">{when(a.at)}{a.endedAt ? ` → ${when(a.endedAt)}` : ''}{a.account ? ` · ${a.account}` : ''}{a.session ? ` · ${a.session}` : ''}{a.head ? ` · ${a.head.slice(0, 9)}` : ''}</span>
-          {a.log && <pre className="axp-gate__pre">{a.log}</pre>}
+      {b.steps.map((x) => (
+        <div key={x.id} className="axp-gate__detail">
+          <span className="axp-gate__cell axp-gate__cell--row"><Chip tone={x.status === 'in-pr' ? 'success' : x.status === 'failed' ? 'danger' : undefined}>{x.status === 'in-pr' && x.prNumber ? `added to PR #${x.prNumber}` : x.status || 'pending'}</Chip><strong>{x.id}</strong></span>
+          <span className="axp-gate__sub">{[x.model, x.slot != null ? `slot ${x.slot}` : ''].filter(Boolean).join(' · ')}</span>
         </div>
       ))}
+      {b.failure && <pre className="axp-gate__pre">{`${b.failure.kind} in ${b.failure.status}: ${b.failure.why}${b.failure.fix ? `\nfix session ${b.failure.fix.session || ''} since ${when(b.failure.fix.at)}` : ''}`}</pre>}
     </div>
   );
   const sel = builds.find((b) => b.build === selected) ?? null;
@@ -99,30 +101,30 @@ function ServerPanel({ refreshSec }: { refreshSec: number }) {
       <div className="axp-gate__bar" role="toolbar" aria-label="Server auto-lander" data-axf-toolbar="gate.auto-lander">
         <Button id="gate-al-run" icon="play" busy={busy === 'run'} disabled={!s || s.service.paused} onClick={() => void run()}>Run now</Button>
         <span className="axp-gate__bar-end">
-          <Button id="gate-al-retry" icon="refresh" disabled={!sel} busy={!!sel && busy === `retry-${sel.build}`} onClick={() => sel && void retry(sel.build)}>{sel ? `Retry ${sel.build}` : 'Retry'}</Button>
-          <Button id="gate-al-fix" icon="hammer" tone="primary" disabled={!sel} busy={!!sel && busy === `fix-${sel.build}`} confirm={sel ? `Reset ${sel.build} and start a fix session for it now?` : undefined} onClick={() => sel && void fix(sel.build)}>Fix</Button>
+          <Button id="gate-al-retry" icon="refresh" disabled={!sel || sel.status !== 'failed'} busy={!!sel && busy === `retry-${sel.build}`} onClick={() => sel && void retry(sel.build)}>{sel ? `Retry ${sel.build}` : 'Retry'}</Button>
+          <Button id="gate-al-fix" icon="hammer" tone="primary" disabled={!sel || sel.status !== 'failed'} busy={!!sel && busy === `fix-${sel.build}`} confirm={sel ? `Start the next attempt for ${sel.build} now instead of after its backoff?` : undefined} onClick={() => sel && void fix(sel.build)}>Fix</Button>
           {s?.service.paused
             ? <Button id="gate-al-resume" icon="play" busy={busy === 'resume'} onClick={() => void resume()}>Resume</Button>
             : <Button id="gate-al-pause" icon="pause" busy={busy === 'pause'} disabled={!s} onClick={() => void pause()}>Pause</Button>}
         </span>
       </div>
       {st.error && <p className="axp-gate__err" role="alert">{st.error}</p>}
-      <Container title="Server auto-lander" icon="monitor">
-        {!s ? <p className="axp-gate__sub">Loading the auto-lander…</p> : (
+      <Container title="Lander" icon="monitor">
+        {!s ? <p className="axp-gate__sub">Loading the lander…</p> : (
           <div className="axp-gate__status">
-            <div className="axp-gate__stat"><span className="axp-gate__label">Service</span><span><Chip tone={s.service.paused ? 'warning' : s.service.up ? 'success' : 'danger'}>{s.service.paused ? 'paused' : s.service.up ? 'up' : 'down'}</Chip></span><span className="axp-gate__sub">{s.service.lastTick ? `last tick ${when(s.service.lastTick)}` : 'never ticked'}</span></div>
-            <div className="axp-gate__stat"><span className="axp-gate__label">Working on</span><span>{s.current || 'nothing right now'}</span><span className="axp-gate__sub">{s.queue.length} in its queue</span></div>
-            <div className="axp-gate__stat"><span className="axp-gate__label">Needs a hand</span><span>{s.escalations.length ? s.escalations.map((e) => e.build).join(', ') : 'nothing'}</span><span className="axp-gate__sub">after {s.settings.maxAttempts} failed tries</span></div>
-            <div className="axp-gate__stat"><span className="axp-gate__label">Tracked</span><span>{s.builds.length} builds</span><span className="axp-gate__sub">{s.builds.filter((b) => b.state === 'landed').length} landed</span></div>
+            <div className="axp-gate__stat"><span className="axp-gate__label">Service</span><span><Chip tone={s.service.paused ? 'warning' : up ? 'success' : 'danger'}>{s.service.paused ? 'paused' : up ? 'up' : 'down'}</Chip></span><span className="axp-gate__sub">{s.service.lastTick ? `last tick ${when(s.service.lastTick)}` : 'never ticked'}</span></div>
+            <div className="axp-gate__stat"><span className="axp-gate__label">Landing</span><span>{s.current || 'nothing right now'}</span><span className="axp-gate__sub">{s.queue.length} waiting to land</span></div>
+            <div className="axp-gate__stat"><span className="axp-gate__label">Failing</span><span>{s.failing.length ? s.failing.map((f) => `${f.build} (attempt ${f.attempt})`).join(', ') : 'nothing'}</span><span className="axp-gate__sub">retries by itself; nobody needs to act</span></div>
+            <div className="axp-gate__stat"><span className="axp-gate__label">Size cap</span><span>{s.settings.sizeCapLines} lines a PR</span><span className="axp-gate__sub">bigger builds land as 2, 3 or more PRs</span></div>
           </div>
         )}
       </Container>
       <GateList<AutoLanderBuild>
-        id="gate.auto-lander" label="Builds in the auto-lander" title={`Builds (${builds.length})`} rows={builds} columns={cols}
-        rowId={(b) => b.build} rowLabel={(b) => `${b.build}: ${STATE_LABEL[b.state] ?? b.state}`} hidden={[]}
-        expanded={expanded} onToggleExpand={(id) => setExpanded((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]))} renderDetail={attemptLog}
-        selected={selected} onRowClick={(b) => { setSelected((cur) => (cur === b.build ? null : b.build)); setExpanded((cur) => (cur.includes(b.build) ? cur : [...cur, b.build])); }} rowTone={(b) => stateTone(b.state) ?? 'muted'}
-        empty={<p className="axp-gate__sub">{s ? 'No finished builds yet: the auto-lander picks them up as they are built.' : 'Loading…'}</p>}
+        id="gate.auto-lander" label="Builds in the lander" title={`Builds (${builds.length})`} rows={builds} columns={cols}
+        rowId={(b) => b.build} rowLabel={(b) => `${b.build}: ${label(b)}`} hidden={[]}
+        expanded={expanded} onToggleExpand={(id) => setExpanded((cur) => (cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]))} renderDetail={detail}
+        selected={selected} onRowClick={(b) => { setSelected((cur) => (cur === b.build ? null : b.build)); setExpanded((cur) => (cur.includes(b.build) ? cur : [...cur, b.build])); }} rowTone={(b) => statusTone(b.status) ?? 'muted'}
+        empty={<p className="axp-gate__sub">{s ? 'Nothing waits to land: the lander picks a build up at build complete.' : 'Loading…'}</p>}
       />
     </>
   );

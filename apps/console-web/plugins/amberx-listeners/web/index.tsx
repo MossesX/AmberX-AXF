@@ -142,7 +142,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   builtWith: { model: 'fable', builtAt: '2026-11-06' },
   views: { [VIEW]: { title: 'AmberX listeners', icon: 'mic', keywords: ['amberx', 'listeners', 'microphone', 'mic', 'hands-free', 'talk mode', 'gizmo', 'restart', 'pause', 'calls'], render: () => <ListenersPage /> } },
-  nav: { label: 'Apps', items: [{ id: VIEW, label: 'AmberX listeners', icon: 'mic', view: VIEW }] },
+  nav: { label: 'System', items: [{ id: VIEW, label: 'AmberX listeners', icon: 'mic', view: VIEW }] },
   appMenu,
   settingsTabs: [{ id: FOLDER, label: 'AmberX listeners', icon: 'mic', order: 93, parent: 'plugins', description: 'How often the page re-reads the hub; install and uninstall' }],
   settings: [{ id: 'amberx-listeners.page', label: 'AmberX listeners', icon: 'mic', tab: FOLDER, settings: [

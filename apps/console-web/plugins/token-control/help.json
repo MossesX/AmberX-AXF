@@ -24,11 +24,6 @@
         "text": "Every token of the picked set with its value now. Change one and it becomes an override in the axHub look, so every app takes it. Reset drops the override and the theme's own value comes back."
       },
       {
-        "target": "tc-tab-passes",
-        "title": "Passes",
-        "text": "Veto passes: let every command run without axHub's veto for a while, e.g. 30 minutes (Everything, the default), or only token changes in one scope (theme, style, layout or all three). Brett approves each pass once; irreversible deletes still confirm unless the pass includes them. Every change made under a pass is logged and Undo puts them all back in one go."
-      },
-      {
         "target": "banner:token-pass",
         "title": "Pass",
         "text": "Shows while a veto pass is on: what it covers (Everything, or the scope) and a live countdown, e.g. Everything: 29:41 left. Extend starts it again from now, Undo puts back every change made under it, Revoke ends it. It turns to a warning two minutes before it ends. When Claude or an agent asks for a pass, the request shows here with Approve and Deny.",
@@ -192,6 +187,11 @@
         "title": "All passes",
         "text": "Leaves this pass request and goes back to the list of veto passes.",
         "kind": "button"
+      },
+      {
+        "target": "veto-passes-are-in-vps-configuration",
+        "title": "Veto passes are in VPS Configuration",
+        "text": "Opens Builds → VPS Configuration → Passes, where passes are started, approved, revoked and undone, and the longest pass is set. The pass banner still shows here while a pass is on."
       }
     ],
     "intros": [

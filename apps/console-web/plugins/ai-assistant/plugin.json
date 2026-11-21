@@ -2,15 +2,14 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.ai-assistant",
   "name": "AI assistant",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, any OpenAI-compatible server), setup wizard in Settings → Plugins → AI assistant, settings dialog inside the chat, live sessions on an open host registry, write-mode approval cards, the Claude Code MCP bridge. Its title bar shows axHub approvals and held calls (lib-approvals badge: click to approve on the hub page, or Deny before a countdown ends). Chats as an agent from an installed agent manager. Hub users (behind axHub's sign-in wall) chat at /api/plugins/ai-assistant/app with permissions from the hub's users page.",
+  "description": "The framework's assistant (assistant@1) in the Dev Console: every provider in the shared registry (Anthropic, Claude Code subscription, OpenAI, xAI Grok, Gemini, Mistral, Groq, DeepSeek, OpenRouter, Together, Fireworks, Perplexity, Cohere, Cerebras, Azure OpenAI, Ollama, LM Studio, any OpenAI-compatible server), setup wizard in Settings → Plugins → AI assistant, settings dialog inside the chat, live sessions on an open host registry, write-mode approval cards, the Claude Code MCP bridge. Drives the open console when asked (open plan studio, go to settings: console_open, console_settings, console_dialog, console_back, console_where, console_list through console-commands@1; navigation and reads only, the owner only). Its title bar shows axHub approvals and held calls (lib-approvals badge: click to approve on the hub page, or Deny before a countdown ends). Chats as an agent from an installed agent manager. Hub users (behind axHub's sign-in wall) chat at /api/plugins/ai-assistant/app with permissions from the hub's users page.",
   "targets": [
     "axf-console",
-    "axf-web-app",
-    "amberx-droid"
+    "axf-web-app"
   ],
   "provides": [
     "view:ai-assistant",
@@ -24,7 +23,8 @@
   "optional": [
     "service:axf.agents@1",
     "service:axf.containers@1",
-    "service:axf.live-host@1"
+    "service:axf.live-host@1",
+    "service:console-commands@1"
   ],
   "scopes": [
     "ROUTES",

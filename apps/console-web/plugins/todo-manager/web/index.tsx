@@ -38,7 +38,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('todo-manager.reload', () => void loadAll(), { label: 'Reload todos' });
   },
   views: { 'todo-manager': { title: 'Todos', icon: 'list', keywords: ['todo', 'tasks', 'notes', 'checklist', 'lists'], render: () => <Page /> } },
-  nav: { label: 'Plugins', items: [{ id: 'todo-manager', label: 'Todos', icon: 'list', view: 'todo-manager' }] },
+  nav: { label: 'Plan', items: [{ id: 'todo-manager', label: 'Todos', icon: 'list', view: 'todo-manager' }] },
   dialogs: { [ENTRY_DIALOG]: { title: 'Entry', icon: 'edit', searchable: false, render: (props, close) => <EntryEditor props={props} close={close} /> } },
   contextMenu: [{
     id: 'todo-manager.ctx', target: 'axf-todo-entry', order: 1, items: [

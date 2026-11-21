@@ -1,0 +1,56 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-data-store-dense",
+  "name": "Data store: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-data-store",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:data-store",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "store",
+        "label": "Store",
+        "items": [
+          {
+            "id": "backup",
+            "icon": "save",
+            "label": "Back up now",
+            "action": "command:data-store/backup",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "verify",
+            "icon": "check-circle",
+            "label": "Verify backup",
+            "action": "command:data-store/verify",
+            "priority": 250
+          },
+          {
+            "id": "sync",
+            "icon": "refresh",
+            "label": "Sync tables",
+            "action": "command:data-store/sync-tables",
+            "confirm": "Sync every table from its source now?",
+            "priority": 200
+          }
+        ]
+      }
+    ]
+  }
+}

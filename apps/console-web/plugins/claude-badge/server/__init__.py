@@ -291,11 +291,11 @@ def amberx_classify(text: str, now_ms: int) -> dict[str, Any]:
     m = re.search(r'"lastSeen"\s*:\s*"([^"]+)"', text)
     seen = _ms(m.group(1)) if m else 0
     if "No AmberX phone is paired" in text:
-        return {"state": "off", "online": False, "lastSeen": 0, "text": "No AmberX phone is paired with axHub"}
+        return {"state": "off", "online": False, "lastSeen": 0, "text": "No phone is paired"}
     if "is offline" in text:
         recent = bool(seen) and now_ms - seen < WARN_OFFLINE_S * 1000
-        return {"state": "warn" if recent else "error", "online": False, "lastSeen": seen, "text": "The AmberX phone is offline"}
-    return {"state": "ok", "online": True, "lastSeen": seen or now_ms, "text": "The AmberX phone is connected"}
+        return {"state": "warn" if recent else "error", "online": False, "lastSeen": seen, "text": "The phone is offline"}
+    return {"state": "ok", "online": True, "lastSeen": seen or now_ms, "text": "The phone is connected"}
 
 
 def read_amberx() -> dict[str, Any]:
@@ -311,7 +311,7 @@ def read_amberx() -> dict[str, Any]:
                 if not ready:
                     res["text"] = str(why)[:200]
                 else:
-                    r = svc.call("amberx.recorder_status", {}, timeout=15, reason="Badges: is the AmberX phone connected")
+                    r = svc.call("amberx.recorder_status", {}, timeout=15, reason="Badges: is the phone connected")
                     res = amberx_classify(str(r.get("ok") or ""), int(now * 1000)) if "ok" in r else {**res, "text": "axHub wants an approval for this read"}
             except Exception as e:  # noqa: BLE001 — the badge says why
                 res["text"] = (str(e).strip("'\"") or e.__class__.__name__)[:200]

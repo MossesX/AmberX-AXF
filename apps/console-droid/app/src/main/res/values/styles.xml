@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Edge to edge: the WebView spans the whole screen and the console pads itself with the insets the shell reports
+         (InsetsBridge); until the page says it handles them the shell pads the WebView, so nothing is ever drawn under
+         the clock, the camera cutout or the notification shade. -->
+    <style name="Shell" parent="android:Theme.DeviceDefault.NoActionBar">
+        <item name="android:windowBackground">@color/ic_launcher_background</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">always</item>
+    </style>
+</resources>

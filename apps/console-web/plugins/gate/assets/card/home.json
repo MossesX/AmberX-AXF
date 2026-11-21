@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "gate-home",
+  "name": "VPS Configuration",
+  "version": "1.0.0",
+  "description": "VPS Configuration on Home: Gate rules: list.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "VPS Configuration",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "gate",
+      "command": "rules-list"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

@@ -13,7 +13,7 @@ Object.assign(process.env, {
 });
 const core = await import('../../../../../framework/plan/builds-store-core.mjs');
 const { buildFacts } = await import('../../../../../framework/cli/stale-facts.mjs');
-const W = await import('../watchdog.mjs');
+const W = await import('../watchdog/rows.mjs');
 const builds = await import('../watchdog/tables/builds.mjs');
 const mq = await import('../watchdog/tables/merge-queue.mjs');
 const ur = await import('../watchdog/tables/ui-review.mjs');
@@ -95,8 +95,12 @@ await t('run: complete / archive builds under the store lock, remove queue entri
   assert.equal(first.ok, true, first.error);
   const s = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8'));
   const get = (id) => s.builds.find((x) => x.id === id);
-  assert.equal(get('q-merged').status, 'complete'); assert.equal(get('q-merged').mergedAt, '2026-11-16T10:00:00Z');
-  assert.ok(get('q-merged').notes.some((x) => /^Watchdog: Queued build q-merged → Complete/.test(x.text)), 'build note');
+  // done-means-merged@1: the watchdog records the merge (pr, mergedAt, landed.sha) and hands the build to the auto-lander
+  // as landing; only CI green on the merge commit makes it landed, only a verify makes it complete
+  assert.equal(get('q-merged').status, 'landing'); assert.equal(get('q-merged').mergedAt, '2026-11-16T10:00:00Z');
+  assert.equal(get('q-merged').landed.sha, 'm101'); assert.equal(get('q-merged').landed.ci, 'unknown'); assert.equal(get('q-merged').landed.pr, 101);
+  assert.ok(get('q-merged').notes.some((x) => /^Watchdog: Queued build q-merged → Complete.*\(queued → landing\)/.test(x.text)), 'build note');
+  assert.ok(!get('q-merged').notes.some((x) => /^Refused /.test(x.text)), 'nothing the store had to refuse');
   assert.equal(get('p-closed').status, 'archived');
   assert.equal(get('q-open').status, 'queued');
   assert.deepEqual(controlCalls, [105]);

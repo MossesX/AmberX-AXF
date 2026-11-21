@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "build-orchestrator-pipeline",
+  "name": "Builds",
+  "version": "1.0.0",
+  "description": "The Builds toolbar (Pending, Queue, Active, Incomplete, Complete, Errors): queue the selected builds, split one now, set its priority, raise its next step to Fable, read what Brett said, open its PR, relaunch it and filter the tab by status. Every button runs the orchestrator's own pipeline commands.",
+  "author": "AmberX AXF",
+  "tags": ["page", "builds", "build-orchestrator", "pipeline"],
+  "data": {
+    "scope": "view:build-orchestrator",
+    "slot": "pipeline",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 2, "label": "More" },
+    "groups": [
+      {
+        "id": "dispatch",
+        "label": "Dispatch",
+        "items": [
+          { "id": "queue", "icon": "play", "label": "Queue selected", "action": "handler:builds.queue-selected", "enabledWhen": "selection.canQueue>0", "badge": "state:selection.canQueue", "priority": 300, "overflow": "never" },
+          { "id": "split", "icon": "layers", "label": "Split now", "action": "command:build-orchestrator/pipeline-split", "args": { "id": "$selection.id" }, "enabledWhen": ["selection.count=1", "selection.canSplit"], "priority": 250 },
+          { "id": "priority", "icon": "chevron-up", "label": "Set priority", "action": "command:build-orchestrator/priority-set", "args": { "builds": "$selection.ids", "priority": "$selection.nextPriority" }, "enabledWhen": "selection.count>0", "priority": 240 },
+          { "id": "fable", "icon": "zap", "label": "Raise to Fable", "action": "handler:builds.raise-fable", "enabledWhen": ["selection.count=1", "selection.canRaise"], "priority": 200 }
+        ]
+      },
+      {
+        "id": "build",
+        "label": "Build",
+        "items": [
+          { "id": "said", "icon": "mic", "label": "Show what Brett said", "action": "handler:builds.show-said", "enabledWhen": "selection.count=1", "priority": 180 },
+          { "id": "pr", "icon": "external", "label": "Open PR", "action": "handler:builds.open-pr", "enabledWhen": ["selection.count=1", "selection.pr"], "priority": 160 },
+          { "id": "relaunch", "icon": "refresh", "label": "Relaunch", "action": "command:build-orchestrator/retry", "args": { "build": "$selection.id", "strategy": "retry", "why": "Relaunched from the Builds toolbar" }, "enabledWhen": ["selection.count=1", "selection.canRelaunch"], "confirm": "Relaunch this build now?", "priority": 150 }
+        ]
+      },
+      {
+        "id": "view",
+        "label": "View",
+        "items": [
+          { "id": "status", "icon": "sliders", "label": "Filter by status", "action": "handler:builds.filter-status", "checked": "state:statusFilter", "badge": "state:statusFilterCount", "enabledWhen": "statuses>1", "priority": 120, "overflow": "never" }
+        ]
+      }
+    ]
+  }
+}

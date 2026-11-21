@@ -291,7 +291,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('claude-settings.open', () => rt.dispatch(`settings.open:${VIEW}`), { label: 'Claude settings' });
   },
   views: { [VIEW]: { title: 'Claude', icon: 'sparkles', render: () => <ClaudePage /> } },
-  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude', icon: 'sparkles', view: VIEW }] },
+  nav: { label: 'AI & agents', items: [{ id: VIEW, label: 'Claude', icon: 'sparkles', view: VIEW }] },
   contextMenu: [{ id: 'claude-settings.ctx', target: '*', order: 70, items: [{ id: 'claude-settings.open', label: 'Claude settings', icon: 'sparkles', action: 'claude-settings.open' }] }],
   banners: [{ id: 'claude-no-wait', label: 'No wait', icon: 'zap', order: 4.9, render: () => <NoWaitBanner /> }],
   settingsTabs: [{ id: VIEW, label: 'Claude', icon: 'sparkles', order: 12, parent: 'plugins', description: 'Settings every Claude session reads on axHub before it acts: approvals and veto, builds, talking, notifications, memory.' }],

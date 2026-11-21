@@ -100,7 +100,7 @@ c = TestClient(app)
 man = json.loads((HERE / "plugin.json").read_text("utf-8"))
 check(man["id"] == "ai.amberx.axf.console.claude-handoff" and man["lifecycle"]["dataDir"] == ".axf-console/plugins/claude-handoff", "plugin@1 manifest: id, data folder")
 web = (HERE / "web" / "index.tsx").read_text("utf-8")
-check("label: 'Tools'" in web and "parent: 'plugins'" in web and "PluginLifecyclePanel" in web and "banners:" in web, "Tools nav section, Plugins sub-tab, lifecycle panel, banner")
+check("nav: { label: 'AI & agents'" in web and "parent: 'plugins'" in web and "PluginLifecyclePanel" in web and "banners:" in web, "AI & agents nav section, Plugins sub-tab, lifecycle panel, banner")
 check("menu: 'tools'" in (HERE / "web" / "menu.ts").read_text("utf-8"), "a Tools menu in the application menu")
 
 s = c.get("/p/status").json()

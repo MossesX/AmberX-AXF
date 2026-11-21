@@ -207,7 +207,7 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       const links = passGrantResultFields(view(req), linkOpts());
       return {
         changed: true, item: view(req), ...links, text: `${passSentence(req, now, timeZone)} ${links.hand_over}`,
-        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), ...links, how: [`Brett opens ${links.deep_link} and taps Approve (or the console banner → Token pass, Token control → Passes, the AmberX notification)`, 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
+        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), ...links, how: [`Brett opens ${links.deep_link} and taps Approve (or the console banner → Token pass, Builds → VPS Configuration → Passes, the AmberX notification)`, 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
       };
     }
     case 'approve': case 'deny': {

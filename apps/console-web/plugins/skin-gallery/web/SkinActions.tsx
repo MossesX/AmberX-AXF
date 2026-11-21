@@ -1,10 +1,10 @@
 /**
- * The action toolbar: one-tap Use skin, Back to skin, Restore to Default (tap to confirm, undoable) and Undo, wired to
- * the plugin's REST routes. After each change a snackbar says what happened and offers Undo for the undo window
+ * The action toolbar: one-tap Use skin, Back to skin, Restore to Default (asks first, undoable) and Undo, wired to
+ * the plugin's REST routes. Drawn by the shared framework toolbar (page-toolbar@1, assets/toolbar/skin-gallery.json). After each change a snackbar says what happened and offers Undo for the undo window
  * (Settings → Plugins → Skins).
  */
 import { useEffect, useState } from 'react';
-import { Button } from '@console/axf/react';
+import { Button, PageToolbar, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import { backAt, restoreAt, scopeLabel, undoLast, useSkinAt, type ScopeView } from './api';
 import { settings } from './settings';
 
@@ -33,15 +33,18 @@ export function SkinActions({ scope, picked, view, onDone, snack: outside }: Pro
     finally { setBusy(''); }
   };
   const same = !!view && picked === view.state.id && view.state.use === 'on';
+  const idle = !busy;
+  usePublishPageState('skin-gallery', { scope: idle && !!scope, canUse: idle && !!scope && !!picked && !same, overridden: idle && !!scope && !!view?.overridden.length, canUndo: idle && !!view?.canUndo });
+  useToolbarHandlers('skin-gallery', {
+    'skin-gallery.use': () => act('use', () => useSkinAt(picked, scope)),
+    'skin-gallery.back': () => act('back-to-skin', () => backAt(scope)),
+    'skin-gallery.restore': () => act('restore-default', () => restoreAt(scope)),
+    'skin-gallery.undo': () => act('undo', undoLast),
+  });
 
   return (
     <>
-      <div className="axp-skin-gallery__actions" role="toolbar" aria-label="Skin actions">
-        <Button tone="primary" icon="check" busy={busy === 'use'} disabled={!scope || !picked || same} data-help="skin-gallery.use" onClick={() => void act('use', () => useSkinAt(picked, scope))}>Use skin</Button>
-        <Button tone="neutral" icon="arrow-left" busy={busy === 'back-to-skin'} disabled={!scope || !view?.overridden.length} data-help="skin-gallery.back" onClick={() => void act('back-to-skin', () => backAt(scope))}>Back to skin</Button>
-        <Button tone="quiet" icon="refresh" busy={busy === 'restore-default'} disabled={!scope} undoable confirm={`Restore ${scope ? scopeLabel(scope) : ''} to its default look? You can undo it once.`} data-help="skin-gallery.restore" onClick={() => void act('restore-default', () => restoreAt(scope))}>Restore to Default</Button>
-        <Button tone="quiet" icon="undo" busy={busy === 'undo'} disabled={!view?.canUndo} title={view?.undo ? `Undo ${LABEL[view.undo.action] ?? view.undo.action} at ${scopeLabel(view.undo.scope)}` : 'Nothing to undo'} data-help="skin-gallery.undo" onClick={() => void act('undo', undoLast)}>Undo</Button>
-      </div>
+      <PageToolbar view="skin-gallery" className="axp-skin-gallery__actions" />
       {err && <p role="alert" className="axp-skin-gallery__msg fx-muted">{err}</p>}
       {snack && (
         <div className="axp-skin-gallery__snack" role="status" aria-live="polite">

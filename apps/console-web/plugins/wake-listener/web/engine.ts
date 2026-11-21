@@ -45,7 +45,16 @@ export function micLease(): MicLease {
 
 /* ------------------------------------------------------------------ what is here */
 
-interface NativeBridge { tools?: string[]; call(tool: string, args?: Record<string, unknown>): Promise<Record<string, unknown>>; on(event: string, fn: (data: Record<string, unknown>, event: string) => void): () => void }
+/**
+ * The console app's bridge (`window.axfNative`, `src/native/axfNative.ts`): `call` answers at once or with a promise and
+ * events arrive untyped, so the listener reads both through {@link ask} and {@link listenerData}. `tools` lists the
+ * `listener.*` tools once the app carries them; until then {@link available} reports no native backend.
+ */
+interface NativeBridge { tools?: string[]; call(method: string, ...args: unknown[]): unknown; on(event: string, fn: (data: unknown) => void): () => void }
+type ListenerData = { text?: string; final?: boolean; listening?: boolean; micOpen?: boolean; error?: string };
+const listenerData = (v: unknown): ListenerData => (v && typeof v === 'object' ? (v as ListenerData) : {});
+const ask = (bridge: NativeBridge, method: string, args?: Record<string, unknown>): Promise<ListenerData> =>
+  Promise.resolve().then(() => bridge.call(method, args)).then(listenerData);
 type Win = Window & { axfNative?: NativeBridge; SpeechRecognition?: new () => SpeechRecognitionLike; webkitSpeechRecognition?: new () => SpeechRecognitionLike };
 interface SpeechRecognitionLike {
   continuous: boolean; interimResults: boolean; lang: string; maxAlternatives: number;
@@ -85,16 +94,17 @@ export function createEngine(kind: EngineKind, hooks: EngineHooks, win: unknown 
       running: () => on,
       async start(phrases) {
         on = true; fails = 0;
-        off?.(); off = bridge.on(NATIVE_EVENT, (d) => {
+        off?.(); off = bridge.on(NATIVE_EVENT, (data) => {
+          const d = listenerData(data);
           if (typeof d.text === 'string' && d.text.trim()) hooks.onText(d.text, d.final !== false);
           set({ listening: d.listening !== false, micOpen: d.micOpen !== false, error: typeof d.error === 'string' ? d.error : '' });
         });
-        try { const r = await bridge.call('listener.start', { phrases }); set({ listening: r.listening !== false, micOpen: r.micOpen !== false, error: '' }); }
+        try { const r = await ask(bridge, 'listener.start', { phrases }); set({ listening: r.listening !== false, micOpen: r.micOpen !== false, error: '' }); }
         catch (e) { set({ listening: false, micOpen: false, error: (e as Error).message || 'the app refused to start the listener' }); }
       },
-      async stop() { on = false; off?.(); off = null; try { await bridge.call('listener.stop'); } catch { /* already stopped */ } set({ listening: false, micOpen: false }); },
-      pause() { if (!on || paused) return; paused = true; void bridge.call('listener.stop').catch(() => undefined); set({ listening: false, micOpen: false }); },
-      resume() { if (!on || !paused) return; paused = false; void bridge.call('listener.start', {}).then((r) => set({ listening: r.listening !== false, micOpen: r.micOpen !== false })).catch(() => undefined); },
+      async stop() { on = false; off?.(); off = null; try { await ask(bridge, 'listener.stop'); } catch { /* already stopped */ } set({ listening: false, micOpen: false }); },
+      pause() { if (!on || paused) return; paused = true; void ask(bridge, 'listener.stop').catch(() => undefined); set({ listening: false, micOpen: false }); },
+      resume() { if (!on || !paused) return; paused = false; void ask(bridge, 'listener.start', {}).then((r) => set({ listening: r.listening !== false, micOpen: r.micOpen !== false })).catch(() => undefined); },
     };
   }
 

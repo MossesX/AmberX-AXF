@@ -5,7 +5,7 @@
  * is one setting (`context-menu-designer.actions.filter`, JSON), so every open window follows a change at once.
  */
 import { useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, IconButton, Note, Segmented, Switch, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Icon, IconButton, Note, PageToolbar, Segmented, Switch, useAxfState, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import { ASSET_TYPES, type AxfRuntime } from '@console/axf/core';
 import { bundledPlugins } from '@console/plugins';
 import {
@@ -88,16 +88,15 @@ export function ActionsTab() {
   const rows = filterRows(all, filter, q, (p) => rt.can(p));
   const groups = groupRows(rows.slice(0, limit));
   const changed = filterChanges(filter);
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/context-menu-actions.json)
+  usePublishPageState('context-menu-actions', { changed, filtered: changed > 0 });
+  useToolbarHandlers('context-menu-actions', { 'context-menu-actions.filter': () => { rt.openDialog(FILTER_DIALOG); return { changed }; } });
   const srcIcon = (s: ActionSource) => SOURCES.find((x) => x.id === s)?.icon ?? 'zap';
   return (
     <div className="axp-ctxd-act">
-      <div className="axp-ctxd-act__bar" role="toolbar" aria-label="Actions search">
-        <input className="fx-input" type="search" aria-label="Search actions" value={q} placeholder="Search actions: name, id or plugin" onChange={(e) => { setQ(e.target.value); setLimit(PAGE); }} autoFocus />
-        <span className="axp-ctxd-act__filter">
-          <Button size="sm" icon="sliders" onClick={() => rt.openDialog(FILTER_DIALOG)}>Filter</Button>
-          {changed > 0 && <span className="fx-chip fx-chip--accent" aria-label={`${changed} filter choices changed`}>{changed}</span>}
-        </span>
-      </div>
+      <PageToolbar view="context-menu-actions" className="axp-ctxd-act__bar">
+        <input className="fx-input axp-ctxd-act__search" type="search" aria-label="Search actions" value={q} placeholder="Search actions: name, id or plugin" onChange={(e) => { setQ(e.target.value); setLimit(PAGE); }} autoFocus />
+      </PageToolbar>
       <p className="axp-ctxd-muted axp-ctxd-act__target">
         {pick ? <>Tap an action to use it for <strong>{pick.label}</strong>.</> : 'Open a menu or chunk in the designer to use an action.'}
         {' '}{rows.length} of {all.length} actions.

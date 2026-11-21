@@ -5,7 +5,7 @@
  * only runs headless jobs: the console stays on the active account.
  */
 import { useCallback, useEffect, useState } from 'react';
-import { Button, Chip, Container, Icon, Note, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, PageToolbar, SelectField, TextField, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
@@ -278,6 +278,16 @@ function Save() {
 
 function Page() {
   const { refresh } = useAccounts();
+  // the Claude accounts toolbar (page-toolbar@1, assets/toolbar/claude-accounts.json)
+  const rt = useRuntime();
+  const go = (cls: string) => { document.querySelector(`.${cls}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); return { section: cls.replace('axp-claude-accounts__', '') }; };
+  useToolbarHandlers(VIEW, {
+    'claude-accounts.switch': () => { rt.openDialog(DIALOG); return { dialog: DIALOG }; },
+    'claude-accounts.refresh': async () => { await refresh(); return { refreshed: true }; },
+    'claude-accounts.routing': () => go('axp-claude-accounts__routing'),
+    'claude-accounts.workers': () => go('axp-claude-accounts__workers'),
+    'claude-accounts.runs': () => go('axp-claude-accounts__runs'),
+  });
   return (
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
@@ -288,11 +298,12 @@ function Page() {
         </div>
         <Button size="sm" tone="ghost" icon="refresh" onClick={() => void refresh()}>Refresh</Button>
       </header>
+      <PageToolbar view="claude-accounts" />
       <Container title="One account" icon="check"><OneAccount /></Container>
       <Container title="Accounts" icon="key"><Accounts manage /></Container>
-      <Container title="Job routing" icon="shuffle"><JobRouting /></Container>
-      <Container title="Add a worker account" icon="user"><Workers /></Container>
-      <Container title="Recent headless runs" icon="clock"><Runs /></Container>
+      <Container title="Job routing" icon="shuffle" className="axp-claude-accounts__routing"><JobRouting /></Container>
+      <Container title="Add a worker account" icon="user" className="axp-claude-accounts__workers"><Workers /></Container>
+      <Container title="Recent headless runs" icon="clock" className="axp-claude-accounts__runs"><Runs /></Container>
       <Container title="Add an account" icon="plus"><Save /></Container>
     </div>
   );
@@ -331,7 +342,7 @@ export const plugin: AxfWebLibrary = {
     setInterval(tick, POLL_MS);
   },
   views: { 'claude-accounts': { title: 'Claude accounts', icon: 'key', render: () => <Page /> } },
-  nav: { label: 'Plugins', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
+  nav: { label: 'AI & agents', items: [{ id: VIEW, label: 'Claude accounts', icon: 'key', view: VIEW }] },
   dialogs: { [DIALOG]: { title: 'Claude account', icon: 'key', searchable: false, render: () => <div className="fx-stack"><OneAccount /><Accounts /></div> } },
   settingsTabs: [{ id: VIEW, label: 'Claude accounts', icon: 'key', order: 13, parent: 'plugins', description: 'One Claude account for the console, the rest headless workers; API accounts and job routing rules with spend caps; usage per account.' }],
   settingsPanels: [

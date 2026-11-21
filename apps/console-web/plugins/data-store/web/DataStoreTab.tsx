@@ -8,7 +8,7 @@
  * is also a REST route (/api/plugins/data-store/…), a plugin command (MCP), `axf data …` and a voice action.
  */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { PageToolbar, Button, Chip, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 
 export const FOLDER = 'data-store';
@@ -83,6 +83,7 @@ export function BackupPanel({ s, reload }: { s: State; reload: () => Promise<voi
         </p>
       ) : <p className="fx-small fx-muted">No backup yet. Backups run daily at 03:17 UTC (14 days plus weekly copies).</p>}
       {job && job.state !== 'idle' ? <p className="fx-small fx-muted">Job: {job.state}{job.ok === false && job.error ? ` · ${job.error}` : ''}</p> : null}
+      <PageToolbar view="data-store" />
       <div className="fx-toolbar" role="toolbar" aria-label="Data store backups" data-axf-toolbar="data-store.backups">
         <Button icon="download" disabled={!s.reachable} onClick={() => void run('backup')} id="data-store-backup">Backup now</Button>
         <Button icon="check" disabled={!s.reachable || !last} onClick={() => void run('verify')} id="data-store-verify">Verify</Button>
