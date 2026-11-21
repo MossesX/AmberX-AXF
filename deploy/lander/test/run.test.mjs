@@ -56,7 +56,7 @@ test('CI red: attempt 1 → flaky re-run; red again: attempt 2 → a fix session
   const opts = base(r, gh, store, now, { fixSession });
   await tick(opts);
   let b = store.list[0];
-  assert.equal(b.status, 'failed'); assert.equal(b.landing.attempt, 1, 'the landing run counts from 1, whatever the dispatcher counted'); assert.equal(b.attempt, 7, 'the dispatcher\'s counter is not touched');
+  assert.equal(b.status, 'failed'); assert.equal(b.landing.attempt, 1, 'the landing run counts from 1, whatever the dispatcher counted'); assert.equal(b.attempt, 1, 'and the build shows the landing run\'s count while it lands');
   assert.equal(b.failure.kind, 'ci-red'); assert.equal(b.failure.retry, 'rerun');
   assert.deepEqual(b.failure.runIds, [42]); assert.deepEqual(b.failure.jobIds, [7]);
   await tick(opts); // the re-run goes at once

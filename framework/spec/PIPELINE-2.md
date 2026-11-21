@@ -63,8 +63,11 @@ in, attempt, retry, notBefore, the failing checks and their log tail…; builds@
 record), `landedAt`, and with `landed` the done-means-merged evidence `mergedAt` + `landed { pr, sha, mergedAt, ci:
 success }`. Notes keep `by`.
 
-Two counters, never one: the build's `attempt` is the dispatcher's; a landing run counts its own failures in
-`landing.attempt`, starting at 0 when the lander takes the build at `build-complete`.
+A landing run counts its own failures: `landing.attempt` starts at 0 when the lander takes the build at
+`build-complete`, whatever the dispatcher counted before. While the build lands, its `attempt` carries that same count,
+because the attempt ceiling (`MAX_ATTEMPTS`) reads `attempt`: retries spent on building never lock a build in `failed`
+while it lands. A stopped build that goes on (Brett's re-send, a PR reopened or merged by hand) leaves `failed` as a
+marked reset with its reason, like every other way past the ceiling.
 
 ## Rules
 
@@ -131,7 +134,8 @@ Two counters, never one: the build's `attempt` is the dispatcher's; a landing ru
    gate fails closed: rules that could not run get one more try, then it is an `infra` failure. Red CI: re-run the
    failed jobs once, then a fix session on Fable on the PR as it is (its brief: the PR branch, the failing checks,
    their log tail, push to that branch only); a PR of several steps is split only when the fixes are used up and the
-   failing log names one step's files. After `maxFixes` fix sessions on a PR or `maxAttempts` failures in a landing
+   failing log names one step's files. After `maxFixes` fix sessions on a PR or `maxAttempts` (5, the contract's
+   `MAX_ATTEMPTS`) failures in a landing
    run the build stops: `failed` with `failure.retry: hold` and `failure.needsBrett`, shown on the systems check with
    the failing check, at the back of the merge line. `node deploy/lander/run.mjs retry <build>` starts a new landing
    run. After `landed` the build's merged step branches and worktrees are removed.

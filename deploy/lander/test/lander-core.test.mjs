@@ -185,14 +185,16 @@ test('a stopped build goes to the back of the line, shows on the systems check, 
   assert.match(e.why, /^Stopped: /); assert.match(e.log, /Failing: tests/); assert.match(e.log, /run\.mjs retry old/);
   assert.equal(L.queueRows([stopped])[0].needsBrett, true); assert.equal(L.queueRows([stopped])[0].attempt, 6);
   const ch = L.releaseHold(stopped, { at, by: 'Brett' });
-  assert.equal(ch.failure.retry, 'fix'); assert.equal(ch.failure.notBefore, at); assert.ok(!('needsBrett' in ch.failure) && !('stopped' in ch.failure));
+  assert.equal(ch.status, 'running-ci', 'a new landing run on the same PR, at the phase the stopped rung belongs to'); assert.equal(ch.failure, null);
+  assert.equal(ch.reset, true, 'a reset in the status contract\'s words'); assert.equal(ch.attempt, 1); assert.match(ch.note, /re-sent by Brett after it stopped/);
   assert.equal(ch.landing.attempt, 0); assert.equal(ch.landing.fixes, null);
+  assert.ok(L.DEFAULTS.maxAttempts <= 5 && L.normConfig({ maxAttempts: 40 }).maxAttempts === 5, 'never above the status contract\'s attempt ceiling');
   assert.equal(L.releaseHold(waiting), null);
   // a closed PR is given up on a re-send: its steps go into a new PR
   const closed = { id: 'c', status: 'failed', landing: { closed: [3] }, failure: L.failure({}, 'pr-closed', { status: 'running-ci', pr: 9, at }).failure };
   assert.equal(closed.failure.retry, 'hold');
   const re = L.releaseHold(closed, { at });
-  assert.equal(re.status, 'merging-pr'); assert.equal(re.failure, null); assert.deepEqual(re.landing.closed, [3, 9]);
+  assert.equal(re.status, 'merging-pr'); assert.equal(re.failure, null); assert.deepEqual(re.landing.closed, [3, 9]); assert.equal(re.reset, true);
 });
 
 test('config: unknown keys dropped, numbers clamped, the cap is a setting', () => {

@@ -247,8 +247,11 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
     let b = b0;
     const act = (text) => { out.actions.push(syncOnly ? `${b.id}: ${text}` : text); log(L.say(b, text)); };
     /** Write a change; a write the store refuses or drops stops the tick (said, never silent). */
-    const write = (ch) => {
+    const write = (change) => {
       if (dry && store.list === undefined) return true;
+      // a stopped build that goes on (its PR was merged or reopened by hand, CI went green on a hand merge) is a reset
+      // with its reason: the only way the store lets a build out of `failed` at the attempt ceiling
+      const ch = L.isHeld(b) && change.status && change.status !== 'failed' && change.note ? { ...L.RESET, ...change } : change;
       const r = store.write(b.id, ch);
       if (r.build) b = r.build;
       if (!r.ok) { out.error = `store: ${r.why || 'write refused'}`; log(L.say(b, out.error)); return false; }
@@ -263,7 +266,8 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       const held = fr.failure.retry === 'hold';
       const next = held ? `stopped (${fr.failure.stopped}): needs Brett` : `next: ${fr.failure.retry} at ${fr.failure.notBefore}`;
       act(`failed in ${fr.failure.status}, attempt ${fr.attempt}: ${fr.failure.why} (${next})`);
-      write({ status: 'failed', failure: fr.failure, landing: { attempt: fr.attempt }, note: `Lander: failed in ${fr.failure.status}, attempt ${fr.attempt}: ${fr.failure.why}${held ? ` Stopped (${fr.failure.stopped}): needs Brett. Start it again: node deploy/lander/run.mjs retry ${b.id}` : ''}` });
+      // the build's `attempt` carries the landing run's count while landing: the store's attempt ceiling reads it there
+      write({ status: 'failed', attempt: fr.attempt, failure: fr.failure, landing: { attempt: fr.attempt }, note: `Lander: failed in ${fr.failure.status}, attempt ${fr.attempt}: ${fr.failure.why}${held ? ` Stopped (${fr.failure.stopped}): needs Brett. Start it again: node deploy/lander/run.mjs retry ${b.id}` : ''}` });
       if (!dry && held) say('failed', `${b.id}: stopped after attempt ${fr.attempt} (${fr.failure.kind} in ${fr.failure.status}): ${fr.failure.stopped}. ${fr.failure.why} Needs Brett; start it again with: lander retry ${b.id}.`, b.id);
       else if (!dry && L.shouldNotify(fr.attempt, cfg)) say('failed', `${b.id}: failed, attempt ${fr.attempt} of ${cfg.maxAttempts} (${fr.failure.kind} in ${fr.failure.status}). The lander retries by itself: ${fr.failure.retry}.`, b.id);
       return 'stop';
@@ -672,9 +676,9 @@ export async function main(argv) {
     const b = store.read().find((x) => x.id === id);
     if (!b || b.status !== 'failed') return print({ ok: false, error: `${id || '<build>'} is not failed` }, `${id || '<build>'} is not failed`);
     // a stopped build is re-sent (a new landing run); any other failed build's retry is simply due now
-    const release = L.releaseHold(b, { at: nowIso(), by: flag('--by') });
+    const release = L.releaseHold(b, { at: nowIso(), by: flag('--by') || 'cli' });
     const r = store.write(b.id, release || { failure: { ...b.failure, notBefore: nowIso() } });
-    return print({ ok: r.ok, build: id, resent: !!release }, r.ok ? `${id}: ${release ? 're-sent, a new landing run starts' : 'the retry is due now'} (the next tick)` : r.why);
+    return print({ ok: r.ok, build: id, resent: !!release }, r.ok ? `${id}: ${release ? `re-sent, a new landing run starts at ${release.status}` : 'the retry is due now'} (the next tick)` : r.why);
   }
   if (cmd === 'accept') {
     // the one hand-recorded verdict: a PR merged by hand whose CI the lander cannot find green, vouched for by a person

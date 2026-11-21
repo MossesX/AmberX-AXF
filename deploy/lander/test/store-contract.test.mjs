@@ -48,7 +48,8 @@ test('the store keeps what ends the ladder: the lander\'s own attempt, the fix c
   await run(opts);
   let b = store.list[0];
   assert.equal(b.status, 'failed'); assert.equal(b.failedFrom, 'running-ci');
-  assert.equal(b.landing.attempt, 1, 'the landing run\'s own count is kept by the store'); assert.equal(b.attempt, 7, 'the dispatcher\'s count is untouched');
+  assert.equal(b.landing.attempt, 1, 'the landing run\'s own count is kept by the store');
+  assert.equal(b.attempt, 1, 'and it is the count the store\'s attempt ceiling reads: seven dispatcher retries do not lock the build in failed');
   assert.equal(b.failure.attempt, 1); assert.deepEqual(b.failure.jobIds, [7]);
   await run(opts); await run(opts); // the flaky re-run, red again
   b = store.list[0];
@@ -71,9 +72,34 @@ test('the store keeps what ends the ladder: the lander\'s own attempt, the fix c
   const re = store.write('b', L.releaseHold(store.list[0], { at: now(), by: 'Brett' }));
   assert.ok(re.ok, re.why);
   b = store.list[0];
-  assert.equal(b.landing?.attempt ?? 0, 0); assert.equal(b.landing?.fixes, undefined); assert.equal(b.failure.needsBrett, undefined); assert.equal(b.failure.retry, 'fix');
-  now.add(1); await run(opts);
+  assert.equal(b.status, 'running-ci'); assert.equal(b.failure, undefined); assert.equal(b.landing?.attempt ?? 0, 0); assert.equal(b.landing?.fixes, undefined);
+  assert.equal(b.statusLog.at(-1).reset, true, 'the re-send is a marked reset, with its reason'); assert.match(b.statusLog.at(-1).why, /re-sent by Brett/);
+  now.add(1); await run(opts); await run(opts); await run(opts); // red again: attempt 1, the flaky re-run, attempt 2
+  now.add(5); await run(opts);
   assert.equal(fixes.length, 3); assert.equal(fixes[2].n, 1);
+});
+
+test('at the store\'s attempt ceiling a stopped build still gets out: by a re-send, and by a hand merge', async () => {
+  const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
+  let state = 'failure'; const gh = github(r, () => state);
+  const now = clock(); const store = contractStore([p2(now, [['s1', 'claude/b-s1']])], { now });
+  // CI that is red and a fix session that never starts: the ladder runs to its top, attempt 5 of 5
+  const opts = base(r, gh, store, now, { cfg: L.normConfig({ flakyReruns: 0, fixStartTries: 1 }), fixSession: () => ({ exit: 3, why: 'no account can take it' }) });
+  for (let i = 0; i < 30 && !L.isHeld(store.list[0]); i++) { await run(opts); now.add(31); }
+  let b = store.list[0];
+  assert.ok(L.isHeld(b)); assert.equal(b.failure.stopped, 'attempt 5 of 5'); assert.equal(b.attempt, P2.MAX_ATTEMPTS, 'the build sits at the contract\'s ceiling');
+  assert.equal(P2.checkTransition(b, 'running-ci').ok, false, 'the store lets nothing out of failed here without a reset');
+  const re = store.write('b', L.releaseHold(b, { at: now(), by: 'Brett' }));
+  assert.ok(re.ok, re.why);
+  assert.equal(store.list[0].status, 'running-ci'); assert.equal(store.list[0].attempt, 1);
+  // to the top again, then Brett merges the PR by hand: the lander records it and the build leaves failed
+  for (let i = 0; i < 30 && !L.isHeld(store.list[0]); i++) { await run(opts); now.add(31); }
+  assert.equal(store.list[0].attempt, P2.MAX_ATTEMPTS);
+  gh.mergeByHand(1); state = 'success'; now.add(1);
+  await run(opts);
+  b = store.list[0];
+  assert.equal(b.status, 'landed'); assert.deepEqual(b.landing.merged, [1]);
+  assert.ok(b.statusLog.some((l) => l.reset === true && /merged by hand/.test(l.why)), 'the way out of failed is a reset with its reason');
 });
 
 test('the store lets a hand merge through: recorded from running-ci, landed with what GitHub says about its CI', async () => {

@@ -66,8 +66,12 @@ export const DEFAULTS = Object.freeze({
   fixTimeoutMin: 60,
   /** From this attempt on, every new attempt is posted to the crew chat and the console alerts. */
   notifyAfterAttempts: 3,
-  /** Failures one landing run may have before it stops and waits for Brett (the ladder's top). */
-  maxAttempts: 6,
+  /**
+   * Failures one landing run may have before it stops and waits for Brett (the ladder's top). Never above the status
+   * contract's own ceiling (pipeline-status.mjs MAX_ATTEMPTS, 5): past that the store lets nothing out of `failed`
+   * without a reset.
+   */
+  maxAttempts: 5,
   /** Fix sessions one PR may get: the first on the failing checks, the next with the failing log attached. */
   maxFixes: 2,
   /** Ticks in a row a fix session may fail to start before that counts as a failed attempt. */
@@ -82,7 +86,7 @@ export const DEFAULTS = Object.freeze({
   workflow: 'android.yml',
   mergeMethod: 'merge',
 });
-const RANGES = { sizeCapLines: [50, 1e7], flakyReruns: [0, 5], backoffBaseMin: [0, 600], backoffFactor: [1, 10], backoffMaxMin: [0, 1440], ciNoneKickMin: [0, 600], ciTimeoutMin: [5, 1440], fixTimeoutMin: [5, 1440], notifyAfterAttempts: [1, 100], maxAttempts: [1, 50], maxFixes: [0, 10], fixStartTries: [1, 100] };
+const RANGES = { sizeCapLines: [50, 1e7], flakyReruns: [0, 5], backoffBaseMin: [0, 600], backoffFactor: [1, 10], backoffMaxMin: [0, 1440], ciNoneKickMin: [0, 600], ciTimeoutMin: [5, 1440], fixTimeoutMin: [5, 1440], notifyAfterAttempts: [1, 100], maxAttempts: [1, 5], maxFixes: [0, 10], fixStartTries: [1, 100] };
 
 const str = (v, n = 300) => (typeof v === 'string' ? v.slice(0, n) : v == null ? '' : String(v).slice(0, n));
 const obj = (v) => (v && typeof v === 'object' && !Array.isArray(v) ? v : {});
@@ -379,20 +383,26 @@ export function failure(b, kind, ctx = {}, cfg = DEFAULTS) {
 export const LOG_TAIL = 3000;
 
 /**
- * Release a stopped build (`lander retry <build>`: Brett re-sends it). → the store change: the landing run starts a
- * new count, and the build goes on from where it stopped. A PR that was closed is given up (a new PR is opened); any
- * other stop retries the rung it stopped at. null when the build is not stopped.
+ * Release a stopped build (`lander retry <build>`: Brett re-sends it). → the store change: a new landing run on the
+ * same PR (the attempt and fix counts start again), at the phase the stopped rung belongs to: CI and the rules are
+ * read again there, and what is still wrong climbs the ladder from its first rung. A PR that was closed is given up
+ * (a new PR is opened). null when the build is not stopped.
  */
 export function releaseHold(b, { at = new Date().toISOString(), by = '' } = {}) {
   if (!isHeld(b)) return null;
   const f = b.failure; const who = by ? ` by ${str(by, 60)}` : '';
   const fresh = { attempt: 0, fixes: null, reruns: null, rules: null, ciKick: null, fullKick: null, green: null };
   if (f.kind === 'pr-closed' && num(f.pr)) {
-    return { status: 'merging-pr', failure: null, landing: { ...fresh, mainPull: null, closed: [...new Set([...landingOf(b).closed, num(f.pr)])] }, note: `Lander: re-sent${who}; PR #${num(f.pr)} stays closed, a new PR is opened` };
+    return { ...RESET, status: 'merging-pr', failure: null, landing: { ...fresh, mainPull: null, closed: [...new Set([...landingOf(b).closed, num(f.pr)])] }, note: `Lander: re-sent${who}; PR #${num(f.pr)} stays closed, a new PR is opened` };
   }
-  const { needsBrett, stopped, resume, fix, ...rest } = f;
-  return { failure: { ...rest, retry: FAILURE_RETRIES.includes(resume) ? resume : 'same', notBefore: at }, landing: fresh, note: `Lander: re-sent${who} after it stopped (${str(stopped, 200)}); a new landing run starts` };
+  const to = retryStatus({ retry: FAILURE_RETRIES.includes(f.resume) ? f.resume : 'same', status: f.status });
+  return { ...RESET, status: to, failure: null, landing: fresh, note: `Lander: re-sent${who} after it stopped (${str(f.stopped, 200)}); a new landing run starts at ${to}` };
 }
+/**
+ * A stopped build that goes on is a reset in the status contract's words: the store lets a build out of `failed` at
+ * its attempt ceiling only through a write marked `reset` with a reason (the change's note), and the count starts again.
+ */
+export const RESET = Object.freeze({ reset: true, attempt: 1 });
 const FAILURE_RETRIES = Object.freeze(['rerun', 'split', 'fix', 'pull-main', 'same']);
 
 /**
@@ -404,7 +414,7 @@ export function acceptHandMerge(b, { by = '', why = '' } = {}) {
   const m = obj(obj(b?.landing).lastMerge);
   if (!(isHeld(b) && b.failure?.kind === 'hand-merge' && m.byHand === true)) return { error: `${b?.id || 'the build'} is not stopped on a hand merge: nothing to accept` };
   if (!str(by).trim() || !str(why).trim()) return { error: 'accept needs --by <who> and --why "<what was checked>"' };
-  return { status: 'merging-pr', failure: null, landing: { lastMerge: { ...m, ci: 'success' } }, note: `Lander: PR #${num(m.pr)} (merged by hand, ${str(m.sha, 9)}) accepted as green by ${str(by, 60)}: ${str(why, 400)}` };
+  return { ...RESET, status: 'merging-pr', failure: null, landing: { lastMerge: { ...m, ci: 'success' } }, note: `Lander: PR #${num(m.pr)} (merged by hand, ${str(m.sha, 9)}) accepted as green by ${str(by, 60)}: ${str(why, 400)}` };
 }
 
 /**

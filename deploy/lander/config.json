@@ -9,7 +9,7 @@
   "ciTimeoutMin": 120,
   "fixTimeoutMin": 60,
   "notifyAfterAttempts": 3,
-  "maxAttempts": 6,
+  "maxAttempts": 5,
   "maxFixes": 2,
   "fixStartTries": 5,
   "cleanup": true,

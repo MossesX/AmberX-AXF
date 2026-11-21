@@ -225,8 +225,11 @@ test('L2-02: failing rules → fix → timeout → fix with the log → timeout 
   assert.deepEqual(st.failing, [], 'a stopped build is an escalation, not "retrying by itself"');
   // Brett re-sends it: a new landing run, a new fix session
   store.write('b', L.releaseHold(store.list[0], { at: now(), by: 'Brett' }));
-  now.add(1); await tick(opts);
-  assert.equal(fixes.length, 3); assert.equal(fixes[2].n, 1); assert.equal(store.list[0].landing.attempt, 0);
+  assert.equal(store.list[0].status, 'running-ci'); assert.equal(store.list[0].landing.attempt, 0); assert.equal(store.list[0].statusLog.at(-1).reset, true);
+  now.add(1); await tick(opts); // the rules are read again: still failing, attempt 1 of the new run
+  assert.equal(store.list[0].landing.attempt, 1); assert.equal(store.list[0].failure.retry, 'fix');
+  now.add(3); await tick(opts);
+  assert.equal(fixes.length, 3); assert.equal(fixes[2].n, 1);
 });
 
 test('L2-02: a fix session that does not start is retried on the next tick, and the status line says so', async () => {
