@@ -251,7 +251,11 @@ def send(command: str, arguments: dict | None, by: dict, device_id: str = "", ap
 def command_view(c: dict) -> dict[str, Any]:
     results = c.get("results") or []
     last = results[-1] if results else None
-    return {**c, "result": last if last and last.get("stage") == "done" else None, "ack": next((r for r in results if r.get("stage") == "ack"), None)}
+    v = {**c, "result": last if last and last.get("stage") == "done" else None, "ack": next((r for r in results if r.get("stage") == "ack"), None)}
+    if c.get("command") == "open_url":
+        # what really happened, the same words on every surface (REST, MCP, `axf phone command`, voice)
+        v["opened"] = opened_how(v)
+    return v
 
 
 def sweep(at: str = "") -> int:

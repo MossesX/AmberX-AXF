@@ -378,6 +378,8 @@ ok("open-url: only notified says so, and why (no display-over-other-apps permiss
 t = phone_answers({"opened": False, "notified": True, "how": "notification", "why": "launch-failed"})
 r = cl.post(f"{P}/open-url", json={"url": "https://console.amberxai.com/?x=3"}, headers=SESSION).json()
 t.join(5)
+cv = cl.get(f"{P}/commands/{r['id']}", headers=SESSION).json()["command"]
+ok("the command itself carries the same account (REST / MCP / CLI read it)", cv["opened"]["notified"] is True and cv["opened"]["opened"] is False and cv["opened"]["why"] == "launch-failed")
 ok("open-url: a start that never came up is not opened either", r["opened"] is False and r["notified"] is True and r["why"] == "launch-failed" and "nothing came to the front" in r["message"])
 for how, said in (("console-app", "console app"), ("console-overlay", "overlay")):
     check(f"opened_how: {how} is opened, in words", (lambda o: (o["opened"], o["notified"], said in o["message"]))(svc.opened_how({"status": "done", "result": {"data": {"opened": True, "how": how}}})), (True, False, True))

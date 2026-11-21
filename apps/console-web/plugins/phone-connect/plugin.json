@@ -199,7 +199,7 @@
         "id": "command-result",
         "title": "One command with its ack and result (wait=<s> holds until it is done)",
         "readOnly": true,
-        "description": "Reads one command with its ack and result. With wait=<seconds> the call holds until the phone has finished it or the wait runs out."
+        "description": "Reads one command with its ack and result. With wait=<seconds> the call holds until the phone has finished it or the wait runs out. An open_url command also carries opened: {answered, opened, notified, how, why, message}: opened only when the phone says the page is on screen, notified when it only posted the tap-to-open notification."
       },
       {
         "route": "GET /settings",
