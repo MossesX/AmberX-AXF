@@ -14,7 +14,8 @@
     "attempt": { "type": "integer", "minimum": 1 },
     "failedFrom": { "$ref": "#/$defs/buildStatus" },
     "statusLog": { "type": "array", "maxItems": 60, "items": { "$ref": "#/$defs/logLine" } },
-    "landing": { "type": "object", "description": "lander@1 landing record (normLanding): split, merged, closed, reruns, rules, ciKick, fullKick, lastMerge" },
+    "landing": { "type": "object", "description": "lander@1 landing record (normLanding): split, merged, closed, reruns, rules, ciKick, fullKick, mainPull, lastMerge" },
+    "emergency": { "type": "object", "description": "Sent to emergency by Brett from his signed-in console: skips the one-active-build line, builds in the emergency slot pool, lands first", "required": ["at"], "properties": { "at": { "type": "string", "format": "date-time" }, "by": { "type": "string", "maxLength": 80 } } },
     "landedAt": { "type": "string", "format": "date-time" },
     "planning": {
       "description": "The plan's steps as Plan Studio sent them: planning context for the splitting stage, never build steps (kept for the record after the split)",

@@ -801,5 +801,91 @@
    "sendable": false,
    "gaveUp": false
   }
- ]
+ ],
+ "emergency": {
+  "builds": [
+   {
+    "id": "active",
+    "flow": "pipeline-2",
+    "status": "building",
+    "statusAt": "2"
+   },
+   {
+    "id": "e-late",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "3",
+    "emergency": {
+     "at": "2026-11-20T10:05:00.000Z",
+     "by": "Brett"
+    }
+   },
+   {
+    "id": "e-first",
+    "flow": "pipeline-2",
+    "status": "failed",
+    "failedFrom": "running-ci",
+    "statusAt": "4",
+    "emergency": {
+     "at": "2026-11-20T10:00:00.000Z",
+     "by": "Brett"
+    }
+   },
+   {
+    "id": "e-unsplit",
+    "flow": "pipeline-2",
+    "status": "pending",
+    "statusAt": "5",
+    "emergency": {
+     "at": "2026-11-20T10:01:00.000Z",
+     "by": "Brett"
+    }
+   },
+   {
+    "id": "e-landed",
+    "flow": "pipeline-2",
+    "status": "landed",
+    "statusAt": "6",
+    "emergency": {
+     "at": "2026-11-20T09:00:00.000Z",
+     "by": "Brett"
+    }
+   },
+   {
+    "id": "untagged",
+    "flow": "pipeline-2",
+    "status": "split",
+    "statusAt": "1",
+    "emergency": {
+     "by": "someone"
+    }
+   }
+  ],
+  "active": "active",
+  "others": [],
+  "emergency": [
+   "e-first",
+   "e-late"
+  ],
+  "tags": [
+   null,
+   {
+    "at": "2026-11-20T10:05:00.000Z",
+    "by": "Brett"
+   },
+   {
+    "at": "2026-11-20T10:00:00.000Z",
+    "by": "Brett"
+   },
+   {
+    "at": "2026-11-20T10:01:00.000Z",
+    "by": "Brett"
+   },
+   {
+    "at": "2026-11-20T09:00:00.000Z",
+    "by": "Brett"
+   },
+   null
+  ]
+ }
 }
