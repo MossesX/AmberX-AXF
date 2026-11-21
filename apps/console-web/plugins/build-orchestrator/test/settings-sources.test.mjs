@@ -24,8 +24,8 @@ const t = (name, fn) => { fn(); n++; console.log(`  ✓ ${name}`); };
 const write = (f, v, at) => { writeFileSync(f, JSON.stringify(v)); if (at) utimesSync(f, new Date(at), new Date(at)); };
 const read = (f) => JSON.parse(readFileSync(f, 'utf8'));
 const settingsFile = join(pipe, 'settings.json'); const accountsFile = join(pipe, 'accounts.json'); const workersFile = join(workers, 'workers.json');
-const log = () => readFileSync(join(pipe, 'settings-migrations.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
-const wipe = () => { for (const f of [settingsFile, accountsFile, workersFile, claude, join(pipe, 'settings-migrations.jsonl')]) rmSync(f, { force: true }); };
+const log = () => readFileSync(join(pipe, 'log.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((l) => l.event === 'settings-migrated');
+const wipe = () => { for (const f of [settingsFile, accountsFile, workersFile, claude, join(pipe, 'log.jsonl')]) rmSync(f, { force: true }); };
 
 t('read aliases: a store with only the old keys is still read from them', () => {
   wipe();

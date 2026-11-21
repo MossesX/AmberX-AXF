@@ -48,12 +48,12 @@
  * (`emergencySlots` places, default 2): it never waits behind the ordinary line and never takes one of its slots, and
  * ordinary entries never take an emergency place. Status carries `emergency` { used, cap, free, queued }.
  */
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { emergencyIds, loadLimit, poolOf, rawLimit, saveLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
+import { emergencyIds, journal as limitJournal, loadLimit, poolOf, rawLimit, saveLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
 import { buildMayTakeSlot } from './dispatch-gate.mjs';
 import { claudePids, readLock, sessionOf, tmuxSessions as buildTmux } from './build-lock.mjs';
 import * as dataFiles from '../core/data-files.mjs';
@@ -225,12 +225,12 @@ function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(
  */
 export const RETIRED_KEYS = Object.freeze({ maxAgents: 'build-limit.json maxBuilds (Builds at once)' });
 const mtimeMs = (f) => { try { return statSync(f).mtimeMs; } catch { return 0; } };
-const migrationLog = (line) => { try { appendFileSync(join(files().dir, 'settings-migrations.jsonl'), `${JSON.stringify({ at: new Date().toISOString(), ...line })}\n`); } catch { /* the log is a courtesy */ } };
 
 /**
  * One-time move of settings.json `maxAgents` into build-limit.json `maxBuilds` (runs by itself on the first read that
  * finds both). When the two disagree the one saved last is kept, except that a later `maxAgents` above the limit never
- * raises it (only Brett raises the VPS's limit); what was kept and dropped is written to settings-migrations.jsonl.
+ * raises it (only Brett raises the VPS's limit); what was kept and dropped is one `settings-migrated` line in the limit's
+ * journal (build-limit.log.jsonl).
  * Returns the log line, or null when there was nothing to move.
  */
 export function migrateBuildsAtOnce() {
@@ -253,7 +253,7 @@ export function migrateBuildsAtOnce() {
     writeJson(f.settings, rest);
   } catch { return null; } // a read-only store: the alias read below still gives the one value
   const line = { group: 'builds.atOnce', kept: { key: 'build-limit.json maxBuilds', value: kept }, dropped: { key: 'agent-slots settings.json maxAgents', value: old, savedAt: iso(oldAt) }, was: { maxBuilds: cur, savedAt: iso(curAt) }, disagreed: old !== cur, why };
-  migrationLog(line);
+  limitJournal({ at: new Date().toISOString(), event: 'settings-migrated', ...line });
   return line;
 }
 

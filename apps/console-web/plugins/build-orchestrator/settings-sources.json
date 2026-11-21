@@ -29,7 +29,7 @@
           "store": "<pipeline dir>/settings.json",
           "module": "plugin:build-orchestrator/pipeline.mjs",
           "was": "Parallel per account",
-          "migration": "migrateSettings() in pipeline.mjs → <pipeline dir>/settings-migrations.jsonl"
+          "migration": "migrateSettings() in pipeline.mjs → a settings-migrated line in <pipeline dir>/log.jsonl"
         },
         {
           "key": "parallel",

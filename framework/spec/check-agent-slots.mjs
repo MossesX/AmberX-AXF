@@ -37,7 +37,7 @@ eq(S.loadSettings().maxHeavy, 4, 'the other keys in the same save are kept');
 writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 2 }));
 eq([S.loadSettings().maxAgents, S.migrateBuildsAtOnce()], [2, null], 'a store with only the old key is still read from it (nothing to migrate into)');
 { // migration: the one saved last is kept and logged; a later maxAgents never raises the limit
-  const logOf = () => readFileSync(join(process.env.AXF_SLOTS_DIR, 'settings-migrations.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  const logOf = () => readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.log.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((l) => l.event === 'settings-migrated');
   rmSync(process.env.AXF_SLOTS_DIR, { recursive: true, force: true }); mkdirSync(process.env.AXF_SLOTS_DIR, { recursive: true });
   writeFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.json'), JSON.stringify({ maxBuilds: 6, setAt: '2020-01-01T00:00:00.000Z' }));
   writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 4, maxHeavy: 2 }));

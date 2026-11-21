@@ -72,7 +72,8 @@ key (`parallelPerAccount`, an account's `parallel`) or refuses it and says where
 `briefMaxBytes`).
 
 Migration rule: when two copies disagree, the one saved last is kept and the decision is one line in
-`settings-migrations.jsonl` next to the store (what was kept, what was dropped, both save times). One guard: a later
+the owning module's journal as a `settings-migrated` line (`build-limit.log.jsonl`, the pipeline's `log.jsonl`): what
+was kept, what was dropped, both save times. One guard: a later
 `maxAgents` above the limit never raises Builds at once, because only Brett raises that.
 
 What the migration will do to the live values (read Nov 21, not run yet: it runs from main after the merge):

@@ -230,7 +230,7 @@ const files = () => { const d = slotsDir(); return { dir: d, config: join(d, 'bu
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
 /** One line in build-limit.log.jsonl (limit changes, emergency grants). Best effort: a failed write never blocks the change. */
-const journal = (line) => { try { appendFileSync(files().journal, `${JSON.stringify(line)}\n`); } catch { /* journal is best effort */ } };
+export const journal = (line) => { try { appendFileSync(files().journal, `${JSON.stringify(line)}\n`); } catch { /* journal is best effort */ } };
 
 /** Read fresh on every call (the console's change applies to the next launch). */
 export const loadLimit = () => normLimit(readJson(files().config, {}));

@@ -185,10 +185,9 @@ export function saveSettings(patch, env = process.env) {
   return loadSettings(env);
 }
 
-const SETTINGS_MIGRATIONS = () => join(files().dir, 'settings-migrations.jsonl');
 /**
  * One-time move of the pipeline's copies to their one stored key (runs by itself on the host's tick while a store still
- * carries an old key; each decision is one line in <pipeline dir>/settings-migrations.jsonl):
+ * carries an old key; each decision is one `settings-migrated` line in the pipeline's log, <pipeline dir>/log.jsonl):
  *   - sessions per account: the pipeline's `parallelPerAccount` and each account's own `parallel` against claude-workers
  *     `limits.building` / `perAccount.<name>.building`. Where they disagree the file saved last is kept; a value that
  *     only the pipeline has is moved over.
@@ -198,7 +197,7 @@ const SETTINGS_MIGRATIONS = () => join(files().dir, 'settings-migrations.jsonl')
  */
 export function migrateSettings(env = process.env) {
   const f = files(); const file = readJson(f.settings, null); const lines = [];
-  const log = (line) => { const l = { at: nowIso(), ...line }; lines.push(l); try { mkdirSync(f.dir, { recursive: true }); appendFileSync(SETTINGS_MIGRATIONS(), `${JSON.stringify(l)}\n`); } catch { /* the log is a courtesy */ } };
+  const log = (line) => { lines.push(line); logLine({ event: 'settings-migrated', ...line }); };
   const own = loadOwnAccounts();
   const ownPar = Object.entries(own).filter(([, v]) => v && Number.isInteger(v.parallel) && v.parallel > 0);
   const hasPar = file && file.parallelPerAccount !== undefined;
@@ -244,7 +243,7 @@ export function migrateSettings(env = process.env) {
 /** On the host (the side that sees the logins): move settings still kept as copies to their one key, before anything reads them. */
 function migrateOnHost(env = process.env) {
   if (!seesAccounts(env)) return;
-  try { for (const m of migrateSettings(env)) logLine({ event: 'settings-migrated', ...m }); } catch (e) { logLine({ event: 'settings-migration-failed', error: str(e.message, 300) }); }
+  try { migrateSettings(env); } catch (e) { logLine({ event: 'settings-migration-failed', error: str(e.message, 300) }); }
 }
 export const loadOwnAccounts = () => { const j = readJson(files().accounts, {}); return j && typeof j === 'object' && !Array.isArray(j) ? j : {}; };
 export function saveOwnAccount(name, patch) {

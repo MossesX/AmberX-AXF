@@ -19,8 +19,8 @@ under **one wording**, and every screen that shows it reads and saves that key. 
 ## Rules
 
 1. One stored key. A second place for the same value is an alias in the registry, read only.
-2. Migration keeps the value saved last when two copies disagree and writes what it kept and dropped to a
-   `settings-migrations.jsonl` next to the store. It never raises an owner-only value (Builds at once).
+2. Migration keeps the value saved last when two copies disagree and writes what it kept and dropped as a `settings-migrated`
+   line in the owning module's journal (`build-limit.log.jsonl`, the pipeline's `log.jsonl`). It never raises an owner-only value (Builds at once).
 3. One wording. Every screen, help entry and command description uses `label`.
 4. A screen reads and saves through the owning module's API. No `localStorage`, `writeLocal` or settings-registry
    copy of a merged key.

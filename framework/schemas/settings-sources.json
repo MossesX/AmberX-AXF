@@ -29,7 +29,7 @@
           "store": "<agent-slots dir>/settings.json",
           "module": "framework/cli/agent-slots.mjs",
           "was": "Max running agents",
-          "migration": "migrateBuildsAtOnce() in framework/cli/agent-slots.mjs → <agent-slots dir>/settings-migrations.jsonl"
+          "migration": "migrateBuildsAtOnce() in framework/cli/agent-slots.mjs → a settings-migrated line in <agent-slots dir>/build-limit.log.jsonl"
         }
       ],
       "retiredWording": [
