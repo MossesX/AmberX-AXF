@@ -11,10 +11,13 @@
  *   merged, CI green on the merge commit                 → land           landed.ci success; status landed
  *   merged, CI red on the merge commit                   → fail           a ci-red failure at the merge commit: fixing
  *                                                          or land        when main is green now with the merge in it
+ *                                                          or wait        while CI on main's newest commit is undecided
  *   merged, CI still running or none                     → wait           until ciWaitMin; then land when main is green
  *                                                                         now with the merge in it, else escalate (no
  *                                                                         rung is left that this watch can take)
- *   fixing with a failure, the PR open or none           → ladder         the retry ladder's next rung, launched now
+ *   fixing with a failure, the PR open or none           → ladder         the retry ladder's next rung, as one step on
+ *                                                                         the build, which goes back to the Queue (the
+ *                                                                         launcher only starts Queued builds)
  *   fixing with a failure, the ladder ran out            → escalate       status escalated, banner item, one push
  *   fixing with no failure on it                         → to-landing     every step done and a PR: it is the lander's
  *                                                          or requeue     steps left: back to the Queue
@@ -39,8 +42,9 @@ export const STATUSES = Object.freeze({
 });
 export const ACTIONS = Object.freeze(['none', 'wait', 'record-merge', 'land', 'fail', 'ladder', 'to-landing', 'requeue', 'escalate']);
 /**
- * Actions that start a session, now (`ladder`) or within a minute (`fail`: the dispatcher's retry runner answers a new
- * failure on its next tick). Capped per pass on their own, so a backlog drains one build at a time and never floods the slots.
+ * Actions that lead to a session: `ladder` puts the build back in the Queue with a step for the rung, `fail` records a
+ * failure the ladder answers next. Capped per pass on their own, so a backlog drains one build at a time and never
+ * floods the Queue or the slots.
  */
 export const LAUNCHES = Object.freeze(['ladder', 'fail']);
 
@@ -133,12 +137,20 @@ export function decide(b, facts = {}, { now = Date.now(), settings = DEFAULTS, p
     const viaMain = facts.mainCi === 'success' && facts.mainHead && facts.mainHead !== sha
       ? { ...base, action: 'land', sha, via: 'main', mainHead: str(facts.mainHead, 64), why: `merged, and main is green at ${str(facts.mainHead, 10)} with ${sha.slice(0, 10)} in it (CI on the merge commit itself: ${facts.ci === 'failure' ? 'red, fixed on main since' : 'no finished run'}): landed` }
       : null;
-    if (facts.ci === 'failure') return viaMain ?? { ...base, action: 'fail', kind: 'ci-red', head: sha, why: `CI is red on main at ${sha.slice(0, 10)} after its merge` };
+    // main has moved past the merge commit and its own CI has not finished (or could not be read): main's result decides
+    // whether this is landed or a failure, so nothing is failed or escalated on the old commit's CI alone
+    const mainUndecided = !!facts.mainHead && facts.mainHead !== sha && facts.mainCi !== 'success' && facts.mainCi !== 'failure';
+    if (facts.ci === 'failure') {
+      if (viaMain) return viaMain;
+      if (mainUndecided) return wait(`CI was red on ${sha.slice(0, 10)}, and CI on main's newest commit ${str(facts.mainHead, 10)} is ${facts.mainCi === 'pending' ? 'still running' : 'not known yet'}: that result decides`);
+      return { ...base, action: 'fail', kind: 'ci-red', head: sha, why: `CI is red on main at ${sha.slice(0, 10)} after its merge${facts.mainCi === 'failure' ? `, and main is still red at ${str(facts.mainHead, 10)}` : ''}` };
+    }
     if (b.status === 'fixing' && b.failure) return ladder(b, base, next); // a failure recorded after the merge: the ladder's
     const sinceMerge = (now - ms(at)) / MIN;
     if (facts.ci == null) return wait(`CI on ${sha.slice(0, 10)} could not be read`);
     if (sinceMerge < S.ciWaitMin) return wait(`CI on ${sha.slice(0, 10)} is ${facts.ci === 'pending' ? 'still running' : 'not there yet'} (${human(Math.round(sinceMerge))} since the merge)`);
     if (viaMain) return viaMain;
+    if (mainUndecided) return wait(`no finished CI on ${sha.slice(0, 10)}, and CI on main's newest commit ${str(facts.mainHead, 10)} is ${facts.mainCi === 'pending' ? 'still running' : 'not known yet'}: that result decides`);
     return { ...base, action: 'escalate', kind: 'ci-red', head: sha, why: `merged ${human(Math.round(sinceMerge))} ago and CI on ${sha.slice(0, 10)} ${facts.ci === 'pending' ? 'never finished' : 'never ran'}: it cannot be proved landed` };
   }
 
@@ -157,7 +169,35 @@ function ladder(b, base, next) {
   if (next.inFlight) return { ...base, action: 'wait', why: str(next.reason, 200) || 'an attempt is in flight' };
   if (next.escalate) return { ...base, action: 'escalate', kind: b.failure.kind, head: str(b.failure.head, 64), why: str(next.reason, 300) || 'the ladder ran out' };
   const rung = next.strategy === 'fix' ? `fix:${next.fixStrategy || 'targeted'}` : str(next.strategy, 40);
-  return { ...base, action: 'ladder', rung, kind: b.failure.kind, why: `fixing (${b.failure.kind}) with nothing tried for ${human(base.minutes)}: ${rung} now` };
+  return { ...base, action: 'ladder', rung, kind: b.failure.kind, model: str(next.model, 20), why: `fixing (${b.failure.kind}) with nothing tried for ${human(base.minutes)}: ${rung} now, through the Queue` };
+}
+
+const FAILURE_WORDS = Object.freeze({ crash: 'the session crashed', 'ci-red': 'CI is red', clash: 'the branch clashes with main', 'push-fail': 'the push or the PR failed', stalled: 'it stood still with its PR open', 'fell-to-pending': 'it fell back to Pending' });
+const RUNG_WORDS = Object.freeze({
+  retry: 'Run the same approach again: the failure looked transient',
+  'merge-main': 'Merge origin/main in first and resolve every conflict (keep both sides\' intent; regenerate generated files rather than hand-merging them)',
+  'fix:targeted': 'Reproduce each failing check locally and fix the cause, not the check',
+  'fix:regenerate': 'Regenerate what is generated first (fixtures, baked framework copies, catalogs, exports), then re-run the failing checks',
+  'fix:redo-step': 'Redo the failing step from its text rather than patching the last attempt',
+  'fresh-session': 'Start from `git status`, `git log origin/main..HEAD` and the tail of the last run log; do not repeat what the earlier session did',
+  'switch-model': 'The earlier attempts ran on another model and failed: take a different approach from theirs',
+  'switch-account': 'The earlier attempts ran on another account and failed: check the branch state first',
+});
+
+/**
+ * The step a ladder rung becomes. The launcher only starts Queued builds, so a rung runs through the Queue: one step
+ * that says what failed, what to do differently this time and what done means, appended to the build, which then goes
+ * back to the Queue (like the land-clash bounce). The attempt number is in the text, so each rung is its own step.
+ * → { text, model, estimate, why }
+ */
+export function rungStep(b, d, { n = 1 } = {}) {
+  const f = b?.failure ?? {};
+  const branch = str(b?.branch, 200) || `claude/${b?.id}`;
+  const pr = prNum(b?.pr);
+  const why = str(f.why, 200).replace(/[.\s]+$/, '');
+  const text = `Land this build (watchdog, attempt ${n}: ${d.rung}). ${FAILURE_WORDS[f.kind] ? `${FAILURE_WORDS[f.kind][0].toUpperCase()}${FAILURE_WORDS[f.kind].slice(1)}` : 'It failed'}${why ? ` (${why})` : ''}. ${RUNG_WORDS[d.rung] ?? RUNG_WORDS.retry}. Merge origin/main into ${branch}, get every check green and push${pr ? `; the PR is #${pr}` : ', then open the PR'}.`;
+  const model = ['Fable', 'Opus'].includes(d.model) ? d.model : ['Fable', 'Opus'].includes(b?.pipeline?.model) ? b.pipeline.model : 'Opus';
+  return { text: text.slice(0, 900), model, estimate: '15 min', why: `watchdog ladder: ${d.rung}` };
 }
 
 export function human(min) {

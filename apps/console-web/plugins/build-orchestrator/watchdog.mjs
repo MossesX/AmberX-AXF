@@ -47,7 +47,7 @@ export const WATCH_FILES = Object.freeze({ sessions: 'watchdog/sessions.mjs', st
 /** The alert link: the orchestrator's Watchdog tab (`?build=<id>` for one build). */
 export const ALERT_LINK = 'build-orchestrator.focus:watchdog';
 export const ALERT_SOURCE = 'watchdog';
-/** A pass older than this while the watchdog is on is stale (the systems check's red). */
+/** No heartbeat for this long while the watchdog is on is stale (the systems check's red). The cron beats every minute. */
 export const STALE_PASS_MIN = 5;
 const CAUGHT_KEPT = 2000;
 const MIN = 60_000;
@@ -280,7 +280,8 @@ export async function pass({ env = process.env, only = '', build = '', force = f
     }
     await appendCaught(catches, env);
   }
-  if (ran.length) await saveState({ ...state, lastPass: at, lastBy: str(by, 80), passes: (state.passes ?? 0) + 1, ...(catches.length ? { lastCatch: at } : {}) }, env);
+  // lastTick is the heartbeat (every cron minute, whether or not a watch was due); lastPass is the last time one ran
+  await saveState({ ...state, lastTick: at, ...(ran.length ? { lastPass: at, lastBy: str(by, 80), passes: (state.passes ?? 0) + 1 } : {}), ...(catches.length ? { lastCatch: at } : {}) }, env);
   return { $axf: 'watchdogs-pass@1', at, by, ran, notRun, catches, alerts: sent };
 }
 
@@ -315,12 +316,13 @@ export async function cronPass({ env = process.env } = {}) {
 
 /**
  * Everything the Watchdog tab, REST, MCP, the CLI and voice show: on/off, the cron, the last pass and its age, and per
- * watch what it is, whether it is on, its last run, what it caught, its last error. `stale` = on and no pass for
- * STALE_PASS_MIN minutes.
+ * watch what it is, whether it is on, its last run, what it caught, its last error. `ageMin` is the age of the heartbeat
+ * (lastTick: the cron reached the watchdog), `stale` = on and no heartbeat for STALE_PASS_MIN minutes.
  */
 export async function status({ env = process.env, now = Date.now(), recent = 20 } = {}) {
   const host = await hostSettings(env); const state = await loadState(env);
-  const last = Date.parse(state.lastPass || '') || 0;
+  // alive = the cron reached the watchdog lately (the heartbeat), not "a watch happened to be due"
+  const last = Date.parse(state.lastTick || state.lastPass || '') || 0;
   const ageMin = last ? Math.round((now - last) / 6000) / 10 : null;
   const watches = [];
   for (const w of await loadWatches()) {
@@ -332,7 +334,7 @@ export async function status({ env = process.env, now = Date.now(), recent = 20 
   }
   let cron = null; try { cron = (await import('./watchdog/cron.mjs')).status(); } catch { /* no cron module */ }
   const recentCaught = await caught({ limit: recent, env });
-  return { $axf: 'watchdogs-status@1', ok: true, at: new Date(now).toISOString(), enabled: host.enabled, alerts: host.alerts, cron, lastPass: state.lastPass || '', lastBy: state.lastBy || '', ageMin,
+  return { $axf: 'watchdogs-status@1', ok: true, at: new Date(now).toISOString(), enabled: host.enabled, alerts: host.alerts, cron, lastTick: state.lastTick || '', lastPass: state.lastPass || '', lastBy: state.lastBy || '', ageMin,
     stale: host.enabled && (ageMin == null || ageMin > STALE_PASS_MIN), passes: state.passes ?? 0, lastCatch: state.lastCatch || '', watches,
     caught: recentCaught, gaveUp: (await caught({ gaveUp: true, limit: 20, env })), request: await readJson(await fileOf('watchdogs-request.json', env)) };
 }
@@ -363,7 +365,7 @@ export async function main(argv = process.argv.slice(2)) {
   const out = (o, print) => (f.json ? console.log(JSON.stringify(o, null, 1)) : print(o));
   if (cmd === 'status') {
     return out(await status(), (s) => {
-      console.log(`watchdog ${s.enabled ? 'on' : 'off'} · last pass ${ago(s.lastPass)}${s.stale ? ' (STALE: the cron is not running it)' : ''} · cron ${s.cron?.installed ? (s.cron.current ? 'installed' : 'installed, out of date') : 'not installed'} · alerts ${s.alerts}`);
+      console.log(`watchdog ${s.enabled ? 'on' : 'off'} · checked ${ago(s.lastTick || s.lastPass)}${s.stale ? ' (STALE: the cron is not running it)' : ''} · a watch last ran ${ago(s.lastPass)} · cron ${s.cron?.installed ? (s.cron.current ? 'installed' : 'installed, out of date') : 'not installed'} · alerts ${s.alerts}`);
       for (const w of s.watches) console.log(`  ${w.available ? (w.enabled ? '✓' : '–') : '!'} ${w.id.padEnd(9)} ${w.available ? `${w.enabled ? `every ${w.intervalMin} min` : 'off'} · last run ${ago(w.lastRun)} · caught ${w.caught}${w.lastError ? ` · last error: ${w.lastError}` : ''}` : `cannot load: ${w.error}`}`);
       if (s.caught.length) { console.log('caught lately:'); s.caught.slice(0, 10).forEach(printCatch); }
     });

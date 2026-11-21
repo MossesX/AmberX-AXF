@@ -75,7 +75,7 @@ def health_probe(status: dict[str, Any] | None = None) -> dict[str, Any]:
                 "details": ["Settings → Plugins → Build orchestrator → Watchdog: switch it on."]}
     age = s.get("ageMin")
     watches = s.get("watches") or []
-    details = [f"Last pass {s.get('lastPass') or 'never'}" + (f" ({age} min ago)" if age is not None else "") + f", {s.get('passes', 0)} passes."]
+    details = [f"Last checked {s.get('lastTick') or s.get('lastPass') or 'never'}" + (f" ({age} min ago)" if age is not None else "") + f"; a watch last ran {s.get('lastPass') or 'never'}, {s.get('passes', 0)} passes."]
     details += [f"{w.get('label') or w.get('id')}: {'on' if w.get('enabled') else 'off'}, last run {w.get('lastRun') or 'never'}, caught {w.get('caught', 0)}" for w in watches]
     if s.get("stale"):
         return {"status": "error", "summary": "The build watchdog hasn't run " + (f"for {age} min" if age is not None else "yet") + ": nothing recovers stuck sessions or pushes stuck builds.",
@@ -86,7 +86,7 @@ def health_probe(status: dict[str, Any] | None = None) -> dict[str, Any]:
                 "details": details}
     off = [w.get("label") or w.get("id") for w in watches if not w.get("enabled")]
     caught = len(s.get("caught") or [])
-    return {"status": "ok", "summary": f"Ran {age} min ago: {len(watches) - len(off)} of {len(watches)} watches on, {caught} caught lately." + (f" Off: {', '.join(off)}." if off else ""), "details": details}
+    return {"status": "ok", "summary": f"Checked {age} min ago: {len(watches) - len(off)} of {len(watches)} watches on, {caught} caught lately." + (f" Off: {', '.join(off)}." if off else ""), "details": details}
 
 
 def autofix(vps: Callable[[str], Any] | None) -> dict[str, Any]:
