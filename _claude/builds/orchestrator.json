@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T21:35:59.183Z",
+ "updatedAt": "2026-11-21T22:06:18.597Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "shipped",
    "pendingId": "",
@@ -67,7 +67,7 @@
    "pr": "#867",
    "mergedAt": "2026-11-21T02:24:10Z",
    "createdAt": "2026-11-20T23:41:14.451Z",
-   "updatedAt": "2026-11-21T21:25:34.503Z",
+   "updatedAt": "2026-11-21T22:05:44.105Z",
    "builtAt": "2026-11-20T23:58:56Z",
    "notes": [
     {
@@ -85,6 +85,14 @@
     {
      "text": "Watchdog: PR #867 merged 2026-11-21 02:24 and the build never heard: the merge is recorded, CI on 4d64551a43 is next.",
      "at": "2026-11-21T21:25:34.503Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 4d64551a43: landed.",
+     "at": "2026-11-21T22:05:31.858Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T22:05:44.105Z"
     }
    ],
    "approvals": [],
@@ -173779,7 +173787,7 @@
    "title": "Banner widget shapes plus change icon",
    "category": "",
    "detail": "Fresh on current main, replacing the stale banner-widget-shapes-more-than-circle (archived). Banner widgets get shapes beyond circle (square, rounded, pill, hexagon, custom), set per widget, plus a Change icon option per widget with an icon picker. Tokens, framework controls, console-control, MCP/CLI/voice. Land through the orchestrator.",
-   "status": "landing",
+   "status": "fixing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -173787,8 +173795,8 @@
    "pr": "#821",
    "priority": "P1",
    "createdAt": "2026-11-16T22:59:51.546Z",
-   "updatedAt": "2026-11-19T04:18:33.129Z",
-   "builtAt": "2026-11-17T23:03:41.339Z",
+   "updatedAt": "2026-11-21T21:45:21.873Z",
+   "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
@@ -173885,6 +173893,14 @@
     {
      "text": "Watchdog: UI Review item r-20261117-e3w9v01 → Remove: The build was cancelled (PR #821 open; not on main; build banner-widget-shapes-plus-change-icon: deleted)",
      "at": "2026-11-19T04:18:33.129Z"
+    },
+    {
+     "text": "Fixing: it stalled (landing for 4 days: PR #821 is still open and nothing moved it). The server retries on its ladder; nothing stops here.",
+     "at": "2026-11-21T21:45:21.873Z"
+    },
+    {
+     "text": "Watchdog: landing for 4 days: PR #821 is still open and nothing moved it. The retry ladder answers it.",
+     "at": "2026-11-21T21:45:21.873Z"
     }
    ],
    "approvals": [
@@ -211925,7 +211941,7 @@
    "title": "Postgres part B: plan, Plan Studio, catalog, sessions and changes to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 2, 8 and the s4 order). This build does s4.2, s4.3 and s4.6 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, pending, build queue, agent-slots or auto-lander (part A), and never touch console state, settings, alerts, notifications, plugin data dirs (part C). Register new tables in their own module file under services/axf-data (e.g. tables_plan.py) and add only additive entries to shared registries, so merges with the other two builds stay clean. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over (key-level mode). No runtime data in JSON. Branch, PR, CI, merge queue; never push to main.",
-   "status": "landing",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -211933,7 +211949,7 @@
    "pr": "#851",
    "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-21T21:25:29.336Z",
+   "updatedAt": "2026-11-21T22:05:39.950Z",
    "builtAt": "",
    "notes": [
     {
@@ -212011,6 +212027,14 @@
     {
      "text": "Watchdog: PR #851 merged 2026-11-19 04:45 and the build never heard: the merge is recorded, CI on b348a81fbe is next. The failure from before the merge is cleared.",
      "at": "2026-11-21T21:25:29.336Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on b348a81fbe: landed.",
+     "at": "2026-11-21T22:05:28.207Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T22:05:39.950Z"
     }
    ],
    "approvals": [],
@@ -213230,15 +213254,15 @@
    "title": "Fable rebuild 1/2: VPS host services (move remaining server-side console parts onto the VPS)",
    "category": "Fable rebuilds",
    "detail": "Fresh on main redo of move-server-side-console-parts-onto-vps (PR #828, stuck landing, 2,200+ commits behind). Plan: fable-rebuild-1-3-vps-host-services-move-server-ybzn. Use #828 as reference only. Gate & rules is already on the VPS: skip anything already moved.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-rebuild-1-2-vps-host-services-move",
-   "pr": "",
+   "pr": "#884",
    "createdAt": "2026-11-21T19:28:48.961Z",
-   "updatedAt": "2026-11-21T19:30:44.831Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-21T22:06:00.034Z",
+   "builtAt": "2026-11-21T22:06:00.034Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-fable-rebuild-1-2-vps-host-services-move--gina.",
@@ -213247,6 +213271,14 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-rebuild-1-2-vps-host-services-move--gina, shared account login)",
      "at": "2026-11-21T19:30:44.831Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:06:00.034Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:01:00.166Z"
     }
    ],
    "approvals": [],
@@ -213277,8 +213309,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:34:06.427Z",
      "note": "",
      "uid": "st-mwqsww6v1pcdqr",
      "createdAt": "2026-11-21T19:28:48.963Z"
@@ -213296,8 +213328,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:43:17.836Z",
      "note": "",
      "uid": "st-mwqsww6v1q92rf",
      "createdAt": "2026-11-21T19:28:48.963Z"
@@ -213315,8 +213347,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:56:27.958Z",
      "note": "",
      "uid": "st-mwqsww6v1r11b5",
      "createdAt": "2026-11-21T19:28:48.963Z"
@@ -213334,8 +213366,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:59:22.686Z",
      "note": "",
      "uid": "st-mwqsww6v1s0xu1",
      "createdAt": "2026-11-21T19:28:48.963Z"
@@ -213760,7 +213792,7 @@
    "branch": "claude/phone-connect-open-straight-phone-no-tap",
    "pr": "#886",
    "createdAt": "2026-11-21T19:47:33.297Z",
-   "updatedAt": "2026-11-21T21:20:33.219Z",
+   "updatedAt": "2026-11-21T22:06:03.826Z",
    "builtAt": "",
    "notes": [
     {
@@ -213778,6 +213810,14 @@
     {
      "text": "Reconciler: PR #886",
      "at": "2026-11-21T21:20:33.219Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:06:03.826Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:01:03.174Z"
     }
    ],
    "approvals": [],
@@ -213866,7 +213906,7 @@
    "branch": "claude/one-true-source-get-redundant-settings",
    "pr": "",
    "createdAt": "2026-11-21T20:04:08.140Z",
-   "updatedAt": "2026-11-21T21:08:54.087Z",
+   "updatedAt": "2026-11-21T22:06:06.301Z",
    "builtAt": "",
    "notes": [
     {
@@ -213876,6 +213916,14 @@
     {
      "text": "Claude account: hulu0241 (axf-one-true-source-get-redundant-settings--earl, shared account login)",
      "at": "2026-11-21T21:08:54.087Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:06:06.301Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:01:05.643Z"
     }
    ],
    "approvals": [],
@@ -213906,8 +213954,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T21:14:56.455Z",
      "note": "",
      "uid": "st-mwqu6bgx1p4z5e",
      "createdAt": "2026-11-21T20:04:08.141Z"
@@ -213925,8 +213973,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T21:28:25.110Z",
      "note": "",
      "uid": "st-mwqu6bgx1qjhfh",
      "createdAt": "2026-11-21T20:04:08.141Z"
@@ -213944,8 +213992,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T21:34:57.916Z",
      "note": "",
      "uid": "st-mwqu6bgx1rfbxl",
      "createdAt": "2026-11-21T20:04:08.141Z"

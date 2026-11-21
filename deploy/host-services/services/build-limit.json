@@ -1,0 +1,16 @@
+{
+  "$axf": "host-service@1",
+  "id": "build-limit",
+  "title": "Hard build limit",
+  "description": "Enforces the cap on headless builds running at once (build-limit.mjs enforce, every 30 s). Its own unit and timer, installed by deploy/install-build-limit.sh.",
+  "kind": "tick",
+  "unit": "axf-build-limit.service",
+  "timer": "axf-build-limit.timer",
+  "adopted": true,
+  "plugin": "console",
+  "runner": "framework/cli/build-limit.mjs",
+  "health": {
+    "intervalSec": 30,
+    "staleSec": 600
+  }
+}

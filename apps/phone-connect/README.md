@@ -6,12 +6,15 @@ side `apps/console-web/plugins/phone-connect`). It pairs with a one-time code fr
 open a page, show a notification, show an approval, record the audio output, say a line or listen once. Nothing else:
 it replaces the AmberX app.
 
-- **Approvals** arrive as a high-priority notification with Approve and Deny on it (Shelve on a countdown that offers
-  it). A tap on an action is the decision: it needs the phone unlocked and goes to the console as Brett's own tap
+- **Approvals** float over whatever is on screen as a card with Approve and Deny on it (Shelve on a countdown that
+  offers it), once Brett allowed "display over other apps", and always arrive as a high-priority notification with
+  the same actions (the lock screen says only "Approval waiting"). A tap on an action is the decision: it needs the phone unlocked and goes to the console as Brett's own tap
   (personOnly); the app never decides by itself. A tap on the body opens that approval in the console.
-- **Pages** open in Chrome (or the default browser) and come to the front. Android blocks an app in the background
-  from starting an activity, so until Brett allows "display over other apps" (a button on the app's screen) a page
-  arrives as a high-priority notification that opens it with one tap.
+- **Pages** open straight away, no tap: a console page in the AXF Console app (its floating overlay, or the app in
+  front), anything else in Chrome (or the default browser). Android blocks an app in the background from starting an
+  activity unless Brett allowed it to "display over other apps" (a button on the app's screen; the console app's own
+  permission counts too). The high-priority tap-to-open notification is only the fallback, when no app holds the
+  permission or the start did not come up, and the result says so (`how: notification`, `why`).
 - **A refused key is never retried.** When the console no longer accepts the device token (revoked, forgotten, replaced)
   the link stops, and the app says "Disconnected: tap to re-pair" in a notification and on its screen.
 

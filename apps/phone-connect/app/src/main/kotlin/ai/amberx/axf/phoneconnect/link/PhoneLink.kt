@@ -103,7 +103,7 @@ class PhoneLink(private val store: PhoneStore, private val http: OkHttpClient = 
     }
 
     companion object {
-        const val APP_VERSION = "0.2.0"
+        const val APP_VERSION = "0.3.0"
         private val JSON = "application/json".toMediaType()
         fun client(): OkHttpClient = OkHttpClient.Builder()
             .followRedirects(false).followSslRedirects(false)

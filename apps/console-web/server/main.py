@@ -1412,6 +1412,9 @@ build_defaults.RULES_FILE = ROOT / "framework" / "schemas" / "build-defaults.jso
 import plugin_services  # noqa: E402 — generic cross-plugin services (capability names, never plugin folders)
 
 plugin_services.configure(plugin_enabled)
+import host_services  # noqa: E402 — the host services client (HOST-SERVICES.md), offered as axf.host-services@1
+
+host_services.register()
 
 # Core context + credentials for plugins (the systems-check plugin, alerts and every feature read the same env).
 import console_context  # noqa: E402
@@ -1839,6 +1842,19 @@ app.include_router(console_control_api.router_for(auth))
 import hub_pages  # noqa: E402
 
 app.include_router(hub_pages.router_for(STATE.parent))
+
+# ---- Host services (host-service@1, framework/spec/HOST-SERVICES.md): /api/host-services/* (host_services_routes.py)
+import host_services_routes  # noqa: E402
+
+app.include_router(host_services_routes.router_for(auth))
+
+
+async def _host_error(_request: Request, exc: Exception) -> JSONResponse:
+    """host-error@1 answers carry the frame itself as the body (REST, MCP and the UI read the same code)."""
+    return JSONResponse(exc.frame(), status_code=exc.status_code)  # type: ignore[attr-defined]
+
+
+app.add_exception_handler(host_services.HostServiceError, _host_error)
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 

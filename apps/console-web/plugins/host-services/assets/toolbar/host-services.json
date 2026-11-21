@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "host-services",
+  "name": "Host services",
+  "version": "1.0.0",
+  "description": "The Host services page toolbar (Settings → Plugins → Host services): refresh the list now, open or fold every row, restart every service that runs on the host and is down. Each button calls the same /api/host-services routes as the MCP tools, the CLI and voice.",
+  "author": "AmberX AXF",
+  "tags": ["page", "host-services"],
+  "data": {
+    "scope": "view:host-services",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 2, "label": "More" },
+    "groups": [
+      {
+        "id": "list",
+        "label": "List",
+        "items": [
+          { "id": "refresh", "icon": "refresh", "label": "Refresh", "action": "handler:host-services.refresh", "badge": "state:services", "priority": 300, "overflow": "never" },
+          { "id": "expand", "icon": "list", "label": "Open all", "action": "handler:host-services.expand-all", "priority": 200 }
+        ]
+      },
+      {
+        "id": "fix",
+        "label": "Fix",
+        "items": [
+          { "id": "restart-down", "icon": "zap", "label": "Restart down services", "action": "handler:host-services.restart-down", "badge": "state:down", "enabledWhen": "down>0", "confirm": "Restart every host service that is down or limping?", "priority": 280 }
+        ]
+      }
+    ]
+  }
+}

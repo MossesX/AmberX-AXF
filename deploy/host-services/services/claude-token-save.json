@@ -1,0 +1,17 @@
+{
+  "$axf": "host-service@1",
+  "id": "claude-token-save",
+  "title": "Claude token save",
+  "description": "Saves renewed Claude logins from the host back to the key store every minute, so a build's refresh is never spent twice. Cron, installed with the console.",
+  "kind": "tick",
+  "cron": "axf-claude-token-save",
+  "adopted": true,
+  "plugin": "ai-keys",
+  "runner": "deploy/claude-token-save.mjs",
+  "health": {
+    "intervalSec": 60,
+    "staleSec": 600,
+    "freshness": false
+  },
+  "log": "/var/log/axf-claude-token-save.log"
+}

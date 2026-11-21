@@ -1,7 +1,7 @@
 {
   "$axf": "page-toolbar-voice@1",
   "note": "One AmberX phrase per page toolbar button and the address it reaches (framework/spec/check-page-toolbar-voice.mts --write).",
-  "count": 168,
+  "count": 171,
   "phrases": [
     {
       "phrase": "press hire on the breakroom toolbar",
@@ -555,6 +555,27 @@
       "button": "demo",
       "address": "toolbar:glossary-index/button:demo",
       "asset": "glossary-index"
+    },
+    {
+      "phrase": "press refresh on the host services toolbar",
+      "toolbar": "host-services",
+      "button": "refresh",
+      "address": "toolbar:host-services/button:refresh",
+      "asset": "host-services"
+    },
+    {
+      "phrase": "press open all on the host services toolbar",
+      "toolbar": "host-services",
+      "button": "expand",
+      "address": "toolbar:host-services/button:expand",
+      "asset": "host-services"
+    },
+    {
+      "phrase": "press restart down services on the host services toolbar",
+      "toolbar": "host-services",
+      "button": "restart-down",
+      "address": "toolbar:host-services/button:restart-down",
+      "asset": "host-services"
     },
     {
       "phrase": "press save on the md studio toolbar",

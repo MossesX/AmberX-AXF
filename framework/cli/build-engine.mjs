@@ -30,6 +30,7 @@ import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJs
 import { REGISTRY as GATE_RULES_REGISTRY, jsonSchemas as gateRulesJsonSchemas } from '../core/gate-rules.mjs';
 import { REGISTRY as AUTO_LANDER_REGISTRY, jsonSchemas as autoLanderJsonSchemas } from '../core/auto-lander.mjs';
 import { REGISTRY as BUILD_RULES_REGISTRY, jsonSchemas as buildRulesJsonSchemas } from '../core/build-rules.mjs';
+import { REGISTRY as HOST_SERVICES_REGISTRY, jsonSchemas as hostServicesJsonSchemas, modeJsonSchema as hostServiceModeJsonSchema } from '../core/host-services.mjs';
 import { jsonSchema as buildWatchdogJsonSchema } from '../core/build-watchdog.mjs';
 import { jsonSchema as liveDemoJsonSchema } from '../core/live-demo.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
@@ -953,6 +954,14 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // build-rules@1: every builder rule as one store the VPS owns (build-rule@1, build-rules-store@1, build-rule-history@1) + the registry snapshot
   for (const [n, schema] of Object.entries(buildRulesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const breg = join(FRAMEWORK_DIR, 'schemas/build-rules.json'); writeFileSync(breg, JSON.stringify(BUILD_RULES_REGISTRY, null, 2) + '\n'); written.push(breg);
+  // host-services@1: the console's server-side parts as systemd services on the VPS host (host-service@1 manifest, host-service-state@1, host-error@1) + the registry snapshot
+  // axf-data: not data (build-time generator: the JSON Schemas)
+  for (const [n, schema] of Object.entries(hostServicesJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  // axf-data: not data (build-time generator: the registry snapshot)
+  const hsreg = join(FRAMEWORK_DIR, 'schemas/host-service.json'); writeFileSync(hsreg, JSON.stringify(HOST_SERVICES_REGISTRY, null, 2) + '\n'); written.push(hsreg);
+  // host-service-mode@1: the mode file (container / shadow / host per service) the console and every host runner read before a tick
+  // axf-data: not data (build-time generator: the mode file schema)
+  const hsmode = join(FRAMEWORK_DIR, 'schemas/host-service-mode.json'); writeFileSync(hsmode, JSON.stringify(hostServiceModeJsonSchema(), null, 2) + '\n'); written.push(hsmode);
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
   for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);

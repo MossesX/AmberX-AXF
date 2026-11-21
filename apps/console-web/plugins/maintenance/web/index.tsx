@@ -14,6 +14,7 @@
  *
  * Server health uses no AI: plain reads of what the host engine measured.
  */
+import { HostServiceGate } from '@console/hostServices';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Checkbox, Chip, Container, Gauge, Icon, Note, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
@@ -439,7 +440,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.2.0',
   builtWith: { model: 'opus', builtAt: '2026-11-04' },
   appMenu,
-  views: { maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <MaintenanceView /> } },
+  views: { maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <HostServiceGate service="maintenance" what="Clear Docker cache, Restart Docker and Measure now run on the host: they can't run until it is back."><MaintenanceView /></HostServiceGate> } },
   nav: { label: 'System', items: [{ id: 'maintenance', label: 'Maintenance', icon: 'monitor', view: 'maintenance' }] },
   settingsTabs: [{ id: FOLDER, label: 'Maintenance', icon: 'monitor', order: 47, parent: 'plugins' }],
   settings: [
