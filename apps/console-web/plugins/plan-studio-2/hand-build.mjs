@@ -230,6 +230,25 @@ export function ensureWorktree(id, env = process.env) {
   return { dir, repo, made: true };
 }
 
+/**
+ * Can this host launch hand builds? The checkout to branch from, its launcher, git and tmux. → { ok, detail } with the
+ * exact fix when not (the Systems check banner shows it through hooks.mjs checks).
+ */
+export function launchReadiness(env = process.env, { has = (cmd) => !spawnSync(cmd, ['-V'], { encoding: 'utf8', timeout: 10e3 }).error } = {}) {
+  const repo = repoRoot(env);
+  const launcher = env.AXF_HAND_LAUNCHER || join(repo, 'deploy', 'claude-headless.sh');
+  const gitOk = spawnSync('git', ['--version'], { encoding: 'utf8', timeout: 10e3 }).status === 0;
+  const missing = [
+    !existsSync(join(repo, '.git')) && `no git checkout at ${repo} (set AXF_HAND_REPO to the console's checkout, normally /opt/axf)`,
+    !existsSync(launcher) && `no launcher at ${launcher} (pull main into ${repo})`,
+    !gitOk && 'git is not installed where the console server runs (apt-get install -y git)',
+    !has('tmux') && 'tmux is not installed where the console server runs (apt-get install -y tmux): hand builds would start without a Terminal tab',
+  ].filter(Boolean);
+  return missing.length
+    ? { ok: false, detail: `Hand builds can't launch from here: ${missing.join('; ')}.` }
+    : { ok: true, detail: `Hand builds launch from ${repo} (worktrees in ${worktreesRoot(env)}), at most ${HAND_CAP} at once` };
+}
+
 /** Run deploy/claude-headless.sh in the worktree; → { status, out }. */
 function runLauncher({ dir, repo, args, env }) {
   const launcher = env.AXF_HAND_LAUNCHER || join(repo, 'deploy', 'claude-headless.sh');

@@ -429,6 +429,13 @@ await t('page layouts: open registry, words resolve, nav is the default', () => 
     assert.equal(hand.listHand({ sessions: [], repo: '' }).builds.length, 4);
   });
 
+  await t('hand build: the launch-readiness check names exactly what is missing', () => {
+    const no = hand.launchReadiness({ AXF_HAND_REPO: join(hd, 'nowhere') }, { has: () => false });
+    assert.equal(no.ok, false); assert.match(no.detail, /no git checkout/); assert.match(no.detail, /no launcher/); assert.match(no.detail, /tmux is not installed/);
+    const yes = hand.launchReadiness({ AXF_HAND_REPO: join(here, '../../../..'), AXF_PIPELINE_WORKTREES: hd }, { has: () => true });
+    assert.equal(yes.ok, true, yes.detail);
+  });
+
   for (const [k, v] of Object.entries(keep)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
   rmSync(hd, { recursive: true, force: true });
 }
