@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10306,
- "updatedAt": "2026-11-21T22:05:31.683Z",
+ "rev": 10307,
+ "updatedAt": "2026-11-21T22:05:47.616Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -335609,7 +335609,7 @@
    "title": "Postgres part B: plan, Plan Studio, catalog, sessions and changes to tables",
    "category": "data",
    "detail": "Priority: Urgent. Split from urgent-all-data-to-postgres-builds-store (Brett, voice, Nov 18 2026: run the rest on three slots without interfering). Source of truth: framework/spec/DATA-INVENTORY.md on branch claude/urgent-all-data-to-postgres-builds-store (sections 2, 8 and the s4 order). This build does s4.2, s4.3 and s4.6 only.\n\nDo not interfere with the other two builds: never touch builds / build_steps / build_* tables, builds-store.mjs, builds-data.mjs, pending, build queue, agent-slots or auto-lander (part A), and never touch console state, settings, alerts, notifications, plugin data dirs (part C). Register new tables in their own module file under services/axf-data (e.g. tables_plan.py) and add only additive entries to shared registries, so merges with the other two builds stay clean. Merge main before each push. Each namespace: create table, backfill, verify counts + manifest hash, cut over (key-level mode). No runtime data in JSON. Branch, PR, CI, merge queue; never push to main.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -335617,7 +335617,7 @@
    "pr": "#851",
    "mergedAt": "2026-11-19T04:45:02Z",
    "createdAt": "2026-11-19T00:12:01.641Z",
-   "updatedAt": "2026-11-21T22:05:28.207Z",
+   "updatedAt": "2026-11-21T22:05:39.950Z",
    "builtAt": "",
    "notes": [
     {
@@ -335699,6 +335699,10 @@
     {
      "text": "Watchdog: merged and CI is green on b348a81fbe: landed.",
      "at": "2026-11-21T22:05:28.207Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T22:05:39.950Z"
     }
    ],
    "approvals": [],
@@ -335764,9 +335768,9 @@
     "ci": "success",
     "ciAt": "2026-11-21T22:05:28.207Z",
     "ciRun": "commit@b348a81fbe64c6e4f388d0f447303f680e2ba92b",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-21T22:05:39.950Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-postgres-part-b-plan-plan-studio-catalog",
@@ -335872,7 +335876,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -352787,7 +352791,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "shipped",
    "pendingId": "",
@@ -352795,7 +352799,7 @@
    "pr": "#867",
    "mergedAt": "2026-11-21T02:24:10Z",
    "createdAt": "2026-11-20T23:41:14.451Z",
-   "updatedAt": "2026-11-21T21:25:34.503Z",
+   "updatedAt": "2026-11-21T22:05:31.858Z",
    "builtAt": "2026-11-20T23:58:56Z",
    "notes": [
     {
@@ -352813,6 +352817,10 @@
     {
      "text": "Watchdog: PR #867 merged 2026-11-21 02:24 and the build never heard: the merge is recorded, CI on 4d64551a43 is next.",
      "at": "2026-11-21T21:25:34.503Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on 4d64551a43: landed.",
+     "at": "2026-11-21T22:05:31.858Z"
     }
    ],
    "approvals": [],
@@ -352833,9 +352841,9 @@
     "pr": 867,
     "sha": "4d64551a43f2afd9b1532f09393b132364a99c00",
     "mergedAt": "2026-11-21T02:24:10Z",
-    "ci": "none",
-    "ciAt": "",
-    "ciRun": "",
+    "ci": "success",
+    "ciAt": "2026-11-21T22:05:31.858Z",
+    "ciRun": "commit@4d64551a43f2afd9b1532f09393b132364a99c00",
     "verifiedAt": "",
     "verifyHow": "",
     "verifyLog": ""
@@ -352966,7 +352974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -353230,15 +353238,15 @@
    "title": "Fable rebuild 1/2: VPS host services (move remaining server-side console parts onto the VPS)",
    "category": "Fable rebuilds",
    "detail": "Fresh on main redo of move-server-side-console-parts-onto-vps (PR #828, stuck landing, 2,200+ commits behind). Plan: fable-rebuild-1-3-vps-host-services-move-server-ybzn. Use #828 as reference only. Gate & rules is already on the VPS: skip anything already moved.",
-   "status": "queued",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/fable-rebuild-1-2-vps-host-services-move",
-   "pr": "",
+   "pr": "#884",
    "createdAt": "2026-11-21T19:28:48.961Z",
    "updatedAt": "2026-11-21T22:01:00.166Z",
-   "builtAt": "",
+   "builtAt": "2026-11-21T22:01:00.166Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-fable-rebuild-1-2-vps-host-services-move--gina.",
@@ -353322,12 +353330,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:34:06.427Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-21T19:28:48.963Z",
-     "updatedAt": "2026-11-21T19:28:48.963Z"
+     "updatedAt": "2026-11-21T19:34:06.918Z"
     },
     {
      "id": "s2",
@@ -353344,12 +353352,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:43:17.836Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-21T19:28:48.963Z",
-     "updatedAt": "2026-11-21T19:28:48.963Z"
+     "updatedAt": "2026-11-21T19:43:18.319Z"
     },
     {
      "id": "s3",
@@ -353366,12 +353374,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:56:27.958Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-21T19:28:48.963Z",
-     "updatedAt": "2026-11-21T19:28:48.963Z"
+     "updatedAt": "2026-11-21T19:56:28.346Z"
     },
     {
      "id": "s4",
@@ -353388,12 +353396,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T19:59:22.686Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-21T19:28:48.963Z",
-     "updatedAt": "2026-11-21T19:28:48.963Z"
+     "updatedAt": "2026-11-21T19:59:23.172Z"
     }
    ],
    "profiles": [
@@ -353404,7 +353412,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -354245,7 +354253,7 @@
    "title": "One true source: get the redundant settings out",
    "category": "Console UI",
    "detail": "Brett, Nov 21: \"I have so many redundant UIs. They can conflict with each other and we got problems.\" \"The settings can only exist in one place. They might be able to set them in multiple places, but they have to exist in one place, one true source.\" \"Unless they're worded a little bit differently and they just conflict with each other.\" \"Let's run Fable to fix all that. Get all the redundant settings out.\" Plan: one-home-per-setting-kill-the-redundant-settings-79kj. Example from today: the build cap is spread over Agent cap (VPS hard build limit, max running agents), the Build orchestrator settings (stepsInParallel, parallelPerAccount, maxRuns) and the VPS Configuration build cap section; Brett raised the hard limit to 6 and max running agents still said 4. Several screens may edit a setting, but each setting is stored once and every screen reads and writes that one value.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -354337,12 +354345,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T21:14:56.455Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-21T20:04:08.141Z",
-     "updatedAt": "2026-11-21T20:04:08.141Z"
+     "updatedAt": "2026-11-21T21:14:56.938Z"
     },
     {
      "id": "s2",
@@ -354359,12 +354367,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T21:28:25.110Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-21T20:04:08.141Z",
-     "updatedAt": "2026-11-21T20:04:08.141Z"
+     "updatedAt": "2026-11-21T21:28:25.632Z"
     },
     {
      "id": "s3",
@@ -354381,12 +354389,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T21:34:57.916Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-21T20:04:08.141Z",
-     "updatedAt": "2026-11-21T20:04:08.141Z"
+     "updatedAt": "2026-11-21T21:34:58.507Z"
     },
     {
      "id": "s4",
@@ -354419,7 +354427,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

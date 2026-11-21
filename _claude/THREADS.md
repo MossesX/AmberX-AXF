@@ -839,11 +839,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 11:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:46 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:47 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:48 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
@@ -1239,6 +1234,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 22:01 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
 - 2026-11-21 22:01 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
 - 2026-11-21 22:05 UTC · `postgres-part-b-plan-plan-studio-catalog` → landed, note (all) · watchdog
+- 2026-11-21 22:05 UTC · `fix-main-ci-red-after-s16-s7-hand` → landed, note (all) · watchdog
+- 2026-11-21 22:05 UTC · `postgres-part-b-plan-plan-studio-catalog` → complete, note (all) · verify
+- 2026-11-21 22:05 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · builds-live
+- 2026-11-21 22:05 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · builds-live
+- 2026-11-21 22:05 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
 
 ## Token passes (log)
 
