@@ -50,7 +50,7 @@ final class NativeBridge {
     @JavascriptInterface public String info() {
         if (!allowed()) return DENIED;
         return ok("\"shell\":\"console-droid\",\"version\":" + JSONObject.quote(BuildConfigInfo.version(app))
-            + ",\"features\":[\"overlay\",\"notifications\",\"mic\",\"permissions\",\"openUrl\",\"wake\",\"insets\",\"update\",\"device\"]"
+            + ",\"features\":[\"overlay\",\"notifications\",\"mic\",\"permissions\",\"openUrl\",\"wake\",\"insets\",\"update\",\"device\",\"" + DialogRules.FEATURE + "\"]"
             + ",\"device\":" + DeviceLink.stateJson());
     }
 

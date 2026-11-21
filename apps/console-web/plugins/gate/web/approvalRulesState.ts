@@ -16,6 +16,8 @@ import { FOLDER, showTab, type Answer } from './api';
 import { lines, putRules, type ApprovalRules, type StageOp } from './approval-core.mjs';
 
 export const OWNER_ONLY = 'Only Brett saves approval rules, with his own click in his signed-in console.';
+export const SIGN_IN_FIRST = 'Sign in to axHub, then press it again. The draft is kept.';
+export const NOT_SIGNED_IN = `Not saved: this page is not on your axHub sign-in. ${SIGN_IN_FIRST}`;
 export const RULE_FIELDS = ['match', 'policy', 'vetoSeconds'] as const;
 export type RuleField = (typeof RULE_FIELDS)[number];
 
@@ -41,17 +43,27 @@ export async function stageApproval(op: StageOp): Promise<ApprovalRules> {
 /** A real click by the person at this screen: a console-control press (el.click()) or a scripted event is not one. */
 export const ownClick = (e: { nativeEvent?: Event; isTrusted?: boolean } | undefined): boolean => !!e && (e.nativeEvent ? e.nativeEvent.isTrusted === true : e.isTrusted === true);
 
+/** Where Brett signs in to axHub; the hub sends him back to this page (the draft waits on the console server). */
+export const hubSignInUrl = (hub: string, back: string = globalThis.location?.href ?? '/'): string => `${hub.replace(/\/+$/, '')}/auth/login?rd=${encodeURIComponent(back)}`;
+
+/** A save that failed, with what the tab offers next: `signin` = his axHub session is missing here, so the tab shows Sign in. */
+export class SaveError extends Error {
+  code: 'owner' | 'signin' | 'refused';
+  constructor(message: string, code: SaveError['code']) { super(message); this.name = 'SaveError'; this.code = code; }
+}
+
 /**
  * Save the draft on axHub. Only from Brett's own click: `click` is the click event, and anything else (a remote press,
- * an action, a script) is refused before any request is made.
+ * an action, a script) is refused before any request is made. Every way it can fail throws with the plain reason, so
+ * the tab always has something to show; a missing session throws `signin`.
  */
 export async function saveApprovals(click: { nativeEvent?: Event; isTrusted?: boolean } | undefined, reason?: string): Promise<ApprovalRules> {
-  if (!ownClick(click)) throw new Error(OWNER_ONLY);
+  if (!ownClick(click)) throw new SaveError(OWNER_ONLY, 'owner');
   const cur = await loadApprovals();
-  if (!cur.canSave) throw new Error(`${OWNER_ONLY} Sign in to the console as Brett first.`);
+  if (!cur.canSave) throw new SaveError(NOT_SIGNED_IN, 'signin');
   if (!cur.save) return cur;
   const r = await putRules(cur.hub, { ...cur.save, reason: reason || cur.save.reason });
-  if (!r.ok) throw new Error(r.message || 'axHub refused.');
+  if (!r.ok) throw r.code === 'unauthenticated' ? new SaveError(`Not saved: your axHub session is missing or has run out here. ${SIGN_IN_FIRST}`, 'signin') : new SaveError(`Not saved: ${r.message || 'axHub refused.'}`, 'refused');
   return stageApproval({ op: 'discard' });
 }
 
