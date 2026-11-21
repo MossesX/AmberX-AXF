@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10268,
- "updatedAt": "2026-11-21T01:51:34.467Z",
+ "rev": 10269,
+ "updatedAt": "2026-11-21T01:52:10.235Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349305,14 +349305,14 @@
    "title": "Nov 20 fix list + voice console control",
    "category": "",
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
-   "status": "split",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-21T01:36:02.116Z",
+   "updatedAt": "2026-11-21T01:52:01.292Z",
    "builtAt": "",
    "notes": [
     {
@@ -349423,6 +349423,11 @@
     {
      "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
      "at": "2026-11-21T01:51:02.044Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
+     "at": "2026-11-21T01:52:01.292Z",
      "by": "watchdog"
     }
    ],
@@ -349865,7 +349870,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349876,9 +349881,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T01:36:02.116Z",
+   "statusAt": "2026-11-21T01:52:01.292Z",
    "statusBy": "watchdog",
    "attempt": 5,
+   "failedFrom": "split",
    "statusLog": [
     {
      "status": "pending",
@@ -349956,6 +349962,13 @@
      "by": "watchdog",
      "attempt": 5,
      "why": "retry forward at split, attempt 5"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-21T01:52:01.292Z",
+     "by": "watchdog",
+     "attempt": 5,
+     "why": "split did not move after 2 re-run(s) of the transition (6 min past its budget)"
     }
    ]
   },
