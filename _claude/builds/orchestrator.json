@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T23:45:56.560Z",
+ "updatedAt": "2026-11-21T23:46:16.121Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -213281,7 +213281,7 @@
    "title": "Rename Gate & rules to VPS Configuration: build cap + veto passes live there",
    "category": "Console UI",
    "detail": "Brett said (Nov 21): \"I need to be able to set that [build cap] in the console somewhere, and it needs to be in rules and gates. I think we should change the name of rules and gates to just VPS configuration.\" Then: \"Don't you think we should move the pass to the VPS configuration plugin that we just renamed? Why is it in token control?\" Then: \"Just send it. Just do it.\" Plan: rename-gate-rules-to-vps-configuration-build-cap-a55g. Every step on Fable.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213289,7 +213289,7 @@
    "pr": "#881",
    "mergedAt": "2026-11-21T21:26:53Z",
    "createdAt": "2026-11-21T19:15:32.824Z",
-   "updatedAt": "2026-11-21T23:45:31.511Z",
+   "updatedAt": "2026-11-21T23:45:55.696Z",
    "builtAt": "2026-11-21T21:07:28.794Z",
    "notes": [
     {
@@ -213335,6 +213335,10 @@
     {
      "text": "Watchdog: merged and CI is green on 466828c777: landed.",
      "at": "2026-11-21T23:45:31.511Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T23:45:55.696Z"
     }
    ],
    "approvals": [],
@@ -213862,7 +213866,7 @@
    "title": "Approval rules in VPS Configuration: veto countdown only on VPS writes",
    "category": "Console UI",
    "detail": "Brett, Nov 21: \"I'm tired of this 90 second shit. It's only supposed to be for writes on the VPS.\" \"I need a bunch of rules to be able to set.\" Today axHub still holds screen opens and overlays on the 90 s veto because its policy API (axHub decision 119, GET/PUT /auth/api/policy) was never deployed, so his Nov 12 default never got applied. Goes in the VPS Configuration plugin (renamed from Gate & rules by build rename-gate-rules-to-vps-configuration).",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213870,7 +213874,7 @@
    "pr": "#885",
    "mergedAt": "2026-11-21T21:26:51Z",
    "createdAt": "2026-11-21T19:40:46.723Z",
-   "updatedAt": "2026-11-21T23:45:37.625Z",
+   "updatedAt": "2026-11-21T23:46:04.927Z",
    "builtAt": "2026-11-21T21:28:09.157Z",
    "notes": [
     {
@@ -213932,6 +213936,10 @@
     {
      "text": "Watchdog: merged and CI is green on fd919ba82d: landed.",
      "at": "2026-11-21T23:45:37.625Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T23:46:04.927Z"
     }
    ],
    "approvals": [],
