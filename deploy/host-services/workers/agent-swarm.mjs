@@ -53,6 +53,7 @@ async function submit(ctx, req) {
   const dir = spool(ctx);
   mkdirSync(dir, { recursive: true });
   const id = `${Date.now()}-${randomUUID().slice(0, 8)}`;
+  // axf-data: not data (a request spool: axf-host writes it, the root task reads and deletes it seconds later)
   writeFileSync(join(dir, `${id}.json.tmp`), JSON.stringify({ id, at: new Date().toISOString(), by: req.by || '', ...c }));
   renameSync(join(dir, `${id}.json.tmp`), join(dir, `${id}.json`));
   const r = await task(ctx, 'jobs-drain');

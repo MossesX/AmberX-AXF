@@ -20,6 +20,7 @@ mkdirSync(join(root, 'deploy/host-services/services'), { recursive: true });
 mkdirSync(join(root, 'deploy/host-services/workers'), { recursive: true });
 mkdirSync(join(root, 'framework/core'), { recursive: true });
 cpSync(join(REPO, 'framework/core/host-services.mjs'), join(root, 'framework/core/host-services.mjs'));
+for (const f of ['framework/core/data-files.mjs', 'framework/core/data-store.mjs', 'framework/core/clip.mjs', 'framework/schemas/data-store-paths.json']) { mkdirSync(join(root, f, '..'), { recursive: true }); cpSync(join(REPO, f), join(root, f)); }
 cpSync(join(REPO, 'deploy/host-services/axf-hostd.mjs'), join(root, 'deploy/host-services/axf-hostd.mjs'));
 cpSync(join(REPO, 'deploy/host-services/services/host-api.json'), join(root, 'deploy/host-services/services/host-api.json'));
 writeFileSync(join(root, 'deploy/host-services/services/demo.json'), JSON.stringify({

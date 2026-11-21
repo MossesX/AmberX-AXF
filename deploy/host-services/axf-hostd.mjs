@@ -33,10 +33,11 @@
  */
 import { createServer, request as httpRequest } from 'node:http';
 import { execFile } from 'node:child_process';
-import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, renameSync, statSync, unlinkSync, writeFileSync, appendFileSync } from 'node:fs';
+import { chmodSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, statSync, unlinkSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { randomUUID } from 'node:crypto';
+import { appendJsonlSync, readJsonSync, writeJsonSync } from '../../framework/core/data-files.mjs';
 import * as H from '../../framework/core/host-services.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -68,14 +69,12 @@ export function dataPath(rel) {
   const r = String(rel || '');
   return r.startsWith('_data/') ? join(DATA, r.slice('_data/'.length)) : r === '_data' ? DATA : join(ROOT, r);
 }
-export function readJson(p, fallback = null) { try { return JSON.parse(readFileSync(p, 'utf8')); } catch { return fallback; } }
-export function writeJson(p, v) {
-  mkdirSync(dirname(p), { recursive: true });
-  const tmp = `${p}.${process.pid}.tmp`;
-  writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`);
-  renameSync(tmp, p);
-}
-const appendLine = (p, v) => { mkdirSync(dirname(p), { recursive: true }); appendFileSync(p, `${JSON.stringify(v)}\n`); };
+// State goes through the data layer (data-store@1, no-json-data@1): a path its map does not name is a plain local
+// file, which is what the host services need (they must keep their state while Docker and axf-data are down). When the
+// host-services folder is mapped, its namespace stays local or shadow for the same reason, never cutover.
+export function readJson(p, fallback = null) { return readJsonSync(p, fallback); }
+export function writeJson(p, v) { writeJsonSync(p, v); }
+const appendLine = (p, v) => appendJsonlSync(p, v);
 const MODE_FILE = () => dataPath(H.DEFAULTS.modeFile);
 const HISTORY_FILE = () => dataPath(`${H.DEFAULTS.stateDir}/history.jsonl`);
 
