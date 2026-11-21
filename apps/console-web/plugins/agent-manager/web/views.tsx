@@ -3,7 +3,7 @@
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, PageToolbar, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
 import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
@@ -60,6 +60,7 @@ export function AgentManagerView() {
       )}
       <select className="fx-input axp-agent-manager__tabpick" value={tab} onChange={(e) => setTab(e.target.value as Tab)} aria-label="Section">{TABS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select>
       <TabGroup id="agent-manager.tabs" label="Agent manager sections" className="axp-agent-manager__tabs" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
+      <PageToolbar view="agent-manager" />
       {!cache ? <LoadingSkeleton /> : (
         <>
           {tab === 'agents' && <AgentsTab cache={cache} status={status} wizard={wizard} />}

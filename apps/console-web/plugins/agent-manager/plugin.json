@@ -14,7 +14,9 @@
   "provides": [
     "view:agent-manager",
     "settings-tab:agent-manager",
-    "service:axf.agents@1"
+    "service:axf.agents@1",
+    "action:agent-manager.voices",
+    "action:agent-manager.voice.match-all"
   ],
   "optional": [
     "service:axf.llm@1",
