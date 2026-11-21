@@ -322,6 +322,44 @@
         "description": "Change the build cap: stepsInParallel (1-12) from anywhere; maxBuilds (1-64) and emergencySlots (0-8) only from Brett's own signed-in console (a session, MCP or voice is refused with 403)."
       },
       {
+        "id": "approval-rules",
+        "route": "GET /approval-rules",
+        "title": "Approval rules: status",
+        "readOnly": true,
+        "tool": "vps_approval_rules",
+        "description": "Approval rules (approval-rules@1): each axHub service's ordered match-pattern rules (match, decision allow / veto / confirm / deny, hold seconds), how many tools each rule decides now, the staged draft, and whether Brett's default (a veto countdown only on VPS shell commands) is applied."
+      },
+      {
+        "id": "approval-rules-stage",
+        "route": "POST /approval-rules/draft",
+        "title": "Approval rules: stage an edit",
+        "tool": "vps_approval_rules_stage",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": { "type": "string", "enum": ["add", "edit", "remove", "move", "set", "clear-own", "default", "discard"], "description": "what to do; default stages Brett's default, discard drops the draft (or one service's)" },
+            "service": { "type": "string", "description": "the axHub service (vps, axf-console, …)" },
+            "index": { "type": "integer", "minimum": 0, "description": "which rule, 0-based (edit, remove, move; add: where to insert)" },
+            "to": { "type": "integer", "minimum": 0, "description": "move: the new position, 0-based" },
+            "rule": {
+              "type": "object",
+              "properties": {
+                "match": { "type": "string", "description": "a tool name or a pattern; * stands for any run of characters (build_*, *_run, *)" },
+                "policy": { "type": "string", "enum": ["allow", "veto", "confirm", "deny"] },
+                "vetoSeconds": { "type": "integer", "minimum": 10, "maximum": 1800, "description": "how long a veto holds" }
+              },
+              "additionalProperties": false
+            },
+            "rules": { "type": "array", "description": "set: the service's whole ordered list", "items": { "type": "object" } },
+            "clearOwn": { "type": "boolean", "description": "set: also clear the tools' own entries on save, so the rules decide" },
+            "on": { "type": "boolean", "description": "clear-own: on or off" }
+          },
+          "required": ["op"],
+          "additionalProperties": false
+        },
+        "description": "Stage one edit to the approval rules. It lands in a draft and changes nothing on axHub: only Brett saves the draft, with his own click in his signed-in console (Builds → VPS Configuration → Approval rules). The first matching rule wins; a tool's own entry beats every rule."
+      },
+      {
         "id": "settings",
         "route": "GET /settings",
         "title": "Gate: plugin settings",
@@ -332,7 +370,7 @@
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, build-cap, passes, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, build-cap, approvals, passes, history)."
       },
       {
         "id": "build-rules-list",

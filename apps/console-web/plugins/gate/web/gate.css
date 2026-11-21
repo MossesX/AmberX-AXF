@@ -27,3 +27,15 @@
 .axp-gate__card-field dd { margin: 0; overflow-wrap: anywhere; }
 /* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
 .axp-gate > .fx-pagehead { margin-bottom: calc(var(--fx-dens-gap-3xl) - var(--fx-dens-gap-lg)) }
+
+/* Approval rules: one rule a row (number, tools, decision, hold, what it decides and its buttons); stacks on a phone */
+.axp-gate__arules { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-gate__arule-list { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
+.axp-gate__arule { display: grid; grid-template-columns: auto minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr); gap: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); align-items: start; padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); min-width: 0; }
+.axp-gate__arule--add { border-style: dashed; }
+.axp-gate__arule-n { color: var(--fx-muted); font-size: var(--fx-type-scale-sm); min-width: calc(var(--fx-space) * 4); padding-top: var(--fx-dens-gap-xs); }
+.axp-gate__arule-field { min-width: 0; }
+.axp-gate__arule-end, .axp-gate__arule-wide { grid-column: 2 / -1; margin: 0; overflow-wrap: anywhere; }
+.axp-gate__arule-end { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }
+:where([data-fx-narrow]) .axp-gate__arule { grid-template-columns: auto minmax(0, 1fr); }
+:where([data-fx-narrow]) .axp-gate__arule-field, :where([data-fx-narrow]) .axp-gate__arule-end, :where([data-fx-narrow]) .axp-gate__arule-wide { grid-column: 2 / -1; }

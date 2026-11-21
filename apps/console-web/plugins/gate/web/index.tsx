@@ -15,6 +15,7 @@ import { appMenu } from './menu';
 import { VIEW_KEY } from './rows';
 import { registerSettingTargets } from './settingsStore';
 import { registerBuildCap } from './buildCapState';
+import { registerApprovals } from './approvalRulesState';
 import { registerPasses } from './passesState';
 
 export const plugin: AxfWebLibrary = {
@@ -26,7 +27,7 @@ export const plugin: AxfWebLibrary = {
   // `view:gate` is the screen (the address every toolbar, link and fixture already uses); `view:vps-configuration` is
   // its address under the new name and opens the same screen.
   views: {
-    gate: { title: 'VPS Configuration', icon: 'shield', render: () => <GateView />, keywords: ['vps configuration', 'vps config', 'gate and rules', 'gate & rules', 'gate', 'rules', 'build cap', 'veto passes', 'passes', 'auto-lander'] },
+    gate: { title: 'VPS Configuration', icon: 'shield', render: () => <GateView />, keywords: ['vps configuration', 'vps config', 'gate and rules', 'gate & rules', 'gate', 'rules', 'build cap', 'approval rules', 'veto countdown', 'veto passes', 'passes', 'auto-lander'] },
     [VIEW_ALIAS]: { title: 'VPS Configuration', icon: 'shield', render: () => <GateAlias /> },
     // the pages of the axHub passes plugin, folded into the Passes tab (Nov 21 2026): their addresses open it, so the
     // hub pages' own links (`go(rt, 'passes')`), old `#/passes` links and saved shortcuts still land
@@ -50,5 +51,5 @@ export const plugin: AxfWebLibrary = {
     { id: 'gate.screen-links', tab: FOLDER, title: 'On the VPS Configuration screen', icon: 'link', order: 30, render: () => <GateScreenLinks /> },
     { id: 'gate.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
-  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerBuildCap(rt); registerPasses(rt); },
+  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerBuildCap(rt); registerApprovals(rt); registerPasses(rt); },
 };

@@ -19,6 +19,9 @@ Every route runs the plugin's one Node implementation (gate.mjs api <op>), so th
   GET  settings · PUT settings {refreshSec?, historySize?, defaultTab?}
   GET  build-cap                        build-cap@1: hard cap, emergency slots, stepsInParallel, what runs now, the note
   POST build-cap {stepsInParallel?, maxBuilds?, emergencySlots?}   maxBuilds / emergencySlots: Brett's signed-in console only
+  GET  approval-rules                   approval-rules@1: axHub's match-pattern policy rules, live, with the draft over them
+  POST approval-rules/draft {op, service?, index?, to?, rule?, rules?, clearOwn?, on?}   stage one edit (add, edit, remove,
+                                        move, set, clear-own, default, discard). Never changes axHub: Brett saves from his console.
   The lander (lander@1, deploy/lander/run.mjs; the same routes the auto-lander@1 runner answered before Nov 19 2026):
   GET  auto-lander                      service up, current build, queue, per-build state and attempts, escalations
   GET  auto-lander/builds/<build>       one build's record and attempt log
@@ -558,6 +561,40 @@ async def build_cap_set(request: Request) -> JSONResponse:
     return _cap_answer(await run_in_threadpool(_node, CAP_CLI, ["status"]), request)
 
 
+# ---------------------------------------------------------------------- approval rules (approval-rules@1, approval-rules.mjs)
+# axHub's match-pattern policy rules, read with the hub token. A write here only stages a draft: the console server
+# holds a bearer token, and axHub never lets a bearer change policy. Brett's Save goes from his browser to axHub.
+APPROVALS_CLI = PLUGIN_DIR / "approval-rules.mjs"
+APPROVAL_OPS = ("add", "edit", "remove", "move", "set", "clear-own", "default", "discard")
+
+
+def _approvals_answer(r: dict[str, Any], request: Request) -> JSONResponse:
+    if r.get("ok"):
+        r["canSave"] = _owner(request)
+    return JSONResponse(r, status_code=200 if r.get("ok") else CAP_STATUS.get(str(r.get("code")), 500))
+
+
+@router.get("/approval-rules")
+async def approval_rules_get(request: Request) -> JSONResponse:
+    """Approval rules (approval-rules@1): each axHub service's ordered match-pattern rules (match, decision, hold), what
+    each rule decides now, the staged draft, and whether Brett's default (veto only on VPS shell commands) is applied."""
+    return _approvals_answer(await run_in_threadpool(_node, APPROVALS_CLI, ["status"]), request)
+
+
+@router.post("/approval-rules/draft")
+async def approval_rules_stage(request: Request) -> JSONResponse:
+    """Stage one edit to the approval rules: {op: add|edit|remove|move|set|clear-own|default|discard, service, index (0-based),
+    to, rule {match, policy, vetoSeconds}, rules, clearOwn, on}. It lands in a draft and changes nothing on axHub: only
+    Brett saves it, from his own signed-in console."""
+    body = await _body(request)
+    if body.get("op") not in APPROVAL_OPS:
+        return _approvals_answer({"ok": False, "code": "invalid", "message": f"say what to do: op is one of {', '.join(APPROVAL_OPS)}"}, request)
+    op = {k: body[k] for k in ("op", "service", "index", "to", "rule", "rules", "clearOwn", "on") if k in body}
+    user = getattr(request.state, "axf_user", None)
+    who = str(body.get("by") or getattr(user, "name", "") or getattr(user, "email", "") or "console")[:60]
+    return _approvals_answer(await run_in_threadpool(_node, APPROVALS_CLI, ["stage", "--op", json.dumps(op), "--by", who]), request)
+
+
 @router.get("/settings")
 async def settings_get() -> JSONResponse:
     """The plugin's settings: refreshSec, historySize, defaultTab."""
@@ -566,7 +603,7 @@ async def settings_get() -> JSONResponse:
 
 @router.put("/settings")
 async def settings_set(request: Request) -> JSONResponse:
-    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|build-rules|auto-lander|build-cap|passes|history)."""
+    """Change the plugin's settings (refreshSec 5-600, historySize 50-20000, defaultTab rules|build-rules|auto-lander|build-cap|approvals|passes|history)."""
     return await _write("settings_set", request)
 
 

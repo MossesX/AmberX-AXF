@@ -23,6 +23,7 @@ FAKE.write_text("console.log(JSON.stringify({ ok: true }));\n")
 (LAND / "config.json").write_text(json.dumps({"mergeQueue": True, "autoLand": False, "landWaitUi": True, "queueMode": "stack"}))
 (LAND / "merge-queue.json").write_text(json.dumps({"items": [{"pr": 702, "title": "Help gate", "branch": "claude/help-gate", "state": "waiting", "why": "its screenshots are waiting in UI Review."}], "waiting": [], "merged": []}))
 os.environ.update(AXF_GATE_DIR=str(TMP / "gate"), AXF_GATE_LANDER_DIR=str(LAND), AXF_GATE_LANDER_CLI=str(FAKE))
+os.environ.update(AXHUB_URL="http://127.0.0.1:9", AXHUB_TOKEN="test-token")  # approval rules: no hub answers here
 
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
@@ -89,6 +90,16 @@ try:
     r = c.post(f"{B}/build-cap", json={"maxBuilds": 9})
     ok(r.status_code == 403 and "Only Brett" in r.json()["message"], "POST build-cap: the hard cap is the owner's own session only")
     ok(c.post(f"{B}/build-cap", json={"emergencySlots": 1, "stepsInParallel": 3}).status_code == 403, "an owner-only key refuses the whole call")
+
+    # approval rules: reading never fails the page, a write here only ever stages, and there is no route that saves
+    r = c.get(f"{B}/approval-rules")
+    ok(r.status_code == 200 and r.json()["$axf"] == "approval-rules@1" and r.json()["available"] is False, "GET approval-rules says plainly when axHub can't be read")
+    ok(r.json()["canSave"] is False, "a token caller cannot save")
+    ok(c.post(f"{B}/approval-rules/draft", json={"op": "save"}).status_code == 400, "POST approval-rules/draft knows only staging ops")
+    ok(c.post(f"{B}/approval-rules/draft", json={}).status_code == 400, "POST approval-rules/draft needs an op")
+    r = c.post(f"{B}/approval-rules/draft", json={"op": "add", "service": "vps", "rule": {"match": "run", "policy": "veto"}})
+    ok(r.status_code == 503 and "nothing was staged" in r.json()["message"], "nothing is staged while axHub can't be read")
+    ok(c.put(f"{B}/approval-rules", json={}).status_code in (404, 405) and c.post(f"{B}/approval-rules", json={}).status_code in (404, 405), "no route writes the policy")
 
     hl = routes.health
     now = time.time() * 1000
