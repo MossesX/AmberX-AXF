@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 07:36 UTC · `fable-full-audit-ui-overhaul-conso` s6 done (all) · ops-slots-watchdog-cleanup
 - 2026-11-20 07:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 07:42 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
 - 2026-11-20 07:48 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 02:00 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
 - 2026-11-21 02:01 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
 - 2026-11-21 02:02 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 02:13 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
 
 ## Token passes (log)
 

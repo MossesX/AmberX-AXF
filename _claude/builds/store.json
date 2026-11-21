@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10278,
- "updatedAt": "2026-11-21T02:02:11.142Z",
+ "rev": 10279,
+ "updatedAt": "2026-11-21T02:20:12.382Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349990,7 +349990,7 @@
    "pr": "867",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T01:13:12.290Z",
+   "updatedAt": "2026-11-21T02:13:43.553Z",
    "builtAt": "",
    "notes": [
     {
@@ -350166,6 +350166,11 @@
      "text": "Lander: failed in running-ci, attempt 8: build rules fail at the gate (feature-status-tracker)",
      "at": "2026-11-21T00:42:49.539Z",
      "by": "lander"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 9: the fix session (agent) pushed nothing in 60 min",
+     "at": "2026-11-21T02:13:43.553Z",
+     "by": "lander"
     }
    ],
    "approvals": [],
@@ -350229,24 +350234,14 @@
     }
    },
    "failure": {
-    "kind": "rules",
+    "kind": "fix-timeout",
     "status": "running-ci",
-    "why": "build rules fail at the gate (feature-status-tracker)",
+    "why": "the fix session (agent) pushed nothing in 60 min",
     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
     "pr": 867,
-    "at": "2026-11-21T00:42:19.837Z",
+    "at": "2026-11-21T02:13:40.846Z",
     "retry": "fix",
-    "notBefore": "2026-11-21T01:12:19.837Z",
-    "failing": [
-     "feature-status-tracker"
-    ],
-    "fix": {
-     "at": "2026-11-21T01:13:06.094Z",
-     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
-     "session": "",
-     "exit": 3,
-     "why": "{\"ok\":false,\"unassigned\":false,\"why\":\"lenny: Quit · joey: Quit · 5 more can't either\",\"tried\":[{\"agent\":\"lenny\",\"why\":\"Quit\"},{\"agent\":\"joey\",\"why\":\"Quit\"},{\"agent\":\"paulie\",\"why\":\"Quit\"},{\"agent\":\"su"
-    }
+    "notBefore": "2026-11-21T02:43:40.846Z"
    },
    "landing": {
     "rules": {
@@ -350728,7 +350723,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 120,
+   "rev": 121,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
