@@ -16,9 +16,10 @@
  * edit lands in the draft file, and the draft reaches axHub only when Brett presses Save in his own console, from his
  * own hub session (web/ApprovalRulesTab.tsx → PUT /auth/api/policy). Rule numbers are 1-based, as the tab shows them.
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, join, resolve } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as files from '../../../../framework/core/data-files.mjs';
 import { DRAFT_FRAME, lines, stage, view } from './web/approval-core.mjs';
 
 const HERE = fileURLToPath(new URL('.', import.meta.url));
@@ -56,15 +57,14 @@ export function dataDir(env = process.env) {
 const draftFile = (env) => join(dataDir(env), 'approval-rules-draft.json');
 
 export function readDraft(env = process.env) {
-  try { const d = JSON.parse(readFileSync(draftFile(env), 'utf8')); return d && d.$axf === DRAFT_FRAME && d.services && typeof d.services === 'object' ? d : null; } catch { return null; }
+  // data-store@1: the draft follows the plugin's data folder onto axf-data (framework/core/data-files.mjs)
+  try { const d = files.readJsonSync(draftFile(env), null); return d && d.$axf === DRAFT_FRAME && d.services && typeof d.services === 'object' ? d : null; } catch { return null; }
 }
 function writeDraft(services, by, reason, env) {
   const f = draftFile(env);
-  if (!Object.keys(services).length) { rmSync(f, { force: true }); return null; }
+  if (!Object.keys(services).length) { files.removeSync(f); return null; }
   const doc = { $axf: DRAFT_FRAME, services, by: String(by || 'someone').slice(0, 60), at: new Date().toISOString(), ...(reason ? { reason: String(reason).slice(0, 300) } : {}) };
-  mkdirSync(dirname(f), { recursive: true });
-  const t = `${f}.tmp-${process.pid}-${Date.now()}`;
-  writeFileSync(t, `${JSON.stringify(doc, null, 1)}\n`); renameSync(t, f);
+  files.writeJsonSync(f, doc, 1);
   return doc;
 }
 
