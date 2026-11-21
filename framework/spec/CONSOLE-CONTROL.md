@@ -35,17 +35,17 @@ view:builds/tab:pipeline/grid:queue/row:full-api-and-voice-control/step:s3
 view:settings/tab:plugins/subtab:skins/setting:axf.skins.active
 view:settings/tab:appearance/button:restore-defaults
 plugin:skins
-view:plan-studio/function:plan-studio.focus
+view:plan-studio-2/function:plan-studio-2.focus
 ```
 
 | Kind | What it names | `id` |
 |---|---|---|
-| `view` | a screen (a view the shell renders, a plugin's tab page) | the view id (`builds`, `settings`, `plan-studio`) |
+| `view` | a screen (a view the shell renders, a plugin's tab page) | the view id (`builds`, `settings`, `plan-studio-2`) |
 | `tab` | a row of tabs, or one tab of it: `tab:<row>` is the row, `tab:<row>=<value>` one tab | the TabGroup's settings id, with `=<tab value>` for one tab |
 | `subtab` | a tab row nested in a tab (Settings → Plugins → Skins: `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=skins`); the framework TabGroup picks `subtab` by itself when it renders inside another tab's panel | the same as `tab` |
 | `setting` | one setting with a value (toggle, text, number, choice, …) | the settings key (`axf.display.fontScale`) |
 | `button` | a button, icon button or menu item that does one thing | the button's id, else its label slug (`save`, `restore-defaults`) |
-| `function` | a registered action, with or without an argument | the action id (`plan-studio.focus`, `settings.open`) |
+| `function` | a registered action, with or without an argument | the action id (`plan-studio-2.focus`, `settings.open`) |
 | `plugin` | an installed plugin | the plugin id (its folder name is never used) |
 | `grid` | a table or grid, or a list of steps | the grid's id (`queue`, `shipped`) |
 | `row` | one row of the grid above it | the row id the grid gives it |

@@ -41,8 +41,7 @@ const journals = readdirSync(JF).filter((f) => f.endsWith('.jsonl')).sort((a, b)
 copy(join(JF, journals[0]), join(R.repo, '_claude/builds/journal', journals[0]));
 for (const f of readdirSync(join(B, 'shipped')).sort().filter((f) => f.endsWith('.json')).slice(0, 25)) copy(join(B, 'shipped', f), join(R.repo, '_claude/builds/shipped', f));
 for (const f of readdirSync(join(B, 'reports')).sort().filter((f) => statSync(join(B, 'reports', f)).isFile()).filter((f, i) => i < 8 || f.length > 80).slice(0, 12)) copy(join(B, 'reports', f), join(R.repo, '_claude/builds/reports', f));
-const seeds = join(ROOT, 'apps/console-web/plugins/plan-studio/data/plans');
-if (existsSync(seeds)) cpSync(seeds, join(R.projects, 'amberx-axf/_data/plan-studio/plans'), { recursive: true });
+put(join(R.projects, 'amberx-axf/_data/plan-studio/plans/p1.json'), JSON.stringify({ $axf: 'plan@1', id: 'p1', title: 'An archived plan' }));
 put(join(R.projects, 'amberx-axf/_data/plan-studio/shipped-log.jsonl'), '{"at":"2026-11-01T00:00:00Z","plan":"p1"}\n{"plan":"p2","at":"2026-11-02T00:00:00Z"}\n');
 copy(join(ROOT, 'apps/console-web/plugins/ui-review/kinds.json'), join(R.plugins, 'ui-review/kinds.json'));
 put(join(R.plugins, 'ui-review', 'shots', 'i1', 'desktop.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47, 1, 2, 3]));

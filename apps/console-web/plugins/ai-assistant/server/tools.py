@@ -47,7 +47,7 @@ SPECS: list[dict[str, Any]] = [
 ]
 _TO = {"type": "string", "description": "Which console: omit for the one Brett used last, \"all\", or a client id."}
 SPECS += [
-    {"name": "console_open", "group": "console", "description": "Open a screen in Brett's open Dev Console (the one he used last). `screen` = the view id (\"plan-studio\"), its title or a few words (\"orchestrator\"); optional `focus` = a tab or item on it (\"pending\", a build id). Not sure of the name: console_list first. If this chat is the full chat page, the console leaves it (the reply keeps running).",
+    {"name": "console_open", "group": "console", "description": "Open a screen in Brett's open Dev Console (the one he used last). `screen` = the view id (\"plan-studio-2\"), its title or a few words (\"orchestrator\"); optional `focus` = a tab or item on it (\"pending\", a build id). Not sure of the name: console_list first. If this chat is the full chat page, the console leaves it (the reply keeps running).",
      "parameters": {"type": "object", "properties": {"screen": {"type": "string"}, "focus": {"type": "string"}, "to": _TO}, "required": ["screen"], "additionalProperties": False}},
     {"name": "console_settings", "group": "console", "description": "Open a Settings tab or sub-tab in the open console: its id (\"appearance\"), \"plugins/<plugin>\" for a plugin's settings, its title, or a single setting's key or name (opens its tab scrolled to it).",
      "parameters": {"type": "object", "properties": {"tab": {"type": "string"}, "anchor": {"type": "string"}, "to": _TO}, "required": ["tab"], "additionalProperties": False}},

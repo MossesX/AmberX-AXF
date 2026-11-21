@@ -202,7 +202,12 @@ export function consoleResolve(items, kind, path) {
   const phrase = foldWords(raw);
   hit = list.find((i) => foldWords(i.label) === phrase);
   if (hit) return { item: hit };
-  if (kind === 'screen') { const f = consoleSplitFocus(list, raw); if (f) return f; }
+  if (kind === 'screen') {
+    const bare = foldWords(raw.replace(LEADING, '')); // "go to plan studio" names the screen, it is not "Plan" + a focus
+    hit = list.find((i) => [i.id, i.label, ...screenAliases(i)].some((n) => foldWords(n) === bare));
+    if (hit) return { item: hit };
+    const f = consoleSplitFocus(list, raw); if (f) return f;
+  }
   const words = wordsOf(raw);
   if (!words.length) return { candidates: [] };
   const scored = list.map((i) => [i, scoreItem(i, words, words.join(' '))]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
@@ -212,16 +217,25 @@ export function consoleResolve(items, kind, path) {
 }
 
 /**
- * A screen named by its exact id or title followed by what to focus on it: "build-orchestrator pending",
+ * Other exact names of a screen: its keywords of two or more words ("plan studio" for Plan Studio 2.0), so a name
+ * people keep saying reaches the screen even when a shorter screen name ("Plan") starts the same way. A one-word
+ * keyword is never a name: it only scores.
+ */
+/** Words people put in front of a screen name. */
+const LEADING = /^((open|show|go|to|the|my)\s+)+/i;
+const screenAliases = (i) => (Array.isArray(i?.keywords) ? i.keywords : []).filter((k) => foldWords(k).includes(' '));
+
+/**
+ * A screen named by its exact id, title or alias followed by what to focus on it: "build-orchestrator pending",
  * "Build orchestrator / pending", "build-orchestrator:my-build" → { item, focus }. The longest screen name wins; null
  * when the path doesn't start with one (or nothing follows it).
  */
 export function consoleSplitFocus(screens, path) {
-  const raw = String(path ?? '').trim().replace(/^((open|show|go|to|the|my)\s+)+/i, '');
+  const raw = String(path ?? '').trim().replace(LEADING, '');
   let best = null;
   for (const i of Array.isArray(screens) ? screens : []) {
     if (i?.kind !== 'screen') continue;
-    for (const name of [i.id, i.label]) {
+    for (const name of [i.id, i.label, ...screenAliases(i)]) {
       const n = String(name ?? '').trim();
       if (!n || raw.length <= n.length || raw.slice(0, n.length).toLowerCase() !== n.toLowerCase()) continue;
       const m = /^(\s*[/:#>→]\s*|\s+)(.+)$/u.exec(raw.slice(n.length));
