@@ -234,6 +234,8 @@ const journal = (line) => { try { appendFileSync(files().journal, `${JSON.string
 
 /** Read fresh on every call (the console's change applies to the next launch). */
 export const loadLimit = () => normLimit(readJson(files().config, {}));
+/** The config file as it is on disk (null when there is none): tells a value Brett set from a default. */
+export const rawLimit = () => { const j = readJson(files().config, null); return j && typeof j === 'object' && !Array.isArray(j) ? j : null; };
 
 /**
  * Brett only: `owner` must be true (the console's owner check, or a person at a terminal). Returns the new config.

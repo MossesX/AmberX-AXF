@@ -17,16 +17,40 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const tmp = mkdtempSync(join(tmpdir(), 'axf-slots-'));
 Object.assign(process.env, { AXF_SLOTS_DIR: join(tmp, 'store'), AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_SLOTS_SWAP_MB: '0', AXF_SLOTS_PREFIX: 'axf-slotstest-' });
 const S = await import('../cli/agent-slots.mjs');
+const L = await import('../cli/build-limit.mjs');
 
 let n = 0; let failed = 0;
 const ok = (cond, what) => { n++; if (!cond) { failed++; console.error(`FAIL ${what}`); } };
 const eq = (a, b, what) => ok(JSON.stringify(a) === JSON.stringify(b), `${what}: ${JSON.stringify(a)} != ${JSON.stringify(b)}`);
-const reset = (settings = {}) => { rmSync(process.env.AXF_SLOTS_DIR, { recursive: true, force: true }); S.saveSettings(settings); };
+// Builds at once is one stored key (build-limit.json maxBuilds); `maxAgents` here is its read alias, so the cap is set there.
+const setCap = (cap) => L.saveLimit({ maxBuilds: cap }, { by: 'test', owner: true });
+const reset = (settings = {}) => { rmSync(process.env.AXF_SLOTS_DIR, { recursive: true, force: true }); const { maxAgents, ...rest } = settings; S.saveSettings(rest); if (maxAgents !== undefined) setCap(maxAgents); };
 const alive = { alive: () => true };
 
 // settings: defaults, limits, bad rules dropped
 reset();
-eq([S.loadSettings().maxAgents, S.loadSettings().maxHeavy, S.loadSettings().minFreeGb], [6, 3, 2], 'defaults 6 agents / 3 heavy / 2 GB');
+eq([S.loadSettings().maxAgents, S.loadSettings().maxHeavy, S.loadSettings().minFreeGb], [L.DEFAULTS.maxBuilds, 3, 2], 'defaults: the build limit / 3 heavy / 2 GB');
+// one true source: maxAgents is a read alias of build-limit.json maxBuilds, never stored again
+ok(!('maxAgents' in JSON.parse(readFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), 'utf8'))), 'a save never stores maxAgents');
+eq(S.saveSettings({ maxAgents: 2, maxHeavy: 4 }).maxAgents, L.DEFAULTS.maxBuilds, 'saving the retired key changes nothing');
+eq(S.loadSettings().maxHeavy, 4, 'the other keys in the same save are kept');
+writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 2 }));
+eq([S.loadSettings().maxAgents, S.migrateBuildsAtOnce()], [2, null], 'a store with only the old key is still read from it (nothing to migrate into)');
+{ // migration: the one saved last is kept and logged; a later maxAgents never raises the limit
+  const logOf = () => readFileSync(join(process.env.AXF_SLOTS_DIR, 'settings-migrations.jsonl'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  rmSync(process.env.AXF_SLOTS_DIR, { recursive: true, force: true }); mkdirSync(process.env.AXF_SLOTS_DIR, { recursive: true });
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.json'), JSON.stringify({ maxBuilds: 6, setAt: '2020-01-01T00:00:00.000Z' }));
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 4, maxHeavy: 2 }));
+  eq([S.loadSettings().maxAgents, L.loadLimit().maxBuilds, S.loadSettings().maxHeavy], [4, 4, 2], 'maxAgents saved last and lower: kept as the one value');
+  ok(!('maxAgents' in JSON.parse(readFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), 'utf8'))), 'the old key is gone from the file');
+  eq([logOf().length, logOf()[0].disagreed, logOf()[0].kept.value, logOf()[0].dropped.value], [1, true, 4, 4], 'the migration is logged once');
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 9 }));
+  eq([S.loadSettings().maxAgents, L.loadLimit().maxBuilds, logOf()[1].kept.value], [4, 4, 4], 'a later maxAgents above the limit never raises it');
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.json'), JSON.stringify({ maxBuilds: 7, setAt: '2099-01-01T00:00:00.000Z' }));
+  writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 3 }));
+  eq([S.loadSettings().maxAgents, logOf()[2].why], [7, 'build-limit.json maxBuilds was saved last'], 'the limit saved last wins over an older maxAgents');
+  reset();
+}
 eq(S.normSettings({ maxAgents: 999, minFreeGb: -1 }).maxAgents, 64, 'cap clamps high');
 eq(S.normSettings({ minFreeGb: -1 }).minFreeGb, 0, 'floor clamps low');
 eq(S.normSettings({ priorityRules: [{ match: '(', level: 'boss' }, { match: 'x', level: 'nope' }, { match: '^vip', level: 'urgent' }] }).priorityRules, [{ match: '^vip', level: 'urgent' }], 'bad rules dropped');
@@ -107,7 +131,7 @@ reset({ maxAgents: 1 });
 S.enqueue({ name: 'p' }, alive);
 const q2 = S.enqueue({ name: 'q' }, alive);
 eq(q2.started, false, 'cap 1 queues q');
-writeFileSync(join(process.env.AXF_SLOTS_DIR, 'settings.json'), JSON.stringify({ maxAgents: 3 }));
+setCap(3);
 eq(S.claim(q2.id, {}, alive).started, true, 'raised cap applies on the next claim');
 eq(S.status(alive).cap, 3, 'status shows the new cap');
 

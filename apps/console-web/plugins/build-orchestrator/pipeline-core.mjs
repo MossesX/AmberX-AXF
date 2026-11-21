@@ -42,7 +42,12 @@ import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orc
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
-  /** Sessions per account at once, when the account has no cap of its own (the Claude setting builds.maxParallel wins when set). */
+  /**
+   * Sessions per account. The one stored key is claude-workers@1 `limits.building` (per account: `perAccount.<name>.building`,
+   * Settings → Plugins → Claude accounts → Job routing); this field is how the pipeline reads it. A store that only has the
+   * old keys (pipeline settings `parallelPerAccount`, an account's own `parallel`, the Claude setting builds.maxParallel)
+   * is still read from them. Never stored here again (ALIAS_KEYS).
+   */
   parallelPerAccount: 1,
   /** Pipeline 2.0: steps of one build that run at once (each in its own worktree), under the VPS-wide slot cap. */
   stepsInParallel: 4,
@@ -58,7 +63,7 @@ export const DEFAULTS = Object.freeze({
   probeDays: 7,
   /** How the split is made: claude (a one-shot Claude call), rules (no model), off (steps by hand only). */
   splitProvider: 'claude',
-  /** New builds go straight to the Queue (the Claude setting builds.launchWithoutAsking, read on every tick). */
+  /** New builds go straight to the Queue: the Claude setting builds.launchWithoutAsking is the one stored key; read here, never stored here. */
   autoQueue: false,
   /** Subscriptions first, then any API account (Brett, Nov 10 2026): when no subscription account can take a build, an API-key account takes it (billed per token, under its caps). */
   apiOverflow: true,
@@ -66,10 +71,19 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
-  /** A launch brief is trimmed to at most this many bytes (Claude setting builds.briefMaxBytes); his words are never cut. */
+  /** A launch brief is trimmed to at most this many bytes: the Claude setting builds.briefMaxBytes is the one stored key; read here, never stored here. */
   briefMaxBytes: 120 * 1024,
 });
-const LIMITS = { parallelPerAccount: [1, 12], stepsInParallel: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
+/**
+ * Settings this document reads from their one source and never stores (settings-sources@1): key → where the value lives.
+ * pipeline.mjs resolves them on every load and strips them on every save.
+ */
+export const ALIAS_KEYS = Object.freeze({
+  parallelPerAccount: 'claude-workers limits.building (Sessions per account)',
+  autoQueue: 'Claude setting builds.launchWithoutAsking (Launch builds without asking)',
+  briefMaxBytes: 'Claude setting builds.briefMaxBytes (Max launch brief size)',
+});
+const LIMITS = { parallelPerAccount: [1, 20], stepsInParallel: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], briefMaxBytes: [16 * 1024, 1024 * 1024] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -103,7 +117,7 @@ export function normSettings(raw = {}) {
  * One account as the pipeline sees it. `row` = a claude-workers status row ({ name, role, email, plan, limited, running[] }),
  * `own` = the pipeline's own record for it (accounts.json: { fable?, parallel?, use?, probe?: { fable, at, error } }).
  *   fable      may this account run Fable? override (own.fable) > a fresh probe > the plan (fablePlans)
- *   parallel   sessions at once: own.parallel > settings.parallelPerAccount
+ *   parallel   sessions at once: the row's saved cap (claude-workers building, buildingSet) > own.parallel (old key) > settings.parallelPerAccount
  *   usable     may the dispatcher put a build on it? never limited, never an API key, never one Brett switched off;
  *              workers always; the console's account only when no worker exists and useConsoleAccount is on
  */
@@ -118,7 +132,10 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   const fableFrom = typeof o.fable === 'boolean' ? 'override' : hp ? 'health' : probe ? 'probe' : plan ? 'plan' : 'unknown';
   const role = str(row?.role, 20) || 'saved';
   const running = list(row?.running).length;
-  const parallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : settings.parallelPerAccount;
+  // one stored key: the account's cap in claude-workers@1 when its config is saved; the pipeline's own numbers are read aliases
+  const rowParallel = row?.buildingSet === true && Number.isInteger(row?.building) && row.building > 0 ? Math.min(20, row.building) : null;
+  const ownParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : null;
+  const parallel = rowParallel ?? ownParallel ?? settings.parallelPerAccount;
   const apiKey = row?.kind === 'api' || role === 'api-key' || role === 'api-worker' || role === 'api-off' || plan === 'api';
   const off = o.use === false;
   const sick = health && (health.signedIn === false || health.credits === false)
@@ -138,7 +155,7 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
   else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
-  const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
+  const apiParallel = rowParallel ?? ownParallel ?? (Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount);
   const api = apiKey ? (pick ? { usable: false, why: `off for builds: ${pick} takes every build`, spend: row?.spend && typeof row.spend === 'object' ? row.spend : null } : apiState(row, o, settings, { limited, apiParallel, running })) : null;
   const rawOrder = o.order ?? row?.order;
   const order = typeof rawOrder === 'number' && Number.isFinite(rawOrder) ? rawOrder : null;

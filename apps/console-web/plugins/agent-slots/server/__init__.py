@@ -41,7 +41,9 @@ CLI = ROOT / "framework" / "cli" / "agent-slots.mjs"
 LIMIT_CLI = ROOT / "framework" / "cli" / "build-limit.mjs"
 LIMIT_KEYS = {"maxBuilds", "emergencySlots", "cpuQuotaPct", "memoryMaxGb", "memoryHighGb", "tasksMax", "dockerCpus", "dockerMemoryGb", "dockerImages", "reserveSec", "setupSec"}
 ID = re.compile(r"^[A-Za-z0-9-]{1,80}$")
-SETTING_KEYS = {"maxAgents", "maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec", "priorityRules", "guardWarnTrips", "swapWarnMb", "swapWarnMin"}
+# maxAgents is retired: Builds at once is the one key, build-limit.json maxBuilds (PUT hard-limit); settings still carry it to read.
+RETIRED_KEYS = {"maxAgents": "Builds at once is one setting now: PUT hard-limit {maxBuilds} (Brett only, Settings → Plugins → Agent cap)"}
+SETTING_KEYS = {"maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec", "priorityRules", "guardWarnTrips", "swapWarnMb", "swapWarnMin"}
 CACHE_S = 3
 _cache: dict[str, Any] = {"at": 0.0, "value": None}
 _lock = threading.Lock()
@@ -138,8 +140,9 @@ async def put_settings(request: Request) -> dict[str, Any]:
     if not isinstance(body, dict):
         raise HTTPException(400, "send a JSON object")
     patch = {k: v for k, v in body.items() if k in SETTING_KEYS}
+    retired = [k for k in body if k in RETIRED_KEYS]
     if not patch:
-        raise HTTPException(400, f"nothing to save (keys: {', '.join(sorted(SETTING_KEYS))})")
+        raise HTTPException(400, RETIRED_KEYS[retired[0]] if retired else f"nothing to save (keys: {', '.join(sorted(SETTING_KEYS))})")
     code, out, err = _run("set", "--json", json.dumps(patch))
     if code != 0:
         raise HTTPException(400, err[-400:] or "refused")

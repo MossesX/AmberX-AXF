@@ -34,8 +34,9 @@
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
  *
  * Hard limit (build-limit@1, Nov 12 2026): framework/cli/build-limit.mjs counts what really runs on the host and refuses
- * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
- * as maxAgentsSet), status carries `hard` { max, live, free } and `free` is the smaller of the two. Heavy steps run in
+ * the N+1st build whatever this queue thinks. Builds at once is that limit's one stored key (`maxBuilds`); `maxAgents`
+ * here is its read alias (see RETIRED_KEYS). Status carries `hard` { max, live, free } and `free` is the smaller of the
+ * booked and the really running count. Heavy steps run in
  * axf-builds.slice (systemd-run --scope) with the docker shim first on PATH (--cpus / --memory on test containers).
  * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
  * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
@@ -47,12 +48,12 @@
  * (`emergencySlots` places, default 2): it never waits behind the ordinary line and never takes one of its slots, and
  * ordinary entries never take an emergency place. Status carries `emergency` { used, cap, free, queued }.
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { emergencyIds, loadLimit, poolOf, scopePrefix, usage as hardUsage } from './build-limit.mjs';
+import { emergencyIds, loadLimit, poolOf, rawLimit, saveLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
 import { buildMayTakeSlot } from './dispatch-gate.mjs';
 import { claudePids, readLock, sessionOf, tmuxSessions as buildTmux } from './build-lock.mjs';
 import * as dataFiles from '../core/data-files.mjs';
@@ -216,11 +217,57 @@ const files = () => { const d = slotsDir(); return { dir: d, settings: join(d, '
 const readJson = (f, dflt) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return dflt; } };
 function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
 
+/**
+ * Builds at once is one stored key: build-limit.json `maxBuilds` (settings-sources@1 `builds.atOnce`). The cap this
+ * queue used to keep for the same job, settings.json `maxAgents`, is a read alias: settings always carry `maxAgents`
+ * (= the one value) so every reader keeps working, but it is never written again. A store that only has the old key
+ * (no build-limit.json value) is still read from it, under the limit's default as before.
+ */
+export const RETIRED_KEYS = Object.freeze({ maxAgents: 'build-limit.json maxBuilds (Builds at once)' });
+const mtimeMs = (f) => { try { return statSync(f).mtimeMs; } catch { return 0; } };
+const migrationLog = (line) => { try { appendFileSync(join(files().dir, 'settings-migrations.jsonl'), `${JSON.stringify({ at: new Date().toISOString(), ...line })}\n`); } catch { /* the log is a courtesy */ } };
+
+/**
+ * One-time move of settings.json `maxAgents` into build-limit.json `maxBuilds` (runs by itself on the first read that
+ * finds both). When the two disagree the one saved last is kept, except that a later `maxAgents` above the limit never
+ * raises it (only Brett raises the VPS's limit); what was kept and dropped is written to settings-migrations.jsonl.
+ * Returns the log line, or null when there was nothing to move.
+ */
+export function migrateBuildsAtOnce() {
+  const f = files();
+  const raw = readJson(f.settings, null);
+  const lim = rawLimit();
+  if (!raw || raw.maxAgents === undefined || lim?.maxBuilds === undefined) return null;
+  const old = normSettings({ maxAgents: raw.maxAgents }).maxAgents;
+  const cur = loadLimit().maxBuilds;
+  const oldAt = mtimeMs(f.settings); const curAt = Date.parse(lim.setAt || '') || mtimeMs(join(f.dir, 'build-limit.json'));
+  const iso = (ms) => (ms ? new Date(ms).toISOString() : '');
+  let kept = cur; let why = old === cur ? 'same value' : 'build-limit.json maxBuilds was saved last';
+  if (old !== cur && oldAt > curAt) {
+    if (old < cur) { kept = old; why = 'settings.json maxAgents was saved last'; }
+    else why = 'settings.json maxAgents was saved last but is above the limit, which only Brett raises';
+  }
+  try {
+    if (kept !== cur) saveLimit({ maxBuilds: kept }, { by: 'settings migration (maxAgents, saved last)', owner: true });
+    const { maxAgents: _dropped, ...rest } = raw;
+    writeJson(f.settings, rest);
+  } catch { return null; } // a read-only store: the alias read below still gives the one value
+  const line = { group: 'builds.atOnce', kept: { key: 'build-limit.json maxBuilds', value: kept }, dropped: { key: 'agent-slots settings.json maxAgents', value: old, savedAt: iso(oldAt) }, was: { maxBuilds: cur, savedAt: iso(curAt) }, disagreed: old !== cur, why };
+  migrationLog(line);
+  return line;
+}
+
 /** Read fresh on every call: a change in the console applies to the next check, nothing to restart. */
 export function loadSettings() {
-  const s = normSettings(readJson(files().settings, {}));
-  let hard = null; try { const l = loadLimit(); hard = l.maxBuilds; s.emergencySlots = l.emergencySlots; s.emergencyBuilds = emergencyIds(); } catch { /* no limit file: defaults */ }
-  if (hard != null) { s.hardMax = hard; if (s.maxAgents > hard) { s.maxAgentsSet = s.maxAgents; s.maxAgents = hard; } }
+  try { migrateBuildsAtOnce(); } catch { /* never in the way of a read */ }
+  const raw = readJson(files().settings, {}) ?? {};
+  const s = normSettings(raw);
+  let limit = null; try { limit = loadLimit(); s.emergencySlots = limit.emergencySlots; s.emergencyBuilds = emergencyIds(); } catch { /* no limit engine: the old key alone */ }
+  if (limit) {
+    // the one value; a store with only the old key is read from it, never above the limit
+    s.maxAgents = raw.maxAgents === undefined || rawLimit()?.maxBuilds !== undefined ? limit.maxBuilds : Math.min(s.maxAgents, limit.maxBuilds);
+    s.hardMax = limit.maxBuilds;
+  }
   s.emergencySlots ??= 0; s.emergencyBuilds ??= [];
   return s;
 }
@@ -238,9 +285,11 @@ export function withHard(sum, facts = {}) {
 }
 export function saveSettings(patch) {
   const f = files(); mkdirSync(f.dir, { recursive: true });
-  const next = normSettings({ ...readJson(f.settings, {}), ...patch });
+  const merged = { ...readJson(f.settings, {}), ...patch };
+  for (const k of Object.keys(RETIRED_KEYS)) delete merged[k]; // read aliases are never stored again
+  const { maxAgents: _alias, ...next } = normSettings(merged);
   writeJson(f.settings, next);
-  return next;
+  return loadSettings();
 }
 /**
  * data-store@1 (s4.1 of urgent-all-data-to-postgres-builds-store): the state is the key `console/agent-slots/state.json`

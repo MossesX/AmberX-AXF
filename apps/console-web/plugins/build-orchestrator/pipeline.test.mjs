@@ -268,7 +268,7 @@ t('authRecovered: a health answer newer than the failure that signs in; once', (
 });
 t('settings normalise and clamp', () => {
   const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
-  assert.equal(s.parallelPerAccount, 12); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
+  assert.equal(s.parallelPerAccount, 20); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
 });
 
 // ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")

@@ -111,7 +111,7 @@ import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { reapFirstSync } from '../../../../framework/cli/reaper.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
-import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
+import { editConfig as editWorkersConfig, paths as workerPaths, reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -139,18 +139,108 @@ const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 's
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
 
-/** pipeline-settings@1: the file, the Claude settings that feed it, then AXF_PIPELINE_SETTINGS (tests). */
+const mtimeMs = (f) => { try { return statSync(f).mtimeMs; } catch { return 0; } };
+/** claude-workers@1 as saved (null when there is no config file): tells a saved cap from the built-in default. */
+const workersRaw = (env = process.env) => { const j = readJson(workerPaths(env).config); return j && typeof j === 'object' && !Array.isArray(j) ? j : null; };
+/** The saved "sessions per account" (claude-workers limits.building), or null when none was ever saved. */
+export function sessionsPerAccount(env = process.env) { const n = Number(workersRaw(env)?.limits?.building); return Number.isInteger(n) && n > 0 ? n : null; }
+
+/**
+ * pipeline-settings@1: the file, then AXF_PIPELINE_SETTINGS (tests). Three of its fields have their one stored key
+ * elsewhere (P.ALIAS_KEYS) and are resolved here on every load:
+ *   parallelPerAccount  claude-workers limits.building  > the file's old key > the Claude setting builds.maxParallel (older still)
+ *   autoQueue           the Claude setting builds.launchWithoutAsking > the file's old key
+ *   briefMaxBytes       the Claude setting builds.briefMaxBytes       > the file's old key
+ * The old keys are read aliases: honoured while a store still carries them, never written again (saveSettings).
+ */
 export function loadSettings(env = process.env) {
   const file = readJson(files().settings, {}) ?? {};
   const cs = claudeSettings(env);
-  const fromClaude = {};
-  if (file.parallelPerAccount === undefined && Number.isFinite(Number(cs['builds.maxParallel']))) fromClaude.parallelPerAccount = Number(cs['builds.maxParallel']);
-  if (typeof cs['builds.launchWithoutAsking'] === 'boolean') fromClaude.autoQueue = cs['builds.launchWithoutAsking'];
-  if (file.briefMaxBytes === undefined && Number.isFinite(Number(cs['builds.briefMaxBytes']))) fromClaude.briefMaxBytes = Number(cs['builds.briefMaxBytes']);
+  const one = {};
+  const spa = sessionsPerAccount(env);
+  if (spa != null) one.parallelPerAccount = spa;
+  else if (file.parallelPerAccount === undefined && Number.isFinite(Number(cs['builds.maxParallel']))) one.parallelPerAccount = Number(cs['builds.maxParallel']);
+  if (typeof cs['builds.launchWithoutAsking'] === 'boolean') one.autoQueue = cs['builds.launchWithoutAsking'];
+  if (Number.isFinite(Number(cs['builds.briefMaxBytes'])) && cs['builds.briefMaxBytes'] !== '' && cs['builds.briefMaxBytes'] != null) one.briefMaxBytes = Number(cs['builds.briefMaxBytes']);
   let patch = {}; try { patch = env.AXF_PIPELINE_SETTINGS ? JSON.parse(env.AXF_PIPELINE_SETTINGS) : {}; } catch { patch = {}; }
-  return P.normSettings({ ...fromClaude, ...file, ...patch });
+  return P.normSettings({ ...file, ...one, ...patch });
 }
-export function saveSettings(patch) { const f = files(); const next = P.normSettings({ ...(readJson(f.settings, {}) ?? {}), ...patch }); writeJson(f.settings, next); return next; }
+/**
+ * Save the pipeline's own keys. A key whose one source is elsewhere is never stored here: `parallelPerAccount` is saved
+ * as claude-workers limits.building (the one key), `autoQueue` and `briefMaxBytes` are refused with where to set them.
+ */
+export function saveSettings(patch, env = process.env) {
+  const f = files(); const own = { ...(patch ?? {}) };
+  if (own.parallelPerAccount !== undefined) {
+    const n = Math.max(1, Math.min(20, Math.round(Number(own.parallelPerAccount)) || 1));
+    editWorkersConfig((c) => { c.limits.building = n; }, env);
+    delete own.parallelPerAccount;
+  }
+  for (const k of ['autoQueue', 'briefMaxBytes']) if (own[k] !== undefined) throw Object.assign(new Error(`${k} is not stored in the pipeline settings: set the ${P.ALIAS_KEYS[k]}`), { code: 2 });
+  const cur = readJson(f.settings, {}) ?? {};
+  const next = P.normSettings({ ...cur, ...own });
+  // old keys still in the file stay until migrateSettings() has moved them (they are read aliases); nothing adds them
+  for (const k of Object.keys(P.ALIAS_KEYS)) { if (cur[k] === undefined) delete next[k]; else next[k] = cur[k]; }
+  writeJson(f.settings, next);
+  return loadSettings(env);
+}
+
+const SETTINGS_MIGRATIONS = () => join(files().dir, 'settings-migrations.jsonl');
+/**
+ * One-time move of the pipeline's copies to their one stored key (runs by itself on the host's tick while a store still
+ * carries an old key; each decision is one line in <pipeline dir>/settings-migrations.jsonl):
+ *   - sessions per account: the pipeline's `parallelPerAccount` and each account's own `parallel` against claude-workers
+ *     `limits.building` / `perAccount.<name>.building`. Where they disagree the file saved last is kept; a value that
+ *     only the pipeline has is moved over.
+ *   - `autoQueue` / `briefMaxBytes`: dropped from the file when the Claude setting is set or the copy is the default
+ *     (a copy that says something else stays as a read alias until the Claude setting is set).
+ * Returns the log lines written.
+ */
+export function migrateSettings(env = process.env) {
+  const f = files(); const file = readJson(f.settings, null); const lines = [];
+  const log = (line) => { const l = { at: nowIso(), ...line }; lines.push(l); try { mkdirSync(f.dir, { recursive: true }); appendFileSync(SETTINGS_MIGRATIONS(), `${JSON.stringify(l)}\n`); } catch { /* the log is a courtesy */ } };
+  const own = loadOwnAccounts();
+  const ownPar = Object.entries(own).filter(([, v]) => v && Number.isInteger(v.parallel) && v.parallel > 0);
+  const hasPar = file && file.parallelPerAccount !== undefined;
+  const iso = (ms) => (ms ? new Date(ms).toISOString() : '');
+  if (hasPar || ownPar.length) {
+    const raw = workersRaw(env); const wFile = workerPaths(env).config;
+    const p = hasPar ? P.normSettings({ parallelPerAccount: file.parallelPerAccount }).parallelPerAccount : null;
+    const pipeAt = Math.max(hasPar ? mtimeMs(f.settings) : 0, ownPar.length ? mtimeMs(f.accounts) : 0); const workAt = mtimeMs(wFile);
+    const saved = raw?.limits?.building !== undefined;
+    const pipelineWins = !saved || pipeAt > workAt;
+    const changes = [];
+    if (pipelineWins) {
+      editWorkersConfig((c) => {
+        if (p != null && (!saved || c.limits.building !== p)) { changes.push({ key: 'limits.building', from: saved ? c.limits.building : null, to: p }); c.limits.building = p; }
+        const names = new Set([...ownPar.map(([n]) => n), ...Object.keys(c.perAccount).filter((n) => c.perAccount[n].building !== undefined && c.perAccount[n].building > 0)]);
+        for (const n of names) {
+          const want = (Number.isInteger(own[n]?.parallel) && own[n].parallel > 0 ? own[n].parallel : null) ?? p; // what the dispatcher used for this account
+          const have = c.perAccount[n]?.building;
+          if (want == null || have === want || (have === undefined && want === c.limits.building)) continue;
+          changes.push({ key: `perAccount.${n}.building`, from: have ?? null, to: want });
+          c.perAccount[n] = { ...(c.perAccount[n] ?? {}), building: want };
+        }
+      }, env);
+    }
+    log({ group: 'builds.sessionsPerAccount', kept: pipelineWins ? 'pipeline (saved last)' : 'claude-workers (saved last)', savedAt: { pipeline: iso(pipeAt), workers: iso(workAt) },
+      dropped: { parallelPerAccount: p, own: Object.fromEntries(ownPar.map(([n, v]) => [n, v.parallel])) }, changes, disagreed: changes.some((c) => c.from != null) });
+    for (const [n] of ownPar) saveOwnAccount(n, { parallel: undefined });
+  }
+  if (file) {
+    const cs = claudeSettings(env); const next = { ...file }; let changed = false;
+    if (hasPar) { delete next.parallelPerAccount; changed = true; }
+    for (const [k, csKey, dflt] of [['autoQueue', 'builds.launchWithoutAsking', P.DEFAULTS.autoQueue], ['briefMaxBytes', 'builds.briefMaxBytes', P.DEFAULTS.briefMaxBytes]]) {
+      if (file[k] === undefined) continue;
+      const set = cs[csKey] !== undefined && cs[csKey] !== null && cs[csKey] !== '';
+      if (!set && file[k] !== dflt) continue; // the only place that value is: stays readable until the Claude setting is set
+      log({ group: csKey, kept: { key: `Claude setting ${csKey}`, value: set ? cs[csKey] : dflt }, dropped: { key: `pipeline settings ${k}`, value: file[k] }, disagreed: set && cs[csKey] !== file[k] });
+      delete next[k]; changed = true;
+    }
+    if (changed) writeJson(f.settings, next);
+  }
+  return lines;
+}
 export const loadOwnAccounts = () => { const j = readJson(files().accounts, {}); return j && typeof j === 'object' && !Array.isArray(j) ? j : {}; };
 export function saveOwnAccount(name, patch) {
   if (!BP.accountName(name)) throw Object.assign(new Error(`not an account name: ${name}`), { code: 2 });
@@ -1289,6 +1379,7 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
   for (const b of reapBuilds({ env })) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
   const store = loadStore(); const settings = loadSettings();
   const read = accountsRead(store, settings, env);
+  if (read.source === 'host') { try { for (const m of migrateSettings(env)) logLine({ event: 'settings-migrated', ...m }); } catch (e) { logLine({ event: 'settings-migration-failed', error: str(e.message, 300) }); } }
   if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
   const findings = read.accounts.map((v) => P.checkAccount(v, read.rows.find((r) => r.name === v.name)));
   const sum = P.checkSummary(findings, fixes);
@@ -1330,6 +1421,7 @@ export function tick({ env = process.env } = {}) {
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
+  if (read.source === 'host') { try { for (const m of migrateSettings(env)) logLine({ event: 'settings-migrated', ...m }); } catch (e) { logLine({ event: 'settings-migration-failed', error: str(e.message, 300) }); } }
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
   // done-means-merged@1: every fixing build gets the ladder's next strategy (a relaunch, a wait, or escalation)
   let retries = [];
@@ -1750,9 +1842,15 @@ async function main(argv) {
   if (cmd === 'account') {
     const patch = {};
     if (has('fable')) patch.fable = flag('fable') === 'auto' ? undefined : flag('fable') === 'on';
-    if (has('parallel')) patch.parallel = Math.max(1, Math.min(12, Number(flag('parallel')) || 1));
     if (has('use')) patch.use = flag('use') !== 'off';
-    const r = saveOwnAccount(rest[0], patch); return out({ ok: true, name: rest[0], record: r }, `${rest[0]}: ${JSON.stringify(r)}`);
+    let building;
+    if (has('parallel')) { // sessions per account is one stored key: this account's cap in claude-workers@1 (perAccount.<name>.building)
+      if (!BP.accountName(rest[0])) throw Object.assign(new Error(`not an account name: ${rest[0]}`), { code: 2 });
+      building = Math.max(1, Math.min(20, Number(flag('parallel')) || 1));
+      editWorkersConfig((c) => { c.perAccount[rest[0]] = { ...(c.perAccount[rest[0]] ?? {}), building }; });
+      patch.parallel = undefined; // the old copy, if this account still had one
+    }
+    const r = saveOwnAccount(rest[0], patch); return out({ ok: true, name: rest[0], record: r, ...(building ? { building } : {}) }, `${rest[0]}: ${JSON.stringify(r)}${building ? ` · ${building} sessions at once` : ''}`);
   }
   if (cmd === 'health') {
     if (has('request')) { const r = requestHealth({ by }); return out({ ok: true, ran: false, requested: r.at, last: loadHealth() }, `health sweep asked for: the next tick starts it (last: ${loadHealth()?.line || 'none yet'})`); }
