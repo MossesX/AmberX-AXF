@@ -390,6 +390,30 @@
         "text": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator).",
         "kind": "screen",
         "draft": true
+      },
+      {
+        "target": "action:plan-studio-2.hand-build",
+        "title": "Hand build",
+        "text": "Opens the Hand build dialog for this plan or item: pick the model (Fable or Opus, every time), then start one session on the whole item. No dispatcher, no split, no queue, no slot; at most 2 hand builds run at once. Brett's signed-in console only.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "hand-build",
+        "title": "Hand build",
+        "text": "Opens the Hand build dialog for the selected item: pick the model, then start one session on the item and everything under it. Its status (launched, building, PR, CI, merged) then shows on the row and here.",
+        "kind": "button"
+      },
+      {
+        "target": "start-hand-build",
+        "title": "Start hand build",
+        "text": "Records the build (mode hand, the model you picked), makes its worktree on claude/<build id> and launches it straight on the VPS headless launcher. Refused when 2 hand builds already run, or when it is not your own signed-in console.",
+        "kind": "button"
+      },
+      {
+        "target": "reload-the-log",
+        "title": "Reload the log",
+        "text": "Reads the end of the hand build's log again (the last 200 lines of <build id>.log in its worktree).",
+        "kind": "button"
       }
     ],
     "intros": [

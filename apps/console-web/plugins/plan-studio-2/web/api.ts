@@ -14,7 +14,7 @@ export const ID = 'ai.amberx.axf.console.plan-studio-2';
 export const CTX_TARGET = 'axp-plan-studio-2-item';
 export const DND_ZONE = 'axp-plan-studio-2';
 export const TOP = '__top__';
-export const DIALOGS = { item: 'plan-studio-2.item', move: 'plan-studio-2.move', link: 'plan-studio-2.link', build: 'plan-studio-2.build' } as const;
+export const DIALOGS = { item: 'plan-studio-2.item', move: 'plan-studio-2.move', link: 'plan-studio-2.link', build: 'plan-studio-2.build', hand: 'plan-studio-2.hand', handLog: 'plan-studio-2.hand-log' } as const;
 export const KEYS = {
   showDone: 'plan-studio-2.showDone', voiceLang: 'plan-studio-2.voiceLang', voiceOut: 'plan-studio-2.voiceOut', defaultModel: 'plan-studio-2.defaultModel', meta: 'plan-studio-2.meta',
   pageLayout: 'plan-studio-2.pageLayout', dock: 'plan-studio-2.dock', tab: 'plan-studio-2.tab',
@@ -28,8 +28,16 @@ interface StateWire { ok: boolean; error?: string; rev: number; items: Item[]; t
 
 /* ---------------------------------------------------------------- the store */
 
-interface Store { state: State | null; error: string; selected: string | null; focus: string | null; store: string; onHub: boolean; busy: boolean }
-let store: Store = { state: null, error: '', selected: null, focus: null, store: '', onHub: false, busy: false };
+/** One hand build as its item shows it (hand-build.mjs handStatus). */
+export interface HandRow {
+  id: string; title: string; item: string; state: 'launched' | 'building' | 'pr' | 'ci-running' | 'ci-green' | 'ci-red' | 'merged' | 'ended' | 'failed'; label: string;
+  model: string; modelLabel: string; session: string; building: boolean; pr: number; prUrl: string; ci: string; merged: boolean; branch: string; launchedAt: string; by: string; log: string; exit: number | null;
+}
+export interface HandModel { value: string; label: string; id: string }
+export interface HandList { ok: boolean; error?: string; cap: number; running: string[]; free: number; models: HandModel[]; builds: HandRow[] }
+
+interface Store { state: State | null; error: string; selected: string | null; focus: string | null; store: string; onHub: boolean; busy: boolean; hands: HandList | null }
+let store: Store = { state: null, error: '', selected: null, focus: null, store: '', onHub: false, busy: false, hands: null };
 let loading: Promise<void> | null = null;
 const subs = new Set<() => void>();
 const tell = () => subs.forEach((f) => f());
@@ -42,9 +50,25 @@ export async function reload(): Promise<void> {
       if (!r.ok) throw new Error(r.error || 'no data');
       set({ state: tc.normalize({ $axf: tc.SCHEMA, rev: r.rev, items: r.items, trash: r.trash }), error: '', store: r.store, onHub: r.onHub });
     } catch (e) { set({ error: (e as Error).message }); } finally { loading = null; }
+    void reloadHands();
   })();
   return loading;
 }
+
+/* ---------------------------------------------------------------- hand builds (no dispatcher, no slot, at most 2 at once) */
+
+/** The hand builds and their live status; a failed read keeps the last list (the tree still works without it). */
+export async function reloadHands(): Promise<HandList | null> {
+  try { const r = await api.call<HandList>('hand-builds'); if (r.ok) set({ hands: r }); return r.ok ? r : store.hands; } catch { return store.hands; }
+}
+/** The item's hand builds, newest first. */
+export const handsOf = (itemId: string): HandRow[] => (store.hands?.builds ?? []).filter((b) => b.item === itemId);
+/** Start a hand build: the server takes it from Brett's own signed-in console only (403 otherwise). */
+export async function startHandBuild(id: string, model: string, buildId?: string): Promise<OpResult & { session?: string; log?: string; waiting?: boolean }> {
+  set({ busy: true });
+  try { const r = await api.post<OpResult & { session?: string; log?: string; waiting?: boolean }>('hand-build', { id, model, buildId }); await reload(); return r; } finally { set({ busy: false }); }
+}
+export const handLog = (id: string, lines = 200) => api.call<{ ok: boolean; error?: string; file: string; text: string; missing?: boolean; total?: number }>(`hand-log/${encodeURIComponent(id)}?lines=${lines}`);
 const snap = () => store;
 export function useTree(): Store & { reload: () => Promise<void> } {
   const s = useSyncExternalStore((f) => { subs.add(f); return () => { subs.delete(f); }; }, snap, snap);

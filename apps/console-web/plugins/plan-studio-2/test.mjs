@@ -4,7 +4,7 @@
 // (the repo, the hub and the original Plan Studio are never read or written), the manifest and the plugin's web part.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as tc from './web/tree-core.mjs';
@@ -311,6 +311,133 @@ await t('page layouts: open registry, words resolve, nav is the default', () => 
     assert.equal(lc.closeTab(one, 'tree', ['tree']), one, 'the last open section stays');
     assert.equal(lc.dropZone(0.05, 0.5, false), 'left'); assert.equal(lc.dropZone(0.5, 0.5, false), 'centre'); assert.equal(lc.dropZone(0.5, 0.5, true), 'header');
   });
+}
+
+// ---------------------------------------------------------------- hand builds (hand-build.mjs): no dispatcher, no slot, 2 at once
+{
+  const hd = mkdtempSync(join(tmpdir(), 'ps2-hand-'));
+  const keep = {};
+  const scratch = { AXF_BUILDS_STORE: join(hd, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0', AXF_PLAN_TREE_DIR: hd };
+  for (const [k, v] of Object.entries(scratch)) { keep[k] = process.env[k]; process.env[k] = v; }
+  const hand = await import('./hand-build.mjs');
+  const BS = await import('../../../../framework/cli/builds-store.mjs');
+  const gate = await import('../../../../framework/cli/dispatch-gate.mjs');
+  const mg = await import('../../../../framework/cli/model-gate.mjs');
+  // Brett's own click: what the console server sets for his signed-in session, and nothing that marks a session or agent
+  const brett = { AXF_APPROVER: 'Brett', AXF_APPROVER_VIA: 'console', AXF_DISPATCH_DIR: join(hd, 'dispatch'), AXF_PIPELINE_WORKTREES: join(hd, 'wt'), AXF_HAND_TMUX: 'off', HOME: hd };
+  const wt = (id) => { const dir = join(hd, 'wt', id); mkdirSync(dir, { recursive: true }); return { dir, repo: hd }; };
+  const ok = (seen = []) => (o) => { seen.push(o); return { status: 0, out: `started axf-${o.env.AXF_BUILD_ID} in ${o.dir}` }; };
+  const builds = () => BS.loadStore().builds;
+
+  let st = tc.emptyState();
+  let r = tc.add(st, { kind: 'plan', title: 'Hand lane', body: 'Build the lane.' }); st = r.state; const plan = r.item.id;
+  r = tc.add(st, { parent: plan, kind: 'step', title: 'Button', body: 'A button on every item.' }); st = r.state; const step = r.item.id;
+  r = tc.add(st, { parent: step, kind: 'note', title: 'Deep note', body: 'Nested body, two levels down.' }); st = r.state;
+  r = tc.add(st, { parent: plan, kind: 'step', title: 'Cap', body: 'At most two at once.' }); st = r.state;
+
+  await t('hand build: Brett\'s signed-in console only; nothing is written for anyone else', () => {
+    for (const env of [{ ...brett, AXF_APPROVER: '' }, { ...brett, AXF_APPROVER_VIA: 'token' }, { ...brett, CLAUDECODE: '1' }, { ...brett, AXF_SESSION: 'amber' }, { ...brett, AXF_SURFACE: 'headless' }]) {
+      assert.throws(() => hand.launchHand(st, plan, { model: 'fable', env, sessions: [], worktree: wt, spawn: ok() }), (e) => e.code === 'forbidden' && /Only Brett/.test(e.message));
+    }
+    assert.equal(builds().length, 0, 'a refused ask writes no record');
+    const srv = readFileSync(join(here, 'server/__init__.py'), 'utf8');
+    assert.match(srv, /@router\.post\("\/hand-build"\)[\s\S]{0,700}who = brett_click\(request\)\s+if not who:\s+raise HTTPException\(403/, 'POST /hand-build refuses everyone but Brett\'s signed-in click (MCP and the CLI go through the same route)');
+    assert.match(readFileSync(join(here, 'web/ui.tsx'), 'utf8'), /onClick=\{start\}><span>Start hand build<\/span><\/Button>/, 'the start button is no console-control target');
+    const m = JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8'));
+    assert.ok(['hand-build', 'hand-builds', 'hand-log'].every((id) => m.commands.items.some((c) => c.id === id)), 'REST / MCP / CLI commands for the lane');
+    const refused = cliFails('api', JSON.stringify({ op: 'hand-build', id: plan, model: 'fable' }));
+    assert.equal(refused.code, 'forbidden', 'the CLI (Amber\'s path) is refused the same way');
+  });
+
+  await t('hand build: the model is picked every time from the live policy, no default', () => {
+    assert.deepEqual(hand.handModels().map((x) => x.value), ['fable', 'opus']);
+    for (const model of ['', undefined, 'sonnet', 'haiku', 'gpt']) assert.throws(() => hand.launchHand(st, plan, { model, env: brett, sessions: [], worktree: wt, spawn: ok() }), (e) => e.code === 'model');
+    assert.equal(builds().length, 0, 'no model, no record');
+  });
+
+  let first = '';
+  await t('hand build: the record is written (mode hand, signed, linked) before the launcher runs', () => {
+    const seen = [];
+    const spawn = (o) => {
+      const b = builds().find((x) => x.id === o.env.AXF_BUILD_ID);
+      assert.ok(b, 'the record exists when the launcher starts');
+      assert.equal(b.source, 'hand'); assert.equal(b.status, 'running'); assert.equal(b.planRef, plan); assert.equal(b.pipeline.model, 'fable'); assert.equal(b.branch, `claude/${b.id}`);
+      assert.equal(b.steps.length, 0, 'no split');
+      // every launcher gate accepts it: the dispatch token is this build's, the model gate passes it
+      assert.equal(gate.check({ build: b.id, name: b.id, token: o.env.AXF_DISPATCH_TOKEN, env: o.env }).ok, true, 'dispatch gate');
+      assert.equal(mg.launchCheck(b, o.env.AXF_MODEL).ok, true, 'model gate');
+      assert.ok(!o.env.AXF_APPROVER, 'the session never inherits Brett\'s click');
+      return ok(seen)(o);
+    };
+    const res = hand.launchHand(st, plan, { model: 'Fable', env: brett, sessions: [], worktree: wt, spawn });
+    first = res.build.id;
+    assert.equal(res.ok, true); assert.equal(res.session, `axf-${first}`); assert.equal(res.model, 'fable');
+    assert.ok(seen[0].args.includes('claude-fable-5-2'), 'launched on the chosen model');
+    assert.ok(tc.byId(res.state, plan).links.some((l) => l.type === 'build' && l.ref.endsWith(`:${first}`)), 'the item links to the build');
+    assert.ok(builds().find((b) => b.id === first).notes.some((x) => /launched: axf-/.test(x.text)));
+  });
+
+  await t('hand build: the brief is the whole item, nested bodies in order, plus the rules', () => {
+    const brief = readFileSync(join(hd, 'wt', first, '.axf-brief.md'), 'utf8');
+    const at = (x) => { const i = brief.indexOf(x); assert.ok(i >= 0, `brief has "${x}"`); return i; };
+    assert.ok(at('# Hand build: Hand lane') < at('Build the lane.'));
+    assert.ok(at('Build the lane.') < at('1. Step: Button') && at('1. Step: Button') < at('A button on every item.'));
+    assert.ok(at('A button on every item.') < at('1.1. Note: Deep note') && at('1.1. Note: Deep note') < at('Nested body, two levels down.'));
+    assert.ok(at('Nested body, two levels down.') < at('2. Step: Cap') && at('2. Step: Cap') < at('At most two at once.'));
+    for (const rule of ['open a PR', 'CI must go green', 'Never merge the PR yourself', 'Tests for what you change', 'Clean code']) assert.match(brief, new RegExp(rule));
+  });
+
+  await t('hand build: launches with every slot busy and past the host limit (no slot, no queue)', () => {
+    BS.withStore((s) => { for (let i = 0; i < 8; i++) s.builds.push({ id: `busy-${i}`, title: `Busy ${i}`, status: 'running', steps: [], pipeline: { account: 'a', session: `axf-busy-${i}`, slot: `hl-${i}` } }); return s; }, { by: 'test' });
+    const seen = [];
+    const sessions = [...Array.from({ length: 8 }, (_, i) => `axf-busy-${i}`), `axf-${first}`];
+    const res = hand.launchHand(st, step, { model: 'opus', env: brett, sessions, worktree: wt, spawn: ok(seen) });
+    assert.equal(res.ok, true);
+    assert.equal(seen[0].env.AXF_SLOTS, 'off', 'never an orchestrator or emergency slot');
+    assert.equal(seen[0].env.AXF_BUILD_LIMIT, 'off', 'past the host build limit');
+    assert.ok(seen[0].args.includes('claude-opus-5-5'));
+  });
+
+  await t('hand build: a third is refused while two run, naming the two; an ended one frees its place', () => {
+    const two = builds().filter((b) => b.source === 'hand').map((b) => b.id);
+    assert.equal(two.length, 2);
+    const sessions = two.map((id) => `axf-${id}--amber`);
+    const before = builds().length;
+    assert.throws(() => hand.launchHand(st, plan, { model: 'fable', env: brett, sessions, worktree: wt, spawn: ok() }), (e) => e.code === 'cap' && two.every((id) => e.message.includes(id)) && /2/.test(e.message));
+    assert.equal(builds().length, before, 'no third record');
+    // records alone count while tmux can't be asked; a session gone after the run ended does not
+    assert.equal(hand.runningHand(builds(), { sessions: null }).length, 2);
+    BS.withStore((s) => { const b = s.builds.find((x) => x.id === two[0]); b.pipeline = { ...b.pipeline, runEnd: { at: new Date().toISOString(), exit: 0, kind: 'phase-done' } }; return s; }, { by: 'test' });
+    assert.deepEqual(hand.runningHand(builds(), { sessions: [`axf-${two[1]}`] }).map((x) => x.id), [two[1]]);
+    assert.equal(hand.launchHand(st, plan, { model: 'fable', buildId: 'hand-third', env: brett, sessions: [`axf-${two[1]}`], worktree: wt, spawn: ok() }).build.id, 'hand-third');
+  });
+
+  await t('hand build: a failed launch keeps the record (failed) and says why; status on the item', () => {
+    const spawn = () => ({ status: 3, out: 'claude-headless: refused: something' });
+    // an hour on, the records with no tmux session behind them are past their startup grace and no longer count
+    const later = () => new Date(Date.now() + 3600e3).toISOString();
+    assert.throws(() => hand.launchHand(st, step, { model: 'opus', buildId: 'hand-broken', env: brett, sessions: [], worktree: wt, spawn, now: later }), (e) => e.code === 'launch' && /refused: something/.test(e.message) && !!e.state);
+    assert.equal(builds().find((b) => b.id === 'hand-broken').status, 'failed');
+    const b = { id: 'x', title: 'X', source: 'hand', status: 'running', pipeline: { model: 'fable', launchedAt: new Date().toISOString() } };
+    assert.equal(hand.handStatus(b, { sessions: [] }).state, 'launched');
+    assert.equal(hand.handStatus(b, { sessions: ['axf-x--amber'] }).state, 'building');
+    assert.equal(hand.handStatus({ ...b, pr: '#12345' }, { sessions: [], repo: 'o/r' }).prUrl, 'https://github.com/o/r/pull/12345');
+    assert.equal(hand.handStatus({ ...b, pr: '#12345', landed: { ci: 'success' } }).label, 'PR #12345 · CI green');
+    assert.equal(hand.handStatus({ ...b, pr: '#12345', landed: { ci: 'failure' } }).state, 'ci-red');
+    assert.equal(hand.handStatus({ ...b, pr: '#12345', mergedAt: '2026-11-21T10:00:00Z' }).state, 'merged');
+    assert.equal(hand.handStatus({ ...b, pipeline: { ...b.pipeline, runEnd: { exit: 1 } } }, { sessions: [] }).label, 'Ended (exit 1)');
+    assert.equal(hand.listHand({ sessions: [], repo: '' }).builds.length, 4);
+  });
+
+  await t('hand build: the launch-readiness check names exactly what is missing', () => {
+    const no = hand.launchReadiness({ AXF_HAND_REPO: join(hd, 'nowhere') }, { has: () => false });
+    assert.equal(no.ok, false); assert.match(no.detail, /no git checkout/); assert.match(no.detail, /no launcher/); assert.match(no.detail, /tmux is not installed/);
+    const yes = hand.launchReadiness({ AXF_HAND_REPO: join(here, '../../../..'), AXF_PIPELINE_WORKTREES: hd }, { has: () => true });
+    assert.equal(yes.ok, true, yes.detail);
+  });
+
+  for (const [k, v] of Object.entries(keep)) { if (v === undefined) delete process.env[k]; else process.env[k] = v; }
+  rmSync(hd, { recursive: true, force: true });
 }
 
 console.log(`plan-studio-2: ${n} checks passed`);

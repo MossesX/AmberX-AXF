@@ -1,8 +1,9 @@
 /**
  * Plan Studio 2.0 page: four sections (Tree, Editor, Say, Trash) laid out by layout.tsx (nav menu, tabs, IDE panes); one tree, nested to any depth, every row dragged (lib-dnd) and right-clicked (context target
  * `axp-plan-studio-2-item`, payload = item id), an editor for the selected item, a Trash tab (undo), a command box and a
- * mic that both go through the server's `say`. Framework controls and tokens only; phone first (the editor drops under
- * the tree on a narrow screen).
+ * mic that both go through the server's `say`. Hand builds (hand-build.mjs): the Hand build dialog picks the model and
+ * starts one; each item's row and editor show its hand builds live (launched, building, PR, CI, merged) with the log.
+ * Framework controls and tokens only; phone first (the editor drops under the tree on a narrow screen).
  */
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
@@ -10,7 +11,7 @@ import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/l
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, handLog, handsOf, linkAction, linkItem, moveItem, reloadHands, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, startHandBuild, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type HandRow, type OpResult } from './api';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -20,6 +21,12 @@ const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: string) => { t
 const flag = (rt: ReturnType<typeof useRuntime>, k: string, d: boolean) => { try { const v = rt.settings.get(k); return typeof v === 'boolean' ? v : d; } catch { return d; } };
 const kindOptions = tc.KINDS.map((k) => ({ value: k, label: tc.KIND_LABEL[k] }));
 const opt = (xs: readonly string[], none: string) => xs.map((x) => ({ value: x, label: x || none }));
+const HAND_POLL_MS = 20e3;
+/** The chip tone for a hand build's state. */
+const HAND_TONE: Record<HandRow['state'], 'accent' | 'success' | 'warning' | 'danger' | undefined> = { launched: 'accent', building: 'accent', pr: 'accent', 'ci-running': 'warning', 'ci-green': 'success', 'ci-red': 'danger', merged: 'success', ended: 'warning', failed: 'danger' };
+function HandChip({ h }: { h: HandRow }) {
+  return <span title={`Hand build ${h.id} · ${h.modelLabel}${h.session ? ` · ${h.session}` : ''}`}><Chip tone={HAND_TONE[h.state]}>Hand · {h.label}</Chip></span>;
+}
 
 /* ---------------------------------------------------------------- the page */
 
@@ -30,6 +37,9 @@ export function PlanStudio2Page() {
   const [q, setQ] = useState('');
   const showDone = flag(rt, KEYS.showDone, true);
   const listRef = useRef<HTMLUListElement>(null);
+
+  // hand builds move on by themselves (building → PR → CI → merged): refresh their status while the page is open
+  useEffect(() => { const t = setInterval(() => { if (document.visibilityState === 'visible') void reloadHands(); }, HAND_POLL_MS); return () => clearInterval(t); }, []);
 
   // a deep link (plan-studio-2.focus:<id or words>): select it, open its ancestors, scroll to it
   useEffect(() => {
@@ -126,6 +136,7 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
   const open = () => select(item.id);
   const ctx = (e: { clientX: number; clientY: number; currentTarget: Element }) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(e.clientX || r.left, e.clientY || r.bottom, CTX_TARGET, item.id); };
   const done = tc.CHECKABLE.has(item.kind) && item.done;
+  const hand = handsOf(item.id)[0];
   return (
     <li className={`${B}__row${selected ? ' is-selected' : ''}${done ? ' is-done' : ''}`} style={{ ['--axp-ps2-depth' as string]: depth }} role="treeitem" aria-selected={selected} aria-expanded={kids ? !item.collapsed : undefined}
       data-fx-ctx-target={CTX_TARGET} data-fx-ctx-payload={item.id} data-axf-drop={DND_ZONE} data-axf-drop-id={item.id}>
@@ -137,6 +148,7 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
         {path && <span className={`${B}__path fx-muted`}>{path}</span>}
       </button>
       <span className={`${B}__meta`}>
+        {hand && <HandChip h={hand} />}
         {item.priority && <Chip tone={item.priority === 'P0' ? 'danger' : item.priority === 'P1' ? 'warning' : undefined}>{item.priority}</Chip>}
         {item.status && item.status !== 'draft' && <Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip>}
         {item.model && <span className={`${B}__n`}>{item.model}</span>}
@@ -172,6 +184,7 @@ function Editor({ item, state }: { item: Item; state: State }) {
         <Button size="sm" icon="move" onClick={() => rt.openDialog(DIALOGS.move, { id: item.id })}>Move to…</Button>
         <Button size="sm" icon="external" onClick={() => rt.openDialog(DIALOGS.link, { id: item.id })}>Link…</Button>
         <Button size="sm" icon="rocket" onClick={() => rt.openDialog(DIALOGS.build, { id: item.id })}>Send to build…</Button>
+        <Button size="sm" icon="play" onClick={() => rt.openDialog(DIALOGS.hand, { id: item.id })}>Hand build…</Button>
         <Button size="sm" icon="trash" tone="danger" undoable onClick={() => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0'))}>Delete</Button>
       </div>
       <TextField label="Title" value={draft.title} onChange={(v) => setDraft({ ...draft, title: v })} />
@@ -194,11 +207,39 @@ function Editor({ item, state }: { item: Item; state: State }) {
           ))}
         </ul>
       )}
+      <HandBuilds itemId={item.id} />
       <div className={`${B}__editrow`}>
         <Button tone="primary" icon="save" disabled={!dirty} onClick={save}>Save</Button>
         <Button tone="quiet" disabled={!dirty} onClick={() => setDraft(item)}>Discard</Button>
         <span className={`${B}__n fx-muted`}>Changed {new Date(item.updatedAt).toLocaleString()}{item.by ? ` by ${item.by}` : ''}</span>
       </div>
+    </section>
+  );
+}
+
+/* ---------------------------------------------------------------- hand builds of the selected item */
+
+function HandBuilds({ itemId }: { itemId: string }) {
+  const rt = useRuntime();
+  useTree();
+  const rows = handsOf(itemId);
+  if (!rows.length) return null;
+  const openPr = (h: HandRow) => { if (h.prUrl) window.open(h.prUrl, '_blank', 'noopener'); else if (!rt.dispatch(`build-orchestrator.open:${h.id}`)) rt.toast(`PR #${h.pr}`, 'info', 'Plan Studio 2.0'); };
+  return (
+    <section className={`${B}__hands`} aria-label="Hand builds">
+      <p className="fx-eyebrow">Hand builds</p>
+      <ul className={`${B}__links`}>
+        {rows.map((h) => (
+          <li key={h.id}>
+            <HandChip h={h} />
+            <span className={`${B}__n fx-mono`}>{h.id}</span>
+            <span className={`${B}__n fx-muted`}>{h.modelLabel} · {h.launchedAt ? new Date(h.launchedAt).toLocaleString() : ''}{h.by ? ` · ${h.by}` : ''}</span>
+            {h.pr > 0 && <Button size="sm" tone="quiet" icon="external" onClick={() => openPr(h)}>PR #{h.pr}</Button>}
+            {h.session && <Button size="sm" tone="quiet" icon="terminal" onClick={() => { if (!rt.dispatch(`terminal.attach:${h.session}:${encodeURIComponent(`Hand build ${h.id}`)}`)) rt.toast(`Session ${h.session}: the Terminal plugin is not installed here.`, 'warning', 'Plan Studio 2.0'); }}>Watch live</Button>}
+            <Button size="sm" tone="quiet" icon="file" onClick={() => rt.openDialog(DIALOGS.handLog, { id: h.id })}>Log</Button>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
@@ -412,6 +453,67 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
         <Button tone={armed ? 'danger' : undefined} icon="zap" disabled={!preview || !!preview.errors?.length} onClick={sendEmergency}><span>{armed ? 'Confirm: send to emergency' : 'Send to emergency'}</span></Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
       </div>
+    </div>
+  );
+}
+
+/**
+ * Hand build: pick the model (every time, no default), then start it. The server takes it from Brett's own signed-in
+ * console session only and records the build before it launches. The Start button's words sit in a <span>, like Send
+ * to emergency, so it is no console-control target (nothing outside the page can press it for him).
+ */
+export function HandDialog({ props, close }: { props: Record<string, unknown>; close: () => void }) {
+  const rt = useRuntime();
+  const { state, hands, busy } = useTree();
+  const it = state && typeof props.id === 'string' ? tc.byId(state, props.id) : null;
+  const [model, setModel] = useState('');
+  const [buildId, setBuildId] = useState('');
+  const [err, setErr] = useState('');
+  useEffect(() => { void reloadHands(); }, []);
+  if (!state || !it) return <Note tone="warning">That item is gone.</Note>;
+  const models = hands?.models ?? [];
+  const kids = tc.descendants(state, it.id).length;
+  const full = !!hands && hands.free <= 0;
+  const start = () => {
+    if (!model) { setErr('Pick the model first.'); return; }
+    setErr('');
+    void startHandBuild(it.id, model, buildId.trim() || undefined).then((r) => {
+      if (!r.ok) { setErr(r.error || 'not started'); return; }
+      rt.toast(r.say ?? 'Hand build started.', 'success', 'Plan Studio 2.0'); close();
+    }, (e: Error) => setErr(e.message));
+  };
+  return (
+    <div className={`${B}__dialog fx-stack`}>
+      <p className="fx-muted">“{it.title}” and everything under it ({kids} item{kids === 1 ? '' : 's'}, with their notes) go to one session as its brief. No dispatcher, no split, no queue, no slot: it starts now on the model you pick. At most {hands?.cap ?? 2} hand builds run at once.</p>
+      {hands && <p className={`${B}__n`}>Hand builds running: {hands.running.length}/{hands.cap}{hands.running.length ? ` (${hands.running.join(', ')})` : ''}</p>}
+      {full && <Note tone="warning">{hands!.cap} hand builds are running ({hands!.running.join(' and ')}). Wait for one to finish.</Note>}
+      {!busy && !models.length && <Note tone="warning">The model list did not load (the hand build status could not be read). Reload and try again.</Note>}
+      {err && <Note tone="danger">{err}</Note>}
+      <SelectField label="Model" value={model} options={models.map((m) => ({ value: m.value, label: m.label }))} onChange={setModel} empty="Pick a model" required hint="Picked every time: there is no default." />
+      <TextField label="Build id" value={buildId} onChange={setBuildId} placeholder={tc.slug(it.title).slice(0, 37)} mono hint="Lower-case letters, digits and dashes; made from the title when empty. The branch is claude/<build id>." />
+      <div className={`${B}__editrow`}>
+        <Button tone="primary" icon="play" disabled={!model || busy || full} onClick={start}><span>Start hand build</span></Button>
+        <Button tone="quiet" onClick={close}>Cancel</Button>
+      </div>
+    </div>
+  );
+}
+
+/** The end of a hand build's log, refreshed on demand. */
+export function HandLogDialog({ props }: { props: Record<string, unknown>; close: () => void }) {
+  const id = typeof props.id === 'string' ? props.id : '';
+  const [log, setLog] = useState<{ text: string; file: string; missing?: boolean } | null>(null);
+  const [err, setErr] = useState('');
+  const load = () => void handLog(id).then((r) => { if (r.ok) { setLog(r); setErr(''); } else setErr(r.error || 'no log'); }, (e: Error) => setErr(e.message));
+  useEffect(load, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  return (
+    <div className={`${B}__dialog fx-stack`}>
+      <div className={`${B}__editrow`} role="toolbar" aria-label="Log tools">
+        <span className={`${B}__n fx-mono`}>{log?.file ?? id}</span>
+        <IconButton icon="refresh" label="Reload the log" onClick={load} />
+      </div>
+      {err && <Note tone="danger">{err}</Note>}
+      {log && (log.missing ? <EmptyState icon="file" compact>No log yet: the session has not written one.</EmptyState> : <pre className={`${B}__log-text fx-mono fx-small`}>{log.text}</pre>)}
     </div>
   );
 }

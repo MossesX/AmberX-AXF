@@ -1,6 +1,7 @@
 /**
  * Plan Studio 2.0 console plugin (ai.amberx.axf.console.plan-studio-2): a brand-new planning tree beside the original
- * Plan Studio, which is left as it is. Starts empty, nothing synced in. Every row has the full context menu (target
+ * Plan Studio, which is left as it is. Starts empty, nothing synced in. Hand build… (any plan or item) opens the model
+ * picker for a hand build (hand-build.mjs). Every row has the full context menu (target
  * `axp-plan-studio-2-item`); every menu item is an action, so it also runs from REST, MCP, the CLI and voice. Deep link:
  * `plan-studio-2.focus:<id or words>` (console_show / console_open plan-studio-2 with input.focus).
  */
@@ -8,7 +9,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { useRuntime, Button } from '@console/axf/react';
 import { appMenu } from './menu';
-import { BuildDialog, ItemDialog, LinkDialog, MoveDialog, PlanStudio2Page } from './ui';
+import { BuildDialog, HandDialog, HandLogDialog, ItemDialog, LinkDialog, MoveDialog, PlanStudio2Page } from './ui';
 import { CTX_TARGET, DIALOGS, FOLDER, setCollapsed, ID, KEYS, VIEW, deleteItem, download, duplicateItem, editItem, exportText, indentItem, nudgeItem, outdentItem, reload, requestFocus, select, selectedId, treeState, undoDelete } from './api';
 import * as tc from './tree-core.mjs';
 import * as lc from './layout-core.mjs';
@@ -55,6 +56,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('plan-studio-2.link', (args, ctx) => { const id = need(args, ctx); if (id) rt.openDialog(DIALOGS.link, { id }); }, { label: 'Link the item to a to-do, build, note or Shipped feature', searchable: false });
     rt.actions.register('plan-studio-2.export', (args, ctx) => { const id = target(args, ctx); void exportText(id, 'md').then((t) => download(`${id ? tc.slug(tc.byId(treeState()!, id)?.title ?? id) : 'plan-studio-2'}.md`, t), (e: Error) => rt.toast(e.message, 'danger', T)); }, { label: 'Export as Markdown (one item, or everything)', params: true });
     rt.actions.register('plan-studio-2.build', (args, ctx) => { const id = need(args, ctx); if (id) rt.openDialog(DIALOGS.build, { id }); }, { label: 'Send the item to the build orchestrator…', searchable: false });
+    // Hand build: opens the model picker only; starting it is the dialog's button, taken from Brett's own console session
+    rt.actions.register('plan-studio-2.hand-build', (args, ctx) => { const id = need(args, ctx); if (id) rt.openDialog(DIALOGS.hand, { id }); }, { label: 'Hand build the item (pick the model)…', searchable: false });
     rt.actions.register('plan-studio-2.delete', (args, ctx) => { const id = need(args, ctx); if (id) void say(deleteItem(id), 'info'); }, { label: 'Delete the item (undo brings it back)', searchable: false });
     rt.actions.register('plan-studio-2.undo', () => void say(undoDelete()), { label: 'Undo the last delete in Plan Studio 2.0' });
     rt.actions.register('plan-studio-2.select', (args, ctx) => { const id = target(args, ctx); select(id); }, { label: 'Select an item', searchable: false });
@@ -97,6 +100,7 @@ export const plugin: AxfWebLibrary = {
         { id: 'plan-studio-2.link', label: 'Link to…', icon: 'external', action: 'plan-studio-2.link' },
         { id: 'plan-studio-2.export', label: 'Export as Markdown', icon: 'download', action: 'plan-studio-2.export' },
         { id: 'plan-studio-2.build', label: 'Send to build orchestrator…', icon: 'rocket', action: 'plan-studio-2.build' },
+        { id: 'plan-studio-2.hand-build', label: 'Hand build…', icon: 'play', action: 'plan-studio-2.hand-build' },
         { id: 'plan-studio-2.sep3', separator: true },
         { id: 'plan-studio-2.delete', label: 'Delete (undo on the toolbar)', icon: 'trash', action: 'plan-studio-2.delete' },
       ],
@@ -109,6 +113,8 @@ export const plugin: AxfWebLibrary = {
     [DIALOGS.move]: { title: 'Move to', icon: 'move', searchable: false, render: (props, close) => <MoveDialog props={props} close={close} /> },
     [DIALOGS.link]: { title: 'Link to', icon: 'external', searchable: false, render: (props, close) => <LinkDialog props={props} close={close} /> },
     [DIALOGS.build]: { title: 'Send to the build orchestrator', icon: 'rocket', searchable: false, render: (props, close) => <BuildDialog props={props} close={close} /> },
+    [DIALOGS.hand]: { title: 'Hand build', icon: 'play', searchable: false, render: (props, close) => <HandDialog props={props} close={close} /> },
+    [DIALOGS.handLog]: { title: 'Hand build log', icon: 'file', searchable: false, render: (props, close) => <HandLogDialog props={props} close={close} /> },
   },
   views: { [VIEW]: { title: 'Plan Studio 2.0', icon: 'branch', keywords: ['plan', 'plans', 'planning', 'tree', 'steps', 'sections', 'notes', 'lists', 'outline', 'roadmap', 'plan studio 2'], render: () => <PlanStudio2Page /> } },
   nav: { label: 'Builds', items: [{ id: 'plan-studio-2', label: 'Plan Studio 2.0', icon: 'branch', view: VIEW }] },
