@@ -35,9 +35,11 @@ interface Rule { match: string; level: Level }
 interface Settings { hardMax?: number; maxAgentsSet?: number; maxAgents: number; maxHeavy: number; minFreeGb: number; closeFinishedAfterSec: number; pollSec: number; priorityRules: Rule[]; guardWarnTrips: number; swapWarnMb: number; swapWarnMin: number }
 interface Entry { id: string; name: string; kind: 'headless' | 'swarm' | 'legacy'; priority: Level; build?: string; state: string; session?: string; agent?: string; by?: string; enqueuedAt: string; startedAt?: string; finishedAt?: string; position?: number }
 interface Hard { max: number; live: number | null; free: number | null; source?: string; at?: string | null; error?: string }
-interface HardItem { kind: 'session' | 'claude' | 'setup' | 'reserved'; name: string; pid?: number; since?: string }
+interface HardItem { kind: 'session' | 'claude' | 'setup' | 'reserved'; pool?: 'builds' | 'emergency'; name: string; pid?: number; since?: string }
 interface HardLimit { max: number; live: number | null; free: number | null; source: string; at: string | null; items: HardItem[]; canEdit: boolean; error?: string
-  limit: { maxBuilds: number; cpuQuotaPct: number; memoryMaxGb: number; memoryHighGb: number; tasksMax: number; dockerCpus: number; dockerMemoryGb: number; dockerImages: string; setBy?: string; setAt?: string }
+  /** The emergency pool (builds Brett sent to emergency): counted apart from `max`. */
+  emergency?: { live: number | null; max: number; free: number | null; builds: { id: string; by: string; at: string }[] }
+  limit: { maxBuilds: number; emergencySlots?: number; cpuQuotaPct: number; memoryMaxGb: number; memoryHighGb: number; tasksMax: number; dockerCpus: number; dockerMemoryGb: number; dockerImages: string; setBy?: string; setAt?: string }
   slice: { name: string; memoryGb?: number; memoryMaxGb?: number | null; cpuQuotaPct?: number | null; tasks?: number; active?: boolean } }
 interface Status { used: number; cap: number; free: number; queued: number; hard?: Hard; running: Entry[]; queue: Entry[]; heavy: { used: number; cap: number }; memory: { availGb: number | null; swapMb: number | null; floorGb: number }; guard: { tripsLastHour: number }; settings: Settings; error?: string }
 
@@ -185,6 +187,7 @@ function HardLimitPanel() {
     <div className="fx-stack axp-slots__hard">
       <p className="axp-slots__hard-now" aria-live="polite">
         <Chip tone={full ? 'danger' : undefined}>{h.live ?? '?'}/{h.max} builds running</Chip>{' '}
+        {h.emergency && h.emergency.max > 0 && <><Chip tone={(h.emergency.live ?? 0) >= h.emergency.max ? 'danger' : undefined}>{h.emergency.live ?? '?'}/{h.emergency.max} emergency</Chip>{' '}</>}
         <span className="fx-small fx-muted">{full ? 'Full: the VPS refuses new builds until one finishes.' : `${h.free ?? '?'} free.`}{stale ? ' Live count unavailable (the enforcer timer on the VPS is not reporting).' : h.at ? ` Counted ${ago(h.at)} ago.` : ''}</span>
       </p>
       <p className="fx-small fx-muted" style={{ margin: 0 }}>Enforced by the VPS itself: every launcher (dispatcher, axHub build_start, swarm, any claude -p) asks it, and it counts what really runs, not the queue. All builds share one systemd slice: CPU {h.slice.cpuQuotaPct ?? l.cpuQuotaPct}%{h.slice.memoryGb != null ? ` · memory ${h.slice.memoryGb}/${h.slice.memoryMaxGb ?? l.memoryMaxGb} GB · ${h.slice.tasks} tasks` : ` · memory max ${l.memoryMaxGb} GB`}. Docker test runs get {l.dockerCpus} CPUs / {l.dockerMemoryGb} GB each.</p>
@@ -192,13 +195,14 @@ function HardLimitPanel() {
         <details className="axp-slots__running">
           <summary className="fx-small">What counts ({h.items.length})</summary>
           <ul className="axp-slots__list">
-            {h.items.map((i) => <li key={`${i.kind}-${i.name}`} className="axp-slots__row"><span className="axp-slots__name"><b>{i.name}</b><span className="fx-small fx-muted">{KIND_LABEL[i.kind] ?? i.kind}{i.pid ? ` · pid ${i.pid}` : ''}{i.since ? ` · ${ago(i.since)}` : ''}</span></span></li>)}
+            {h.items.map((i) => <li key={`${i.kind}-${i.name}`} className="axp-slots__row"><span className="axp-slots__name"><b>{i.name}</b><span className="fx-small fx-muted">{KIND_LABEL[i.kind] ?? i.kind}{i.pool === 'emergency' ? ' · emergency slot' : ''}{i.pid ? ` · pid ${i.pid}` : ''}{i.since ? ` · ${ago(i.since)}` : ''}</span></span></li>)}
           </ul>
         </details>
       )}
       {h.canEdit ? (
         <>
           <NumberSetting label="Hard limit: builds at once" hint="The VPS refuses the next build past this (default 8)" value={l.maxBuilds} min={1} max={64} onSave={(v) => void save({ maxBuilds: v })} />
+          <NumberSetting label="Emergency slots" hint="Places beside the hard limit for builds you send to emergency; counted apart, never used by the orchestrator (default 2, 0 = off)" value={l.emergencySlots ?? 2} min={0} max={8} onSave={(v) => void save({ emergencySlots: v })} />
           <NumberSetting label="CPU for all builds (%)" hint="100 = one core; the slice's CPUQuota" value={l.cpuQuotaPct} min={50} max={25600} onSave={(v) => void save({ cpuQuotaPct: v })} />
           <NumberSetting label="Memory for all builds (GB)" hint="The slice's MemoryMax; builds slow down near it and are stopped past it" value={l.memoryMaxGb} min={1} max={1024} onSave={(v) => void save({ memoryMaxGb: v })} />
           <NumberSetting label="Docker test run CPUs" hint="--cpus on node:* / Playwright containers" value={l.dockerCpus} min={0.25} max={64} step={0.25} onSave={(v) => void save({ dockerCpus: v })} />

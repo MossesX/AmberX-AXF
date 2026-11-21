@@ -12,6 +12,8 @@ whatever the queue thinks, and runs every build in axf-builds.slice (CPU / memor
 usage (the host's snapshot, refreshed every 30 s by the enforcer timer) and the slice; anyone with the console token reads
 it (REST, MCP, CLI, voice). PUT hard-limit = Brett only: his own signed-in console session (axf_user.admin), never the
 console token that sessions, MCP and voice use.
+Emergency slots (Nov 20 2026): the hard limit carries a second pool (`emergency` { live, max, free, builds }) for the
+builds Brett sent to emergency; it is counted apart from maxBuilds and sized by `emergencySlots` (default 2, Brett only).
 Capability axf.agent-slots@1: status() for other plugins. Registers the systems-check item `agent-slots-memory` on
 axf.health@1 (memory guard tripping often, swap in use for long).
 """
@@ -37,7 +39,7 @@ HEALTH_ID = "agent-slots-memory"
 ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console image)
 CLI = ROOT / "framework" / "cli" / "agent-slots.mjs"
 LIMIT_CLI = ROOT / "framework" / "cli" / "build-limit.mjs"
-LIMIT_KEYS = {"maxBuilds", "cpuQuotaPct", "memoryMaxGb", "memoryHighGb", "tasksMax", "dockerCpus", "dockerMemoryGb", "dockerImages", "reserveSec", "setupSec"}
+LIMIT_KEYS = {"maxBuilds", "emergencySlots", "cpuQuotaPct", "memoryMaxGb", "memoryHighGb", "tasksMax", "dockerCpus", "dockerMemoryGb", "dockerImages", "reserveSec", "setupSec"}
 ID = re.compile(r"^[A-Za-z0-9-]{1,80}$")
 SETTING_KEYS = {"maxAgents", "maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec", "priorityRules", "guardWarnTrips", "swapWarnMb", "swapWarnMin"}
 CACHE_S = 3
