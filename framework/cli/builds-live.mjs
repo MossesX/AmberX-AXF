@@ -4,51 +4,39 @@
  * when a build lands, not once per store write (audit finding B4-06, Nov 21 2026: a push per write put 896 status-only
  * commits on main in 24 hours, so main moved about every 90 seconds and every PR was always behind it).
  *
- * The store (_claude/builds/store.json, builds@1) is a repo file, so until now a session's step ticks, statuses, notes,
- * branch and PR fields sat on its feature branch and main (and every banner reading main) only saw them if and when
- * that branch merged. Now:
- *
  *   1. every store write that changes a build is queued here (an outbox next to the store: one journal entry per line).
- *      The store itself and its journal are written at once as before, so live status never waits for main: the
- *      console and every session read the store, and with a file store the console's checkout on this machine takes
- *      the changed builds right away (a file copy, no commit, no push);
- *   2. the outbox is due on main (push mode `landed`, the default) when a build in it reaches `landed`, when it has
- *      held changes for a day (AXF_BUILDS_LIVE_SNAPSHOT_HOURS, default 24: the daily snapshot) or when it has grown
- *      past AXF_BUILDS_LIVE_OUTBOX_MAX_MB (default 16). Everything queued before that rides along in the same commit.
- *      `flush` and `sync --now` publish at once; AXF_BUILDS_LIVE_PUSH=every restores a push per write;
+ *      The store is the live copy and is written at once as before; with a file store the console's checkout on this
+ *      machine takes the changed builds right away (a file copy, no commit, no push);
+ *   2. the outbox is due on main when a build in it lands, when it has held changes for a day (the daily snapshot)
+ *      or when it has grown past its size cap. Everything queued rides along in the same commit. `flush` and
+ *      `sync --now` publish at once;
  *   3. a flush publishes the outbox to main as ONE small status-only commit, made with git plumbing on origin/main
  *      (a private index, never this checkout's working tree or branch): fetch, take main's store, merge this
  *      checkout's changed builds into it (per build and per step, newer wins: builds-merge-core.mjs), append the journal
- *      lines (union), append one line per change to THREADS.md's live log, regenerate the orchestrator exports, commit
- *      with `[skip ci]`, push. Rejected because main moved: fetch again and re-apply (bounded); never a force push;
+ *      lines, one line per change in THREADS.md's live log, regenerate the orchestrator exports, commit with
+ *      `[skip ci]`, push. Rejected because main moved: fetch again and re-apply (bounded); never a force push;
  *   4. main's newer builds come back into this checkout (pull), and into the console's checkout (AXF_CONSOLE_ROOT,
  *      default /opt/axf, mounted live into the console) so the banners show the change now, not at the next update.
  *
- * Code still goes through the feature branch and its PR as before; only status data goes straight to main.
- * A flush that can't reach GitHub keeps the outbox and says why (`status`; the systems check shows it red after 15 min);
- * the next write or `flush` retries.
+ * Code still goes through the feature branch and its PR; only status data goes straight to main. A flush that can't reach GitHub keeps the outbox and says why (`status`); the next due write or `flush` retries.
  *
- *   node framework/cli/builds-live.mjs status [--json]        outbox size, last publish, last error
- *   … flush                                                   publish the outbox now (waits for it)
- *   … pull                                                    take main's newer builds into this checkout
- *   … sync [--now]                                            take main's newer builds; when the outbox is due (or --now):
- *                                                             first flush and send builds newer here than on main (session start)
- *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
- *         [--sha <merge commit>] [--ci success|failure|running] [--ci-run url] [--verified check|playwright|deploy|hand]
- *                                                            done-means-merged@1 evidence: landed needs merged + sha + CI
- *                                                            success, complete also the verify (the store refuses without)
+ *   node framework/cli/builds-live.mjs status [--json]   outbox size, whether it is due, last publish, last error
+ *   … flush                                              publish the outbox now (waits for it)
+ *   … pull                                               take main's newer builds into this checkout
+ *   … sync [--now]                                       take main's newer builds; due or --now: publish first
+ *   … link <build> [--branch b] [--pr n|url] [--merged [iso]] [--sha <merge commit>] [--ci success|failure|running]
+ *         [--ci-run url] [--verified check|playwright|deploy|hand]   a build's branch / PR / merged + landed evidence
  *   … run-end <build> --exit n [--signal TERM] [--kind k] [--limit usage|auth] [--account a] [--session s] [--phase p]
- *                                                             record how a session ended on the build (pipeline.runEnd, live):
- *                                                             the headless wrapper calls it as claude exits (watchdog evidence)
- *   … install                                                 git merge driver for the builds files (this clone)
- *   … merge-driver <base> <ours> <theirs> <path>              (git calls it) newer-wins merge of a builds file
- *   … heal <branch>                                           merge main into a branch whose PR conflicts only in builds files
+ *                                                        how a session ended, on the build (pipeline.runEnd)
+ *   … install                                            git merge driver for the builds files (this clone)
+ *   … merge-driver <base> <ours> <theirs> <path>         (git calls it) newer-wins merge of a builds file
+ *   … heal <branch>                                      merge main into a branch whose PR conflicts only in builds files
  *
  * Environment: AXF_BUILDS_LIVE=0 off | 1 on even for a test store; AXF_BUILDS_LIVE_GIT the checkout to run git in
  * (default the repo); AXF_BUILDS_LIVE_PUSH=landed (default) | every (a push per write); AXF_BUILDS_LIVE_SNAPSHOT_HOURS
  * (24; 0 = no daily snapshot); AXF_BUILDS_LIVE_OUTBOX_MAX_MB (16); AXF_BUILDS_LIVE_PUSH_CONFIG (the snapshot's push
- * target on a protected main, see pushTarget); AXF_BUILDS_LIVE_REMOTE (origin) / AXF_BUILDS_LIVE_BRANCH (main); AXF_BUILDS_LIVE_SYNC=1 flush in
- * the writing process instead of a background one (tests); AXF_CONSOLE_ROOT (default /opt/axf; "off" = none).
+ * target on a protected main, see pushTarget); AXF_BUILDS_LIVE_REMOTE (origin) / AXF_BUILDS_LIVE_BRANCH (main);
+ * AXF_BUILDS_LIVE_SYNC=1 flush in the writing process, not a background one (tests); AXF_CONSOLE_ROOT (/opt/axf; "off" = none).
  */
 import { spawn, spawnSync } from 'node:child_process';
 import { closeSync, existsSync, mkdirSync, mkdtempSync, openSync, readFileSync, readdirSync, realpathSync, rmSync, statSync, writeFileSync, appendFileSync } from 'node:fs';

@@ -148,6 +148,7 @@ async function main() {
     const keys = await gh('GET', `/repos/${slug}/keys?per_page=100`);
     const have = (keys ?? []).find((x) => x.key.split(' ').slice(0, 2).join(' ') === pub.split(' ').slice(0, 2).join(' '));
     const made = have ?? await gh('POST', `/repos/${slug}/keys`, { title: KEY_TITLE, key: pub, read_only: false });
+    // axf-data: not data (machine config next to its private key: where builds-live pushes, read before any data store is reachable)
     writeFileSync(f.config, `${JSON.stringify({ $axf: 'builds-live-push@1', url: `git@github.com:${slug}.git`, key: 'builds-live-push.key', deployKey: made.id }, null, 1)}\n`);
     const others = (keys ?? []).filter((x) => x.id !== made.id && !x.read_only).map((x) => x.title);
     return say({ ok: true, deployKey: made.id, config: f.config, otherWriteKeys: others },
