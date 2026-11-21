@@ -7,8 +7,8 @@
  *
  * <store> is the hub's shared data where /projects is mounted (the console container): /projects/amberx-axf/_data/
  * plan-studio-2/, per project (projects@1). Elsewhere it is the plugin's data folder (.axf-console/plugins/plan-studio-2).
- * AXF_PLAN_TREE_DIR overrides (tests). The store starts empty: nothing is synced into it, and the old Plan Studio's
- * plans are never read.
+ * AXF_PLAN_TREE_DIR overrides (tests). The store starts empty and nothing is synced into it. plans.mjs is plans@1 over
+ * this tree (control@1 planner.plans, the orchestrator, the project seed CLI).
  *
  *   node apps/console-web/plugins/plan-studio-2/tree.mjs tree [<item>] [--md]     the tree (indented), or one branch
  *   … list [--kind step] [--under <item>] [--q words]                            flat rows
