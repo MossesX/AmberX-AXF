@@ -7,7 +7,6 @@
   "cron": "axf-orchestrator-tick",
   "adopted": true,
   "plugin": "build-orchestrator",
-  "runner": "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
   "health": {
     "intervalSec": 60,
     "staleSec": 900

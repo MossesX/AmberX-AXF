@@ -207,7 +207,7 @@ function manifestProps() {
     cron: { type: 'string', pattern: CRON_PATTERN, description: `tick: the ${CRON_DIR} file that starts it instead of a unit and timer (adopted schedules only)` },
     adopted: { type: 'boolean', description: 'already runs on the host from its own installer: listed and health-checked here, never installed, stopped or migrated; its mode is always host' },
     plugin: { type: 'string', pattern: PLUGIN_PATTERN, description: "the console plugin folder that owns it ('console' for core parts like alert delivery)" },
-    runner: { type: 'string', minLength: 1, maxLength: 200, description: 'repo-relative entry the unit runs (deploy/<service>/…)' },
+    runner: { type: 'string', maxLength: 200, description: 'repo-relative entry the unit runs (deploy/<service>/…); an adopted schedule may leave it out (its own installer says what runs)' },
     user: { type: 'string', pattern: '^[a-z_][a-z0-9_-]{0,31}$', description: `the host account; default ${DEFAULTS.user}` },
     sudo: sudoSchema(),
     socket: { type: 'string', pattern: PATH_PATTERN, description: `daemon: the unix socket the service serves; default ${DEFAULTS.socketDir}/<id>.sock` },
@@ -241,7 +241,7 @@ export function jsonSchemas() {
   return {
     'host-service.schema.json': {
       $schema, $id: $id('host-service.schema.json'), title: `${MANIFEST_FRAME} (${SCHEMA}) — a host service manifest`, type: 'object', additionalProperties: false,
-      required: ['$axf', 'id', 'title', 'kind', 'plugin', 'runner'], anyOf: [{ required: ['unit'] }, { required: ['cron'] }], properties: manifestProps(),
+      required: ['$axf', 'id', 'title', 'kind', 'plugin'], allOf: [{ anyOf: [{ required: ['unit'] }, { required: ['cron'] }] }, { anyOf: [{ required: ['runner'] }, { required: ['adopted'] }] }], properties: manifestProps(),
     },
     'host-service-state.schema.json': {
       $schema, $id: $id('host-service-state.schema.json'), title: `${STATE_FRAME} (${SCHEMA}) — what the console reads`, type: 'object', additionalProperties: true,
@@ -332,7 +332,7 @@ export function manifestErrors(m, path = 'manifest') {
   if (m.kind === 'tick' && m.socket !== undefined) e('socket', 'a tick serves no socket');
   if (m.kind === 'daemon' && m.timer !== undefined) e('timer', 'a daemon has no timer');
   if (typeof m.plugin !== 'string' || !re(PLUGIN_PATTERN).test(m.plugin)) e('plugin', 'the owning plugin folder, or console');
-  if (typeof m.runner !== 'string' || !m.runner || m.runner.length > 200 || m.runner.startsWith('/') || m.runner.includes('..')) e('runner', 'repo-relative path (deploy/<service>/…)');
+  if (!(m.adopted === true && m.runner === undefined) && (typeof m.runner !== 'string' || !m.runner || m.runner.length > 200 || m.runner.startsWith('/') || m.runner.includes('..'))) e('runner', 'repo-relative path (deploy/<service>/…); only an adopted schedule may leave it out');
   if (m.user !== undefined && (typeof m.user !== 'string' || !/^[a-z_][a-z0-9_-]{0,31}$/.test(m.user))) e('user', 'a unix account name');
   if (m.user === 'root') e('user', 'never root: the sudo whitelist is the only way up');
   if (m.socket !== undefined && (typeof m.socket !== 'string' || !re(PATH_PATTERN).test(m.socket) || !m.socket.startsWith(`${DEFAULTS.socketDir}/`))) e('socket', `an absolute path under ${DEFAULTS.socketDir}/`);
@@ -416,7 +416,7 @@ export function normManifest(m) {
   const health = { intervalSec: DEFAULTS.healthIntervalSec, timeoutMs: DEFAULTS.healthTimeoutMs, staleSec: DEFAULTS.staleSec, ...(m.kind === 'daemon' ? { path: '/health' } : {}), ...(m.health || {}) };
   return {
     $axf: MANIFEST_FRAME, id: m.id, title: m.title, description: m.description || '', kind: m.kind, unit: m.cron ? `cron:${m.cron}` : m.unit, ...(m.cron ? { cron: m.cron } : m.kind === 'tick' ? { timer: m.timer || d.timer } : {}), ...(m.adopted === true ? { adopted: true } : {}),
-    plugin: m.plugin, runner: m.runner, user: m.user || DEFAULTS.user, sudo: (m.sudo || []).map((s) => ({ cmd: s.cmd, why: s.why, as: s.as || 'root' })),
+    plugin: m.plugin, runner: m.runner || '', user: m.user || DEFAULTS.user, sudo: (m.sudo || []).map((s) => ({ cmd: s.cmd, why: s.why, as: s.as || 'root' })),
     ...(m.kind === 'daemon' ? { socket: m.socket || d.socket } : {}), health,
     actions: (m.actions || []).map((a) => ({ id: a.id, title: a.title, description: a.description || '', confirm: a.confirm === true, modes: a.modes || ['shadow', 'host'], args: a.args || {}, timeoutMs: a.timeoutMs || health.timeoutMs })),
     settings: Object.fromEntries(Object.entries(m.settings || {}).map(([k, s]) => [k, { type: s.type, default: s.default, ...(s.values ? { values: s.values } : {}), ...(s.min !== undefined ? { min: s.min } : {}), ...(s.max !== undefined ? { max: s.max } : {}), title: s.title || k, description: s.description || '' }])),

@@ -16,6 +16,8 @@ fail() { echo "  ✗ $*" >&2; for f in "$T"/*.log; do echo "--- $f" >&2; tail -2
 
 R="$T/root"; mkdir -p "$R/deploy/host-services/services" "$R/deploy/host-services/workers" "$R/framework/core" "$T/data" "$T/run" "$T/cron" "$T/bin" "$T/units"
 cp "$REPO/framework/core/host-services.mjs" "$R/framework/core/"
+# the runner keeps its state through the data layer (data-files.mjs), which reads the path map
+mkdir -p "$R/framework/schemas"; cp "$REPO/framework/core/data-files.mjs" "$REPO/framework/core/data-store.mjs" "$REPO/framework/core/clip.mjs" "$R/framework/core/"; cp "$REPO/framework/schemas/data-store-paths.json" "$R/framework/schemas/"
 cp "$REPO/deploy/host-services/axf-hostd.mjs" "$R/deploy/host-services/"
 cp "$REPO/deploy/host-services/services/host-api.json" "$R/deploy/host-services/services/"
 cat > "$R/deploy/host-services/services/demo.json" <<'EOF'

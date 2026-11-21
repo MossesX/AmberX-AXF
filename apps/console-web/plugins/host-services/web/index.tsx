@@ -22,6 +22,7 @@ import { DataGrid, type GridColumn } from '@console/axf/libs/datagrid';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { HostStatusChip, hostServicesApi, refreshHostServices, since, useHostServices, type HostServiceState } from '@console/hostServices';
 import { registerHostActions } from './actions';
+import { appMenu } from './menu';
 import './host.css';
 
 const FOLDER = 'host-services';
@@ -188,7 +189,8 @@ export const plugin: AxfWebLibrary = {
   settingsPanels: [
     { id: 'host-services.list', tab: FOLDER, title: 'Host services', icon: 'server', order: 10, render: () => <HostServicesView /> },
     { id: 'host-services.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
-    { id: 'host-services.syscheck', tab: 'systems-check', title: 'Host services', icon: 'server', order: 15, render: () => <HostServicesView compact /> },
+    { id: 'host-services.syscheck', tab: 'systems-check', title: 'Host services', icon: 'server', order: 15, render: () => <HostServicesView compact /> }, // axf-plugin:systems-check
   ],
+  appMenu,
   register(rt) { registerHostActions(rt); },
 };

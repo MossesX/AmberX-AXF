@@ -59,6 +59,11 @@ class Host:
         (r / "deploy/host-services/workers").mkdir(parents=True)
         (r / "framework/core").mkdir(parents=True)
         shutil.copy(ROOT / "framework/core/host-services.mjs", r / "framework/core/")
+        # the runner keeps its state through the data layer (data-files.mjs) and that reads the path map
+        for f in ("data-files.mjs", "data-store.mjs", "clip.mjs"):
+            shutil.copy(ROOT / "framework/core" / f, r / "framework/core/")
+        (r / "framework/schemas").mkdir(parents=True, exist_ok=True)
+        shutil.copy(ROOT / "framework/schemas/data-store-paths.json", r / "framework/schemas/")
         shutil.copy(ROOT / "deploy/host-services/axf-hostd.mjs", r / "deploy/host-services/")
         shutil.copy(ROOT / "deploy/host-services/services/host-api.json", r / "deploy/host-services/services/")
         (r / "deploy/host-services/services/demo.json").write_text(json.dumps({
@@ -174,7 +179,7 @@ def test_against_a_live_host() -> None:
         assert rb["to"] == "container" and rb["ok"] is True
         assert "-n /usr/bin/systemctl stop axf-demo.service" in (h.t / "sudo.log").read_text()
         # the health@1 items
-        hh = _load("host_health", ROOT / "apps/console-web/plugins/systems-check/server/host_health.py")
+        hh = _load("host_health", ROOT / "apps/console-web/plugins/systems-check/server/host_health.py")  # axf-plugin:systems-check
         regs: dict[str, Any] = {}
 
         class Reg:

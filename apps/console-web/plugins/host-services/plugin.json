@@ -308,5 +308,21 @@
     "builtAt": "2026-11-18"
   },
   "help": "help.json",
-  "opens": false
+  "opens": false,
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-dens-gap-2xs",
+      "--fx-dens-gap-sm",
+      "--fx-dens-gap-xl",
+      "--fx-font-mono",
+      "--fx-font-size",
+      "--fx-radius-sm",
+      "--fx-space",
+      "--fx-surface2",
+      "--fx-type-root-sm"
+    ]
+  }
 }

@@ -284,7 +284,7 @@
     "manifest.kind: one of tick, daemon",
     "manifest.unit: axf-<name>.service",
     "manifest.plugin: the owning plugin folder, or console",
-    "manifest.runner: repo-relative path (deploy/<service>/…)"
+    "manifest.runner: repo-relative path (deploy/<service>/…); only an adopted schedule may leave it out"
    ],
    "tickWithSocket": [
     "manifest.socket: a tick serves no socket",
@@ -316,7 +316,7 @@
     "manifest.settings.flag.default: every setting has a default"
    ],
    "badPaths": [
-    "manifest.runner: repo-relative path (deploy/<service>/…)",
+    "manifest.runner: repo-relative path (deploy/<service>/…); only an adopted schedule may leave it out",
     "manifest.dataDir: repo-relative",
     "manifest.log: an absolute path"
    ]

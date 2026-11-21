@@ -46,9 +46,9 @@ await t('every deploy/host-services/services/*.json (and deploy/*/host-service.j
     const e = H.manifestErrors(m, `deploy/host-services/services/${name}`);
     assert.deepEqual(e, [], e.join('\n'));
     assert.equal(`${m.id}.json`, name, `${name}: the file is named after its id`);
-    assert.ok(m.runner.startsWith('deploy/host-services/') || m.kind === 'tick', `${name}: a daemon runs from deploy/host-services (workers/ or axf-hostd.mjs); a tick may adopt an existing runner`);
+    assert.ok(m.kind === 'tick' || m.runner.startsWith('deploy/host-services/'), `${name}: a daemon runs from deploy/host-services (workers/ or axf-hostd.mjs); a tick may adopt an existing runner`);
     if (m.kind === 'tick') assert.equal(m.adopted, true, `${name}: every tick here is an adopted schedule (adopted: true): its own installer owns the unit or cron file`);
-    assert.ok(existsSync(join(ROOT, m.runner)), `${name}: runner ${m.runner} exists`);
+    if (m.runner !== undefined) assert.ok(existsSync(join(ROOT, m.runner)), `${name}: runner ${m.runner} exists`);
     repoManifests.push(m);
   }
   const dir = join(ROOT, 'deploy');

@@ -9,18 +9,35 @@
     "id",
     "title",
     "kind",
-    "plugin",
-    "runner"
+    "plugin"
   ],
-  "anyOf": [
+  "allOf": [
     {
-      "required": [
-        "unit"
+      "anyOf": [
+        {
+          "required": [
+            "unit"
+          ]
+        },
+        {
+          "required": [
+            "cron"
+          ]
+        }
       ]
     },
     {
-      "required": [
-        "cron"
+      "anyOf": [
+        {
+          "required": [
+            "runner"
+          ]
+        },
+        {
+          "required": [
+            "adopted"
+          ]
+        }
       ]
     }
   ],
@@ -73,9 +90,8 @@
     },
     "runner": {
       "type": "string",
-      "minLength": 1,
       "maxLength": 200,
-      "description": "repo-relative entry the unit runs (deploy/<service>/…)"
+      "description": "repo-relative entry the unit runs (deploy/<service>/…); an adopted schedule may leave it out (its own installer says what runs)"
     },
     "user": {
       "type": "string",

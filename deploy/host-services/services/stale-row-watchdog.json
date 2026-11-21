@@ -7,7 +7,6 @@
   "cron": "axf-stale-watchdog",
   "adopted": true,
   "plugin": "build-orchestrator",
-  "runner": "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
   "health": {
     "intervalSec": 300,
     "staleSec": 1800
