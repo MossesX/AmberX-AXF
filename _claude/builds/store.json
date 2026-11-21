@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10228,
- "updatedAt": "2026-11-21T00:56:09.988Z",
+ "rev": 10229,
+ "updatedAt": "2026-11-21T00:57:09.159Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351406,14 +351406,14 @@
    "title": "Console tabs: plugins open in tabs inside one console",
    "category": "",
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T00:56:01.224Z",
+   "updatedAt": "2026-11-21T00:57:02.199Z",
    "builtAt": "",
    "notes": [
     {
@@ -351445,6 +351445,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
      "at": "2026-11-21T00:56:01.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 2.",
+     "at": "2026-11-21T00:57:02.199Z",
      "by": "watchdog"
     }
    ],
@@ -352053,7 +352058,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -352064,10 +352069,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T00:56:01.224Z",
+   "statusAt": "2026-11-21T00:57:02.199Z",
    "statusBy": "watchdog",
-   "attempt": 1,
-   "failedFrom": "split",
+   "attempt": 2,
    "statusLog": [
     {
      "status": "pending",
@@ -352096,6 +352100,13 @@
      "by": "watchdog",
      "attempt": 1,
      "why": "split did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T00:57:02.199Z",
+     "by": "watchdog",
+     "attempt": 2,
+     "why": "retry forward at split, attempt 2"
     }
    ]
   }

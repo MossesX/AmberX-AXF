@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T00:56:09.988Z",
+ "updatedAt": "2026-11-21T00:57:09.159Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Console tabs: plugins open in tabs inside one console",
    "category": "",
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -67,7 +67,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T00:56:01.224Z",
+   "updatedAt": "2026-11-21T00:57:02.199Z",
    "builtAt": "",
    "notes": [
     {
@@ -99,6 +99,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
      "at": "2026-11-21T00:56:01.224Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 2.",
+     "at": "2026-11-21T00:57:02.199Z",
      "by": "watchdog"
     }
    ],
