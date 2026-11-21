@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10243,
- "updatedAt": "2026-11-21T01:15:54.870Z",
+ "rev": 10244,
+ "updatedAt": "2026-11-21T01:18:44.037Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349379,6 +349379,11 @@
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T01:15:01.432Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:18:01.792Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -349820,7 +349825,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
