@@ -348,6 +348,11 @@ await t('adopted schedules: a cron tick, an adopted unit, freshness off, no mode
   const landerNow = { $axf: 'host-service@1', id: 'lander', title: 'Lander', kind: 'tick', unit: 'axf-lander.service', timer: 'axf-lander.timer', adopted: true, plugin: 'gate', runner: 'deploy/lander/run.mjs' };
   const ad = {};
   ad.manifests = { reaper: H.normManifest(reaper), lander: H.normManifest(landerNow) };
+  // every filled-in manifest is itself a valid manifest (the host API and the console normalise what they are handed)
+  const noRunner = { ...reaper, id: 'orchestrator-tick', cron: 'axf-orchestrator-tick', runner: undefined };
+  ad.manifests.noRunner = H.normManifest(noRunner);
+  for (const m of [reaper, quiet, landerNow, noRunner, maintenance, lander]) assert.deepEqual(H.normManifest(H.normManifest(m)), H.normManifest(m), `${m.id}: normalising twice changes nothing`);
+  for (const m of repoManifests) assert.deepEqual(H.normManifest(H.normManifest(m)), H.normManifest(m), `${m.id}: normalising twice changes nothing`);
   assert.equal(ad.manifests.reaper.unit, 'cron:axf-reaper'); assert.equal(ad.manifests.reaper.timer, undefined); assert.equal(ad.manifests.reaper.adopted, true);
   ad.errors = {
     cronWithUnit: H.manifestErrors({ ...reaper, unit: 'axf-reaper.service' }),

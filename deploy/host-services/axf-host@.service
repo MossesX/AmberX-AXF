@@ -24,7 +24,11 @@ WorkingDirectory=@DIR@
 EnvironmentFile=-/etc/axf-host/env
 EnvironmentFile=-/etc/axf-host/%i.env
 Environment=AXF_HOST_ROOT=@DIR@
-Environment=AXF_HOST_DATA=@DATA@
+# The state folder lives in the shared data folder, which on the VPS is inside a Docker volume: /var/lib/docker lets only
+# root through, so axf-host could never reach it by its real path. systemd (as root) binds that one folder to a path the
+# service user can reach; root tasks (bin/axf-task) and the console keep using the real path, and see the same files.
+Environment=AXF_HOST_DATA=@STATE@
+BindPaths=@DATA@/host-services:@STATE@/host-services
 Environment=NODE_ENV=production
 ExecStart=/usr/bin/env node @DIR@/deploy/host-services/axf-hostd.mjs %i
 ExecReload=/bin/kill -HUP $MAINPID
@@ -49,7 +53,7 @@ UMask=0007
 # Hardening. The whole file system is read-only except the checkout, the shared data folder and what sudo needs.
 NoNewPrivileges=@NNP@
 ProtectSystem=strict
-ReadWritePaths=@DIR@ @DATA@ -/run/sudo -/var/lib/sudo -/var/log/axf-%i.log
+ReadWritePaths=@DIR@ @DATA@ @STATE@ -/run/sudo -/var/lib/sudo -/var/log/axf-%i.log
 ProtectHome=read-only
 PrivateTmp=yes
 PrivateDevices=yes
