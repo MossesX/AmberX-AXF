@@ -26,7 +26,7 @@ export current to a new skin".
 | --- | --- | --- |
 | registry / registry-summary / registry-token | GET /registry, /registry/summary, /registry/token/{token} | the registry, filtered (`q`, `area`, `element`, `level`, `state`, `scheme`, `source`) |
 | uis | GET /uis | UIs the sandbox can draw (manifests + element gallery) |
-| state / sessions / session | GET /state, /sessions, /sessions/{ui} | the current session, every session, one chain (`ui` = `view:home`, `dialog:x`, `element:button`, `plugin:plan-studio`) |
+| state / sessions / session | GET /state, /sessions, /sessions/{ui} | the current session, every session, one chain (`ui` = `view:home`, `dialog:x`, `element:button`, `plugin:plan-studio-2`) |
 | pick | POST /sessions/{ui}/pick | make a UI current (its chain starts at the default skin) |
 | edit | POST /sessions/{ui}/edit `{ edits: [{ token, to }] }` | set tokens → a snapshot (`to: null` = back to default) |
 | revert | POST /sessions/{ui}/revert `{ snapshot | minutesAgo | at }` | revert to a snapshot, the default, or how it was n minutes ago |

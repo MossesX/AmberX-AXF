@@ -109,11 +109,10 @@ Single settings (build full-voice-and-ai-control, Nov 13 2026): every console re
 same name wins); `get` reads the value; `list` with `q` lists matching fields after the tabs. `console.actions run settings.set:<key>:<value>`
 changes one (`consoleFieldValue` parses on/off/toggle, numbers in range, choices by value, comma lists; the setting's own `requires` applies;
 a refused value is the ack's message). The catalog is re-sent when a setting changes, so a `get` right after a set reads the new value.
-Find by content (same build): Plan Studio's `plan-studio.focus:<focus>` opens a plan down to one item: `<plan id>`, `<plan id>/<item ref>`
-(step id, `risks:2`, comment id, `body:4`) or words — "the plan about X, the step that mentions Y" — that its `find` resolves to the best
-hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`, <!-- axf-plugin:plan-studio -->
-`axf plan-studio find`), CLI `plans.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio <focus or words>"` /
-`console_show` open it. <!-- axf-plugin:plan-studio -->
+Find by content: Plan Studio 2.0's `plan-studio-2.focus:<id or words>` opens the tree at one item (a plan, section, step, note, list or list
+item), by id or by words that its `find` resolves to the best hit. REST `GET /api/plugins/plan-studio-2/find?q=&kind=&under=` (also MCP <!-- axf-plugin:plan-studio-2 -->
+`plan-studio-2_find`, `axf plan-studio-2 find`), CLI `tree.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio-2 <!-- axf-plugin:plan-studio-2 -->
+<focus or words>"` / `console_show` open it. <!-- axf-plugin:plan-studio-2 -->
 Screenshots (build console-screenshot, Nov 19 2026): `console.nav` `act screenshot` lets a Claude session see what Brett's open
 console shows. The console captures its current view as a PNG (the whole viewport, or the element `input.address` (a
 console-control@1 address: one panel, dialog, grid) or `input.selector` (CSS) covers; not both), at most

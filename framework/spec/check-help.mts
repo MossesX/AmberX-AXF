@@ -135,7 +135,7 @@ for (const app of ['console-web', 'axhub-web', 'walkthrough-studio']) eq(readFil
 const fwPack = read('framework/assets/help/framework.json').data;
 for (const t of ['action:help.mode', 'refresh', 'save', 'delete', 'approval-deny', 'approval-approve', 'watch-live', 'view:settings']) ok(fwPack.entries.some((e: { target: string; draft?: boolean }) => e.target === t && !e.draft), `framework help has written "${t}"`);
 const consolePack = read('apps/console-web/src/assets/help/console.json').data;
-for (const s of ['home', 'builds', 'build-orchestrator', 'ui-review', 'ui-screenshots', 'agent-swarm', 'plan-studio']) ok(consolePack.intros.some((i: { screen: string; steps: unknown[] }) => i.screen === s && i.steps.length >= 2 && i.steps.length <= 4), `console intro for ${s} (2–4 steps)`);
+for (const s of ['home', 'builds', 'build-orchestrator', 'ui-review', 'ui-screenshots', 'agent-swarm', 'plan-studio-2']) ok(consolePack.intros.some((i: { screen: string; steps: unknown[] }) => i.screen === s && i.steps.length >= 2 && i.steps.length <= 4), `console intro for ${s} (2–4 steps)`);
 
 /* ---- voice ---- */
 eq(helpVoiceCommand('Help mode on'), 'on', 'voice: "help mode on"');

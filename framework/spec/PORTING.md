@@ -284,6 +284,15 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
 
+## Deferred: screen aliases in console name resolution (Nov 21 2026)
+Web only (build `rip-out-plan-studio-1-keep-only-plan`), Kotlin twin when the Android side resumes:
+- `consoleResolve` / `consoleSplitFocus` (`core/engines/console-commands.mjs`): a screen's keywords of two or more words are
+  other exact names of it ("plan studio" → Plan Studio 2.0, also in front of a focus), and leading words followed by a whole
+  screen name ("go to plan studio") name that screen instead of a shorter screen plus a focus. One-word keywords only
+  score, as before. Cases: `framework/spec/check-console-commands.mts`.
+- plans@1 is provided by Plan Studio 2.0 (`plans.mjs` over plan-tree@1); control@1 `planner.plans` keeps its fields and
+  verbs (statuses the tree lacks are folded, `restore` is the tree's undo). No Kotlin side: plugin code.
+
 ## Deferred: console screenshots (Nov 19 2026)
 Web only (Android on hold, build `console-screenshot`), Kotlin twins when the Android side resumes: `console.nav` act
 `screenshot` (effect `read`), `console-command@1` op `screenshot` with `selector` / `address`, `consoleShotState`,

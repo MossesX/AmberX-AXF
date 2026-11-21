@@ -141,5 +141,11 @@ with tempfile.TemporaryDirectory() as d:
         item2 = plan.run({"op": "add", "kind": "plan", "title": "Ordinary work", "body": "Nothing urgent.", "by": "test"})["item"]["id"]
         code, res = call(plan.build, Req("token", {"id": item2, "emergency": True, "buildId": "ordinary-work"}))
         check(code == 200 and "emergency" not in build("ordinary-work") and grants() == ["hot-fix-now"], "plan studio: POST /build ignores an emergency flag in the body (an ordinary build)")
+        # plans@1 from the same plugin: the tree's plans with the build each was sent as (the orchestrator's priority rows read this)
+        plans = plan.PlansService()
+        rows = {p["id"]: p for p in plans.list()}
+        check(rows[item]["build"] == {"id": "hot-fix-now"} and rows[item2]["build"] == {"id": "ordinary-work"} and plans.get(item)["title"] == "Hot fix now" and plans.get("nope") is None, "plans@1: list / get carry the linked build")
+        parked = plans.park("Do it later", "A parked idea", by="test")
+        check(parked["ok"] and parked["item"]["status"] == "parked" and parked["item"]["kind"] == "plan" and not any(b["id"] == "do-it-later" for b in json.loads(store.read_text())["builds"]), "plans@1 park: a parked plan, never a build")
 
 print(f"send to emergency (console only): {n} checks passed")
