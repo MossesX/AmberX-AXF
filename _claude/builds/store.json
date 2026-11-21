@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10222,
- "updatedAt": "2026-11-21T00:51:10.340Z",
+ "rev": 10223,
+ "updatedAt": "2026-11-21T00:51:43.605Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350812,6 +350812,11 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-21T00:40:50.110Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T00:51:01.497Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -351329,7 +351334,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
