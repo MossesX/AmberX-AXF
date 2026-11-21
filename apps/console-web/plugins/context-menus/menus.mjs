@@ -36,7 +36,8 @@
  *   … where                           the store folder
  *   --json on any command prints one JSON line.
  */
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
@@ -50,8 +51,11 @@ export const FOLDER = 'context-menus';
 
 /* ---------------- files ---------------- */
 
-function readJson(f, fallback = null) { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return fallback; } }
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); }
+// data-store@1: reads, writes, lists and deletes go through framework/core/data-files.mjs (local / shadow / cutover by namespace).
+const readJson = (f, fallback = null) => dataFiles.readJsonSync(f, fallback);
+const writeJson = (f, v) => dataFiles.writeJsonSync(f, v, 1);
+const listJson = (dir) => dataFiles.listSync(dir).filter((f) => f.endsWith('.json'));
+const removeFile = (f) => dataFiles.removeSync(f);
 const now = () => new Date().toISOString();
 
 /** Where the menus live: the hub's shared data (one true source) when mounted, else the plugin's data folder. */
@@ -68,9 +72,8 @@ const idOk = (id) => R.ID_RE.test(String(id ?? ''));
 
 export function loadMenus() {
   const dir = P('menus');
-  if (!existsSync(dir)) return [];
   const active = activeMap();
-  return readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean)
+  return listJson(dir).map((f) => readJson(join(dir, f))).filter(Boolean)
     .map((m) => ({ ...R.normalizeMenu(m), active: active[activeKey(m)] === m.id }))
     .sort((a, b) => a.app.localeCompare(b.app) || R.LEVELS[a.level].order - R.LEVELS[b.level].order || a.name.localeCompare(b.name));
 }
@@ -96,9 +99,9 @@ export function saveMenu(raw, { by = '', source } = {}) {
 export function deleteMenu(id) {
   if (!idOk(id)) throw new Error(`bad menu id "${id}"`);
   const f = P('menus', `${id}.json`);
-  if (!existsSync(f)) return { ok: false, error: 'no such menu' };
+  if (!dataFiles.existsAnySync(f)) return { ok: false, error: 'no such menu' };
   const m = readJson(f);
-  rmSync(f);
+  removeFile(f);
   const act = activeMap();
   if (m?.app && act[activeKey(m)] === id) { delete act[activeKey(m)]; writeJson(P('active.json'), act); }
   return { ok: true, id };
@@ -272,8 +275,7 @@ export function registerActions(owner, actions, { app = R.DEFAULT_APP, by = '' }
 
 export function registeredActions() {
   const dir = P('actions');
-  if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter((d) => d?.$axf === ACTIONS_FORMAT);
+  return listJson(dir).map((f) => readJson(join(dir, f))).filter((d) => d?.$axf === ACTIONS_FORMAT);
 }
 
 /** Every action a menu item may run: the console inventory plus what plugins and apps registered on the hub. */
@@ -293,9 +295,9 @@ export function unknownActions(doc, known = new Set(allActions().map((a) => a.id
 
 /* ---------------- drafts: preview before applying ---------------- */
 
-export function drafts() { const dir = P('drafts'); return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean).sort((a, b) => String(b.at).localeCompare(String(a.at))) : []; }
+export function drafts() { const dir = P('drafts'); return listJson(dir).map((f) => readJson(join(dir, f))).filter(Boolean).sort((a, b) => String(b.at).localeCompare(String(a.at))); }
 export function getDraft(id) { return idOk(id) ? readJson(P('drafts', `${id}.json`)) : null; }
-export function discardDraft(id) { if (!idOk(id)) return { ok: false, error: 'bad id' }; const f = P('drafts', `${id}.json`); if (!existsSync(f)) return { ok: false, error: 'no such draft' }; rmSync(f); return { ok: true, id }; }
+export function discardDraft(id) { if (!idOk(id)) return { ok: false, error: 'bad id' }; const f = P('drafts', `${id}.json`); if (!dataFiles.existsAnySync(f)) return { ok: false, error: 'no such draft' }; removeFile(f); return { ok: true, id }; }
 
 export function promptFor({ level = 'pro', app = R.DEFAULT_APP, page = '', actions, name = '' } = {}) {
   if (!R.isLevel(level)) throw new Error(`level must be one of ${R.LEVEL_IDS.join(', ')}`);
@@ -326,7 +328,7 @@ export function applyDraft(id, { by = '', use = true } = {}) {
   const saved = saveMenu({ ...d.menu, by: by || d.by }, { by: by || d.by, source: 'claude' });
   if (!saved.ok) return saved;
   if (use) useMenu(saved.menu.id, by);
-  rmSync(P('drafts', `${id}.json`), { force: true });
+  removeFile(P('drafts', `${id}.json`));
   return { ok: true, menu: getMenu(saved.menu.id), applied: id };
 }
 
