@@ -96,7 +96,13 @@ beat the new rules. It now points to the new tab.
   `python3 apps/console-web/plugins/gate/test_auto_lander.py`, `node apps/console-web/plugins/claude-settings/test.mjs`.
 - `check-theme`, `check-controls`, `check-toolbars`, `check-console-control`, `check-chrome-assets`,
   `plugin-lifecycle check gate`, `tsc --noEmit`: all pass.
-- Help: seven entries in `plugins/gate/help.json`. Docs: `plugins/gate/README.md`, `framework/spec/AXHUB-POLICY-API.md`.
+- Seen in a real browser (`apps/console-web/scripts/vps-config-shots.mjs`, now also the Approval rules tab): desktop
+  and phone screenshots against the built console with a fixture table. The same run presses Save through
+  console-control with its confirm: the tab answers "Only Brett saves approval rules, with his own click in his
+  signed-in console." and no request reaches the hub's policy route. The script fails if one does.
+- Screenshots: `axf shot` saved them to the worktree's local Screenshots store only; filing them in the live console
+  needs the console token, which this session was not given.
+- Help: entries in `plugins/gate/help.json`. Docs: `plugins/gate/README.md`, `framework/spec/AXHUB-POLICY-API.md`.
 
 ## For Brett
 
