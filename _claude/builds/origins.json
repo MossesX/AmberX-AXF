@@ -3674,6 +3674,18 @@
    "from": "",
    "addenda": []
   },
+  "fix-main-ci-red-after-s16-s7-hand": {
+   "said": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
+   "at": "",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "# Fix main CI (red after s16 + s7 hand lands): step s5\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s5 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s5.\n\n## Your step\nTests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR\n\nFiles: _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, _claude/THREADS.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+   "verbatim": false,
+   "from": "report",
+   "addenda": []
+  },
   "fix-main-ci-red-after-s16-s7-hand-": {
    "said": "",
    "at": "",

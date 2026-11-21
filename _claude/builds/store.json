@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10280,
- "updatedAt": "2026-11-21T02:25:36.878Z",
+ "rev": 10281,
+ "updatedAt": "2026-11-21T02:25:52.112Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -352506,6 +352506,186 @@
      "why": "split did not move after 2 re-run(s) of the transition (6 min past its budget)"
     }
    ]
+  },
+  {
+   "id": "fix-main-ci-red-after-s16-s7-hand",
+   "title": "Fix main CI (red after s16 + s7 hand lands)",
+   "category": "",
+   "detail": "",
+   "status": "landing",
+   "hidden": false,
+   "source": "shipped",
+   "pendingId": "",
+   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
+   "pr": "#867",
+   "mergedAt": "2026-11-21T02:24:10Z",
+   "createdAt": "2026-11-20T23:41:14.451Z",
+   "updatedAt": "2026-11-21T02:25:44Z",
+   "builtAt": "2026-11-20T23:58:56Z",
+   "notes": [
+    {
+     "text": "Recorded from its shipped manifest (orchestrator): it was started outside the builds store and landed as 9d30f6dae.",
+     "at": "2026-11-21T02:25:44Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-main-ci-red-after-s16-s7-hand rev 1 sent to Shipped features (orchestrator): landed 9d30f6dae, 4 file(s), 6 test line(s), 0 open.",
+     "at": "2026-11-21T02:25:44Z"
+    },
+    {
+     "text": "Refused landing → complete (asked by orchestrator): complete needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-21T02:25:47.976Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "# Fix main CI (red after s16 + s7 hand lands): step s5\n\nBuild fix-main-ci-red-after-s16-s7-hand- (Pipeline 2.0), step s5 of 5. Model Fable. You run headless; nobody is watching.\nWorktree: /root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5 (already cut from main) · branch claude/fix-main-ci-red-after-s16-s7-hand---s5.\n\n## Your step\nTests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR\n\nFiles: _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, _claude/THREADS.md. Other steps of this build work on other files at the same time: stay inside yours.\n\n## The build\nBrett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.\n\n## Rules\n- One session, no sub-agents. Commit on this branch only and push it (`git push -u origin HEAD`). Never push to main, never open or merge a PR: the lander merges every step of this build into one PR.\n- Opus or Fable only. Heavy steps (npm/vite builds, Playwright) go through `node framework/cli/agent-slots.mjs heavy -- <cmd>`.\n- When the step is done and pushed, end the session. The orchestrator marks the step completed when the session exits cleanly.\n",
+    "verbatim": false,
+    "from": "report",
+    "addenda": []
+   },
+   "shipped": {
+    "id": "sm-fix-main-ci-red-after-s16-s7-hand",
+    "rev": 1,
+    "at": "2026-11-21T02:25:44Z",
+    "landedCommit": "9d30f6dae7815abaa4d5b7bd3c906643c2fce8bd"
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwpsd9zc0164hd",
+     "title": "",
+     "text": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868).",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:36:29.276Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T02:25:44Z",
+     "updatedAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwpsd9zc02htlz",
+     "title": "",
+     "text": "Run 44801650701 on 7f128689.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:14:42.202Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T02:25:44Z",
+     "updatedAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwpsd9zc03j2ph",
+     "title": "",
+     "text": "Fix it, CI green, land.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-21T00:08:11.808Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T02:25:44Z",
+     "updatedAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwpsd9zc04sfqp",
+     "title": "",
+     "text": "Every step on Fable.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:43:32.724Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T02:25:44Z",
+     "updatedAt": "2026-11-21T02:25:44Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwpsd9zc05lwz8",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/fix-main-ci-red-after-s16-s7-hand-.md, THREADS row, commit, push, PR",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-20T23:51:54.493Z",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T02:25:44Z",
+     "updatedAt": "2026-11-21T02:25:44Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-21T02:25:44Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
   }
  ]
 }
