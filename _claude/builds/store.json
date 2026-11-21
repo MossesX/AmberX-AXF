@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10277,
- "updatedAt": "2026-11-21T02:01:23.832Z",
+ "rev": 10278,
+ "updatedAt": "2026-11-21T02:02:11.142Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351680,7 +351680,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T02:01:02.038Z",
+   "updatedAt": "2026-11-21T02:02:01.702Z",
    "builtAt": "",
    "notes": [
     {
@@ -351792,6 +351792,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
      "at": "2026-11-21T02:01:02.038Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T02:02:01.702Z",
      "by": "watchdog"
     }
    ],
@@ -352400,7 +352405,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
