@@ -390,6 +390,18 @@
         "text": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator).",
         "kind": "screen",
         "draft": true
+      },
+      {
+        "target": "action:plan-studio-2.hand",
+        "title": "Hand build",
+        "text": "Opens the model picker for a hand build of this item: pick Fable or Opus (there is no default), then Start. The whole item and everything under it go to one build, recorded first, signed as emergency (one emergency slot) and launched on the VPS without the dispatcher. Its state, PR, CI and log show on the item. Only Brett, from his own signed-in console.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "hand-build",
+        "title": "Hand build",
+        "text": "Opens the model picker for a hand build of this item: pick Fable or Opus (there is no default), then Start. The whole item and everything under it go to one build, recorded first, signed as emergency (one emergency slot) and launched on the VPS without the dispatcher. Its state, PR, CI and log show on the item. Only Brett, from his own signed-in console.",
+        "kind": "button"
       }
     ],
     "intros": [

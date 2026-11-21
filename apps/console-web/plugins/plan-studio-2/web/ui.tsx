@@ -5,12 +5,12 @@
  * the tree on a narrow screen).
  */
 import { useEffect, useMemo, useRef, useState, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Note, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, ChoiceGrid, Chip, Icon, IconButton, Note, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
 import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/libs/dnd';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, startHand, handLog, handStatus, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type HandBuild, type HandModel, type HandStatus, type OpResult } from './api';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -142,6 +142,7 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
         {item.model && <span className={`${B}__n`}>{item.model}</span>}
         {item.minutes > 0 && <span className={`${B}__n`}>{item.minutes} min</span>}
         {prog && prog.total > 0 && <span className={`${B}__n`} title="Steps done">{prog.done}/{prog.total}</span>}
+        {item.links.some((l) => l.type === 'build' && l.label.startsWith(HAND_LABEL)) && <span className={`${B}__n`} title="Has a hand build: open the item to see its state"><Icon name="play" size={12} /></span>}
         {item.links.length > 0 && <span className={`${B}__n`} title={item.links.map((l) => `${LINK_LABEL[l.type]}: ${l.label || l.ref}`).join('\n')}><Icon name="external" size={12} /> {item.links.length}</span>}
       </span>
       <IconButton icon="plus" label={`New inside ${item.title}`} className={`${B}__act`} onClick={() => rt.openDialog(DIALOGS.item, { parent: item.id, kind: tc.CHILD_KIND[item.kind] })} />
@@ -172,6 +173,7 @@ function Editor({ item, state }: { item: Item; state: State }) {
         <Button size="sm" icon="move" onClick={() => rt.openDialog(DIALOGS.move, { id: item.id })}>Move to…</Button>
         <Button size="sm" icon="external" onClick={() => rt.openDialog(DIALOGS.link, { id: item.id })}>Link…</Button>
         <Button size="sm" icon="rocket" onClick={() => rt.openDialog(DIALOGS.build, { id: item.id })}>Send to build…</Button>
+        <Button size="sm" icon="play" onClick={() => rt.openDialog(DIALOGS.hand, { id: item.id })}>Hand build…</Button>
         <Button size="sm" icon="trash" tone="danger" undoable onClick={() => void deleteItem(item.id).then((r) => rt.toast(r.say ?? 'Deleted.', 'info', 'Plan Studio 2.0'))}>Delete</Button>
       </div>
       <TextField label="Title" value={draft.title} onChange={(v) => setDraft({ ...draft, title: v })} />
@@ -194,6 +196,7 @@ function Editor({ item, state }: { item: Item; state: State }) {
           ))}
         </ul>
       )}
+      <HandPanel itemId={item.id} />
       <div className={`${B}__editrow`}>
         <Button tone="primary" icon="save" disabled={!dirty} onClick={save}>Save</Button>
         <Button tone="quiet" disabled={!dirty} onClick={() => setDraft(item)}>Discard</Button>
@@ -412,6 +415,112 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
         <Button tone={armed ? 'danger' : undefined} icon="zap" disabled={!preview || !!preview.errors?.length} onClick={sendEmergency}><span>{armed ? 'Confirm: send to emergency' : 'Send to emergency'}</span></Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
       </div>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- hand builds (hand-build@1, no dispatcher) */
+
+/** The label prefix of the `build` link a hand build puts on its item (tree.mjs startHand). */
+const HAND_LABEL = 'Hand build: ';
+const HAND_STATE: Record<HandBuild['live']['state'], { label: string; tone?: 'accent' | 'success' | 'warning' | 'danger' }> = {
+  recorded: { label: 'Recorded, launching' }, launched: { label: 'Launched', tone: 'accent' }, building: { label: 'Building', tone: 'accent' },
+  ended: { label: 'Session ended, no PR yet', tone: 'warning' }, pr: { label: 'PR open', tone: 'accent' }, merged: { label: 'Merged', tone: 'success' },
+  closed: { label: 'PR closed', tone: 'warning' }, failed: { label: 'Did not launch', tone: 'danger' },
+};
+const CI_TONE = { pending: undefined, green: 'success', red: 'danger' } as const;
+
+/**
+ * Hand build: one build of the whole item on the model Brett picks here (every time: there is no default), recorded
+ * first, signed as emergency and launched on the VPS without the dispatcher. The Start button's words sit in a <span>,
+ * so it is no console-control target (nothing outside the page can press it); the server takes it from Brett's own
+ * signed-in console session only.
+ */
+export function HandDialog({ props, close }: { props: Record<string, unknown>; close: () => void }) {
+  const rt = useRuntime();
+  const { state, busy } = useTree();
+  const it = state && typeof props.id === 'string' ? tc.byId(state, props.id) : null;
+  const [info, setInfo] = useState<HandStatus | null>(null);
+  const [model, setModel] = useState('');
+  const [buildId, setBuildId] = useState('');
+  const [err, setErr] = useState('');
+  useEffect(() => { if (it) void handStatus(it.id).then(setInfo, (e: Error) => setErr(e.message)); }, [it?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  if (!state || !it) return <Note tone="warning">That item is gone.</Note>;
+  const nested = tc.descendants(state, it.id).length;
+  const open = info?.builds.find((b) => !['merged', 'closed', 'failed'].includes(b.live.state));
+  const start = () => void startHand(it.id, model, buildId.trim()).then((r) => {
+    if (!r.ok) { setErr(r.error || 'not started'); return; }
+    rt.toast(r.say ?? 'Hand build started.', 'success', 'Plan Studio 2.0'); close();
+  }, (e: Error) => setErr(e.message));
+  const choices = (info?.models ?? []).map((m: HandModel) => ({ id: m.name, title: m.label, text: m.key === 'fable' ? 'Audits, debugging, pipeline and store code, contracts, any judgment call.' : 'Work that clearly needs no Fable: copy, docs, simple styling, renames.', icon: m.key === 'fable' ? 'zap' : 'play' }));
+  return (
+    <div className={`${B}__dialog fx-stack`}>
+      <p className="fx-muted">“{it.title}” and everything under it ({nested} item{nested === 1 ? '' : 's'}, each with its notes) go to ONE hand build: recorded in the builds store first, signed as emergency (it takes one of the 2 emergency slots) and launched on the VPS without the dispatcher. No split, no queue. It opens a PR; CI must go green; it never merges itself.</p>
+      {err && <Note tone="danger">{err}</Note>}
+      {info && !info.canStart && <Note tone="warning">Only Brett starts a hand build, from his own signed-in console. This session cannot.</Note>}
+      {open && <Note tone="warning">This item already has an open hand build: {open.id} ({HAND_STATE[open.live.state].label}).</Note>}
+      {!info && !err ? <LoadingSkeleton rows={2} label="Loading the models" /> : (
+        <>
+          <ChoiceGrid label="Model" choices={choices} selected={model ? [model] : []} onToggle={(id) => setModel(id === model ? '' : id)} />
+          <TextField label="Build id" value={buildId} onChange={setBuildId} placeholder={tc.slug(it.title).slice(0, 34)} mono hint="Lower-case letters, digits and dashes; made from the title when empty." />
+        </>
+      )}
+      <div className={`${B}__editrow`}>
+        <Button tone="primary" icon="play" disabled={!model || !info?.canStart || !!open || busy} onClick={start}><span>{model ? `Start the hand build on ${model}` : 'Pick a model first'}</span></Button>
+        <Button tone="quiet" onClick={close}>Cancel</Button>
+      </div>
+    </div>
+  );
+}
+
+/** The item's hand builds and their live state (refreshed every 15 s while the item is open), each with its log. */
+function HandPanel({ itemId }: { itemId: string }) {
+  const rt = useRuntime();
+  const [builds, setBuilds] = useState<HandBuild[]>([]);
+  useEffect(() => {
+    let live = true;
+    const pull = () => void handStatus(itemId).then((r) => { if (live) setBuilds(r.builds ?? []); }, () => { /* the panel stays as it was */ });
+    pull(); const t = setInterval(pull, 15_000);
+    return () => { live = false; clearInterval(t); };
+  }, [itemId]);
+  if (!builds.length) return null;
+  return (
+    <ul className={`${B}__hand`} aria-label="Hand builds">
+      {builds.map((b) => {
+        const st = HAND_STATE[b.live.state] ?? { label: b.live.state };
+        return (
+          <li key={b.id} className={`${B}__handrow`}>
+            <Icon name="play" size={14} />
+            <span className={`${B}__text`}>{b.id}</span>
+            <Chip tone={st.tone}>{st.label}</Chip>
+            {b.emergency && <Chip tone="danger">Emergency</Chip>}
+            <span className={`${B}__n`}>{b.model}</span>
+            {b.live.pr ? <Button size="sm" tone="quiet" icon="external" onClick={() => b.live.url && window.open(b.live.url, '_blank', 'noopener')}>PR #{b.live.pr}</Button> : null}
+            {b.live.ci ? <Chip tone={CI_TONE[b.live.ci]}>CI {b.live.ci}</Chip> : null}
+            {b.live.state === 'failed' && b.error && <span className={`${B}__n fx-muted`}>{b.error}</span>}
+            <Button size="sm" tone="quiet" icon="terminal" disabled={!b.log} onClick={() => rt.openDialog(DIALOGS.handLog, { build: b.id })}>Log</Button>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/** The last lines of a hand build's log. */
+export function HandLogDialog({ props }: { props: Record<string, unknown> }) {
+  const build = typeof props.build === 'string' ? props.build : '';
+  const [lines, setLines] = useState<string[] | null>(null);
+  const [why, setWhy] = useState('');
+  useEffect(() => {
+    let live = true;
+    const pull = () => void handLog(build).then((r) => { if (!live) return; setLines(r.lines ?? []); setWhy(r.why || r.error || ''); }, (e: Error) => live && setWhy(e.message));
+    pull(); const t = setInterval(pull, 10_000);
+    return () => { live = false; clearInterval(t); };
+  }, [build]);
+  return (
+    <div className={`${B}__dialog fx-stack`}>
+      {why && <Note tone="info">{why}</Note>}
+      {lines === null ? <LoadingSkeleton rows={4} label="Loading the log" /> : <pre className={`${B}__log`}>{lines.join('\n')}</pre>}
     </div>
   );
 }

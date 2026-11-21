@@ -11,6 +11,8 @@ page, the CLI, claude.ai sessions and AmberX share one set of rules (web/tree-co
   POST   add | rename | edit | move | nudge | indent | outdent | duplicate | undo | link | unlink | collapse | import | build | say
   POST   emergency        send an item as an EMERGENCY build: Brett's own signed-in console only (403 for the console
                           token, MCP, voice and sessions)
+  POST   hand             a HAND build of an item on the model Brett picks (no dispatcher): his signed-in console only
+  GET    hand             an item's hand builds and their live state · GET hand/log  the last lines of one's log
   DELETE item/{id}        to the trash (undo brings it back)
   DELETE all              everything gone, the trash too (confirm)
 
@@ -228,6 +230,39 @@ async def emergency(request: Request) -> dict[str, Any]:
     body = await _body(request)
     body.pop("preview", None)
     return _answer(run({**body, "op": "build", "emergency": True, "by": who}, approver=who))
+
+
+HAND_ONLY_BRETT = ("Only Brett starts a hand build, from his own signed-in console (Plan Studio 2.0). "
+                   "The console token, MCP, the CLI, voice and sessions cannot.")
+
+
+@router.post("/hand")
+async def hand(request: Request) -> dict[str, Any]:
+    """Hand build: {id, model, buildId}. Brett only, from his own signed-in console session (403 for the console token,
+    MCP, the CLI, voice and sessions). `model` (Opus or Fable) is required: there is no default. The whole item goes to
+    ONE build, recorded in the builds store first, signed as emergency (one emergency slot) and launched on the VPS
+    without the dispatcher (framework/cli/hand-build.mjs)."""
+    who = brett_click(request)
+    if not who:
+        raise HTTPException(403, HAND_ONLY_BRETT)
+    body = await _body(request)
+    if not str(body.get("model") or "").strip():
+        raise HTTPException(400, "Pick a model for the hand build (Opus or Fable): there is no default.")
+    req = {"op": "hand", "id": body.get("id"), "model": body.get("model"), "buildId": body.get("buildId") or "", "by": who}
+    return _answer(run(req, timeout=240, approver=who))
+
+
+@router.get("/hand")
+def hand_status(request: Request, id: str = "") -> dict[str, Any]:
+    """The item's hand builds (newest first): launched, building, PR #, CI, merged, with the log path; the models the
+    picker offers (the live model policy); `canStart` = this request is Brett's own signed-in console."""
+    return {**_answer(run({"op": "hand-status", "id": id})), "canStart": bool(brett_click(request))}
+
+
+@router.get("/hand/log")
+def hand_log(build: str = "", lines: int = 200) -> dict[str, Any]:
+    """The last lines of a hand build's log (`build` = its build id)."""
+    return _answer(run({"op": "hand-log", "build": build, "lines": max(1, min(lines, 2000))}))
 
 
 @router.post("/say")

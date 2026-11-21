@@ -17,6 +17,8 @@
     "dialog:plan-studio-2.move",
     "dialog:plan-studio-2.link",
     "dialog:plan-studio-2.build",
+    "dialog:plan-studio-2.hand",
+    "dialog:plan-studio-2.hand-log",
     "service:plan-tree@1"
   ],
   "scopes": [
@@ -70,6 +72,9 @@
       { "route": "POST /import", "id": "import", "title": "Import items", "description": "A plan-tree-export@1 (or a list of items) under `parent`; ids are made new." },
       { "route": "POST /build", "id": "build", "title": "Send to the build orchestrator", "description": "The item becomes one pending Pipeline 2.0 build (its open steps kept as planning notes; the orchestrator's splitting stage designs the build steps); `preview: true` shows it without writing it." },
       { "route": "POST /emergency", "id": "emergency", "title": "Send as an emergency build", "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Like Send to the build orchestrator, and the build is tagged emergency: it skips the line, builds in the 2 emergency slots and lands first." },
+      { "route": "POST /hand", "id": "hand", "title": "Hand build", "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. The whole item (title, body, every nested child with its body) goes to ONE build on the model Brett picks (Opus or Fable: required, no default), recorded in the builds store first (mode hand), signed as emergency (it takes one emergency slot) and launched on the VPS without the Pipeline 2.0 dispatcher: no split, no queue.", "input": { "type": "object", "properties": { "id": { "type": "string", "description": "The item: an id or words in its title" }, "model": { "type": "string", "description": "Opus or Fable (the live model policy, GET /hand lists them). Required." }, "buildId": { "type": "string", "description": "Build id (optional; made from the title)" } }, "required": ["id", "model"] }, "output": "{ build: { profile, id }, model, launch, say }" },
+      { "route": "GET /hand", "id": "hand-status", "title": "Hand builds of an item", "description": "The item's hand builds, newest first, with their live state (recorded, launched, building, PR #, CI, merged), the log path, and the models the picker offers.", "readOnly": true, "output": "{ builds: [{ id, model, by, live: { state, pr, ci } }], models, canStart }" },
+      { "route": "GET /hand/log", "id": "hand-log", "title": "Hand build log", "description": "The last lines of one hand build's log (`build` = its build id).", "readOnly": true },
       { "route": "POST /say", "id": "say", "title": "Say a plan command", "description": "One spoken sentence (new plan X, add a step Y to X, rename X to Y, delete X, undo, move X into Y, mark X done, send X to the build orchestrator, find X, open X) → the matching change, with what to say back." },
       { "route": "DELETE /all", "id": "clear", "title": "Clear everything (the trash too)", "description": "Deletes every item and empties the trash. This cannot be undone.", "destructive": true, "confirm": true }
     ]
@@ -87,12 +92,14 @@
       "--fx-dens-gap-sm",
       "--fx-dens-gap-xl",
       "--fx-dens-gap-xs",
+      "--fx-font-mono",
       "--fx-font-size",
       "--fx-muted",
       "--fx-opacity-tint",
       "--fx-radius-sm",
       "--fx-size-icon-button-size",
       "--fx-surface",
+      "--fx-type-root-xs",
       "--fx-type-scale-sm",
       "--fx-type-scale-xs"
     ],

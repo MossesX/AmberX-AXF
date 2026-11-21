@@ -93,11 +93,20 @@ export function clearEmergency(id, { by = 'console' } = {}) {
 }
 
 /**
+ * A hand build (hand-build@1, framework/cli/hand-build.mjs) Brett started and signed as emergency, still open: it keeps
+ * its grant (its tag lives in `hand.emergency`, since it is no Pipeline 2.0 build).
+ */
+export function isOpenHandEmergency(b) {
+  const h = b?.mode === 'hand' ? b.hand : null;
+  return !!h && !b.deleted && b.status === 'running' && !!h.emergency?.at && h.state !== 'failed' && !['merged', 'closed'].includes(h.live?.state);
+}
+
+/**
  * Housekeeping (the dispatcher's pass): a grant whose build is no longer a live emergency build (landed, archived,
  * deleted, tag removed) is taken back. → the ids revoked.
  */
 export function syncGrants(store = loadStore()) {
-  const live = new Set(store.builds.filter((b) => P2.isEmergency(b) && !refusal(b)).map((b) => b.id));
+  const live = new Set(store.builds.filter((b) => (P2.isEmergency(b) && !refusal(b)) || isOpenHandEmergency(b)).map((b) => b.id));
   const gone = loadEmergency().map((g) => g.id).filter((id) => !live.has(id));
   for (const id of gone) revokeEmergency(id, { by: 'orchestrator' });
   return gone;
@@ -106,7 +115,9 @@ export function syncGrants(store = loadStore()) {
 /** Every emergency build with its status and whether its grant is on file. */
 export function list(store = loadStore()) {
   const grants = new Set(loadEmergency().map((g) => g.id));
-  return store.builds.filter((b) => P2.isEmergency(b) && !b.deleted).map((b) => ({ id: b.id, title: b.title, status: b.status, emergency: b.emergency, granted: grants.has(b.id) }));
+  const p2 = store.builds.filter((b) => P2.isEmergency(b) && !b.deleted).map((b) => ({ id: b.id, title: b.title, status: b.status, emergency: b.emergency, granted: grants.has(b.id) }));
+  const hand = store.builds.filter(isOpenHandEmergency).map((b) => ({ id: b.id, title: b.title, status: b.status, emergency: b.hand.emergency, granted: grants.has(b.id), mode: 'hand' }));
+  return [...p2, ...hand];
 }
 
 function cli(argv) {
