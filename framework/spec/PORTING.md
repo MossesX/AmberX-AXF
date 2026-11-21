@@ -413,3 +413,16 @@ Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules i
 merge-queue filter, client-side timers) and the console's reader of the builds store `apps/console-web/server/builds_store.py`.
 Kotlin twin deferred (no new Android work): the console Android app keeps showing the orchestrator through the web
 view; a native Builds table would port status-table-core.mjs as is (pure, no IO) and read GET /table.
+
+## Deferred: model-policy@1 work rule and strict model words (Nov 21 2026)
+
+`core/model-policy.mjs` (web/Node only, no Android twin) now carries Brett's model rule as data: `MODEL_POLICY.work`
+(`fable` and `opus` word lists, `unsure: 'fable'`), read by `workModel` / `modelForWork` (a Fable word wins, else an
+Opus word, else Fable; `floor` and `pin` raise, never lower). Model words are strict where a model is stored, pinned or
+launched: `requireModel`, `stepModelName` and `modelId` throw `ModelError` on an unknown word, and `coerceModel` (for
+readers of old records) reads an unknown word as Fable, never Opus. `ids.fable` is `claude-fable-5-2`.
+
+An Android twin would be a pure `ModelPolicy.kt` reading `framework/schemas/model-policy.json` (the fragments are plain
+regular expressions; match with `(?<![\w-])(?:…)(?![\w-])`, case-insensitive) and replaying the cases in
+`spec/check-model-policy.mjs`. Nothing on Android picks or launches a model today, so there is no twin and no fixture;
+the snapshot JSON is the contract when one is needed.
