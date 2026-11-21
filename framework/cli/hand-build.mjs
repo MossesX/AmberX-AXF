@@ -228,7 +228,7 @@ export function launchHandBuild(id, { env = process.env, launcher = env.AXF_HAND
   try {
     dir = cut(id, env);
     writeFileSync(join(dir, '.brief.md'), `${h.brief}\n`);
-    writeFileSync(join(dir, '.axf-hand-build.json'), `${JSON.stringify({ $axf: SCHEMA, id, model: h.model, by: h.by, at: h.at, item: h.item?.id ?? '' })}\n`);
+    writeFileSync(join(dir, '.axf-hand-build.json'), `${JSON.stringify({ $axf: SCHEMA, id, model: h.model, by: h.by, at: h.at, item: h.item?.id ?? '' })}\n`); // axf-data: not data (a git-ignored launch marker in the build's own worktree, like .brief.md)
     const token = issueDispatch(id, { account: '', model: h.model, env });
     const key = requireHandModel(h.model);
     const args = ['--name', id, '--brief', '.brief.md', '--log', `${id}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
