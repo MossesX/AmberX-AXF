@@ -27,7 +27,7 @@ const git = (cwd, ...args) => { const r = spawnSync('git', args, { cwd, encoding
 const gitTry = (cwd, ...args) => spawnSync('git', args, { cwd, encoding: 'utf8', env: { ...process.env, ...WHO } });
 const envFor = (clone, extra = {}) => ({
   ...process.env, ...WHO,
-  AXF_BUILDS_STORE: join(clone, STORE_REL), AXF_BUILDS_LIVE: '1', AXF_BUILDS_LIVE_GIT: clone, AXF_BUILDS_LIVE_SYNC: '1',
+  AXF_BUILDS_STORE: join(clone, STORE_REL), AXF_BUILDS_LIVE: '1', AXF_BUILDS_LIVE_GIT: clone, AXF_BUILDS_LIVE_SYNC: '1', AXF_BUILDS_LIVE_PUSH: 'every',
   AXF_CONSOLE_ROOT: 'off', AXF_BUILD_PROFILE: 'all', AXF_BUILDS_EXPORT: '0', AXF_ACTOR: `check-${clone.slice(-1)}`, ...extra,
 });
 const run = (clone, script, args, extra) => spawnSync(process.execPath, [script, ...args], { cwd: ROOT, encoding: 'utf8', env: envFor(clone, extra) });
@@ -272,6 +272,33 @@ async function main() {
   check(existsSync(join(hub, 'framework/plan/profiles/hub-only/_claude/builds/orchestrator.json')), 'the hub-only export lives in the profile\'s shared-data folder');
   check(!existsSync(leaked), 'a repo export of a hub-only profile from an older version is swept');
   check(!existsSync(join(ROOT, '_claude/builds/profiles/hub-only')), 'nothing was written into the real repo');
+
+  // 14. push mode end (the default since Nov 18 2026): ticks wait in the outbox, the console's checkout takes them at
+  // once (file copy), and the first build end publishes everything queued as one commit
+  git(T, 'clone', '-q', join(T, 'remote.git'), 'e'); git(T, 'clone', '-q', join(T, 'remote.git'), 'f');
+  const E = join(T, 'e'); const F = join(T, 'f');
+  const endEnv = { AXF_BUILDS_LIVE_PUSH: 'end', AXF_CONSOLE_ROOT: F };
+  const mainCount = () => { fetchA(); return git(A, 'rev-list', '--count', 'origin/main'); };
+  const before14 = mainCount();
+  r = run(E, ORCH, ['act', JSON.stringify({ action: 'add', id: 'w', title: 'Build w', steps: [{ id: 's1', text: 'one', model: 'Opus' }, { id: 's2', text: 'two', model: 'Opus' }] })], endEnv);
+  check(r.status === 0, `add w (end mode): ${r.stderr}`);
+  r = run(E, ORCH, ['act', 'step', 'w', 's1', 'done'], endEnv); check(r.status === 0, `tick w s1 (end mode): ${r.stderr}`);
+  check(mainCount() === before14, 'end mode: an add and a tick make no commit on main');
+  st = JSON.parse(run(E, LIVE, ['status', '--json'], endEnv).stdout);
+  check(st.push === 'end' && st.queued === 2 && !st.endQueued && !st.stuck, `end mode: both changes queued, not due (${JSON.stringify(st).slice(0, 160)})`);
+  const fw = JSON.parse(readFileSync(join(F, STORE_REL), 'utf8')).builds.find((b) => b.id === 'w');
+  check(fw && stepsDone(JSON.parse(readFileSync(join(F, STORE_REL), 'utf8')), 'w') === 's1', 'end mode: the console checkout has the tick at once');
+  r = run(E, LIVE, ['sync'], endEnv);
+  check(r.status === 0 && mainCount() === before14 && /held/.test(r.stdout), `end mode: sync pulls only and holds the queue (${r.stdout.trim()})`);
+  r = run(E, ORCH, ['act', 'step', 'w', 's2', 'done'], endEnv); check(r.status === 0, `tick w s2 (end mode): ${r.stderr}`);
+  check(Number(mainCount()) === Number(before14) + 1, 'end mode: the build end makes exactly one commit');
+  const w = mainStore().builds.find((b) => b.id === 'w');
+  check(w && stepsDone(mainStore(), 'w') === 's1,s2' && w.status === 'landing', `end mode: main has w with both steps (${w?.status})`);
+  check(JSON.parse(run(E, LIVE, ['status', '--json'], endEnv).stdout).queued === 0, 'end mode: outbox empty after the build end');
+  r = run(E, ORCH, ['act', 'note', 'w', 'a note after the end'], endEnv);
+  check(mainCount() === String(Number(before14) + 1), 'end mode: a note after the end waits again');
+  r = run(E, LIVE, ['flush'], endEnv);
+  check(r.status === 0 && Number(mainCount()) === Number(before14) + 2, 'end mode: flush publishes on demand');
 
   console.log(`${fail ? '✗' : '✓'} builds-live: ${pass} passed, ${fail} failed`);
   rmSync(T, { recursive: true, force: true });

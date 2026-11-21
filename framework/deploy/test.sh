@@ -138,6 +138,12 @@ if command -v git >/dev/null; then
   AXF_UPDATE_DEPLOY="$T/deploys.jsonl console" axf_update_script "$U" "$T/clone" main "$T/log" "false" "$T/st.json"
   bash "$U" && fail "the failing update script exited 0"; grep -q '"target":"console".*"state":"failed"' "$T/deploys.jsonl" && ok || fail "failed update: failed deploy record"
   grep -q 'export AXF_DEPLOY_WHO=update' "$U" && ok || fail "update script says who deploys"
+  # AXF_UPDATE_PATHS: only a change under the app's own paths runs the command
+  rm -f "$T/ran" "$T/st.json"; AXF_UPDATE_PATHS="apps/one" axf_update_script "$U" "$T/clone" main "$T/log" "touch $T/ran" "$T/st.json"
+  echo 5 > "$R/app"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m five
+  bash "$U"; [ ! -e "$T/ran" ] && ok || fail "AXF_UPDATE_PATHS: another path changed, command not run"
+  mkdir -p "$R/apps/one"; echo 1 > "$R/apps/one/f"; git -C "$R" add -A; git -C "$R" -c user.email=t@t -c user.name=t commit -q -m one
+  bash "$U"; [ -e "$T/ran" ] && ok || fail "AXF_UPDATE_PATHS: the app's path changed, command run"
 fi
 
 # ---- deploy log (deploy-log@1)

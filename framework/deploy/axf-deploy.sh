@@ -200,12 +200,18 @@ axf_deploy_log() {
 # no secrets). The whole script is one { … } block, so bash has read all of it before COMMAND rewrites the file.
 # Optional, read when called: AXF_UPDATE_DEPLOY = "LOGFILE TARGET": a failed run appends a failed deploy-log@1 record
 # (needs STATUS_FILE); AXF_UPDATE_FETCH = the git command used for the fetch (default `git`; e.g. a private repo:
-# `git "${H[@]}"`), AXF_UPDATE_PRELUDE = shell lines run right after `cd DIR` (e.g. building that H array).
+# `git "${H[@]}"`), AXF_UPDATE_PRELUDE = shell lines run right after `cd DIR` (e.g. building that H array),
+# AXF_UPDATE_PATHS = space-separated pathspecs the app is built from (e.g. "apps/expenses"): a pull that changed none of
+# them exits without running COMMAND (default: anything outside _claude/).
 # The script is root-only (0700): COMMAND may carry a token the installer passes on to itself.
 axf_update_script() {
   local _axf_path="$1" _axf_dir="$2" _axf_branch="$3" _axf_log="$4" _axf_cmd="$5" _axf_st="${6:-}"
   shift 5; [ "$#" -gt 0 ] && shift
-  local _axf_cond='[ "$before" = "$(git rev-parse HEAD)" ]' _axf_data='git diff --quiet "$before" HEAD -- . '"'"':(exclude)_claude'"'"'' _axf_m
+  local _axf_cond='[ "$before" = "$(git rev-parse HEAD)" ]' _axf_data='git diff --quiet "$before" HEAD -- . '"'"':(exclude)_claude'"'"'' _axf_m _axf_p
+  if [ -n "${AXF_UPDATE_PATHS:-}" ]; then
+    _axf_data='git diff --quiet "$before" HEAD --'
+    for _axf_p in $AXF_UPDATE_PATHS; do case "$_axf_p" in *[!A-Za-z0-9._/-]*|'') ;; *) _axf_data="$_axf_data '$_axf_p'" ;; esac; done
+  fi
   for _axf_m in "$@"; do _axf_cond="$_axf_cond && [ ! -f \"$_axf_m\" ]"; _axf_data="$_axf_data && [ ! -f \"$_axf_m\" ]"; done
   # A run that failed part way (it may already have removed the old container) is retried on the next tick even when
   # main hasn't moved; before Nov 4 2026 the next tick saw "unchanged" and the app stayed down until the next merge.
@@ -219,7 +225,7 @@ axf_update_script() {
     printf '%s\n' \
       "before=\$(git rev-parse HEAD); ${AXF_UPDATE_FETCH:-git} fetch -q origin $_axf_branch && git reset -q --hard origin/$_axf_branch" \
       "$_axf_cond && exit 0  # unchanged (and no marker asks for a re-run)" \
-      "$_axf_data && exit 0  # only _claude/ changed (builds-live status commits): the checkout is current, nothing to rebuild"
+      "$_axf_data && exit 0  # ${AXF_UPDATE_PATHS:+none of $AXF_UPDATE_PATHS changed}${AXF_UPDATE_PATHS:-only _claude/ changed (builds-live status commits)}: the checkout is current, nothing to rebuild"
     if [ -n "$_axf_st" ]; then
       printf '%s\n' '# Progress for the app'"'"'s Activity banner (activity@1, source "update"). No secrets in it.' \
         "st=\"$_axf_st\"; after=\$(git rev-parse HEAD); t0=\$(date +%s)" \

@@ -1,19 +1,26 @@
 #!/usr/bin/env node
 /**
- * builds-live — every builds store write reaches main at once (Brett, Nov 3 2026: "every completed step, no matter how
- * small, must reach the orchestrator and appear on main immediately"; build orch-live-sync).
+ * builds-live — builds store writes reach main (build orch-live-sync, Nov 3 2026), once per build end (Nov 18 2026,
+ * build stop-push-storm-builds-live-pushes-build: a push per write made a commit on main for every tick, note and
+ * heartbeat, and every one of them woke the app deploys).
  *
  * The store (_claude/builds/store.json, builds@1) is a repo file, so until now a session's step ticks, statuses, notes,
  * branch and PR fields sat on its feature branch and main (and every banner reading main) only saw them if and when
  * that branch merged. Now:
  *
  *   1. every store write that changes a build is queued here (an outbox next to the store: one journal entry per line);
- *   2. a flush publishes the outbox to main as ONE small status-only commit, made with git plumbing on origin/main
+ *      the local store and journal are written at once as before, and the console's checkout on this machine gets the
+ *      changed builds at once too (local file copy, no push), so the orchestrator and the banners stay live;
+ *   2. the outbox goes to main when a build in it ends (push mode `end`, the default): its status becomes built, landing
+ *      (every step done), landed, complete, failed, escalated or archived (cancelled), or it is deleted. Ticks, notes,
+ *      branch / PR fields queued before that ride along in the same commit. `flush` and `sync --now` publish at once;
+ *      AXF_BUILDS_LIVE_PUSH=every restores a push per write;
+ *   3. a flush publishes the outbox to main as ONE small status-only commit, made with git plumbing on origin/main
  *      (a private index, never this checkout's working tree or branch): fetch, take main's store, merge this
  *      checkout's changed builds into it (per build and per step, newer wins: builds-merge-core.mjs), append the journal
  *      lines (union), append one line per change to THREADS.md's live log, regenerate the orchestrator exports, commit
  *      with `[skip ci]`, push. Rejected because main moved: fetch again and re-apply (bounded); never a force push;
- *   3. main's newer builds come back into this checkout (pull), and into the console's checkout (AXF_CONSOLE_ROOT,
+ *   4. main's newer builds come back into this checkout (pull), and into the console's checkout (AXF_CONSOLE_ROOT,
  *      default /opt/axf, mounted live into the console) so the banners show the change now, not at the next update.
  *
  * Code still goes through the feature branch and its PR as before; only status data goes straight to main.
@@ -23,7 +30,8 @@
  *   node framework/cli/builds-live.mjs status [--json]        outbox size, last publish, last error
  *   … flush                                                   publish the outbox now (waits for it)
  *   … pull                                                    take main's newer builds into this checkout
- *   … sync                                                    flush, send builds newer here than on main, then pull (session start)
+ *   … sync [--now]                                            pull main's newer builds; when a build end is queued (or --now):
+ *                                                             first flush and send builds newer here than on main (session start)
  *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
  *         [--sha <merge commit>] [--ci success|failure|running] [--ci-run url] [--verified check|playwright|deploy|hand]
  *                                                            done-means-merged@1 evidence: landed needs merged + sha + CI
@@ -36,7 +44,8 @@
  *   … heal <branch>                                           merge main into a branch whose PR conflicts only in builds files
  *
  * Environment: AXF_BUILDS_LIVE=0 off | 1 on even for a test store; AXF_BUILDS_LIVE_GIT the checkout to run git in
- * (default the repo); AXF_BUILDS_LIVE_REMOTE (origin) / AXF_BUILDS_LIVE_BRANCH (main); AXF_BUILDS_LIVE_SYNC=1 flush in
+ * (default the repo); AXF_BUILDS_LIVE_PUSH=end (default: push when a build ends) | every (push per
+ * write); AXF_BUILDS_LIVE_REMOTE (origin) / AXF_BUILDS_LIVE_BRANCH (main); AXF_BUILDS_LIVE_SYNC=1 flush in
  * the writing process instead of a background one (tests); AXF_CONSOLE_ROOT (default /opt/axf; "off" = none).
  */
 import { spawn, spawnSync } from 'node:child_process';
@@ -87,6 +96,15 @@ const gitRoot = () => env('AXF_BUILDS_LIVE_GIT') || REPO_ROOT;
 const testStore = () => !!process.env.AXF_BUILDS_STORE || !!(process.env.AXF_DATA_DIR && process.env.AXF_DATA_DIR !== 'off');
 /** On unless switched off; a test or scratch store only when asked for (AXF_BUILDS_LIVE=1). */
 export const liveOn = () => env('AXF_BUILDS_LIVE') === '1' || (env('AXF_BUILDS_LIVE') !== '0' && !testStore());
+/** When the outbox goes to main: `end` (a build in it ended; the default) or `every` (each write, the Nov 3 behaviour). */
+export const pushMode = () => (env('AXF_BUILDS_LIVE_PUSH') === 'every' ? 'every' : 'end');
+/** Statuses that end a build's run (done-means-merged@1: `landing` = every step done, the old `built`; archived = cancelled). */
+export const END_STATUSES = ['built', 'landing', 'landed', 'complete', 'failed', 'escalated', 'archived'];
+/** Does this journal entry end a build: a status that moved into END_STATUSES, or a delete. */
+export function endsBuild(entry) {
+  return (entry?.builds ?? []).some((b) => b.op === 'delete'
+    || (b.after && END_STATUSES.includes(b.after.status) && (b.op === 'add' || b.before?.status !== b.after.status)));
+}
 export const outboxFile = () => `${storeFile()}.live-outbox.jsonl`;
 const statusFile = () => `${storeFile()}.live.json`;
 const readJson = (f) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return null; } };
@@ -115,12 +133,22 @@ function setStatus(patch) {
 export function liveStatus() {
   const s = readJson(statusFile()) ?? {};
   const queued = readOutbox().length;
-  return { on: liveOn(), remote: remote(), branch: branch(), queued, ...s, stuck: queued > 0 && !!s.lastError && (!s.lastOk || s.lastOk < s.lastError) };
+  return { on: liveOn(), remote: remote(), branch: branch(), push: pushMode(), queued, endQueued: endQueued(), ...s, stuck: queued > 0 && !!s.lastError && (!s.lastOk || s.lastOk < s.lastError) };
 }
 
-/** After a write: publish in a background process (the writer returns at once) or inline with AXF_BUILDS_LIVE_SYNC=1. */
+/** A queued entry ends a build (the outbox is due on main). */
+export function endQueued() {
+  return readOutbox().some((l) => { try { return endsBuild(JSON.parse(l)); } catch { return false; } });
+}
+
+/**
+ * After a write: when the outbox is due (a build ended, or push mode `every`), publish in a background process (the
+ * writer returns at once) or inline with AXF_BUILDS_LIVE_SYNC=1. Otherwise the change waits in the outbox and only the
+ * console's checkout on this machine takes it now (a file copy, no commit, no push).
+ */
 export function flushLiveSoon() {
   if (!liveOn() || !readOutbox().length) return;
+  if (pushMode() === 'end' && !endQueued()) { try { toConsole({ [STORE_REL]: storeText(readStoreNow()) }); } catch { /* the next due flush brings it */ } return; }
   if (env('AXF_BUILDS_LIVE_SYNC') === '1') { flushLive(); return; }
   try {
     const c = spawn(process.execPath, [SELF, 'flush', '--quiet'], { cwd: REPO_ROOT, detached: true, stdio: 'ignore', env: process.env });
@@ -371,8 +399,10 @@ function toConsole(files) {
  * `sync`: both ways at once. Builds this checkout has newer than main (written before live existed, offline, or
  * queued and lost) go to main in one commit with the journal lines main lacks; then main's newer builds come back.
  */
-export function syncAll() {
+export function syncAll({ now = false } = {}) {
   if (!liveOn()) return { ok: true, skipped: 'off' };
+  // push mode end: a session start only takes main's builds; what is queued here goes with the next build end
+  if (!now && pushMode() === 'end' && !endQueued()) { const p = pullMain(); return { ...p, pushed: [], held: readOutbox().length }; }
   const flushed = flushLive();
   if (!flushed.ok) return flushed;
   const ref = `refs/remotes/${remote()}/${branch()}`;
@@ -528,9 +558,9 @@ async function main(argv) {
   const opt = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? (args[i + 1] && !args[i + 1].startsWith('--') ? args[i + 1] : true) : undefined; };
   const out = (o, text) => { if (!quiet) console.log(json ? JSON.stringify(o) : text); };
   const [cmd = 'status', ...rest] = args;
-  if (cmd === 'status') { const s = liveStatus(); return out({ ok: !s.stuck, ...s }, `live ${s.on ? 'on' : 'off'} → ${s.remote}/${s.branch} · ${s.queued} queued · last publish ${s.lastOk || 'never'}${s.lastSha ? ` (${s.lastSha.slice(0, 8)})` : ''}${s.error ? `\nlast error ${s.lastError}: ${s.error}` : ''}${s.skipped?.length ? `\nleft out as not valid: ${s.skipped.join(', ')}` : ''}`); }
+  if (cmd === 'status') { const s = liveStatus(); return out({ ok: !s.stuck, ...s }, `live ${s.on ? 'on' : 'off'} → ${s.remote}/${s.branch} (push ${s.push === 'every' ? 'every write' : 'at build end'}) · ${s.queued} queued${s.endQueued ? ' (build end: due)' : ''} · last publish ${s.lastOk || 'never'}${s.lastSha ? ` (${s.lastSha.slice(0, 8)})` : ''}${s.error ? `\nlast error ${s.lastError}: ${s.error}` : ''}${s.skipped?.length ? `\nleft out as not valid: ${s.skipped.join(', ')}` : ''}`); }
   if (cmd === 'flush') { const r = flushLive(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? `flush skipped (${r.skipped})` : `published ${r.commits.length} commit(s) ${r.commits.map((c) => c.slice(0, 8)).join(' ')}`) : `not published: ${r.error}`); }
-  if (cmd === 'sync') { const r = syncAll(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `synced: sent ${r.pushed?.length ?? 0} build(s)${r.pushed?.length ? ` (${r.pushed.join(', ')})` : ''}, took ${r.taken?.length ?? 0} from main${r.taken?.length ? ` (${r.taken.join(', ')})` : ''}`) : `sync failed: ${r.error}`); }
+  if (cmd === 'sync') { const r = syncAll({ now: argv.includes('--now') }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `synced: sent ${r.pushed?.length ?? 0} build(s)${r.pushed?.length ? ` (${r.pushed.join(', ')})` : ''}${r.held ? `, ${r.held} change(s) held for the next build end` : ''}, took ${r.taken?.length ?? 0} from main${r.taken?.length ? ` (${r.taken.join(', ')})` : ''}`) : `sync failed: ${r.error}`); }
   if (cmd === 'pull') { const r = pullMain(); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? (r.skipped ? 'live is off' : `pulled: ${r.taken.length} build(s) newer on main${r.taken.length ? ` (${r.taken.join(', ')})` : ''}`) : `pull failed: ${r.error}`); }
   if (cmd === 'link') {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('link <build> [--branch b] [--pr n] [--merged [iso]]');

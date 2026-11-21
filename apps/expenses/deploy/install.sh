@@ -7,6 +7,7 @@
 #   sudo bash apps/expenses/deploy/install.sh --rollback  back to the old MossesX/Expense container (one command)
 #
 #   SRC=<checkout>/apps/expenses  build from that folder instead of the $DIR clone (first cut-over before the PR merges)
+#   FORCE=1                       rebuild and swap even when nothing the image is built from changed
 #
 # DATA: the app reads and writes the SAME Docker volume as before ($VOLUME, mounted read-write at /data; studio.amberxai.com
 # shares it). Nothing here deletes, copies or rewrites it. Each run counts the ledger entries on the volume before and after
@@ -14,13 +15,15 @@
 #
 # What it does (safe to re-run):
 #   1. clone / update AmberX-AXF into $DIR (GitHub token from the broker, like Molly)
-#   2. build $IMAGE:<commit> from apps/expenses (heavy step: agent-slots lock when it is there)
+#   2. build $IMAGE:<commit> from apps/expenses (heavy step: agent-slots lock when it is there), but only when something
+#      it is built from (apps/expenses; with an axf.lock.json also the framework folders `axf init` bakes) changed since
+#      the running image's commit: a healthy container on an unchanged app skips 2-7 (status-only commits never rebuild)
 #   3. run it as $NAME-next on the volume, no Traefik route, and wait for /api/health
 #   4. count ledger entries (every /data/axf/kv/<user>/expenses.json) from inside the candidate = the count on the volume
 #   5. the first time: tag the old image as $OLD_IMAGE:pre-axf (the rollback image; never pruned by this script)
 #   6. swap: remove the running $NAME, start the new image as $NAME with the same Traefik labels and volume
 #   7. wait healthy, count again (must match), else roll back at once
-#   8. cron: pull main every 5 minutes (flock) and re-run this when apps/expenses or the framework changed
+#   8. cron: pull main every 5 minutes (flock) and re-run this only when apps/expenses (or the baked framework) changed
 set -euo pipefail
 
 DOMAIN="${DOMAIN:-expenses.amberxai.com}"
@@ -127,7 +130,48 @@ if [ -d "$AXF_DIR/.axf-console" ]; then install -m 600 "$TOKF" "$AXF_DIR/.axf-co
 ENVS+=(-e "EXPENSES_API_TOKEN=$(cat "$TOKF")" -e "EXPENSES_API_USER=${EXPENSES_API_USER:-Brett}")
 [ -f "$APP/Dockerfile" ] || { say "No app at $APP (not on $BRANCH yet?) - the running container is left as it is"; exit 1; }
 
-# ---- 2. image ----
+# ---- 8. auto-update (from main, never from SRC); run at the end, and by a skipped rebuild ----
+# The cron only runs this installer when a pull changed $WATCH (set below), never for status-only commits.
+install_cron() {
+  if [ "${INSTALL_CRON:-1}" = 1 ]; then
+    if [ ! -d "$DIR/.git" ]; then # SRC run: the clone the cron pulls ($DIR already holds .app)
+      rm -rf "$DIR.tmp"; if "${GIT[@]}" clone -q --branch "$BRANCH" "$REPO" "$DIR.tmp"; then cp -a "$DIR.tmp/." "$DIR/"; fi; rm -rf "$DIR.tmp"
+    fi
+    if [ -f "$DIR/framework/deploy/axf-deploy.sh" ]; then
+      # shellcheck source=../../../framework/deploy/axf-deploy.sh
+      . "$DIR/framework/deploy/axf-deploy.sh"
+      # shellcheck disable=SC2016
+      AXF_UPDATE_PRELUDE="T=\$({ command -v node >/dev/null && node \"$BROKER\" token 2>/dev/null; } || $CONSOLE_BROKER 2>/dev/null)
+  H=(); [ -n \"\$T\" ] && H=(-c \"http.https://github.com/.extraheader=AUTHORIZATION: basic \$(printf 'x-access-token:%s' \"\$T\" | base64 -w0)\")" \
+      AXF_UPDATE_FETCH='git "${H[@]}"' AXF_UPDATE_PATHS="$WATCH" \
+        axf_update_script "/usr/local/bin/$NAME-update" "$DIR" "$BRANCH" "/var/log/$NAME-update.log" \
+        "DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" SUB=\"$SUB\" AXF_DIR=\"$AXF_DIR\" VOLUME=\"$VOLUME\" bash \"$DIR/$SUB/deploy/install.sh\"" \
+        "$STATE/update-status.json"
+      axf_cron_file "$NAME" "*/5 * * * * root flock -n /run/$NAME-update.lock /usr/local/bin/$NAME-update"
+      say "Update cron: every 5 minutes from $BRANCH (until $SUB is on $BRANCH, a run fails and leaves this container alone)"
+    fi
+  fi
+}
+
+# ---- 2. image: only when what it is built from changed since the running image's commit ----
+# The image is built from $SUB alone (its Dockerfile context; @axf/core is vendored there). An app that `axf init` baked
+# (axf.lock.json) also follows the framework folders it bakes from. Paths are repo-relative.
+REL="$(git -C "$APP" rev-parse --show-prefix 2>/dev/null)"; REL="${REL%/}"; REL="${REL:-$SUB}"
+WATCH="$REL"
+[ -f "$APP/axf.lock.json" ] && WATCH="$WATCH framework/core framework/react framework/ui framework/schemas"
+RUN_IMG="$(docker inspect "$NAME" --format '{{.Config.Image}}' 2>/dev/null || true)"
+RUN_REV=""; [ "${RUN_IMG#"$IMAGE":}" != "$RUN_IMG" ] && RUN_REV="${RUN_IMG#"$IMAGE":}"
+RUN_OK="$(docker inspect "$NAME" --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' 2>/dev/null || true)"
+if [ "${FORCE:-0}" != 1 ] && [ "$RUN_OK" = healthy ] && [ -n "$RUN_REV" ] && [ "$RUN_REV" != latest ] \
+  && git -C "$APP" cat-file -e "$RUN_REV^{commit}" 2>/dev/null \
+  && (cd "$(git -C "$APP" rev-parse --show-toplevel)" && read -ra W <<< "$WATCH" && git diff --quiet "$RUN_REV" HEAD -- "${W[@]}"); then
+  say "Up to date: $IMAGE:$RUN_REV is healthy and nothing in $WATCH changed since (now at $REV); no rebuild"
+  install_cron
+  exit 0
+fi
+WHY="no healthy $IMAGE build running"; [ -n "$RUN_REV" ] && [ "$RUN_OK" = healthy ] && WHY="$WATCH changed since $RUN_REV"
+[ "${FORCE:-0}" = 1 ] && WHY="FORCE=1"
+say "Rebuilding: $WHY"
 say "Building $IMAGE:$REV (first time takes a few minutes)"
 SLOTS="$AXF_DIR/framework/cli/agent-slots.mjs"
 BUILD=(docker build -q --build-arg "SOURCE_VERSION=$REV" -t "$IMAGE:$REV" "$APP")
@@ -181,23 +225,5 @@ printf '{"image":"%s","rev":"%s","before":"%s","after":"%s","at":"%s"}\n' "$IMAG
 # keep the last three AXF builds, never the pre-axf rollback image
 docker images "$IMAGE" --format '{{.Tag}}' | grep -vE '^(latest|'"$REV"')$' | tail -n +3 | while read -r t; do docker rmi "$IMAGE:$t" >/dev/null 2>&1 || true; done || true
 
-# ---- 8. auto-update (from main, never from SRC) ----
-if [ "${INSTALL_CRON:-1}" = 1 ]; then
-  if [ ! -d "$DIR/.git" ]; then # SRC run: the clone the cron pulls ($DIR already holds .app)
-    rm -rf "$DIR.tmp"; if "${GIT[@]}" clone -q --branch "$BRANCH" "$REPO" "$DIR.tmp"; then cp -a "$DIR.tmp/." "$DIR/"; fi; rm -rf "$DIR.tmp"
-  fi
-  if [ -f "$DIR/framework/deploy/axf-deploy.sh" ]; then
-    # shellcheck source=../../../framework/deploy/axf-deploy.sh
-    . "$DIR/framework/deploy/axf-deploy.sh"
-    # shellcheck disable=SC2016
-    AXF_UPDATE_PRELUDE="T=\$({ command -v node >/dev/null && node \"$BROKER\" token 2>/dev/null; } || $CONSOLE_BROKER 2>/dev/null)
-H=(); [ -n \"\$T\" ] && H=(-c \"http.https://github.com/.extraheader=AUTHORIZATION: basic \$(printf 'x-access-token:%s' \"\$T\" | base64 -w0)\")" \
-    AXF_UPDATE_FETCH='git "${H[@]}"' \
-      axf_update_script "/usr/local/bin/$NAME-update" "$DIR" "$BRANCH" "/var/log/$NAME-update.log" \
-      "DOMAIN=\"$DOMAIN\" NAME=\"$NAME\" DIR=\"$DIR\" SUB=\"$SUB\" AXF_DIR=\"$AXF_DIR\" VOLUME=\"$VOLUME\" bash \"$DIR/$SUB/deploy/install.sh\"" \
-      "$STATE/update-status.json"
-    axf_cron_file "$NAME" "*/5 * * * * root flock -n /run/$NAME-update.lock /usr/local/bin/$NAME-update"
-    say "Update cron: every 5 minutes from $BRANCH (until $SUB is on $BRANCH, a run fails and leaves this container alone)"
-  fi
-fi
+install_cron
 say "Expenses: https://$DOMAIN   Rollback: bash $APP/deploy/install.sh --rollback"
