@@ -138,7 +138,7 @@ function Row({ item, depth, kids, path, state, selected }: { item: Item; depth: 
       </button>
       <span className={`${B}__meta`}>
         {item.priority && <Chip tone={item.priority === 'P0' ? 'danger' : item.priority === 'P1' ? 'warning' : undefined}>{item.priority}</Chip>}
-        {item.status && item.status !== 'draft' && <Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip>}
+        {item.status && item.status !== 'draft' && <span data-status={item.status}><Chip tone={item.status === 'active' ? 'accent' : item.status === 'done' ? 'success' : undefined}>{item.status}</Chip></span>}
         {item.model && <span className={`${B}__n`}>{item.model}</span>}
         {item.minutes > 0 && <span className={`${B}__n`}>{item.minutes} min</span>}
         {prog && prog.total > 0 && <span className={`${B}__n`} title="Steps done">{prog.done}/{prog.total}</span>}
