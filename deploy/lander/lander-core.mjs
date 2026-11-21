@@ -448,6 +448,17 @@ export const ciTimedOut = (since, at, cfg = DEFAULTS) => !!since && minutesBetwe
 export function say(b, text) { return `${b?.id || 'lander'}: ${str(text, 500)}`; }
 
 /**
+ * The attempt a queue row shows. A build in a landing phase: the landing run's own count; a record the lander wrote
+ * before it had one (a failure with no `attempt` of its own) still shows the number it was given then. A build that
+ * is not landing yet (building): the dispatcher's count.
+ */
+export function rowAttempt(b) {
+  if (!LANDING.includes(failedIn(b))) return Math.max(0, Math.floor(num(b?.attempt)));
+  const own = landingAttempt(b) || Math.max(0, Math.floor(num(b?.failure?.attempt)));
+  return own || (b?.status === 'failed' && b.failure && !('attempt' in b.failure) ? Math.max(0, Math.floor(num(b.attempt))) : 0);
+}
+
+/**
  * The merge queue view (read-only, merge-queue@2): every build waiting to land, from the same store rows, live status,
  * no state of its own. `attempt` is the landing run's own count. → [{ build, title, status, attempt, needsBrett, failure,
  * prs: [{ pr, steps, state }], waiting, at }]
@@ -466,7 +477,7 @@ export function queueRows(builds) {
       if (!prs.has(n)) prs.set(n, { pr: n, steps: [], state: l.merged.includes(n) ? 'merged' : l.closed.includes(n) ? 'closed' : 'open' });
       prs.get(n).steps.push(st.id);
     }
-    rows.push({ build: b.id, title: str(b.title || b.id, 200), ...(isEmergency(b) ? { emergency: true } : {}), status: b.status, attempt: landingAttempt(b), ...(isHeld(b) ? { needsBrett: true } : {}), failure: b.status === 'failed' ? b.failure || null : null, statusAt: str(b.statusAt, 40), prs: [...prs.values()], waiting: g.waiting.map((x) => x.id), steps: landSteps(b).map((x) => ({ id: x.id, status: x.status || '', prNumber: num(x.prNumber) || null, model: x.model || '', slot: x.slot ?? null })) });
+    rows.push({ build: b.id, title: str(b.title || b.id, 200), ...(isEmergency(b) ? { emergency: true } : {}), status: b.status, attempt: rowAttempt(b), ...(isHeld(b) ? { needsBrett: true } : {}), failure: b.status === 'failed' ? b.failure || null : null, statusAt: str(b.statusAt, 40), prs: [...prs.values()], waiting: g.waiting.map((x) => x.id), steps: landSteps(b).map((x) => ({ id: x.id, status: x.status || '', prNumber: num(x.prNumber) || null, model: x.model || '', slot: x.slot ?? null })) });
   }
   const order = (r) => (r.status === 'failed' ? buildIndex(r.failure?.status || 'build-complete') : buildIndex(r.status));
   return rows.sort((a, b) => Number(!!b.emergency) - Number(!!a.emergency) || order(b) - order(a) || a.build.localeCompare(b.build));

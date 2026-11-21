@@ -165,6 +165,15 @@ test('the ladder has a top: the lander counts its own attempts and stops at maxA
   assert.ok(L.shouldNotify(3)); assert.ok(!L.shouldNotify(2));
 });
 
+test('queue rows show the right counter: the landing run\'s own, the dispatcher\'s while building, an old record\'s as it was (L2-07)', () => {
+  const row = (b) => L.queueRows([{ id: 'b', steps: [], ...b }])[0].attempt;
+  assert.equal(row({ status: 'failed', attempt: 7, failure: { kind: 'ci-red', status: 'running-ci', attempt: 1 }, landing: { attempt: 1 } }), 1, 'a landing failure never shows the dispatcher\'s 7');
+  assert.equal(row({ status: 'running-ci', attempt: 7 }), 0, 'landing, nothing failed yet');
+  assert.equal(row({ status: 'failed', attempt: 3, failedFrom: 'building', failure: { kind: 'launch', status: 'building' } }), 3, 'failed while building: the dispatcher\'s count');
+  assert.equal(row({ status: 'building', attempt: 2 }), 2);
+  assert.equal(row({ status: 'failed', attempt: 2, failure: { kind: 'ci-red', status: 'running-ci', retry: 'split' } }), 2, 'a record from before the lander had its own count');
+});
+
 test('a stopped build goes to the back of the line, shows on the systems check, and is released by a re-send', () => {
   const stopped = { id: 'old', status: 'failed', statusAt: '2026-11-21T02:00:00Z', completedAt: '2026-11-20T01:00:00Z', landing: { attempt: 6 }, failure: L.failure({ landing: { attempt: 5 } }, 'ci-red', { status: 'running-ci', reruns: 1, fixes: 2, pr: 867, why: 'CI is red on abc (tests)', failing: ['tests'], at }).failure };
   const waiting = { id: 'next', status: 'build-complete', completedAt: '2026-11-21T03:00:00Z' };
