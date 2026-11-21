@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { compileSlots, regionAccepts } from '../core/engines/layout';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
 import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
@@ -85,6 +85,10 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state.view, keepKey]);
   const keptNow = keep.filter((id) => views[id] && (kept.includes(id) || id === state.view));
+  // The main area is one scroll container for every view: a new view starts at its top instead of wherever the last
+  // one was scrolled to (its page head was landing off screen after a long list).
+  const mainRef = useRef<HTMLElement>(null);
+  useEffect(() => { mainRef.current?.scrollTo({ top: 0 }); }, [state.view]);
 
   // Developer apps (an appearance source is attached): nothing but the waiting screen until the hub has answered the first
   // time (or says this browser may not read the look). A later re-read that fails keeps the app on screen (Nov 1 2026).
@@ -154,7 +158,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           <NavMenu views={views} />
         </div>
       )}
-      <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
+      <main ref={mainRef} className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
         {/* every view root is a UI level of the skin chain (SkinScope kind="ui": a marker until Appearance names a skin for it) */}
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>

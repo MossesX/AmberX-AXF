@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "card",
+  "id": "console-terminal-home",
+  "name": "Terminal",
+  "version": "1.0.0",
+  "description": "Terminal on Home: List live sessions.",
+  "author": "AmberX AXF (gate fixer home-card)",
+  "tags": [
+    "home",
+    "plugin-home"
+  ],
+  "data": {
+    "title": "Terminal",
+    "icon": "box",
+    "source": {
+      "kind": "command",
+      "plugin": "console-terminal",
+      "command": "sessions-list"
+    },
+    "view": "auto",
+    "refresh": {
+      "kind": "every",
+      "every": 60
+    },
+    "size": "m"
+  }
+}

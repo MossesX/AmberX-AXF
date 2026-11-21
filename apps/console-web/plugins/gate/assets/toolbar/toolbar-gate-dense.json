@@ -1,0 +1,94 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-gate-dense",
+  "name": "Gate: Dense icons",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Icons only: every button on one short bar; the names are in the tooltips and the API.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-gate",
+    "choice-option:dense"
+  ],
+  "data": {
+    "scope": "view:gate",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 0,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "lander",
+        "label": "Lander",
+        "items": [
+          {
+            "id": "land-now",
+            "icon": "rocket",
+            "label": "Land now",
+            "action": "command:gate/lander-land-now",
+            "confirm": "Land every waiting build that passes now?",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "pause",
+            "icon": "pause",
+            "label": "Pause lander",
+            "action": "command:gate/lander-pause",
+            "priority": 260
+          },
+          {
+            "id": "resume",
+            "icon": "play",
+            "label": "Resume lander",
+            "action": "command:gate/lander-resume",
+            "priority": 250
+          },
+          {
+            "id": "auto",
+            "icon": "branch",
+            "label": "Run auto-lander",
+            "action": "command:gate/auto-lander-run",
+            "priority": 240
+          }
+        ]
+      },
+      {
+        "id": "rules",
+        "label": "Rules",
+        "items": [
+          {
+            "id": "build-rules",
+            "icon": "list",
+            "label": "Build rules",
+            "action": "handler:gate.show-build-rules",
+            "checked": "state:onBuildRules",
+            "priority": 200
+          },
+          {
+            "id": "history",
+            "icon": "clock",
+            "label": "History",
+            "action": "handler:gate.show-history",
+            "checked": "state:onHistory",
+            "priority": 180
+          },
+          {
+            "id": "reset",
+            "icon": "trash",
+            "label": "Reset rules",
+            "action": "command:gate/rules-reset",
+            "destructive": true,
+            "confirm": "Put every gate rule back to its default?",
+            "priority": 20
+          }
+        ]
+      }
+    ]
+  }
+}

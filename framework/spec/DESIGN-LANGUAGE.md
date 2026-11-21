@@ -130,7 +130,7 @@ visual control instead.
 
 ## 12. Plugins
 
-Every plugin page (`apps/console-web/plugins/*`, `apps/amberx-droid/src/plugins/*`) uses: `fx-pagehead` with
+Every plugin page (`apps/console-web/plugins/*`) uses: `fx-pagehead` with
 eyebrow + title + one-sentence description; sections as `Container` cards; framework controls only
 (THEMING.md); tables through the framework DataGrid; no page-level colour. The refactor phase of the
 `enterprise-branding` build brings every in-scope plugin to this.

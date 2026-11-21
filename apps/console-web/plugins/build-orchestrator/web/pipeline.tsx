@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, Note, PriorityTag, SelectField, Switch, flashWhenReady, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, Note, PageToolbar, PriorityTag, SelectField, Switch, flashWhenReady, usePublishPageState, useRuntime, useToolbarHandlers } from '@console/axf/react';
+import { PRIORITIES, effectivePriority } from '@console/axf/core/build-priority.mjs';
+import { focusBuild } from './focus';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import { BuildDetail, StatusChip, type AttemptsData } from './attempts';
 import { WatchLiveFor } from '@console/watchLive';
@@ -112,6 +114,38 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     finally { setBusy(''); }
   };
   const toggle = (id: string, on: boolean) => setSel((cur) => { const n = new Set(cur); if (on) n.add(id); else n.delete(id); return n; });
+  // the Builds toolbar (page-toolbar@1, assets/toolbar/build-orchestrator-pipeline.json): what it reads, what it runs
+  const [statusFilter, setStatusFilter] = useState('');
+  const tabRows = view === 'accounts' ? [] : (s?.tabs?.[view] ?? []);
+  const picked = tabRows.filter((r) => sel.has(r.id));
+  const one = picked.length === 1 ? picked[0] : undefined;
+  const statuses = [...new Set(tabRows.map((r) => r.status))].sort();
+  const nextPriority = (() => { const cur = picked.length ? effectivePriority(picked[0]) : 'P2'; const i = PRIORITIES.indexOf(cur); return PRIORITIES[(i + PRIORITIES.length - 1) % PRIORITIES.length] ?? 'P2'; })();
+  usePublishPageState('build-orchestrator', {
+    tab: view,
+    selection: {
+      count: picked.length, id: one?.id ?? '', ids: picked.map((r) => r.id), pr: one?.pr ?? '', nextPriority,
+      canQueue: picked.filter((r) => r.tab === 'pending').length,
+      canSplit: !!one && (one.tab === 'pending' || one.tab === 'queue') && !one.pipeline?.splitRequested,
+      canRaise: !!one && !!one.stepList.find((x) => !x.done && !x.skip && x.model !== 'Fable'),
+      canRelaunch: !!one && (one.tab === 'incomplete' || one.tab === 'errors'),
+    },
+    statuses: statuses.length, statusFilter, statusFilterCount: statusFilter ? tabRows.filter((r) => r.status === statusFilter).length : 0,
+  });
+  useToolbarHandlers('build-orchestrator', {
+    'builds.queue-selected': async () => {
+      for (const r of picked.filter((x) => x.tab === 'pending')) await act('pipeline/queue', { id: r.id }, `${r.id} → Queue`);
+      setSel(new Set());
+    },
+    'builds.raise-fable': async () => {
+      const st = one?.stepList.find((x) => !x.done && !x.skip && x.model !== 'Fable');
+      if (!one || !st) throw new Error('no open step below Fable');
+      await act('act', { action: 'edit-step', id: one.id, step: st.id, stepData: { model: 'Fable' } }, `${one.id} ${st.id} → Fable`);
+    },
+    'builds.show-said': () => { if (one) focusBuild(one.id); return one ? { id: one.id, said: one.said } : null; },
+    'builds.open-pr': () => { if (one?.pr) window.open(one.pr, '_blank', 'noopener'); return one?.pr ?? null; },
+    'builds.filter-status': () => { const i = statuses.indexOf(statusFilter); const next = i + 1 < statuses.length ? statuses[i + 1] ?? '' : ''; setStatusFilter(next); return { statusFilter: next }; },
+  });
   // a build asked for (console command, search, menu): once this tab lists it, scroll it into view and flash it; the
   // card stays expanded (its steps) and marked as the current one
   const focusId = useFocusedBuild();
@@ -196,7 +230,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
         )}
       </section>}
       {view !== 'accounts' && (() => {
-        const rows = s.tabs?.[view] ?? [];
+        const rows = (s.tabs?.[view] ?? []).filter((r) => !statusFilter || r.status === statusFilter);
         const chosen = rows.filter((r) => sel.has(r.id));
         const offered = ACTION_ORDER.filter((a) => rows.some((r) => r.actions?.includes(a)));
         return (
@@ -209,6 +243,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
               {view === 'archive' && <span className="fx-muted fx-small"> · every completed and archived build</span>}
               {view === 'deleted' && <span className="fx-muted fx-small"> · kept saved for good · Restore brings one back</span>}
             </h2>
+            <PageToolbar view="build-orchestrator" slot="pipeline" label={`${TAB_LABEL[view]}: builds`} />
             {rows.length > 0 && offered.length > 0 && (
               <div className="pl-bulk" role="toolbar" aria-label={`${TAB_LABEL[view]}: bulk actions`}>
                 <Checkbox label={chosen.length ? `${chosen.length} selected` : 'Select all'} checked={chosen.length === rows.length} indeterminate={chosen.length > 0 && chosen.length < rows.length} disabled={busy === 'bulk'} onChange={(on) => setSel(on ? new Set(rows.map((r) => r.id)) : new Set())} />

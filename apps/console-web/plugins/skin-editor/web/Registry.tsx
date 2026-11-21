@@ -4,7 +4,7 @@
  * Skin editor on the current UI.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Note, Segmented, SelectField, useRuntime } from '@console/axf/react';
+import { Chip, Container, Note, PageToolbar, Segmented, SelectField, useRuntime, useToolbarHandlers } from '@console/axf/react';
 import type { RegistrySummary } from '@console/axf/core/engines/token-registry.mjs';
 import { ELEMENT_LABELS, TOKEN_AREAS, TOKEN_STATES } from '@console/axf/core/engines/token-registry.mjs';
 import { registry as fetchRegistry, registrySummary } from './api';
@@ -15,6 +15,8 @@ export const REGISTRY_Q_KEY = 'axf.skin-editor.registry.q';
 
 export function RegistryView() {
   const rt = useRuntime();
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/token-registry.json)
+  useToolbarHandlers('token-registry', { 'token-registry.skin-editor': () => { rt.navigate('skin-editor'); return { opened: 'skin-editor' }; } });
   const [tokens, setTokens] = useState<RegistryToken[]>([]);
   const [summary, setSummary] = useState<RegistrySummary | null>(null);
   const [q, setQ] = useState(String(rt.settings.get(REGISTRY_Q_KEY) ?? ''));
@@ -40,14 +42,13 @@ export function RegistryView() {
   return (
     <div className={`${P} fx-stack fx-stack--lg`}>
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Framework</p><h1>Token registry</h1><p className="fx-muted" title="Every --fx-* token the framework, apps and plugins read: where it is defined, who reads it, its default and level. Open one in the Skin editor to change it.">Every design token, where it comes from and who reads it.</p></div></header>
-      <div className="axp-skin__bar" role="toolbar" aria-label="Token registry">
+      <PageToolbar view="token-registry" className="axp-skin__bar">
         <Segmented label="Level" size="sm" value={level} onChange={setLevel} options={LEVELS.map((l) => ({ value: l.value, label: l.label, title: l.title }))} />
         <input className="fx-input" placeholder="Find a token: words from its name, element, description…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a token" />
         <SelectField label="Area" value={area} onChange={setArea} options={[{ value: '', label: 'Every area' }, ...TOKEN_AREAS.map((a) => ({ value: a, label: a }))]} />
         <SelectField label="Element" value={element} onChange={setElement} options={[{ value: '', label: 'Every element' }, ...elements.map((e) => ({ value: e, label: ELEMENT_LABELS[e] ?? e }))]} />
         <SelectField label="State" value={state} onChange={setState} options={[{ value: '', label: 'Every state' }, ...TOKEN_STATES.map((s) => ({ value: s, label: s }))]} />
-        <Button size="sm" icon="palette" onClick={() => rt.navigate('skin-editor')}>Skin editor</Button>
-      </div>
+      </PageToolbar>
       {summary && (
         <div className={`${P}__summary`}>
           <Chip tone="accent">{summary.total} tokens</Chip>

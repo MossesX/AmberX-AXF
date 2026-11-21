@@ -11,6 +11,8 @@ Routes (base /v1, spec framework/spec/DATA-STORE.md → Operations):
   DELETE /v1/<key>                          same preconditions; leaves a tombstone
   GET    /v1/<ns>                           data-list@1 (?prefix= &after= &limit= &deleted=1); `plugins/<folder>` too
   POST   /v1/<key>:append                   { entries } ; Idempotency-Key
+  POST   /v1/<key>:patch                    data-patch@1: { head?, lists: { <list>: [{ key, ifRev?, item }] }, journal? } on a
+                                            table-backed record (the builds store): only the named rows are locked and rewritten
   GET    /v1/<ns>:manifest                  one namespace of data-manifest@1
   POST   /v1/snapshot                       { namespaces?, mode? } → data-manifest@1 + snapshots/<id>.tar
   GET    /v1/snapshot/<id> | <id>.tar       the manifest | the archive
@@ -180,6 +182,14 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
             body = await _json(req)
             entries = body.get('entries') if isinstance(body, dict) else None
             return st.append(ns, path, entries, caller, req.headers.get('idempotency-key') or '')
+        if action == 'patch' and req.method == 'POST':
+            # data-patch@1: some rows of a keyed list (the builds store's builds), the head fields given and one journal
+            # line in one transaction; only the named rows are locked (pg.py PgStore.patch, store.py the document twin)
+            p.need('put', ns, path)
+            body = await _json(req)
+            if isinstance(body, dict) and isinstance(body.get('journal'), dict):
+                p.need('append', ns, str(body['journal'].get('path') or ''))
+            return st.patch(ns, path, body, caller)
         if action:
             raise DataError('invalid_key', f'unknown action :{action}', ns=ns, path=path)
         if req.method == 'GET':
@@ -193,11 +203,12 @@ def create_app(data_dir: Path | str = DATA_DIR, store: Store | None = None) -> F
                     f['data'] = json.loads(body) if r['kind'] == 'record' else base64.b64encode(body).decode('ascii')
                 return f
             inm = (req.headers.get('if-none-match') or '').strip('"')
-            headers = {'ETag': f'"{r["etag"]}"', 'X-Axf-Rev': str(r['rev']), 'X-Axf-At': r['at'], 'X-Axf-By': r['by'], 'X-Axf-Kind': r['kind'],
-                       'X-Axf-Deleted': '1' if r['deleted'] else '0'}
+            # A row the shadow mirror is still writing may lack a field: headers carry '' then, never None (a 500).
+            headers = {'ETag': f'"{r["etag"] or ""}"', 'X-Axf-Rev': str(r['rev'] or 0), 'X-Axf-At': r['at'] or '', 'X-Axf-By': r['by'] or '',
+                       'X-Axf-Kind': r['kind'] or '', 'X-Axf-Deleted': '1' if r['deleted'] else '0'}
             if inm and inm == r['etag']:
                 return Response(status_code=304, headers=headers)
-            return Response(body or b'', media_type=r['content_type'], headers=headers)
+            return Response(body or b'', media_type=r['content_type'] or 'application/octet-stream', headers=headers)
         if req.method == 'PUT':
             p.need('put', ns, path)
             body = await req.body()
@@ -245,7 +256,11 @@ def _backup_state() -> dict:
     import backup
     out = _backups()
     last = out / 'last.json'
-    return {'$axf': 'data-backups@1', 'dir': str(out), 'last': json.loads(last.read_text('utf-8')) if last.is_file() else None,
+    try:
+        last_doc = json.loads(last.read_text('utf-8')) if last.is_file() else None
+    except (OSError, ValueError):  # an older writer mid-write: report no last backup rather than a 500
+        last_doc = None
+    return {'$axf': 'data-backups@1', 'dir': str(out), 'last': last_doc,
             'kept': [{'file': p.name, 'bytes': p.stat().st_size} for p in backup.backups(out)] if out.is_dir() else [],
             'job': dict(_backup_job)}
 
@@ -281,7 +296,7 @@ def _backup_start(kind: str, by: str, st) -> dict:
                     doc = json.loads(last.read_text('utf-8'))
                     if doc.get('file') == f.name:
                         doc['verify'] = r
-                        last.write_text(json.dumps(doc, indent=1), 'utf-8')
+                        backup.write_last(out, doc)
                 _backup_job.update(state='done', ok=bool(r['ok']), file=f.name, finishedAt=now_iso())
         except BaseException as e:  # noqa: BLE001 — reported on the job (SystemExit included), never raised into the server
             _backup_job.update(state='failed', ok=False, error=f'{type(e).__name__}: {e}'[:300], finishedAt=now_iso())

@@ -1,0 +1,5575 @@
+{
+  "contract": "page-toolbar@1",
+  "resolve": {
+    "lander running, everything fits": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": true,
+          "buttons": [
+            "live/w1",
+            "live/w2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now",
+          "icon": "play",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "2",
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry",
+          "icon": "refresh",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {
+              "build": "b1"
+            }
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix",
+          "icon": "hammer",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "build": "b1",
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "lander/pause",
+          "label": "Pause",
+          "title": "Pause",
+          "icon": "pause",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": false,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:pause",
+          "origin": "asset",
+          "invocation": {
+            "kind": "handler",
+            "id": "gate.pause",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules",
+          "icon": "trash",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/home",
+          "label": "Home",
+          "title": "Home — requires dev.tools",
+          "icon": "home",
+          "enabled": false,
+          "visible": true,
+          "reason": "requires dev.tools",
+          "pressed": null,
+          "badge": "3",
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "auto",
+          "requires": "dev.tools",
+          "address": "toolbar:gate.auto-lander/button:home",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "nav:home",
+            "spec": "nav:home",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w1",
+          "label": "Plan",
+          "title": "Plan",
+          "icon": "layers",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w1",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w1",
+            "spec": "windows.restore:w1",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w2",
+          "label": "Terminal",
+          "title": "Terminal — not available",
+          "icon": "chevron-right",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w2",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w2",
+            "spec": "windows.restore:w2",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "2",
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {
+                "build": "b1"
+              }
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "build": "b1",
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "pause",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:pause",
+            "label": "Pause",
+            "icon": "pause",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": false,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "handler:gate.pause",
+            "invocation": {
+              "kind": "handler",
+              "id": "gate.pause",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "home",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:home",
+            "label": "Home",
+            "icon": "home",
+            "enabled": false,
+            "visible": true,
+            "reason": "requires dev.tools",
+            "pressed": null,
+            "badge": "3",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:nav:home",
+            "invocation": {
+              "kind": "action",
+              "id": "nav:home",
+              "spec": "nav:home",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": "dev.tools",
+            "origin": "asset"
+          },
+          {
+            "id": "w1",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w1",
+            "label": "Plan",
+            "icon": "layers",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w1",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w1",
+              "spec": "windows.restore:w1",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          },
+          {
+            "id": "w2",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w2",
+            "label": "Terminal",
+            "icon": "chevron-right",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w2",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w2",
+              "spec": "windows.restore:w2",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          }
+        ]
+      }
+    },
+    "lander running, room for 3": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": true,
+          "buttons": [
+            "live/w1",
+            "live/w2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now",
+          "icon": "play",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "2",
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry",
+          "icon": "refresh",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {
+              "build": "b1"
+            }
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix",
+          "icon": "hammer",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "build": "b1",
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "lander/pause",
+          "label": "Pause",
+          "title": "Pause",
+          "icon": "pause",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": false,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:pause",
+          "origin": "asset",
+          "invocation": {
+            "kind": "handler",
+            "id": "gate.pause",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules",
+          "icon": "trash",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/home",
+          "label": "Home",
+          "title": "Home — requires dev.tools",
+          "icon": "home",
+          "enabled": false,
+          "visible": true,
+          "reason": "requires dev.tools",
+          "pressed": null,
+          "badge": "3",
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "auto",
+          "requires": "dev.tools",
+          "address": "toolbar:gate.auto-lander/button:home",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "nav:home",
+            "spec": "nav:home",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w1",
+          "label": "Plan",
+          "title": "Plan",
+          "icon": "layers",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w1",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w1",
+            "spec": "windows.restore:w1",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w2",
+          "label": "Terminal",
+          "title": "Terminal — not available",
+          "icon": "chevron-right",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w2",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w2",
+            "spec": "windows.restore:w2",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "run",
+        "retry",
+        "pause"
+      ],
+      "more": [
+        "fix",
+        "reset",
+        "settings",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "2",
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {
+                "build": "b1"
+              }
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "build": "b1",
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "pause",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:pause",
+            "label": "Pause",
+            "icon": "pause",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": false,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "handler:gate.pause",
+            "invocation": {
+              "kind": "handler",
+              "id": "gate.pause",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "home",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:home",
+            "label": "Home",
+            "icon": "home",
+            "enabled": false,
+            "visible": true,
+            "reason": "requires dev.tools",
+            "pressed": null,
+            "badge": "3",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:nav:home",
+            "invocation": {
+              "kind": "action",
+              "id": "nav:home",
+              "spec": "nav:home",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "auto",
+            "inMore": true,
+            "requires": "dev.tools",
+            "origin": "asset"
+          },
+          {
+            "id": "w1",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w1",
+            "label": "Plan",
+            "icon": "layers",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w1",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w1",
+              "spec": "windows.restore:w1",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": true,
+            "requires": null,
+            "origin": "provider:windows"
+          },
+          {
+            "id": "w2",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w2",
+            "label": "Terminal",
+            "icon": "chevron-right",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w2",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w2",
+              "spec": "windows.restore:w2",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": true,
+            "requires": null,
+            "origin": "provider:windows"
+          }
+        ]
+      }
+    },
+    "lander paused, nothing selected": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": true,
+          "buttons": [
+            "live/w1",
+            "live/w2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now — not available in this state",
+          "icon": "play",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available in this state",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry — not available in this state",
+          "icon": "refresh",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available in this state",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix — not available in this state",
+          "icon": "hammer",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available in this state",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "lander/pause",
+          "label": "Pause",
+          "title": "Pause",
+          "icon": "pause",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": true,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:pause",
+          "origin": "asset",
+          "invocation": {
+            "kind": "handler",
+            "id": "gate.pause",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules",
+          "icon": "trash",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/home",
+          "label": "Home",
+          "title": "Home — requires dev.tools",
+          "icon": "home",
+          "enabled": false,
+          "visible": true,
+          "reason": "requires dev.tools",
+          "pressed": null,
+          "badge": "3",
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "auto",
+          "requires": "dev.tools",
+          "address": "toolbar:gate.auto-lander/button:home",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "nav:home",
+            "spec": "nav:home",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w1",
+          "label": "Plan",
+          "title": "Plan",
+          "icon": "layers",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w1",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w1",
+            "spec": "windows.restore:w1",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w2",
+          "label": "Terminal",
+          "title": "Terminal — not available",
+          "icon": "chevron-right",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w2",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w2",
+            "spec": "windows.restore:w2",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available in this state",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available in this state",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available in this state",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "pause",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:pause",
+            "label": "Pause",
+            "icon": "pause",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": true,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "handler:gate.pause",
+            "invocation": {
+              "kind": "handler",
+              "id": "gate.pause",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "home",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:home",
+            "label": "Home",
+            "icon": "home",
+            "enabled": false,
+            "visible": true,
+            "reason": "requires dev.tools",
+            "pressed": null,
+            "badge": "3",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:nav:home",
+            "invocation": {
+              "kind": "action",
+              "id": "nav:home",
+              "spec": "nav:home",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": "dev.tools",
+            "origin": "asset"
+          },
+          {
+            "id": "w1",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w1",
+            "label": "Plan",
+            "icon": "layers",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w1",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w1",
+              "spec": "windows.restore:w1",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          },
+          {
+            "id": "w2",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w2",
+            "label": "Terminal",
+            "icon": "chevron-right",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w2",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w2",
+              "spec": "windows.restore:w2",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          }
+        ]
+      }
+    },
+    "lander off: pause hidden": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": true,
+          "buttons": [
+            "live/w1",
+            "live/w2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now — not available in this state",
+          "icon": "play",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available in this state",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry — not available in this state",
+          "icon": "refresh",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available in this state",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix — not available in this state",
+          "icon": "hammer",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available in this state",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules",
+          "icon": "trash",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/home",
+          "label": "Home",
+          "title": "Home — requires dev.tools",
+          "icon": "home",
+          "enabled": false,
+          "visible": true,
+          "reason": "requires dev.tools",
+          "pressed": null,
+          "badge": "3",
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "auto",
+          "requires": "dev.tools",
+          "address": "toolbar:gate.auto-lander/button:home",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "nav:home",
+            "spec": "nav:home",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w1",
+          "label": "Plan",
+          "title": "Plan",
+          "icon": "layers",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w1",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w1",
+            "spec": "windows.restore:w1",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w2",
+          "label": "Terminal",
+          "title": "Terminal — not available",
+          "icon": "chevron-right",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w2",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w2",
+            "spec": "windows.restore:w2",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [
+        {
+          "key": "lander/pause",
+          "reason": "hidden by the page state"
+        }
+      ],
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "reset",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available in this state",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available in this state",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available in this state",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "home",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:home",
+            "label": "Home",
+            "icon": "home",
+            "enabled": false,
+            "visible": true,
+            "reason": "requires dev.tools",
+            "pressed": null,
+            "badge": "3",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:nav:home",
+            "invocation": {
+              "kind": "action",
+              "id": "nav:home",
+              "spec": "nav:home",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": "dev.tools",
+            "origin": "asset"
+          },
+          {
+            "id": "w1",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w1",
+            "label": "Plan",
+            "icon": "layers",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w1",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w1",
+              "spec": "windows.restore:w1",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          },
+          {
+            "id": "w2",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w2",
+            "label": "Terminal",
+            "icon": "chevron-right",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w2",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w2",
+              "spec": "windows.restore:w2",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          }
+        ]
+      }
+    },
+    "lander with user overrides and tap off": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons",
+        "align": "start",
+        "density": "compact",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": false,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": true,
+          "buttons": [
+            "live/w1",
+            "live/w2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now",
+          "icon": "play",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "2",
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry",
+          "icon": "refresh",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {
+              "build": "b1"
+            }
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix",
+          "icon": "hammer",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "build": "b1",
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "lander/pause",
+          "label": "Pause",
+          "title": "Pause",
+          "icon": "pause",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": false,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:pause",
+          "origin": "asset",
+          "invocation": {
+            "kind": "handler",
+            "id": "gate.pause",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules",
+          "icon": "trash",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/home",
+          "label": "Home",
+          "title": "Home — requires dev.tools",
+          "icon": "home",
+          "enabled": false,
+          "visible": true,
+          "reason": "requires dev.tools",
+          "pressed": null,
+          "badge": "3",
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "auto",
+          "requires": "dev.tools",
+          "address": "toolbar:gate.auto-lander/button:home",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "nav:home",
+            "spec": "nav:home",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w1",
+          "label": "Plan",
+          "title": "Plan",
+          "icon": "layers",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w1",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w1",
+            "spec": "windows.restore:w1",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w2",
+          "label": "Terminal",
+          "title": "Terminal — not available",
+          "icon": "chevron-right",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w2",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w2",
+            "spec": "windows.restore:w2",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons",
+          "align": "start",
+          "density": "compact",
+          "showSearch": false
+        },
+        "tapConfirm": false,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "2",
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {
+                "build": "b1"
+              }
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "build": "b1",
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "pause",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:pause",
+            "label": "Pause",
+            "icon": "pause",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": false,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "handler:gate.pause",
+            "invocation": {
+              "kind": "handler",
+              "id": "gate.pause",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "home",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:home",
+            "label": "Home",
+            "icon": "home",
+            "enabled": false,
+            "visible": true,
+            "reason": "requires dev.tools",
+            "pressed": null,
+            "badge": "3",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:nav:home",
+            "invocation": {
+              "kind": "action",
+              "id": "nav:home",
+              "spec": "nav:home",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": "dev.tools",
+            "origin": "asset"
+          },
+          {
+            "id": "w1",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w1",
+            "label": "Plan",
+            "icon": "layers",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w1",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w1",
+              "spec": "windows.restore:w1",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          },
+          {
+            "id": "w2",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w2",
+            "label": "Terminal",
+            "icon": "chevron-right",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w2",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w2",
+              "spec": "windows.restore:w2",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          }
+        ]
+      }
+    },
+    "lander, pause handler not wired, host takes home": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": true,
+          "buttons": [
+            "live/w1",
+            "live/w2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now",
+          "icon": "play",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "2",
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry",
+          "icon": "refresh",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {
+              "build": "b1"
+            }
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix",
+          "icon": "hammer",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "build": "b1",
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "lander/pause",
+          "label": "Pause",
+          "title": "Pause — not wired: no handler \"gate.pause\" on this page",
+          "icon": "pause",
+          "enabled": false,
+          "visible": true,
+          "reason": "not wired: no handler \"gate.pause\" on this page",
+          "pressed": false,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:pause",
+          "origin": "asset",
+          "invocation": {
+            "kind": "handler",
+            "id": "gate.pause",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules",
+          "icon": "trash",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w1",
+          "label": "Plan",
+          "title": "Plan",
+          "icon": "layers",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w1",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w1",
+            "spec": "windows.restore:w1",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w2",
+          "label": "Terminal",
+          "title": "Terminal — not available",
+          "icon": "chevron-right",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w2",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w2",
+            "spec": "windows.restore:w2",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [
+        {
+          "key": "rules/home",
+          "reason": "done by the host app"
+        }
+      ],
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "2",
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {
+                "build": "b1"
+              }
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "build": "b1",
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "pause",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:pause",
+            "label": "Pause",
+            "icon": "pause",
+            "enabled": false,
+            "visible": true,
+            "reason": "not wired: no handler \"gate.pause\" on this page",
+            "pressed": false,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "handler:gate.pause",
+            "invocation": {
+              "kind": "handler",
+              "id": "gate.pause",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "w1",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w1",
+            "label": "Plan",
+            "icon": "layers",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w1",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w1",
+              "spec": "windows.restore:w1",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          },
+          {
+            "id": "w2",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w2",
+            "label": "Terminal",
+            "icon": "chevron-right",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w2",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w2",
+              "spec": "windows.restore:w2",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          }
+        ]
+      }
+    },
+    "lander, host locks reset": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": true,
+          "buttons": [
+            "live/w1",
+            "live/w2"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now",
+          "icon": "play",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "2",
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry",
+          "icon": "refresh",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {
+              "build": "b1"
+            }
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix",
+          "icon": "hammer",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "build": "b1",
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "lander/pause",
+          "label": "Pause",
+          "title": "Pause",
+          "icon": "pause",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": false,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:pause",
+          "origin": "asset",
+          "invocation": {
+            "kind": "handler",
+            "id": "gate.pause",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules — the host owns the rules",
+          "icon": "trash",
+          "enabled": false,
+          "visible": true,
+          "reason": "the host owns the rules",
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/home",
+          "label": "Home",
+          "title": "Home — requires dev.tools",
+          "icon": "home",
+          "enabled": false,
+          "visible": true,
+          "reason": "requires dev.tools",
+          "pressed": null,
+          "badge": "3",
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "auto",
+          "requires": "dev.tools",
+          "address": "toolbar:gate.auto-lander/button:home",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "nav:home",
+            "spec": "nav:home",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w1",
+          "label": "Plan",
+          "title": "Plan",
+          "icon": "layers",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w1",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w1",
+            "spec": "windows.restore:w1",
+            "args": {}
+          }
+        },
+        {
+          "key": "live/w2",
+          "label": "Terminal",
+          "title": "Terminal — not available",
+          "icon": "chevron-right",
+          "enabled": false,
+          "visible": true,
+          "reason": "not available",
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:w2",
+          "origin": "provider:windows",
+          "invocation": {
+            "kind": "action",
+            "id": "windows.restore:w2",
+            "spec": "windows.restore:w2",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "2",
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {
+                "build": "b1"
+              }
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "build": "b1",
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "pause",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:pause",
+            "label": "Pause",
+            "icon": "pause",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": false,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "handler:gate.pause",
+            "invocation": {
+              "kind": "handler",
+              "id": "gate.pause",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": false,
+            "visible": true,
+            "reason": "the host owns the rules",
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "home",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:home",
+            "label": "Home",
+            "icon": "home",
+            "enabled": false,
+            "visible": true,
+            "reason": "requires dev.tools",
+            "pressed": null,
+            "badge": "3",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:nav:home",
+            "invocation": {
+              "kind": "action",
+              "id": "nav:home",
+              "spec": "nav:home",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": "dev.tools",
+            "origin": "asset"
+          },
+          {
+            "id": "w1",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w1",
+            "label": "Plan",
+            "icon": "layers",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w1",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w1",
+              "spec": "windows.restore:w1",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          },
+          {
+            "id": "w2",
+            "group": "live",
+            "address": "toolbar:gate.auto-lander/button:w2",
+            "label": "Terminal",
+            "icon": "chevron-right",
+            "enabled": false,
+            "visible": true,
+            "reason": "not available",
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:windows.restore:w2",
+            "invocation": {
+              "kind": "action",
+              "id": "windows.restore:w2",
+              "spec": "windows.restore:w2",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "provider:windows"
+          }
+        ]
+      }
+    },
+    "lander, no registries: everything assumed wired": {
+      "id": "gate.auto-lander",
+      "address": "toolbar:gate.auto-lander",
+      "scope": {
+        "kind": "view",
+        "id": "gate"
+      },
+      "slot": "auto-lander",
+      "label": "Auto-lander",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [
+        "paused",
+        "selection.id",
+        "status",
+        "waiting"
+      ],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "lander",
+          "label": "Lander",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "lander/run",
+            "lander/retry",
+            "lander/fix",
+            "lander/pause"
+          ]
+        },
+        {
+          "id": "rules",
+          "label": "Rules",
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "rules/reset",
+            "rules/settings",
+            "rules/home"
+          ]
+        },
+        {
+          "id": "live",
+          "label": "Open windows",
+          "provider": "windows",
+          "visible": false,
+          "buttons": []
+        }
+      ],
+      "buttons": [
+        {
+          "key": "lander/run",
+          "label": "Run now",
+          "title": "Run now",
+          "icon": "play",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "2",
+          "destructive": false,
+          "confirm": null,
+          "priority": 200,
+          "overflow": "never",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:run",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-run",
+            "input": {}
+          }
+        },
+        {
+          "key": "lander/retry",
+          "label": "Retry",
+          "title": "Retry",
+          "icon": "refresh",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:retry",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-retry",
+            "input": {
+              "build": "b1"
+            }
+          }
+        },
+        {
+          "key": "lander/fix",
+          "label": "Fix",
+          "title": "Fix",
+          "icon": "hammer",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 90,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:fix",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "lander-fix",
+            "input": {
+              "build": "b1",
+              "mode": "fix"
+            }
+          }
+        },
+        {
+          "key": "lander/pause",
+          "label": "Pause",
+          "title": "Pause",
+          "icon": "pause",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": false,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:pause",
+          "origin": "asset",
+          "invocation": {
+            "kind": "handler",
+            "id": "gate.pause",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/reset",
+          "label": "Reset rules",
+          "title": "Reset rules",
+          "icon": "trash",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": true,
+          "confirm": "Reset every rule to the defaults?",
+          "priority": 10,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:reset",
+          "origin": "asset",
+          "invocation": {
+            "kind": "command",
+            "plugin": "gate",
+            "command": "rules-reset",
+            "input": {}
+          }
+        },
+        {
+          "key": "rules/settings",
+          "label": "Gate settings",
+          "title": "Gate settings",
+          "icon": "settings",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "always",
+          "requires": null,
+          "address": "toolbar:gate.auto-lander/button:settings",
+          "origin": "asset",
+          "invocation": {
+            "kind": "control",
+            "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "verb": "open",
+            "args": {}
+          }
+        },
+        {
+          "key": "rules/home",
+          "label": "Home",
+          "title": "Home",
+          "icon": "home",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 50,
+          "overflow": "auto",
+          "requires": "dev.tools",
+          "address": "toolbar:gate.auto-lander/button:home",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "nav:home",
+            "spec": "nav:home",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "home"
+      ],
+      "more": [
+        "settings"
+      ],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "gate.auto-lander",
+        "asset": "gate-auto-lander",
+        "scope": "view:gate",
+        "slot": "auto-lander",
+        "label": "Auto-lander",
+        "address": "toolbar:gate.auto-lander",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [
+          "paused",
+          "selection.id",
+          "status",
+          "waiting"
+        ],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "run",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:run",
+            "label": "Run now",
+            "icon": "play",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "2",
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-run",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-run",
+              "input": {}
+            },
+            "priority": 200,
+            "overflow": "never",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "retry",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:retry",
+            "label": "Retry",
+            "icon": "refresh",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-retry",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-retry",
+              "input": {
+                "build": "b1"
+              }
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "fix",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:fix",
+            "label": "Fix",
+            "icon": "hammer",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "command:gate/lander-fix",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "lander-fix",
+              "input": {
+                "build": "b1",
+                "mode": "fix"
+              }
+            },
+            "priority": 90,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "pause",
+            "group": "lander",
+            "address": "toolbar:gate.auto-lander/button:pause",
+            "label": "Pause",
+            "icon": "pause",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": false,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "handler:gate.pause",
+            "invocation": {
+              "kind": "handler",
+              "id": "gate.pause",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "reset",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:reset",
+            "label": "Reset rules",
+            "icon": "trash",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": true,
+            "confirm": true,
+            "action": "command:gate/rules-reset",
+            "invocation": {
+              "kind": "command",
+              "plugin": "gate",
+              "command": "rules-reset",
+              "input": {}
+            },
+            "priority": 10,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "settings",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:settings",
+            "label": "Gate settings",
+            "icon": "settings",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "control:view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+            "invocation": {
+              "kind": "control",
+              "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=gate",
+              "verb": "open",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "always",
+            "inMore": true,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "home",
+            "group": "rules",
+            "address": "toolbar:gate.auto-lander/button:home",
+            "label": "Home",
+            "icon": "home",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:nav:home",
+            "invocation": {
+              "kind": "action",
+              "id": "nav:home",
+              "spec": "nav:home",
+              "args": {}
+            },
+            "priority": 50,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": "dev.tools",
+            "origin": "asset"
+          }
+        ]
+      }
+    },
+    "plugin main toolbar": {
+      "id": "ai.amberx.axf.console.builds-page",
+      "address": "toolbar:ai.amberx.axf.console.builds-page",
+      "scope": {
+        "kind": "plugin",
+        "id": "ai.amberx.axf.console.builds-page"
+      },
+      "slot": "main",
+      "label": "Builds",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "g",
+          "label": null,
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "g/refresh"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "g/refresh",
+          "label": "Refresh",
+          "title": "Refresh",
+          "icon": "refresh",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:ai.amberx.axf.console.builds-page/button:refresh",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "builds.refresh",
+            "spec": "builds.refresh",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "refresh"
+      ],
+      "more": [],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "ai.amberx.axf.console.builds-page",
+        "asset": "builds-main",
+        "scope": "plugin:ai.amberx.axf.console.builds-page",
+        "slot": "main",
+        "label": "Builds",
+        "address": "toolbar:ai.amberx.axf.console.builds-page",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "refresh",
+            "group": "g",
+            "address": "toolbar:ai.amberx.axf.console.builds-page/button:refresh",
+            "label": "Refresh",
+            "icon": "refresh",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:builds.refresh",
+            "invocation": {
+              "kind": "action",
+              "id": "builds.refresh",
+              "spec": "builds.refresh",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          }
+        ]
+      }
+    },
+    "frame toolbar (old shape) as the app toolbar": {
+      "id": "app",
+      "address": "toolbar:app",
+      "scope": {
+        "kind": "app",
+        "id": ""
+      },
+      "slot": "main",
+      "label": "Editor",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "file",
+          "label": null,
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "file/new",
+            "file/save"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "file/new",
+          "label": "New",
+          "title": "New",
+          "icon": "plus",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:app/button:new",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "file.new",
+            "spec": "file.new",
+            "args": {}
+          }
+        },
+        {
+          "key": "file/save",
+          "label": "Save",
+          "title": "Save",
+          "icon": "save",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "99+",
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:app/button:save",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "file.save",
+            "spec": "file.save",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "new",
+        "save"
+      ],
+      "more": [],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "app",
+        "asset": "editor-classic-copy",
+        "scope": "app",
+        "slot": "main",
+        "label": "Editor",
+        "address": "toolbar:app",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "new",
+            "group": "file",
+            "address": "toolbar:app/button:new",
+            "label": "New",
+            "icon": "plus",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:file.new",
+            "invocation": {
+              "kind": "action",
+              "id": "file.new",
+              "spec": "file.new",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "save",
+            "group": "file",
+            "address": "toolbar:app/button:save",
+            "label": "Save",
+            "icon": "save",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "99+",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:file.save",
+            "invocation": {
+              "kind": "action",
+              "id": "file.save",
+              "spec": "file.save",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          }
+        ]
+      }
+    },
+    "frame toolbar lent to a page": {
+      "id": "plan",
+      "address": "toolbar:plan",
+      "scope": {
+        "kind": "app",
+        "id": ""
+      },
+      "slot": "main",
+      "label": "Editor",
+      "look": {
+        "variant": "icons-labels",
+        "align": "start",
+        "showSearch": false
+      },
+      "tapConfirm": {
+        "enabled": true,
+        "armMs": 3000
+      },
+      "stateKeys": [],
+      "moreLabel": "More",
+      "groups": [
+        {
+          "id": "file",
+          "label": null,
+          "provider": null,
+          "visible": true,
+          "buttons": [
+            "file/new",
+            "file/save"
+          ]
+        }
+      ],
+      "buttons": [
+        {
+          "key": "file/new",
+          "label": "New",
+          "title": "New",
+          "icon": "plus",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": null,
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:plan/button:new",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "file.new",
+            "spec": "file.new",
+            "args": {}
+          }
+        },
+        {
+          "key": "file/save",
+          "label": "Save",
+          "title": "Save",
+          "icon": "save",
+          "enabled": true,
+          "visible": true,
+          "reason": null,
+          "pressed": null,
+          "badge": "99+",
+          "destructive": false,
+          "confirm": null,
+          "priority": 100,
+          "overflow": "auto",
+          "requires": null,
+          "address": "toolbar:plan/button:save",
+          "origin": "asset",
+          "invocation": {
+            "kind": "action",
+            "id": "file.save",
+            "spec": "file.save",
+            "args": {}
+          }
+        }
+      ],
+      "hidden": [],
+      "bar": [
+        "new",
+        "save"
+      ],
+      "more": [],
+      "state": {
+        "contract": "page-toolbar@1",
+        "id": "plan",
+        "asset": "editor-classic-copy",
+        "scope": "app",
+        "slot": "main",
+        "label": "Editor",
+        "address": "toolbar:plan",
+        "look": {
+          "variant": "icons-labels",
+          "align": "start",
+          "showSearch": false
+        },
+        "tapConfirm": true,
+        "stateKeys": [],
+        "moreLabel": "More",
+        "buttons": [
+          {
+            "id": "new",
+            "group": "file",
+            "address": "toolbar:plan/button:new",
+            "label": "New",
+            "icon": "plus",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": null,
+            "destructive": false,
+            "confirm": false,
+            "action": "action:file.new",
+            "invocation": {
+              "kind": "action",
+              "id": "file.new",
+              "spec": "file.new",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          },
+          {
+            "id": "save",
+            "group": "file",
+            "address": "toolbar:plan/button:save",
+            "label": "Save",
+            "icon": "save",
+            "enabled": true,
+            "visible": true,
+            "reason": null,
+            "pressed": null,
+            "badge": "99+",
+            "destructive": false,
+            "confirm": false,
+            "action": "action:file.save",
+            "invocation": {
+              "kind": "action",
+              "id": "file.save",
+              "spec": "file.save",
+              "args": {}
+            },
+            "priority": 100,
+            "overflow": "auto",
+            "inMore": false,
+            "requires": null,
+            "origin": "asset"
+          }
+        ]
+      }
+    }
+  },
+  "match": {
+    "gate-auto-lander ← view + slot": true,
+    "gate-auto-lander ← view main slot: none": false,
+    "gate-auto-lander ← plugin main": false,
+    "gate-auto-lander ← plugin with its view too": false,
+    "gate-auto-lander ← user pick wins": true,
+    "gate-auto-lander ← user pick of an unknown asset falls back": true,
+    "gate-auto-lander ← case-insensitive view": true,
+    "gate-auto-lander ← unknown page": false,
+    "builds-main ← view + slot": false,
+    "builds-main ← view main slot: none": false,
+    "builds-main ← plugin main": true,
+    "builds-main ← plugin with its view too": true,
+    "builds-main ← user pick wins": false,
+    "builds-main ← user pick of an unknown asset falls back": false,
+    "builds-main ← case-insensitive view": false,
+    "builds-main ← unknown page": false,
+    "editor-classic-copy ← view + slot": false,
+    "editor-classic-copy ← view main slot: none": false,
+    "editor-classic-copy ← plugin main": false,
+    "editor-classic-copy ← plugin with its view too": false,
+    "editor-classic-copy ← user pick wins": false,
+    "editor-classic-copy ← user pick of an unknown asset falls back": false,
+    "editor-classic-copy ← case-insensitive view": false,
+    "editor-classic-copy ← unknown page": false
+  },
+  "pick": {
+    "view + slot": {
+      "id": "gate.auto-lander",
+      "asset": "gate-auto-lander"
+    },
+    "view main slot: none": {
+      "id": "gate",
+      "asset": null
+    },
+    "plugin main": {
+      "id": "ai.amberx.axf.console.builds-page",
+      "asset": "builds-main"
+    },
+    "plugin with its view too": {
+      "id": "builds",
+      "asset": "builds-main"
+    },
+    "user pick wins": {
+      "id": "gate.auto-lander",
+      "asset": "editor-classic-copy"
+    },
+    "user pick of an unknown asset falls back": {
+      "id": "gate.auto-lander",
+      "asset": "gate-auto-lander"
+    },
+    "case-insensitive view": {
+      "id": "gate.auto-lander",
+      "asset": "gate-auto-lander"
+    },
+    "unknown page": {
+      "id": "nowhere",
+      "asset": null
+    }
+  },
+  "settingsIds": {
+    "view:gate / -": "gate",
+    "view:gate / auto-lander": "gate.auto-lander",
+    "view:gate / main": "gate",
+    "plugin:ai.amberx.axf.console.builds-page / queue": "ai.amberx.axf.console.builds-page.queue",
+    "app / x": "app",
+    "view:PlanStudio2 / tree": "planstudio2.tree"
+  },
+  "overflow": {
+    "auto, fits": {
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "label": "More"
+    },
+    "auto, room for 4": {
+      "bar": [
+        "run",
+        "retry",
+        "pause",
+        "w1"
+      ],
+      "more": [
+        "fix",
+        "reset",
+        "settings",
+        "home",
+        "w2"
+      ],
+      "label": "More"
+    },
+    "auto keep 3, room for 1": {
+      "bar": [
+        "run",
+        "retry",
+        "pause"
+      ],
+      "more": [
+        "fix",
+        "reset",
+        "settings",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "label": "More"
+    },
+    "never, room for 1": {
+      "bar": [
+        "run",
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "more": [
+        "settings"
+      ],
+      "label": "More"
+    },
+    "always keep 2": {
+      "bar": [
+        "run",
+        "retry",
+        "pause"
+      ],
+      "more": [
+        "fix",
+        "reset",
+        "settings",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "label": "Actions"
+    },
+    "always keep 0": {
+      "bar": [
+        "run"
+      ],
+      "more": [
+        "retry",
+        "fix",
+        "pause",
+        "reset",
+        "settings",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "label": "More"
+    },
+    "default rule": {
+      "bar": [
+        "run",
+        "retry"
+      ],
+      "more": [
+        "fix",
+        "pause",
+        "reset",
+        "settings",
+        "home",
+        "w1",
+        "w2"
+      ],
+      "label": "More"
+    }
+  },
+  "invocations": {
+    "file.save": {
+      "kind": "action",
+      "id": "file.save",
+      "spec": "file.save:b1",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "nav:home": {
+      "kind": "action",
+      "id": "nav:home",
+      "spec": "nav:home:b1",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "swap:layout:next": {
+      "kind": "action",
+      "id": "swap:layout:next",
+      "spec": "swap:layout:next:b1",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "action:plan.focus": {
+      "kind": "action",
+      "id": "plan.focus",
+      "spec": "plan.focus:b1",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "command:gate/lander-run": {
+      "kind": "command",
+      "plugin": "gate",
+      "command": "lander-run",
+      "input": {
+        "build": "b1"
+      }
+    },
+    "control:view:builds": {
+      "kind": "control",
+      "address": "view:builds",
+      "verb": "open",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "control:view:builds/button:refresh": {
+      "kind": "control",
+      "address": "view:builds/button:refresh",
+      "verb": "press",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "control:setting:axf.display.fontScale": {
+      "kind": "control",
+      "address": "setting:axf.display.fontScale",
+      "verb": "press",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "control:button:save": {
+      "kind": "control",
+      "address": "button:save",
+      "verb": "press",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "control:view:settings/tab:settings.tabs=plugins": {
+      "kind": "control",
+      "address": "view:settings/tab:settings.tabs=plugins",
+      "verb": "open",
+      "args": {
+        "build": "b1"
+      }
+    },
+    "handler:gate.pause": {
+      "kind": "handler",
+      "id": "gate.pause",
+      "args": {
+        "build": "b1"
+      }
+    }
+  },
+  "find": {
+    "byId": "lander/retry",
+    "byKey": "rules/reset",
+    "caseInsensitive": "lander/retry",
+    "missing": null
+  },
+  "starters": {
+    "amberx-signature": {
+      "record": {
+        "id": "amberx-signature",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "pages/home→action:nav:home",
+        "app/settings→action:app.settings"
+      ]
+    },
+    "appearance-studio": {
+      "record": {
+        "id": "appearance-studio",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "package/next-package→action:design.package:next",
+        "themes/next-color→action:swap:color-theme:next",
+        "themes/next-style→action:swap:style-theme:next",
+        "themes/next-layout→action:swap:layout:next",
+        "roll/random→action:assets.random",
+        "roll/reset→action:assets.reset",
+        "roll/appearance→action:settings.open:appearance"
+      ]
+    },
+    "approvals-desk": {
+      "record": {
+        "id": "approvals-desk",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[1].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "review/undo→action:edit.undo",
+        "review/redo→action:edit.redo",
+        "review/save→action:file.save",
+        "inbox/alerts→action:alerts.open"
+      ]
+    },
+    "brand-bar": {
+      "record": {
+        "id": "brand-bar",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": []
+    },
+    "chrome-toggles": {
+      "record": {
+        "id": "chrome-toggles",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "spacing/spacing-tight→action:spacing:tight",
+        "spacing/spacing-compact→action:spacing:compact",
+        "spacing/spacing-regular→action:spacing:regular"
+      ]
+    },
+    "data-grid-tools": {
+      "record": {
+        "id": "data-grid-tools",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "rows/new→action:file.new",
+        "rows/copy→action:edit.copy",
+        "rows/delete→action:edit.delete",
+        "rows/export→action:file.export"
+      ]
+    },
+    "developer-ops": {
+      "record": {
+        "id": "developer-ops",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "run/build→action:run.build",
+        "run/deploy→action:run.deploy",
+        "tools/console→action:dev.console"
+      ]
+    },
+    "dialog-launcher": {
+      "record": {
+        "id": "dialog-launcher",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": []
+    },
+    "editor-classic": {
+      "record": {
+        "id": "editor-classic",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "file/new→action:file.new",
+        "file/open-file→action:file.open",
+        "file/save→action:file.save",
+        "file/export→action:file.export",
+        "history/undo→action:edit.undo",
+        "history/redo→action:edit.redo",
+        "clipboard/cut→action:edit.cut",
+        "clipboard/copy→action:edit.copy",
+        "clipboard/paste→action:edit.paste",
+        "clipboard/delete→action:edit.delete"
+      ]
+    },
+    "enterprise-command": {
+      "record": {
+        "id": "enterprise-command",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "file/new→action:file.new",
+        "file/open-file→action:file.open",
+        "file/save→action:file.save",
+        "file/export→action:file.export",
+        "edit/undo→action:edit.undo",
+        "edit/redo→action:edit.redo",
+        "app/alerts→action:alerts.open",
+        "app/settings→action:app.settings"
+      ]
+    },
+    "kiosk-lite": {
+      "record": {
+        "id": "kiosk-lite",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "help/docs→action:help.docs"
+      ]
+    },
+    "labeled-actions": {
+      "record": {
+        "id": "labeled-actions",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "doc/save→action:file.save",
+        "doc/export→action:file.export",
+        "look/color→action:swap:color-theme:next",
+        "look/layout→action:swap:layout:next",
+        "ship/build→action:run.build",
+        "ship/deploy→action:run.deploy"
+      ]
+    },
+    "live-pages": {
+      "record": {
+        "id": "live-pages",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "pages/home→action:nav:home"
+      ]
+    },
+    "minimal-glass": {
+      "record": {
+        "id": "minimal-glass",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[0].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "app/alerts→action:alerts.open",
+        "app/settings→action:app.settings"
+      ]
+    },
+    "navigator-strip": {
+      "record": {
+        "id": "navigator-strip",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": []
+    },
+    "ops-monitor": {
+      "record": {
+        "id": "ops-monitor",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "app/settings→action:app.settings",
+        "app/docs→action:help.docs"
+      ]
+    },
+    "portal-header": {
+      "record": {
+        "id": "portal-header",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": []
+    },
+    "power-user": {
+      "record": {
+        "id": "power-user",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "file/new→action:file.new",
+        "file/open-file→action:file.open",
+        "file/save→action:file.save",
+        "edit/undo→action:edit.undo",
+        "edit/redo→action:edit.redo",
+        "edit/cut→action:edit.cut",
+        "edit/copy→action:edit.copy",
+        "edit/paste→action:edit.paste",
+        "app/alerts→action:alerts.open",
+        "app/settings→action:app.settings",
+        "app/shortcuts→action:view.shortcuts"
+      ]
+    },
+    "quick-create": {
+      "record": {
+        "id": "quick-create",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "file/new→action:file.new",
+        "file/open-file→action:file.open"
+      ]
+    },
+    "reader-bar": {
+      "record": {
+        "id": "reader-bar",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "spacing/spacing-compact→action:spacing:compact",
+        "spacing/spacing-regular→action:spacing:regular",
+        "help/docs→action:help.docs"
+      ]
+    },
+    "review-flow": {
+      "record": {
+        "id": "review-flow",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "history/undo→action:edit.undo",
+        "history/redo→action:edit.redo",
+        "history/save→action:file.save",
+        "inbox/alerts→action:alerts.open"
+      ]
+    },
+    "search-first": {
+      "record": {
+        "id": "search-first",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": []
+    },
+    "settings-jump": {
+      "record": {
+        "id": "settings-jump",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": []
+    },
+    "settings-page": {
+      "record": {
+        "id": "settings-page",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "tabs/appearance→action:settings.open:appearance",
+        "tabs/account→action:settings.open:account",
+        "tabs/plugins→action:settings.open:plugins",
+        "tabs/about→action:settings.open:about",
+        "look/restore→action:appearance.restore"
+      ]
+    },
+    "standard-icons": {
+      "record": {
+        "id": "standard-icons",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "file/new→action:file.new",
+        "file/open→action:file.open",
+        "file/save→action:file.save",
+        "edit/undo→action:edit.undo",
+        "edit/redo→action:edit.redo",
+        "edit/cut→action:edit.cut",
+        "edit/copy→action:edit.copy",
+        "edit/paste→action:edit.paste",
+        "view/color→action:swap:color-theme:next",
+        "view/style→action:swap:style-theme:next",
+        "view/layout→action:swap:layout:next",
+        "view/random→action:assets.random"
+      ]
+    },
+    "status-strip": {
+      "record": {
+        "id": "status-strip",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": []
+    },
+    "text-commands": {
+      "record": {
+        "id": "text-commands",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "go/go-home→action:nav:home",
+        "go/go-components→action:nav:components",
+        "go/go-assets→action:nav:assets",
+        "go/go-account→action:nav:account",
+        "look/random→action:assets.random",
+        "look/reset→action:assets.reset"
+      ]
+    },
+    "touch-dock": {
+      "record": {
+        "id": "touch-dock",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto",
+          "groups[2].items[0].badge: counter:alerts.unread"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "go/home→action:nav:home",
+        "app/alerts→action:alerts.open",
+        "app/settings→action:app.settings"
+      ]
+    },
+    "window-switcher": {
+      "record": {
+        "id": "window-switcher",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "layout/next-layout→action:swap:layout:next",
+        "layout/toggle-nav→action:slot.hide:nav-menu:toggle"
+      ]
+    },
+    "windows": {
+      "record": {
+        "id": "windows",
+        "contract": "page-toolbar@1",
+        "wasOldShape": true,
+        "changed": true,
+        "changes": [
+          "scope: app",
+          "overflow: auto"
+        ],
+        "sameLook": true
+      },
+      "resolvedAs": [
+        "file/new→action:file.new",
+        "file/open→action:file.open",
+        "file/save→action:file.save",
+        "edit/undo→action:edit.undo",
+        "edit/redo→action:edit.redo",
+        "edit/cut→action:edit.cut",
+        "edit/copy→action:edit.copy",
+        "edit/paste→action:edit.paste",
+        "view/color→action:swap:color-theme:next",
+        "view/style→action:swap:style-theme:next",
+        "view/layout→action:swap:layout:next",
+        "view/random→action:assets.random"
+      ]
+    }
+  },
+  "suggest": [
+    {
+      "ref": "command:gate/rules-reset",
+      "label": "reset to defaults",
+      "icon": "trash",
+      "readOnly": false,
+      "destructive": true,
+      "confirm": true
+    },
+    {
+      "ref": "command:gate/lander-run",
+      "label": "run now",
+      "icon": "play",
+      "readOnly": false,
+      "destructive": false,
+      "confirm": false
+    },
+    {
+      "ref": "command:gate/lander-pause",
+      "label": "pause",
+      "icon": "pause",
+      "readOnly": false,
+      "destructive": false,
+      "confirm": false
+    },
+    {
+      "ref": "command:gate/rules-list",
+      "label": "list",
+      "icon": "list",
+      "readOnly": true,
+      "destructive": false,
+      "confirm": false
+    }
+  ]
+}

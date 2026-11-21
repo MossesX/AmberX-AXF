@@ -299,3 +299,141 @@ def ensure_health() -> bool:
         return False
     _health_done = True
     return True
+
+
+# ---- approvals-relay@1: a decision Brett tapped on a paired phone (Phone Connect)
+#
+# The phone's tap reaches the console over its device token (phone-connect@1, personOnly: a result with by.kind
+# "person" and a tap uuid, checked by the engine's decisionErrors before this is called). It is relayed with the
+# console's owner sign-in, like a console tap without a browser cookie. No route, MCP tool, CLI command or voice phrase
+# reaches this: it is a server-side capability, and it refuses anything that isn't a verified phone tap.
+
+UUID_RE = re.compile(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")
+PHONE_ACTIONS = {"approval": {"approve": "approve", "deny": "decline"}, "veto": {"approve": "approve-now", "deny": "deny", "shelve": "shelve"}}
+
+
+def phone_tap_errors(tap: Any) -> str:
+    """'' when `tap` is a verified phone tap: {kind: "phone-tap", auth: "device", by: {kind: "person", tap: <uuid>}, deviceId, owner, approvalId, prompt, decision}."""
+    if not isinstance(tap, dict) or tap.get("kind") != "phone-tap" or tap.get("auth") != "device":
+        return "only a tap on the paired phone, over its device token, is relayed"
+    by = tap.get("by") if isinstance(tap.get("by"), dict) else {}
+    if by.get("kind") != "person" or not UUID_RE.match(str(by.get("tap") or "")):
+        return "an approval is decided only by Brett's own tap"
+    if not ID_RE.match(str(tap.get("approvalId") or "")):
+        return "not a request id"
+    if tap.get("decision") not in PHONE_ACTIONS.get(str(tap.get("prompt")), {}):
+        return f"{tap.get('decision')!r} is not an action of a {tap.get('prompt')!r} prompt"
+    return ""
+
+
+# What waits on the hub, read with the same owner sign-in (read only). The console's banner reads this feed from
+# Brett's browser; a paired phone has no browser open, so Phone Connect's watcher asks here instead and shows each new
+# approval on the phone. Reading never decides anything: the decision is still only the tap above.
+
+FEED_PATH = "/auth/admin/approvals.json"  # lib-hub HUB_PATHS.feed
+FEED_MAX_BYTES = 262_144
+FEED_MAX_ITEMS = 50
+FEED_CAPS = {"tool": 120, "title": 120, "summary": 600, "time": 40}
+_CTRL_RE = re.compile(r"[\x00-\x1f\x7f]+")
+
+
+def _feed_text(v: Any, cap: int) -> str:
+    return _CTRL_RE.sub(" ", v).strip()[:cap] if isinstance(v, str) else ""
+
+
+def feed_items(body: dict[str, Any]) -> list[dict[str, Any]]:
+    """The hub's feed reply → [{id, kind: approval|veto, tool, title, summary, actions, rev?, secondsLeft?, shelved?,
+    createdAt, expiresAt}]. Entries need a real id; duplicates are dropped; text is capped; a held call (veto@1:
+    `status: "held"` with `veto`, in `pending` or `held`) is a veto with its countdown and what the owner may do now."""
+    out: list[dict[str, Any]] = []
+    ids: set[str] = set()
+    for e in [*(body.get("pending") if isinstance(body.get("pending"), list) else []), *(body.get("held") if isinstance(body.get("held"), list) else [])]:
+        if len(out) >= FEED_MAX_ITEMS:
+            break
+        if not isinstance(e, dict) or not UUID_RE.match(str(e.get("id") or "")) or e["id"] in ids:
+            continue
+        ids.add(e["id"])
+        veto = e.get("veto") if isinstance(e.get("veto"), dict) else None
+        held = veto is not None and e.get("status") in ("held", None)
+        item: dict[str, Any] = {"id": e["id"], "kind": "veto" if held else "approval", "tool": _feed_text(e.get("tool"), FEED_CAPS["tool"]) or "call",
+                                "title": _feed_text(e.get("title"), FEED_CAPS["title"]), "summary": _feed_text(e.get("summary"), FEED_CAPS["summary"]),
+                                "createdAt": _feed_text(e.get("createdAt"), FEED_CAPS["time"]), "expiresAt": _feed_text(e.get("expiresAt"), FEED_CAPS["time"])}
+        rev = e.get("revision")
+        if isinstance(rev, int) and not isinstance(rev, bool):
+            item["rev"] = rev
+        if held:
+            left = veto.get("secondsLeft")
+            item["secondsLeft"] = max(0, int(left)) if isinstance(left, (int, float)) and not isinstance(left, bool) else 0
+            item["shelved"] = veto.get("state") == "shelved"
+            acts = veto.get("actions")
+            item["actions"] = [a for a in acts if a in VETO_ROUTES] if isinstance(acts, list) else ["deny"]  # a hub before decision 104: Deny only
+        else:
+            acts = e.get("actions")
+            item["actions"] = [a for a in acts if a in PLAIN] if isinstance(acts, list) else list(PLAIN)
+        out.append(item)
+    return out
+
+
+def owner_pending(hub: str, cred: tuple[str, str], client: httpx.Client, owner: OwnerSession = OWNER) -> dict[str, Any]:
+    """The feed with the console's own owner session; a session the hub dropped is signed in again once."""
+    r: dict[str, Any] = {}
+    for _ in (1, 2):
+        s = owner.get(hub, cred, client)
+        if not s["ok"]:
+            return {**s, "message": str(s.get("message", "")).replace("Nothing was decided: ", "")}
+        res = client.get(f"{hub}{FEED_PATH}", headers={"Cookie": f"{COOKIE}={s['cookie']}", "Accept": "application/json"})
+        body = _reply_json(res) if len(res.content) <= FEED_MAX_BYTES else {}
+        if res.status_code == 200 and body.get("signedIn") is not False and body.get("admin") is not False and isinstance(body.get("pending", []), list):
+            return {"ok": True, "items": feed_items(body)}
+        if res.status_code == 401 or body.get("signedIn") is False:
+            owner.drop(s["cookie"])
+            r = {"ok": False, "code": "no_session", "status": res.status_code, "message": "axHub keeps refusing the console's sign-in session."}
+            continue
+        if res.status_code == 403 or body.get("admin") is False:
+            return {"ok": False, "code": "not_admin", "status": res.status_code, "message": "The console's axHub sign-in is not an admin, so it can't read what waits."}
+        return {"ok": False, "code": "hub_refused", "status": res.status_code, "message": f"axHub answered {res.status_code} for the approvals feed."}
+    return r
+
+
+class PhoneTapRelay:
+    version = "approvals-relay@1"
+
+    def pending(self, owner: str = "", client: httpx.Client | None = None) -> dict[str, Any]:
+        """What waits on the hub right now: {ok, items} or {ok: False, code, message}. Read only, server side only
+        (no route, MCP tool or CLI command reaches it), with the console's owner sign-in and the same owner rule as a
+        tap: `owner` is the paired phone's owner."""
+        hub, cred = hub_base(), owner_credential()
+        if not hub or not cred or not owner_may(wall.Caller(str(owner or "")[:80], "admin", frozenset(), "session")):
+            return {"ok": False, "code": "no_credential", "message": "The console has no axHub owner sign-in (AXF_HUB_RELAY_USER / AXF_HUB_RELAY_PASSWORD), so it can't read what waits on axHub."}
+        try:
+            if client is not None:
+                return owner_pending(hub, cred, client)
+            with httpx.Client(timeout=TIMEOUT_S, follow_redirects=False) as c:
+                return owner_pending(hub, cred, c)
+        except httpx.HTTPError as e:
+            return {"ok": False, "code": "unreachable", "message": f"Couldn't reach axHub ({type(e).__name__})."}
+
+    def decide_from_phone_tap(self, tap: dict[str, Any], client: httpx.Client | None = None) -> dict[str, Any]:
+        why = phone_tap_errors(tap)
+        if why:
+            _log({"by": "phone", "id": str((tap or {}).get("approvalId", ""))[:40], "action": str((tap or {}).get("decision", ""))[:20], "ok": False, "via": "phone", "code": "denied"})
+            return {"ok": False, "code": "denied", "message": why}
+        owner = str(tap.get("owner") or "")[:80]
+        action = PHONE_ACTIONS[tap["prompt"]][tap["decision"]]
+        hub, cred = hub_base(), owner_credential()
+        if not hub or not cred or not owner_may(wall.Caller(owner, "admin", frozenset(), "session")):
+            r = {"ok": False, "code": "no_credential", "message": "Nothing was decided: the console has no axHub owner sign-in for this phone's owner. Open the approval on axHub instead."}
+        else:
+            try:
+                if client is not None:
+                    r = owner_decision(hub, cred, tap["approvalId"], action, tap.get("rev"), client)
+                else:
+                    with httpx.Client(timeout=TIMEOUT_S, follow_redirects=False) as c:
+                        r = owner_decision(hub, cred, tap["approvalId"], action, tap.get("rev"), c)
+            except httpx.HTTPError as e:
+                r = {"ok": False, "code": "unreachable", "message": f"Couldn't reach axHub ({type(e).__name__}). Nothing was decided."}
+        _log({"by": owner or "phone", "id": tap["approvalId"], "action": action, "ok": r["ok"], "via": "phone", "device": str(tap.get("deviceId", ""))[:64], "status": r.get("status"), "code": r.get("code", "")})
+        return {**r, "via": "phone", "action": action}
+
+
+plugin_services.provide("approvals-relay@1", PhoneTapRelay(), folder=FOLDER)

@@ -1,0 +1,84 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "toolbar-ui-review-queue-grouped",
+  "name": "UI Review: Grouped with overflow",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "The first group on the bar, the rest in More: the calmest bar on a phone.",
+  "tags": [
+    "ui-choice",
+    "choice-set:toolbar-ui-review-queue",
+    "choice-option:grouped"
+  ],
+  "data": {
+    "scope": "view:ui-review",
+    "slot": "queue",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 2,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "view",
+        "label": "View",
+        "items": [
+          {
+            "id": "group-by",
+            "icon": "grid",
+            "label": "Group by",
+            "action": "handler:ui-review.group-by",
+            "checked": "state:grouped",
+            "badge": "state:groupByLabel",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "compare",
+            "icon": "copy",
+            "label": "Compare before/after",
+            "action": "handler:ui-review.compare",
+            "checked": "state:comparing",
+            "enabledWhen": "shown>0",
+            "priority": 250
+          }
+        ]
+      },
+      {
+        "id": "item",
+        "label": "Selected item",
+        "items": [
+          {
+            "id": "pr",
+            "icon": "github",
+            "label": "Open PR",
+            "action": "handler:ui-review.open-pr",
+            "enabledWhen": [
+              "selection.count=1",
+              "selection.pr"
+            ],
+            "priority": 200,
+            "overflow": "always"
+          },
+          {
+            "id": "choices",
+            "icon": "layers",
+            "label": "Open choices",
+            "action": "handler:ui-review.open-choices",
+            "enabledWhen": [
+              "selection.count=1",
+              "selection.choices>0"
+            ],
+            "badge": "state:selection.choices",
+            "priority": 180,
+            "overflow": "always"
+          }
+        ]
+      }
+    ]
+  }
+}

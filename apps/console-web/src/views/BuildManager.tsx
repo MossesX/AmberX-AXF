@@ -239,9 +239,9 @@ export function BuildManager() {
         </Container>
       </div>
 
-      <div className="fx-row fx-row--wrap">
-        <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
-        <label className="fx-row" style={{ gap: 'var(--fx-dens-gap-lg)' }}>Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
+      <div className="fx-row fx-row--wrap bm-filters">
+        <label className="fx-row"><input type="checkbox" checked={showDone} onChange={(e) => setShowDone(e.target.checked)} /> Show built steps ({done.length})</label>
+        <label className="fx-row">Model<select className="fx-input" value={model} onChange={(e) => setModel(e.target.value as '' | api.ModelId)}><option value="">All</option>{api.MODELS.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}</select></label>
       </div>
 
       <div className="bm-queue" role="list">

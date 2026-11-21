@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "arctic-daylight",
+  "name": "Arctic Daylight",
+  "version": "1.1.0",
+  "description": "Crisp light theme with cobalt accents for long daytime sessions.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "cool"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f2f5f8",
+      "surface": "#ffffff",
+      "surface2": "#f7f9fb",
+      "surface3": "#e8edf2",
+      "text": "#14202b",
+      "muted": "#5d6d7c",
+      "border": "#d6dfe7",
+      "accent": "#1567e6",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(21,103,230,0.10)",
+      "danger": "#ce2f38",
+      "success": "#177e4f",
+      "warning": "#966319",
+      "info": "#077994",
+      "focus": "#1567e6",
+      "shadow": "rgba(20,40,70,0.12)"
+    }
+  }
+}

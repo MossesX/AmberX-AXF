@@ -97,7 +97,7 @@
       {
         "target": "overlay",
         "title": "Overlay",
-        "text": "The one switch for AmberX's floating toolbar on the phone. On: it stays on screen over every app, spawns the approval bar when something waits, and expands into a full-screen browser. Off: no toolbar, and pages Amber opens go to Chrome with a tap-to-open notification.",
+        "text": "The one switch for the floating toolbar on the phone (AmberX, and the AXF Console app). On: it stays on screen over every app, spawns the approval bar when something waits, and expands into a full-screen browser. Off: no toolbar, and pages Amber opens go to Chrome with a tap-to-open notification.",
         "kind": "field"
       },
       {
@@ -109,7 +109,7 @@
       {
         "target": "toolbar-shows",
         "title": "Toolbar shows",
-        "text": "What the toolbar says while something waits: the next held command's countdown, or how many are waiting.",
+        "text": "What the toolbar says while something waits: the next held command's countdown (\"Runs in 1:05 · +2\"), or how many are waiting. A call you already saw or hid doesn't pop the approval bar again; a new one does.",
         "kind": "field"
       },
       {
@@ -121,7 +121,7 @@
       {
         "target": "height-on-screen-from-the-top",
         "title": "Height on screen (% from the top)",
-        "text": "How far down the screen the toolbar sits. Dragging it on the phone sets this too.",
+        "text": "How far down the screen the toolbar sits. Dragging it on the phone sets this too. It never goes under the clock, the camera, the navigation bar or the keyboard, and in landscape it keeps clear of a camera or button bar on the side.",
         "kind": "field"
       },
       {

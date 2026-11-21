@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "amberx-house",
+  "name": "AmberX",
+  "version": "1.0.0",
+  "description": "The finished Dev Console look from the full audit and UI overhaul: AmberX Signature gold on cream by day and molten gold on carbon after dark, the signature dock layout and controls, each app's own side navigation (the console keeps its rebuilt one), the shared AmberX toolbar and compact, tight spacing. The default skin of the Dev Console.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amber",
+    "brand",
+    "console",
+    "skin",
+    "default"
+  ],
+  "data": {
+    "layoutTheme": "signature-dock",
+    "colorTheme": "saffron-day",
+    "colorThemes": {
+      "light": "saffron-day",
+      "dark": "carbon-amber"
+    },
+    "styleTheme": "geometric",
+    "behaviorTheme": "amber",
+    "assets": {
+      "style-package": "amber-signature",
+      "toolbar": "amberx-signature",
+      "nav-style": "accordion",
+      "banner": "amberx-branded",
+      "app-menu": "standard-desktop",
+      "button": "rounded-solid",
+      "container": "soft-card",
+      "context-menu": "compact-classic",
+      "dialog": "centered-modal",
+      "popup": "corner-solid",
+      "tab-group": "underline",
+      "theme-switch": "fresh-day-night",
+      "typography": "compact",
+      "density": "compact",
+      "sizing": "compact"
+    },
+    "preview": {
+      "caption": "AmberX gold, signature dock, compact console chrome."
+    },
+    "extras": {
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false
+      }
+    },
+    "iconPack": "amberx-outline"
+  }
+}

@@ -8,8 +8,7 @@
   "author": "Brett",
   "description": "An always-on wake-word listener for the console and the console Android app: say a wake phrase Brett sets in Settings (several allowed), then a command. Runs on-device (the console app's offline recognizer through the native bridge; the browser's recognizer elsewhere) with a mic-on light on the banner and an off switch. Every console action, plugin command, control@1 target and pipeline command has a voice entry built from the API registry (new plugins appear by themselves); a command with missing fields runs as a spoken wizard ('create a new project' → 'name?' → 'Gizmo Johnson' → confirm). 'Approve' reviews everything waiting on axHub one at a time (approve / deny / skip / approve all pending). Claude mode (setting Understand with Claude when connected, axf.voice.useClaude, default on): while Claude is connected Claude picks the command and fills its fields through axf.llm@1, asks only for what is missing and confirms destructive commands; off, offline, slow or failing it falls back to the scripted matcher with the same words; approvals always stay on the spoken approve / deny words; an offline-mode indicator and a command history with the mode. REST /api/plugins/wake-listener (settings, on, off, state, catalog, match, claude, understand, history), MCP wake-listener_*, CLI listener.mjs / axf voice / axf wake-listener, voice.",
   "targets": [
-    "axf-console",
-    "amberx-droid"
+    "axf-console"
   ],
   "provides": [
     "settings-tab:wake-listener",

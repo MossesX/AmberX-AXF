@@ -28,6 +28,7 @@
  */
 
 import { ALLOWED_MODELS, DEFAULT_MODEL, coerceModel } from './model-policy.mjs';
+import { P2_ONLY } from './pipeline-status.mjs'; // pipeline-2@1 statuses (framework/spec/PIPELINE-2.md)
 import { normRef as normShippedRef } from './shipped-manifest.mjs';
 
 export const SCHEMA = 'build-hook@1';
@@ -35,7 +36,7 @@ export const RECORD = 'build-event@1';
 export const VERSION = 1;
 export const EVENTS = ['created', 'steps-added', 'step-done', 'status', 'pr-opened', 'pr-merged', 'addendum', 'cancelled', 'restored', 'shipped'];
 /** builds@1 statuses, mirrored so a port does not need the store core. */
-export const BUILD_STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived'];
+export const BUILD_STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixing', 'blocked', 'failed', 'built', 'landing', 'landed', 'complete', 'escalated', 'archived', ...P2_ONLY];
 export const REPOS = ['amberx-axf', 'axhub'];
 /** GitHub repo → ledger repo id (the PR URL is the one sure sign of where a build lives). */
 export const GITHUB_REPOS = Object.freeze({ 'mossesx/amberx-axf': 'amberx-axf', 'mossesx/axhub': 'axhub' });

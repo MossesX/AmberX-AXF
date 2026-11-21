@@ -75,7 +75,7 @@ export const plugin: AxfWebLibrary = {
     }), { label: 'Stop an agent\'s current job', params: true, searchable: false });
   },
   views: { [VIEW]: { title: 'Crew', icon: 'user', keywords: ['crew', 'agents', 'employees', 'working', 'live', 'cost', 'who', 'diff', 'headless'], render: () => <CrewView /> } },
-  nav: { label: 'Builds', items: [{ id: 'crew', label: 'Crew', icon: 'user', view: 'crew' }] }, // literal ids: scripts/menu-reach.mts reads this line
+  nav: { label: 'AI & agents', items: [{ id: 'crew', label: 'Crew', icon: 'user', view: 'crew' }] }, // literal ids: scripts/menu-reach.mts reads this line
   slots: { 'app.frame.cover': [{ id: 'crew.directory', order: 99, render: () => <DirectoryFeed /> }] },
   contextMenu: [{
     id: 'crew.agent', target: 'agent', order: 10, items: [

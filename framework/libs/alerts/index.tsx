@@ -473,6 +473,8 @@ export interface AlertsOptions {
    * `alertsServiceWorker()` from ./vite-plugin.mjs. Without it, web push is off and the settings panel says why.
    */
   serviceWorkerUrl?: string;
+  /** The nav section the Alerts page joins (sections merge by label); default `Alerts`. */
+  navLabel?: string;
 }
 
 export function createAlertsLibrary(opts: AlertsOptions = {}): AxfWebLibrary {
@@ -501,7 +503,7 @@ export function createAlertsLibrary(opts: AlertsOptions = {}): AxfWebLibrary {
       rt.actions.register('alerts.ackAll', () => void store.act(() => store.transport.ack('all')), { label: 'Mark all alerts seen' });
     },
     views: { alerts: { title: 'Alerts', icon: 'bell', render: () => <AlertsView /> } },
-    nav: { label: 'Alerts', items: [{ id: 'alerts', label: 'Alerts', icon: 'bell', view: 'alerts' }] },
+    nav: { label: opts.navLabel ?? 'Alerts', items: [{ id: 'alerts', label: 'Alerts', icon: 'bell', view: 'alerts' }] },
     settingsTabs: [{ id: 'alerts', label: 'Alerts', icon: 'bell', order: 34, description: 'Developer alerts: where they go (bell, ntfy, web push), which sources run, and a test.' }],
     settingsPanels: panels.map((p) => ({ ...p, tab: 'alerts' })),
   };

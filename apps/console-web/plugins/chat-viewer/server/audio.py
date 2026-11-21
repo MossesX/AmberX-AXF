@@ -249,6 +249,10 @@ class Audio:
                                                     "model": opts.get("model") or ""}))
                     env["CHAT_VIEWER_TMP"] = str(job_file.parent)
                     p = subprocess.Popen([py, str(WORKER), str(job_file)], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, env=env)
+                    err: list[str] = []
+                    # drained alongside stdout: a chatty renderer filling the stderr pipe would otherwise block forever
+                    drain = threading.Thread(target=lambda: err.append((p.stderr.read() if p.stderr else "")[-500:]), daemon=True)
+                    drain.start()
                     result: dict[str, Any] = {}
                     for line in p.stdout or []:
                         try:
@@ -260,8 +264,9 @@ class Audio:
                         else:
                             result = msg
                     p.wait()
+                    drain.join(5)
                     if not result.get("ok"):
-                        raise RuntimeError(result.get("error") or (p.stderr.read()[-500:] if p.stderr else "the renderer stopped"))
+                        raise RuntimeError(result.get("error") or "".join(err) or "the renderer stopped")
                     f = Path(result["file"])
                     meta = {**meta_base, "file": f.name, "format": result["format"], "duration": round(result["duration"], 2),
                             "chapters": chapters(turns, result["offsets"]), "bytes": f.stat().st_size}

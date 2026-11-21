@@ -5,7 +5,7 @@ import * as core from './orchestrator-core.mjs';
 /*
  * Split section (Brett, Nov 13 2026: "orchestrator settings needs a collapsible section for split, with all the
  * splitting options, and one option splits it so it runs multiple parallel builds simultaneously to speed it up").
- * One collapsible block, shown on the orchestrator's Rules tab and as a panel of Settings → Plugins → Build orchestrator.
+ * One collapsible block, a panel of Settings → Plugins → Build orchestrator (Pipeline 2.0 moved the old Rules tab there).
  * Every value is a pipeline-settings@1 setting (GET / POST pipeline/settings; MCP pipeline-settings / pipeline-settings-set;
  * `pipeline.mjs settings | set k=v`), saved as soon as it changes; the deep link is build-orchestrator.split-settings.
  *   splitProvider       how a build is cut into steps: claude | rules | off
@@ -38,7 +38,7 @@ const MODES = [
 ];
 
 /**
- * `rules` + `saveRules` come from the orchestrator page (its Rules tab keeps one copy of the rules); without them, as
+ * `rules` + `saveRules` can come from a parent that already holds the rules; without them, as
  * in Settings → Plugins, the section reads the rules from GET state and saves them through POST act.
  */
 export function SplitSettings({ api, open, rules, saveRules }: { api: Api; open?: boolean; rules?: StepRules; saveRules?: (r: StepRules) => Promise<boolean> }) {

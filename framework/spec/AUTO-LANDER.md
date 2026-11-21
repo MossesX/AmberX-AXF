@@ -155,7 +155,7 @@ The lander has no screen of its own in this build; it is enforced server-side. W
 | Transport | Where |
 | --- | --- |
 | Deep link | `view:gate`, `tab:gate.tabs=rules`, `row:auto-lander` (the rule), `tab:gate.tabs=auto-lander` (the state) |
-| REST | `/api/plugins/gate/rules/auto-lander` (`GET`, `PUT`, `POST …/toggle`), `GET /api/plugins/gate/lander` (state) |
+| REST | `/api/plugins/gate/rules/auto-lander` (`GET`, `PUT`, `POST …/toggle`), `GET /api/plugins/gate/lander` (state) | <!-- axf-plugin:gate -->
 | MCP | `gate_rules_get { id: 'auto-lander' }`, `gate_rules_set`, `gate_rules_toggle`, `lander_status`, `lander_waiting` |
 | CLI | `axf gate rules get auto-lander`, `axf gate rules set auto-lander maxAttempts 5`, `axf gate rules on\|off auto-lander`, `axf gate lander status` |
 | Voice (AmberX) | `gate.rule` ("turn off the auto-lander rule", "set the auto-lander to five tries"), `lander.status` ("what's the lander doing") |

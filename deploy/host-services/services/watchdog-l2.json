@@ -1,0 +1,16 @@
+{
+  "$axf": "host-service@1",
+  "id": "watchdog-l2",
+  "title": "Watchdog layer 2",
+  "description": "Finds stuck statuses, dead sessions and usage limits and retries them forward. Cron, written by deploy/watchdog/cron.mjs.",
+  "kind": "tick",
+  "cron": "axf-watchdog-l2",
+  "adopted": true,
+  "plugin": "build-orchestrator",
+  "runner": "deploy/watchdog/layer2.mjs",
+  "health": {
+    "intervalSec": 60,
+    "staleSec": 900
+  },
+  "log": "/var/log/axf-watchdog-l2.log"
+}

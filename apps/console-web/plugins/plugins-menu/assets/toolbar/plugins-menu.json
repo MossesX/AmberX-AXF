@@ -1,0 +1,28 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "plugins-menu",
+  "name": "Plugins menu",
+  "version": "1.0.0",
+  "description": "The Plugins menu toolbar: show or hide the plugin list, read the installed plugins again and open this browser's own settings. The Open as dialog / window switch rides on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "plugins-menu", "plugins"],
+  "data": {
+    "scope": "view:plugins-menu",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "never", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "menu",
+        "label": "Menu",
+        "items": [
+          { "id": "list", "icon": "menu", "label": "Plugin list", "action": "handler:plugins-menu.list", "checked": "state:listShown", "priority": 300, "overflow": "never" },
+          { "id": "reload", "icon": "refresh", "label": "Reload plugins", "action": "handler:plugins-menu.reload", "priority": 200 },
+          { "id": "settings", "icon": "settings", "label": "Menu settings", "action": "handler:plugins-menu.settings", "priority": 250 }
+        ]
+      }
+    ]
+  }
+}

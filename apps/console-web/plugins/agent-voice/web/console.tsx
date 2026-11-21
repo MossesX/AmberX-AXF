@@ -9,7 +9,7 @@ import {
   applyPreset, AUTO_SPEAK, CODE_MODES, DEFAULT_MIC, EMOJI_MODES, estimateMs, exportProfiles, INTERRUPT, LIGHT_LABEL, MIC_MODES, narrate, NUMBER_MODES, PRESETS,
   READ_MODES, URL_MODES, type MicSettings, type Narrator, type Pronunciation, type VoiceProfile,
 } from './core';
-import { deviceVoices, isAmberX, onSpeaker, pauseSpeaking, resumeSpeaking, skipLine, speak, speakerState, stopSpeaking, type DeviceVoice } from './engine';
+import { deviceVoices, onSpeaker, pauseSpeaking, resumeSpeaking, skipLine, speak, speakerState, stopSpeaking, type DeviceVoice } from './engine';
 import {
   agentName, clearCache, cloudVoices, deleteKey, getKeys, importVoice, putKey, loadVoice, patchProfile, profileOrDefault, removeProfile, saveMic, savePronunciations,
   useVoiceData, type KeyInfo,
@@ -153,7 +153,7 @@ function VoiceTab({ p }: { p: VoiceProfile }) {
       </Container>
       <Container title="Engine" icon="cloud">
         <Segmented label="Engine" value={p.engine} onChange={(v) => up(p, { engine: v })} options={[
-          { value: 'device', label: isAmberX() ? 'Phone voice' : 'Device voice', icon: 'smartphone', title: 'Free, offline, instant' },
+          { value: 'device', label: 'Device voice', icon: 'smartphone', title: 'Free, offline, instant' },
           { value: 'cloud', label: 'Cloud voice', icon: 'cloud', title: 'Most natural; OpenAI or ElevenLabs key on the server' },
         ]} />
         {p.engine === 'cloud' && !p.permissions.cloud && <Note tone="warning">Cloud voices are off in this agent's Permissions, so it speaks with the device voice until you allow them.</Note>}
@@ -230,7 +230,7 @@ function PermissionsTab({ p, name }: { p: VoiceProfile; name: string }) {
       <Switch label="Speak out loud" checked={p.permissions.speak} onChange={(v) => perm('speak', v)} />
       <Switch label="Listen (the Assistant microphone)" checked={p.permissions.listen} onChange={(v) => perm('listen', v)} hint={`Without it the Assistant microphone says "${name} is missing permission".`} />
       <Switch label="Send what I say right away" checked={p.permissions.autoSend} onChange={(v) => perm('autoSend', v)} hint="Off: what you said waits in the box until you press Send (or say the send phrase)." />
-      <Switch label={`"Talk to ${name}" voice command`} checked={p.permissions.wakeName} onChange={(v) => perm('wakeName', v)} hint="Adds an action you (and AmberX voice commands) can use to open the Assistant on this agent and start listening." />
+      <Switch label={`"Talk to ${name}" voice command`} checked={p.permissions.wakeName} onChange={(v) => perm('wakeName', v)} hint="Adds an action you (and voice commands) can use to open the Assistant on this agent and start listening." />
       <Switch label="Cloud voices" checked={p.permissions.cloud} onChange={(v) => perm('cloud', v)} hint="Lets the reply text go to the cloud voice provider. The server refuses cloud speech without it." />
     </Container>
   );
@@ -322,7 +322,7 @@ export function MicPanel() {
   const set = (patch: Partial<MicSettings>) => saveMic({ ...m, ...patch });
   return (
     <div className="fx-stack">
-      <p className="fx-small fx-muted">The microphone in the Assistant window. It shares the mic with AmberX's hands-free listening, dictation and Speak a command: only one listens at a time and none of them steals it from another.</p>
+      <p className="fx-small fx-muted">The microphone in the Assistant window. It shares the mic with dictation and Speak a command: only one listens at a time and none of them steals it from another.</p>
       <SelectField label="How it listens" value={m.mode} options={opts(MIC_MODES, { tap: 'Tap: one sentence, then stop', hold: 'Hold: listens while held', toggle: 'Toggle: keeps listening until tapped again' })} onChange={(v) => set({ mode: v as MicSettings['mode'] })} />
       <TextField label="Language" value={m.lang} onChange={(v) => set({ lang: v })} placeholder="en-US" />
       <Switch label="Show words as they're said" checked={m.liveText} onChange={(v) => set({ liveText: v })} />
@@ -332,8 +332,6 @@ export function MicPanel() {
       <Slider label="Stop after silence (toggle mode)" value={m.silenceMs} min={800} max={15000} step={100} unit=" ms" onChange={(v) => set({ silenceMs: v })} />
       <Slider label="Never listen longer than" value={m.maxSeconds} min={5} max={600} step={5} unit=" s" onChange={(v) => set({ maxSeconds: v })} />
       <Switch label="Pressing the mic stops the agent talking" checked={m.bargeIn} onChange={(v) => set({ bargeIn: v })} />
-      <Switch label="Hands-free listening steps aside while this listens (AmberX)" checked={m.pauseHandsFree} onChange={(v) => set({ pauseHandsFree: v })} />
-      <Switch label="Hands-free can't hear the agent's voice as a command (AmberX)" checked={m.muteWakeWhileSpeaking} onChange={(v) => set({ muteWakeWhileSpeaking: v })} />
       <Switch label="Wait when dictation or Speak a command has the mic" checked={m.respectOthers} onChange={(v) => set({ respectOthers: v })} hint="Off: say it's busy at once instead of waiting." />
       {m.respectOthers && <Slider label="Wait up to" value={m.waitMs} min={0} max={15000} step={500} unit=" ms" onChange={(v) => set({ waitMs: v })} />}
       <Switch label="Vibrate when the mic opens (phone)" checked={m.haptics} onChange={(v) => set({ haptics: v })} />

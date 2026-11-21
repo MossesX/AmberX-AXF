@@ -1,7 +1,6 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
-import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
 import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem, type ToolbarData } from '../../core';
-import { toolbarStyle } from '../../core/engines/components';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
@@ -15,6 +14,7 @@ import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
 import { controlSlug } from '../controlTargets';
+import { PageToolbar } from './Toolbar';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -219,26 +219,17 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
 
 /**
  * A toolbar drawn from a named toolbar asset rather than the app's active one: a page's own toolbar (the settings
- * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets or fold.
- * `search` fills the asset's search spot when it has `showSearch`. Null when the asset isn't registered.
+ * interface names one in its `toolbar` field). Since page-toolbar@1 it renders through the engine (PageToolbar in
+ * Toolbar.tsx): the same items, look, gating, overrides and context menu, plus state gating, badges from the page,
+ * confirm and the More overflow; no widgets or fold. `search` fills the asset's search spot when it has `showSearch`.
+ * Nothing when the asset isn't registered.
  */
 export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: string; search?: ReactNode; label?: string }) {
   const rt = useRuntime();
   useAxfState();
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
-  // chrome-settings@1: a page toolbar is its own instance (its asset id): its overrides apply to it alone, through the
-  // same style engine as the app toolbar, scoped by a layout-free wrapper carrying the attributes and vars
-  const data = (rt.chromeData('toolbar', tb.id, tb.data) ?? tb.data) as ToolbarData;
-  const out = toolbarStyle(data);
-  return (
-    <div className="fx-toolbar-scope" style={out.vars as CSSProperties} {...out.attrs}>
-      <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} data-fx-ctx-target="toolbar" data-fx-ctx-payload={tb.id}>
-        {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g as ToolbarGroup} variant={data.variant} />)}
-        {data.showSearch && search}
-      </div>
-    </div>
-  );
+  return <PageToolbar assetId={id} label={label}>{(tb.data as ToolbarData).showSearch ? search : null}</PageToolbar>;
 }
 
 /* ---------------- NavMenu (nav-menu asset, oriented by the layout asset) ---------------- */
@@ -246,18 +237,26 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
 /**
  * Sections with the same eyebrow are one section (DESIGN-LANGUAGE §11: one level, grouped by eyebrow), so plugins
  * that file their page under "Voice" join the asset's own "Voice" section instead of repeating the eyebrow. Order:
- * first appearance wins; unlabelled sections stay separate.
+ * first appearance wins; unlabelled sections stay separate. The first section's own items keep their order; items that
+ * join it later (plugins, which install in whatever order their chunks arrive) follow them sorted by label, so the
+ * menu reads the same on every load.
  */
 export function mergeNavSections<S extends { label?: string | null; items: NavItem[] }>(sections: S[]): S[] {
   const out: S[] = [];
   const byLabel = new Map<string, S>();
+  const own = new Map<S, number>();
   for (const s of sections) {
     const key = s.label ? s.label.trim().toLowerCase() : '';
     const hit = key ? byLabel.get(key) : undefined;
     if (hit) { hit.items = withChildren(hit.items, s.items); continue; }
     const copy = { ...s, items: [...s.items] };
     out.push(copy);
+    own.set(copy, copy.items.length);
     if (key) byLabel.set(key, copy);
+  }
+  for (const s of out) {
+    const n = own.get(s) ?? s.items.length;
+    if (s.items.length - n > 1) s.items = [...s.items.slice(0, n), ...s.items.slice(n).sort((a, b) => a.label.localeCompare(b.label))];
   }
   return out;
 }

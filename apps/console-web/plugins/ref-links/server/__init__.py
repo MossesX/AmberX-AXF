@@ -157,10 +157,9 @@ async def _body(request: Request) -> dict[str, Any]:
 
 @router.get("/targets")
 async def get_targets() -> JSONResponse:
-    # every open console asks on load; one shared answer (refs.mjs + the console catalog) per 15 s, fresh after a
-    # builds store write (server/readcache.py)
-    store = ROOT / "_claude" / "builds" / "store.json"
-    return _answer(await run_in_threadpool(readcache.cached, "ref-links:targets", targets, 15, (store,)))
+    # every open console asks on load; one shared answer (refs.mjs + the console catalog) per 15 s (server/readcache.py).
+    # refs.mjs reads the builds store itself (the axf-data tables): there is no store.json to watch any more
+    return _answer(await run_in_threadpool(readcache.cached, "ref-links:targets", targets, 15, ()))
 
 
 @router.post("/find")

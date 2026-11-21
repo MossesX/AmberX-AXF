@@ -23,7 +23,7 @@ export const api = pluginApi(FOLDER, 'Plan Studio 2.0', { unavailable: 'Plan Stu
 
 export interface ItemView extends Item { path: string; depth: number; progress: { done: number; total: number; minutes: number }; children: number }
 export interface OpResult { ok: boolean; rev?: number; item?: ItemView | null; say?: string; error?: string; trashId?: string; removed?: number; restored?: number; count?: number; build?: { profile: string; id: string }; steps?: number; minutes?: number; understood?: boolean; focus?: string; hits?: tc.Hit[]; markdown?: string; command?: tc.VoiceCommand; changed?: boolean | number }
-export interface BuildPreview { ok: boolean; preview: true; build: { profile: string; id: string }; change: tc.BuildChange; minutes: number }
+export interface BuildPreview { ok: boolean; preview: true; build: { profile: string; id: string }; change: tc.BuildChange; planning: number; errors: { path: string; why: string }[] }
 interface StateWire { ok: boolean; error?: string; rev: number; items: Item[]; trash: State['trash']; store: string; onHub: boolean }
 
 /* ---------------------------------------------------------------- the store */
@@ -60,7 +60,7 @@ export const tookFocus = () => set({ focus: null });
 
 /* ---------------------------------------------------------------- writes */
 
-type Op = 'add' | 'rename' | 'edit' | 'move' | 'nudge' | 'indent' | 'outdent' | 'duplicate' | 'undo' | 'link' | 'unlink' | 'collapse' | 'import' | 'build' | 'say';
+type Op = 'add' | 'rename' | 'edit' | 'move' | 'nudge' | 'indent' | 'outdent' | 'duplicate' | 'undo' | 'link' | 'unlink' | 'collapse' | 'import' | 'build' | 'emergency' | 'say';
 async function post(op: Op, body: Record<string, unknown>, { quiet = false } = {}): Promise<OpResult> {
   set({ busy: true });
   try {
@@ -82,6 +82,8 @@ export const linkItem = (id: string, l: Partial<Link>) => post('link', { id, ...
 export const unlinkItem = (id: string, l: { type: string; ref: string }) => post('unlink', { id, ...l });
 export const importItems = (data: unknown, parent: string | null) => post('import', { data, parent });
 export const sendToBuild = (id: string, o: { preview?: boolean; buildId?: string; said?: string } = {}) => post('build', { id, ...o }, { quiet: !!o.preview }) as Promise<OpResult | BuildPreview>;
+/** Send as an emergency build: the server takes it from Brett's own signed-in console only (403 otherwise). */
+export const sendToEmergency = (id: string, o: { buildId?: string; said?: string } = {}) => post('emergency', { id, ...o });
 export const sayCommand = (text: string) => post('say', { text });
 export async function deleteItem(id: string): Promise<OpResult> {
   set({ busy: true });

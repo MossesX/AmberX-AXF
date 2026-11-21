@@ -55,7 +55,7 @@ export const plugin: AxfWebLibrary = {
   dialogs: {
     'plugin-manager.window': { title: 'Plugin Manager', icon: 'package', render: () => <PluginManager embedded /> },
   },
-  nav: { label: 'Plugins', items: [{ id: 'plugin-manager', label: 'Plugin Manager', icon: 'package', view: 'plugin-manager' }] },
+  nav: { label: 'System', items: [{ id: 'plugin-manager', label: 'Plugin Manager', icon: 'package', view: 'plugin-manager' }] },
   contextMenu: [
     // The app-wide menu (right-click / long-press on anything without its own menu).
     { id: 'plugin-manager.default', target: 'default', order: 90, items: [{ id: 'plugin-manager', label: 'Plugin Manager', icon: 'package', action: 'plugin-manager.open' }] },

@@ -7,8 +7,8 @@
  *
  * <store> is the hub's shared data where /projects is mounted (the console container): /projects/amberx-axf/_data/
  * plan-studio-2/, per project (projects@1). Elsewhere it is the plugin's data folder (.axf-console/plugins/plan-studio-2).
- * AXF_PLAN_TREE_DIR overrides (tests). The store starts empty: nothing is synced into it, and the old Plan Studio's
- * plans are never read.
+ * AXF_PLAN_TREE_DIR overrides (tests). The store starts empty and nothing is synced into it. plans.mjs is plans@1 over
+ * this tree (control@1 planner.plans, the orchestrator, the project seed CLI).
  *
  *   node apps/console-web/plugins/plan-studio-2/tree.mjs tree [<item>] [--md]     the tree (indented), or one branch
  *   … list [--kind step] [--under <item>] [--q words]                            flat rows
@@ -21,7 +21,10 @@
  *   … link <item> <todo|build|note|shipped|plan|url> <ref> [--label …] · unlink <item> <type> <ref>
  *   … collapse [<item>|--all] · expand [<item>|--all]
  *   … export [<item>] [--json] [--out file] · import <file.json> [--in <item>]
- *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator (its steps = the build's)
+ *   … validate <item> [--id build-id]                             plan-build@1: the build id it gets and every reason it may not be sent
+ *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; ONE Pipeline 2.0
+ *                                                                 build (flow pipeline-2, pending, its steps kept as planning) in the
+ *                                                                 builds store; the orchestrator's splitting stage designs the build steps
  *   … say "<spoken sentence>"                                     one voice command (what AmberX and the page's mic send)
  *   … clear --yes                                                 everything gone (the trash too)
  *   … api '<json {op,…}>'                                         what the server calls (also reads stdin)
@@ -30,20 +33,27 @@
  *
  * `<item>` is an id, or the title / words in it ("the step about deploy"): tree-core resolve().
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { chmodSync, chownSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as tc from './web/tree-core.mjs';
-import { orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
+import * as P2 from '../../../../framework/core/pipeline-status.mjs';
+import * as BS from '../../../../framework/cli/builds-store.mjs';
+import * as core from '../../../../framework/plan/builds-store-core.mjs';
+import * as dataFiles from '../../../../framework/core/data-files.mjs';
+import { persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { projectDataDir } from '../../../../framework/cli/projects.mjs';
+import { ownerFrom, sendToEmergency } from '../../../../framework/cli/emergency-builds.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
 export const FOLDER = 'plan-studio-2';
 export const FILE = 'tree.json';
 
-const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, `${JSON.stringify(v, null, 1)}\n`); renameSync(tmp, f); }
+// Through data-files (data-store@1): the hub copy maps to planner/v2/tree.json (planner_tree rows on axf-data), so the
+// tree follows the planner namespace's mode (local file, shadow copy, or axf-data only after the cut-over).
+const readJson = (f, d = null) => { try { return dataFiles.readJsonSync(f, d); } catch { return d; } };
+const writeJson = (f, v) => dataFiles.writeJsonSync(f, v, 1);
 
 /** Where the tree lives: the hub's shared data per project, else the plugin's data folder; AXF_PLAN_TREE_DIR as given. */
 export function storeDir() {
@@ -55,38 +65,78 @@ export const onHub = () => !process.env.AXF_PLAN_TREE_DIR && !!persistRoot();
 const file = () => join(storeDir(), FILE);
 
 export function load() { return tc.normalize(readJson(file(), tc.emptyState())); }
-export function save(state) { const s = tc.normalize(state); writeJson(file(), s); return s; }
+export function save(state) { const s = tc.normalize(state); writeJson(file(), s); handBack(file()); return s; }
+/** Written as root (a VPS session's CLI): the file goes back to the folder's owner, group-writable, so the console can still write it. */
+function handBack(f) {
+  if (process.getuid?.() !== 0) return;
+  try { const st = statSync(dirname(f)); if (st.uid !== 0) { chownSync(f, st.uid, st.gid); chmodSync(f, 0o664); } } catch { /* best effort */ }
+}
 
 /* ------------------------------------------------------------------ the build orchestrator (explicit hand-off) */
 
-const orchFile = (profile) => (process.env.AXF_ORCH_FILE ? process.env.AXF_ORCH_FILE : orchestratorPath(profile || activeProfile().id));
 export function profiles() { try { return readProfiles().profiles?.map((p) => ({ id: p.id, label: p.label ?? p.name ?? p.id })) ?? []; } catch { return []; } }
 const buildId = (title, taken) => { const base = tc.slug(title).slice(0, 34) || 'plan'; let id = base; for (let n = 2; taken.has(id); n++) id = `${base}-${n}`.slice(0, 40); return id; };
 
-/** Send an item to the build orchestrator: its steps become the build's steps; the item gets a `build` link back. */
-export function sendToBuild(state, ref, { profile = '', id = '', preview = false, by = '', said = '' } = {}) {
+/** A build sent from this item that has not landed or left the flow yet (pending, split, active or failed), or null. */
+const liveSent = (builds, itemId) => builds.find((b) => b.planRef === itemId && b.flow === P2.FLOW && !b.deleted && ![P2.EXIT, 'landed'].includes(b.status)) ?? null;
+
+/**
+ * The item as a plan-build@1 manifest (framework/schemas/json/plan-build.schema.json): one build, the plan as a whole
+ * (title, body, its open steps as planning steps). `id` is the build id Plan Studio gives it (from the title, unique in
+ * the builds store). Steps need no minutes or model: the orchestrator's splitting stage designs the build steps.
+ * → { plan, errors: [{ path, why }] } (errors empty = it may be sent).
+ */
+export function planOf(state, ref, { id = '', said = '' } = {}) {
   const it = tc.resolve(state, ref);
   if (!it) throw new tc.TreeError('not_found', `no item "${ref}"`);
-  const prof = profile || activeProfile().id;
   const change = tc.toBuild(state, it.id, { said });
-  if (!change.steps.length) throw new tc.TreeError('validation', `"${it.title}" has no open steps to build: add steps under it first`);
-  const f = orchFile(prof);
-  const st = readJson(f, { $axf: 'orchestrator@1', builds: [] });
-  st.builds = st.builds ?? [];
-  const bid = id || buildId(it.title, new Set(st.builds.map((b) => b.id)));
-  const minutes = change.steps.reduce((m, s) => m + (parseInt(s.estimate, 10) || 0), 0);
-  if (preview) return { ok: true, preview: true, build: { profile: prof, id: bid }, change, minutes };
-  if (st.builds.some((b) => b.id === bid)) throw new tc.TreeError('validation', `"${bid}" is already in the ${prof} orchestrator: pick another build id`);
-  const now = new Date().toISOString();
-  st.builds.push({
-    id: bid, title: change.title, category: '', detail: change.detail, status: 'pending', hidden: false, source: FOLDER, pendingId: '', branch: '', pr: '',
-    createdAt: now, updatedAt: now, builtAt: '', notes: [{ text: `Plan Studio 2.0 item: ${it.id} (${tc.pathOf(state, it.id)})`, at: now }], approvals: [],
-    ...(said ? { origin: { $axf: 'build-origin@1', said: [{ text: said, at: now, by: by || 'Brett' }] } } : {}),
-    steps: change.steps.map((s, i) => ({ id: `s${i + 1}`, text: s.text, model: s.model, why: '', phase: 1, group: '', estimate: s.estimate, files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' })),
-  });
-  writeJson(f, st);
-  const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${bid}`, label: change.title });
-  return { ok: true, state: linked.state, build: { profile: prof, id: bid }, steps: change.steps.length, minutes };
+  const builds = BS.loadStore().builds;
+  const taken = new Set(builds.flatMap((b) => [b.id, b.alias].filter(Boolean)));
+  const plan = P2.normPlan({ ...change, id: id || buildId(it.title, taken), planItem: it.id, said,
+    steps: change.steps.map((x) => ({ text: x.text, model: x.model, estimate: x.estimate })) });
+  const errors = P2.validatePlan(plan);
+  if (id && taken.has(id)) errors.push({ path: 'id', why: `"${id}" is already a build: pick another build id` });
+  const live = liveSent(builds, it.id);
+  if (live) errors.push({ path: 'planItem', why: `already sent as ${live.id} (${P2.labelOf(live.status, live.attempt)}): wait for it to land, or archive it first` });
+  return { item: it, plan, errors };
+}
+
+/**
+ * Send to orchestrator (pipeline-2@1, framework/spec/PIPELINE-2.md): the plan must pass plan-build@1 (nothing invalid
+ * moves on: every reason is listed), gets its build id, and goes into the builds store as ONE Pipeline 2.0 build
+ * (`flow: pipeline-2`, status `pending`, no build steps; the plan's steps kept as `planning`). The orchestrator flow
+ * takes it from there: splitting (Fable designs the build steps, each with minutes and a model) → split → pulling-main
+ * → assigning-models → ready. The item gets a `build` link back.
+ *
+ * `emergency` (Send to emergency): the same build, tagged emergency once it is in the store, so it skips the line,
+ * builds in the emergency slots and lands first. Brett's signed-in console only: who is asking is read from `env`
+ * (framework/cli/emergency-builds.mjs ownerFrom) and checked before anything is written, so a refused ask sends nothing.
+ */
+export function sendToBuild(state, ref, { profile = '', id = '', preview = false, by = '', said = '', emergency = false, env = process.env } = {}) {
+  if (emergency && !preview) { const o = ownerFrom(env); if (!o.ok) throw new tc.TreeError('forbidden', o.why); }
+  const prof = profile || activeProfile().id;
+  const { item: it, plan, errors } = planOf(state, ref, { id, said });
+  const change = tc.toBuild(state, it.id, { said });
+  if (preview) return { ok: !errors.length, preview: true, build: { profile: prof, id: plan.id }, change, plan, errors, planning: plan.steps.length };
+  if (errors.length) throw new tc.TreeError('validation', `"${it.title}" does not pass plan-build@1, so it was not sent: ${errors.map((e) => `${e.path}: ${e.why}`).join('; ')}`);
+  const now = new Date().toISOString(); const who = by || 'plan-studio-2';
+  BS.withStore((s) => {
+    if (core.findBuild(s, plan.id)) throw new tc.TreeError('validation', `"${plan.id}" is already a build: pick another build id`);
+    const live = liveSent(s.builds, it.id);
+    if (live) throw new tc.TreeError('validation', `"${it.title}" is already sent as ${live.id}: wait for it to land, or archive it first`);
+    const b = P2.transition({
+      id: plan.id, title: plan.title, detail: plan.detail, source: FOLDER, planRef: it.id, profiles: [prof], createdAt: now, updatedAt: now, flow: P2.FLOW,
+      notes: [{ text: `Plan Studio 2.0 item: ${it.id} (${tc.pathOf(state, it.id)}). Passed plan-build@1; sent as one Pipeline 2.0 build with ${plan.steps.length} planning step${plan.steps.length === 1 ? '' : 's'}. The splitting stage designs its build steps.`, at: now }],
+      ...(said ? { origin: { said, at: now, source: 'console', by: by || 'Brett' } } : {}),
+      planning: plan.steps,
+      steps: [],
+    }, 'pending', { at: now, by: who, why: 'Send to orchestrator' }).rec;
+    s.builds.push(core.normBuild(b, { now, profile: prof }));
+    return s;
+  }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} planning steps` });
+  if (emergency) sendToEmergency(plan.id, { env });
+  const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${plan.id}`, label: plan.title });
+  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan, emergency: !!emergency };
 }
 
 /* ------------------------------------------------------------------ one op → one change (the server, the CLI, voice) */
@@ -127,7 +177,8 @@ export function api(r, { by = '' } = {}) {
     case 'unlink': { const res = tc.unlink(s, r.id, { type: r.type, ref: r.ref }); return done(res, res.changed ? 'Link removed.' : 'No such link.'); }
     case 'collapse': { const ids = r.all ? null : [tc.resolve(s, r.id)?.id].filter(Boolean); if (!r.all && !ids.length) throw new tc.TreeError('not_found', `no item "${r.id}"`); const res = tc.setCollapsed(s, ids, r.collapsed !== false); return done(res, `${r.collapsed === false ? 'Expanded' : 'Collapsed'} ${r.all ? 'everything' : 'it'}.`); }
     case 'import': { const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
-    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, steps: res.steps, minutes: res.minutes, say: `Sent it to the build orchestrator as ${res.build.id} with ${res.steps} steps.` }; }
+    case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
+    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
@@ -186,6 +237,7 @@ export async function main(argv = process.argv.slice(2)) {
       case 'expand': return out(api({ op: 'collapse', id: a[0], all: !!flags.all || !a[0], collapsed: false }), 'expanded');
       case 'export': { const r = api({ op: 'export', id: a[0], format: flags.json ? 'json' : 'md' }); const text = r.format === 'json' ? JSON.stringify(r.data, null, 1) : r.markdown; if (flags.out) { writeFileSync(flags.out, text); return console.log(`wrote ${flags.out}`); } return console.log(text); }
       case 'import': { const data = JSON.parse(readFileSync(a[0] === '-' ? 0 : a[0], 'utf8')); return out(api({ op: 'import', data, parent: flags.in }), 'imported'); }
+      case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
       case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }

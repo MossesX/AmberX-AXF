@@ -69,7 +69,7 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   register,
   views: { 'demonstration-designer': { title: 'Demonstration Designer', icon: 'play', render: () => <DesignerPage /> } },
-  nav: { label: 'Demos', items: [{ id: 'demonstration-designer', label: 'Demonstration Designer', icon: 'play', view: 'demonstration-designer' }] },
+  nav: { label: 'Docs & media', items: [{ id: 'demonstration-designer', label: 'Demonstration Designer', icon: 'play', view: 'demonstration-designer' }] },
   settingsTabs: [{ id: SETTINGS_TAB, label: 'Demonstration Designer', icon: 'play', order: 62, parent: 'plugins' }],
   settingsPanels: [
     { id: 'demonstration-designer.settings', tab: SETTINGS_TAB, title: 'Pitch, stage, music and export', icon: 'play', order: 10, render: () => <SettingsPanel /> },

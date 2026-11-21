@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, controlSlug } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, PageToolbar, Segmented, SelectField, Switch, TextField, controlSlug, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -9,7 +9,8 @@ import type { AudioExport, Hit, Job, Message, Row, SyncReport, Version } from '.
 export const FOLDER = 'chat-viewer';
 const api = pluginApi(FOLDER, 'The Chat viewer');
 const enc = encodeURIComponent;
-const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+/** Grid column widths in text units (the columns hold text; a compact spacing preset shrinks space-based tracks). n = the old space count. */
+const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
 
 /** A phone-width screen: fewer columns by default (the title shows the source icon anyway). */
 const narrow = () => typeof window !== 'undefined' && window.matchMedia?.('(max-width: 640px)').matches;
@@ -65,7 +66,15 @@ export function ChatViewer() {
     } catch (e) { setError((e as Error).message); } finally { setImporting(''); if (fileRef.current) fileRef.current.value = ''; }
   };
 
-  if (open) return <SessionView id={open.id} seq={open.seq} onBack={() => { setOpen(null); void load(); }} />;
+  // the Chats toolbar (page-toolbar@1, assets/toolbar/chat-viewer.json)
+  const openRow = open ? (rows ?? []).find((r) => r.id === open.id) : undefined;
+  usePublishPageState('chat-viewer', { unseen: (rows ?? []).filter((r) => !r.seen).length, syncing: checking, searching: !!q.trim(), open: open ? { id: open.id, title: openRow?.title ?? '' } : null });
+  useToolbarHandlers('chat-viewer', {
+    'chat-viewer.sync': async () => { await check(); return { sessions: rows?.length ?? 0 }; },
+    'chat-viewer.search': () => { const el = document.querySelector<HTMLInputElement>('.axp-chat-viewer-search'); el?.focus(); el?.select(); return { q }; },
+    'chat-viewer.export': async () => { if (!open) return null; await api.download(`sessions/${enc(open.id)}/export?format=md`, `${(openRow?.title ?? open.id).slice(0, 60)}.md`); return { exported: open.id }; },
+  });
+  if (open) return <><PageToolbar view="chat-viewer" /><SessionView id={open.id} seq={open.seq} onBack={() => { setOpen(null); void load(); }} /></>;
 
   const shown = (rows ?? []).filter((r) => (only === 'all' || r.source === only || (only === 'updated' && !r.seen)) && core.matches(r, hits ? '' : q));
   const cols: GridColumn<Row>[] = [
@@ -82,7 +91,7 @@ export function ChatViewer() {
     ...core.SOURCES.filter((s) => by[s.id]).map((s) => ({ value: s.id, label: `${s.short} ${by[s.id]}` }))];
 
   return (
-    <div className="fx-stack axp-chat-viewer">
+    <div className="fx-stack fx-stack--lg axp-chat-viewer">
       <header className="fx-pagehead">
         <div><p className="fx-eyebrow">Every session</p><h1>Chats</h1><p className="fx-muted axp-chat-viewer-lede">claude.ai, Claude Code and build sessions in one place: search them, read them, listen to them.</p></div>
         <div className="fx-row axp-chat-viewer-acts">
@@ -93,6 +102,7 @@ export function ChatViewer() {
       </header>
       <UpdateNote report={report} checking={checking} importing={importing} status={status} />
       {error && <Note tone="danger" icon="alert">{error}</Note>}
+      <PageToolbar view="chat-viewer" />
       <div className="fx-row axp-chat-viewer-bar">
         <input className="fx-input axp-chat-viewer-search" type="search" aria-label="Search every session" placeholder="Search every message" value={q} onChange={(e) => setQ(e.target.value)} />
         {unseen > 0 && <Button size="sm" icon="check" onClick={() => void api.post('seen-all', {}).then(load)}>Mark all read</Button>}
@@ -218,7 +228,7 @@ function SessionView({ id, seq, onBack }: { id: string; seq?: number; onBack: ()
   const src = core.sourceOf(s.source);
 
   return (
-    <div className="fx-stack axp-chat-viewer axp-chat-viewer-session">
+    <div className="fx-stack fx-stack--lg axp-chat-viewer axp-chat-viewer-session">
       <header className="fx-pagehead">
         <div className="axp-chat-viewer-head">
           <p className="fx-eyebrow"><IconButton icon="arrow-left" label="Back to every session" onClick={onBack} /> <SourceChip s={s.source} /> {src.label}</p>

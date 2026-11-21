@@ -28,6 +28,12 @@ address resolves to the full one. Framework controls (TabGroup, DataGrid, Settin
 register themselves; a hand-drawn element carries `data-axf-target="<kind>:<id>"`. A new view, tab row, toolbar,
 setting, plugin or DataGrid without an address fails `check-console-control` in CI.
 
+Chrome instances (build fix-banner-settings-interface-tab): every tab group, toolbar, banner, nav, menu bar and context
+menu's own settings are `setting:chrome.<type>.<id>.<field>` (+ `.asset`), derived in `ChromeContext.tsx`
+(`chromeSettingTargets`, through `addDerivedTargets`): set writes `axf.chrome.<type>.<id>` exactly like its Settings →
+Interface tab (`reset` / '' drops a field), open = `chrome.settings:<type>:<id>:interface`. CLI
+`axf console chrome get|set|reset|open <type> <id> [key] [value]`.
+
 ## REST (`/api/console-control`)
 
 `GET /targets?under&kinds&source=auto|console|inventory` · `GET /state[?address]` · `POST /do {verb, address, value,
@@ -63,3 +69,12 @@ REST, MCP, CLI and voice are one code path (`console_control_api.command` / `voi
 in-process inside the console, or over REST from a local clone; the CLI calls REST. `console-control-parity.mjs`
 proves it: the same 14 commands through all four give the same answer, the same command at the console and the
 same state.
+
+## Page toolbars (Nov 17 2026, build rebuild-every-toolbar-page-specific)
+
+A toolbar drawn from a page toolbar asset (page-toolbar@1) is `toolbar:<settings id>` (`gate.auto-lander`), its buttons
+`toolbar:<settings id>/button:<id>`. `state` reads the look and every button (enabled, visible, pressed, badge, action, inMore);
+`press` runs a button through the same engine the click uses; a destructive button needs `confirm`. Shortcuts on every
+transport: REST `GET /api/console-control/toolbars`, `GET …/toolbars/<id>`, `POST …/toolbars/<id>/press {button}`; MCP
+`console_control_toolbar`; control@1 `console.toolbars`; CLI `axf console toolbar list|get|press`; voice "press <button> on
+the <x> toolbar", "what's on the <x> toolbar".

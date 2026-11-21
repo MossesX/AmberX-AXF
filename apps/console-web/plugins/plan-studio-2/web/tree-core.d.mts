@@ -14,7 +14,7 @@ export interface TreeRow extends Item { children: TreeRow[] }
 export interface FlatRow { item: Item; depth: number; kids: number }
 export interface Progress { done: number; total: number; minutes: number }
 export type Change<T = object> = { state: State } & T;
-export interface BuildChange { action: 'add'; title: string; detail: string; source: string; said?: string; steps: { text: string; model: string; estimate: string }[] }
+export interface BuildChange { action: 'add'; title: string; detail: string; source: string; said?: string; steps: { text: string; model: string; estimate: string }[] } // planning steps: model and estimate are '' when not set
 export type VoiceCommand =
   | { op: 'undo' } | { op: 'collapse'; all?: boolean; id?: string; collapsed: boolean }
   | { op: 'add'; kind: Kind | null; title: string; parent: string | null } | { op: 'rename'; id: string; title: string }

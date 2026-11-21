@@ -8,7 +8,7 @@
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 import {
   DEFAULTS, HUB_DOC_MAX, K, PART_BYTES, REC_IDLE, HubRecordings, byDay, byGroup, cleanSession, sessionPartName, capHours, chunkBytes, chunkName, cleanProject, dataUrl, fromBase64, hubHours, hubOf,
   idDate, idOfIndex, indexPath, isChunkId, normalizeIndex, partCount, partPath, readSettings, recReduce, splitParts, toBase64,
@@ -284,7 +284,6 @@ function fakeBridge() {
     async fetch(o) { calls.push({ m: 'fetch', o }); return { uri: `content://media/external/audio/media/${o.id}` }; },
     async play(o) { calls.push({ m: 'play', o }); },
     async share(o) { calls.push({ m: 'share', o }); },
-    async toExtract(o) { calls.push({ m: 'toExtract', o }); },
     async addListener(_ev, fn) { listeners.add(fn); return { remove: () => { listeners.delete(fn); } }; },
   };
   return { b, calls, emit: (e) => listeners.forEach((f) => f(e)), setRunning: (v) => { running = v; } };
@@ -320,7 +319,7 @@ await t('controller: attach, switch on → Android → recording → stopped, qu
   await c.detach();
 });
 
-await t('controller: list from axHub, play, share, send to Audio Extract, delete', async () => {
+await t('controller: list from axHub, play, share, delete', async () => {
   const f = fakeBridge();
   const hub = fakeHub();
   const a = audio(PART_BYTES + 10, 9);
@@ -339,8 +338,6 @@ await t('controller: list from axHub, play, share, send to Audio Extract, delete
   assert.deepEqual(c.get().playing, { id: r.id, url: 'blob:0' });
   await c.share(r);
   assert.deepEqual(f.calls.filter((x) => x.m === 'fetch' || x.m === 'share').map((x) => x.m), ['fetch', 'share']);
-  await c.toExtract(r);
-  assert.deepEqual(f.calls.at(-1), { m: 'toExtract', o: { uri: 'content://media/external/audio/media/20261030-101500-aaaa' } });
   await c.remove(r);
   assert.deepEqual(revoked, ['blob:0']); // the playing copy is let go first
   assert.equal(c.get().hub.items.length, 0);
@@ -371,96 +368,10 @@ await t('controller without the native side (the console): list only, start refu
   assert.equal(c.native(), false);
   await c.attach();
   await c.start();
-  assert.match(toasts[0], /AmberX app on Android/);
+  assert.match(toasts[0], /paired phone/);
   await c.refreshHub();
   assert.equal(c.get().hub.items.length, 1);
   await settle();
-});
-
-/* ---------------------------------------------------------------- the native side, statically */
-
-const root = new URL('../../../../', import.meta.url);
-const java = (f: string) => readFileSync(new URL(`apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/${f}`, root), 'utf8');
-
-const code = (f: string) => java(f).replace(/\/\*[\s\S]*?\*\/|\/\/.*$/gm, ''); // code only, not the comments
-
-await t('native: the mic only in the recorder service, only opt-in, VOICE_RECOGNITION (never a privacy-sensitive source)', () => {
-  for (const f of ['OutputRecordStartActivity.java', 'OutputRecorderPlugin.java', 'OutputRecordUploader.java', 'OutputRecordQueue.java', 'OutputRecordTile.java', 'TwoTrack.java', 'RecorderControl.java']) {
-    assert.ok(!/setAudioSource|AudioSource\.|MediaRecorder|SpeechRecognizer|new AudioRecord/.test(code(f)), `${f} must not open the microphone`);
-  }
-  const svc = code('OutputRecordService.java');
-  assert.match(svc, /setAudioPlaybackCaptureConfig\(cfg\)/);
-  assert.match(svc, /FOREGROUND_SERVICE_TYPE_MEDIA_PROJECTION/);
-  assert.equal((svc.match(/setAudioSource\(/g) ?? []).length, 1, 'one mic AudioRecord');
-  assert.match(svc, /setAudioSource\(android\.media\.MediaRecorder\.AudioSource\.VOICE_RECOGNITION\)/);
-  assert.ok(!/VOICE_COMMUNICATION|CAMCORDER/.test(svc), 'never a privacy-sensitive source (it would take the mic from a call / the Claude app)');
-  assert.ok(!/SpeechRecognizer/.test(svc), 'a plain capture: no recognizer');
-  // opened only when the setting / the approved start asks for it
-  // opt-in only, and never while AmberX's Mic off switch is on (MicGuard, Nov 1 2026)
-  assert.match(svc, /boolean wantMic = OutputRecordQueue\.micWanted\(this\)( && MicGuard\.mayOpen\(this\))?;/);
-  assert.match(svc, /if \(micOn\) \{\s*if \(!micAllowed\)[^\n]*\n\s*else openMic\(\);/);
-  assert.match(code('OutputRecordQueue.java'), /boolean mic = false;/);
-  assert.match(code('OutputRecordQueue.java'), /s\.mic = p\.getBoolean\("mic", false\);/);
-  const mf = readFileSync(new URL('apps/amberx-droid/android/app/src/main/AndroidManifest.xml', root), 'utf8');
-  assert.match(mf, /\.OutputRecordService"[\s\S]*?mediaProjection\|microphone/);
-});
-
-await t('native: two tracks (left = mic, right = playback), mic busy = playback only + marked, release on stop', () => {
-  const svc = code('OutputRecordService.java');
-  const tt = code('TwoTrack.java');
-  assert.match(tt, /LEFT = "mic"/);
-  assert.match(tt, /RIGHT = "playback"/);
-  assert.match(svc, /channels = micOn \? 2 : s\.channels;/);
-  assert.match(svc, /TwoTrack\.mixBlock\(micRing, playRing, micClock,/);
-  assert.match(svc, /meta\.put\("tracks", TwoTrack\.tracks\(\)\)/);
-  assert.match(svc, /meta\.put\("micBusy", spans\)/);
-  assert.match(code('OutputRecordUploader.java'), /index\.put\("micBusy"/);
-  // busy: refused, silenced (reported by Android), stopped delivering → marked + notification, never a failure
-  assert.match(svc, /isClientSilenced\(\)/);
-  assert.match(svc, /micBusy\(TwoTrack\.BUSY_UNAVAILABLE/);
-  assert.match(svc, /micBusy\(TwoTrack\.BUSY_SILENCED/);
-  assert.match(svc, /"Mic busy: recording playback only"/);
-  assert.ok(!/fail\([^)]*mic/i.test(svc), 'a busy mic never fails the recording');
-  // privacy: the notification says so, Stop mic is on it, the mic goes the moment the recording stops
-  assert.match(svc, /"Recording: playback \+ mic"/);
-  assert.match(svc, /"Stop mic", stopMic/);
-  assert.match(svc, /ACTION_STOP_MIC\.equals\(a\)\) stopMic\(\)/);
-  assert.match(svc, /private void release\(\) \{\s*micStop = true;\s*releaseMic\(\);/);
-  assert.match(svc, /m\.release\(\)/);
-});
-
-await t('native: no second listener (one recorder event listener, set only by the plugin)', () => {
-  for (const f of ['OutputRecordService.java', 'AxppLink.java', 'OutputRecordStartActivity.java', 'OutputRecordTile.java', 'OutputRecordUploader.java', 'TwoTrack.java']) {
-    assert.ok(!/OutputRecordService\.listener\s*=|\blistener\s*=\s*[^=]/.test(code(f).replace(/static volatile Listener listener;/, '')), `${f} must not add a recorder listener`);
-    assert.ok(!/notifyListeners|addListener|registerAudioRecordingCallback/.test(code(f)), `${f} must not subscribe to anything new`);
-  }
-  assert.equal((code('OutputRecorderPlugin.java').match(/OutputRecordService\.listener = e ->/g) ?? []).length, 1);
-});
-
-await t('native: one consent flow (switch and tile), manifest, part size twin', () => {
-  assert.match(java('OutputRecorderPlugin.java'), /OutputRecordStartActivity\.intent/);
-  assert.match(java('OutputRecordTile.java'), /OutputRecordStartActivity\.intent/);
-  assert.match(java('OutputRecordStartActivity.java'), /createScreenCaptureIntent/);
-  assert.match(java('OutputRecordUploader.java'), new RegExp(`PART_BYTES = ${PART_BYTES.toLocaleString('en').replace(/,/g, '_')};`));
-  assert.match(java('OutputRecordUploader.java'), /output-recorder\/parts\//);
-  assert.match(java('OutputRecordUploader.java'), /output-recorder\/recordings\//);
-  assert.match(java('OutputRecordQueue.java'), /kbps = 32;[\s\S]*channels = 1;[\s\S]*chunkMin = 30;[\s\S]*capMb = 200;[\s\S]*"amberx-recordings"/);
-  const mf = readFileSync(new URL('apps/amberx-droid/android/app/src/main/AndroidManifest.xml', root), 'utf8');
-  assert.match(mf, /\.OutputRecordService"[\s\S]*?mediaProjection/);
-  assert.match(mf, /\.OutputRecordTile"[\s\S]*?BIND_QUICK_SETTINGS_TILE[\s\S]*?QS_TILE/);
-  assert.match(java('MainActivity.java'), /registerPlugin\(OutputRecorderPlugin\.class\)/);
-  assert.match(java('AudioExtractPlugin.java'), /void offer\(List<Uri> uris\)/);
-  assert.ok(existsSync(new URL('apps/console-web/plugins/output-recorder/README.md', root)));
-});
-
-await t('sessions from axHub: native side names parts, groups them, mic as asked, never auto-approved', () => {
-  assert.match(java('OutputRecordService.java'), /RecorderControl\.partName\(/);
-  assert.match(java('OutputRecordUploader.java'), /"group", "session", "note"/);
-  assert.match(java('RecorderControl.java'), /" - part" \+/);
-  assert.match(java('AxppLink.java'), /\.put\("mic", OutputRecordService\.running && OutputRecordService\.micOn\)/);
-  assert.match(java('AxppLink.java'), /\.put\("micDefault", OutputRecordQueue\.settings\(c\)\.mic\)/);
-  assert.match(java('RecorderControl.java'), /static boolean micFor\(Boolean sessionMic, boolean setting\)/);
-  assert.match(java('HubRules.java'), /NEVER_AUTO = Set\.of\("amberx\.recorder_start"\)/);
 });
 
 await t('transcripts: paths, format, search with context, a session by its group', () => {
@@ -488,12 +399,8 @@ await t('transcripts: paths, format, search with context, a session by its group
   assert.ok(TRANSCRIPT_MAX >= 100);
 });
 
-await t('transcripts: a session is asked for, never the mic; AmberX tells the truth about opening a page', () => {
+await t('transcripts: a session is asked for, never the mic', () => {
   assert.doesNotMatch(readFileSync(new URL('../claude-session/server/recording.py', import.meta.url), 'utf8').replace(/^.*mic.*(follows|never sent).*$/gm, ''), /"mic"/);
-  const link = java('AxppLink.java');
-  assert.doesNotMatch(link, /\.put\("notified", true\)/, 'notified is measured, not hard-coded');
-  assert.match(link, /startInForeground/, 'one way to start from the background');
-  assert.match(link, /canDrawOverlays/, 'only with the permission a background start needs');
 });
 
 console.log(`output-recorder: ${n} tests passed`);

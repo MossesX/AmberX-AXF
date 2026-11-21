@@ -19,7 +19,10 @@
  *             process per call). axf-data unreachable: reads fall back to the local read-only copy (logged), writes throw
  *   rollback  async reads from axf-data; writes refuse with `read_only`
  *
- * axf-data: AXF_DATA_URL + AXF_DATA_TOKEN (the env files deploy/install-data.sh writes). Tests pass `remote`.
+ * axf-data: AXF_DATA_URL + AXF_DATA_TOKEN (the env files deploy/install-data.sh writes), or on the VPS host the
+ * `conf/env/host.env` file it writes for processes outside the containers (remoteConfig). Tests pass `remote`.
+ * Modes are per namespace with key-level overrides (data-store-mode@1 `keys`): the builds store and its journal moved
+ * first (Nov 18 2026), the rest of `builds` follows namespace by namespace.
  */
 import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -27,6 +30,7 @@ import { fileURLToPath } from 'node:url';
 import { createHash, randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { DataStoreError, NAMESPACES, LIMITS, PATTERNS, canonical, createDataStore, etagOf, httpBackend, kindOfFile } from './data-store.mjs';
+import { clip } from './clip.mjs';
 
 const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const PATHS = JSON.parse(readFileSync(join(REPO, 'framework/schemas/data-store-paths.json'), 'utf8'));
@@ -35,10 +39,32 @@ const SEGMENT = new RegExp(PATTERNS.segment);
 const FOLDER = new RegExp(PATTERNS.pluginFolder);
 export const MODES = ['local', 'shadow', 'cutover', 'rollback'];
 
+/**
+ * A linked git worktree (`.git` is a file) shares the main checkout's console data: its `.axf-console` (the mode document,
+ * the data-store folder) is the main checkout's, never one of its own, so a build session sees the same modes as the
+ * console and every other process on the machine. Memoised per repo path.
+ */
+const mainCheckoutMemo = new Map();
+export function mainCheckout(repo) {
+  if (mainCheckoutMemo.has(repo)) return mainCheckoutMemo.get(repo);
+  let main = repo;
+  try {
+    const g = join(repo, '.git');
+    if (statSync(g).isFile()) {
+      const gitdir = readFileSync(g, 'utf8').match(/gitdir:\s*(.+)/)?.[1]?.trim();
+      // <main>/.git/worktrees/<name> → <main>
+      const m = gitdir && /^(.*)\/\.git\/worktrees\/[^/]+\/?$/.exec(resolve(repo, gitdir));
+      if (m && existsSync(join(m[1], '.git'))) main = m[1];
+    }
+  } catch { /* not a worktree */ }
+  mainCheckoutMemo.set(repo, main);
+  return main;
+}
 /** The four roots, from the same env as the Python side. */
 export function roots(env = process.env) {
-  const data = env.AXF_STATE ? dirname(resolve(env.AXF_STATE)) : join(env.AXF_ROOT ? resolve(env.AXF_ROOT) : REPO, '.axf-console');
-  return { plugins: resolve(env.AXF_PLUGINS_DATA_DIR || join(data, 'plugins')), data, repo: env.AXF_ROOT ? resolve(env.AXF_ROOT) : REPO, projects: resolve(env.AXHUB_PROJECTS_DIR || '/projects') };
+  const repo = env.AXF_ROOT ? resolve(env.AXF_ROOT) : REPO;
+  const data = env.AXF_STATE ? dirname(resolve(env.AXF_STATE)) : join(env.AXF_ROOT ? repo : mainCheckout(repo), '.axf-console');
+  return { plugins: resolve(env.AXF_PLUGINS_DATA_DIR || join(data, 'plugins')), data, repo, projects: resolve(env.AXHUB_PROJECTS_DIR || '/projects') };
 }
 /** Is `key` a key data-store@1 accepts (registry namespaces, segments, plugin folder)? */
 export function validKey(key) {
@@ -129,19 +155,47 @@ export function modeDoc(env = process.env) {
   }
   return modeCache.doc;
 }
+/**
+ * The mode of one key: a key-level override on its namespace entry (`keys`: the exact path, or the longest prefix ending
+ * in `/`, relative to the namespace id: `builds/store.json` → `store.json`), else the namespace entry, else the store.
+ */
 export function modeOf(key, env = process.env) {
-  const doc = modeDoc(env); const e = doc.namespaces?.[nsIdOf(key)];
-  const m = e?.mode || doc.mode || 'local';
+  const doc = modeDoc(env); const id = nsIdOf(key); const e = doc.namespaces?.[id];
+  let m = '';
+  const rel = key.startsWith(`${id}/`) ? key.slice(id.length + 1) : '';
+  if (rel && e?.keys && typeof e.keys === 'object') {
+    let best = '';
+    for (const [p, k] of Object.entries(e.keys)) { const hit = p.endsWith('/') ? rel.startsWith(p) : rel === p; if (hit && p.length > best.length && k && typeof k === 'object') { best = p; m = String(k.mode || ''); } }
+  }
+  m = m || e?.mode || doc.mode || 'local';
   return MODES.includes(m) ? m : 'local';
 }
 
 // ── axf-data ──
 let remote = null;
-/** The axf-data client (createDataStore over httpBackend), or null when AXF_DATA_URL is unset. Tests pass their own. */
+/**
+ * Where axf-data is: AXF_DATA_URL + AXF_DATA_TOKEN from the environment (the console container, the headless drill), else
+ * the host env file deploy/install-data.sh writes for processes on the VPS itself (build sessions in worktrees, the gate
+ * runner, cron): `<AXF_DATA_CONF>/env/host.env` (default /root/hub/data/axf-data/conf/env/host.env, root-only, carrying
+ * the loopback URL and the orchestrator token). Tests set AXF_DATA_URL or pass their own store; AXF_DATA_URL=off disables.
+ */
+export function remoteConfig(env = process.env) {
+  if (env.AXF_DATA_URL === 'off') return null;
+  if (env.AXF_DATA_URL) return { url: env.AXF_DATA_URL, token: env.AXF_DATA_TOKEN || '', from: 'env' };
+  if (env.AXF_DATA_DIR !== undefined || env.AXF_BUILDS_STORE) return null; // tests and scratch runs never reach the VPS service
+  const f = join(env.AXF_DATA_CONF || '/root/hub/data/axf-data/conf', 'env', 'host.env');
+  try {
+    const kv = Object.fromEntries(readFileSync(f, 'utf8').split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')).map((l) => { const i = l.indexOf('='); return [l.slice(0, i), l.slice(i + 1)]; }));
+    if (kv.AXF_DATA_URL) return { url: kv.AXF_DATA_URL, token: kv.AXF_DATA_TOKEN || '', from: f };
+  } catch { /* no host env file: not on the VPS */ }
+  return null;
+}
+/** The axf-data client (createDataStore over httpBackend), or null when axf-data is not configured here. Tests pass their own. */
 export function remoteStore(env = process.env) {
   if (remote) return remote;
-  if (!env.AXF_DATA_URL) return null;
-  remote = createDataStore({ backend: httpBackend({ url: env.AXF_DATA_URL, token: () => env.AXF_DATA_TOKEN || '', actor: env.AXF_DATA_ACTOR || '' }) });
+  const cfg = remoteConfig(env);
+  if (!cfg) return null;
+  remote = createDataStore({ backend: httpBackend({ url: cfg.url, token: () => cfg.token, actor: env.AXF_DATA_ACTOR || '' }) });
   return remote;
 }
 export function setRemote(store) { remote = store; }
@@ -190,7 +244,7 @@ function putLatestSync(key, text) {
 function remoteTextSync(key) {
   if (kindOfKey(key) === 'journal') {
     const lines = []; let since = 0;
-    for (;;) { let r; try { r = callSync({ op: 'read', key, since }); } catch (e) { if (e.code === 'not_found') return lines.length ? lines.join('') : null; throw e; } for (const x of r.entries) lines.push(`${JSON.stringify(x.entry)}\n`); if (!r.next) break; since = r.next; }
+    for (;;) { let r; try { r = callSync({ op: 'read', key, since, limit: SYNC_READ_PAGE }); } catch (e) { if (e.code === 'not_found') return lines.length ? lines.join('') : null; throw e; } for (const x of r.entries) lines.push(`${JSON.stringify(x.entry)}\n`); if (!r.next) break; since = r.next; }
     return lines.join('');
   }
   const rec = callSync({ op: 'get', key });
@@ -326,6 +380,16 @@ export async function appendJsonl(p, entry) {
 }
 
 /**
+ * The biggest answer one sync call may print: a blob at the store's limit, base64 in JSON (4/3), plus room for the
+ * frame. A fixed 64 MiB failed with ENOBUFS on a 207 MB SQLite blob and on a 68 MB journal page (Nov 20 2026).
+ */
+export const CALL_SYNC_MAX_BUFFER = Math.ceil((Math.max(LIMITS.blobBytes, LIMITS.recordBytes) * 4) / 3) + 16 * 1024 * 1024;
+/**
+ * Journal entries per sync `read`: each entry is at most LIMITS.entryBytes (256 KiB), so a page stays near 25 MiB
+ * whatever the journal holds. The server's default page (journalPage, 5000) of a busy month part is over 60 MB.
+ */
+export const SYNC_READ_PAGE = 100;
+/**
  * One data-store@1 call, synchronously (a child node process runs framework/cli/data-call.mjs): for sync code that
  * must work in cutover (builds-store.mjs). Throws DataStoreError with the server's code. AXF_DATA_CALL_SYNC may name
  * another helper (tests point it at an in-process store).
@@ -333,8 +397,8 @@ export async function appendJsonl(p, entry) {
 export function callSync(req) {
   const helper = process.env.AXF_DATA_CALL_SYNC || join(REPO, 'framework/cli/data-call.mjs');
   let text;
-  try { text = execFileSync(process.execPath, [helper], { input: JSON.stringify(req), encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 60000 }); }
-  catch (e) { throw new DataStoreError('unavailable', `data-call failed: ${String(e.message).slice(0, 200)}`); }
+  try { text = execFileSync(process.execPath, [helper], { input: JSON.stringify(req), encoding: 'utf8', maxBuffer: CALL_SYNC_MAX_BUFFER, timeout: 60000 }); }
+  catch (e) { throw new DataStoreError('unavailable', `data-call failed: ${clip(String(e.message), 200)}`); }
   const r = JSON.parse(text.trim().split('\n').pop());
   if (!r.ok) throw new DataStoreError(r.code, r.message, { rev: r.rev, etag: r.etag });
   return r.result;

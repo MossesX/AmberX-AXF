@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "phone-connect-settings-s-mwl9dru5-stacked",
+  "name": "phone-connect-settings-s-mwl9dru5: One page",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "Every section on one page, in order: Pair, Phones, Features, Activity. Nothing hidden; longest scroll.",
+  "tags": [
+    "ui-choice",
+    "choice-set:phone-connect-settings-s-mwl9dru5",
+    "choice-option:stacked"
+  ],
+  "data": {
+    "view": "stacked",
+    "settingKey": "phone-connect.layout",
+    "appliesTo": [
+      "phone-connect"
+    ],
+    "builtFor": "plugin:phone-connect"
+  }
+}
