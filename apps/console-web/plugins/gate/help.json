@@ -86,7 +86,7 @@
       {
         "target": "save",
         "title": "Save",
-        "text": "Saves the changed fields. The change is written to History."
+        "text": "Saves the changed fields. The change is written to History. On Approval rules it sends the draft to axHub from this browser on Brett's own hub session, and only Brett's own click does it."
       },
       {
         "target": "merge-queue",
@@ -300,11 +300,6 @@
         "text": "Sets Brett's rule in one go: only shell commands on the VPS hold on the veto countdown (vps run and launch, the console terminal run, Vinny command run). Everything else in the console and the orchestrator runs at once, model upgrades keep their confirm and deletes keep their approval. It takes Brett's own click: a session, MCP, the CLI and voice cannot press it."
       },
       {
-        "target": "save",
-        "title": "Save",
-        "text": "Sends the draft to axHub from this browser, on Brett's own hub session. Only Brett's own click saves: everything else can read the rules and stage edits."
-      },
-      {
         "target": "discard-draft",
         "title": "Discard draft",
         "text": "Drops every staged edit. axHub was never changed, so nothing is undone there."
@@ -313,6 +308,31 @@
         "target": "let-the-rules-decide",
         "title": "Let the rules decide",
         "text": "A tool with an entry of its own ignores every rule. On: Save clears those entries for this service so the rules decide. Denied tools and deletes keep theirs."
+      },
+      {
+        "target": "update-rule",
+        "title": "Update rule",
+        "text": "Puts the edited tools pattern and hold length for this rule into the draft. Nothing changes on axHub until Save."
+      },
+      {
+        "target": "move-rule-up",
+        "title": "Move rule up",
+        "text": "Moves the rule one place up. Order matters: the first rule that matches a tool decides it."
+      },
+      {
+        "target": "move-rule-down",
+        "title": "Move rule down",
+        "text": "Moves the rule one place down. A rule under a catch-all (*) decides nothing."
+      },
+      {
+        "target": "remove-rule",
+        "title": "Remove rule",
+        "text": "Takes the rule out of the draft. The tools it decided fall to the next matching rule, or to the service."
+      },
+      {
+        "target": "add-rule-to",
+        "title": "Add rule",
+        "text": "Adds the new rule to this service's draft, above a closing catch-all (*) so it can still decide something."
       },
       {
         "target": "cli:gate/approvals",

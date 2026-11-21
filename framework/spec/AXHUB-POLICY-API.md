@@ -1,7 +1,6 @@
 # axHub policy API (policy-table@1)
 
-Contract between the Dev Console and axHub: the Approval rules tab in VPS Configuration (`apps/console-web/plugins/gate`,
-approval-rules@1) and the Approvals & veto tab in Claude settings. The console side came with build
+Contract between the Dev Console and axHub: the Approval rules tab in VPS Configuration (approval-rules@1) and the Approvals & veto tab in Claude settings. The console side came with build
 `claude-settings-tabs-veto` (Nov 7 2026); axHub's routes were written for `owner-recognized-everywhere-veto-countdown-only-on-shell-commands`
 (axHub decision #119, Nov 12 2026, `packages/server/src/policy-web.ts`) and landed on axHub main, with match-pattern
 rules (axHub decision #121), on Nov 21 2026 (axHub PR #43, build `approval-rules-vps-configuration-veto`). Against an
@@ -72,5 +71,5 @@ whole ordered list; an empty list clears it. A rule is `{ match, policy?, vetoSe
 - An `allow` rule never decides a guarded tool (destructive, owner grant, explicit approval): that tool follows the
   service as if no rule matched, so a preset's straight approval for a delete is not turned into a countdown.
 
-The console keeps a draft of rule edits (approval-rules@1, `apps/console-web/plugins/gate/README.md`); only the
+The console keeps a draft of rule edits (approval-rules@1, the VPS Configuration plugin's README); only the
 `PUT` above, from Brett's own click in his own browser session, changes anything on the hub.

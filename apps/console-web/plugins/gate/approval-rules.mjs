@@ -19,12 +19,33 @@
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readPolicy } from '../claude-settings/core.mjs'; // axf-plugin:claude-settings
 import { DRAFT_FRAME, lines, stage, view } from './web/approval-core.mjs';
 
 const HERE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
 const fail = (message, code = 'invalid') => Object.assign(new Error(message), { code });
+
+/** The hub's address from AXHUB_URL (which may name /mcp). */
+export const hubBase = (env = process.env) => String(env.AXHUB_URL || 'https://axhub.amberxai.com').replace(/\/mcp\/?$/, '').replace(/\/+$/, '');
+function hubToken(env) {
+  if (env.AXHUB_TOKEN) return env.AXHUB_TOKEN.trim();
+  try { return readFileSync(join(env.HOME || '', '.config', 'axhub', 'token'), 'utf8').trim(); } catch { return ''; }
+}
+/**
+ * The live policy table (policy-table@1, framework/spec/AXHUB-POLICY-API.md), read with the hub token: a bearer reads,
+ * never writes. → { hub, available: true, table } | { hub, available: false, message }, never a stale copy.
+ */
+export async function readPolicy({ env = process.env, fetch: f = globalThis.fetch } = {}) {
+  const hub = hubBase(env);
+  const token = hubToken(env);
+  if (!token) return { hub, available: false, message: 'No axHub token here, so the rules cannot be read.' };
+  try {
+    const r = await f(`${hub}/auth/api/policy`, { headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' }, redirect: 'error', signal: AbortSignal.timeout(20000) });
+    if (r.status === 404) return { hub, available: false, message: "axHub doesn't have the policy API yet (axHub decisions 119 and 121)." };
+    if (!r.ok) return { hub, available: false, message: `axHub answered ${r.status}.` };
+    return { hub, available: true, table: await r.json() };
+  } catch (e) { return { hub, available: false, message: `Can't reach axHub: ${String(e?.message ?? e).slice(0, 120)}` }; }
+}
 
 /** The plugin's data folder (the same one gate-store.mjs uses). */
 export function dataDir(env = process.env) {

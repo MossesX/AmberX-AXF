@@ -339,6 +339,15 @@ try {
     const down = { ...io, read: async () => ({ hub: 'h', available: false, message: 'axHub answered 502.' }) };
     assert.equal(await R.main(['default', '--json'], down), 1); assert.match(JSON.parse(out.pop()).message, /nothing was staged: axHub answered 502/);
     assert.equal(await R.main(['status'], down), 0); assert.match(out.pop(), /can't be shown: axHub answered 502/);
+    // the read itself: a bearer GET, never a stale copy, plain words when it fails
+    const hubEnv = { AXHUB_URL: 'https://hub.test/mcp', AXHUB_TOKEN: ' tok ' };
+    const seen = [];
+    const okRead = await R.readPolicy({ env: hubEnv, fetch: async (url, init) => { seen.push([url, init]); return { ok: true, status: 200, json: async () => table }; } });
+    assert.equal(okRead.available, true); assert.equal(seen[0][0], 'https://hub.test/auth/api/policy'); assert.equal(seen[0][1].headers.Authorization, 'Bearer tok'); assert.equal(seen[0][1].method, undefined, 'a GET');
+    assert.match((await R.readPolicy({ env: hubEnv, fetch: async () => ({ ok: false, status: 404 }) })).message, /doesn't have the policy API yet/);
+    assert.match((await R.readPolicy({ env: hubEnv, fetch: async () => ({ ok: false, status: 401 }) })).message, /answered 401/);
+    assert.match((await R.readPolicy({ env: hubEnv, fetch: async () => { throw new Error('down'); } })).message, /Can't reach axHub: down/);
+    assert.match((await R.readPolicy({ env: { HOME: dir } })).message, /No axHub token here/);
     rmSync(dir, { recursive: true, force: true });
 
     // the wiring: tab, routes, MCP tools, CLI word, targets, actions; Save and Apply the default want the real click
