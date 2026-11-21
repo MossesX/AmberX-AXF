@@ -1,4 +1,4 @@
-/* Gate & rules: layout only; every control is a framework one (Button, Switch, Chip, TextField, SelectField, DataGrid). */
+/* VPS Configuration: layout only; every control is a framework one (Button, Switch, Chip, TextField, SelectField, DataGrid). */
 .axp-gate { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
 .axp-gate__panel { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0; }
 .axp-gate__bar { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }

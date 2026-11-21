@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Gate & rules self-test: the gate-rules core against its fixtures, the store and lander adapters against a temp
+ * VPS Configuration self-test: the gate-rules core against its fixtures, the store and lander adapters against a temp
  * lander data folder (config.json, merge-queue.json, land.json, a fake land.mjs that records what it was asked), the
  * History log, the ops (rules, reset confirm, check, settings), and CLI-vs-API parity (what the REST routes and so the
  * MCP tools run): the same input gives the same record.

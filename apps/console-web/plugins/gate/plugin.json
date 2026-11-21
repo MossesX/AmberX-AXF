@@ -1,7 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.gate",
-  "name": "Gate & rules",
+  "name": "VPS Configuration",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,
@@ -12,6 +12,7 @@
   ],
   "provides": [
     "view:gate",
+    "view:vps-configuration",
     "settings-tab:gate",
     "service:axf.gate@1",
     "service:axf.build-rules@1"
@@ -39,6 +40,7 @@
     "mentions": [
       "apps/console-web/plugins/README.md",
       "framework/spec/GATE.md",
+      "apps/console-web/plugins/glossary-index/terms.json",
       "CLAUDE.md",
       "_claude/rules/RULES.md",
       "framework/spec/BUILD-RULES.md",

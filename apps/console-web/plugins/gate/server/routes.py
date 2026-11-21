@@ -1,4 +1,4 @@
-"""Gate & rules REST routes (gate-rules@1, framework/spec/GATE.md). Mounted at /api/plugins/gate/.
+"""VPS Configuration REST routes (gate-rules@1, framework/spec/GATE.md). Mounted at /api/plugins/gate/.
 
 Every route runs the plugin's one Node implementation (gate.mjs api <op>), so the console page, the MCP tools
 (plugin-commands@1: gate_*), the CLI (`axf gate …`) and voice give the same record for the same input.

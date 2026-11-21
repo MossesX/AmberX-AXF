@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Gate & rules: the one implementation behind every transport (framework/spec/GATE.md). The console's REST routes
+ * VPS Configuration: the one implementation behind every transport (framework/spec/GATE.md). The console's REST routes
  * (server/routes.py), the MCP tools (plugin-commands → those routes) and the CLI (`axf gate …`) all end in `run(op, input)`
  * here, so the same input gives the same record everywhere (the CLI-vs-MCP parity test checks it).
  *
@@ -42,7 +42,7 @@ export function buildRulesVerdict(build, { dir } = {}) {
 
 export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
 
-/** The plugin's own settings (Settings → Plugins → Gate): key → { type, default, … }. */
+/** The plugin's own settings (Settings → Plugins → VPS Configuration): key → { type, default, … }. */
 export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
@@ -143,7 +143,7 @@ export function createGate(opts = {}) {
       const build = String(i.build || (i.branch || snap?.head || '').replace(/^claude\//, '') || '').slice(0, 120);
       const br = i.build || i.branch ? buildRulesVerdict(build, { dir: i.rulesDir }) : null;
       if (br?.failing.length) {
-        const reason = `build-rules: ${br.failing.join(', ')} failed at the gate (Builds → Gate & rules → Build rules).`;
+        const reason = `build-rules: ${br.failing.join(', ')} failed at the gate (Builds → VPS Configuration → Build rules).`;
         return { ok: true, ...v, pass: false, held: false, blockedBy: v.blockedBy || 'build-rules', reasons: [...(v.reasons || []), reason], buildRules: br, known };
       }
       return { ok: true, ...v, ...(br ? { buildRules: br } : {}), known };

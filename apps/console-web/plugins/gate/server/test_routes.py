@@ -1,4 +1,4 @@
-"""Gate & rules REST routes (server/routes.py) against a temp data folder: every route answers, the plugin-commands body
+"""VPS Configuration REST routes (server/routes.py) against a temp data folder: every route answers, the plugin-commands body
 shape ({input, by, reason}) works like a page's, two-step presses answer confirmation_required first, errors map to
 status codes, and the health / alert builders (health.py) say the right thing.
 

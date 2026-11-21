@@ -2,7 +2,7 @@
   "$axf": "asset@1",
   "type": "help",
   "id": "gate-help",
-  "name": "Gate & rules help",
+  "name": "VPS Configuration help",
   "version": "0.1.0",
   "description": "The gate plugin's Help mode entries (help@1).",
   "author": "Brett",
@@ -14,13 +14,13 @@
     "entries": [
       {
         "target": "view:gate",
-        "title": "Gate & rules",
-        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change to either. Same calls as `axf gate …`, the gate_* and lander_* MCP tools and voice.",
+        "title": "VPS Configuration",
+        "text": "How the VPS runs builds (this screen was named Gate & rules): the rules a PR must pass before it lands, the build rules, the auto-lander that lands it, and the history of every change. Same calls as `axf gate …`, the gate_* and lander_* MCP tools and voice (“open VPS Configuration”).",
         "kind": "screen"
       },
       {
         "target": "gate",
-        "title": "Gate settings",
+        "title": "VPS Configuration settings",
         "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
       },
       {
@@ -136,7 +136,7 @@
       {
         "target": "refresh-every-seconds",
         "title": "Refresh every (seconds)",
-        "text": "How often the open Gate & rules tab asks the lander again (5 to 600)."
+        "text": "How often the open VPS Configuration tab asks the lander again (5 to 600)."
       },
       {
         "target": "history-size-entries-kept",
@@ -146,7 +146,7 @@
       {
         "target": "tab-it-opens-on",
         "title": "Tab it opens on",
-        "text": "The tab Gate & rules opens on, unless you were on another one last time."
+        "text": "The tab VPS Configuration opens on, unless you were on another one last time."
       },
       {
         "target": "gate.view",
@@ -275,7 +275,7 @@
       {
         "target": "land-by-itself",
         "title": "Land by itself",
-        "text": "Turns “Land by itself” on or off. It takes effect straight away and is remembered. Part of Gate & rules.",
+        "text": "Turns “Land by itself” on or off. It takes effect straight away and is remembered. Part of VPS Configuration.",
         "kind": "toggle",
         "draft": true
       }
@@ -283,7 +283,7 @@
     "intros": [
       {
         "screen": "gate",
-        "title": "Gate & rules",
+        "title": "VPS Configuration",
         "steps": [
           {
             "say": "Rules: what every PR must pass before it lands. Switch a rule off or change its severity here.",

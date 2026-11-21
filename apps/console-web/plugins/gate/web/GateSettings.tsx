@@ -1,5 +1,5 @@
 /**
- * Settings → Plugins → Gate (a sub-tab: the settings library draws the tab's level toolbar above it). The plugin's own
+ * Settings → Plugins → VPS Configuration (a sub-tab: the settings library draws the tab's level toolbar above it). The plugin's own
  * settings live on the server (GET / PUT settings), so the CLI (`axf gate settings set refreshSec 60`), MCP
  * (gate_settings, gate_settings_set), voice (`gate.setting:refreshSec:60`, "set the gate refresh to 60") and this panel
  * read and write the same values. console-control@1: `setting:gate.refreshSec | gate.historySize | gate.defaultTab`.
@@ -22,7 +22,7 @@ export function GateSettings() {
   const changed = !!cur && (refresh !== String(cur.refreshSec) || size !== String(cur.historySize) || tab !== cur.defaultTab);
   const save = async () => {
     setBusy(true); setError('');
-    try { fill(await saveSettings({ refreshSec: Number(refresh), historySize: Number(size), defaultTab: tab as Settings['defaultTab'] })); rt.toast('Gate settings saved.', 'success', 'Gate'); }
+    try { fill(await saveSettings({ refreshSec: Number(refresh), historySize: Number(size), defaultTab: tab as Settings['defaultTab'] })); rt.toast('Gate settings saved.', 'success', 'VPS Configuration'); }
     catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   };
   if (!cur && !error) return <p className="axp-gate__sub">Loading…</p>;
@@ -39,7 +39,7 @@ export function GateSettings() {
 
 
 
-/** Links from Settings → Plugins → Gate into the Gate screen's own tabs (build rules and the auto-lander stay there). */
+/** Links from Settings → Plugins → VPS Configuration into the VPS Configuration screen's own tabs (build rules and the auto-lander stay there). */
 export function GateScreenLinks() {
   const rt = useRuntime();
   const open = (tab: string) => { rt.closeDialog(); rt.dispatch(`gate.open:${tab}`); };

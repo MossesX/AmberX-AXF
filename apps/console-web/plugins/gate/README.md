@@ -1,10 +1,14 @@
-# Gate & rules (console plugin)
+# VPS Configuration (console plugin)
+
+Named **Gate & rules** until Nov 21 2026 (build `rename-gate-rules-to-vps-configuration`). The folder, plugin id, REST
+prefix (`/api/plugins/gate/`), CLI (`axf gate`), MCP tools (`gate_*`, `lander_*`) and `view:gate` keep their names so
+nothing saved breaks; `view:vps-configuration`, `console_open vps-configuration` and `vps.open` are the new addresses.
 
 `ai.amberx.axf.console.gate` · built on Opus (Nov 15 2026, build `gate-rules-plugin-in-the-console`;
 Brett: "Where is the gate and rules plugin, open it on my screen.").
 
 The gate a PR must pass before it lands (gate-rules@1) and the auto-lander that lands it, in one place:
-Builds → **Gate & rules** (`view:gate`), with three tabs (framework TabGroup `gate.tabs`):
+Builds → **VPS Configuration** (`view:gate`), with three tabs (framework TabGroup `gate.tabs`):
 
 - **Rules**: every gate rule with its on/off switch, severity and settings; Reset to defaults (confirm); Check a PR.
 - **Auto-lander**: the one mode switch **Merge queue** (on = PRs go through the stacked merge queue and the
@@ -32,7 +36,7 @@ Contract: `framework/spec/GATE.md`. Engine: `framework/core/gate-rules.mjs` (pur
   annotations (reads run at once, writes are veto calls, Reset and Land now also ask for the gate's confirm token).
 - CLI `axf gate rules|check|history|lander|settings …` (gate.mjs, plugin.json `cli`), and every command id through
   plugin-commands (`axf gate rules-list --json`).
-- Voice / console actions: `gate.open[:tab]`, `gate.rule:<id>[:on|off]`, `lander.land-now:<pr>` (confirms first),
+- Voice / console actions: `vps.open[:tab]` (`gate.open[:tab]` is the same under the old name), `gate.rule:<id>[:on|off]`, `lander.land-now:<pr>` (confirms first),
   `lander.pause[:why]`, `lander.resume`.
 
 ## Server lander (lander@1; replaced auto-lander@1 on Nov 19 2026)
@@ -43,7 +47,7 @@ to the builds store), `deploy/systemd/axf-lander.{service,timer}`. The gate's bu
 checks of before / after rules) run inside the lander's running-ci step, once per green head (`build-rules-runner.mjs`).
 In this plugin: `server/routes.py` (`/auto-lander…` routes, now answered by `deploy/lander/run.mjs`),
 `server/auto_lander_health.py` (systems check item `gate-auto-lander`: service down, or builds failing repeatedly while
-the lander retries), `web/AutoLanderTab.tsx` (Gate → Auto-lander → Server), `web/AutoLanderSettings.tsx` (Settings →
+the lander retries), `web/AutoLanderTab.tsx` (VPS Configuration → Auto-lander → Server), `web/AutoLanderSettings.tsx` (Settings →
 Plugins → Gate: the size cap and retry timing), `test_auto_lander.py`. MCP `gate_auto_lander_*`, CLI
 `axf gate auto-lander …`, voice `gate.auto-lander.*`.
 

@@ -1,5 +1,5 @@
 /**
- * Settings → Plugins → Gate → Server auto-lander (a panel in the Gate sub-tab: the settings library draws the tab's
+ * Settings → Plugins → VPS Configuration → Server auto-lander (a panel in the Gate sub-tab: the settings library draws the tab's
  * level toolbar above it). The values live with the VPS lander (deploy/lander/config.json, the data folder's
  * config.json on top) and are read and written through GET / POST /api/plugins/gate/auto-lander/settings, the same call
  * as MCP (gate_auto_lander_settings, gate_auto_lander_settings_set), the CLI (`axf gate auto-lander set sizeCapLines
@@ -34,7 +34,7 @@ export function AutoLanderSettings() {
   const changed = Object.keys(patch).length > 0;
   const save = async () => {
     setBusy(true); setError('');
-    try { fill(await saveAutoLanderSettings(Object.fromEntries(Object.entries(patch).map(([k, v]) => [k, typeof v === 'boolean' ? v : Number(v)])))); rt.toast('Lander settings saved.', 'success', 'Gate'); }
+    try { fill(await saveAutoLanderSettings(Object.fromEntries(Object.entries(patch).map(([k, v]) => [k, typeof v === 'boolean' ? v : Number(v)])))); rt.toast('Lander settings saved.', 'success', 'VPS Configuration'); }
     catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   };
   if (!cur && !error) return <p className="axp-gate__sub">Loading…</p>;

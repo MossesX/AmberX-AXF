@@ -29,7 +29,7 @@ export interface Answer { ok: boolean; code?: string; message?: string; confirm?
 export async function gateCall<T = Answer>(path: string, method: 'GET' | 'POST' | 'PUT' = 'GET', body?: unknown): Promise<T & Answer> {
   const r = await pluginFetch(FOLDER, path, method === 'GET' ? {} : { method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body ?? {}) });
   let j: Answer;
-  try { j = (await r.json()) as Answer; } catch { throw new Error(r.status === 404 ? 'The Gate & rules plugin is off or its server part is not running.' : `The gate answered ${r.status}.`); }
+  try { j = (await r.json()) as Answer; } catch { throw new Error(r.status === 404 ? 'The VPS Configuration plugin is off or its server part is not running.' : `The gate answered ${r.status}.`); }
   if (!j.ok && j.code !== 'confirmation_required') throw new Error(String(j.message || j.detail || `The gate answered ${r.status}.`));
   return j as T & Answer;
 }
