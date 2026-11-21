@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T05:20:17.472Z",
+ "updatedAt": "2026-11-21T05:20:59.902Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -330,6 +330,11 @@
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T05:16:01.451Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:20:03.140Z",
      "by": "watchdog"
     }
    ],
@@ -806,6 +811,11 @@
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T05:16:01.451Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:20:03.140Z",
      "by": "watchdog"
     }
    ],

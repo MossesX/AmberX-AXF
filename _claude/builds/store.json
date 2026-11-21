@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10292,
- "updatedAt": "2026-11-21T05:20:17.472Z",
+ "rev": 10293,
+ "updatedAt": "2026-11-21T05:20:59.902Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351155,6 +351155,11 @@
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T05:16:01.451Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:20:03.140Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -351672,7 +351677,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351915,6 +351920,11 @@
     {
      "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T05:16:01.451Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (5 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:20:03.140Z",
      "by": "watchdog"
     }
    ],
@@ -352523,7 +352533,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
