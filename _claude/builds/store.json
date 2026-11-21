@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10307,
- "updatedAt": "2026-11-21T22:05:47.616Z",
+ "rev": 10308,
+ "updatedAt": "2026-11-21T22:06:02.903Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -352791,7 +352791,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "shipped",
    "pendingId": "",
@@ -352799,7 +352799,7 @@
    "pr": "#867",
    "mergedAt": "2026-11-21T02:24:10Z",
    "createdAt": "2026-11-20T23:41:14.451Z",
-   "updatedAt": "2026-11-21T22:05:31.858Z",
+   "updatedAt": "2026-11-21T22:05:44.105Z",
    "builtAt": "2026-11-20T23:58:56Z",
    "notes": [
     {
@@ -352821,6 +352821,10 @@
     {
      "text": "Watchdog: merged and CI is green on 4d64551a43: landed.",
      "at": "2026-11-21T22:05:31.858Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T22:05:44.105Z"
     }
    ],
    "approvals": [],
@@ -352844,9 +352848,9 @@
     "ci": "success",
     "ciAt": "2026-11-21T22:05:31.858Z",
     "ciRun": "commit@4d64551a43f2afd9b1532f09393b132364a99c00",
-    "verifiedAt": "",
-    "verifyHow": "",
-    "verifyLog": ""
+    "verifiedAt": "2026-11-21T22:05:44.105Z",
+    "verifyHow": "deploy",
+    "verifyLog": "No verify command: CI green on the merge commit is the verify."
    },
    "shipped": {
     "id": "sm-fix-main-ci-red-after-s16-s7-hand",
@@ -352974,7 +352978,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -353245,8 +353249,8 @@
    "branch": "claude/fable-rebuild-1-2-vps-host-services-move",
    "pr": "#884",
    "createdAt": "2026-11-21T19:28:48.961Z",
-   "updatedAt": "2026-11-21T22:01:00.166Z",
-   "builtAt": "2026-11-21T22:01:00.166Z",
+   "updatedAt": "2026-11-21T22:06:00.034Z",
+   "builtAt": "2026-11-21T22:06:00.034Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-fable-rebuild-1-2-vps-host-services-move--gina.",
@@ -353255,6 +353259,10 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-rebuild-1-2-vps-host-services-move--gina, shared account login)",
      "at": "2026-11-21T19:30:44.831Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:06:00.034Z"
     },
     {
      "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
@@ -353287,7 +353295,7 @@
     "runs": 1,
     "crashes": 0,
     "lastRun": {
-     "at": "2026-11-21T22:00:59.283Z",
+     "at": "2026-11-21T22:05:59.224Z",
      "exit": 1,
      "outcome": "requeued",
      "reason": "",

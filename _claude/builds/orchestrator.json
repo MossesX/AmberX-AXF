@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T22:05:47.616Z",
+ "updatedAt": "2026-11-21T22:06:02.903Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "shipped",
    "pendingId": "",
@@ -67,7 +67,7 @@
    "pr": "#867",
    "mergedAt": "2026-11-21T02:24:10Z",
    "createdAt": "2026-11-20T23:41:14.451Z",
-   "updatedAt": "2026-11-21T22:05:31.858Z",
+   "updatedAt": "2026-11-21T22:05:44.105Z",
    "builtAt": "2026-11-20T23:58:56Z",
    "notes": [
     {
@@ -89,6 +89,10 @@
     {
      "text": "Watchdog: merged and CI is green on 4d64551a43: landed.",
      "at": "2026-11-21T22:05:31.858Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T22:05:44.105Z"
     }
    ],
    "approvals": [],
@@ -213257,8 +213261,8 @@
    "branch": "claude/fable-rebuild-1-2-vps-host-services-move",
    "pr": "#884",
    "createdAt": "2026-11-21T19:28:48.961Z",
-   "updatedAt": "2026-11-21T22:01:00.166Z",
-   "builtAt": "2026-11-21T22:01:00.166Z",
+   "updatedAt": "2026-11-21T22:06:00.034Z",
+   "builtAt": "2026-11-21T22:06:00.034Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-fable-rebuild-1-2-vps-host-services-move--gina.",
@@ -213267,6 +213271,10 @@
     {
      "text": "Claude account: hulu0241 (axf-fable-rebuild-1-2-vps-host-services-move--gina, shared account login)",
      "at": "2026-11-21T19:30:44.831Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:06:00.034Z"
     },
     {
      "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
