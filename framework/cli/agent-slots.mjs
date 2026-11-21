@@ -37,12 +37,15 @@
  * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
  * as maxAgentsSet), status carries `hard` { max, live, free } and `free` is the smaller of the two. Heavy steps run in
  * axf-builds.slice (systemd-run --scope) with the docker shim first on PATH (--cpus / --memory on test containers).
+ * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
+ * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
+ */
+
+/*
  * Emergency slots (Brett, Nov 20 2026): a second pool beside the cap. An entry of a build that holds an emergency grant
  * (build-limit.mjs grantEmergency: Brett's signed-in console only) queues and starts in the emergency pool
  * (`emergencySlots` places, default 2): it never waits behind the ordinary line and never takes one of its slots, and
  * ordinary entries never take an emergency place. Status carries `emergency` { used, cap, free, queued }.
- * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
- * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';

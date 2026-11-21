@@ -23,12 +23,6 @@
  * --memory with `docker update`. Build sessions get a `docker` shim (deploy/build-limit/docker) that adds --cpus,
  * --memory and --cgroup-parent=axf-builds.slice to `docker run` of those images.
  *
- * Emergency slots (Brett, Nov 20 2026): besides the `maxBuilds` places there is a second, separately counted pool of
- * `emergencySlots` places (default 2) for builds Brett sends to emergency from his signed-in console. A session belongs
- * to that pool when its name is `axf-<build>--<step>` of a build with an emergency grant (build-limit-emergency.json,
- * written by `grantEmergency`, owner only). Emergency sessions never count against `maxBuilds` and ordinary builds can
- * never take an emergency place, so the host runs at most maxBuilds + emergencySlots builds.
- *
  * One config file: <agent-slots dir>/build-limit.json (shared by the host and the console container). Set by Brett only:
  * his signed-in console (Settings → Plugins → Agent cap) or this CLI at a terminal (`set` refuses without a TTY, so a
  * headless session can't raise it). Every change is journalled in build-limit.log.jsonl.
@@ -41,6 +35,14 @@
  *   … enforce [--json]                                                      root on the host: slice, adopt strays, docker limits, snapshot
  *   … docker-args <image>                                                   the args the docker shim adds for that image (empty = none)
  *   … slice-unit                                                            the axf-builds.slice unit for the current config
+ */
+
+/*
+ * Emergency slots (Brett, Nov 20 2026): besides the `maxBuilds` places there is a second, separately counted pool of
+ * `emergencySlots` places (default 2) for builds Brett sends to emergency from his signed-in console. A session belongs
+ * to that pool when its name is `axf-<build>--<step>` of a build with an emergency grant (build-limit-emergency.json,
+ * written by `grantEmergency`, owner only). Emergency sessions never count against `maxBuilds` and ordinary builds can
+ * never take an emergency place, so the host runs at most maxBuilds + emergencySlots builds.
  */
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readlinkSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { cpus, homedir, hostname, totalmem } from 'node:os';
@@ -213,6 +215,8 @@ export function dockerArgs(image, l, { slice = true } = {}) {
 const files = () => { const d = slotsDir(); return { dir: d, config: join(d, 'build-limit.json'), res: join(d, 'build-limit-res.json'), emergency: join(d, 'build-limit-emergency.json'), live: join(d, 'build-limit-live.json'), journal: join(d, 'build-limit.log.jsonl'), lock: join(d, 'build-limit.lock') }; };
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(v, null, 2)}\n`); renameSync(tmp, f); }
+/** One line in build-limit.log.jsonl (limit changes, emergency grants). Best effort: a failed write never blocks the change. */
+const journal = (line) => { try { appendFileSync(files().journal, `${JSON.stringify(line)}\n`); } catch { /* journal is best effort */ } };
 
 /** Read fresh on every call (the console's change applies to the next launch). */
 export const loadLimit = () => normLimit(readJson(files().config, {}));
@@ -229,7 +233,7 @@ export function saveLimit(patch, { by = '', owner = false } = {}) {
   const next = normLimit({ ...readJson(f.config, {}), ...clean, setBy: String(by || 'brett').slice(0, 80), setAt: new Date().toISOString() });
   writeJson(f.config, next);
   const changed = Object.fromEntries(SETTABLE.filter((k) => before[k] !== next[k]).map((k) => [k, [before[k], next[k]]]));
-  try { appendFileSync(f.journal, `${JSON.stringify({ at: next.setAt, by: next.setBy, changed })}\n`); } catch { /* journal is best effort */ }
+  journal({ at: next.setAt, by: next.setBy, changed });
   return next;
 }
 
@@ -240,7 +244,6 @@ const normGrants = (raw) => (Array.isArray(raw?.builds) ? raw.builds : []).filte
 /** The builds that hold an emergency grant: [{ id, by, at }] (read fresh on every call). */
 export const loadEmergency = () => normGrants(readJson(files().emergency, null));
 export const emergencyIds = () => loadEmergency().map((g) => g.id);
-const journal = (line) => { try { appendFileSync(files().journal, `${JSON.stringify(line)}\n`); } catch { /* journal is best effort */ } };
 
 /**
  * Brett only (`owner` true: his signed-in console's click): the build's sessions count in the emergency pool from now on.
