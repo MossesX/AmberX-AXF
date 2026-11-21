@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10284,
- "updatedAt": "2026-11-21T03:50:11.326Z",
+ "rev": 10285,
+ "updatedAt": "2026-11-21T04:20:12.480Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349991,7 +349991,7 @@
    "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T03:45:10.075Z",
+   "updatedAt": "2026-11-21T04:15:59.830Z",
    "builtAt": "",
    "notes": [
     {
@@ -350251,7 +350251,14 @@
     "pr": 867,
     "at": "2026-11-21T03:45:06.830Z",
     "retry": "fix",
-    "notBefore": "2026-11-21T04:15:06.830Z"
+    "notBefore": "2026-11-21T04:15:06.830Z",
+    "fix": {
+     "at": "2026-11-21T04:15:55.861Z",
+     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
+     "session": "",
+     "exit": 3,
+     "why": "{\"ok\":false,\"unassigned\":false,\"why\":\"lenny: Quit · joey: Quit · 5 more can't either\",\"tried\":[{\"agent\":\"lenny\",\"why\":\"Quit\"},{\"agent\":\"joey\",\"why\":\"Quit\"},{\"agent\":\"paulie\",\"why\":\"Quit\"},{\"agent\":\"su"
+    }
    },
    "landing": {
     "rules": {
@@ -350733,7 +350740,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 125,
+   "rev": 126,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
