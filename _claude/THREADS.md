@@ -839,68 +839,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 08:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 08:27 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:33 UTC · `fable-full-audit-ui-overhaul-conso` s10 done (all) · orchestrator
-- 2026-11-20 08:34 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:36 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:40 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:40 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 08:50 UTC · `fable-full-audit-ui-overhaul-conso` s11 done (all) · orchestrator
-- 2026-11-20 08:50 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s11 (all) · builds-live
-- 2026-11-20 08:50 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 08:51 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:55 UTC · `fable-full-audit-ui-overhaul-conso` s12 done (all) · orchestrator
-- 2026-11-20 08:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 08:58 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 09:02 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 09:04 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 09:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 09:06 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` s13 done (all) · orchestrator
-- 2026-11-20 09:07 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s13 (all) · builds-live
-- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:07 UTC · `fable-full-audit-ui-overhaul-conso` s14 done (all) · orchestrator
-- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s14 (all) · builds-live
-- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 09:10 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 09:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 09:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 09:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:17 UTC · `fable-full-audit-ui-overhaul-conso` s15 done (all) · orchestrator
-- 2026-11-20 09:18 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 09:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 09:57 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 10:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 10:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 10:05 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · watchdog
-- 2026-11-20 10:06 UTC · `fable-full-audit-ui-overhaul-conso` → building, note (all) · watchdog
-- 2026-11-20 10:06 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 10:11 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 10:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 10:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 10:16 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 10:29 UTC · `fable-full-audit-ui-overhaul-conso` s17 done (all) · orchestrator
-- 2026-11-20 10:29 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s17 (all) · builds-live
-- 2026-11-20 10:30 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 10:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 10:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` s18 done (all) · orchestrator
-- 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s18 (all) · builds-live
-- 2026-11-20 10:38 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 11:08 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s8 (all) · builds-live
-- 2026-11-20 11:08 UTC · `fable-full-audit-ui-overhaul-conso` s8 done, note (all) · orchestrator
 - 2026-11-20 11:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
 - 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` s16 done (all) · orchestrator
 - 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s16 (all) · builds-live
@@ -1239,6 +1177,68 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 06:47 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
 - 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · console
 - 2026-11-21 07:00 UTC · `fix-main-ci-red-after-s16-s7-hand-` → archived, note (all) · foreign-write
+- 2026-11-21 19:15 UTC · `rename-gate-rules-to-vps-configuration` added (4 steps) (all) · amber-voice
+- 2026-11-21 19:15 UTC · `rename-gate-rules-to-vps-configuration` → queued (all) · amber-voice
+- 2026-11-21 19:16 UTC · `rename-gate-rules-to-vps-configuration` → running, note (all) · pipeline
+- 2026-11-21 19:17 UTC · `rename-gate-rules-to-vps-configuration` branch claude/rename-gate-rules-to-vps-configuration (all) · pipeline
+- 2026-11-21 19:17 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
+- 2026-11-21 19:28 UTC · `fable-rebuild-1-2-vps-host-services-move` added (4 steps) (all) · amber-voice
+- 2026-11-21 19:28 UTC · `fable-rebuild-2-2-both-watchdogs-one` added (4 steps) (all) · amber-voice
+- 2026-11-21 19:29 UTC · `rip-out-plan-studio-1-keep-only-plan` added (3 steps) (all) · amber-voice
+- 2026-11-21 19:29 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued (all) · amber-voice
+- 2026-11-21 19:29 UTC · `fable-rebuild-2-2-both-watchdogs-one` → queued (all) · amber-voice
+- 2026-11-21 19:29 UTC · `rip-out-plan-studio-1-keep-only-plan` → queued (all) · amber-voice
+- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` → running, note (all) · pipeline
+- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` branch claude/fable-rebuild-1-2-vps-host-services-move (all) · pipeline
+- 2026-11-21 19:30 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
+- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` → running, note (all) · pipeline
+- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` branch claude/fable-rebuild-2-2-both-watchdogs-one (all) · pipeline
+- 2026-11-21 19:31 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
+- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` → running, note (all) · pipeline
+- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` branch claude/rip-out-plan-studio-1-keep-only-plan (all) · pipeline
+- 2026-11-21 19:32 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
+- 2026-11-21 19:40 UTC · `approval-rules-vps-configuration-veto` added (4 steps) (all) · amber-voice
+- 2026-11-21 19:41 UTC · `approval-rules-vps-configuration-veto` → queued (all) · amber-voice
+- 2026-11-21 19:47 UTC · `phone-connect-open-straight-phone-no-tap` added (3 steps) (all) · amber-voice
+- 2026-11-21 19:48 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · amber-voice
+- 2026-11-21 19:48 UTC · `phone-connect-open-straight-phone-no-tap` → queued (all) · amber-voice
+- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` → running, note (all) · pipeline
+- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` branch claude/approval-rules-vps-configuration-veto (all) · pipeline
+- 2026-11-21 20:01 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
+- 2026-11-21 20:02 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
+- 2026-11-21 20:04 UTC · `one-true-source-get-redundant-settings` added (4 steps) (all) · amber-voice
+- 2026-11-21 20:04 UTC · `one-true-source-get-redundant-settings` → queued (all) · amber-voice
+- 2026-11-21 20:26 UTC · `rip-out-plan-studio-1-keep-only-plan` → fixing, note (all) · pipeline
+- 2026-11-21 20:29 UTC · `rename-gate-rules-to-vps-configuration` → fixing, note (all) · pipeline
+- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
+- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` → landing, note (all) · pipeline
+- 2026-11-21 21:00 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
+- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` → running, note (all) · pipeline
+- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` branch claude/phone-connect-open-straight-phone-no-tap (all) · pipeline
+- 2026-11-21 21:01 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
+- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
+- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
+- 2026-11-21 21:07 UTC · `rename-gate-rules-to-vps-configuration` → landing, note (all) · pipeline
+- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` → running, note (all) · pipeline
+- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` branch claude/one-true-source-get-redundant-settings (all) · pipeline
+- 2026-11-21 21:08 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
+- 2026-11-21 21:16 UTC · `rip-out-plan-studio-1-keep-only-plan` → fixing, note (all) · pipeline
+- 2026-11-21 21:19 UTC · `approval-rules-vps-configuration-veto` → fixing, note (all) · pipeline
+- 2026-11-21 21:20 UTC · `fable-rebuild-2-2-both-watchdogs-one` PR #883, merged, note (all) · reconciler
+- 2026-11-21 21:20 UTC · `rip-out-plan-studio-1-keep-only-plan` PR #882, merged, note (all) · reconciler
+- 2026-11-21 21:20 UTC · `approval-rules-vps-configuration-veto` s4 done, PR #885, note (all) · reconciler
+- 2026-11-21 21:20 UTC · `phone-connect-open-straight-phone-no-tap` PR #886, note (all) · reconciler
+- 2026-11-21 21:20 UTC · `fable-rebuild-2-2-both-watchdogs-one` note (all) · orchestrator
+- 2026-11-21 21:20 UTC · `rip-out-plan-studio-1-keep-only-plan` note (all) · orchestrator
+- 2026-11-21 21:25 UTC · `rebuild-fresh-main-hide-any-asset` → fixing, note (all) · watchdog
+- 2026-11-21 21:25 UTC · `postgres-part-b-plan-plan-studio-catalog` → landing, note (all) · watchdog
+- 2026-11-21 21:25 UTC · `fix-main-ci-red-after-s16-s7-hand` note (all) · watchdog
+- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
+- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` → landing, note (all) · pipeline
+- 2026-11-21 21:28 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
+- 2026-11-21 21:35 UTC · `fix-refreshing-console-jumps-back` → fixing, note (all) · watchdog
+- 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed, note (all) · watchdog
+- 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → complete, note (all) · verify
 
 ## Token passes (log)
 
