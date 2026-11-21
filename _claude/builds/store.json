@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10216,
- "updatedAt": "2026-11-21T00:42:48.576Z",
+ "rev": 10217,
+ "updatedAt": "2026-11-21T00:45:10.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349334,6 +349334,11 @@
     {
      "text": "Watchdog: build stuck at split (27 min past budget): re-ran the transition (1).",
      "at": "2026-11-20T20:15:01.288Z"
+    },
+    {
+     "text": "Watchdog: build stuck at split (295 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T00:43:01.989Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -349775,7 +349780,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349818,7 +349823,7 @@
    "title": "Fix main CI (red after s16 + s7 hand lands)",
    "category": "",
    "detail": "Brett, Nov 20: main is red after the hand lands of fable-full-audit s16 (2598ea0) and s7 (7f12868). Run 44801650701 on 7f128689. Fix it, CI green, land. Every step on Fable.",
-   "status": "running-ci",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
@@ -349826,7 +349831,7 @@
    "pr": "867",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T00:42:45.118Z",
+   "updatedAt": "2026-11-21T00:42:49.539Z",
    "builtAt": "",
    "notes": [
     {
@@ -349997,6 +350002,11 @@
      "text": "Lander: PR 1 of 1 (s1, s2, s3, s4, s5)",
      "at": "2026-11-21T00:11:38.596Z",
      "by": "lander"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 8: build rules fail at the gate (feature-status-tracker)",
+     "at": "2026-11-21T00:42:49.539Z",
+     "by": "lander"
     }
    ],
    "approvals": [],
@@ -350058,6 +350068,19 @@
      "session": "axf-fix-main-ci-red-after-s16-s7-hand---s2--lenny",
      "phase": ""
     }
+   },
+   "failure": {
+    "kind": "rules",
+    "status": "running-ci",
+    "why": "build rules fail at the gate (feature-status-tracker)",
+    "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
+    "pr": 867,
+    "at": "2026-11-21T00:42:19.837Z",
+    "retry": "fix",
+    "notBefore": "2026-11-21T01:12:19.837Z",
+    "failing": [
+     "feature-status-tracker"
+    ]
    },
    "landing": {
     "rules": {
@@ -350539,7 +350562,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 118,
+   "rev": 119,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -350550,9 +350573,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T00:12:01.867Z",
+   "statusAt": "2026-11-21T00:42:49.539Z",
    "statusBy": "lander",
-   "attempt": 7,
+   "attempt": 8,
+   "failedFrom": "running-ci",
    "statusLog": [
     {
      "status": "pending",
@@ -350719,6 +350743,13 @@
      "at": "2026-11-21T00:12:01.867Z",
      "by": "lander",
      "attempt": 1
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-21T00:42:49.539Z",
+     "by": "lander",
+     "attempt": 8,
+     "why": "Lander: failed in running-ci, attempt 8: build rules fail at the gate (feature-status-tracker)"
     }
    ]
   },
@@ -351321,7 +351352,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T00:41:38.778Z",
+   "updatedAt": "2026-11-21T00:43:32.609Z",
    "builtAt": "",
    "notes": [
     {
@@ -351331,6 +351362,16 @@
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
      "at": "2026-11-21T00:40:52.877Z"
+    },
+    {
+     "text": "Split by Fable into 14 steps (415 min, 7 Fable).",
+     "at": "2026-11-21T00:42:47.553Z",
+     "by": "orchestrator"
+    },
+    {
+     "text": "Split by Fable into 14 steps (400 min, 9 Fable).",
+     "at": "2026-11-21T00:43:30.956Z",
+     "by": "orchestrator"
     }
    ],
    "approvals": [],
@@ -351374,15 +351415,20 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwponc2j01h3c2",
+     "uid": "st-mwpoprwi01s70t",
      "title": "",
-     "text": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs.",
-     "model": "Opus",
+     "text": "console-tabs@1 engine (pure, cross-port design): framework/core/engines/console-tabs.ts with the tab state model and reducers: open(screen) returns switch when a tab with that screen key already exists (Open = new tab rule), switch, close, closeOthers, duplicate, pin/unpin (pinned tabs stay first and cannot close), reorder, maxTabs cap with the eviction rule, and a serialisable saved shape {version, tabs:[{id, screen, title, pinned, state}], active} for the settings key axf.console.tabs. Tab ids are tab:<n>; screen keys are console-control view addresses. Ship framework/spec/check-console-tabs.mts holding a golden fixture framework/spec/fixtures/console-tabs.json (--write regenerates) and a deferred Kotlin twin line in framework/spec/PORTING.md. Do not touch gen-fixtures.mts.",
+     "model": "Fable",
      "why": "",
-     "phase": "",
+     "phase": "1",
      "group": "",
-     "estimate": "10 min",
-     "files": [],
+     "estimate": "30 min",
+     "files": [
+      "framework/core/engines/console-tabs.ts",
+      "framework/spec/check-console-tabs.mts",
+      "framework/spec/fixtures/console-tabs.json",
+      "framework/spec/PORTING.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -351391,15 +351437,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z",
-     "statusAt": "2026-11-21T00:41:37.132Z",
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-21T00:41:37.132Z",
+       "at": "2026-11-21T00:43:30.956Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -351409,15 +351455,22 @@
     },
     {
      "id": "s2",
-     "uid": "st-mwponc2j024dyb",
+     "uid": "st-mwpoprwi02pg8j",
      "title": "",
-     "text": "One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab).",
-     "model": "Opus",
+     "text": "tab-group@1 asset type grows the console tab-group settings: in framework/schemas/asset-types.json add optional fields autoHide (off|hover|hotkey|swipe|any), collapse (bool), revealHotkey, maxTabs, closeButtons (always|hover|never), overflow already exists (keep); regenerate framework/schemas/json; extend framework/core/engines/tabgroup.ts so each compiles to tokens --fx-tabgroup-autohide, --fx-tabgroup-collapse, --fx-tabgroup-reveal, --fx-tabgroup-max, --fx-tabgroup-close (defaults keep every existing fixture output identical), regenerate framework/spec/fixtures/tab-group.json via gen-fixtures.mts, and add the shared console default asset framework/assets/tab-group/console.json (top, chips, auto-hide on hover+hotkey+swipe, overflow menu, closable, reorderable). Validate with axf validate --framework and check-skin-coverage.",
+     "model": "Fable",
      "why": "",
-     "phase": "",
+     "phase": "1",
      "group": "",
-     "estimate": "10 min",
-     "files": [],
+     "estimate": "30 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/",
+      "framework/core/engines/tabgroup.ts",
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/tab-group.json",
+      "framework/assets/tab-group/console.json"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -351426,15 +351479,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z",
-     "statusAt": "2026-11-21T00:41:37.132Z",
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-21T00:41:37.132Z",
+       "at": "2026-11-21T00:43:30.956Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -351444,15 +351497,18 @@
     },
     {
      "id": "s3",
-     "uid": "st-mwponc2j03ownm",
+     "uid": "st-mwpoprwi035hdy",
      "title": "",
-     "text": "Every step on Fable.",
-     "model": "Opus",
+     "text": "TabGroup behaviour for every app: framework/react/components/TabGroup.tsx reads the tokens --fx-tabgroup-autohide / -collapse / -reveal / -max / -close by name and implements auto-hide + collapse (strip folds to a thin edge when idle, shows on pointer hover of the edge, on the reveal hotkey, or on an edge swipe on touch, hides again after a settle delay), close buttons per the token, max-tab enforcement surfaced to the host via onOverflow, overflow tabs folding into the existing More menu, and drag-to-reorder on pointer and touch (reorderable prop, onReorder). Styling only through tokens in framework/ui/axf.css tab-group section (no literals, no var() fallbacks); keep role=tablist and the data-axf-tab-group settings id so check-chrome-assets and check-toolbars stay green.",
+     "model": "Fable",
      "why": "",
-     "phase": "",
+     "phase": "1",
      "group": "",
-     "estimate": "10 min",
-     "files": [],
+     "estimate": "30 min",
+     "files": [
+      "framework/react/components/TabGroup.tsx",
+      "framework/ui/axf.css"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -351461,15 +351517,15 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z",
-     "statusAt": "2026-11-21T00:41:37.132Z",
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-21T00:41:37.132Z",
+       "at": "2026-11-21T00:43:30.956Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -351479,17 +351535,18 @@
     },
     {
      "id": "s4",
-     "uid": "st-mwponc2j048wmm",
+     "uid": "st-mwpoprwi04v02i",
      "title": "",
-     "text": "Tests green, report _claude/builds/reports/console-tabs-plugins-open-in-tabs-.md, THREADS row, commit, push, PR",
-     "model": "Opus",
+     "text": "Console shell gets one tab group: new apps/console-web/src/console-tabs/ConsoleTabs.tsx (TabGroup with settings id console-tabs on the tab-group asset tab-group/console, per-row pick key axf.chrome.tab-group.console-tabs.asset) and TabHost.tsx that mounts each open tab's plugin screen from the console's existing view registry inside the one running AxfProvider: inactive tabs stay mounted but hidden (keep-alive, own scroll container, own React state), no second console boot, each tab root a SkinScope. Wire it into the console root (apps/console-web/src/App.tsx or the current shell file) so the former single view becomes the first tab. Register console-control targets for the strip and each tab (data-axf-target, row:tab:<id>). In-memory tab state only in this step, driven by string actions console.tabs.open|switch|close|list dispatched on the console action bus.",
+     "model": "Fable",
      "why": "",
-     "phase": "",
+     "phase": "1",
      "group": "",
-     "estimate": "10 min",
+     "estimate": "30 min",
      "files": [
-      "_claude/builds/reports/console-tabs-plugins-open-in-tabs-.md",
-      "_claude/THREADS.md"
+      "apps/console-web/src/console-tabs/ConsoleTabs.tsx",
+      "apps/console-web/src/console-tabs/TabHost.tsx",
+      "apps/console-web/src/App.tsx"
      ],
      "checks": [],
      "session": "same",
@@ -351499,15 +351556,413 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z",
-     "statusAt": "2026-11-21T00:41:37.132Z",
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
      "statusBy": "orchestrator",
      "attempt": 1,
      "statusLog": [
       {
        "status": "pending",
-       "at": "2026-11-21T00:41:37.132Z",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwpoprwi05kpsm",
+     "title": "",
+     "text": "Tabs remembered across reloads: apps/console-web/src/console-tabs/store.ts saves the console-tabs@1 shape under settings key axf.console.tabs through the SettingsRegistry (data-store@1 backed, last save wins, debounced) and restores it on boot; apps/console-web/src/console-tabs/url.ts keeps the active tab and every tab's screen in the URL (hash ?tabs=… + active) so a refresh or a shared link lands on the same tabs with each tab on its own plugin screen, and a plain view address link opens as a tab. Includes a migration from the pre-tabs single-view URL and a unit test apps/console-web/src/console-tabs/store.test.ts.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "apps/console-web/src/console-tabs/store.ts",
+      "apps/console-web/src/console-tabs/url.ts",
+      "apps/console-web/src/console-tabs/store.test.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwpoprwi06lgw6",
+     "title": "",
+     "text": "Tab context menu: framework/assets/context-menu/console-tab.json (asset@1) with Close, Close others, Close to the right, Duplicate, Duplicate into tab group, Pin / Unpin, Settings… (opens the tab group's chrome settings dialog); apps/console-web/src/console-tabs/tabMenu.tsx wires right-click / long-press on a tab to it and dispatches console.tabs.close|closeOthers|duplicate|pin actions; Duplicate into tab group opens the same screen in a new tab next to the source and gives it a fresh tab:<n> id. Destructive items use the framework confirm string. Register the menu actions as console-control targets so voice can reach them.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "25 min",
+     "files": [
+      "framework/assets/context-menu/console-tab.json",
+      "apps/console-web/src/console-tabs/tabMenu.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwpoprwi07bp1i",
+     "title": "",
+     "text": "Open = new tab: apps/console-web/src/console-tabs/navigate.ts intercepts every console navigation on the web side (the console router / view switch, console_show and console_control navigate messages from the server, in-console links, command palette picks, voice actions) and turns it into console.tabs.open with the view address as screen key: already open in a tab = switch to that tab, else a new tab; a newTab:false flag on the message replaces the current tab's screen instead. Honour the setting axf.console.tabs.openInNewTab (default on). Add a unit test navigate.test.ts covering link, command, remote message and the already-open case.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/src/console-tabs/navigate.ts",
+      "apps/console-web/src/console-tabs/navigate.test.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwpoprwi089p50",
+     "title": "",
+     "text": "console-tabs plugin (Opus wiring): apps/console-web/plugins/console-tabs/ with plugin.json (builtWith, lifecycle.dataDir, description), install.mjs, uninstall.mjs, a Settings → Plugins → Console tabs sub-tab (settings.tsx: open in new tab, remember tabs, max tabs, auto-hide, Reset tabs; level toolbar via the framework settings interface) and server/routes.py exposing GET/POST /api/plugins/console-tabs/tabs (list, open {screen, newTab}, switch, close, reorder, pin) that relay to the browser through the existing console-control channel; commands for MCP tool console_tabs (list|open|switch|close) and the newTab option on console_open / console_show in the plugin that defines them; CLI axf console tabs list|open|switch|close in framework/cli/axf.mjs. Routes must be statically readable by plugin-commands.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/console-tabs/plugin.json",
+      "apps/console-web/plugins/console-tabs/install.mjs",
+      "apps/console-web/plugins/console-tabs/uninstall.mjs",
+      "apps/console-web/plugins/console-tabs/settings.tsx",
+      "apps/console-web/plugins/console-tabs/server/routes.py",
+      "apps/console-web/plugins/console-tabs/commands.json",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwpoprwi09992p",
+     "title": "",
+     "text": "What a plugin tab contains: apps/console-web/src/console-tabs/tabChrome.tsx renders the console banner inside each tab from the banner asset picked per tab (settings key axf.console.tab.<id>.banner and appearance override, default = the console banner; right-click banner → Change… works per tab) and apps/console-web/src/console-tabs/menuSection.ts contributes a top section to the application menu named after the active tab's plugin with that plugin's commands (from its plugin.json commands / web library contextMenu via rt.addContextItems), swapped on every tab switch while the console-wide items stay; the host-hides-chrome embed@1 rule applies so only one banner is on screen per tab.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/src/console-tabs/tabChrome.tsx",
+      "apps/console-web/src/console-tabs/menuSection.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwpoprwi0axi6f",
+     "title": "",
+     "text": "banner-layout@1 engine for the designer: framework/core/engines/banner-layout.ts, pure functions that take the widget registry entries and a layout {slots:[{widget, side, order, width}]} and give snap-to-grid arrange, resize within the banner's min/max per widget, overlap prevention (attached things snap, never overlap), reorder and serialisation into a valid banner asset (asset@1 banner type) plus the reverse (banner asset → layout). Fixture framework/spec/fixtures/banner-layout.json held by framework/spec/check-banner-layout.mts (--write regenerates); deferred Kotlin twin line in framework/spec/PORTING.md is NOT touched here (step 1 owns it): record the gap in the report step instead.",
+     "model": "Fable",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "framework/core/engines/banner-layout.ts",
+      "framework/spec/check-banner-layout.mts",
+      "framework/spec/fixtures/banner-layout.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwpoprwi0b0vm9",
+     "title": "",
+     "text": "Banner designer UI: apps/console-web/plugins/banner-designer/ui/Designer.tsx, Palette.tsx (every widget from the widget registry, searchable), Canvas.tsx (drag-and-drop arrange and resize using framework controls and tokens only, pointer + touch, snap feedback), Preview.tsx (live banner rendered through the real banner frame from the current layout), ApplyScope.tsx (apply to this tab / this tab group / whole console, written as the banner pick setting at that scope) and save.ts (save as a new banner asset through the console asset API, id and name asked in a dialog). Opens as a console view axp-banner-designer; reads/writes the layout through the banner-layout@1 engine by its module path.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/banner-designer/ui/Designer.tsx",
+      "apps/console-web/plugins/banner-designer/ui/Palette.tsx",
+      "apps/console-web/plugins/banner-designer/ui/Canvas.tsx",
+      "apps/console-web/plugins/banner-designer/ui/Preview.tsx",
+      "apps/console-web/plugins/banner-designer/ui/ApplyScope.tsx",
+      "apps/console-web/plugins/banner-designer/ui/save.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.610Z",
+     "updatedAt": "2026-11-21T00:43:32.610Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwpoprwj0cjbve",
+     "title": "",
+     "text": "Banner designer plugin shell and hooks: apps/console-web/plugins/banner-designer/plugin.json (builtWith, description, lifecycle.dataDir, view + settings sub-tab, uiEditor: builder), install.mjs, uninstall.mjs, index.ts web library registering the view and a Design banner… entry in every banner's context menu through rt.addContextItems (never editing a context-menu asset), settings.tsx (default grid, snap, apply scope default, Install & uninstall panel), server/routes.py with POST /api/plugins/banner-designer/open {scope, tab} and /save and /apply relaying to the browser (statically readable for plugin-commands), commands for voice / MCP banner.design, and notify.json empty. node framework/cli/plugin-lifecycle.mjs check banner-designer --after-uninstall must pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/plugins/banner-designer/plugin.json",
+      "apps/console-web/plugins/banner-designer/install.mjs",
+      "apps/console-web/plugins/banner-designer/uninstall.mjs",
+      "apps/console-web/plugins/banner-designer/index.ts",
+      "apps/console-web/plugins/banner-designer/settings.tsx",
+      "apps/console-web/plugins/banner-designer/server/routes.py",
+      "apps/console-web/plugins/banner-designer/notify.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.611Z",
+     "updatedAt": "2026-11-21T00:43:32.611Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwpoprwj0d8rro",
+     "title": "",
+     "text": "UI Review options as assets: three console tab-strip looks as tab-group assets in apps/console-web/plugins/console-tabs/assets/tab-group/ (chips-top-autohide.json, underline-top-pinned.json, left-rail-icons.json; each a valid tab-group@1 with the new autoHide/collapse/maxTabs fields and a description) plus apps/console-web/plugins/console-tabs/assets/choices.json ({assetType: tab-group, owner: console-tabs, options with id, label, notes, predicted look} ready for review.mjs submit --choices). Validate each with axf validate.",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "apps/console-web/plugins/console-tabs/assets/tab-group/chips-top-autohide.json",
+      "apps/console-web/plugins/console-tabs/assets/tab-group/underline-top-pinned.json",
+      "apps/console-web/plugins/console-tabs/assets/tab-group/left-rail-icons.json",
+      "apps/console-web/plugins/console-tabs/assets/choices.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.611Z",
+     "updatedAt": "2026-11-21T00:43:32.611Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwpoprwj0ecqmh",
+     "title": "",
+     "text": "Tests and report: apps/console-web/scripts/console-tabs-smoke.mjs (Playwright against vite preview with /api/me mocked: open two plugin screens → two tabs, re-open the first → switches not duplicates, reload keeps both, right-click Close others, drag reorder, auto-hide reveals on hover and hotkey, banner designer opens from a tab banner's context menu and applies to one tab); run check-console-tabs.mts, check-banner-layout.mts, check-tab-group.mts, check-chrome-assets, check-theme, check-controls, check-toolbars, check-console-control, plugin-lifecycle checks for console-tabs and banner-designer; take desktop + phone shots of the three option strips and the designer and submit them to UI Review with --choices (group named after the build id) noting the PR waits there; write _claude/builds/reports/console-tabs-plugins-open-in-tabs-.md (what shipped, actions and settings keys, deferred Kotlin twins for console-tabs@1 and banner-layout@1, test results before/after, known gaps).",
+     "model": "Opus",
+     "why": "",
+     "phase": "1",
+     "group": "",
+     "estimate": "30 min",
+     "files": [
+      "apps/console-web/scripts/console-tabs-smoke.mjs",
+      "_claude/builds/reports/console-tabs-plugins-open-in-tabs-.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-21T00:43:32.611Z",
+     "updatedAt": "2026-11-21T00:43:32.611Z",
+     "statusAt": "2026-11-21T00:43:30.956Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:43:30.956Z",
        "by": "orchestrator",
        "attempt": 1,
        "why": "split"
@@ -351524,7 +351979,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
