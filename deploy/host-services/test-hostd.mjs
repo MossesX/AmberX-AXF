@@ -32,7 +32,7 @@ writeFileSync(join(root, 'deploy/host-services/services/demo.json'), JSON.string
 const cronDir = join(root, 'cron.d'); mkdirSync(cronDir, { recursive: true });
 const cronLog = join(root, 'axf-reaper.log');
 writeFileSync(join(root, 'deploy/host-services/services/reaper.json'), JSON.stringify({
-  $axf: 'host-service@1', id: 'reaper', title: 'Reaper', kind: 'tick', cron: 'axf-reaper', adopted: true, plugin: 'console', runner: 'framework/cli/reaper.mjs', health: { staleSec: 900 }, log: cronLog,
+  $axf: 'host-service@1', id: 'reaper', title: 'Reaper', kind: 'tick', cron: 'axf-reaper', adopted: true, plugin: 'console', health: { staleSec: 900 }, log: cronLog,
 }));
 writeFileSync(join(root, 'deploy/host-services/workers/demo.mjs'), `
 let n = 0;

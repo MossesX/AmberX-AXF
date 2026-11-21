@@ -2954,6 +2954,31 @@
      "after": [],
      "dataDir": "_data/host-services/lander",
      "log": "/var/log/axf-lander.log"
+    },
+    "noRunner": {
+     "$axf": "host-service@1",
+     "id": "orchestrator-tick",
+     "title": "Reaper",
+     "description": "",
+     "kind": "tick",
+     "unit": "cron:axf-orchestrator-tick",
+     "cron": "axf-orchestrator-tick",
+     "adopted": true,
+     "plugin": "console",
+     "runner": "",
+     "user": "axf-host",
+     "sudo": [],
+     "health": {
+      "intervalSec": 30,
+      "timeoutMs": 5000,
+      "staleSec": 900
+     },
+     "actions": [],
+     "settings": {},
+     "replaces": [],
+     "after": [],
+     "dataDir": "_data/host-services/orchestrator-tick",
+     "log": "/var/log/axf-reaper.log"
     }
    },
    "errors": {
