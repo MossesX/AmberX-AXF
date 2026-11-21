@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10198,
- "updatedAt": "2026-11-21T00:09:08.259Z",
+ "rev": 10199,
+ "updatedAt": "2026-11-21T00:10:08.083Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T00:08:57.121Z",
+   "updatedAt": "2026-11-21T00:09:59.928Z",
    "builtAt": "",
    "notes": [
     {
@@ -344835,6 +344835,10 @@
     {
      "text": "Worker accounts: hulu0241: 1 run, $11.07",
      "at": "2026-11-21T00:08:51.824Z"
+    },
+    {
+     "text": "s2: builds-store verify was also red on main (windows-terminal s7 text got U+FFFD in the bulk publish dfa865375). Restored the record to journal rev 10101 (published 6e87241b9); verify green on main. Open: the writer on the publish path that produces U+FFFD (3 more fields carry it). Steps s1-s5 all fixed the same checks; s2 merged them all into one tree.",
+     "at": "2026-11-21T00:09:59.928Z"
     }
    ],
    "approvals": [],
@@ -345324,7 +345328,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 105,
+   "rev": 106,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
