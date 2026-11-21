@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T01:35:15.513Z",
+ "updatedAt": "2026-11-21T01:36:09.446Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -1176,7 +1176,7 @@
    "title": "Nov 20 fix list + voice console control",
    "category": "",
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -1184,7 +1184,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-21T01:35:02.326Z",
+   "updatedAt": "2026-11-21T01:36:02.116Z",
    "builtAt": "",
    "notes": [
     {
@@ -1280,6 +1280,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 4: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
      "at": "2026-11-21T01:35:02.326Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 5.",
+     "at": "2026-11-21T01:36:02.116Z",
      "by": "watchdog"
     }
    ],
