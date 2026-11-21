@@ -652,14 +652,14 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
         """Claude settings (kept on axHub, shared by every Claude session): read them at session start and before
         acting, and follow them. Every setting comes with its value, default, who may change it and a plain
         description: No wait (held calls run at once), Follow Amber, builds (default model, launch without asking,
-        max parallel, budget caps), verification, talking (persona, tone, swearing, length, costs), notifications,
+        brief size, budget caps), verification, talking (persona, tone, swearing, length, costs), notifications,
         memory. `key` = one setting only."""
         return await go("get", key) if key else await go("get")
 
     @mcp.tool(annotations=IDEMPOTENT)
     async def claude_settings_set(values: dict[str, Any], by: str = "") -> dict[str, Any]:
         """Change Claude settings that are not owner-only ({key: value}). Owner-only settings (No wait, Include
-        irreversible, launch without asking, default model, UI Review gate, raising a budget cap or max parallel) are
+        irreversible, launch without asking, default model, UI Review gate, raising a budget cap) are
         refused here: only Brett changes them, with his own click in the console (Settings → Plugins → Claude)."""
         pairs = [f"{k}={v if isinstance(v, str) else json.dumps(v)}" for k, v in (values or {}).items()]
         if not pairs:
