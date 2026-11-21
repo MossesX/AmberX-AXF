@@ -41,7 +41,7 @@ const ok = (c, what) => { n++; if (!c) { failed++; console.error(`✗ ${what}`);
 const eq = (a, b, what) => ok(JSON.stringify(a) === JSON.stringify(b), `${what}${JSON.stringify(a) === JSON.stringify(b) ? '' : `: ${JSON.stringify(a)} != ${JSON.stringify(b)}`}`);
 const get = (id) => BS.loadStore().builds.find((b) => b.id === id);
 const running = (id) => get(id).steps.filter((s) => ['sending', 'building'].includes(s.status)).map((s) => s.id);
-const send = (id, k) => BS.withStore((s) => { s.builds.push(core.normBuild(P2.transition({ id, title: id, flow: P2.FLOW, steps: Array.from({ length: k }, (_, i) => P2.transition({ id: `s${i + 1}`, text: `Part ${i + 1}`, model: 'Opus', estimate: '20 min', files: [`apps/p${i + 1}`] }, 'pending', { kind: 'step', by: 'test' }).rec) }, 'pending', { by: 'test' }).rec)); return s; }, { by: 'test' });
+const send = (id, k) => BS.withStore((s) => { s.builds.push(core.normBuild(P2.transition({ id, title: id, flow: P2.FLOW, steps: Array.from({ length: k }, (_, i) => P2.transition({ id: `s${i + 1}`, text: `Part ${i + 1}`, model: 'Opus', estimate: '5 min', files: [`apps/p${i + 1}`] }, 'pending', { kind: 'step', by: 'test' }).rec) }, 'pending', { by: 'test' }).rec)); return s; }, { by: 'test' });
 
 console.log('parallel steps: up to stepsInParallel (default 4) at once, each in its own worktree');
 eq(F.parallelCap(), 4, 'the default is 4 steps at once');
@@ -80,9 +80,13 @@ eq([get('par').steps[4].status, get('par').steps[4].attempt], ['failed', 5], 's5
 ok(r.waits.some((w) => w.step === 's5' && /gave up after attempt 5 of 5/.test(w.why)), 'and the pass says why');
 for (let i = 0; i < 3; i++) F.advance();
 eq(get('par').steps[4].attempt, 5, 'no pass ever relaunches it (no "attempt 21 of 5")');
-BS.withStore((x) => { const st = x.builds.find((b) => b.id === 'par').steps[4]; Object.assign(st, { status: 'ready', statusAt: new Date().toISOString(), statusBy: 'watchdog', attempt: 6, model: 'Fable', account: 'b', tmux: '', slot: '' }); return x; }, { by: 'watchdog' });
+// B4-05: the store keeps the ceiling too. A hand-written "ready, attempt 6" is refused; only a reset with a reason passes
+const raw = BS.withStore((x) => { const st = x.builds.find((b) => b.id === 'par').steps[4]; Object.assign(st, { status: 'ready', statusAt: new Date().toISOString(), statusBy: 'someone', attempt: 6 }); return x; }, { by: 'someone' });
+eq([raw.flowRefused.length, get('par').steps[4].status, get('par').steps[4].attempt], [1, 'failed', 5], 'a hand-written relaunch past the ceiling is refused by the store');
+ok(/refused a write by someone/.test(get('par').notes.at(-1)?.text ?? ''), 'and the refused write is a note on the build');
+BS.withStore((x) => { const b = x.builds.find((y) => y.id === 'par'); b.steps[4] = P2.transition(b.steps[4], 'ready', { kind: 'step', by: 'watchdog', reset: true, why: 'attempt 5 of 5 failed on Opus at building: raised to Fable with a fresh attempt count', extra: { model: 'Fable', account: 'b', tmux: '', slot: '' } }).rec; return x; }, { by: 'watchdog' });
 F.advance();
-eq([get('par').steps[4].status, get('par').steps[4].model, get('par').steps[4].attempt], ['building', 'Fable', 6], "the watchdog's Fable escalation (ready, attempt 6) is sent");
+eq([get('par').steps[4].status, get('par').steps[4].model, get('par').steps[4].attempt], ['building', 'Fable', 1], "the watchdog's Fable escalation (a reset: ready, attempt 1) is sent");
 
 console.log('act step on a Pipeline 2.0 build');
 let err = ''; try { O.act({ action: 'step', id: 'par', step: 's6', done: true }); } catch (e) { err = e.message; }

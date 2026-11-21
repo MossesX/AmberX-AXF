@@ -13,6 +13,7 @@
     "statusBy": { "type": "string", "minLength": 1, "maxLength": 80 },
     "attempt": { "type": "integer", "minimum": 1 },
     "failedFrom": { "$ref": "#/$defs/buildStatus" },
+    "archivedFrom": { "$ref": "#/$defs/buildStatus", "description": "Only while the build is archived: the status it was archived from. It returns there, or to failed from it, never anywhere else." },
     "statusLog": { "type": "array", "maxItems": 60, "items": { "$ref": "#/$defs/logLine" } },
     "landing": { "type": "object", "description": "lander@1 landing record (normLanding): split, merged, closed, reruns, rules, ciKick, fullKick, mainPull, lastMerge" },
     "emergency": { "type": "object", "description": "Sent to emergency by Brett from his signed-in console: skips the one-active-build line, builds in the emergency slot pool, lands first", "required": ["at"], "properties": { "at": { "type": "string", "format": "date-time" }, "by": { "type": "string", "maxLength": 80 } } },
@@ -42,7 +43,9 @@
         "at": { "type": "string" },
         "by": { "type": "string", "maxLength": 80 },
         "attempt": { "type": "integer", "minimum": 1 },
-        "why": { "type": "string", "maxLength": 300 }
+        "why": { "type": "string", "maxLength": 300 },
+        "reset": { "const": true, "description": "This move left failed past the attempt ceiling as attempt 1 (Brett's retry, the watchdog's escalation). Needs why." },
+        "resplit": { "const": true, "description": "A build waiting at split was split again (no step past pending). Needs why." }
       }
     },
     "step": {
@@ -51,7 +54,7 @@
       "properties": {
         "id": { "type": "string", "minLength": 1, "maxLength": 40 },
         "text": { "type": "string" },
-        "status": { "$ref": "#/$defs/stepStatus" },
+        "status": { "$ref": "#/$defs/stepStatus", "description": "Never missing on a stored step: the store's guard gives a step that arrives without one the status it had, and a new step pending." },
         "statusAt": { "type": "string" },
         "statusBy": { "type": "string", "maxLength": 80 },
         "attempt": { "type": "integer", "minimum": 1 },

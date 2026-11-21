@@ -939,7 +939,7 @@
         "id": "retry",
         "route": "POST /retry/{build}",
         "title": "Retry a build",
-        "description": "Retry a fixing or escalated build: the ladder starts over for its failure (the attempts so far stay in the log), the next tick relaunches it, or at once on the strategy given (never above the step's pinned model). Say 'retry skins' or 'retry skins in a fresh session'.",
+        "description": "Retry a fixing or escalated build: the ladder starts over for its failure (the attempts so far stay in the log), the next tick relaunches it, or at once on the strategy given (never above the step's pinned model). A Pipeline 2.0 build that failed (given up at attempt 5 included): the build and its failed steps go forward again from the status they failed at with their attempt counts reset, and the next pass carries on; a strategy is not used. Say 'retry skins' or 'retry skins in a fresh session'.",
         "input": {
           "type": "object",
           "properties": {

@@ -184,10 +184,15 @@ export async function run({ env = process.env, now = Date.now() } = {}) {
   const writes = acting.filter(({ d }) => d.action !== 'nudge');
   if (writes.length) {
     try {
-      api.withStore((store) => {
-        for (const { issue, d } of writes) { const note = C.applyDecision(store, issue, d, { now }); if (note) actions.push({ build: issue.build, step: issue.step || '', kind: issue.kind, action: d.action, note }); }
+      const planned = [];
+      const w = api.withStore((store) => {
+        planned.length = 0; // the store may run this again on a conflict: only the last run counts
+        for (const { issue, d } of writes) { const note = C.applyDecision(store, issue, d, { now }); if (note) planned.push({ build: issue.build, step: issue.step || '', kind: issue.kind, action: d.action, note }); }
         return store;
       }, { by: C.BY, action: 'watchdog-heal', note: `${writes.length} fix(es)` });
+      // a fix the store's guard refused was not kept (nothing of it, for that build): logged as refused, never as done
+      const refused = new Set((w?.flowRefused ?? []).map((x) => x.id));
+      for (const a of planned) actions.push(refused.has(a.build) ? { ...a, action: 'store-refused', note: `Watchdog: the store refused its fix for ${a.build}${a.step ? ` / ${a.step}` : ''} (${a.action}); nothing was changed.` } : a);
     } catch (e) { actions.push({ action: 'store-write-failed', note: String(e.message || e).slice(0, 300) }); }
   }
   // re-run stuck transitions (layer 1 for that build), each one note on the build

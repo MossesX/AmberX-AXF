@@ -217,7 +217,8 @@
    "ok": true,
    "status": "archived",
    "attempt": 1,
-   "failedFrom": null
+   "failedFrom": null,
+   "archivedFrom": "building"
   },
   {
    "kind": "step",
@@ -381,6 +382,286 @@
    "to": "building",
    "ok": false,
    "why": "a retry continues forward: build failed at running-ci, so it cannot go back to building"
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 4
+   },
+   "to": "ready",
+   "ok": true,
+   "status": "ready",
+   "attempt": 5,
+   "failedFrom": null
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 5
+   },
+   "to": "ready",
+   "ok": false,
+   "why": "attempts used up: step failed at attempt 5 of 5, so only a reset with a reason (Brett's retry, the watchdog's escalation) moves it on"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "running-ci",
+    "attempt": 9
+   },
+   "to": "running-ci",
+   "ok": false,
+   "why": "attempts used up: build failed at attempt 9 of 5, so only a reset with a reason (Brett's retry, the watchdog's escalation) moves it on"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "split",
+    "attempt": 5
+   },
+   "to": "split",
+   "ok": false,
+   "why": "attempts used up: build failed at attempt 5 of 5, so only a reset with a reason (Brett's retry, the watchdog's escalation) moves it on"
+  },
+  {
+   "kind": "step",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 5
+   },
+   "to": "ready",
+   "opts": {
+    "reset": true,
+    "why": "raised to Fable"
+   },
+   "ok": true,
+   "status": "ready",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "split",
+    "attempt": 5
+   },
+   "to": "split",
+   "opts": {
+    "reset": true,
+    "why": "Retry by Brett"
+   },
+   "ok": true,
+   "status": "split",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "split",
+    "attempt": 5
+   },
+   "to": "split",
+   "opts": {
+    "reset": true
+   },
+   "ok": false,
+   "why": "a reset needs a reason"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "failed",
+    "failedFrom": "building",
+    "attempt": 5
+   },
+   "to": "ready",
+   "opts": {
+    "reset": true,
+    "why": "Retry by Brett"
+   },
+   "ok": false,
+   "why": "a retry continues forward: build failed at building, so it cannot go back to ready"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "building"
+   },
+   "to": "building",
+   "ok": true,
+   "status": "building",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "building"
+   },
+   "to": "failed",
+   "ok": true,
+   "status": "failed",
+   "attempt": 1,
+   "failedFrom": "building"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "building"
+   },
+   "to": "pending",
+   "ok": false,
+   "why": "an archived build returns to the status it was archived from (building), or to failed from it: not pending"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "building"
+   },
+   "to": "landed",
+   "ok": false,
+   "why": "an archived build returns to the status it was archived from (building), or to failed from it: not landed"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "statusLog": [
+     {
+      "status": "ready",
+      "at": "T"
+     },
+     {
+      "status": "archived",
+      "at": "T"
+     }
+    ]
+   },
+   "to": "split",
+   "ok": false,
+   "why": "an archived build returns to the status it was archived from (ready), or to failed from it: not split"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "statusLog": [
+     {
+      "status": "ready",
+      "at": "T"
+     },
+     {
+      "status": "archived",
+      "at": "T"
+     }
+    ]
+   },
+   "to": "ready",
+   "ok": true,
+   "status": "ready",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "failed",
+    "failedFrom": "running-ci",
+    "attempt": 3
+   },
+   "to": "failed",
+   "ok": true,
+   "status": "failed",
+   "attempt": 3,
+   "failedFrom": "running-ci"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "landed"
+   },
+   "to": "failed",
+   "ok": false,
+   "why": "an archived build returns to the status it was archived from (landed), or to failed from it: not failed"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "status": "archived"
+   },
+   "to": "pending",
+   "ok": true,
+   "status": "pending",
+   "attempt": 1,
+   "failedFrom": null
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "archived"
+   },
+   "to": "building",
+   "ok": false,
+   "why": "an archived build returns to the status it was archived from: nothing is recorded for this one, so only pending"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "running",
+    "statusLog": [
+     {
+      "status": "building",
+      "at": "T"
+     }
+    ]
+   },
+   "to": "pending",
+   "ok": false,
+   "why": "forward-only: building → pending goes back"
+  },
+  {
+   "kind": "build",
+   "rec": {
+    "flow": "pipeline-2",
+    "status": "running",
+    "statusLog": [
+     {
+      "status": "building",
+      "at": "T"
+     }
+    ]
+   },
+   "to": "build-complete",
+   "ok": true,
+   "status": "build-complete",
+   "attempt": 1,
+   "failedFrom": null
   }
  ],
  "split": [
@@ -464,6 +745,89 @@
     [
      1,
      3
+    ]
+   ]
+  },
+  {
+   "steps": [
+    {
+     "files": [
+      "x"
+     ],
+     "minutes": 10
+    },
+    {
+     "files": [
+      "x/y"
+     ],
+     "minutes": 5
+    },
+    {
+     "files": [
+      "x/z"
+     ],
+     "minutes": 5
+    }
+   ],
+   "slots": 4,
+   "parts": [
+    [
+     0,
+     1
+    ],
+    [
+     2
+    ]
+   ]
+  },
+  {
+   "steps": [
+    {
+     "estimate": "10 min"
+    },
+    {
+     "estimate": "10 min"
+    },
+    {
+     "estimate": "5 min"
+    },
+    {
+     "estimate": "5 min"
+    }
+   ],
+   "slots": 2,
+   "parts": [
+    [
+     0,
+     2
+    ],
+    [
+     1,
+     3
+    ]
+   ]
+  },
+  {
+   "steps": [
+    {
+     "files": [
+      "x"
+     ],
+     "minutes": 12
+    },
+    {
+     "files": [
+      "x"
+     ],
+     "minutes": 12
+    }
+   ],
+   "slots": 1,
+   "maxMinutes": 30,
+   "parts": [
+    [
+     0,
+     1
     ]
    ]
   }
@@ -605,23 +969,11 @@
      }
     ]
    },
-   "steps": [
-    {
-     "text": "Schema",
-     "model": "Fable",
-     "minutes": 20,
-     "files": [
-      "a"
-     ]
-    },
-    {
-     "text": "UI",
-     "model": "Opus",
-     "minutes": 30,
-     "files": []
-    }
-   ],
-   "errors": []
+   "steps": [],
+   "errors": [
+    "steps[0].minutes",
+    "steps[1].minutes"
+   ]
   },
   {
    "answer": {
@@ -702,7 +1054,7 @@
     {
      "text": "Write the contract",
      "model": "Fable",
-     "minutes": 30,
+     "minutes": 15,
      "files": []
     },
     {
@@ -714,7 +1066,7 @@
     {
      "text": "Big",
      "model": "Opus",
-     "minutes": 30,
+     "minutes": 15,
      "files": []
     }
    ]
@@ -728,13 +1080,114 @@
     {
      "text": "Engine work\n\nBody only.",
      "model": "Fable",
-     "minutes": 30,
+     "minutes": 15,
      "files": []
     }
    ]
   }
  ],
  "maxAttempts": 5,
+ "stepMaxMinutes": 15,
+ "stepBudgets": [
+  {
+   "step": {
+    "estimate": "10 min"
+   },
+   "minutes": 20
+  },
+  {
+   "step": {
+    "minutes": 15
+   },
+   "minutes": 30
+  },
+  {
+   "step": {},
+   "minutes": 30
+  },
+  {
+   "step": {
+    "estimate": "40 min"
+   },
+   "minutes": 80
+  }
+ ],
+ "stepsLocked": [
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "pending"
+   },
+   "locked": false,
+   "frozen": false
+  },
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "splitting"
+   },
+   "locked": false,
+   "frozen": false
+  },
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "failed",
+    "failedFrom": "splitting"
+   },
+   "locked": false,
+   "frozen": false
+  },
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "split"
+   },
+   "locked": true,
+   "frozen": false
+  },
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "failed",
+    "failedFrom": "split"
+   },
+   "locked": true,
+   "frozen": false
+  },
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "building"
+   },
+   "locked": true,
+   "frozen": true
+  },
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "archived",
+    "archivedFrom": "ready"
+   },
+   "locked": true,
+   "frozen": true
+  },
+  {
+   "build": {
+    "flow": "pipeline-2",
+    "status": "landed"
+   },
+   "locked": true,
+   "frozen": true
+  },
+  {
+   "build": {
+    "status": "running"
+   },
+   "locked": false,
+   "frozen": false
+  }
+ ],
  "sendable": [
   {
    "step": {

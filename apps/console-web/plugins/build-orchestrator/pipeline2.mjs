@@ -19,9 +19,12 @@
  *                                        worktree, under the VPS-wide slot cap
  *   building → build-complete            every step completed (a step exit is written the moment it happens)
  *   failed (attempt N)                   a launch failure or a usage-limit exit retries forward at once on another
- *                                        account as attempt N + 1; there is no bench. At maxAttempts (the watchdog's
- *                                        setting, default P2.MAX_ATTEMPTS) the give-up is final: the step stays failed
- *                                        and only the watchdog (its Fable escalation, or Brett) moves it on
+ *                                        account as attempt N + 1; there is no bench. A build that failed while it
+ *                                        waited at split is activated again like any waiting build. At maxAttempts (the
+ *                                        contract's ceiling, P2.MAX_ATTEMPTS; the watchdog's setting may lower it) the
+ *                                        give-up is final: the record stays failed, the contract refuses every move,
+ *                                        and only a reset moves it on (the watchdog's Fable escalation, or Brett's
+ *                                        `orchestrator.mjs retry <build>`: retryBuild below)
  *
  * Emergency builds (Brett, Nov 20 2026): a build Brett sent to emergency from his signed-in console (`emergency` on
  * the build, framework/cli/emergency-builds.mjs) skips the line. It is split like any other, then goes straight to
@@ -37,6 +40,7 @@
  *   node apps/console-web/plugins/build-orchestrator/pipeline2.mjs advance [--build id] [--json]   one pass (under the dispatcher's lock)
  *   … status [--json]                      every Pipeline 2.0 build: status, steps, the active one
  *   … step-exit <build> <step> --exit n [--hit usage|auth] [--account a] [--session s]   a step's session ended
+ *   … retry <build> [--why w] [--by who]   Brett's retry of a failed build: the attempt counts start again
  *
  * Environment (tests): AXF_PIPELINE_LAUNCHER, AXF_PIPELINE_WORKTREES, AXF_PIPELINE_WORKTREE_MODE=mkdir, AXF_P2_SLOTS
  * (slot count instead of agent-slots), AXF_P2_ACCOUNTS (JSON rows instead of the logins), AXF_P2_ALIVE (comma list of
@@ -161,10 +165,12 @@ function splitAll(store, env, out, only = '') {
 
 /* ------------------------------------------------------------------ one active build, then main into each step */
 
+/** Waiting its turn: at `split`, or failed there with attempts left (a build that failed while it waited starts like any other). */
+export const waitsTurn = (b, max = P2.MAX_ATTEMPTS) => P2.WAITING.includes(b.status) || (b.status === P2.FAILED && P2.WAITING.includes(b.failedFrom) && !P2.gaveUp(b, max));
 /** The next build to become active: P0 first, then the oldest. Only when no build is active. Emergency builds have their own lane. */
-function nextToActivate(builds) {
+export function nextToActivate(builds, max = P2.MAX_ATTEMPTS) {
   const pr = (b) => ({ P0: 0, P1: 1, P2: 2, P3: 3 }[b.priority] ?? 2);
-  return builds.filter((b) => b.status === 'split' && !b.hidden && !P2.isEmergency(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
+  return builds.filter((b) => waitsTurn(b, max) && !b.hidden && !P2.isEmergency(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
 }
 
 /** Cut a step's worktree from fresh origin/main (or pull main into the one already there). Outside any launch. */
@@ -180,10 +186,15 @@ export function cutWorktree(b, s, env = process.env) {
   return { dir, branch: `claude/${name}` };
 }
 
+/** Does main still have to go into this step: pending (a step with no status counts as pending), pulling, or failed there. */
+const needsMain = (s) => !s.skip && (!s.status || at(s, 'pending', 'pulling-main'));
+
 function pullMain(b, env, out) {
+  const maxAttempts = attemptCap(env);
   for (const s0 of b.steps) {
     const s = stepOf(loadStore().builds.find((x) => x.id === b.id), s0.id);
-    if (!at(s, 'pending', 'pulling-main') || (s.status === P2.FAILED && P2.rank(s.failedFrom, 'step') > P2.rank('pulling-main', 'step'))) continue;
+    if (!needsMain(s)) continue;
+    if (P2.gaveUp(s, maxAttempts)) { out.waits.push({ id: b.id, step: s.id, why: `the main pull gave up after attempt ${s.attempt} of ${maxAttempts}: retry the build to start it again` }); return false; }
     const name = stepName(b, s);
     const dir = join(worktreesRoot(env), name);
     if (s.status !== 'pulling-main' && !move(b.id, 'pulling-main', { step: s.id, why: 'cutting its worktree and pulling main', extra: { worktree: dir, branch: `claude/${name}` } })) return false;
@@ -202,10 +213,10 @@ function pullMain(b, env, out) {
 
 function prepare(b, env, out) {
   if (at(b, 'pulling-main')) {
-    if (b.status === P2.FAILED) move(b.id, 'pulling-main', { why: 'retrying the main pull' });
+    if (b.status === P2.FAILED && !move(b.id, 'pulling-main', { why: 'retrying the main pull' })) return;
     if (!pullMain(b, env, out)) return;
     const fresh = loadStore().builds.find((x) => x.id === b.id);
-    if (!fresh.steps.every((s) => s.status === 'ready')) return;
+    if (!P2.everyStep(fresh, 'ready')) return;
     if (!move(b.id, 'assigning-models', { why: 'every step has main' })) return;
   }
   const cur = loadStore().builds.find((x) => x.id === b.id);
@@ -229,10 +240,11 @@ export function parallelCap(env = process.env) {
   if (env.AXF_P2_PARALLEL) return Math.max(1, Number(env.AXF_P2_PARALLEL) || 1);
   try { return Math.max(1, Number(PL.loadSettings(env).stepsInParallel) || PC.DEFAULTS.stepsInParallel); } catch { return PC.DEFAULTS.stepsInParallel; }
 }
-/** The watchdog's attempt cap (pipeline-watchdog@2 maxAttempts, its settings file next to the dispatcher's), else P2.MAX_ATTEMPTS. */
+/** The attempt cap: the watchdog's maxAttempts setting (its settings file next to the dispatcher's) when lower than the contract's P2.MAX_ATTEMPTS, else that. */
 export function attemptCap(env = process.env) {
-  if (env.AXF_P2_MAX_ATTEMPTS) return Math.max(1, Number(env.AXF_P2_MAX_ATTEMPTS) || P2.MAX_ATTEMPTS);
-  try { const j = JSON.parse(readFileSync(join(env.AXF_WATCHDOG2_DIR || join(PL.pipeDir(), 'watchdog2'), 'settings.json'), 'utf8')); const n = Number(j?.maxAttempts); return Number.isFinite(n) && n >= 1 ? Math.floor(n) : P2.MAX_ATTEMPTS; } catch { return P2.MAX_ATTEMPTS; }
+  const cap = (n) => (Number.isFinite(n) && n >= 1 ? Math.min(P2.MAX_ATTEMPTS, Math.floor(n)) : P2.MAX_ATTEMPTS); // the contract's ceiling: a setting may lower it, never raise it
+  if (env.AXF_P2_MAX_ATTEMPTS) return cap(Number(env.AXF_P2_MAX_ATTEMPTS));
+  try { return cap(Number(JSON.parse(readFileSync(join(env.AXF_WATCHDOG2_DIR || join(PL.pipeDir(), 'watchdog2'), 'settings.json'), 'utf8'))?.maxAttempts)); } catch { return P2.MAX_ATTEMPTS; }
 }
 const inSlot = (s) => ['sending', 'building'].includes(s.status);
 /** The slot pool a build's steps go to: `emergency` for an emergency build, else the orchestrator's `builds` pool. */
@@ -389,7 +401,7 @@ export function stepExit(id, sid, { exit = 0, hit = '', account = '', session = 
   move(id, clean ? 'completed' : P2.FAILED, { step: sid, by, why });
   logLine({ event: clean ? 'step-completed' : 'step-failed', build: id, step: sid, exit, hit, account: account || s.account });
   const after = loadStore().builds.find((x) => x.id === id);
-  if (after.steps.every((x) => x.status === 'completed')) { move(id, 'build-complete', { by, why: 'every step completed' }); say('dispatcher', 'done', `${id}: every step completed. Over to the lander.`, id); }
+  if (P2.everyStep(after, 'completed')) { move(id, 'build-complete', { by, why: 'every step completed' }); say('dispatcher', 'done', `${id}: every step completed. Over to the lander.`, id); }
   return { ok: true, status: clean ? 'completed' : P2.FAILED };
 }
 
@@ -431,10 +443,10 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
   let { active, others } = P2.activeBuild(p2Builds(store));
   for (const o of others) { out.waits.push({ id: o.id, why: `one active build at a time: ${active.id} is active (this one is a breach, left for the watchdog)` }); logLine({ event: 'active-breach', build: o.id, active: active.id }); }
   if (!active) {
-    const next = nextToActivate(p2Builds(store));
-    if (next && (!build || next.id === build) && move(next.id, 'pulling-main', { why: 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
+    const next = nextToActivate(p2Builds(store), attemptCap(env));
+    if (next && (!build || next.id === build) && move(next.id, 'pulling-main', { why: next.status === P2.FAILED ? 'no other build is active (it failed while it waited: starting it now)' : 'no other build is active' })) active = loadStore().builds.find((x) => x.id === next.id);
   }
-  for (const w of p2Builds(store).filter((b) => b.status === 'split' && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
+  for (const w of p2Builds(store).filter((b) => waitsTurn(b, attemptCap(env)) && !P2.isEmergency(b) && b.id !== active?.id && (!build || b.id === build))) out.waits.push({ id: w.id, why: `waiting for ${active?.id ?? 'the active build'} to land (one active build at a time; nothing pulls main while one is active)` });
   if (!active) return out;
   out.active = active.id;
   if (build && active.id !== build) return out;
@@ -447,13 +459,46 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
 /** One build past the line: main into its steps, ended sessions swept, steps out to its slot pool, build-complete. */
 function work(b0, env, out, { launch }) {
   let b = b0;
+  // attempts used up: the contract refuses every move, so nothing is tried (the watchdog alerted; a retry resets it)
+  if (P2.gaveUp(b, attemptCap(env))) { out.waits.push({ id: b.id, why: `gave up after attempt ${b.attempt} at ${b.failedFrom || 'an unknown status'}: \`orchestrator.mjs retry ${b.id}\` starts it again` }); return; }
   if (at(b, 'pulling-main', 'assigning-models')) prepare(b, env, out);
   b = loadStore().builds.find((x) => x.id === b.id);
   sweepEnded(b, env, out);
   b = loadStore().builds.find((x) => x.id === b.id);
+  // a step that never got main (one left without a status by an older writer) gets it now instead of blocking the build
+  if (at(b, 'ready', 'sending', 'building') && b.steps.some(needsMain)) { pullMain(b, env, out); b = loadStore().builds.find((x) => x.id === b.id); }
   if (at(b, 'ready', 'sending', 'building')) dispatch(b, env, out, { launch });
   const fin = loadStore().builds.find((x) => x.id === b.id);
-  if (at(fin, 'building', 'sending') && fin.steps.length && fin.steps.every((s) => s.status === 'completed')) move(fin.id, 'build-complete', { why: 'every step completed' });
+  if (at(fin, 'building', 'sending') && P2.everyStep(fin, 'completed')) move(fin.id, 'build-complete', { why: 'every step completed' });
+}
+
+/**
+ * Brett's retry of a failed Pipeline 2.0 build (`orchestrator.mjs retry <build>`, the console's Retry, MCP): the one
+ * way on for a record that used up its attempts. The build and every failed step leave `failed` forward, at the status
+ * they failed at (a step that died in its slot relaunches through `ready`), as a reset: the attempt counts start again
+ * at 1, with the reason in the log. A build that failed while waiting goes back to `split` and takes its turn. Nothing
+ * is launched here: the next pass carries on. → { id, status, steps: [{ id, status }], by }
+ */
+export function retryBuild(id, { by = process.env.AXF_ACTOR || 'console', why = '' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id);
+  if (!b || b.flow !== P2.FLOW) throw Object.assign(new Error(`${id} is not a Pipeline 2.0 build`), { code: 2 });
+  const failedSteps = b.steps.filter((s) => s.status === P2.FAILED);
+  if (b.status !== P2.FAILED && !failedSteps.length) throw Object.assign(new Error(`${b.id} is ${P2.labelOf(b.status, b.attempt)} with no failed step: nothing to retry`), { code: 2 });
+  const reason = `Retry by ${by}${why ? `: ${why}` : ''}`;
+  const steps = [];
+  for (const s of failedSteps) {
+    const to = P2.RELAUNCH_FROM.includes(s.failedFrom) ? 'ready' : s.failedFrom || 'pending';
+    // a fresh start: the accounts it failed on may be tried again
+    setFlowStatus(b.id, to, { step: s.id, by, why: reason, reset: true, extra: { tried: [] } });
+    steps.push({ id: s.id, status: to });
+  }
+  let status = b.status;
+  if (b.status === P2.FAILED) {
+    status = b.failedFrom || 'pending';
+    setFlowStatus(b.id, status, { by, why: reason, reset: true, mutate: (rec) => { delete rec.failure; rec.notes.push({ text: `${reason}. The attempt counts start again${steps.length ? ` (steps ${steps.map((x) => x.id).join(', ')} too)` : ''}.`, at: nowIso(), by }); } });
+  } else setFlowStatus(b.id, b.status, { by, mutate: (rec) => { rec.notes.push({ text: `${reason}. Steps ${steps.map((x) => x.id).join(', ')} start again at attempt 1.`, at: nowIso(), by }); } });
+  logLine({ event: 'retry-hand', build: b.id, by, status, steps: steps.map((x) => x.id) });
+  return { id: b.id, status, steps, by };
 }
 
 /**
@@ -466,7 +511,7 @@ function advanceEmergency(env, out, { launch, build = '' }) {
   for (const e0 of P2.emergencyBuilds(p2Builds(loadStore()))) {
     if (build && e0.id !== build) continue;
     let e = e0;
-    if (e.status === 'split') {
+    if (!P2.holdsActive(e)) {
       if (!move(e.id, 'pulling-main', { why: 'emergency build: skips the line' })) continue;
       logLine({ event: 'emergency-activated', build: e.id }); say('orchestrator', 'done', `${e.id} is an emergency build: it skips the line and builds in the emergency slots.`, e.id);
       e = loadStore().builds.find((x) => x.id === e.id);
@@ -490,7 +535,7 @@ async function main(argv) {
   const json = rest.includes('--json');
   await pl();
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
-  if (cmd === 'advance' || cmd === 'step-exit') {
+  if (cmd === 'advance' || cmd === 'step-exit' || cmd === 'retry') {
     // the dispatcher's lock, as pipeline.mjs takes it: re-exec under flock unless already inside it
     const { pipelineLock } = await pl();
     if (process.env.AXF_PIPELINE_LOCKED !== '1' && spawnSync('flock', ['-V'], { encoding: 'utf8' }).status === 0) {
@@ -500,7 +545,8 @@ async function main(argv) {
   }
   if (cmd === 'advance') { const r = advance({ build: flag('build') }); return print(r, `active ${r.active || 'none'} · split ${r.split.length} · main pulled ${r.pulled.length} · ready ${r.ready.length} · launched ${r.launched.length} · failed ${r.failed.length}${r.waits.length ? `\n${r.waits.map((w) => `  waits ${w.id}${w.step ? `/${w.step}` : ''}: ${w.why}`).join('\n')}` : ''}`); }
   if (cmd === 'step-exit') { const r = stepExit(rest[0], rest[1], { exit: Number(flag('exit', '0')), hit: flag('hit'), account: flag('account'), session: flag('session'), by: flag('by', 'headless') }); return print(r, r.why || r.status); }
+  if (cmd === 'retry') { if (!rest[0]) throw new Error('retry <build> [--why w] [--by who]'); const r = retryBuild(rest[0], { by: flag('by', process.env.AXF_ACTOR || 'cli'), why: flag('why') }); return print({ ok: true, ...r }, `${r.id}: ${P2.labelOf(r.status)}${r.steps.length ? ` · steps ${r.steps.map((x) => `${x.id} → ${x.status}`).join(', ')}` : ''} · the attempt counts start again`); }
   if (cmd === 'status') { const v = statusView(); return print(v, v.builds.map((b) => `${b.id}: ${b.label}${b.id === v.active ? ' (active)' : ''}\n${b.steps.map((s) => `  ${s.id} ${s.label} ${s.model}${s.account ? ` · ${s.account}` : ''}${s.slot ? ` · ${s.slot}` : ''}`).join('\n')}`).join('\n') || 'no Pipeline 2.0 builds'); }
-  console.error('usage: pipeline2.mjs advance | status | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
+  console.error('usage: pipeline2.mjs advance | status | retry <build> | step-exit <build> <step> --exit n [--hit usage|auth] (see the header)'); process.exitCode = 2;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv.slice(2)).catch((e) => { console.error(`pipeline2: ${e.message}`); process.exitCode = 1; });

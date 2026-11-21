@@ -396,6 +396,16 @@ statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the stor
 Android work): AmberX reads build rows through the console's REST and shows the status string it is given; a Kotlin
 `PipelineStatus.kt` answering the fixture's transitions is needed only once an Android surface writes build statuses.
 
+Pipeline repair part A (Nov 21 2026, the Fable deep audit): the contract now owns every limit. `checkTransition` /
+`transition` take `reset` and `max` (the attempt ceiling `MAX_ATTEMPTS`: out of `failed` past it only as a reset with a
+reason, attempt 1 again) and `resplit`; archive records `archivedFrom` and an archived build returns only there or to
+`failed` from it; `enforceFlow` is strict (one refusal drops the whole write for that build, with a note), keeps a split
+build's steps (none removed or replaced, none added past `split`) and never leaves a step without a status; new helpers
+`stepsLocked`, `stepsFrozen`, `canResplit`, `liveSteps`, `everyStep`, `stepsEditRefusal`, `archivedFromOf`,
+`stepBudgetMinutes`, `WAITING`; `STEP_MAX_MINUTES` is 15 and `splitParts` never joins steps past it. The fixture carries
+the new transition cases (with `opts`), split cases, `stepMaxMinutes`, `stepBudgets` and `stepsLocked`.
+**Kotlin twin still deferred**, same reason: when `PipelineStatus.kt` is written it must answer these cases too.
+
 Plan Studio Send fix (Nov 19 2026): plan-build@1 steps are planning only (no minutes or model needed); the engine adds
 `normPlanning`, `normDesign` (the splitting stage's check of Fable's build steps) and `fallbackDesign`, with fixture
 cases `normPlan`, `designs` and `fallbacks`. **Kotlin twin deferred** for the same reason: no Android surface sends
