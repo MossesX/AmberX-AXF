@@ -50,5 +50,23 @@
     "label": "axHub approvals",
     "icon": "shield",
     "order": 71
+  },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-border-w",
+      "--fx-danger",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-xl",
+      "--fx-focus",
+      "--fx-font-mono",
+      "--fx-font-size",
+      "--fx-muted",
+      "--fx-row-h",
+      "--fx-space",
+      "--fx-type-root-2xl",
+      "--fx-type-root-xs",
+      "--fx-warning"
+    ]
   }
 }
