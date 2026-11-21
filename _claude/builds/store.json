@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10285,
- "updatedAt": "2026-11-21T04:20:12.480Z",
+ "rev": 10286,
+ "updatedAt": "2026-11-21T05:04:52.461Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349991,7 +349991,7 @@
    "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T04:15:59.830Z",
+   "updatedAt": "2026-11-21T05:04:46.941Z",
    "builtAt": "",
    "notes": [
     {
@@ -350181,6 +350181,10 @@
      "text": "Lander: failed in running-ci, attempt 10: the fix session (agent) pushed nothing in 60 min",
      "at": "2026-11-21T03:45:10.075Z",
      "by": "lander"
+    },
+    {
+     "text": "Refused failed → landed (asked by amber): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-21T05:04:46.942Z"
     }
    ],
    "approvals": [],
@@ -350740,7 +350744,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 126,
+   "rev": 127,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -350751,9 +350755,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T00:42:49.539Z",
-   "statusBy": "lander",
-   "attempt": 8,
+   "statusAt": "2026-11-21T05:04:46.941Z",
+   "statusBy": "amber",
+   "attempt": 11,
    "failedFrom": "running-ci",
    "statusLog": [
     {
@@ -350928,6 +350932,13 @@
      "by": "lander",
      "attempt": 8,
      "why": "Lander: failed in running-ci, attempt 8: build rules fail at the gate (feature-status-tracker)"
+    },
+    {
+     "status": "landed",
+     "at": "2026-11-21T05:04:46.941Z",
+     "by": "amber",
+     "attempt": 11,
+     "why": "Brett Nov 21: unstick per fable-deep-audit 0.2 (PR #867 merged by hand 02:24)"
     }
    ]
   },
