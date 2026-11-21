@@ -4,7 +4,12 @@
  * can't upgrade."; framework/core/model-switch.mjs).
  *
  *   node framework/cli/model-gate.mjs launch --model <m> [--build <id>] [--name <session name>] [--brief <file>] [--json]
- *        exit 0 = may start; exit 3 = refused (one plain line says why and what to do)
+ *        exit 0 = may start; exit 3 = refused (one plain line says why and what to do). A model word the policy
+ *        does not know is refused for every launch, build or not: it is an error, never a silent Opus.
+ *   node framework/cli/model-gate.mjs resolve <model> [--json]
+ *        the policy's key, label and Claude Code id for any spelling ("FABLE" → claude-fable-5-2); exit 2 when unknown
+ *   node framework/cli/model-gate.mjs for-work "<text>" [--floor <model>] [--json]
+ *        the model a piece of work gets from the one word list (model-policy@1 work: unsure = Fable) and why
  *   node framework/cli/model-gate.mjs audit [--all] [--json]
  *        every model upgrade approved so far (--all: downgrades too) and whether Brett approved it
  *   node framework/cli/model-gate.mjs mark-self <build> <phase> --by "<who>" [--note "…"]
@@ -18,7 +23,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { MODEL_LABELS, modelKey, modelRank } from '../core/model-policy.mjs';
+import { MODEL_IDS, MODEL_LABELS, modelKey, modelProblem, modelRank, requireModel, workModel } from '../core/model-policy.mjs';
 import { phaseApproved, stepPhases, upgradeLine, upgradeNeedsApproval } from '../core/model-switch.mjs';
 import { loadUpgradePolicy } from './upgrade-policy.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
@@ -52,9 +57,10 @@ export function stepOf(b, { step = '', name = '' } = {}) {
  * because phase 1 of the build was Opus).
  */
 export function launchCheck(b, model, { step = null } = {}) {
-  if (!b) return { ok: true, why: 'not an orchestrator build: nothing to compare' };
   const want = modelKey(model);
-  if (!want) return { ok: true, why: `model "${model}" unknown to the policy: the launcher's own check decides` };
+  if (!want && String(model ?? '').trim()) return { ok: false, unknown: true, ...(b ? { build: b.id } : {}), why: `${modelProblem(model)}. An unknown model is an error, never a silent ${MODEL_LABELS.opus.split(' ')[0]}: launch it on ${MODEL_LABELS.opus} or ${MODEL_LABELS.fable}.` };
+  if (!b) return { ok: true, why: 'not an orchestrator build: nothing to compare' };
+  if (!want) return { ok: true, why: 'no model given: nothing to compare' };
   if (step) {
     if (modelRank(want) > modelRank(step.model)) return { ok: false, build: b.id, step: step.id, why: `${b.id}/${step.id} is pinned to ${label(step.model)}; launching it on ${label(want)} is a model upgrade: raise the step first.` };
     return { ok: true, build: b.id, step: step.id, why: `${b.id}/${step.id} runs on ${label(step.model)}; ${label(want)} is ${modelRank(want) < modelRank(step.model) ? 'a downgrade (fine)' : 'the same model'}` };
@@ -116,6 +122,16 @@ async function main(argv) {
     if (!r.ok) process.exitCode = 3;
     return;
   }
+  if (cmd === 'resolve') {
+    const key = requireModel(args[1]); // throws ModelError on an unknown or missing model → exit 2
+    const r = { ok: true, key, label: MODEL_LABELS[key], id: MODEL_IDS[key] };
+    return console.log(json ? JSON.stringify(r) : r.id);
+  }
+  if (cmd === 'for-work') {
+    const floor = opt('floor'); const text = args.slice(1).filter((a, i, l) => a !== '--floor' && l[i - 1] !== '--floor').join(' ');
+    const r = workModel(text, { floor });
+    return console.log(json ? JSON.stringify({ ok: true, ...r, label: MODEL_LABELS[r.model], id: MODEL_IDS[r.model] }) : `${MODEL_LABELS[r.model]}: ${r.why}`);
+  }
   if (cmd === 'audit') {
     const rows = audit(loadStore(), { all: args.includes('--all') });
     if (json) return console.log(JSON.stringify({ ok: true, approvals: rows }));
@@ -128,7 +144,7 @@ async function main(argv) {
     const r = withStore((st) => markSelfApproved(st, id, phase, { by: opt('by'), note: opt('note') }), { by: 'model-gate audit', action: 'model-gate:mark-self', note: `${id} phase ${Number(phase) + 1}` });
     return console.log(`${id} phase ${Number(phase) + 1}: marked self-approved (store rev ${r.rev})`);
   }
-  console.error('usage: model-gate.mjs launch --model <m> [--build <id>] [--name <n>] [--brief <file>] | audit'); process.exitCode = 2;
+  console.error('usage: model-gate.mjs launch --model <m> [--build <id>] [--name <n>] [--brief <file>] | resolve <model> | for-work "<text>" [--floor <model>] | audit'); process.exitCode = 2;
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

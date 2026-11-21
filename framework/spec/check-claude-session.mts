@@ -41,7 +41,7 @@ check(lib.filterConversations(items, '  ').length === items.length, 'empty searc
 const ms = lib.chatModels();
 check(ms[0]?.key === 'opus' && ms.map((m) => m.key).join() === 'opus,fable', 'pick list = policy allowed, default first');
 check(lib.chatModelId('sonnet') === 'claude-opus-5-5' && lib.chatModelId('claude-haiku-5-5') === 'claude-opus-5-5', 'Sonnet / Haiku run as Opus');
-check(lib.chatModelId('fable') === 'claude-fable-5-1' && lib.chatModelId('') === '', 'Fable kept; empty = default');
+check(lib.chatModelId('fable') === 'claude-fable-5-2' && lib.chatModelId('') === '', 'Fable kept; empty = default');
 
 // ---- budget
 check(lib.budgetState(1, 0).level === 'off', 'no cap = off');

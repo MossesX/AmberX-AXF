@@ -423,7 +423,7 @@
   "junk": {
    "specialty": "",
    "skills": [],
-   "model": "opus",
+   "model": "fable",
    "budget": {
     "tokens": 200000,
     "maxTurns": 30,
@@ -566,7 +566,7 @@
    "data.brief uses {{who}}, which is neither an input nor a built-in"
   ],
   "blocked-model": [
-   "data.model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.1 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
+   "data.model \"sonnet\" is not allowed: Opus 5.5 or Fable 5.2 only, never Sonnet 5.5 (Brett, 2026-11-01); it runs as opus"
   ],
   "other-type": [],
   "skills-only": [],
