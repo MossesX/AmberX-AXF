@@ -1,7 +1,7 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.gate",
-  "name": "Gate & rules",
+  "name": "VPS Configuration",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,
@@ -12,6 +12,11 @@
   ],
   "provides": [
     "view:gate",
+    "view:vps-configuration",
+    "view:axhub-passes",
+    "view:axhub-go-pass",
+    "action:axhub-passes.open",
+    "action:axhub-go-pass.open",
     "settings-tab:gate",
     "service:axf.gate@1",
     "service:axf.build-rules@1"
@@ -19,7 +24,8 @@
   "optional": [
     "service:axf.merge-queue@1",
     "service:axf.health@1",
-    "service:axf.alerts@1"
+    "service:axf.alerts@1",
+    "service:control@1"
   ],
   "scopes": [
     "ROUTES"
@@ -37,22 +43,24 @@
       "AXF_GATE_LANDER_CLI"
     ],
     "mentions": [
-      "_claude/memory/decisions.md",
-      "_claude/memory/docs/auto-lander.md",
-      "apps/console-web/scripts/auto-lander-shots.mjs",
-      "deploy/auto-lander/auto-lander.mjs",
-      "deploy/auto-lander/escalate.mjs",
-      "deploy/auto-lander/test/loop.test.mjs",
-      "deploy/install-console.sh",
-      "framework/spec/AUTO-LANDER.md",
-      "framework/spec/DONE-MEANS-MERGED.md",
       "apps/console-web/plugins/README.md",
       "framework/spec/GATE.md",
+      "apps/console-web/plugins/glossary-index/terms.json",
       "CLAUDE.md",
       "_claude/rules/RULES.md",
       "framework/spec/BUILD-RULES.md",
       "_claude/builds/BRIEF-TEMPLATE.md",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "_claude/memory/decisions.md",
+      "_claude/memory/docs/auto-lander.md",
+      "apps/console-web/scripts/auto-lander-shots.mjs",
+      "apps/console-web/scripts/vps-config-shots.mjs",
+      "deploy/install-console.sh",
+      "framework/spec/AUTO-LANDER.md",
+      "framework/spec/DONE-MEANS-MERGED.md",
+      "deploy/lander/run.mjs",
+      "deploy/systemd/axf-lander.service",
+      "deploy/watchdog/audits.mjs"
     ]
   },
   "commands": {
@@ -170,14 +178,14 @@
         "route": "GET /auto-lander",
         "title": "Server auto-lander: status",
         "readOnly": true,
-        "description": "The server auto-lander (auto-lander@1, a VPS service): service up, the build it works on, its queue, every build's state (waiting, merging-main, fixing, ci-running, landing, landed, escalated) with attempt counts and the last decision, escalations, settings."
+        "description": "The lander (lander@1, deploy/lander/run.mjs on the VPS): service up, the build landing, every build waiting to land with its live status from the builds store (merging-pr, pr-pulling-main, running-ci, merging-main, failed with attempt N), the builds failing repeatedly, settings."
       },
       {
         "id": "auto-lander-build",
         "route": "GET /auto-lander/builds/{build}",
         "title": "Server auto-lander: one build's attempts",
         "readOnly": true,
-        "description": "One build in the server auto-lander: its record and every attempt (clash, red-ci, land) with result, account, session and log."
+        "description": "One build in the lander: its status, status log (every change with at and by), attempt and failure, and its PRs."
       },
       {
         "id": "auto-lander-run",
@@ -218,10 +226,138 @@
       },
       {
         "id": "auto-lander-settings-set",
-        "input": {"type": "object", "properties": {"enabled": {"type": "boolean"}, "maxAttempts": {"type": "integer", "minimum": 1, "maximum": 10}, "backoffBaseMin": {"type": "number", "exclusiveMinimum": 0}, "backoffFactor": {"type": "number", "exclusiveMinimum": 0}, "backoffMaxMin": {"type": "number", "exclusiveMinimum": 0}, "attemptTimeoutMin": {"type": "number", "exclusiveMinimum": 0}, "pushOnEscalation": {"type": "boolean"}, "key": {"type": "string", "description": "one setting by name (with value)"}, "value": {"description": "the value for key"}}, "additionalProperties": false},
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "sizeCapLines": {
+              "type": "integer",
+              "minimum": 50,
+              "description": "lines one PR may carry before a build's steps are split into 2, 3 or more PRs"
+            },
+            "flakyReruns": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 5
+            },
+            "backoffBaseMin": {
+              "type": "number",
+              "minimum": 0
+            },
+            "backoffFactor": {
+              "type": "number",
+              "minimum": 1
+            },
+            "backoffMaxMin": {
+              "type": "number",
+              "minimum": 0
+            },
+            "ciNoneKickMin": {
+              "type": "number",
+              "minimum": 0
+            },
+            "ciTimeoutMin": {
+              "type": "number",
+              "minimum": 5
+            },
+            "fixTimeoutMin": {
+              "type": "number",
+              "minimum": 5
+            },
+            "notifyAfterAttempts": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "workflow": {
+              "type": "string"
+            },
+            "mergeMethod": {
+              "type": "string",
+              "enum": [
+                "merge",
+                "squash",
+                "rebase"
+              ]
+            },
+            "key": {
+              "type": "string",
+              "description": "one setting by name (with value)"
+            },
+            "value": {
+              "description": "the value for key"
+            }
+          },
+          "additionalProperties": false
+        },
         "route": "POST /auto-lander/settings",
         "title": "Server auto-lander: change settings",
-        "description": "Change server auto-lander settings ({key: value, …} or {key, value}): enabled, maxAttempts (1-10), backoffBaseMin, backoffFactor, backoffMaxMin, attemptTimeoutMin, pushOnEscalation. Every key is checked first."
+        "description": "Change the lander's settings (deploy/lander/run.mjs): enabled, sizeCapLines (the one-PR size cap), flakyReruns, backoffBaseMin/Factor/MaxMin, ciNoneKickMin, ciTimeoutMin, fixTimeoutMin, notifyAfterAttempts, workflow, mergeMethod; {key: value, …} or {key, value}."
+      },
+      {
+        "id": "build-cap",
+        "route": "GET /build-cap",
+        "title": "Build cap: status",
+        "readOnly": true,
+        "tool": "vps_build_cap",
+        "description": "The build cap (build-cap@1): the host hard cap (maxBuilds), emergency slots and the orchestrator's stepsInParallel side by side, what runs now, how many really run at once and the note when the numbers disagree."
+      },
+      {
+        "id": "build-cap-set",
+        "route": "POST /build-cap",
+        "title": "Build cap: change",
+        "tool": "vps_build_cap_set",
+        "input": {
+          "type": "object",
+          "properties": {
+            "stepsInParallel": { "type": "integer", "minimum": 1, "maximum": 12, "description": "steps of one build sent at once" },
+            "maxBuilds": { "type": "integer", "minimum": 1, "maximum": 64, "description": "the host hard cap; Brett's signed-in console only" },
+            "emergencySlots": { "type": "integer", "minimum": 0, "maximum": 8, "description": "the emergency pool; Brett's signed-in console only" },
+            "key": { "type": "string", "description": "one setting by name (with value)" },
+            "value": { "description": "the value for key" }
+          },
+          "additionalProperties": false
+        },
+        "description": "Change the build cap: stepsInParallel (1-12) from anywhere; maxBuilds (1-64) and emergencySlots (0-8) only from Brett's own signed-in console (a session, MCP or voice is refused with 403)."
+      },
+      {
+        "id": "approval-rules",
+        "route": "GET /approval-rules",
+        "title": "Approval rules: status",
+        "readOnly": true,
+        "tool": "vps_approval_rules",
+        "description": "Approval rules (approval-rules@1): each axHub service's ordered match-pattern rules (match, decision allow / veto / confirm / deny, hold seconds), how many tools each rule decides now, the staged draft, and whether Brett's default (a veto countdown only on VPS shell commands) is applied."
+      },
+      {
+        "id": "approval-rules-stage",
+        "route": "POST /approval-rules/draft",
+        "title": "Approval rules: stage an edit",
+        "tool": "vps_approval_rules_stage",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": { "type": "string", "enum": ["add", "edit", "remove", "move", "set", "clear-own", "default", "discard"], "description": "what to do; default stages Brett's default, discard drops the draft (or one service's)" },
+            "service": { "type": "string", "description": "the axHub service (vps, axf-console, …)" },
+            "index": { "type": "integer", "minimum": 0, "description": "which rule, 0-based (edit, remove, move; add: where to insert)" },
+            "to": { "type": "integer", "minimum": 0, "description": "move: the new position, 0-based" },
+            "rule": {
+              "type": "object",
+              "properties": {
+                "match": { "type": "string", "description": "a tool name or a pattern; * stands for any run of characters (build_*, *_run, *)" },
+                "policy": { "type": "string", "enum": ["allow", "veto", "confirm", "deny"] },
+                "vetoSeconds": { "type": "integer", "minimum": 10, "maximum": 1800, "description": "how long a veto holds" }
+              },
+              "additionalProperties": false
+            },
+            "rules": { "type": "array", "description": "set: the service's whole ordered list", "items": { "type": "object" } },
+            "clearOwn": { "type": "boolean", "description": "set: also clear the tools' own entries on save, so the rules decide" },
+            "on": { "type": "boolean", "description": "clear-own: on or off" }
+          },
+          "required": ["op"],
+          "additionalProperties": false
+        },
+        "description": "Stage one edit to the approval rules. It lands in a draft and changes nothing on axHub: only Brett saves the draft, with his own click in his signed-in console (Builds → VPS Configuration → Approval rules). The first matching rule wins; a tool's own entry beats every rule."
       },
       {
         "id": "settings",
@@ -234,7 +370,7 @@
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, build-cap, approvals, passes, history)."
       },
       {
         "id": "build-rules-list",
@@ -325,6 +461,7 @@
       "--fx-border",
       "--fx-border-w",
       "--fx-danger",
+      "--fx-dens-gap-3xl",
       "--fx-dens-gap-lg",
       "--fx-dens-gap-md",
       "--fx-dens-gap-sm",
@@ -344,5 +481,7 @@
   },
   "help": "help.json",
   "opens": "main",
-  "settingsTab": { "default": true }
+  "settingsTab": {
+    "default": true
+  }
 }

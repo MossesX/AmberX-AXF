@@ -21,7 +21,18 @@ const ownAssets = import.meta.glob('./assets/**/*.json', { eager: true, import: 
 const overrideAssets = import.meta.glob('./assets-overrides/**/*.json', { eager: true, import: 'default' });
 // Plugin Home cards (card@1 at plugins/<folder>/assets/card/*.json; the VPS writes missing ones, build rule home-card).
 const pluginCards = import.meta.glob(['../plugins/*/assets/card/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' });
-const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...overrideAssets };
+// Page toolbars (page-toolbar@1 at plugins/<folder>/assets/toolbar/*.json, scoped to the plugin's page; build
+// rebuild-every-toolbar-page-specific): each plugin page draws its own through <PageToolbar>.
+// UI Review options (tag ui-choice) are left out: an option is used only once it is picked (it joins the library through
+// UI Review's choices/assets), so the page's own asset stays the one its scope picks.
+const pluginToolbars = Object.fromEntries(Object.entries(import.meta.glob(['../plugins/*/assets/toolbar/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' }))
+  .filter(([, a]) => !((a as { tags?: string[] }).tags ?? []).includes('ui-choice')));
+// Plugin settings interfaces (settings-iface@1, settings asset with data.builtFor = plugin:<folder>, at
+// plugins/<folder>/assets/settings/*.json): each plugin's default-<folder> and any other interface built for it, so its
+// Settings → Plugins tab can pick between them. UI Review options (ui-choice) are left out like toolbars.
+const pluginSettings = Object.fromEntries(Object.entries(import.meta.glob(['../plugins/*/assets/settings/*.json', '!../plugins/_*/**'], { eager: true, import: 'default' }))
+  .filter(([, a]) => !((a as { tags?: string[] }).tags ?? []).includes('ui-choice')));
+const assetModules = { ...sharedAssets, ...ownAssets, ...pluginCards, ...pluginToolbars, ...pluginSettings, ...overrideAssets };
 
 const axf = createAxf({
   manifest: manifest as AxfManifest,

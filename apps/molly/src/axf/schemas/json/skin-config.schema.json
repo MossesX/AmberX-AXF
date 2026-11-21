@@ -666,6 +666,15 @@
                         },
                         "collapsible": {
                           "$ref": "#/$defs/mode"
+                        },
+                        "scope": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "overflow": {
+                          "$ref": "#/$defs/mode"
+                        },
+                        "slot": {
+                          "$ref": "#/$defs/mode"
                         }
                       }
                     }

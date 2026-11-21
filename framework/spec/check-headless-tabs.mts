@@ -48,8 +48,7 @@ check(rel.join(' | ') === 'user memory:/home/.claude/CLAUDE.md | import:/home/hu
 
 // ---- the meter: cost per message once, reconciled to the result, chain from Reads
 let t = 1_000_000;
-// lean: false pins the full memory chain, so a run inside a headless (brief-only) session checks the same thing CI does
-const m = createMeter({ lean: false, session: 'axf-x', name: 'x', agent: 'Vinnie', model: 'opus', cwd: proj, home, pricing, now: () => t });
+const m = createMeter({ session: 'axf-x', name: 'x', agent: 'Vinnie', model: 'opus', cwd: proj, home, pricing, now: () => t });
 check(m.snapshot().chainCount === 5 && m.snapshot().status === 'starting', 'meter starts with the memory chain loaded, status starting');
 m.add({ type: 'system', subtype: 'init', model: 'claude-opus-5-5' });
 const usage = (o: number) => ({ input_tokens: 1000, output_tokens: o, cache_read_input_tokens: 100000, cache_creation_input_tokens: 2000 });
@@ -67,13 +66,13 @@ check(!m.snapshot().toolRunning, 'tool result clears the running tool');
 m.add({ type: 'result', subtype: 'success', total_cost_usd: 0.25, num_turns: 2 });
 s = m.snapshot();
 check(s.costUsd === 0.25 && !s.costEstimated && s.status === 'done' && s.tokens.output === 600, 'result: cost = Claude Code\'s total_cost_usd, done, tokens kept');
-const m2 = createMeter({ lean: false, session: 'axf-x', model: 'opus', cwd: proj, home, pricing, prev: s, prevChain: ch, now: () => t });
+const m2 = createMeter({ session: 'axf-x', model: 'opus', cwd: proj, home, pricing, prev: s, prevChain: ch, now: () => t });
 m2.add({ type: 'assistant', message: { id: 'n1', model: 'claude-opus-5-5', usage: { input_tokens: 0, output_tokens: 1000 }, content: [] } });
 check(Math.abs(m2.snapshot().costUsd - 0.27) < 1e-6 && m2.snapshot().runs === 2 && m2.chain().items.length === ch.items.length, 'a second run (account switch) adds to the first; chain carried over');
-const m3 = createMeter({ lean: false, session: 'axf-y', model: 'opus', cwd: proj, home, pricing });
+const m3 = createMeter({ session: 'axf-y', model: 'opus', cwd: proj, home, pricing });
 m3.add({ type: 'assistant', message: { id: 'q', usage: usage(10), content: [] } }); m3.end();
 check(m3.snapshot().status === 'failed' && m3.snapshot().ended, 'stream ended without a result = failed');
-const m4 = createMeter({ lean: false, session: 'axf-z', model: 'mystery-model', cwd: proj, home, pricing });
+const m4 = createMeter({ session: 'axf-z', model: 'mystery-model', cwd: proj, home, pricing });
 m4.add({ type: 'assistant', message: { id: 'q', model: 'mystery-model', usage: usage(10), content: [] } });
 check(m4.snapshot().priced === false && m4.snapshot().costUsd === 0, 'a model without a price is flagged, never guessed');
 
@@ -141,7 +140,7 @@ writeFileSync(join(tp, '_claude', 'THREADS.md'), '# Threads\n- see src/app.ts\n'
 writeFileSync(join(tp, '_claude', 'memory', 'decisions.md'), '# Decisions\n- d1\n'); writeFileSync(join(tp, '_claude', 'memory', 'spec.md'), '# Spec\n');
 writeFileSync(join(tp, 'src', 'app.ts'), 'x'); writeFileSync(join(tp, 'src', 'lone.ts'), 'y');
 const home2 = join(root, 'home2'); mkdirSync(home2, { recursive: true });
-const tm = createMeter({ lean: false, session: 'axf-t', model: 'opus', cwd: tp, home: home2, pricing, now: () => t });
+const tm = createMeter({ session: 'axf-t', model: 'opus', cwd: tp, home: home2, pricing, now: () => t });
 const readEv = (id: string, f: string) => ({ type: 'assistant', message: { id, content: [{ type: 'tool_use', id: `t-${id}`, name: 'Read', input: { file_path: join(tp, f) } }] } });
 for (const [id, f] of [['a', '_claude/THREADS.md'], ['b', '_claude/memory/decisions.md'], ['c', 'src/app.ts'], ['d', 'src/lone.ts'], ['e', '_claude/memory/spec.md']] as const) tm.add(readEv(id, f));
 const ti: ChainItem[] = tm.chain().items;

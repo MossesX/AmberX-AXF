@@ -35,7 +35,7 @@ SEGMENT = re.compile(r"^[A-Za-z0-9_@][A-Za-z0-9._ @+-]{0,159}$")
 HUB_PROJECT = re.compile(r"^(_shared|[a-z0-9][a-z0-9._-]{0,63})$")
 # folders a repo listing never walks (builds, vendored and baked copies, VCS, caches, the builds journal)
 SKIP_DIRS = {".git", "node_modules", "dist", "build", ".gradle", ".idea", ".venv", "venv", "__pycache__", ".axf-console", ".next", "out", "coverage", "journal", ".pytest_cache"}
-SKIP_PATHS = ("apps/console-web/src/axf/", "apps/demo/src/axf/", "apps/axhub-web/src/axf/", "apps/amberx-droid/src/axf/")
+SKIP_PATHS = ("apps/console-web/src/axf/", "apps/demo/src/axf/", "apps/axhub-web/src/axf/")
 DOT_DIRS = {".claude"}  # the one hidden folder MD Studio lists and writes (skills, commands, agents)
 _LOCK = threading.RLock()
 

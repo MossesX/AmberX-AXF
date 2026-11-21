@@ -77,6 +77,6 @@ for (const c of f.errors) {
 }
 // an item's `open: pane` only applies while the IDE is on; standalone apps never get an xlayout (not shared, not baked)
 ok(openTargetFor({ open: 'pane' }, false) === 'floating' && openTargetFor({ open: 'pane' }, true) === 'pane', 'pane needs the IDE switch');
-for (const app of ['apps/console-web', 'apps/axhub-web', 'apps/amberx-droid', 'apps/molly']) ok(!existsSync(join(root, '..', app, 'src/axf/assets/xlayout')), `${app} does not bake xlayout (host-only)`);
+for (const app of ['apps/console-web', 'apps/axhub-web', 'apps/molly']) ok(!existsSync(join(root, '..', app, 'src/axf/assets/xlayout')), `${app} does not bake xlayout (host-only)`);
 
 console.log(`check-xlayout: ok (${checks} checks)`);

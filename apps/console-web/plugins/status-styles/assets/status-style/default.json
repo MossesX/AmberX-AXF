@@ -1,0 +1,211 @@
+{
+  "$axf": "asset@1",
+  "type": "status-style",
+  "id": "default",
+  "name": "Status styles (default)",
+  "version": "1.0.0",
+  "description": "The style every known status starts with (status-styles@1): the preset on its row, the preset on its badge and whether the badge moves. Moving statuses animate; resting ones carry a still look. Brett's changes are saved over these in the plugin's data folder.",
+  "author": "AmberX AXF",
+  "tags": [
+    "status-style",
+    "default",
+    "plugin"
+  ],
+  "data": {
+    "$axf": "status-styles@1",
+    "enabled": true,
+    "rows": true,
+    "badges": true,
+    "statuses": {
+      "pending": {
+        "label": "Pending",
+        "group": "Builds",
+        "preset": "plain",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "splitting": {
+        "label": "Splitting",
+        "group": "Builds",
+        "preset": "row-sweep-slow",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "split": {
+        "label": "Split",
+        "group": "Builds",
+        "preset": "plain",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "pulling-main": {
+        "label": "Pulling main",
+        "group": "Builds",
+        "preset": "row-sweep-info",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "assigning-models": {
+        "label": "Assigning models",
+        "group": "Builds",
+        "preset": "row-shimmer-slow",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "ready": {
+        "label": "Ready for build",
+        "group": "Builds",
+        "preset": "still-edge-accent",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "sending": {
+        "label": "Sending",
+        "group": "Builds",
+        "preset": "row-sweep",
+        "badgePreset": "badge-blink",
+        "animated": true
+      },
+      "building": {
+        "label": "Building",
+        "group": "Builds",
+        "preset": "row-sweep-slow",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "build-complete": {
+        "label": "Build complete",
+        "group": "Builds",
+        "preset": "still-edge-success",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "merging-pr": {
+        "label": "Merging to one PR",
+        "group": "Builds",
+        "preset": "row-pulse-slow",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "pr-pulling-main": {
+        "label": "PR pulling main",
+        "group": "Builds",
+        "preset": "row-sweep-info",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "running-ci": {
+        "label": "Running CI",
+        "group": "Builds",
+        "preset": "row-stripes",
+        "badgePreset": "badge-blink",
+        "animated": true
+      },
+      "merging-main": {
+        "label": "Merging into main",
+        "group": "Builds",
+        "preset": "row-sweep-success",
+        "badgePreset": "badge-ring-success",
+        "animated": true
+      },
+      "landed": {
+        "label": "Landed",
+        "group": "Builds",
+        "preset": "still-tint-success",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "failed": {
+        "label": "Failed",
+        "group": "Builds",
+        "preset": "still-edge-danger",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "completed": {
+        "label": "Completed",
+        "group": "Steps",
+        "preset": "still-edge-success",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "in-pr": {
+        "label": "In PR",
+        "group": "Steps",
+        "preset": "still-tint-success",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "scoring-risk": {
+        "label": "Scoring risk",
+        "group": "Coming statuses",
+        "preset": "row-shimmer-accent",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "fast-merge": {
+        "label": "Fast merge",
+        "group": "Coming statuses",
+        "preset": "row-sweep-success",
+        "badgePreset": "badge-ring-success",
+        "animated": true
+      },
+      "post-merge-ci": {
+        "label": "Post-merge CI",
+        "group": "Coming statuses",
+        "preset": "row-stripes",
+        "badgePreset": "badge-blink",
+        "animated": true
+      },
+      "rolling-back": {
+        "label": "Rolling back",
+        "group": "Coming statuses",
+        "preset": "row-stripes-back",
+        "badgePreset": "badge-ring-danger",
+        "animated": true
+      },
+      "rolled-back": {
+        "label": "Rolled back",
+        "group": "Coming statuses",
+        "preset": "still-tint-warning",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "idea": {
+        "label": "Idea",
+        "group": "Plans",
+        "preset": "still-dim-italic",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "draft": {
+        "label": "Draft",
+        "group": "Plans",
+        "preset": "plain",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "active": {
+        "label": "Active",
+        "group": "Plans",
+        "preset": "text-pulse-accent",
+        "badgePreset": "badge-pulse",
+        "animated": true
+      },
+      "parked": {
+        "label": "Parked",
+        "group": "Plans",
+        "preset": "still-dim",
+        "badgePreset": "plain",
+        "animated": false
+      },
+      "done": {
+        "label": "Done",
+        "group": "Plans",
+        "preset": "still-dim",
+        "badgePreset": "plain",
+        "animated": false
+      }
+    }
+  }
+}

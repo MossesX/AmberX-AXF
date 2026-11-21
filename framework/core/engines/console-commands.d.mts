@@ -4,10 +4,10 @@ import type { ControlCommand, ControlWireCode } from './control-rules.mjs';
 export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action' | 'field';
 export type ConsoleActionEffect = 'navigate' | 'read' | 'write' | 'destructive';
 export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string; /** field: its setting kind, current value as text (not for secrets), choices, range */ type?: string; value?: string; options?: string[]; min?: number; max?: number; secret?: boolean }
-export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
+export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string; /** open tab of each tab row on the screen: row address → tab */ tabs?: Record<string, string>; /** the focused row or target */ selection?: string }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
-export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh' | 'control'; /** op control: a console-control@1 command (spec/CONSOLE-CONTROL.md) */ command?: Record<string, unknown>; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; /** a tab or an item to bring forward on the opened screen (runs `<screen>.focus:<focus>`) */ focus?: string; hard?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
+export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh' | 'screenshot' | 'control'; /** op control: a console-control@1 command (spec/CONSOLE-CONTROL.md) */ command?: Record<string, unknown>; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; /** a tab or an item to bring forward on the opened screen (runs `<screen>.focus:<focus>`) */ focus?: string; hard?: boolean; /** op screenshot: capture only the element this CSS selector or console-control@1 address names */ selector?: string; address?: string; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
 export type ConsoleRun =
   | { ok: true; data: Record<string, unknown>; deliver?: { to: string[]; message: ConsoleMessage } }
   | { ok: false; code: ControlWireCode; message: string; [k: string]: unknown };
@@ -24,6 +24,13 @@ export const CONSOLE_CLIENT_STALE_MS: number;
 export const CONSOLE_HEARTBEAT_MS: number;
 export const CONSOLE_LATE_MS: number;
 export const CONSOLE_TOOLS: readonly string[];
+export const CONSOLE_SHOT_MAX_WIDTH: number;
+export const CONSOLE_SHOT_MAX_BYTES: number;
+export const CONSOLE_SHOT_TTL_MS: number;
+export const CONSOLE_SHOT_MIME: 'image/png';
+/** What a screenshot answer says about the screen. */
+export interface ConsoleShotState { screen: string; screenLabel: string; tabs?: Record<string, string>; dialog?: string; settings?: string; selection?: string; scroll?: Record<string, number | string | boolean>; capture?: string; width?: number; height?: number; scale?: number }
+export function consoleShotState(state: unknown, here: unknown, extra?: { capture?: string; width?: number; height?: number; scale?: number }): ConsoleShotState;
 export function foldWords(s: unknown): string;
 export function normalizeConsoleItem(raw: unknown): ConsoleItem | null;
 export function normalizeConsoleCatalog(raw: unknown): ConsoleCatalog;

@@ -108,12 +108,19 @@ function watchClaudeSettings(rt: AxfRuntime) {
   }
 }
 
+/** The last report sent: every paint of the banner asks for a report, but only a changed state is sent (each report
+ * costs the server a node run). */
+let lastReport = '';
+
 function scheduleReport() {
   if (L.reportTimer) return;
   const wait = Math.max(0, REPORT_MIN_MS - (Date.now() - L.reportAt));
   L.reportTimer = setTimeout(() => {
-    L.reportTimer = null; L.reportAt = Date.now();
-    void pluginFetch(FOLDER, 'report', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ state: L.state }) }).catch(() => undefined);
+    L.reportTimer = null;
+    const body = JSON.stringify({ state: L.state });
+    if (body === lastReport) return;
+    L.reportAt = Date.now(); lastReport = body;
+    void pluginFetch(FOLDER, 'report', { method: 'POST', headers: { 'content-type': 'application/json' }, body }).catch(() => { lastReport = ''; });
   }, wait);
 }
 

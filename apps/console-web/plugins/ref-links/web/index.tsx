@@ -40,7 +40,7 @@ function RefSourceClient() {
   return null;
 }
 
-const SAMPLE = 'Editing the Terminal settings and the Plan Studio screen for banner-ref-links (PR 254); see apps/console-web/plugins/push-banner.';
+const SAMPLE = 'Editing the Terminal settings and the Plan Studio screen for banner-ref-links (PR 254); see apps/console-web/plugins/gate.';
 
 function TryPanel() {
   const rt = useRuntime();

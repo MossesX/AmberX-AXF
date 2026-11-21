@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "chrome-banner-interface-tab-one-list",
+  "name": "chrome-banner-interface-tab: One list, no tabs",
+  "version": "0.1.0",
+  "author": "UI Review choices",
+  "description": "No tab row at all: Look, Behaviour and Asset as sections in one scroll (the settings asset's list layout), Interface hidden since the list is the whole interface. Best for a quick phone pass.",
+  "tags": [
+    "ui-choice",
+    "choice-set:chrome-banner-interface-tab",
+    "choice-option:one-list"
+  ],
+  "data": {
+    "for": "banner",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "layout": "list",
+    "tabs": [
+      {
+        "id": "look",
+        "label": "Look",
+        "icon": "palette",
+        "order": 10
+      },
+      {
+        "id": "behaviour",
+        "label": "Behaviour",
+        "icon": "sliders",
+        "order": 20
+      },
+      {
+        "id": "asset",
+        "label": "Asset",
+        "icon": "layers",
+        "order": 30
+      },
+      {
+        "id": "interface",
+        "label": "Interface",
+        "icon": "settings",
+        "order": 40,
+        "hidden": true
+      }
+    ],
+    "hide": [],
+    "levelOf": {
+      "look": "simple",
+      "behaviour": "basic",
+      "asset": "basic"
+    },
+    "builtFor": "chrome:banner"
+  }
+}

@@ -384,6 +384,17 @@ export function withContextLead<T extends MenuEntry>(lead: readonly T[], rest: r
   return body.length ? [...top, { id: CONTEXT_LEAD_SEPARATOR_ID, separator: true } as T, ...body] : top;
 }
 
+/**
+ * context-bar@1 (Nov 20 2026): a context menu's items split into the icon strip on top (top-level `place: "toolbar"`
+ * items) and the list (the rest, with no separator left at an edge or doubled where a strip item came out).
+ */
+export function splitContextBar<T extends MenuEntry & { place?: string }>(items: readonly T[]): { bar: T[]; list: T[] } {
+  const bar = items.filter((i) => !i.separator && i.place === 'toolbar');
+  const kept = items.filter((i) => i.separator || i.place !== 'toolbar');
+  const list = kept.filter((x, i) => !(x.separator && (i === 0 || i === kept.length - 1 || kept[i - 1]?.separator)));
+  return { bar, list };
+}
+
 /** Even distribution: the first `size % n` groups get one extra tab (5 → 3 + 2, 7 in four → 2,2,2,1). Empty parts are kept so the grid has every cell. */
 export function distribute<T>(items: T[], n: number): T[][] {
   const base = Math.floor(items.length / n), extra = items.length % n; let i = 0;

@@ -2534,12 +2534,24 @@
                   "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)"
                 },
                 {
+                  "id": "cx.buildengine.emergency",
+                  "title": "Emergency builds: two emergency slots counted apart from the hard limit, started from Brett's signed-in console only, past the one-active-build line, first in the merge line; every merge on main's newest code"
+                },
+                {
+                  "id": "cx.buildengine.statuscontract",
+                  "title": "Pipeline 2.0 status contract owns every limit: the attempt ceiling, the 15 minute step cap, the archive rule, fixed steps and whole refusals; one watchdog and one dispatcher read it"
+                },
+                {
                   "id": "cx.buildengine.buildids",
                   "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept"
                 },
                 {
                   "id": "cx.buildengine.groups",
                   "title": "Custom groups and custom tabs on the builds board: user-made and smart groups sorted by state (partial to landed) with counts, pinned as tabs next to Pending and the other stages, group actions, saved per project"
+                },
+                {
+                  "id": "cx.buildengine.statustable",
+                  "title": "One status-driven builds table (Pipeline 2.0): no tabs, builds as rows expandable to their steps, filters on the toolbar, one colour per status, live timers, a read-only merge queue view of the same rows"
                 },
                 {
                   "id": "cx.buildengine.sectionowners",
@@ -2672,6 +2684,30 @@
               "id": "cx.gate",
               "title": "Gate & rules plugin: the rules a PR must pass, the auto-lander with one Merge queue on/off switch (off = one at a time), and the history of both; REST, MCP, CLI and voice",
               "note": "apps/console-web/plugins/gate (gate-rules@1, framework/spec/GATE.md; build-rules@1, framework/spec/BUILD-RULES.md): Rules / Build rules / Auto-lander / History tabs, the VPS build rules runner and fixers (home card, help stub, Shipped features manifest, API parity, THREADS + tracker, CI checks, PR open + link), gate-store.mjs + lander.mjs adapters (axf-molly replaces only those), gate.mjs one implementation; Kotlin twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.phone",
+              "title": "Phone Connect: pair the phone with a one-time code (personOnly claim), device token, command queue (open a page, notify, approval prompt, recorder, voice), approvals decided only on the hub page; REST, MCP, CLI and voice",
+              "note": "apps/console-web/plugins/phone-connect + apps/phone-connect (phone-connect@1, framework/spec/PHONE-CONNECT.md): Settings \u2192 Plugins \u2192 Phone Connect, capability axf.phone@1, alert hub \u2192 phone push, systems check item, axHub amberx.* tools answered by the paired phone; replaces the AmberX app (code removal staged: remove-amberx-app-code-once-phone); Kotlin engine twin deferred",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.axhubpages",
+              "title": "axHub's pages in the console: module axHub, one removable plugin per hub feature (approvals + held calls + log, passes, apps, users, handoff, account) over a hub-pages relay that takes only a wall admin's browser",
+              "note": "apps/console-web/plugins/axhub-* + src/hubPages + server/hub_pages.py (Nov 20 2026, fold of apps/axhub-web, which is archived); axHub server unchanged",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.statusstyles",
+              "title": "Status styles: animations and styling for every status (whole row or text only, a preset library, own presets, a style per status, moving or still badges)",
+              "note": "apps/console-web/plugins/status-styles (Nov 21 2026): display only, a generated token-only stylesheet keyed on data-status; off under reduced motion",
               "tag": "",
               "recommended": true,
               "suggests": []

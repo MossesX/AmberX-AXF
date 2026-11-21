@@ -11,7 +11,7 @@ of the banners. I need to see that kind of shit.").
   * **Annotate**: every item in the systems-check report (built-in checks too) gets `since` and `breaks`. A service that
     simply didn't answer stays amber for HOLD_S before it turns red, so one network blip doesn't page Brett.
   * **Push**: each item that turns red is raised once as a console alert (key `system:<id>`, the same key the alerts
-    poller uses, so it's never two), which the AmberX app shows as a phone notification; it resolves when it's green.
+    poller uses, so it's never two), which Phone Connect shows as a phone notification; it resolves when it's green.
 
   * **Auto-fix** (Brett, Oct 30 2026: "Why do I have to tell you to fix something when you have the tools to do it?"):
     a check may carry `autoFix` ({run, label, mitigated?}; built-in checks get one with `add_autofix`). When it turns
@@ -59,7 +59,7 @@ BREAKS: dict[str, str] = {
     "openai-key": "Voice features that use OpenAI stop working.",
     "elevenlabs-key": "Voice features that use ElevenLabs stop working.",
     "ntfy": "Phone alerts through ntfy stop arriving.",
-    "push-path": "New red items don't reach the AmberX app on your phone.",
+    "push-path": "New red items don't reach your phone (Phone Connect).",
     "git-push": "Builds on the VPS can't push their branches, so their PRs never open.",
     "ci-main": "main is red: deploys and every new PR build on a broken base.",
     "builds-stuck": "The Build manager shows builds as running that nothing is working on.",
@@ -351,7 +351,7 @@ class Monitor:
         try:
             self.raise_alert({"source": "system", "severity": "error", "key": f"system:{it['id']}", "title": f"Broken: {it.get('title')}"[:200],
                               "body": body[:2000], "link": "settings:system", "meta": {"check": str(it["id"]), "health": True}})
-            self.log("system", f"health: {it.get('title')} is red, pushed to AmberX", "warn")
+            self.log("system", f"health: {it.get('title')} is red, pushed to the phone", "warn")
         except Exception as e:  # noqa: BLE001 — a push that fails is retried on the next red episode
             self.log("system", f"health: couldn't push {it.get('id')}: {str(e)[:120]}", "warn")
 

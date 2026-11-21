@@ -20,7 +20,7 @@
  */
 import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import { AgentAvatar, Icon, WindowGrip, useRuntime, useTabPress, useWindowFrame, useWindowManager } from '@console/axf/react';
+import { AgentAvatar, Icon, PageToolbar, WindowGrip, usePublishPageState, useRuntime, useTabPress, useToolbarHandlers, useWindowFrame, useWindowManager } from '@console/axf/react';
 import { reorderIndex, type TabSpec } from '@console/axf/core';
 import { call, getSettings, post, type ClaudeProfile, onSettings, parseOpen, tabSessions, type Open, type Settings, type Target, type TmuxSession } from './api';
 import { applyProfile, useProfiles } from './profiles';
@@ -146,6 +146,29 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
   const newLike = () => (settings?.newTab === 'same' || !front ? add(front?.open ? { ...front.open, attach: undefined, tmux: undefined, readOnly: undefined } : { kind: 'console' }) : pick(front.open.kind === 'claude' ? 'claude' : 'shell'));
   const duplicate = (s: HostSession) => addSession(tab.id, { id: sessionId(), title: s.title, open: { ...s.open, attach: undefined, tmux: undefined, readOnly: undefined }, color: s.color }, h.sessions.indexOf(s) + 1);
   const toNewWindow = (s: HostSession) => { removeSession(s.id); newWindow(rt, [s]); };
+  // the Terminal page toolbar (page-toolbar@1, assets/toolbar/terminal-sessions.json): what it reads and runs
+  const frontTmux = front ? tmuxOf(front) : null;
+  const claudeTabs = h.sessions.filter((x) => x.id !== front?.id && x.open?.kind === 'claude');
+  const SPLITS: Split[] = ['side', 'stacked', 'none'];
+  usePublishPageState('terminal', {
+    tabs: h.sessions.length, claudeTabs: claudeTabs.length,
+    front: front ? { id: front.id, title: front.title, live: !!c && c.conn === 'live', headless: !!headlessOf(front) && settings?.showChain !== false, split: splitOf(front) !== 'none', splitLabel: splitOf(front) === 'none' ? '' : splitOf(front), tmux: frontTmux?.name ?? '', where: frontTmux?.where ?? '' } : null,
+  });
+  useToolbarHandlers('terminal', {
+    'terminal.new-tab': () => { newLike(); return { tabs: h.sessions.length }; },
+    'terminal.split': () => { if (!front) return null; const next = SPLITS[(SPLITS.indexOf(splitOf(front)) + 1) % SPLITS.length]!; patchSession(front.id, { split: next }); return { split: next }; },
+    'terminal.copy': () => { c?.copy(); return { copied: c?.selection().length ?? 0 }; },
+    'terminal.clear': () => { c?.clear(); return { cleared: front?.id ?? '' }; },
+    'terminal.send-to-claude': () => {
+      const text = c?.selection() ?? '';
+      const to = claudeTabs[0];
+      if (!to) throw new Error('no Claude Code tab open here');
+      if (!text.trim()) throw new Error('select some text in the terminal first');
+      activate(tab.id, to.id);
+      ctl(to.id)?.type(text);
+      return { to: to.id, chars: text.length };
+    },
+  });
 
   // the last tab closed: the window closes, like Windows Terminal
   useEffect(() => { if (h.sessions.length === 0) { const w = windowId(); if (w) wm.close(w); else wm.closeTab(tab.id); } }, [h.sessions.length]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -260,6 +283,7 @@ export function TerminalHost({ tab }: { tab: TabSpec }) {
         onTouchEnd={(e) => { const x0 = edge.current; edge.current = null; const x1 = e.changedTouches[0]?.clientX; if (showNav && x0 !== null && x1 !== undefined && x1 - x0 > 60) setDrawer(true); }}>
       {showNav && <SessionsRail hostId={tab.id} drawer={drawer} onDrawer={setDrawer} />}
       <div className={`${P}__pane`}>
+      <PageToolbar view="terminal" slot="sessions" />
       {toolbar && (
         <div className={`${P}__toolbar`} role="toolbar" aria-label="Terminal commands" onContextMenu={(e) => { if ((e.target as HTMLElement).closest('button')) return; e.preventDefault(); e.stopPropagation(); setWinMenu({ x: e.clientX, y: e.clientY }); }}>
           <button type="button" className="fx-btn fx-btn--ghost" title="New Claude Code tab: pick a connection" onClick={() => pick('claude')}><Icon name="sparkles" size={14} /> Claude Code</button>

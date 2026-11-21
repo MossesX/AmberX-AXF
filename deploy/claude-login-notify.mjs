@@ -13,7 +13,7 @@
  *
  * Every event: one login-event@1 line in <headless dir>/login-events.jsonl (account, build, result; never a credential)
  * and one console alert (source "claude-login", key claude-login:<kind>:<ok|failed>:<account>:<build>:<time>), so each
- * event is its own AmberX phone push (types in the Claude accounts plugin's notify.json).
+ * event is its own phone push (types in the Claude accounts plugin's notify.json).
  *
  *   node deploy/claude-login-notify.mjs verify --dir <build folder> --session <name> [--build <id>]
  *   node deploy/claude-login-notify.mjs recent [--n 20] [--json]

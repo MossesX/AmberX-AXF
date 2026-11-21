@@ -3,5 +3,5 @@
 .axf-hubstatus__dot[data-on='1'] { background: var(--fx-success); }
 .axf-hubstatus__row { display: flex; gap: var(--fx-dens-gap-xl); justify-content: space-between; flex-wrap: wrap; }
 .axf-hubstatus__row > :last-child { text-align: end; overflow-wrap: anywhere; }
-.axf-hubstatus__more { display: flex; align-items: center; gap: calc(var(--fx-space) / 2); }
+.axf-hubstatus__more { display: flex; align-items: center; gap: var(--fx-dens-gap-md); }
 .axf-hubstatus__details { padding-inline-start: var(--fx-dens-gap-xl); border-inline-start: var(--fx-border-w) solid var(--fx-border); }

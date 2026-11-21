@@ -656,6 +656,15 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbtn.is-on { background: var(--fx-accent-soft); color: var(--fx-accent); }
 .fx-toolbtn.is-on:hover:not(:disabled) { background: var(--fx-accent-soft); color: var(--fx-accent); }
 .fx-toolbtn { position: relative; }
+/* page toolbars (page-toolbar@1, react/components/Toolbar.tsx): destructive tone, the More menu and its badges */
+.fx-toolbtn--danger { color: var(--fx-danger); }
+.fx-toolbtn--danger:hover:not(:disabled) { background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent); color: var(--fx-danger); }
+.fx-toolbar__more { position: relative; margin-left: auto; flex: none; }
+.fx-toolbar[data-align='spread'] .fx-toolbar__more { margin-left: 0; }
+.fx-toolbar__menu { position: absolute; top: 100%; right: 0; z-index: 85; margin-top: var(--fx-dens-gap-xs); min-width: calc(var(--fx-row-h) * 5); }
+.fx-toolbar__menu .fx-menu__item.is-on { color: var(--fx-accent); }
+.fx-toolbar__menu .fx-menu__item.is-danger { color: var(--fx-danger); }
+.fx-menu__badge { margin-left: auto; min-width: 16px; height: 16px; padding: 0 var(--fx-dens-gap-md); box-sizing: border-box; border-radius: 999px; background: var(--fx-accent); color: var(--fx-accent-text); font-size: var(--fx-type-root-2xs); font-weight: 700; line-height: 16px; text-align: center; }
 /* unread counter (toolbar item `badge`) */
 .fx-toolbtn__badge {
   position: absolute; top: 1px; right: 1px; min-width: 16px; height: 16px; padding: 0 var(--fx-dens-gap-md); box-sizing: border-box;

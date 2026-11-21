@@ -1,7 +1,7 @@
 name: Android framework + console
 
 # Builds everything the sandbox cannot (Maven + Android SDK): the kernel tests, every framework module,
-# the Dev Console APK, and the build-engine sweep. Artifacts: console-debug.apk + framework maven repo.
+# the Dev Console APK, the console app APK, and the build-engine sweep. Artifacts: console-debug.apk, console-app-debug.apk + framework maven repo.
 
 on:
   push:
@@ -36,11 +36,8 @@ jobs:
       light: ${{ steps.s.outputs.light }}
       engine: ${{ steps.s.outputs.engine }}
       console: ${{ steps.s.outputs.console }}
-      axhubweb: ${{ steps.s.outputs.axhubweb }}
-      amberxweb: ${{ steps.s.outputs.amberxweb }}
       molly: ${{ steps.s.outputs.molly }}
       walkthrough: ${{ steps.s.outputs.walkthrough }}
-      amberx: ${{ steps.s.outputs.amberx }}
       android: ${{ steps.s.outputs.android }}
     steps:
       - uses: actions/checkout@v4
@@ -93,6 +90,7 @@ jobs:
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
       - run: node framework/spec/check-build-id.mjs                # build-id@1: new build ids fit the vps tools' 40-char pattern, collisions get suffixes, legacy long ids get aliases
+      - run: node framework/spec/check-store-encoding.mjs           # store transport and encoding (deep audit part B): multi-byte text across 64 KB chunks byte for byte, unknown fields kept, store version, journal diffs + gzip, mojibake repair
       - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock (GET /api/build-queue 500, urgent-console-perf)
       - run: node framework/spec/check-build-origin.mjs            # build-origin@1: Brett's verbatim words on every build, never lost on merge, brief capture, backfill
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching
@@ -100,19 +98,24 @@ jobs:
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/spec/check-build-limit.mjs              # build-limit@1: hard limit counts what really runs, N+1 refused (claude-headless.sh end to end), Brett-only set, docker/slice caps, only Queued builds take slots
       - run: node framework/spec/check-build-lock.mjs               # build-lock@1: one live session per build: tmux axf-<id>*, claude pids in the worktree, a heartbeat lock that expires; double dispatch refused
+      - run: node framework/spec/check-reaper.mjs                   # vps-reaper@1: finished claude -p killed and handed to the lander, working builds never touched, dead tmux / ghost slots / ownerless heavy locks / leftover test servers / stale temp folders cleared, every kill logged + noted + one FYI
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
       - run: node deploy/claude-shared-login.test.mjs               # two builds on one Claude account: a forced renewal in one, the other keeps working
       - run: node deploy/claude-login-notify.test.mjs               # every Claude sign-in verified and every token refresh confirmed saved: one phone alert each, never a token
       - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
+      - run: node --test 'deploy/watchdog/*.test.mjs'              # pipeline-watchdog@2: stuck statuses, dead tmux, usage limits → failed + retried forward on another account; layer 3 heals and alerts once; schedules retire the old crons
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
+      - run: node deploy/branch-protection.test.mjs                 # L2-09: the main ruleset (required checks = this workflow's job names, deploy-key-only bypass); nothing is applied without --yes
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test-watchdog.mjs   # build watchdog: killed / failed / hung builds requeued and retried, cap, other account, idle slots, phone FYI  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-build-watchdog.mjs           # build-watchdog@1 decision table: killed 143 / exit 1 / OOM / stale heartbeat → reset + requeue (retry) until maxRetries → Pending + banner (give-up), usage limit / dead login → another account, live session left alone; recoveries[] on builds@1, schemas/build-watchdog.json current; fixtures/build-watchdog.json
+      - run: node framework/spec/check-live-demo.mjs               # demo-run@1 (guided live demo): state machine idle → overlay → focusing → captioned → running → waiting-next → cooldown → done / stopped, pause on = wait for Next then ≥30 s, pause off = ≥30 s, the gap never below 30 s, refused transitions by code, per-act results + summary fold; acts touch demo- builds only; schemas/live-demo.json current; fixtures/live-demo.json
       - run: node framework/spec/check-build-pipeline.mjs           # build-pipeline@1 exit transition: phase done → Queue (same place, no crash counted), crash → Queue until the limit → Pending, blocked upgrade → Pending, all done → landing; fixtures/build-pipeline-exit.json
       - run: node framework/spec/check-done-means-merged.mjs        # done-means-merged@1: built / complete refused without merge + green CI + verify, migration loses nothing, the retry ladder never repeats a failed strategy, escalation only after N different attempts
+      - run: node framework/spec/check-json-data-writes.mjs         # no-json-data@1: no new direct JSON/JSONL data write in runtime code (data goes to Postgres through data-store@1); counts per file may only go down (json-data-writes.baseline.json)
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/groups.test.mjs   # build-groups@1: custom groups and tabs, state order and counts, smart rules, group actions, per project  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
@@ -125,10 +128,22 @@ jobs:
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
       - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
+      - run: node framework/spec/check-phone-connect.mjs             # phone-connect@1: engine vs fixture (records, commands, wire, dispatch order, personOnly, pairing flow, migration), wire error codes frozen, schema snapshots + JSON Schemas current and agreeing with the engine
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-stale-rows.mjs               # stale-row@1: the VPS watchdog's classifier (landed via merge queue / direct merge commit / build complete → complete; closed PR / dead build → remove; live session / missing facts → keep), cleanup log record + schema; fixtures/stale-rows.json
       - run: node apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs   # stale-row watchdog: table readers + apply against a temp store, merge-queue and UI Review fixtures (dry run writes nothing, running builds untouched, open PRs never completed, second run a no-op)  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/watchdogs.test.mjs   # build-watchdogs@1: the one watchdog (registry, pass, caught log, alerts, settings, requests) and stale-status@1 (the decision table, a pass on fake sources)  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/watchdogs-store.test.mjs   # stale-status watch: its real writes on a scratch builds store (merge recorded, landed under the guard, failure recorded)  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs   # step-dedupe: re-split never grows a build, re-uided copies merge into one step, save guard, done copy wins, dedupe-steps cleanup  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs     # launch-retry: a launch crash is requeued with a backoff outside maxRuns, the plan waits it out, the cap stops with a banner alert  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs       # land-clash bounce: a done build that clashes gets one merge-main step and goes back to the Queue, once per head  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/p2-flow.test.mjs          # pipeline-2@1 flow: split, one active build, worktrees before launch, accounts by usage left, retries forward  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs       # emergency builds: started from Brett's signed-in console only, past the one-active-build line, the 2 emergency slots counted apart, grants taken back  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/p2-parallel.test.mjs      # pipeline-2@1: up to stepsInParallel (4) steps at once, a give-up at maxAttempts is final, act step keeps the flow status  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/p2-status-contract.test.mjs   # pipeline-2@1 status contract end to end (deep audit part A): a build that failed while waiting starts again, Brett's retry resets attempts, steps with no status never block, zero refusals from store ops, refused writes keep nothing, one dispatcher and one watchdog  # axf-plugin:build-orchestrator
+      - run: node framework/spec/check-pipeline-2.mjs               # pipeline-2@1: the engine against its fixture and schemas; the attempt ceiling, the archive rule, fixed steps, strict refusals, the 15 minute step cap
+      - run: bash deploy/test/claude-headless-brief.test.sh                                  # the launch prompt goes on stdin (a 300 KB brief, no E2BIG; tmux part skipped without tmux), brief size cap keeps Brett's words
       - run: (git fetch -q --unshallow origin || true) && git fetch -q origin +refs/heads/main:refs/remotes/origin/main && node framework/cli/check-tracking-files.mjs   # tracking-paths@1: a PR branch never changes the builds store, orchestrator / origins / pending / queue exports or journal parts (builds-live status commits excepted); names the file
       - run: node framework/spec/check-data-store.mjs               # data-store@1: registry mirror, the client on memory + file backends (same answers), rev/etag conflicts, append-only journals, watch, count manifests, http error mapping + retries, migration map, mode transitions
       - name: axf-data service tests (CRUD, rev conflicts, append-only journals, history + restore, watch, auth refusal) and the wire contract replayed from Node
@@ -142,11 +157,19 @@ jobs:
           AXF_DATA_TEST_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata AXF_DATA_PG_TOOLS="docker exec -i axf-pg" AXF_DATA_PG_TOOLS_DSN=postgresql://postgres:axf@127.0.0.1:5432/axfdata \
             python3 services/axf-data/test_pg.py
           docker rm -f axf-pg
+      - run: node framework/spec/check-data-tables.mjs             # data-tables (DATA-INVENTORY s4.2/s4.3/s4.6): per-set file → key map, rows per table vs the files, backfill only what differs, cut refused while writers write files, Plan Studio 2 tree held on the files
       - run: node framework/spec/check-data-migrate.mjs             # data-migrate on a seeded copy of real data: dry run by default, backup first, copy, verify M0 = M1, roll back from the backup, idempotent re-run, forced mismatches fail
       - run: node framework/spec/check-builds-store-data.mjs        # builds store on data-store@1: local, shadow (mirrored store + journal), cutover (axf-data only, lock = rev check, history from the remote journal), rollback refused
+      - run: node framework/spec/check-agent-slots-data.mjs         # agent-slots on data-store@1: local, the cut (copy, verify, flip the key), cutover writes (rev check instead of the mkdir lock), back to local
       - run: python3 apps/console-web/server/test_data_store.py      # console server data layer (data_store.py): storage-shaped calls in local, shadow, cutover and rollback against an in-process axf-data
       - run: node framework/spec/check-landing-line.mjs              # landing-line@1: one entry in flight, cancelled / superseded / stale runs re-run and never fail, red files a fix and the line moves on, pause / skip / move, merge-queue migration fixture
       - run: node framework/spec/check-gate-rules.mjs                # gate-rules@1: default rule set, migration from the lander settings, verdicts (green, red CI, UI Review held, clash, draft, held by hand, warn / off / molly-owned rules), lander-state@1 from the merge queue, schema snapshots
+      - run: node framework/spec/check-host-services.mjs             # host-services@1: every deploy/host-services/services/*.json manifest, defaults and errors, sudoers lines, control targets, endpoints from env, up / degraded / down / unknown with since, call results → host_service_down, schema snapshots
+      - run: node deploy/host-services/test-hostd.mjs                # axf-hostd: worker loop under the mode file, socket API, heartbeat, journald lines, host API (list, actions, confirm, settings, mode, rollback, logs), loopback token, CLI, host_service_down
+      - run: node deploy/host-services/test-sudoers.mjs              # the sudo whitelist holds only what the manifests declare (axf-* expanded, no ALL / shell / free wildcard), the committed file is current
+      - run: node deploy/host-services/axf-hostd.mjs --check         # every manifest loads and every declared action has a worker function
+      - run: bash deploy/dryrun/host-services.sh                     # install-host-services.sh --dry-run / --only / --uninstall: rendered units, env files, sudoers, calls
+      - run: bash deploy/dryrun/host-services-rollback.sh            # migration drill: container → shadow (runs compared) → host (cron aside) → rollback (unit stopped, cron back), verified
       - run: node framework/spec/check-auto-lander.mjs               # auto-lander@1: decide (clash → merge main, red → fix session, running → wait, green → land, maxAttempts → escalate), backoff, mid-flight + stale attempts, reset by hand, policy from the auto-lander rule, lander-state@1 migration, schema snapshots
       - run: node framework/spec/check-build-rules.mjs               # build-rules@1: schema validation, the inventory → seed migration losing nothing (home-card first), briefBlocks per build (VPS rules never in a brief), history on edit / toggle / add / remove / restore, disabled rules skipped, the locked store round trip, schema snapshots
       - run: node framework/cli/build-rules-migrate.mjs --check      # every inventoried builder rule is in the seed store
@@ -174,20 +197,24 @@ jobs:
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
       - name: Plan Studio 2.0 plugin (plan-tree@1 nesting, moves, undo, links, export, build hand-off, voice parser, CLI on a scratch store)  # axf-plugin:plan-studio-2
         run: node apps/console-web/plugins/plan-studio-2/test.mjs  # axf-plugin:plan-studio-2
-      - name: Gate & rules plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
+      - name: VPS Configuration plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
-      - name: Server auto-lander (attempt log, clash resolver on a temp repo, red-CI reader, fix-session launcher, reconcile, the whole loop with a fake GitHub and claude-headless)
-        run: node --test 'deploy/auto-lander/test/*.test.mjs'
+      - name: Merge queue view (read-only projection of the builds store; no state, no actions)  # axf-plugin:merge-queue-view
+        run: node apps/console-web/plugins/merge-queue-view/test.mjs  # axf-plugin:merge-queue-view
+      - name: Lander (one PR per build, size-cap groups, flaky re-run, split, fix session, forward-only statuses; real git, fake GitHub, in-memory store)  # axf-plugin:gate
+        run: node --test 'deploy/lander/test/*.test.mjs'
       - name: Session check-in plugin (installer keeps other hooks, archive scrubs secrets, hook output)
         run: node apps/console-web/plugins/session-checkin/test.mjs
-      - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)
-        run: node apps/console-web/plugins/project-wizard/test.mjs
+      - name: Project wizard plugin (new AXF app / GitHub / folder sources, GitHub + VPS homes, Claude.ai kit, folder guard)  # axf-plugin:project-wizard
+        run: node apps/console-web/plugins/project-wizard/test.mjs  # axf-plugin:project-wizard
       - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
+      - name: Android console app, console side (deep links, native.* actions, bridge calls, tokens shared with the Java shell and axf.css)
+        run: node apps/console-web/src/native/nativeRules.test.mjs
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index
@@ -206,12 +233,6 @@ jobs:
         run: node apps/console-web/plugins/amberx-listeners/test.mjs  # axf-plugin:amberx-listeners
       - name: Notes & tasks plugin (notes-tasks@1 schema — one item type nested to any depth, 10+ and 1 000 levels; amberx-notes@1 and first-design documents stay valid)  # axf-plugin:notes-tasks
         run: node apps/console-web/plugins/notes-tasks/test.mjs  # axf-plugin:notes-tasks
-      - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
-        run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
-      - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
-        run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs  # axf-plugin:push-banner
-      - name: Tracking files (push banner) — reset before land, tracking conflicts take main, generated files regenerate, code conflicts stop, CI guard; real git  # axf-plugin:push-banner
-        run: node apps/console-web/plugins/push-banner/land/tracking.test.mjs  # axf-plugin:push-banner
       - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
         run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
@@ -259,19 +280,9 @@ jobs:
           cp -r plugins/_template plugins/ci-example && sed -i "s/const FOLDER = 'example'/const FOLDER = 'ci-example'/" plugins/ci-example/web/index.tsx
           # a plugin made from the template records the model that built it (build-defaults@1 plugin.builtWith.*)
           sed -i 's/"builtWith": { "model": "", "builtAt": "" }/"builtWith": { "model": "opus", "builtAt": "2026-10-23" }/' plugins/ci-example/plugin.json
+          # and ships its locked settings default like every plugin (settings-iface@1: default-<folder>.json)
+          (cd ../.. && node framework/cli/settings-iface.mjs defaults --write)
           npm ci && npm run build
-      - name: axhub-web — re-bake the framework into it and build it
-        if: ${{ needs.scope.outputs.axhubweb == 'true' }}
-        working-directory: apps/axhub-web
-        run: |
-          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
-          npm install --no-audit --no-fund --silent && npm run build
-      - name: amberx-droid — re-bake the framework into it and build it
-        if: ${{ needs.scope.outputs.amberxweb == 'true' }}
-        working-directory: apps/amberx-droid
-        run: |
-          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
-          npm install --no-audit --no-fund --silent && npm run build
       - name: molly — re-bake the framework into it and build it
         if: ${{ needs.scope.outputs.molly == 'true' }}
         working-directory: apps/molly
@@ -302,6 +313,9 @@ jobs:
             npx -y tsx framework/spec/check-alerts.mts
             npx -y tsx framework/spec/check-widgets.mts
             npx -y tsx framework/spec/check-tapconfirm.mts            # toolbar tap-to-confirm: touch arms then runs, mouse/pen/keyboard click once, re-arm, window, per-toolbar settings
+            npx -y tsx framework/spec/check-toolbar-actions.mts       # page-toolbar@1: migration with no visible change, scope + slot pick, state gating, overflow plans, invocations, API state; fixtures/toolbar-actions.json
+            npx -y tsx framework/spec/check-page-toolbars.mts         # every plugin page toolbar asset: page-scoped, every button bound and wired, drawn by its page, reachable by deep link, REST, MCP, CLI and voice
+            npx -y tsx framework/spec/check-page-toolbar-voice.mts    # the voice inventory (fixtures/page-toolbar-voice.json): "press <button> on the <toolbar> toolbar" reaches the same button as REST, MCP, CLI and control@1
             npx -y tsx framework/spec/check-menu-fit.mts               # menu-fit@1: menus flip / shift to stay on screen and scroll only when taller than the room
             npx -y tsx framework/spec/check-windows.mts                # window engine: 8 resize handles, maximize / restore, frames, snapping (windows.json)
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
@@ -323,7 +337,9 @@ jobs:
             npx -y tsx framework/spec/check-skin-animations.mts         # skin animations: behaviour-theme swatch / skin-switch / picker fields, Animations picks, colour maths, runtime actions, CLI, tokens-only CSS, reduced motion
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
             node framework/spec/check-skin-modes.mjs                    # skin-modes@1: every skin ships a light and a dark colour theme (shipped, right scheme, own theme is one of them)
+            node framework/spec/check-theme-contrast.mjs                # every colour theme, light and dark: the full token set, and every text token at WCAG AA on bg and surface
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
+            node framework/spec/check-settings-iface.mjs                # settings-iface@1: every asset type + plugin ships its locked default-<name>, every settings asset has a valid builtFor, picker lists only its owner's
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
             node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
             node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
@@ -350,6 +366,7 @@ jobs:
             npx -y tsx framework/spec/check-swarm.mts                  # agent swarm contracts (agent@1 … swarm-run@1): fixture replay, field-naming validators, model policy, schema snapshots, shipped roster, plugin uses the framework's
             npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch
             npx -y tsx framework/spec/check-help-mode.mts              # Help mode in the DOM (jsdom): switch, hover / long-press / badge tooltips, dismiss, No help yet, What is this?, intro once per screen
+            npx -y tsx framework/spec/check-chrome-interface-tab.mts   # a chrome Settings… Interface tab edits that chrome (axf.chrome.<type>.<id>), never the settings window (jsdom, every kind + grid tokens)
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
@@ -371,9 +388,7 @@ jobs:
             npx -y tsx framework/spec/check-banner-hide.mts            # banner Hide / Hide all / hide timer state + plugin@1 banner check
             npx -y tsx framework/spec/check-looktokens.mts             # look@1 tokens: only-changed storage, compact to no space, theme-token CSS
             npx -y tsx framework/spec/check-work.mts                   # work@1: work.json replay (same file as the kernel's WorkConformanceTest) + a host over the reducer
-            npx -y tsx apps/axhub-web/test.mjs                         # AXHub web app: what a hub reply means, what is thrown away, sizes and times
-            (cd apps/axhub-web && { [ -d node_modules ] || npm install --no-audit --no-fund --silent; } && npx -y tsx scripts/refresh-check.mts)  # AXHub web app: refreshes, failed reads, look re-reads and countdown ticks never flash "Reading the hub" or remount rows
-            (cd apps/amberx-droid && { [ -d node_modules ] || npm install --no-audit --no-fund --silent; }) && npx -y tsx apps/amberx-droid/test.mjs  # AmberX: hub rules + voice command matching + monitoring / auto-approval rules
+            npx -y tsx apps/console-web/src/hubPages/test.mjs          # the hub's pages in the console (hub-pages@1, was apps/axhub-web/test.mjs): replies, routes, sizes and times
             npx -y tsx apps/walkthrough-studio/test.mts                # Walkthrough Studio: outline moves, trash, incremental compile, exports
             python framework/python/axf_libs/mcp/test.py              # Python MCP client replays the same fixture
             python framework/python/axf/contracts/test.py             # assistant@1 + agent-definition@1 Python ports replay their fixtures
@@ -397,11 +412,14 @@ jobs:
             npx -y tsx framework/spec/check-watch-live.mts             # watch-live@1: focus params, asset hot swap (no reload), registry, targets, focus file, Vite plugin
             python apps/console-web/server/test_alerts.py
             python apps/console-web/server/test_wall_users.py
+            python apps/console-web/server/test_hub_pages.py
             python apps/console-web/server/test_plugin_catalog.py
             python apps/console-web/server/test_app_catalog.py
             python apps/console-web/server/test_build_profiles.py
             python apps/console-web/server/test_projects.py          # projects@1: the server's mirror agrees with framework/cli/projects.mjs
             python apps/console-web/server/test_readcache.py         # shared read cache (single-flight, stale-while-revalidate, file-change) + node spawn cap
+            python apps/console-web/server/test_wall_device.py       # behind the wall a plugin's device routes take the device's own token (a paired phone can connect)
+            python apps/console-web/server/test_spa.py               # SPA fallback: index.html no-cache, unknown /api and /mcp paths are JSON 404s
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm, liveness, failover to the next live console, wake, late acks, build focus  # axf-plugin:console-commands
             python apps/console-web/plugins/output-recorder/test_transcripts.py  # axf-plugin:output-recorder
@@ -409,10 +427,13 @@ jobs:
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
+            python apps/console-web/plugins/host-services/test.py  # host-services plugin routes (MCP commands): down state, confirm on destructive presses  # axf-plugin:host-services
+            python apps/console-web/server/tests/test_host_services.py  # host services, console half: client down state + endpoint order, REST + plugin routes (confirm on destructive presses), live host API, health@1 items, capability
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
-            python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
+            python apps/console-web/plugins/build-orchestrator/server/test_emergency.py  # send to emergency: 403 for the console token, agents and sessions; Brett's signed-in click tags the build and grants the emergency slots (orchestrator + Plan Studio 2.0 routes)  # axf-plugin:build-orchestrator
+            python apps/console-web/plugins/build-orchestrator/server/test_watchdogs.py  # build-watchdogs@1 routes: status, one flat settings map (bad keys and values 400), Run asks the host, the systems check item  # axf-plugin:build-orchestrator
             python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue
@@ -428,6 +449,10 @@ jobs:
         run: |
           pip install -r apps/console-web/server/requirements.txt httpx
           for t in apps/console-web/plugins/[!_]*/test.py; do [ -f "$t" ] || continue; echo "== $t"; python "$t"; done
+      - name: Plugin page toolbar tests (every plugins/*/toolbar.test.mjs; found by glob)
+        run: |
+          set -e
+          for t in apps/console-web/plugins/[!_]*/toolbar.test.mjs; do [ -f "$t" ] || continue; echo "== $t"; node "$t"; done
       - name: Plugin pure-part self-tests (every plugins/*/test.mts; found by glob so removing a plugin never breaks CI)
         env:
           AXF_BUILD_PROFILE: all
@@ -473,60 +498,10 @@ jobs:
           name: console-web-dist
           path: apps/console-web/dist
 
-  amberx:
-    name: AmberX — web app in the Capacitor Android shell (APK + native unit tests)
-    needs: scope
-    if: ${{ needs.scope.outputs.amberx == 'true' }}
-    runs-on: ubuntu-24.04
-    env:
-      AXF_BUILD_NUMBER: ${{ github.run_number }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 22 }
-      # Capacitor 8 builds with JDK 21 and compileSdk 36.
-      - uses: actions/setup-java@v4
-        with: { distribution: temurin, java-version: '21' }
-      - name: Android SDK 36
-        run: |
-          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
-          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0" "platform-tools" > /dev/null
-      - name: Stable debug signing key (secret ANDROID_DEBUG_KEYSTORE, base64)
-        env: { KS: '${{ secrets.ANDROID_DEBUG_KEYSTORE }}' }
-        run: if [ -n "$KS" ]; then mkdir -p ~/.android && echo "$KS" | base64 -d > ~/.android/debug.keystore; fi
-      - name: Build the web app, copy it into the shell
-        working-directory: apps/amberx-droid
-        run: |
-          rm -rf src/axf && mkdir -p src/axf && for d in core react ui schemas libs; do cp -r ../../framework/$d src/axf/; done && node ../../framework/cli/shared-assets.mjs bake .
-          npm ci --no-audit --no-fund && npm run build && npx cap sync android
-      - name: Native unit tests + debug APK
-        working-directory: apps/amberx-droid/android
-        run: |
-          chmod +x gradlew
-          set -o pipefail
-          ./gradlew :app:testDebugUnitTest :app:assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/amberx-gradle.log
-      - name: Report AmberX build/test errors to the "CI build errors" issue
-        if: failure()
-        env: { GH_TOKEN: '${{ github.token }}' }
-        run: |
-          {
-            echo "### AmberX Android build failed on \`${{ github.ref_name }}\` — ${{ github.sha }}"; echo; echo '```'
-            grep -E "error:|\.java:[0-9]+|FAILED|expected|but was|AssertionError|What went wrong|> Task .*FAILED" /tmp/amberx-gradle.log 2>/dev/null | grep -vE "^\s+at " | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | head -60
-            for f in apps/amberx-droid/android/app/build/test-results/testDebugUnitTest/*.xml; do [ -f "$f" ] && grep -A3 "<failure" "$f" | head -20; done
-            echo '```'
-          } > /tmp/amberx-report.md
-          N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
-          if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/amberx-report.md; else gh issue comment "$N" --body-file /tmp/amberx-report.md; fi
-      - uses: actions/upload-artifact@v4
-        with:
-          name: amberx-debug.apk
-          path: apps/amberx-droid/android/app/build/outputs/apk/debug/app-debug.apk
-          retention-days: 14
   android:
     name: Gradle — framework modules, kernel tests, console APK
     runs-on: ubuntu-24.04
-    # Waits for the AmberX shell so its APK joins the app catalog bundle; runs whatever that job's result.
-    needs: [scope, amberx]
+    needs: scope
     if: ${{ !cancelled() && needs.scope.outputs.android == 'true' }}
     env:
       # Every app's versionCode = this run number, so each catalog build installs over the previous one.
@@ -570,12 +545,21 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
+      - name: AXF Console for Android (WebView shell that replaces AmberX) — native unit tests + APK
+        # standalone app (no framework module dependencies): it still builds when an earlier framework step is red,
+        # so the APK is there to download; the job stays red either way
+        if: ${{ !cancelled() }}
+        working-directory: apps/console-droid
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console-droid.log; exit ${PIPESTATUS[0]}
       - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
         working-directory: framework/android
         run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
       - name: Build Voice Vault (apps/voicevault) + its unit tests (voice notes rules)
         working-directory: apps/voicevault
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-voicevault.log; exit ${PIPESTATUS[0]}
+      - name: Build Phone Connect (apps/phone-connect) + its unit tests (link rules)
+        working-directory: apps/phone-connect
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-phone-connect.log; exit ${PIPESTATUS[0]}
       - name: Build AXHub (apps/axhub-android) + its unit tests
         working-directory: apps/axhub-android
         run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-axhub.log; exit ${PIPESTATUS[0]}
@@ -586,21 +570,13 @@ jobs:
             ls "$d"/app/build/outputs/apk/debug/*.apk >/dev/null 2>&1 && continue
             echo "== $d"; (cd "$d" && gradle :app:assembleDebug --no-daemon) 2>&1 | tee -a /tmp/build-apps.log
           done
-      - name: AmberX APK from its own job (Capacitor shell) for the catalog bundle
-        if: ${{ needs.amberx.result == 'success' }}
-        uses: actions/download-artifact@v4
-        with:
-          name: amberx-debug.apk
-          path: apps/amberx-droid/android/app/build/outputs/apk/debug/
       - name: App catalog bundle (every app's APK + apps.json, read by the Dev Console into the hub's app catalog)
-        # the AmberX shell's APK comes from its own job; when CI scope skipped that job (nothing it builds changed), the
-        # bundle is made without it rather than failing main (Nov 4 2026)
-        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" ${{ needs.amberx.result != 'success' && '--skip apps/amberx-droid' || '' }}
+        run: node framework/cli/app-bundle.mjs collect dist/app-apks --build "${{ github.run_number }}" --commit "${{ github.sha }}" --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Report compiler errors to the "CI build errors" issue (readable without artifact downloads)
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/build-console-droid.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-phone-connect.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
@@ -608,9 +584,19 @@ jobs:
           name: console-debug.apk
           path: apps/console/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: console-app-debug.apk   # AXF Console for Android (apps/console-droid), the WebView app that replaces AmberX
+          path: apps/console-droid/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
         with:
           name: voicevault-debug.apk
           path: apps/voicevault/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: phone-connect-debug.apk   # Phone Connect, the small companion that replaces the AmberX app (phone-connect@1)
+          path: apps/phone-connect/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: axhub-debug.apk

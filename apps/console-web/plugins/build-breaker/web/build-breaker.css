@@ -14,7 +14,6 @@
 .axp-build-breaker__bar { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; }
 .axp-build-breaker__tabs { font-size: var(--axp-bb-fs); }
 .axp-build-breaker__tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-lg); min-width: 0; font-size: var(--axp-bb-fs); }
-.axp-build-breaker__fold { display: inline-flex; gap: var(--fx-dens-gap-xs); margin-inline-start: auto; }
 .axp-build-breaker__statuses { display: flex; gap: var(--fx-dens-gap-sm); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x proximity; padding-bottom: var(--fx-dens-gap-xs); }
 .axp-build-breaker__statuses > * { flex: 0 0 auto; scroll-snap-align: start; }
 
@@ -89,3 +88,5 @@
 .axp-build-breaker__bar { gap: var(--fx-dens-gap-sm); }
 .axp-build-breaker__tools { gap: var(--fx-dens-gap-sm); }
 :where([data-fx-small]) .axp-build-breaker .axp-build-breaker__search { flex-basis: 100%; }
+/* page rhythm (console UI pass): the page head keeps the console-wide distance to the content, whatever this root's own gap */
+.axp-build-breaker > .fx-pagehead { margin-bottom: var(--fx-dens-gap-xl) }

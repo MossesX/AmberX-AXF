@@ -59,6 +59,12 @@
         "after": {
           "type": "string",
           "minLength": 1
+        },
+        "place": {
+          "enum": [
+            "toolbar"
+          ],
+          "description": "string — context menus only: toolbar puts a top-level item in the icon strip above the list (cut / copy / paste and similar), not in the list"
         }
       }
     }

@@ -1,0 +1,198 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "status-styles-help",
+  "name": "Status styles help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Status styles plugin (help@1): every switch, list, slider and button in Settings → Plugins → Status styles.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:status-styles",
+    "entries": [
+      {
+        "target": "status-styles",
+        "title": "Status styles",
+        "text": "Animations and styling for every status: pick how each status looks on its row and on its badge, browse the preset library and make your own presets. The status itself always comes from the VPS; this only decides how it is drawn.",
+        "kind": "tab"
+      },
+      {
+        "target": "status-styles-on",
+        "title": "Status styles on",
+        "text": "Turns every status style on or off at once. Off, rows and badges look exactly as they did before the plugin; your picks are kept for when you turn it back on.",
+        "kind": "toggle"
+      },
+      {
+        "target": "style-rows",
+        "title": "Style rows",
+        "text": "When on, the row a status sits in takes that status's row style: build rows, step rows, Plan Studio lines and merge queue rows. Turn it off to keep the styles on badges only.",
+        "kind": "toggle"
+      },
+      {
+        "target": "style-badges",
+        "title": "Style badges",
+        "text": "When on, the status badge itself takes its badge style, and badge packs show their animated picture for moving statuses. Turn it off to style rows only.",
+        "kind": "toggle"
+      },
+      {
+        "target": "row-style",
+        "title": "Row style",
+        "text": "The preset this status puts on its row: an animation on the whole row, an animation on the row's text only, or a still look. Pick Plain for no style. The sample above shows it straight away.",
+        "kind": "field"
+      },
+      {
+        "target": "badge-style",
+        "title": "Badge style",
+        "text": "The preset this status puts on its own badge. It only moves while Animated badge is on; otherwise the badge keeps the preset's still look.",
+        "kind": "field"
+      },
+      {
+        "target": "animated-badge",
+        "title": "Animated badge",
+        "text": "Marks this as a moving status: its badge animates, and a badge pack shows its animated picture instead of the still one. Leave it off for resting statuses such as Landed or Failed.",
+        "kind": "toggle"
+      },
+      {
+        "target": "remove-status",
+        "title": "Remove status",
+        "text": "Takes a status you added off the list, with its style. Built-in statuses cannot be removed, only set back to Plain.",
+        "kind": "button"
+      },
+      {
+        "target": "new-status",
+        "title": "New status",
+        "text": "Type the id of a status that is not listed yet, exactly as the VPS sends it (for example waiting-review), then tap Add status. Use it when a new status shows up before the plugin ships a default for it.",
+        "kind": "field"
+      },
+      {
+        "target": "add-status",
+        "title": "Add status",
+        "text": "Adds the status you typed to the list under Your statuses, starting with no style, so you can pick its row and badge style.",
+        "kind": "button"
+      },
+      {
+        "target": "back-to-the-shipped-styles",
+        "title": "Back to the shipped styles",
+        "text": "Puts every status back to the style the plugin shipped with and removes statuses you added. Your own presets are kept. It asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "show-presets",
+        "title": "Show presets",
+        "text": "Filters the library: every preset, only those that animate the whole row, only those that animate the text, or only the ones you made.",
+        "kind": "control"
+      },
+      {
+        "target": "edit-a-copy",
+        "title": "Edit a copy",
+        "text": "Copies this preset into Make a preset below so you can change it and save it under your own name. The original is not changed.",
+        "kind": "button"
+      },
+      {
+        "target": "remove-preset",
+        "title": "Remove preset",
+        "text": "Deletes one of your own presets. Any status still using it goes back to no style until you pick another. Built-in presets cannot be removed. It asks first.",
+        "kind": "button"
+      },
+      {
+        "target": "preset-name",
+        "title": "Preset name",
+        "text": "The name your preset is saved and listed under. Saving again with the same name replaces your earlier preset of that name.",
+        "kind": "field"
+      },
+      {
+        "target": "applies-to",
+        "title": "Applies to",
+        "text": "Whole row: the effect is drawn across the row (background, glow, movement). Text only: only the row's words change, the row itself stays still.",
+        "kind": "control"
+      },
+      {
+        "target": "effect",
+        "title": "Effect",
+        "text": "What moves: blink, pulse, a fade sweeping across, shimmer, stripes, glow and more. None makes a still preset that only uses the tint, edge bar, bold, italic and dim settings.",
+        "kind": "field"
+      },
+      {
+        "target": "colour",
+        "title": "Colour",
+        "text": "Which theme colour the effect uses: accent, green, amber, red, blue, muted or the text colour. It follows the skin, so the preset fits every theme.",
+        "kind": "field"
+      },
+      {
+        "target": "direction",
+        "title": "Direction",
+        "text": "Which way the animation runs: forwards (left to right for sweeps), backwards, or back and forth.",
+        "kind": "field"
+      },
+      {
+        "target": "speed",
+        "title": "Speed",
+        "text": "How fast the animation plays, as a percentage of its normal speed. 50% is slow and calm, 200% is twice as fast. It also follows the skin's animation speed.",
+        "kind": "slider"
+      },
+      {
+        "target": "strength",
+        "title": "Strength",
+        "text": "How strong the effect is: how deep the colour goes or how far the row moves. Lower it for a subtle hint, raise it to make the row stand out.",
+        "kind": "slider"
+      },
+      {
+        "target": "still-tint",
+        "title": "Still tint",
+        "text": "A constant background tint in the preset's colour, shown even when nothing moves. 0 means no tint.",
+        "kind": "slider"
+      },
+      {
+        "target": "dim",
+        "title": "Dim",
+        "text": "Fades the whole row or badge by this much, for statuses that should sit in the background such as parked or done. 0 means not dimmed.",
+        "kind": "slider"
+      },
+      {
+        "target": "edge-bar",
+        "title": "Edge bar",
+        "text": "Draws a solid bar in the preset's colour down the left edge of the row. It stays while the row animates.",
+        "kind": "toggle"
+      },
+      {
+        "target": "bold",
+        "title": "Bold",
+        "text": "Makes the row's text bold while it has this status.",
+        "kind": "toggle"
+      },
+      {
+        "target": "italic",
+        "title": "Italic",
+        "text": "Makes the row's text italic while it has this status.",
+        "kind": "toggle"
+      },
+      {
+        "target": "save-preset",
+        "title": "Save preset",
+        "text": "Saves what you set up here as one of your own presets. It then appears in the library under Yours and in every Row style and Badge style list.",
+        "kind": "button"
+      },
+      {
+        "target": "start-over",
+        "title": "Start over",
+        "text": "Clears the preset maker back to a fresh preset. Nothing saved is changed.",
+        "kind": "button"
+      },
+      {
+        "target": "action:status-styles.open",
+        "title": "Open Status styles",
+        "text": "Opens this plugin's settings: Settings → Plugins → Status styles.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:status-styles.refresh",
+        "title": "Reload the status styles",
+        "text": "Reads the saved styles from the console again and redraws every status. Use it after changing the styles from another device.",
+        "kind": "menu-item"
+      }
+    ],
+    "intros": []
+  }
+}

@@ -110,25 +110,20 @@ class Projects:
     def dir(self, base_dir: Path | str) -> Path:
         return project_dir(base_dir, self.active())
 
-    # ---- a build's project (the builds store, builds@1: a build's first profile), cached on the store's mtime
-    _builds: tuple[float, dict[str, str]] = (-1.0, {})
-
-    def _store_file(self) -> Path:
-        return self.root / "_claude" / "builds" / "store.json"
+    # ---- a build's project (the builds store, builds@1: a build's first profile), cached on the store's rev
+    _builds: tuple[int, dict[str, str]] = (-2, {})
 
     def build_profiles(self) -> dict[str, str]:
-        f = self._store_file()
-        try:
-            mt = f.stat().st_mtime
-        except OSError:
-            return {}
-        if mt != self._builds[0]:
+        # the builds store itself (builds_store.py: the axf-data tables once cut over; Pipeline 2.0, no store.json)
+        import builds_store
+        store = builds_store.read(self.root)
+        rev = int(store.get("rev") or 0) if store else -1
+        if rev != self._builds[0]:
             try:
-                store = json.loads(f.read_text("utf-8"))
-                m = {str(b.get("id")): (b.get("profiles") or ["all"])[0] for b in store.get("builds", []) if isinstance(b, dict) and b.get("id")}
-            except (OSError, ValueError, AttributeError, TypeError):
+                m = {str(b.get("id")): (b.get("profiles") or ["all"])[0] for b in (store or {}).get("builds", []) if isinstance(b, dict) and b.get("id")}
+            except (AttributeError, TypeError):
                 m = {}
-            self._builds = (mt, m)
+            self._builds = (rev, m)
         return self._builds[1]
 
     def of_build(self, build_id: str | None) -> dict[str, Any] | None:

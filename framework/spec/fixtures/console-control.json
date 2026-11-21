@@ -12,7 +12,8 @@
       "row",
       "step",
       "panel",
-      "scroll"
+      "scroll",
+      "toolbar"
     ],
     "verbs": [
       "open",
@@ -106,6 +107,12 @@
       "scroll": [
         "state",
         "scroll"
+      ],
+      "toolbar": [
+        "open",
+        "state",
+        "list",
+        "focus"
       ]
     }
   },
@@ -336,7 +343,7 @@
       "$axf": "console-control@1",
       "ok": false,
       "code": "invalid",
-      "message": "segment 1 \"screen:builds\": kind must be one of view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+      "message": "segment 1 \"screen:builds\": kind must be one of view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll, toolbar",
       "field": "address",
       "segment": "screen:builds"
     },
@@ -413,7 +420,7 @@
       "$axf": "console-control@1",
       "ok": false,
       "code": "invalid",
-      "message": "segment 1: kind must be one of view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+      "message": "segment 1: kind must be one of view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll, toolbar",
       "field": "address",
       "segment": "nope:x"
     },
@@ -628,7 +635,7 @@
     "search": [],
     "search-bad": [
       "query.q must be words",
-      "query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+      "query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll, toolbar",
       "query.limit must be 1 to 50",
       "query: no field sort"
     ],
@@ -784,10 +791,10 @@
       "$axf": "console-control@1",
       "ok": false,
       "code": "invalid",
-      "message": "query.q must be words; query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll; query.limit must be 1 to 50; query: no field sort",
+      "message": "query.q must be words; query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll, toolbar; query.limit must be 1 to 50; query: no field sort",
       "problems": [
         "query.q must be words",
-        "query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+        "query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll, toolbar",
         "query.limit must be 1 to 50",
         "query: no field sort"
       ]

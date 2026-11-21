@@ -6,13 +6,13 @@
  */
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 process.env.AXF_CONSOLE_COMMANDS_DATA_DIR = mkdtempSync(join(tmpdir(), 'cc-'));
-const { commandFromArgv, formatAnswer, runConsole, sendOverlay, sendToConsole, confirmSalt } = await import('./console.mjs');
+const { commandFromArgv, formatAnswer, formatShotState, runConsole, saveShots, sendOverlay, sendToConsole, confirmSalt } = await import('./console.mjs');
 
 let n = 0;
 const t = (name, fn) => { fn(); n++; };
@@ -115,6 +115,25 @@ t('run on stdin (what the server calls)', () => {
   const p = spawnSync(process.execPath, [fileURLToPath(new URL('./console.mjs', import.meta.url)), 'run'], { input: JSON.stringify({ command: { op: 'act', target: 'console.screens', path: 'home', action: 'open' }, grants: ['*'], by: 'mcp', clients }), encoding: 'utf8', env: process.env });
   const j = JSON.parse(p.stdout.trim().split('\n').pop());
   assert.ok(j.ok && j.deliver.message.target === 'home', p.stderr || p.stdout);
+});
+
+t('screenshot: CLI words, saved image, one-line state', () => {
+  assert.deepEqual(commandFromArgv(['screenshot']).command, { op: 'act', target: 'console.nav', path: 'here', action: 'screenshot' });
+  const p = commandFromArgv(['console', 'screenshot', '--address', 'view:settings', '--to', 'all', '--out', 'x.png']);
+  assert.deepEqual(p.command, { op: 'act', target: 'console.nav', path: 'here', action: 'screenshot', input: { to: 'all', address: 'view:settings' } });
+  assert.equal(p.out, 'x.png');
+  assert.deepEqual(commandFromArgv(['shot', '--selector', '.fx-dialog']).command.input, { selector: '.fx-dialog' });
+  const dir = mkdtempSync(join(tmpdir(), 'cc-shot-'));
+  const r = { ok: true, op: 'act', target: 'console.nav', action: 'screenshot', status: 'delivered', images: [{ client: 'cc-1', mime: 'image/png', data: Buffer.from('png').toString('base64'), width: 800, height: 600 }],
+    state: { screen: 'settings', screenLabel: 'Settings', tabs: { 'view:settings/tab:settings.tabs': 'appearance' }, dialog: 'asset-json', selection: 'grid:q/row:b1', scroll: { fraction: 0.5 } } };
+  const [file] = saveShots(r, join(dir, 'shot.png'));
+  assert.equal(readFileSync(file, 'utf8'), 'png');
+  assert.ok(!('data' in r.images[0]), 'the image data is dropped from what is printed');
+  const line = formatAnswer(r);
+  assert.ok(line.startsWith('✓ screenshot →') && line.includes('800×600'), line);
+  assert.equal(formatShotState(r.state), 'screen Settings (settings) · tabs settings.tabs=appearance · dialog asset-json · selection grid:q/row:b1 · scroll 50%');
+  assert.ok(formatAnswer({ ...r, images: [], status: 'failed', message: 'not on the screen' }).startsWith('✗ screenshot: not on the screen'));
+  assert.ok(formatAnswer({ ...r, images: [], status: 'pending', queued: true }).startsWith('pending: screenshot'));
 });
 
 console.log(`✓ console-commands: ${n} tests passed`);

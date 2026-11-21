@@ -3,8 +3,8 @@
   "type": "context-menu",
   "id": "amber",
   "name": "Amber",
-  "version": "1.0.0",
-  "description": "The console's Amber right-click menu: every plugin under Plugins (each opens where it's set to open: main area, dialog or window), the everyday console tools, cut / copy / paste, colour theme next / previous / reset, and Settings (shown on top as Console settings, which leads every console menu). Shows only its own items.",
+  "version": "1.1.0",
+  "description": "The console's Amber right-click menu: a quick-action strip on top (cut / copy / paste, colour theme previous / next / reset, reload data), every plugin under Plugins (each opens where it's set to open: main area, dialog or window), the everyday console tools, Settings (shown on top as Console settings, which leads every console menu) and Search anywhere pinned at the bottom. Shows only its own items.",
   "author": "AmberX AXF",
   "tags": [],
   "data": {
@@ -12,8 +12,62 @@
     "showIcons": true,
     "showShortcuts": true,
     "contributions": false,
+    "search": "Search anywhere…",
     "targets": {
       "default": [
+        {
+          "id": "cut",
+          "label": "Cut",
+          "icon": "cut",
+          "action": "edit.cut",
+          "shortcut": "Ctrl+X",
+          "place": "toolbar"
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C",
+          "place": "toolbar"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "paste",
+          "action": "edit.paste",
+          "shortcut": "Ctrl+V",
+          "place": "toolbar"
+        },
+        {
+          "id": "prev-theme",
+          "label": "Previous theme",
+          "icon": "palette",
+          "action": "swap:color-theme:prev",
+          "place": "toolbar"
+        },
+        {
+          "id": "next-theme",
+          "label": "Next theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
+          "shortcut": "Alt+C",
+          "place": "toolbar"
+        },
+        {
+          "id": "reset-theme",
+          "label": "Reset theme",
+          "icon": "undo",
+          "action": "swap:color-theme:default",
+          "place": "toolbar"
+        },
+        {
+          "id": "reload",
+          "label": "Reload data",
+          "icon": "refresh",
+          "action": "console.refresh",
+          "place": "toolbar"
+        },
         {
           "id": "plugins",
           "label": "Plugins",
@@ -23,13 +77,6 @@
         {
           "id": "s-plugins",
           "separator": true
-        },
-        {
-          "id": "search",
-          "label": "Search everything",
-          "icon": "search",
-          "action": "console.search",
-          "shortcut": "Ctrl+K"
         },
         {
           "id": "ashes",
@@ -73,60 +120,6 @@
           "label": "Pending builds",
           "icon": "list",
           "action": "nav:pending"
-        },
-        {
-          "id": "reload",
-          "label": "Reload data",
-          "icon": "refresh",
-          "action": "console.refresh"
-        },
-        {
-          "id": "s-edit",
-          "separator": true
-        },
-        {
-          "id": "cut",
-          "label": "Cut",
-          "icon": "cut",
-          "action": "edit.cut",
-          "shortcut": "Ctrl+X"
-        },
-        {
-          "id": "copy",
-          "label": "Copy",
-          "icon": "copy",
-          "action": "edit.copy",
-          "shortcut": "Ctrl+C"
-        },
-        {
-          "id": "paste",
-          "label": "Paste",
-          "icon": "paste",
-          "action": "edit.paste",
-          "shortcut": "Ctrl+V"
-        },
-        {
-          "id": "s-theme",
-          "separator": true
-        },
-        {
-          "id": "next-theme",
-          "label": "Next theme",
-          "icon": "palette",
-          "action": "swap:color-theme:next",
-          "shortcut": "Alt+C"
-        },
-        {
-          "id": "prev-theme",
-          "label": "Previous theme",
-          "icon": "palette",
-          "action": "swap:color-theme:prev"
-        },
-        {
-          "id": "reset-theme",
-          "label": "Reset theme",
-          "icon": "undo",
-          "action": "swap:color-theme:default"
         },
         {
           "id": "spacer",

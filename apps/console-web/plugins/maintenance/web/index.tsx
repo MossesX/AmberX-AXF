@@ -14,6 +14,7 @@
  *
  * Server health uses no AI: plain reads of what the host engine measured.
  */
+import { HostServiceGate } from '@console/hostServices';
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Checkbox, Chip, Container, Gauge, Icon, Note, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
@@ -300,7 +301,7 @@ function ProfilesDialog({ run, close }: { run: string; close: () => void }) {
       ))}
       {plan.empty.length > 0 && <Note tone="warning">Nothing left to build in {plan.empty.join(', ')} once this is applied. They are flagged here, never removed.</Note>}
       <div className="axp-maintenance__acts">
-        <span className="fx-small fx-muted">{picked} of {all.length} ticked · done → complete when merged and verified, else archived as done; not needed and duplicates → archived (never deleted), merges folded in · running builds are never touched</span>
+        <span className="fx-small fx-muted">{picked} of {all.length} ticked · done → complete, not needed and duplicates → archived (never deleted), merges folded in · running builds are never touched</span>
         <Button onClick={close}>Cancel</Button>
         <Button tone="primary" icon="check" disabled={!picked || busy} busy={busy} onClick={() => void doApply()}>Apply {picked}</Button>
       </div>
@@ -439,8 +440,8 @@ export const plugin: AxfWebLibrary = {
   version: '0.2.0',
   builtWith: { model: 'opus', builtAt: '2026-11-04' },
   appMenu,
-  views: { maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <MaintenanceView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'maintenance', label: 'Maintenance', icon: 'monitor', view: 'maintenance' }] },
+  views: { maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <HostServiceGate service="maintenance" what="Clear Docker cache, Restart Docker and Measure now run on the host: they can't run until it is back."><MaintenanceView /></HostServiceGate> } },
+  nav: { label: 'System', items: [{ id: 'maintenance', label: 'Maintenance', icon: 'monitor', view: 'maintenance' }] },
   settingsTabs: [{ id: FOLDER, label: 'Maintenance', icon: 'monitor', order: 47, parent: 'plugins' }],
   settings: [
     {

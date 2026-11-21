@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "todo-manager-selection",
+  "name": "Selected entries",
+  "version": "1.0.0",
+  "description": "The selection toolbar of a to-do list: mark the selected entries done, duplicate them, delete them (and their subtasks) and clear the selection. The status and Move to picks ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "todo-manager", "todos", "selection"],
+  "data": {
+    "scope": "view:todo-manager",
+    "slot": "selection",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "auto", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "selection",
+        "label": "Selection",
+        "items": [
+          { "id": "done", "icon": "check", "label": "Done", "action": "handler:todo-manager.sel-done", "badge": "state:selected", "enabledWhen": "selected", "priority": 300, "overflow": "never" },
+          { "id": "duplicate", "icon": "copy", "label": "Duplicate", "action": "handler:todo-manager.sel-duplicate", "enabledWhen": "selected", "priority": 200 },
+          { "id": "delete", "icon": "trash", "label": "Delete", "action": "handler:todo-manager.sel-delete", "destructive": true, "enabledWhen": "selected", "priority": 150 },
+          { "id": "clear", "icon": "x", "label": "Clear selection", "action": "handler:todo-manager.sel-clear", "enabledWhen": "selected", "priority": 280 }
+        ]
+      }
+    ]
+  }
+}

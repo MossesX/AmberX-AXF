@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "book",
+  "id": "getting-started",
+  "name": "Getting started with AmberX AXF",
+  "version": "1.0.0",
+  "description": "The starter book: three short chapters (assets and hot swap, the Dev Console, builds and the merge queue) built from glossary entries and the starter demonstration, with standard HTML documentation. Open it in the Book Builder, add chapters, drag entries in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "book",
+    "starter"
+  ],
+  "data": {
+    "about": "A ten-minute tour of the framework for someone who has never opened the console.",
+    "plan": { "totalMinutes": 10, "chapterMinutes": 4, "style": "quickstart", "theme": "", "narrator": "", "speed": 1 },
+    "chapters": [
+      { "id": "assets", "title": "Everything is an asset", "minutes": 3, "intro": "First, the one idea behind the whole framework.", "items": [ { "ref": "demonstration/what-is-an-asset" }, { "ref": "concept:asset" }, { "ref": "concept:hot-swap" } ] },
+      { "id": "console", "title": "The Dev Console", "minutes": 4, "intro": "Where you watch, build and approve.", "items": [ { "ref": "concept:plugin" }, { "ref": "plugin:glossary-index" } ] },
+      { "id": "builds", "title": "Builds and landing", "minutes": 3, "intro": "How work gets onto main.", "items": [ { "ref": "concept:veto-call" }, { "ref": "concept:merge-queue" } ] }
+    ],
+    "docs": { "enabled": true, "depth": "standard", "format": "html", "interactive": "none", "includeApi": true, "includeScreens": true },
+    "outputs": { "video": true, "chapterClips": true },
+    "keywords": [ "getting started", "quickstart", "asset", "console", "builds", "book", "starter" ]
+  }
+}

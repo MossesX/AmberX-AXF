@@ -28,7 +28,7 @@ from typing import Any
 
 import fcntl
 import pty
-import select
+import threading
 import signal
 import struct
 import termios
@@ -92,17 +92,29 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         finally:
             if hub:
                 hub.stop()
+            if cat:
+                cat.stop()
 
 
 app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
+# Route prefixes of paired devices (plugin.json "deviceRoutes": true), filled when plugins load. A device holds no
+# console token: its own bearer (a device token) is checked by the route itself, so the wall's token gate lets these
+# paths through. Nothing else is exempt, and a disabled plugin's device routes still answer 404 (_plugin_guard).
+DEVICE_ROUTE_PREFIXES: set[str] = set()
+
+
+def _device_route(path: str) -> bool:
+    return any(path.startswith(p) for p in DEVICE_ROUTE_PREFIXES)
+
+
 @app.middleware("http")
 async def _wall_token_gate(request: Request, call_next):  # type: ignore[no-untyped-def]
     """Behind axHub's sign-in wall, a request let through on a bearer header (X-Auth-Via: token, set by the hub; the
     proxy strips any client copy) must carry the real console token on every route, reads included."""
-    if request.headers.get("x-auth-via") == "token":
+    if request.headers.get("x-auth-via") == "token" and not _device_route(request.url.path):
         tok = current_token()
         got = request.headers.get("authorization", "")
         if not tok or not _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode()):
@@ -180,7 +192,8 @@ def _data_watch() -> tuple[Path, ...]:
         projects = Path(os.environ.get("AXHUB_PROJECTS_DIR") or "/projects") / "amberx-axf" / "_data"
         if projects.is_dir():
             roots.append(projects)
-    out: list[Path] = [ROOT / "_claude" / "builds" / "store.json", ROOT / "_claude" / "builds"]
+    # the builds store is the axf-data tables (Pipeline 2.0): no store.json to watch; the folder still holds reports
+    out: list[Path] = [ROOT / "_claude" / "builds"]
     for r in roots:
         out += [r / "framework" / "plan", r / "framework" / "plan" / "profiles.json", r / "framework" / "catalog", r / "builds"]
     return tuple(out)
@@ -935,23 +948,27 @@ async def shell(ws: WebSocket) -> None:
         os.environ["TERM"] = "xterm-256color"
         os.execvp(os.environ.get("AXF_SHELL", "bash"), [os.environ.get("AXF_SHELL", "bash"), "-l"])
     log("shell", f"terminal session opened (pid {pid})")
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
+    out: asyncio.Queue[bytes] = asyncio.Queue()
+
+    def readable() -> None:  # event-driven: no executor thread polling the pty twice a second per open shell
+        try:
+            data = os.read(fd, 65536)
+        except OSError:
+            data = b""
+        if not data:
+            loop.remove_reader(fd)
+        out.put_nowait(data)
 
     async def pump() -> None:
         try:
-            while True:
-                r, _, _ = await loop.run_in_executor(None, select.select, [fd], [], [], 0.5)
-                if r:
-                    try:
-                        data = os.read(fd, 65536)
-                    except OSError:
-                        break
-                    if not data:
-                        break
-                    await ws.send_bytes(data)
+            while data := await out.get():
+                await ws.send_bytes(data)
+            await ws.close()  # the shell exited: end the session instead of leaving a dead socket open
         except Exception:
             pass
 
+    loop.add_reader(fd, readable)
     task = asyncio.create_task(pump())
     try:
         while True:
@@ -969,17 +986,36 @@ async def shell(ws: WebSocket) -> None:
                     os.write(fd, txt.encode())
             elif (data := msg.get("bytes")) is not None:
                 os.write(fd, data)
-    except (WebSocketDisconnect, RuntimeError):
+    except (WebSocketDisconnect, RuntimeError, OSError):
         pass
     finally:
         _shells.discard(ws)
         task.cancel()
+        loop.remove_reader(fd)
         try:
             os.kill(pid, signal.SIGHUP)
         except Exception:
             pass
         os.close(fd)
+        threading.Thread(target=_reap_shell, args=(pid,), name=f"shell-reap-{pid}", daemon=True).start()
         log("shell", "terminal session closed")
+
+
+def _reap_shell(pid: int, grace_s: float = 5.0) -> None:
+    """Collect a closed terminal's shell so it never lingers as a zombie, and kill it if it ignored the hang-up."""
+    deadline = time.monotonic() + grace_s
+    while time.monotonic() < deadline:
+        try:
+            if os.waitpid(pid, os.WNOHANG)[0]:
+                return
+        except ChildProcessError:
+            return
+        time.sleep(0.2)
+    try:
+        os.kill(pid, signal.SIGKILL)
+        os.waitpid(pid, 0)
+    except (ProcessLookupError, ChildProcessError):
+        pass
 
 
 # ---------------------------------------------------------------- releases (CI artifacts: APK, maven repo, console dist)
@@ -1323,6 +1359,13 @@ def load_plugins() -> None:
                     raise ImportError("server/__init__.py must export `router` (fastapi.APIRouter)")
                 app.include_router(router, prefix=f"/api/plugins/{folder.name}",
                                    dependencies=[Depends(_plugin_auth(m.get("wallUsers") is True, folder.name)), Depends(_plugin_guard(folder.name))])
+                # A plugin that owns a paired device (manifest "deviceRoutes": true) may export `device_router`: mounted
+                # at /api/plugins/<folder>/device/ without the console token (the device has none). Only the enabled
+                # check applies; every route there authenticates its caller itself (Phone Connect: the device token).
+                device_router = getattr(module, "device_router", None)
+                if device_router is not None and m.get("deviceRoutes") is True:
+                    app.include_router(device_router, prefix=f"/api/plugins/{folder.name}/device", dependencies=[Depends(_plugin_guard(folder.name))])
+                    DEVICE_ROUTE_PREFIXES.add(f"/api/plugins/{folder.name}/device/")
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console
@@ -1369,6 +1412,9 @@ build_defaults.RULES_FILE = ROOT / "framework" / "schemas" / "build-defaults.jso
 import plugin_services  # noqa: E402 — generic cross-plugin services (capability names, never plugin folders)
 
 plugin_services.configure(plugin_enabled)
+import host_services  # noqa: E402 — the host services client (HOST-SERVICES.md), offered as axf.host-services@1
+
+host_services.register()
 
 # Core context + credentials for plugins (the systems-check plugin, alerts and every feature read the same env).
 import console_context  # noqa: E402
@@ -1617,13 +1663,12 @@ def catalog_remove(body: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-# ---- App plugins (plugin-catalog kinds with `into`, e.g. axhub → apps/axhub-web/src/plugins): the console holds the
+# ---- App plugins (plugin-catalog kinds with `into`; none since apps/axhub-web folded into the console, Nov 20 2026): the console holds the
 # repo, so it installs another app's web plugins for it and commits just that folder; the app's own 5-minute update
 # rebuilds with it. Console token; never on MCP.
-_APP_PLUGIN_KINDS = {"axhub", "amberx"}
-# What happens once the change is on GitHub. AmberX is an APK: CI builds it and the app catalog offers the new build.
-_APP_PLUGIN_AFTER = {"amberx": ("CI builds a new AmberX APK with it; the app catalog offers it after that run.",
-                                "CI builds a new AmberX APK without it; the app catalog offers it after that run.")}
+_APP_PLUGIN_KINDS: set[str] = set()  # axhub retired Nov 20 2026 (its web app folded into the console), amberx before it
+# What happens once the change is on GitHub, per kind (default: the app's own 5-minute update rebuilds it).
+_APP_PLUGIN_AFTER: dict[str, tuple[str, str]] = {}
 
 
 def _app_kind(kind: str) -> None:
@@ -1791,6 +1836,25 @@ app.include_router(alerts_hub.router_for(ALERTS, auth_always))
 import console_control_api  # noqa: E402
 
 app.include_router(console_control_api.router_for(auth))
+
+# ---- The hub's own pages (hub-pages@1, server/hub_pages.py): the axHub plugins' relay to the hub's /auth/api/*.
+# Only a wall admin's browser may use it (it checks that itself); the console token alone never reaches the hub here.
+import hub_pages  # noqa: E402
+
+app.include_router(hub_pages.router_for(STATE.parent))
+
+# ---- Host services (host-service@1, framework/spec/HOST-SERVICES.md): /api/host-services/* (host_services_routes.py)
+import host_services_routes  # noqa: E402
+
+app.include_router(host_services_routes.router_for(auth))
+
+
+async def _host_error(_request: Request, exc: Exception) -> JSONResponse:
+    """host-error@1 answers carry the frame itself as the body (REST, MCP and the UI read the same code)."""
+    return JSONResponse(exc.frame(), status_code=exc.status_code)  # type: ignore[attr-defined]
+
+
+app.add_exception_handler(host_services.HostServiceError, _host_error)
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 
@@ -1847,11 +1911,25 @@ if DIST.exists():
     _DIST_ROOT = DIST.resolve()
 
     @app.get("/{path:path}")
-    def spa(path: str) -> FileResponse:
+    def spa(path: str) -> Response:
+        # An API path that no route answered is a 404 in JSON, not the console page: a caller's r.json() then fails with
+        # the real cause (a removed or mistyped route) instead of an HTML parse error.
+        if _api_path(path):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
         # Never serve anything outside dist/: the path arrives decoded, so ../ (also as %2e%2e or %2f) must be refused here.
         try:
             f = (_DIST_ROOT / path).resolve()
             is_file = bool(path) and f.is_relative_to(_DIST_ROOT) and f.is_file()
         except (OSError, ValueError, RuntimeError):  # a path too long, with a NUL byte or a symlink loop is simply not a file
             is_file = False
-        return FileResponse(f if is_file else _DIST_ROOT / "index.html")
+        if is_file and f.name != "index.html":
+            return FileResponse(f)
+        # index.html names this build's hashed entry chunk, and a deploy empties dist/assets: it must be revalidated on
+        # every load, or a heuristically cached copy asks for a bundle that no longer exists (a blank console).
+        return FileResponse(_DIST_ROOT / "index.html", headers={"cache-control": "no-cache"})
+
+
+def _api_path(path: str) -> bool:
+    """True for a path under /api or /mcp (the SPA fallback must not answer those with the console page)."""
+    head = path.lstrip("/").split("/", 1)[0]
+    return head in ("api", "mcp")

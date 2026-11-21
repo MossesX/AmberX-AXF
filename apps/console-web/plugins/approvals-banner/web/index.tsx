@@ -49,7 +49,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
-import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
+import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -97,7 +97,19 @@ interface State { status: Status; hub: string; count: number; pending: Pending[]
 
 let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], held: [], items: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
-const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); subs.forEach((f) => f()); };
+const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); toPhone(); subs.forEach((f) => f()); };
+
+/* The Android console app's floating toolbar (overlay@1 `overlayItems`): what waits, one by one, sent when it changes. */
+let lastPhone = '';
+function toPhone(): void {
+  // read loosely: the plugin also runs in apps without the console's axfNative typing
+  const host = typeof window !== 'undefined' ? (window as unknown as { axfNativeHost?: { overlayItems?: (json: string) => string } }).axfNativeHost : undefined;
+  if (!host?.overlayItems) return;
+  const json = JSON.stringify(st.status === 'ok' ? overlayItems(st.held, st.pending) : []);
+  if (json === lastPhone) return;
+  lastPhone = json;
+  try { host.overlayItems(json); } catch { /* the shell answers on its own thread; nothing to undo */ }
+}
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 /** The hub's address, from the console's own account endpoint (AXF_WALL_HUB on the server); https only. */
@@ -652,8 +664,8 @@ export const plugin: AxfWebLibrary = {
         { key: ALARM_KEYS.repeat, label: 'Rings (1 = no repeat)', kind: 'number', default: ALARM_DEFAULTS.repeat, min: 1, max: 10 },
         { key: ALARM_KEYS.repeatGapSeconds, label: 'Quiet between rings (seconds)', kind: 'number', default: ALARM_DEFAULTS.repeatGapSeconds, min: 0, max: 300 },
         { key: ALARM_KEYS.vibration, label: 'Vibration', kind: 'choice', default: ALARM_DEFAULTS.vibration, options: VIBRATIONS.map(({ value, label }) => ({ value, label })) },
-        { key: ALARM_KEYS.throughSilent, label: 'Ring through silent mode (phone)', kind: 'toggle', default: ALARM_DEFAULTS.throughSilent, description: 'AmberX on Android plays it on the alarm channel, which sounds even when the phone is on silent.' },
-        { key: ALARM_KEYS.notices, label: 'Notices (one per held call)', kind: 'toggle', default: true, description: 'One normal notification per held call, with Deny, Approve and Shelve (AmberX on the phone; in a browser while this page is open). It updates at 30 s left and when it runs.' },
+        { key: ALARM_KEYS.throughSilent, label: 'Ring through silent mode (phone)', kind: 'toggle', default: ALARM_DEFAULTS.throughSilent, description: 'The phone app plays it on the alarm channel, which sounds even when the phone is on silent.' },
+        { key: ALARM_KEYS.notices, label: 'Notices (one per held call)', kind: 'toggle', default: true, description: 'One normal notification per held call, with Deny, Approve and Shelve (on the phone; in a browser while this page is open). It updates at 30 s left and when it runs.' },
         { key: ALARM_KEYS.noticeSound, label: 'Notice sound', kind: 'toggle', default: NOTICE_DEFAULTS.sound, description: "The phone's normal notification sound, once." },
         { key: ALARM_KEYS.noticeVibrate, label: 'Notice vibration', kind: 'toggle', default: NOTICE_DEFAULTS.vibrate },
         { key: ALARM_KEYS.noticeRepeat, label: 'Alert again at 30 s left and when it runs', kind: 'toggle', default: NOTICE_DEFAULTS.repeat, description: 'Off: the notice just updates, silently.' },
@@ -661,7 +673,7 @@ export const plugin: AxfWebLibrary = {
     },
     {
       id: 'approvals-banner.overlay', label: 'Overlay (phone)', icon: 'layers', tab: 'approvals-banner', order: 12,
-      description: 'One overlay on the AmberX phone app: a floating toolbar always on screen over every app (drag it anywhere; it remembers where). When something waits for you it spawns the approval bar (what, countdown, Approve / Deny). Tap it, or let Amber open something, and it expands into a full-screen browser signed in like the app, with the toolbar docked top-left; one tap collapses it. Because the toolbar is always visible, AmberX can open pages from the background without a notification tap. Needs "Display over other apps".',
+      description: 'One overlay on the phone app: a floating toolbar always on screen over every app (drag it anywhere; it remembers where). When something waits for you it spawns the approval bar (what, countdown, Approve / Deny). Tap it, or let Amber open something, and it expands into a full-screen browser signed in like the app, with the toolbar docked top-left; one tap collapses it. Because the toolbar is always visible, the phone can open pages from the background without a notification tap. Needs "Display over other apps".',
       settings: [
         { key: OVERLAY_KEYS.on, label: 'Overlay', kind: 'toggle', default: OVERLAY_DEFAULTS.on, description: 'The one switch. Off: no toolbar, and pages Amber opens go to Chrome with a tap-to-open notification.' },
         { key: OVERLAY_KEYS.expand, label: 'Approval bar opens for', kind: 'choice', default: OVERLAY_DEFAULTS.expand, options: EXPANDS.map(({ value, label }) => ({ value, label })) },

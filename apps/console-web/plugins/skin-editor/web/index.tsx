@@ -62,7 +62,7 @@ export const plugin: AxfWebLibrary = {
     'skin-editor': { title: 'Skin editor', icon: 'palette', keywords: ['skin', 'tokens', 'theme', 'sandbox', 'snapshot', 'revert', 'export'], render: () => <SkinEditorView /> },
     'token-registry': { title: 'Token registry', icon: 'list', keywords: ['tokens', 'registry', '--fx', 'colour', 'style', 'layout'], render: () => <RegistryView /> },
   },
-  nav: { label: 'Plugins', items: [{ id: 'skin-editor', label: 'Skin editor', icon: 'palette', view: 'skin-editor' }, { id: 'token-registry', label: 'Token registry', icon: 'list', view: 'token-registry' }] },
+  nav: { label: 'Design', items: [{ id: 'skin-editor', label: 'Skin editor', icon: 'palette', view: 'skin-editor' }, { id: 'token-registry', label: 'Token registry', icon: 'list', view: 'token-registry' }] },
   settingsTabs: [{ id: 'skin-editor', label: 'Skin editor', icon: 'palette', order: 85, parent: 'plugins' }],
   settingsPanels: [
     { id: 'skin-editor.about', tab: 'skin-editor', title: 'Skin editor', icon: 'palette', order: 10, render: () => <SettingsPanel /> },

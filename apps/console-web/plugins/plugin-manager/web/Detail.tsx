@@ -18,6 +18,9 @@ const TABS = [
   { id: 'install', label: 'Install', icon: 'package' },
 ] as const;
 type TabId = (typeof TABS)[number]['id'];
+/** Ask the open detail pane for one of its sections (`detail` = a TabId). */
+export const DETAIL_TAB_EVENT = 'axp-plugin-manager:detail-tab';
+export const openDetailTab = (tab: TabId) => globalThis.dispatchEvent(new CustomEvent(DETAIL_TAB_EVENT, { detail: tab }));
 
 export function Monogram({ row, size = 'md' }: { row: PluginRow; size?: 'sm' | 'md' | 'lg' }) {
   return <span className={`axp-plugin-manager-mono axp-plugin-manager-mono--${size} is-${row.health}`} aria-hidden>{monogram(row.name)}</span>;
@@ -45,6 +48,12 @@ export function QuickActions({ row, onChanged, compact }: { row: PluginRow; onCh
 export function DetailPane({ row, inv, onChanged, onSelect, initialTab }: { row: PluginRow; inv: Inventory; onChanged: () => void; onSelect: (folder: string) => void; initialTab?: TabId }) {
   const [tab, setTab] = useState<TabId>(initialTab ?? 'overview');
   useEffect(() => { if (initialTab) setTab(initialTab); }, [initialTab, row.folder]);
+  // the page toolbar opens a section of the selected plugin (View logs, Show dependencies, Install / Update)
+  useEffect(() => {
+    const on = (e: Event) => { const t = (e as CustomEvent<string>).detail; if (TABS.some((x) => x.id === t)) setTab(t as TabId); };
+    globalThis.addEventListener(DETAIL_TAB_EVENT, on);
+    return () => globalThis.removeEventListener(DETAIL_TAB_EVENT, on);
+  }, []);
   const conflicts = inv.conflicts.filter((c) => c.folders.includes(row.folder));
   return (
     <article className="axp-plugin-manager-detail">

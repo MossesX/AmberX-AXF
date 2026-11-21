@@ -12,7 +12,9 @@
  * when that projects folder exists, else no catalog (commands say so).
  *
  * Kinds are an open registry (KINDS below): `console` = Dev Console plugins (plugin@1, any files),
- * `axhub` = axHub web app plugins (axhub-plugin@1, web only: plugin.json, README.md, web/**; `into` = the app folder in this repo they install into, see app-install). Add a kind there.
+ * `axhub` = axHub web app plugins (axhub-plugin@1, web only: plugin.json, README.md, web/**; listed and served only since the
+ * web app folded into the console, Nov 20 2026). A kind with `into` (the app folder in this repo it installs into, see
+ * app-install) takes app plugins; none does today. Add a kind there.
  *
  * Safety (the same checks run on pack, publish, read and install, and in the Python copy, axf_server.plugin_package):
  *  - folder names ^[a-z0-9][a-z0-9-]{1,47}$; file paths relative, plain segments, no "..", no dot-files, no symlinks
@@ -23,7 +25,7 @@
  *  - installing never overwrites a different plugin (same folder, other id) and never a folder that is a symlink
  *
  *   node framework/cli/plugin-catalog.mjs where
- *   node framework/cli/plugin-catalog.mjs list [--kind console|axhub|amberx]
+ *   node framework/cli/plugin-catalog.mjs list [--kind console|axhub]
  *   node framework/cli/plugin-catalog.mjs show <kind> <folder>
  *   node framework/cli/plugin-catalog.mjs pack <dir> --kind <kind> [--out file.json]
  *   node framework/cli/plugin-catalog.mjs publish <dir> --kind <kind> [--from "who/where"] [--console https://console.amberxai.com]
@@ -42,9 +44,9 @@
  *        install a console plugin package read from any archive (the Plugins installer: folder, https, another console);
  *        same checks as install (verified, one instance per plugin, other-model builds only with --replace = swap)
  *   node framework/cli/plugin-catalog.mjs remove <kind> <folder>                   take it out of the catalog (packages kept)
- *   node framework/cli/plugin-catalog.mjs app-list <kind>                          plugins of a kind with `into` (e.g. axhub) in this repo
+ *   node framework/cli/plugin-catalog.mjs app-list <kind>                          plugins of a kind with `into` in this repo
  *   node framework/cli/plugin-catalog.mjs app-install <kind> <folder> [--update] [--version v] [--publish]
- *        unpack it into the kind's app folder (apps/axhub-web/src/plugins/<folder>) and commit just that folder to GitHub
+ *        unpack it into the kind's app folder (<into>/<folder>) and commit just that folder to GitHub
  *   node framework/cli/plugin-catalog.mjs app-uninstall <kind> <folder> [--publish]  remove it there (and on GitHub)
  *   add --json for one JSON result on stdout
  */
@@ -62,10 +64,10 @@ const ROOT = resolve(process.env.AXF_ROOT || join(dirname(fileURLToPath(import.m
 /** Open registry of plugin kinds. `allow` limits which files a plugin of that kind may carry (null = any safe file). */
 export const KINDS = {
   console: { label: 'Dev Console plugin', manifest: 'plugin@1', allow: null, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/ },
-  // axHub's web app (apps/axhub-web, static files the hub only hosts: decision #93, the hub server never runs them).
-  axhub: { label: 'axHub web plugin', manifest: 'axhub-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/, into: 'apps/axhub-web/src/plugins' },
-  // AmberX (apps/amberx-droid): the voice + monitoring Android app (web in a Capacitor shell); web files only.
-  amberx: { label: 'AmberX plugin', manifest: 'amberx-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/, into: 'apps/amberx-droid/src/plugins' },
+  // axHub web plugins (axhub-plugin@1): kept so the catalog still lists and serves the packages it holds. No app installs
+  // them any more: apps/axhub-web folded into the console (Nov 20 2026), so the kind has no `into`; its features are
+  // console plugins (kind console).
+  axhub: { label: 'axHub web plugin', manifest: 'axhub-plugin@1', allow: /^(plugin\.json|README\.md|web\/.+)$/, idPattern: /^[a-z][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)+$/ },
 };
 
 export const LIMITS = { files: 600, fileBytes: 2 * 1024 * 1024, totalBytes: 8 * 1024 * 1024, pathChars: 200 };
@@ -473,7 +475,7 @@ export async function swapConsolePackage(raw, { keepData = false, publish = fals
 
 /* ------------------------------------------------------------------ app plugins (kinds with `into`) */
 
-/** The app plugins folder of a kind that installs into an app in this repo (e.g. axhub → apps/axhub-web/src/plugins). */
+/** The app plugins folder of a kind that installs into an app in this repo (a kind with `into`; none today). */
 export function appPluginsDir(kind) {
   const k = checkKind(kind);
   if (!k.into) throw new Error(`${k.label}s don't install into an app in this repo`);

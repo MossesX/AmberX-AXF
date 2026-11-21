@@ -38,7 +38,7 @@ const nowIso = () => new Date().toISOString();
 export function readState(env = process.env) {
   try { return MODE.normState(JSON.parse(readFileSync(modeFile(env), 'utf8')), nowIso()); } catch { return MODE.initialState(nowIso()); }
 }
-function writeState(state, env) {
+export function writeState(state, env = process.env) {
   const f = modeFile(env); mkdirSync(dirname(f), { recursive: true });
   const tmp = `${f}.${process.pid}.tmp`; writeFileSync(tmp, `${JSON.stringify(state, null, 1)}\n`); renameSync(tmp, f);
 }
@@ -58,7 +58,8 @@ async function uploadDrift(store, ns, env) {
   writeFileSync(mark, String(all.length));
   return rest.length;
 }
-async function publish(store, state, changes, by) {
+/** The mode document and its change log on axf-data (`_meta/mode`, `_meta/mode-log`): the record of every move. */
+export async function publish(store, state, changes, by) {
   const cur = await store.get('_meta/mode');
   await store.put('_meta/mode', state, cur ? { ifMatch: cur.etag } : { create: true });
   if (changes.length) await store.append('_meta/mode-log', changes.map((c) => ({ ...c, by })));

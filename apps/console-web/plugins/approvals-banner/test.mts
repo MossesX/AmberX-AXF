@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
 import { nextPopup, vetoGone } from './web/popup.ts';
-import { migrateOverlay, OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayBridge, overlayConfig, overlayUrlAllowed, overlayVerbUrl, parseOverlayChange, parseOverlayVerb, RETIRED_KEYS as R } from './web/overlay.ts';
+import { migrateOverlay, OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayBridge, overlayConfig, overlayItems, overlayUrlAllowed, overlayVerbUrl, parseOverlayChange, parseOverlayVerb, RETIRED_KEYS as R } from './web/overlay.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
@@ -238,3 +238,22 @@ t('the veto screen closes itself only on a read made after it opened', () => {
 });
 
 console.log(`✓ approvals-banner: ${n} checks passed`);
+
+// the console app's floating toolbar (overlay@1 overlayItems): held calls carry the epoch ms they run at
+{
+  const items = overlayItems(
+    [
+      { id: 'h1', title: 'Deploy', command: 'deploy.sh', secondsLeft: 30, readAt: 1000, shelved: false, approvedNow: false },
+      { id: 'h2', title: '', command: 'rm -rf x', secondsLeft: 50, readAt: 1000, shelved: true, approvedNow: false },
+      { id: 'h3', title: 'Gone', command: '', secondsLeft: 9, readAt: 1000, shelved: false, approvedNow: true },
+    ],
+    [{ id: 'a1', tool: 'vps.run', summary: '', title: 'Restart nginx' }, { id: 'a2', tool: 'files.delete', summary: '' }],
+  );
+  assert.deepEqual(items, [
+    { id: 'held:h1', kind: 'held', title: 'Deploy', runsAt: 31000, shelved: false },
+    { id: 'held:h2', kind: 'held', title: 'rm -rf x', runsAt: 0, shelved: true },
+    { id: 'approval:a1', kind: 'approval', title: 'Restart nginx', runsAt: 0, shelved: false },
+    { id: 'approval:a2', kind: 'approval', title: 'files.delete', runsAt: 0, shelved: false },
+  ]);
+  console.log('ok overlayItems');
+}

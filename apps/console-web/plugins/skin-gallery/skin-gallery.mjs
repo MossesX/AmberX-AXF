@@ -26,7 +26,7 @@ import { parseSwitchScope, skinSwitch, skinSwitchState, switchScopes } from '../
 import { appIds, change, coverage, covers, readGlobal, readLook, sharedFile, skinRows, writeLook } from '../../../../framework/cli/skins.mjs';
 
 export const DEFAULT_APP = 'axf-console';
-const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
+const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web' };
 const VERBS = { use: 'use', back: 'back-to-skin', restore: 'restore-default', undo: 'undo' };
 
 function appOf(name) {

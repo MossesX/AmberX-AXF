@@ -1,0 +1,13 @@
+/* Status styles: layout of the settings tab only. The styles a status gets are generated (web/core.ts), not here. */
+.axp-status-styles__sample {
+  display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-md);
+  padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); min-width: 0; overflow: hidden;
+  border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface);
+}
+.axp-status-styles__sample > :first-child { flex: 1 1 auto; min-width: 0; }
+.axp-status-styles__status { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding-block: var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); }
+.axp-status-styles__status:last-child { border-bottom: 0; }
+.axp-status-styles__picks { display: grid; gap: var(--fx-dens-gap-md); align-items: end; grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--fx-space) * 40)), 1fr)); }
+.axp-status-styles__library { display: grid; gap: var(--fx-dens-gap-md); grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 50)), 1fr)); }
+.axp-status-styles__card { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-status-styles__note { margin: 0; }

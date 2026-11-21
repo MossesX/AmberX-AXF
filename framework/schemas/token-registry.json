@@ -1,7 +1,7 @@
 {
   "$axf": "token-registry@1",
   "version": 1,
-  "updatedAt": "2026-11-14",
+  "updatedAt": "2026-11-21",
   "tokens": [
     {
       "id": "--fx-accent",
@@ -2591,10 +2591,10 @@
       "level": "advanced",
       "description": "Navigation style: accent.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2608,10 +2608,10 @@
       "level": "advanced",
       "description": "Navigation style: navs when active.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2625,10 +2625,10 @@
       "level": "advanced",
       "description": "Navigation style: text colour when active.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2642,10 +2642,10 @@
       "level": "advanced",
       "description": "Navigation style: background.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2687,10 +2687,10 @@
       "level": "advanced",
       "description": "Navigation style: navs when hover.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2746,10 +2746,10 @@
       "level": "advanced",
       "description": "Navigation style: submenu.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -2763,10 +2763,10 @@
       "level": "advanced",
       "description": "Navigation style: text colour.",
       "default": "",
-      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "source": "apps/axhub-web/src/axf/ui/axf.css",
       "sources": [
-        "apps/amberx-droid/src/axf/ui/axf.css",
         "apps/axhub-web/src/axf/ui/axf.css",
+        "apps/console-web/src/axf/ui/axf.css",
         "engine:prefix --fx-navs-",
         "framework/ui/axf.css"
       ]
@@ -3112,6 +3112,62 @@
       "sources": [
         "engine:framework/core/engines/theme.ts",
         "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-safe-bottom",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the bottom edge (the navigation bar or keyboard). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-bottom)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-safe-left",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the left edge (the left cutout or navigation bar). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-left)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-safe-right",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the right edge (the right cutout or navigation bar). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-right)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-safe-top",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Page: safe-area inset at the top edge (the status bar or camera cutout). The browser value by default; the console Android app sets the real size on <html>. Zero on a desktop.",
+      "default": "env(safe-area-inset-top)",
+      "source": "framework/ui/axf.css",
+      "sources": [
         "framework/ui/axf.css"
       ]
     },

@@ -38,13 +38,13 @@ export const SESSION_RE = /^[A-Za-z0-9._-]{1,64}$/;
 export const TARGETS = [
   { app: 'console-web', label: 'Dev Console', match: /^apps\/console-web\//, kind: 'vite', dir: 'apps/console-web', liveFramework: true },
   { app: 'axhub-web', label: 'axHub web', match: /^apps\/axhub-web\//, kind: 'vite', dir: 'apps/axhub-web' },
-  { app: 'amberx-droid', label: 'AmberX (web layer)', match: /^apps\/amberx-droid\/(?!android\/)/, kind: 'vite', dir: 'apps/amberx-droid', note: 'Native (Capacitor) code shows in the next APK.' },
   { app: 'walkthrough-studio', label: 'Walkthrough Studio', match: /^apps\/walkthrough-studio\//, kind: 'vite', dir: 'apps/walkthrough-studio' },
   { app: 'demo', label: 'Demo', match: /^apps\/demo\//, kind: 'vite', dir: 'apps/demo', liveFramework: true },
   { app: 'framework', label: 'Framework (assets, engines, controls, templates)', match: /^framework\/(assets|core|react|ui|schemas|templates|boilerplates)\//, kind: 'shell', dir: 'apps/demo', assets: { framework: true }, liveFramework: true },
   { app: 'console', label: 'Dev Console (Android)', match: /^apps\/console\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/console' }, android: true },
   { app: 'axhub-android', label: 'axHub (Android)', match: /^apps\/axhub-android\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/axhub-android' }, android: true },
   { app: 'voicevault', label: 'Voice Vault (Android)', match: /^apps\/voicevault\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/voicevault' }, android: true },
+  { app: 'phone-connect', label: 'Phone Connect (Android)', match: /^apps\/phone-connect\//, kind: 'shell', dir: 'apps/demo', assets: { dir: 'apps/phone-connect' }, android: true },
 ];
 export const ANDROID_NOTE = 'Android/Compose screen shown through the web port: asset and layout changes render live here; Kotlin/Compose code changes only show in the next APK.';
 

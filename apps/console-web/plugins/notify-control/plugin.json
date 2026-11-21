@@ -25,14 +25,20 @@
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/notify-control",
     "env": ["AXF_NOTIFY_DATA_DIR"],
-    "mentions": ["_claude/rules/RULES.md", "_claude/memory/STATUS.md", "_claude/THREADS.md", "apps/console-web/plugins/README.md", "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh"]
+    "mentions": [
+      "_claude/rules/RULES.md",
+      "_claude/memory/STATUS.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/README.md",
+      "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh"
+    ]
   },
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "GET /state", "id": "state", "title": "The whole Notifications panel: master, apps, quiet hours, every type", "readOnly": true },
-      { "route": "GET /types", "id": "types", "title": "List every notification type and what happens to it now", "readOnly": true },
+      { "route": "GET /state", "id": "state", "title": "The whole Notifications panel: master, apps, quiet hours, every type", "description": "Reads the Notifications panel in one answer: the master switch, the console / AmberX / web push app switches, quiet hours, and every notification type with its channels, priority and whether it is on.", "readOnly": true },
+      { "route": "GET /types", "id": "types", "title": "List every notification type and what happens to it now", "description": "Every notification type in the registry (notify-types@1) with its group, app, channels, priority and whether it is on now, so a caller can see what will reach the phone before it happens.", "readOnly": true },
       { "route": "GET /check", "id": "check", "title": "What happens to one notification type right now, and why", "readOnly": true, "input": { "type": "object", "properties": { "type": { "type": "string", "description": "the type id, e.g. ci.failed" } }, "required": ["type"], "additionalProperties": false } },
       { "route": "GET /recent", "id": "recent", "title": "What the gate sent or blocked lately", "readOnly": true },
       { "route": "POST /master", "id": "master", "title": "Turn all notifications on or off (approvals and veto stay on)", "input": { "type": "object", "properties": { "on": { "type": "boolean" } }, "required": ["on"], "additionalProperties": false } },
@@ -41,10 +47,10 @@
       { "route": "POST /quiet", "id": "quiet", "title": "Set quiet hours", "input": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "start": { "type": "string", "description": "HH:MM, 24 hour" }, "end": { "type": "string", "description": "HH:MM, 24 hour" } }, "additionalProperties": false } },
       { "route": "POST /test", "id": "test", "title": "Send a test of one notification type", "input": { "type": "object", "properties": { "type": { "type": "string" } }, "required": ["type"], "additionalProperties": false } },
       { "route": "POST /reset", "id": "reset", "title": "Put one type, or everything, back to its defaults", "input": { "type": "object", "properties": { "type": { "type": "string" }, "confirm": { "type": "string", "enum": ["reset"] } }, "required": ["confirm"], "additionalProperties": false } },
-      { "route": "GET /groups", "id": "groups", "title": "List the notification groups, with their types and commands", "readOnly": true },
+      { "route": "GET /groups", "id": "groups", "title": "List the notification groups, with their types and commands", "description": "The notification groups the Notifications panel shows, each with the types in it, plus the command kinds a group can run.", "readOnly": true },
       { "route": "POST /group", "id": "group", "title": "Make or change a notification group: name, on or off, types, commands", "input": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "on": { "type": "boolean" }, "types": { "type": "array", "items": { "type": "string" } }, "commands": { "type": "array", "items": { "type": "object", "properties": { "label": { "type": "string" }, "kind": { "type": "string", "enum": ["approve", "open", "console"] }, "target": { "type": "string" }, "icon": { "type": "string" } }, "required": ["label", "kind"] } } }, "additionalProperties": false } },
       { "route": "POST /group-remove", "id": "group-remove", "title": "Remove a notification group", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"], "additionalProperties": false } },
-      { "route": "GET /triggers", "id": "triggers", "title": "List the notification triggers and what they can use", "readOnly": true },
+      { "route": "GET /triggers", "id": "triggers", "title": "List the notification triggers and what they can use", "description": "The notification triggers (what fires a notification) with the options each rule can use.", "readOnly": true },
       { "route": "POST /trigger", "id": "trigger", "title": "Make or change a notification trigger: event, conditions, threshold, schedule, effect", "input": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "on": { "type": "boolean" }, "effect": { "type": "string", "enum": ["only", "mute", "raise"] }, "event": { "type": "object", "description": "types, groups, source, keyPrefix, severity" }, "conditions": { "type": "array", "items": { "type": "object", "properties": { "field": { "type": "string" }, "op": { "type": "string", "enum": ["eq", "ne", "contains", "not-contains", "gte", "lte"] }, "value": {} }, "required": ["field", "op", "value"] } }, "threshold": { "type": "object", "description": "count, minutes" }, "schedule": { "type": "object", "description": "days (mon..sun), start, end (HH:MM)" }, "title": { "type": "string" }, "body": { "type": "string" }, "severity": { "type": "string", "enum": ["info", "warning", "error", "critical"] } }, "additionalProperties": false } },
       { "route": "POST /trigger-remove", "id": "trigger-remove", "title": "Remove a notification trigger", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"], "additionalProperties": false } },
       { "route": "POST /trigger-test", "id": "trigger-test", "title": "Try a trigger on a sample notification: nothing is sent or counted", "input": { "type": "object", "properties": { "id": { "type": "string" }, "alert": { "type": "object", "description": "source, key, title, severity, meta" } }, "required": ["id", "alert"], "additionalProperties": false } }

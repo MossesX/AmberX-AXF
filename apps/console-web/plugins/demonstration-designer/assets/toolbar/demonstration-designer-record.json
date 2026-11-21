@@ -1,0 +1,50 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "demonstration-designer-record",
+  "name": "Record by doing",
+  "version": "1.0.0",
+  "description": "The Record by doing toolbar: record the console moves (pressed while recording; press again to stop), then make a pitch from them (or add them to the open pitch). The recording count rides on the same bar.",
+  "author": "AmberX AXF",
+  "tags": [
+    "page",
+    "demonstration-designer",
+    "record"
+  ],
+  "data": {
+    "scope": "view:demonstration-designer-advanced",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": {
+      "when": "auto",
+      "keep": 1,
+      "label": "More"
+    },
+    "groups": [
+      {
+        "id": "record",
+        "label": "Record",
+        "items": [
+          {
+            "id": "record",
+            "icon": "monitor",
+            "label": "Record",
+            "action": "handler:demonstration-designer.record",
+            "checked": "state:recording",
+            "priority": 300,
+            "overflow": "never"
+          },
+          {
+            "id": "make",
+            "icon": "plus",
+            "label": "Make steps",
+            "action": "handler:demonstration-designer.make-steps",
+            "enabledWhen": "canMake",
+            "priority": 260
+          }
+        ]
+      }
+    ]
+  }
+}

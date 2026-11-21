@@ -8,7 +8,9 @@
 # What it does (root on the host):
 #   - copies framework/cli/build-limit.mjs (standalone) to /usr/local/lib/axf/build-limit.mjs, so the enforcer runs even
 #     from a checkout that doesn't have it yet; the timer prefers /opt/axf's copy once it is there;
-#   - writes the config <agent-slots dir>/build-limit.json with the defaults when there is none (maxBuilds 8);
+#   - writes the config <agent-slots dir>/build-limit.json with the defaults when there is none (maxBuilds 8, and
+#     emergencySlots 2: the separate pool for builds Brett sends to emergency, counted apart from maxBuilds; a config
+#     written before that key existed reads as 2 without being rewritten);
 #   - writes /etc/systemd/system/axf-builds.slice (CPUQuota, MemoryHigh, MemoryMax, TasksMax from the config) and starts it;
 #   - installs axf-build-limit.service + .timer (every 30 s): `build-limit.mjs enforce` keeps the slice in step with the
 #     config, moves any axf-* tmux pane tree or `claude -p` tree still outside it into it, gives docker test containers

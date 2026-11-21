@@ -1,0 +1,17 @@
+{
+  "$axf": "host-service@1",
+  "id": "lander",
+  "title": "Lander",
+  "description": "Lands the one build at build-complete: every step in one PR, main pulled in, CI once with the gate's build rules, merged (lander@1). Its own unit and timer, installed by axf_lander_install.",
+  "kind": "tick",
+  "unit": "axf-lander.service",
+  "timer": "axf-lander.timer",
+  "adopted": true,
+  "plugin": "gate",
+  "runner": "deploy/lander/run.mjs",
+  "health": {
+    "intervalSec": 60,
+    "staleSec": 900
+  },
+  "log": "/var/log/axf-lander.log"
+}

@@ -10,12 +10,14 @@
  * status, merged time, branch and PR from it), `wantPrs` the PR numbers the rows name.
  */
 import { kindOfBuild, prNumber } from '../../../../../../framework/core/stale-rows.mjs';
+import { guardStatus, normLanded } from '../../../../../../framework/core/build-pipeline.mjs';
 
 export const TABLE = Object.freeze({ id: 'builds', label: 'Builds store (Pending, Queue, Building)', kinds: ['pending', 'queued', 'building'] });
 
 /** One builds@1 record → a classifier row, or null when the build is no row to watch. */
 export function rowOf(b) {
   if (!b || typeof b !== 'object' || !b.id || b.deleted) return null;
+  if (b.flow === 'pipeline-2') return null; // pipeline-2@1: the flow owns a Pipeline 2.0 build's status; its rows are never cleaned here
   const kind = kindOfBuild(b);
   if (!kind) return null;
   return { kind, id: String(b.id), build: String(b.id), pr: prNumber(b.pr), branch: String(b.branch ?? ''), status: String(b.status ?? ''), title: String(b.title ?? '') };
@@ -38,30 +40,35 @@ export async function read({ store } = {}) {
 export const HANDS_OFF = Object.freeze(['running', 'waiting']);
 
 /**
+ * The status a build settles to once its merge is recorded, under the done-means-merged@1 guard (pure: `b` is not
+ * changed). The store's own rule gives landed / complete once every step is ticked, but the watchdog only knows the
+ * PR merged and its merge commit, never CI on that commit or a verify: so a build the rule would call landed goes to
+ * `landing` (the auto-lander proves CI green on the merge commit and sets landed), and one with steps still open
+ * keeps its status. Returns { status, landed }.
+ */
+export function settledStatus(b, v, now, settleStatus) {
+  const x = { ...b, steps: b.steps, pr: v.row?.pr ? `#${v.row.pr}` : b.pr, mergedAt: b.mergedAt || v.mergedAt || now };
+  const landed = normLanded({ ...(normLanded(b.landed) ?? {}), pr: v.row?.pr || normLanded(b.landed)?.pr || 0, sha: normLanded(b.landed)?.sha || v.mergeCommit || '', mergedAt: x.mergedAt, ci: normLanded(b.landed)?.ci === 'success' ? 'success' : 'unknown' });
+  x.landed = landed;
+  settleStatus(x, now);
+  if (x.status !== b.status && !guardStatus({ ...x, status: b.status }, x.status).ok) {
+    x.status = guardStatus({ ...x, status: b.status }, 'landing').ok ? 'landing' : b.status;
+  }
+  return { status: x.status, landed };
+}
+
+/**
  * Apply verdicts in ONE store write (withStore: under the store lock, journalled, live to main through builds-live):
  *   complete → the merged PR is recorded (pr, mergedAt, landed.sha = the merge commit) and the status settles by the
- *              store's own rule, only as far as done-means-merged@1 allows (guardStatus): landed needs CI green on the
- *              merge commit, which the watchdog does not prove, so a fully ticked build goes to landing (the lander
- *              records CI and lands it); with steps open it stays and says why
+ *              store's own rule under the done-means-merged@1 guard (settledStatus: landing once every step is ticked,
+ *              the auto-lander sets landed when CI on the merge commit is green; otherwise it stays and says why)
  *   remove   → archived, with the reason in a note
  * Every touched build gets a build note naming the watchdog and the evidence. Running / waiting builds are never
  * touched. `withStore` / `settle` override the store (tests). Returns each verdict with { applied, why, status }.
  */
-export async function apply(verdicts, { by = 'watchdog', withStore, settle, guard } = {}) {
+export async function apply(verdicts, { by = 'watchdog', withStore, settle } = {}) {
   const ws = withStore ?? (await import('../../../../../../framework/cli/builds-store.mjs')).withStore;
   const settleStatus = settle ?? (await import('../../../../../../framework/plan/builds-merge-core.mjs')).settleStatus;
-  const guardStatus = guard ?? (await import('../../../../../../framework/core/build-pipeline.mjs')).guardStatus;
-  // done-means-merged@1: settle by the store's rule, but never into a status the store's guard would refuse (a refused
-  // status is reverted on write and the merge would look unrecorded); landing is the furthest the watchdog can prove
-  const settleGuarded = (b, now) => {
-    const before = b.status;
-    if (!settleStatus(b, now)) return false;
-    if (guardStatus({ ...b, status: before }, b.status).ok) return true;
-    const landing = guardStatus({ ...b, status: before }, 'landing').ok && before !== 'landing';
-    b.status = landing ? 'landing' : before;
-    if (!['complete', 'built', 'landing', 'landed'].includes(b.status)) b.builtAt = '';
-    return b.status !== before;
-  };
   const out = [];
   ws((s) => {
     const now = new Date().toISOString();
@@ -71,14 +78,16 @@ export async function apply(verdicts, { by = 'watchdog', withStore, settle, guar
       if (HANDS_OFF.includes(b.status)) { out.push({ ...v, applied: false, why: `the build is ${b.status}: left to the orchestrator` }); continue; }
       if (b.status !== v.row.status) { out.push({ ...v, applied: false, why: `the build moved to ${b.status} since the read` }); continue; }
       const before = b.status;
-      if (v.action === 'complete' && b.mergedAt && b.pr === `#${v.row.pr}` && !settleGuarded({ ...b, steps: b.steps }, now)) {
+      if (v.action === 'complete' && b.mergedAt && b.pr === `#${v.row.pr}` && settledStatus(b, v, now, settleStatus).status === b.status) {
         out.push({ ...v, applied: false, noop: true, why: `merge already recorded; status stays ${b.status} until every step is ticked` }); continue;
       }
       if (v.action === 'complete') {
         if (v.row.pr) b.pr = `#${v.row.pr}`;
         if (!b.mergedAt) b.mergedAt = v.mergedAt || now;
-        if (v.mergeCommit) b.landed = { ...(b.landed ?? {}), sha: b.landed?.sha || v.mergeCommit, pr: Number(String(b.pr).replace(/\D/g, '')) || 0, mergedAt: b.mergedAt };
-        settleGuarded(b, now);
+        const s2 = settledStatus(b, v, now, settleStatus);
+        if (s2.landed) b.landed = s2.landed;
+        b.status = s2.status;
+        if (['landing', 'landed', 'complete'].includes(b.status) && !b.builtAt) b.builtAt = now;
       } else if (v.action === 'remove') {
         b.status = 'archived';
       }

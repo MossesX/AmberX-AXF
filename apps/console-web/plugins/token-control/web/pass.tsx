@@ -1,7 +1,8 @@
 /**
  * Veto passes in the console (control-pass@1; builds theme-veto-pass, pass-all): the banner chip with a live countdown
  * while a pass is on ("Everything: 29:41 left"; Extend, Revoke, Undo; a warning two minutes before it ends) and the
- * waiting requests Brett approves or denies, plus the Passes tab on the Token control page and the max-minutes setting.
+ * waiting requests Brett approves or denies. Starting a pass, the scopes, the recent passes and the longest-pass setting
+ * moved to Builds → VPS Configuration → Passes (the gate plugin, Nov 21 2026), which calls the same pass routes.
  * A pass is for everything unless a narrower scope is picked.
  *
  * Owner actions (grant, extend, approve, deny) go out WITHOUT the console token first, so the server sees Brett's
@@ -9,7 +10,7 @@
  * (no wall) they fall back to the token, and the server answers what that may do.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
+import { Button, Icon, useRuntime } from '@console/axf/react';
 import { ownerFetch, pluginFetch } from '@console/plugins';
 
 const FOLDER = 'token-control';
@@ -139,77 +140,6 @@ export function PassBanner() {
           </span>
         ))}
       </div>
-    </div>
-  );
-}
-
-/* ---------------- Token control → Passes ---------------- */
-
-export function PassesTab() {
-  const { status, error } = usePasses();
-  const now = useNow(true);
-  const { busy, act } = useAct();
-  const [scope, setScope] = useState('all');
-  const [irreversible, setIrreversible] = useState(false);
-  const [minutes, setMinutes] = useState('30');
-  const [reason, setReason] = useState('');
-  const rows = status?.items ?? [];
-  return (
-    <div className="fx-stack">
-      {error && <Note tone="danger">{error}</Note>}
-      <Note tone="info">A pass lets commands run without axHub's veto for a while ("allow everything for the next 30 minutes"). Everything is the default: every command through the API, MCP or CLI on every plugin, ordinary deletes included; a narrower scope covers only token changes there. Irreversible deletes still confirm unless the pass includes them. Brett approves each pass once. Everything done under a pass is logged; undo puts back what can be put back and names the rest.</Note>
-      <Container title="Start a pass" icon="key">
-        <div className="fx-row axf-tc-wrap">
-          <SelectField label="Scope" value={scope} onChange={setScope} className="axf-tc-pick" options={rows.map((r) => ({ value: r.id, label: r.label }))} />
-          <TextField label="Minutes" value={minutes} onChange={setMinutes} mono hint={`1–${status?.maxMinutes ?? 240}`} />
-          <TextField label="Reason" value={reason} onChange={setReason} className="axf-tc-pick" />
-        </div>
-        {scope === 'all' && <Switch label="Include irreversible deletes" checked={irreversible} onChange={setIrreversible} hint="Hard deletes nothing can bring back (AmberX notes and lists, tools axHub marks irreversible) skip the confirm too." />}
-        <div className="fx-row"><Button tone="primary" icon="check" disabled={!!busy} onClick={() => void act('grant', () => passCalls.grant(scope, Number(minutes) || 30, reason, scope === 'all' && irreversible))}>Start pass</Button></div>
-      </Container>
-      <Container title="Scopes" icon="shield">
-        <table className="fx-table"><tbody>{rows.map((r) => (
-          <tr key={r.id}>
-            <td><b>{r.label}</b><div className="fx-muted fx-mono axf-tc-small">{r.id}</div></td>
-            <td>{r.active ? <>{r.text} <span className="fx-mono">{countdown(r.active.expiresAt, now)}</span></> : r.text}</td>
-            <td><div className="fx-row fx-row--tight fx-row--end">
-              {r.pending && <Button size="sm" tone="primary" icon="check" disabled={!!busy} onClick={() => void act('a', () => passCalls.approve(r.id, r.pending!.id))}>Approve</Button>}
-              {r.active && <Button size="sm" tone="ghost" icon="undo" disabled={!!busy || !r.active.changes} onClick={() => void act('u', () => passCalls.undo(r.id))}>Undo {r.active.changes}</Button>}
-              {(r.active || r.pending) && <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act('r', () => passCalls.revoke(r.id))}>Revoke</Button>}
-            </div></td>
-          </tr>
-        ))}</tbody></table>
-      </Container>
-      {!!status?.recent?.length && (
-        <Container title="Recent passes" icon="clock">
-          <table className="fx-table"><tbody>{status.recent.filter(Boolean).map((p) => <tr key={p!.id}><td className="fx-mono axf-tc-small">{p!.id}</td><td>{p!.scope}</td><td>{p!.state}</td><td className="fx-muted">{p!.text}</td></tr>)}</tbody></table>
-        </Container>
-      )}
-    </div>
-  );
-}
-
-/* ---------------- Settings → Plugins → Token control ---------------- */
-
-export function PassSettings() {
-  const rt = useRuntime();
-  const [max, setMax] = useState('');
-  const [tz, setTz] = useState('');
-  useEffect(() => { void pluginFetch(FOLDER, 'pass/settings').then((r) => r.json()).then((s: { maxMinutes?: number; timeZone?: string }) => { setMax(String(s.maxMinutes ?? 240)); setTz(s.timeZone ?? ''); }); }, []);
-  const save = async () => {
-    const r = await pluginFetch(FOLDER, 'pass/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ maxMinutes: Number(max) || 240, timeZone: tz }) });
-    const s = (await r.json()) as { ok?: boolean; maxMinutes?: number };
-    rt.toast(s.ok ? `Passes now last at most ${s.maxMinutes} min` : 'Not saved', s.ok ? 'success' : 'danger');
-    if (s.maxMinutes) setMax(String(s.maxMinutes));
-  };
-  return (
-    <div className="fx-stack">
-      <p className="fx-muted">How long a veto pass may last at most (1–240 minutes; a longer request is cut to this), and the time zone the plain answers use ("until 10:42 AM").</p>
-      <div className="fx-row axf-tc-wrap">
-        <TextField label="Longest pass (minutes)" value={max} onChange={setMax} mono />
-        <TextField label="Time zone" value={tz} onChange={setTz} hint="e.g. America/New_York" />
-      </div>
-      <div className="fx-row"><Button icon="check" onClick={() => void save()}>Save</Button></div>
     </div>
   );
 }
