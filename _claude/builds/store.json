@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10252,
- "updatedAt": "2026-11-21T01:27:37.126Z",
+ "rev": 10253,
+ "updatedAt": "2026-11-21T01:28:12.067Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351549,14 +351549,14 @@
    "title": "Console tabs: plugins open in tabs inside one console",
    "category": "",
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
-   "status": "split",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T01:13:01.864Z",
+   "updatedAt": "2026-11-21T01:28:01.966Z",
    "builtAt": "",
    "notes": [
     {
@@ -351623,6 +351623,11 @@
     {
      "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
      "at": "2026-11-21T01:27:02.143Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
+     "at": "2026-11-21T01:28:01.966Z",
      "by": "watchdog"
     }
    ],
@@ -352231,7 +352236,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -352242,9 +352247,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T01:13:01.864Z",
+   "statusAt": "2026-11-21T01:28:01.966Z",
    "statusBy": "watchdog",
    "attempt": 3,
+   "failedFrom": "split",
    "statusLog": [
     {
      "status": "pending",
@@ -352294,6 +352300,13 @@
      "by": "watchdog",
      "attempt": 3,
      "why": "retry forward at split, attempt 3"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-21T01:28:01.966Z",
+     "by": "watchdog",
+     "attempt": 3,
+     "why": "split did not move after 2 re-run(s) of the transition (5 min past its budget)"
     }
    ]
   }
