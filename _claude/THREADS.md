@@ -840,8 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 14:44 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 14:45 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
 - 2026-11-20 14:46 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 - 2026-11-20 14:55 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
 - 2026-11-20 14:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
@@ -1240,6 +1238,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 23:41 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
 - 2026-11-21 23:45 UTC · `terminal-main-tab-streaming-console-s` → fixing, note (all) · watchdog
 - 2026-11-21 23:45 UTC · `rename-gate-rules-to-vps-configuration` → landed, note (all) · watchdog
+- 2026-11-21 23:45 UTC · `approval-rules-vps-configuration-veto` → landed, note (all) · watchdog
+- 2026-11-21 23:45 UTC · `approval-rules-save-apply-default-don-t` note (all) · builds-live
 
 ## Token passes (log)
 

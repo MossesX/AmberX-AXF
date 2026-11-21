@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T23:45:35.351Z",
+ "updatedAt": "2026-11-21T23:45:56.560Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -213862,7 +213862,7 @@
    "title": "Approval rules in VPS Configuration: veto countdown only on VPS writes",
    "category": "Console UI",
    "detail": "Brett, Nov 21: \"I'm tired of this 90 second shit. It's only supposed to be for writes on the VPS.\" \"I need a bunch of rules to be able to set.\" Today axHub still holds screen opens and overlays on the 90 s veto because its policy API (axHub decision 119, GET/PUT /auth/api/policy) was never deployed, so his Nov 12 default never got applied. Goes in the VPS Configuration plugin (renamed from Gate & rules by build rename-gate-rules-to-vps-configuration).",
-   "status": "landing",
+   "status": "landed",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213870,7 +213870,7 @@
    "pr": "#885",
    "mergedAt": "2026-11-21T21:26:51Z",
    "createdAt": "2026-11-21T19:40:46.723Z",
-   "updatedAt": "2026-11-21T23:05:42.430Z",
+   "updatedAt": "2026-11-21T23:45:37.625Z",
    "builtAt": "2026-11-21T21:28:09.157Z",
    "notes": [
     {
@@ -213928,6 +213928,10 @@
     {
      "text": "Watchdog: PR #885 merged 2026-11-21 21:26 and the build never heard: the merge is recorded, CI on fd919ba82d is next. The failure from before the merge is cleared.",
      "at": "2026-11-21T23:05:42.430Z"
+    },
+    {
+     "text": "Watchdog: merged and CI is green on fd919ba82d: landed.",
+     "at": "2026-11-21T23:45:37.625Z"
     }
    ],
    "approvals": [],
@@ -214328,15 +214332,15 @@
    "title": "Approval rules: Save and Apply the default don't work from the Phone Connect app",
    "category": "Console UI",
    "detail": "Found live with Brett, Nov 21, in the Phone Connect app on his phone (Builds → VPS Configuration → Approval rules, shipped by PR #885). (1) Tapping 'Apply the default' staged nothing: the tab still showed zero rules and Save stayed disabled. Staging the same default through gate/approval-rules-stage {op: default} worked and lit Save. (2) Tapping Save with that draft does nothing visible: the draft stays ('Unsaved changes, last staged by console token'), default.applied stays false, live rules stay empty on axHub, canSave is true. Suspect: the save is sent from the browser on Brett's own axHub session and the app's WebView has no hub session (or the cross-origin request is blocked), and the failure is swallowed with no message. Brett's rule stands: only his own click applies the policy.",
-   "status": "queued",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/approval-rules-save-apply-default-don-t",
-   "pr": "",
+   "pr": "#890",
    "createdAt": "2026-11-21T22:28:34.554Z",
    "updatedAt": "2026-11-21T23:41:01.326Z",
-   "builtAt": "",
+   "builtAt": "2026-11-21T23:41:01.326Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-approval-rules-save-apply-default-don-t--lenny.",
@@ -214353,6 +214357,14 @@
     {
      "text": "Session on hulu0241 ended (exit 1) with 3 steps left: back in the Queue (run 1).",
      "at": "2026-11-21T23:41:01.326Z"
+    },
+    {
+     "text": "Reconciler: PR #890",
+     "at": "2026-11-21T23:07:38.464Z"
+    },
+    {
+     "text": "PR #890, CI green. Cause: confirm() cannot be drawn in the console app's overlay WebView, so both buttons ended silently. Fix: on-tab question + Sign in prompt + clear errors (console deploy), console app 0.2.0 draws dialogs in the overlay. Not run on a phone. CI: one Gradle failure was a timing flake in lib-hub HubAppearanceSourceTest (unrelated), green on re-run.",
+     "at": "2026-11-21T23:28:53.989Z"
     }
    ],
    "approvals": [],
@@ -214383,8 +214395,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T22:33:53.632Z",
      "note": "",
      "uid": "st-mwqzc2bt1o5z2g",
      "createdAt": "2026-11-21T22:28:34.555Z"
@@ -214402,8 +214414,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T22:46:16.133Z",
      "note": "",
      "uid": "st-mwqzc2bt1pbbzf",
      "createdAt": "2026-11-21T22:28:34.555Z"
@@ -214421,8 +214433,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T23:28:46.753Z",
      "note": "",
      "uid": "st-mwqzc2bt1q4fcf",
      "createdAt": "2026-11-21T22:28:34.555Z"
