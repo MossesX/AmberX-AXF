@@ -85,6 +85,11 @@ await t('fixing: the ladder`s next rung, its escalation, and no failure at all',
   const d = C.decide(b, f, { now: NOW, settings: SET, next: { strategy: 'fix', fixStrategy: 'targeted' } });
   assert.equal(d.action, 'ladder'); assert.equal(d.rung, 'fix:targeted');
   assert.equal(C.decide(b, f, { now: NOW, settings: SET, next: { strategy: 'fresh-session' } }).rung, 'fresh-session');
+  // the rung as a step: what failed, what to do differently, what done means; the model never invented
+  const st = C.rungStep({ ...b, pipeline: { model: 'Fable' } }, { rung: 'fresh-session', model: '' }, { n: 3 });
+  assert.match(st.text, /^Land this build \(watchdog, attempt 3: fresh-session\)\. CI is red \(CI is red\)\. Start from `git status`/); assert.match(st.text, /Merge origin\/main into claude\/b1, get every check green and push; the PR is #10\.$/);
+  assert.equal(st.model, 'Fable'); assert.equal(C.rungStep(b, { rung: 'switch-model', model: 'Opus' }).model, 'Opus'); assert.equal(C.rungStep(b, { rung: 'retry', model: 'nonsense' }).model, 'Opus');
+  assert.match(C.rungStep({ ...b, pr: '' }, { rung: 'retry' }).text, /push, then open the PR\.$/);
   assert.equal(C.decide(b, f, { now: NOW, settings: SET, next: { escalate: true, reason: 'every rung used' } }).action, 'escalate');
   assert.equal(C.decide(b, f, { now: NOW, settings: SET, next: { inFlight: true } }).action, 'wait');
   assert.equal(C.decide(build({ status: 'fixing' }), f, { now: NOW, settings: SET }).action, 'to-landing');

@@ -90,15 +90,15 @@ build's last real progress (a failure recorded, an attempt, a ticked step, a lau
 | merged, CI red on the merge commit and main red too (or the merge commit is main's newest) | `fail`: a `ci-red` failure at the merge commit, status `fixing` |
 | merged, CI on the merge commit not green, CI on main's newest commit still running or unreadable | wait: main's result decides |
 | merged, CI still running or none | wait `ciWaitMin`, then `escalate` |
-| `fixing` with a failure and nothing tried | `ladder`: the retry ladder's next rung, launched now (`pipeline.mjs retryFixing`) |
+| `fixing` with a failure and nothing tried | `ladder`: the retry ladder's next rung as ONE step on the build (what failed, what to do differently, what done means), the attempt on its log, and the build back in the Queue. The launcher only starts Queued builds, so a rung runs through the Queue like the land-clash bounce |
 | `fixing`, the ladder ran out | `escalate`: status `escalated`, banner item, one push |
 | `fixing` with no failure on it | `to-landing` (every step done and a PR) or `requeue` |
 | `landing` / `merging`, the PR open, closed or missing | `fail`: a `stalled` (or `push-fail`) failure; the dispatcher's retry runner answers it |
 
 Never touched: a build with a live session, a lander fix agent or an attempt in flight; a build pushed less than
 `cooldownMin` ago; a build whose PR state could not be read from GitHub (nothing is pushed blind). A pass acts on the
-longest-standing builds first, at most `maxPerPass`, and starts at most `maxLaunchPerPass` sessions (default 1, so a
-backlog drains one build per pass; 0 = bookkeeping only, never start a session).
+longest-standing builds first, at most `maxPerPass`, and sends at most `maxLaunchPerPass` builds towards a session
+(default 1, so a backlog drains one build per pass; 0 = bookkeeping only, nothing is queued or failed).
 
 **Settings** are one flat map: `enabled` (the master switch), `alerts` (`batch` / `each` / `off`; a give-up always
 alerts) and each watch's own under `<watch>.<key>`: `sessions.staleMin`, `sessions.maxRetries`, `stale.limit.landing`

@@ -60,7 +60,8 @@ The dry run on Nov 21 found 22 builds@1 builds standing still, none with an atte
 - 6 in `fixing` (red CI, failed push) for 3 to 4 days: the ladder's first rung, one launch per pass.
 - 13 in `landing` for 3 to 4 days with their PR still open: a `stalled` failure each, then the ladder.
 
-So it starts sessions: at most one per pass (every 10 minutes), longest-standing first. To hold that back:
+So it sends builds back to the Queue (the dispatcher starts them): at most one per pass (every 10 minutes),
+longest-standing first. To hold that back:
 `axf watchdog set stale.maxLaunchPerPass=0` (bookkeeping only) or `stale.enabled=off`.
 
 ## Judgement calls
@@ -95,6 +96,11 @@ first pass against the live state showed two things, fixed in a follow-up:
   launch per pass had gone to the older build.
 - **Heartbeat.** "Last pass" only moved when a watch was due, so with the row cleaner at 5 minutes the systems check
   item could flap red at the 5-minute limit. The cron now writes `lastTick` every minute and staleness is judged on it.
+- **The ladder goes through the Queue.** The first two `ladder` pushes (21:55, 22:05) were refused by the launcher:
+  "only a Queued build takes a slot". That gate is also why the dispatcher's own retry runner never started these
+  builds and they sat in `fixing` for four days. A rung is now one step on the build (what failed, what to do
+  differently, what done means), the attempt goes on the build's log, and the build goes back to the Queue, the way
+  the land-clash bounce does it. The two refused pushes changed nothing on their builds and were logged as not done.
 - The CLI's "cron installed, out of date" was wrong: the deploy script writes the schedule line alone, the plugin
   installer the whole template. Both now count as current.
 

@@ -70,6 +70,20 @@ await t('landing with the PR still open: a stalled failure the ladder answers; t
   const again = await S.run({ sources: facts({}) });
   assert.equal(again.catches.length, 0, 'the failure it just recorded is movement: nothing is pushed twice');
 });
+await t('fixing with a failure and nothing tried: the ladder rung becomes a step and the build goes back to the Queue', async () => {
+  wipe(); seed([build('l', { status: 'fixing', failure: { kind: 'ci-red', at: ago(500), why: 'CI is red (Web Dev Console). Needs a code fix.', head: 'c'.repeat(40) }, pipeline: { model: 'Fable', session: 'axf-l--old', runs: 3 } })]);
+  const src = { ...facts({}), nextRung: () => ({ strategy: 'fix', fixStrategy: 'targeted', model: '' }) };
+  const r = await S.run({ sources: src });
+  assert.equal(r.catches[0].action, 'ladder'); assert.equal(r.catches[0].rung, 'fix:targeted'); assert.equal(r.catches[0].ok, true, r.catches[0].note);
+  const b = find('l');
+  assert.equal(b.status, 'queued'); assert.equal(b.failure ?? null, null); assert.equal(b.steps.length, 2);
+  const st = b.steps[1];
+  assert.equal(st.id, 's2'); assert.ok(!st.done); assert.equal(st.model, 'Fable', 'the build`s own model, never above it');
+  assert.match(st.text, /^Land this build \(watchdog, attempt 1: fix:targeted\)\. CI is red \(CI is red \(Web Dev Console\)\. Needs a code fix\)\. Reproduce each failing check/); assert.match(st.text, /the PR is #10\.$/);
+  assert.equal(b.attempts.length, 1); assert.equal(b.attempts[0].strategy, 'fix'); assert.equal(b.attempts[0].fixStrategy, 'targeted'); assert.equal(b.attempts[0].result, 'started'); assert.equal(b.attempts[0].step, 's2');
+  assert.equal(b.pipeline.session, ''); assert.equal(b.pipeline.runs, 0); assert.ok(b.pipeline.queuedAt);
+  assert.equal((await S.run({ sources: src })).catches.length, 0, 'a Queued build is the dispatcher`s: not watched');
+});
 await t('fixing with no failure, every step done and a PR: back to landing', async () => {
   wipe(); seed([build('f', { status: 'fixing' })]);
   const r = await S.run({ sources: facts({}) });

@@ -91,9 +91,12 @@ Build report: `_claude/builds/reports/fable-rebuild-2-2-both-watchdogs-one.md`.
 ## Known gaps
 
 - Found and fixed the day it went live (follow-up PR): a merged build was failed while main's own CI was still
-  running (it now waits for main's result), and staleness was judged on the last pass instead of a per-minute heartbeat.
+  running (it now waits for main's result), staleness was judged on the last pass instead of a per-minute heartbeat,
+  and a ladder rung was launched directly and refused (it now goes through the Queue).
 
-- `ladder` and `escalate` are covered through the decision table and fake appliers, not against a real launcher.
+- `ladder` puts the build back in the Queue with one step for the rung (tested on a scratch store); the launcher refuses
+  a `fixing` build, so `pipeline.mjs retryFixing` cannot start one. That older retry runner is left as it is.
+- `escalate` is covered through the decision table and a fake applier, not against the real banner and push.
 - `merging` is watched but no builds@1 writer sets it today; it is there for the flow that does.
 - A `landing` build whose PR is open gets a `stalled` failure rather than a lander nudge: the builds@1 lander has no
   per-build tick to call.
