@@ -3,7 +3,7 @@
   "type": "help",
   "id": "gate-help",
   "name": "Gate & rules help",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "The gate plugin's Help mode entries (help@1).",
   "author": "Brett",
   "tags": [
@@ -15,53 +15,78 @@
       {
         "target": "view:gate",
         "title": "Gate & rules",
-        "text": "The rules a PR must pass before it lands, the auto-lander that lands it, and the history of every change to either. Same calls as `axf gate …`, the gate_* and lander_* MCP tools and voice.",
+        "text": "What a build must pass before it lands, who lands it, and everything that changed, in eight tabs. The screen only shows what the server answers and sends your taps to it. Same calls as `axf gate …`, the gate_* and lander_* MCP tools and voice.",
         "kind": "screen"
       },
       {
         "target": "gate",
         "title": "Gate settings",
-        "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, and which tab it opens on."
+        "text": "This plugin's settings under Settings → Plugins: how often the open tab refreshes, how much History keeps, which tab it opens on, how the lists are drawn, and the lander's limits."
+      },
+      {
+        "target": "overview",
+        "title": "Overview",
+        "text": "The pipeline at a glance: the lander, what is landing, the merge line, how many gates and build rules are on. Tap a tile to open its tab."
       },
       {
         "target": "rules",
-        "title": "Rules",
-        "text": "Every gate rule with its on/off switch, severity and settings."
+        "title": "Gates",
+        "text": "Every gate rule a PR must pass before it lands, grouped by what it guards. Tap a rule to change it."
+      },
+      {
+        "target": "gates",
+        "title": "Gates",
+        "text": "Every gate rule a PR must pass before it lands, grouped by what it guards. Tap a rule to change it."
+      },
+      {
+        "target": "build-rules",
+        "title": "Build rules",
+        "text": "Every rule a build has to follow, grouped by when it applies: who does it (the VPS or the build session), its check and fixer, on or off, and how it went last time. VPS rules are done by the VPS and never reach a session's brief."
+      },
+      {
+        "target": "line",
+        "title": "Merge line",
+        "text": "The Merge queue switch, the line's status, the PRs waiting to land with the rule that holds each one, and the last runs."
+      },
+      {
+        "target": "merge-line",
+        "title": "Merge line",
+        "text": "The Merge queue switch, the line's status, the PRs waiting to land with the rule that holds each one, and the last runs."
       },
       {
         "target": "auto-lander",
-        "title": "Auto-lander",
-        "text": "The Merge queue switch, the lander's status, the PRs waiting to land and its last runs."
+        "title": "Lander",
+        "text": "The VPS lander that fixes and lands finished builds by itself: its service, the build landing, every build waiting, and Retry or Fix for one that failed."
+      },
+      {
+        "target": "lander",
+        "title": "Lander",
+        "text": "The VPS lander that fixes and lands finished builds by itself: its service, the build landing, every build waiting, and Retry or Fix for one that failed."
+      },
+      {
+        "target": "limits",
+        "title": "Limits",
+        "text": "The lander's limits: how big one PR may be, how often it retries, how long it waits, and how it merges."
+      },
+      {
+        "target": "triage",
+        "title": "Model triage",
+        "text": "Kept for the VPS model triage gate, which is not built yet. Nothing to change here today."
+      },
+      {
+        "target": "model-triage",
+        "title": "Model triage",
+        "text": "Kept for the VPS model triage gate, which is not built yet. Nothing to change here today."
       },
       {
         "target": "history",
         "title": "History",
-        "text": "Every rule change and lander action: who, when, before and after."
+        "text": "The audit trail: every gate and merge line change, every build rule change, and every check or fix the VPS ran."
       },
       {
-        "target": "rule",
-        "title": "Rule",
-        "text": "The rule's name; with two lines a row, what it checks underneath. Tap the row to open its settings."
-      },
-      {
-        "target": "checks",
-        "title": "Checks",
-        "text": "What the rule looks at: CI, tests, theme, controls, UI Review, a clash with main, or a policy."
-      },
-      {
-        "target": "severity",
-        "title": "Severity",
-        "text": "Block: the PR waits until it passes. Warn: it lands and History notes it. Info: only recorded."
-      },
-      {
-        "target": "run-by",
-        "title": "Run by",
-        "text": "Who evaluates the rule: the console now, axf-molly once that container owns the gate. A rule is never run by both."
-      },
-      {
-        "target": "on",
-        "title": "On",
-        "text": "Switches the rule on or off at once. Off rules are skipped for every PR."
+        "target": "show",
+        "title": "Show",
+        "text": "Pick what the list holds. On Gates: every rule, only the ones on, or only the ones off. On History: which of the three audit lists to read."
       },
       {
         "target": "pr",
@@ -79,91 +104,89 @@
         "text": "Puts every gate rule back to its default. It asks first; History keeps what was there."
       },
       {
+        "target": "reset-this-rule",
+        "title": "Reset this rule",
+        "text": "Puts this one rule back to its default. It asks first; History keeps what was there."
+      },
+      {
+        "target": "title",
+        "title": "Title",
+        "text": "The rule's name in every list."
+      },
+      {
+        "target": "what-it-checks",
+        "title": "What it checks",
+        "text": "What the rule looks at, in plain words. It shows under the rule's name and in the reason a PR is held."
+      },
+      {
+        "target": "severity",
+        "title": "Severity",
+        "text": "Block: the PR waits until it passes. Warn: it lands and History notes it. Info: only recorded."
+      },
+      {
+        "target": "run-by",
+        "title": "Run by",
+        "text": "Who evaluates the rule: the console now, axf-molly once that container owns the gate. A rule is never run by both."
+      },
+      {
+        "target": "on",
+        "title": "On",
+        "text": "Switches the rule on or off at once. Off rules are skipped."
+      },
+      {
         "target": "save",
         "title": "Save",
-        "text": "Saves the changed fields. The change is written to History."
+        "text": "Sends the changed fields to the server. The change is written to History."
       },
       {
-        "target": "merge-queue",
-        "title": "Merge queue",
-        "text": "On: ready PRs go through the stacked merge queue and the one-at-a-time lander is off. Off (the default): the auto-lander lands each finished build one at a time, main merged in first. Takes effect at once."
+        "target": "add-a-policy",
+        "title": "Add a policy",
+        "text": "A new custom gate rule: an id, a title, what it checks and a severity."
       },
       {
-        "target": "land-now",
-        "title": "Land now",
-        "text": "Puts the selected PR at the head of the line in the current mode. It asks first and still has to pass every rule; nothing is merged directly."
+        "target": "add-policy",
+        "title": "Add policy",
+        "text": "Adds the custom rule. It starts on; switch it off or change it from its row."
       },
       {
-        "target": "land-next",
-        "title": "Land next",
-        "text": "Puts this PR at the head of the line. It asks first and still has to pass every rule."
+        "target": "id",
+        "title": "Id",
+        "text": "The rule's id: lower case, digits and dashes. It can't be changed later."
       },
       {
-        "target": "why-pause",
-        "title": "Why pause",
-        "text": "Optional: why you pause the lander. It shows on the status card, in History and in the alert."
+        "target": "who",
+        "title": "Who",
+        "text": "Show the rules the VPS does, the ones the session does, or all of them."
       },
       {
-        "target": "pause",
-        "title": "Pause",
-        "text": "Stops the lander from starting anything new; what is landing now finishes. Resume carries on."
+        "target": "when",
+        "title": "When",
+        "text": "When the rule applies: before launch, in the brief, after the build, or at the gate before the PR lands."
       },
       {
-        "target": "resume",
-        "title": "Resume",
-        "text": "Starts the lander again in its current mode."
+        "target": "kind",
+        "title": "Kind",
+        "text": "Mechanical: a check or fixer can do it. Judgement: it needs reasoning."
       },
       {
-        "target": "show",
-        "title": "Show",
-        "text": "Which History entries to list: all, rule changes, or lander actions."
+        "target": "state",
+        "title": "State",
+        "text": "Filter by state. On Build rules: rules that are on or off. On Merge line: where a PR is in the line (waiting, held, testing, merging, kicked, skipped)."
       },
       {
-        "target": "held-by",
-        "title": "Held by",
-        "text": "The gate rule that keeps this PR from landing."
+        "target": "search",
+        "title": "Search",
+        "text": "Find build rules by id, title or text."
       },
       {
-        "target": "why",
-        "title": "Why",
-        "text": "Why the PR waits, in plain words."
+        "target": "add-a-rule",
+        "title": "Add a rule",
+        "text": "Opens the rule dialog for a new build rule."
       },
       {
-        "target": "result",
-        "title": "Result",
-        "text": "How the run ended: landed, landing, idle, skipped or error."
-      },
-      {
-        "target": "refresh-every-seconds",
-        "title": "Refresh every (seconds)",
-        "text": "How often the open Gate & rules tab asks the lander again (5 to 600)."
-      },
-      {
-        "target": "history-size-entries-kept",
-        "title": "History size (entries kept)",
-        "text": "How many History entries are kept; the oldest go first (50 to 20000)."
-      },
-      {
-        "target": "tab-it-opens-on",
-        "title": "Tab it opens on",
-        "text": "The tab Gate & rules opens on, unless you were on another one last time."
-      },
-      {
-        "target": "gate.view",
-        "title": "Show the lists as",
-        "text": "How the gate's lists are drawn: a grid with two lines a row, cards (best on a phone), or a compact one-line grid. Unset, it follows the skin."
-      },
-      {
-        "target": "build-rules",
-        "title": "Build rules",
-        "text": "Every rule a build has to follow, in one list: who does it (the VPS or the build session), when, its check and fixer, on or off, and how it went last time. VPS rules are done by the VPS and never reach a session's brief, so nothing is done twice. Same as `axf gate build-rules …`, the gate_build_rules_* MCP tools and voice (gate.build-rules.*).",
-        "kind": "tab"
-      },
-      {
-        "target": "view:gate/tab:build-rules",
-        "title": "Build rules tab",
-        "text": "Open it with console_show view:gate/tab:gate.tabs=build-rules or the voice action gate.build-rules.open. A rule's History opens with gate.build-rules.open:<rule>.",
-        "kind": "screen"
+        "target": "edit",
+        "title": "Edit",
+        "text": "Opens the rule dialog for this rule."
       },
       {
         "target": "the-rule",
@@ -171,14 +194,19 @@
         "text": "The words a build session reads in its brief, or what the VPS enforces. Keep it to what has to happen."
       },
       {
+        "target": "note",
+        "title": "Note",
+        "text": "Why the rule exists or who asked for it. It is never sent to a session."
+      },
+      {
         "target": "who-does-it",
         "title": "Who does it",
         "text": "The VPS: it is run by the dispatcher, the end hook or the gate, with its check and fixer, and never reaches a brief. The build session: it goes into the brief block you pick."
       },
       {
-        "target": "when",
-        "title": "When",
-        "text": "When the VPS acts on it: before launch, in the brief, after the build, or at the gate before the PR lands."
+        "target": "check",
+        "title": "Check",
+        "text": "How the rule is checked: a command, a checker id, or empty for none."
       },
       {
         "target": "fixer",
@@ -196,19 +224,39 @@
         "text": "Build sessions only, sessions with Brett only, or both."
       },
       {
+        "target": "builds",
+        "title": "Builds",
+        "text": "Limit a session rule to builds that change UI, to builds that don't, or leave it for every build. On the Lander tab: every build waiting to land."
+      },
+      {
         "target": "only-when-the-build-mentions",
         "title": "Only when the build mentions",
         "text": "Comma-separated words. The rule goes into a build's brief only when its title or text names one of them; empty = every build."
       },
       {
-        "target": "who",
-        "title": "Who",
-        "text": "Show the rules the VPS does, the ones the session does, or all of them."
+        "target": "cancel",
+        "title": "Cancel",
+        "text": "Closes the dialog without saving."
+      },
+      {
+        "target": "delete",
+        "title": "Delete",
+        "text": "Deletes the build rule. It asks first; History keeps the rule."
+      },
+      {
+        "target": "build",
+        "title": "Build",
+        "text": "The build id the tool works on."
       },
       {
         "target": "phase",
         "title": "Phase",
         "text": "Which rules to run for the build: before launch, after the build, or at the gate."
+      },
+      {
+        "target": "only-these-rules",
+        "title": "Only these rules",
+        "text": "Rule ids, comma separated, to run only those. Empty runs every rule of the phase."
       },
       {
         "target": "dry-run",
@@ -218,12 +266,27 @@
       {
         "target": "run-now",
         "title": "Run now",
-        "text": "Runs the build's rules now: checks, fixes what fails in the build's worktree (committed on its branch), checks again, and writes it all to History."
+        "text": "On Build rules: runs the build's rules now, fixes what fails in the build's worktree (committed on its branch), checks again and writes it all to History. On Lander and Overview: asks the lander for a round now; it runs within a minute."
       },
       {
-        "target": "add-a-rule",
-        "title": "Add a rule",
-        "text": "Opens the rule dialog for a new build rule."
+        "target": "build-title",
+        "title": "Build title",
+        "text": "The build's title. Rules that only apply when a build mentions a word look here."
+      },
+      {
+        "target": "build-text",
+        "title": "Build text",
+        "text": "The build's description, searched the same way as the title."
+      },
+      {
+        "target": "changes-ui",
+        "title": "Changes UI",
+        "text": "Whether the build changes UI. UI builds get the look rules; leave it to decide from the text."
+      },
+      {
+        "target": "preview-brief",
+        "title": "Preview brief",
+        "text": "Shows exactly what a build session's brief would get from the build rules: only session rules, never VPS rules. It changes nothing."
       },
       {
         "target": "last-result",
@@ -231,53 +294,226 @@
         "text": "How the rule went the last time the VPS ran it: pass, fixed, fail or skipped (its checker runs elsewhere)."
       },
       {
-        "target": "cli:gate/build-rules",
-        "title": "axf gate build-rules",
-        "text": "The CLI: list, get, add, edit, on, off, delete (two-step), history, runs, run <build> --phase before|after|gate [--dry-run], brief <build>. Also node apps/console-web/plugins/gate/build-rules.mjs.",
-        "kind": "control"
+        "target": "merge-queue",
+        "title": "Merge queue",
+        "text": "On: ready PRs go through the stacked merge queue and the one-at-a-time lander is off. Off (the default): each finished build lands one at a time, main merged in first, clashes fixed, then landed. It takes effect at once and is written to History."
       },
       {
-        "target": "auto-lander-server",
-        "title": "Server auto-lander",
-        "text": "The VPS fixes and lands finished builds by itself, every minute: merges main into a clash, starts a fix session for red CI, sends green PRs to the merge queue. After 3 failed tries of one kind it stops and puts a red item in the systems check with Fix.",
-        "kind": "screen"
+        "target": "why-pause",
+        "title": "Why pause",
+        "text": "Optional: why you pause the line. It shows on the status tile, in History and in the alert."
       },
       {
-        "target": "button:gate-al-fix",
-        "title": "Fix",
-        "text": "Resets the selected build's attempts and starts a fix session for it on the next tick, whatever CI says.",
-        "kind": "control"
+        "target": "pause",
+        "title": "Pause",
+        "text": "Stops the merge line from starting anything new; what is landing now finishes. Resume carries on."
+      },
+      {
+        "target": "resume",
+        "title": "Resume",
+        "text": "Starts the merge line again in its current mode."
+      },
+      {
+        "target": "land-next",
+        "title": "Land next",
+        "text": "Puts this PR at the head of the line. It asks first and still has to pass every rule; nothing is merged directly."
+      },
+      {
+        "target": "land-now",
+        "title": "Land now",
+        "text": "Puts a PR at the head of the line in the current mode. It asks first and still has to pass every rule; nothing is merged directly."
+      },
+      {
+        "target": "check-this-pr",
+        "title": "Check this PR",
+        "text": "Shows whether this PR can land, rule by rule. It changes nothing."
+      },
+      {
+        "target": "result",
+        "title": "Result",
+        "text": "Filter by how it ended. Merge line runs: landed, landing, idle or error. Build rule runs: pass, fixed, fail or skipped."
+      },
+      {
+        "target": "how-many",
+        "title": "How many",
+        "text": "How many of the last runs to list."
+      },
+      {
+        "target": "held-by",
+        "title": "Held by",
+        "text": "The gate rule that keeps this PR from landing."
+      },
+      {
+        "target": "why",
+        "title": "Why",
+        "text": "Why the PR waits, in plain words."
+      },
+      {
+        "target": "pause-lander",
+        "title": "Pause lander",
+        "text": "Pauses the VPS lander: nothing new is merged, fixed or landed until you resume it. It asks first."
+      },
+      {
+        "target": "resume-lander",
+        "title": "Resume lander",
+        "text": "Starts the VPS lander again."
       },
       {
         "target": "button:gate-al-retry",
         "title": "Retry",
-        "text": "Resets the selected build's attempts and escalation; the next tick tries again from attempt 1.",
+        "text": "Makes the build's next attempt due now instead of after its wait. Only a failed build can be retried; the lander says when.",
         "kind": "control"
       },
       {
-        "target": "cli:gate/auto-lander",
-        "title": "axf gate auto-lander",
-        "text": "status, show <build>, run [--now], retry <build>, fix <build>, pause, resume, settings, set <key> <value>. Same as REST /api/plugins/gate/auto-lander and MCP gate_auto_lander_*.",
+        "target": "retry",
+        "title": "Retry",
+        "text": "Makes the build's next attempt due now instead of after its wait. Only a failed build can be retried; the lander says when."
+      },
+      {
+        "target": "button:gate-al-fix",
+        "title": "Fix now",
+        "text": "Starts a fix session for the build on the next round, whatever CI says. It asks first. Only a failed build can be fixed; the lander says when.",
         "kind": "control"
       },
       {
-        "target": "fix-and-land-by-itself",
-        "title": "Fix and land by itself",
-        "text": "On: the server auto-lander merges main in, starts fix sessions and lands builds by itself every minute. Off: it still reads every build but changes nothing.",
-        "kind": "control"
-      },
-      {
-        "target": "push-to-my-phone-when-it-gives-up",
-        "title": "Push to my phone when it gives up",
-        "text": "One phone push per build the auto-lander gives up on (after the set number of failed tries). The systems check banner item shows either way.",
-        "kind": "control"
+        "target": "fix-now",
+        "title": "Fix now",
+        "text": "Starts a fix session for the build on the next round, whatever CI says. It asks first. Only a failed build can be fixed; the lander says when."
       },
       {
         "target": "land-by-itself",
         "title": "Land by itself",
-        "text": "Turns “Land by itself” on or off. It takes effect straight away and is remembered. Part of Gate & rules.",
-        "kind": "toggle",
-        "draft": true
+        "text": "On: the lander merges main in, starts fix sessions and lands builds by itself every minute. Off: it still reads every build but opens, merges and fixes nothing."
+      },
+      {
+        "target": "lines-one-pr-may-carry",
+        "title": "Lines one PR may carry",
+        "text": "The size cap. A build whose steps change more lines than this lands as 2, 3 or more PRs, one at a time, in order."
+      },
+      {
+        "target": "re-runs-of-a-red-ci",
+        "title": "Re-runs of a red CI",
+        "text": "How many times the failed jobs are re-run on the same head before a red CI counts (flaky checks). 0 to 5."
+      },
+      {
+        "target": "first-wait-minutes",
+        "title": "First wait (minutes)",
+        "text": "How long the lander waits before the next attempt after a failure."
+      },
+      {
+        "target": "wait-grows-by",
+        "title": "Wait grows by",
+        "text": "Each further wait is the last one times this."
+      },
+      {
+        "target": "longest-wait-minutes",
+        "title": "Longest wait (minutes)",
+        "text": "The wait never grows past this; attempts never stop."
+      },
+      {
+        "target": "post-every-attempt-from",
+        "title": "Post every attempt from",
+        "text": "From this attempt on, each new attempt is posted in the crew chat and on the systems check."
+      },
+      {
+        "target": "start-ci-again-after-minutes",
+        "title": "Start CI again after (minutes)",
+        "text": "A PR whose CI never started is pushed again after this long."
+      },
+      {
+        "target": "ci-times-out-after-minutes",
+        "title": "CI times out after (minutes)",
+        "text": "CI still running after this counts as a failure and is re-run."
+      },
+      {
+        "target": "a-fix-session-times-out-after-minutes",
+        "title": "A fix session times out after (minutes)",
+        "text": "A fix session that pushed nothing in this time is a failed attempt; another starts."
+      },
+      {
+        "target": "merge-method",
+        "title": "Merge method",
+        "text": "How a green PR goes into main: a merge commit, one squashed commit, or a rebase."
+      },
+      {
+        "target": "ci-workflow",
+        "title": "CI workflow",
+        "text": "The workflow file whose run decides green or red."
+      },
+      {
+        "target": "save-limits",
+        "title": "Save limits",
+        "text": "Sends the changed limits to the lander. It checks every value before anything is saved."
+      },
+      {
+        "target": "rule",
+        "title": "Rule",
+        "text": "Only entries for this rule id."
+      },
+      {
+        "target": "pr-number",
+        "title": "PR number",
+        "text": "Only entries for this pull request."
+      },
+      {
+        "target": "action",
+        "title": "Action",
+        "text": "Only entries with this action, for example toggle, set, reset, pause, add or edit."
+      },
+      {
+        "target": "build-id",
+        "title": "Build id",
+        "text": "Only runs for this build."
+      },
+      {
+        "target": "since",
+        "title": "Since",
+        "text": "Only entries from this day on."
+      },
+      {
+        "target": "refresh-every-seconds",
+        "title": "Refresh every (seconds)",
+        "text": "How often the open Gate & rules tab asks the server again (5 to 600)."
+      },
+      {
+        "target": "history-size-entries-kept",
+        "title": "History size (entries kept)",
+        "text": "How many History entries are kept; the oldest go first (50 to 20000)."
+      },
+      {
+        "target": "tab-it-opens-on",
+        "title": "Tab it opens on",
+        "text": "The tab Gate & rules shows first."
+      },
+      {
+        "target": "gate.view",
+        "title": "Show the lists as",
+        "text": "How the gate's lists are drawn: rows with two lines each, cards, or compact one-line rows. Unset, it follows the skin."
+      },
+      {
+        "target": "tab",
+        "title": "Tab",
+        "text": "Which tab of the Gate screen to open."
+      },
+      {
+        "target": "open-tab",
+        "title": "Open tab",
+        "text": "Opens that tab of the Gate screen."
+      },
+      {
+        "target": "view:gate/tab:build-rules",
+        "title": "Build rules tab",
+        "text": "Open it with console_show view:gate/tab:gate.tabs=build-rules or the voice action gate.build-rules.open. A rule's detail opens with gate.build-rules.open:<rule>."
+      },
+      {
+        "target": "cli:gate/build-rules",
+        "title": "axf gate build-rules",
+        "text": "The CLI: list, get, add, edit, on, off, delete (two-step), history, runs, run <build> --phase before|after|gate [--dry-run], brief <build>."
+      },
+      {
+        "target": "cli:gate/auto-lander",
+        "title": "axf gate auto-lander",
+        "text": "status, show <build>, run [--now], retry <build>, fix <build>, pause, resume, settings, set <key> <value>. Same as REST /api/plugins/gate/auto-lander and the MCP gate_auto_lander_* tools."
       }
     ],
     "intros": [
@@ -286,15 +522,23 @@
         "title": "Gate & rules",
         "steps": [
           {
-            "say": "Rules: what every PR must pass before it lands. Switch a rule off or change its severity here.",
+            "say": "Overview: the pipeline at a glance. Tap a tile to open its tab.",
+            "target": "overview"
+          },
+          {
+            "say": "Gates: what every PR must pass before it lands. Tap a rule to switch it off or change it.",
             "target": "rules"
           },
           {
-            "say": "Auto-lander: Server is the VPS auto-lander that fixes and lands builds by itself; Merge line is the Merge queue switch and what waits.",
+            "say": "Build rules: what every build follows, and who does it: the VPS or the session.",
+            "target": "build-rules"
+          },
+          {
+            "say": "Merge line and Lander: what is landing, what waits and why.",
             "target": "auto-lander"
           },
           {
-            "say": "History: every change and lander action, with before and after.",
+            "say": "History: every change and run, with before and after.",
             "target": "history"
           }
         ]

@@ -1,5 +1,5 @@
 /**
- * Screenshots of Gate → Auto-lander → Server (the lander, lander@1, Pipeline 2.0) and of the read-only Merge queue view
+ * Screenshots of Gate → Lander (the lander, lander@1, Pipeline 2.0) and of the read-only Merge queue view
  * for UI Review: desktop and phone, one pair per list layout (grid, cards, compact: the gate.view choice) plus one pair of
  * the merge queue, against `vite preview` of dist/ with the routes answered from a fixed fixture (no VPS, no GitHub). Each shot opens the tab through
  * console-control (`view:gate/tab:gate.tabs=auto-lander`) and selects a build row, like the deep link does.
@@ -38,7 +38,8 @@ const ROWS = [
 ];
 const STATUS = {
   ok: true, $axf: 'lander-status@1',
-  service: { lastTick: new Date(Date.now() - 30000).toISOString(), result: 'worked', build: 'p2-status-core', error: '', paused: false, pausedBy: '', pausedAt: '' },
+  service: { lastTick: new Date(Date.now() - 30000).toISOString(), result: 'worked', build: 'p2-status-core', error: '', paused: false, pausedBy: '', pausedAt: '', up: true, state: 'up' },
+  can: { run: true, pause: true, resume: false },
   current: 'p2-status-core', queue: ROWS.map((r) => r.build), builds: ROWS,
   failing: [{ build: 'console-look-axhub-skin', attempt: 4, kind: 'ci-red', why: ROWS[0].failure.why, since: at(12), pr: 733 }],
   escalations: [],
@@ -80,8 +81,8 @@ try {
       say(`${view} ${device}: set gate.view → ${JSON.stringify(set).slice(0, 200)}`);
       await run({ verb: 'open', address: 'view:gate/tab:gate.tabs=auto-lander' });
       await page.waitForSelector('[data-axf-toolbar="gate.auto-lander"]', { timeout: 15_000 });
-      // select + open the escalated build's row (its attempt log), as the escalation banner's deep link does
-      await page.locator('[data-axf-toolbar="gate.auto-lander"] ~ * strong', { hasText: /^console-look-axhub-skin$/ }).first().click({ timeout: 5000 }).catch((e) => say(`row click: ${e.message.split('\n')[0]}`));
+      // open the failing build's row (its steps and status log), as the deep link does
+      await page.locator('[data-axf-target="row:console-look-axhub-skin"] [data-fx-row]').first().click({ timeout: 5000 }).catch((e) => say(`row click: ${e.message.split('\n')[0]}`));
       await sleep(900);
       const file = join(OUT, `auto-lander-${view}-${device}.png`);
       await page.screenshot({ path: file, fullPage: !mobile });

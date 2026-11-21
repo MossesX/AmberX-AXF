@@ -232,6 +232,11 @@ test('status: the merge queue rows are the store rows (read-only)', async () => 
   const store = memoryStore([build([['s1', 'x']], { status: 'running-ci' }), { id: 'q', status: 'building', steps: [] }]);
   const st = await status(r.s, { store });
   assert.deepEqual(st.queue, ['b', 'q']); assert.equal(st.current, 'b'); assert.deepEqual(st.escalations, []);
+  // the lander says what state it is in and what may be pressed; a console only shows it
+  assert.equal(st.service.state, 'down', 'never ticked = down'); assert.deepEqual(st.can, { run: true, pause: true, resume: false });
+  assert.deepEqual(st.builds.map((b) => b.can), [{ retry: false, fix: false }, { retry: false, fix: false }]);
+  const failed = await status(r.s, { store: memoryStore([build([['s1', 'x']], { status: 'failed', failure: { status: 'running-ci', kind: 'ci', why: 'red' } })]) });
+  assert.deepEqual(failed.builds[0].can, { retry: true, fix: true });
   assert.ok(!readFileSync(new URL('../run.mjs', import.meta.url), 'utf8').match(/anthropic|openai|claude-agent-sdk/i), 'no model client in the lander');
 });
 

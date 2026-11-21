@@ -5,12 +5,14 @@
 import { pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'gate';
-export const TABS = ['rules', 'build-rules', 'auto-lander', 'history'] as const;
+/** The view's tabs, in order (gate.mjs TABS: the server's `defaultTab` is one of them). */
+export const TABS = ['overview', 'rules', 'build-rules', 'line', 'auto-lander', 'limits', 'triage', 'history'] as const;
+export const TAB_LABEL: Record<(typeof TABS)[number], string> = { overview: 'Overview', rules: 'Gates', 'build-rules': 'Build rules', line: 'Merge line', 'auto-lander': 'Lander', limits: 'Limits', triage: 'Model triage', history: 'History' };
 export type GateTab = (typeof TABS)[number];
 
 export interface GateRule { id: string; kind: string; enabled: boolean; severity: 'block' | 'warn' | 'info'; owner: string; title: string; description: string; settings: Record<string, unknown>; source?: string; updatedAt?: string; updatedBy?: string }
-export interface RuleSet { rev: number; at: string; rules: GateRule[]; migratedFrom?: { keys: string[] } }
-export interface Verdict { pr: number; pass: boolean; held: boolean; blockedBy: string; reasons: string[]; warnings: string[]; known?: boolean; results: { id: string; verdict: string; reason: string; severity: string }[] }
+export interface RuleSet { rev: number; at: string; rules: GateRule[]; counts?: { total: number; on: number; blocking: number }; enums?: { kinds: string[]; severities: string[]; owners: string[] }; migratedFrom?: { keys: string[] } }
+export interface Verdict { pr: number; pass: boolean; held: boolean; blockedBy: string; reasons: string[]; warnings: string[]; known?: boolean; summary?: string; results: { id: string; verdict: string; reason: string; severity: string }[] }
 export interface Waiting { position: number; pr: number; title: string; build: string; branch: string; state: string; rule: string; reason: string; since: string; url?: string; gate?: { pass: boolean; blockedBy: string; reasons: string[] } }
 export interface Run { startedAt: string; finishedAt: string; result: string; mode: string; reasonText: string; landing: { pr: number; title: string; build: string } | null; merged: number[] }
 export interface LanderStatus { status: string; enabled: boolean; paused: boolean; pause: { why: string; by: string; at: string } | null; mode: string; mergeQueue: boolean; modeSince: string; modeBy: string; landing: { pr: number; title: string; build: string; since: string } | null; counts: { waiting: number; runs: number }; lastRun: Run | null; at: string }
@@ -19,7 +21,7 @@ export interface GateSettings { refreshSec: number; historySize: number; default
 /** build-rule@1 as the list sends it (sources left out, their count kept) with its last run. */
 export interface BuildRule { id: string; title: string; text: string; doer: 'vps' | 'session'; kind: 'mechanical' | 'judgement'; phase: 'before' | 'dispatch' | 'after' | 'gate'; enabled: boolean; check: string; autofix: string; briefBlock: 'look' | 'api' | 'checkpoints' | 'rules'; applies: 'builds' | 'interactive' | 'all'; when: { ui?: boolean; keywords?: string[] }; note?: string; rev: number; updatedAt: string; updatedBy: string; sourceCount?: number; checkKind?: string; last?: BuildRuleRunSummary | null }
 export interface BuildRuleRunSummary { result: 'pass' | 'fixed' | 'fail' | 'skipped'; at: string; build: string; phase: string; detail: string }
-export interface BuildRuleRun extends BuildRuleRunSummary { id: string; by: string; dryRun?: boolean; fix?: { fixer: string; ok: boolean; detail: string; changed: string[] } }
+export interface BuildRuleRun extends BuildRuleRunSummary { id: string; by: string; rule?: string; dryRun?: boolean; fix?: { fixer: string; ok: boolean; detail: string; changed: string[] } }
 export interface BuildRuleHistory { at: string; by: string; action: string; id?: string; rev: number; reason: { title: string; description: string }; before?: Partial<BuildRule>; after?: Partial<BuildRule> }
 export interface BuildRuleEnums { doers: string[]; kinds: string[]; phases: string[]; briefBlocks: string[]; applies: string[]; fixers: string[] }
 export interface BuildRuleList { rev: number; at: string; source: 'live' | 'seed' | 'empty'; counts: { total: number; vps: number; session: number; on: number }; rules: BuildRule[]; enums: BuildRuleEnums }
@@ -51,3 +53,8 @@ export const isTab = (t: unknown): t is GateTab => typeof t === 'string' && (TAB
 export function showTab(tab: GateTab): void { wanted = tab; for (const l of listeners) l(tab); }
 export function takeWantedTab(): GateTab | null { const t = wanted; wanted = null; return t; }
 export function onShowTab(l: Listener): () => void { listeners.add(l); return () => { listeners.delete(l); }; }
+
+/** What a session's brief gets from the build rules (brief-blocks@1, GET build-rules/brief). */
+export interface BriefBlocks { build: string; ui: boolean; text: string; chars: number; tokens: number; picked: string[]; skipped: { id: string; why: string }[] }
+/** One phase run (POST build-rules/run). */
+export interface PhaseRun { pass: boolean; counts: Record<string, number>; runs?: { id: string; result: string; detail: string }[]; worktree?: string }

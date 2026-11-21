@@ -19,11 +19,16 @@
     "defaultTab": {
       "type": "enum",
       "values": [
+        "overview",
         "rules",
+        "build-rules",
+        "line",
         "auto-lander",
+        "limits",
+        "triage",
         "history"
       ],
-      "default": "rules",
+      "default": "overview",
       "title": "Tab it opens on"
     }
   }

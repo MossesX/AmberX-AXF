@@ -148,6 +148,18 @@ try {
     assert.equal(g.run('rules_get', { id: 'nope' }).code, 'not_found');
     assert.equal(g.run('nope').code, 'invalid');
   });
+  t('the server decides, not the caller: toggle flips, settings typed as text take the rule\'s types, lists carry counts', () => {
+    const was = g.run('rules_get', { id: 'toolbars' }).rule.enabled;
+    assert.equal(g.run('rules_toggle', { id: 'toolbars' }).rule.enabled, !was); assert.equal(g.run('rules_toggle', { id: 'toolbars' }).rule.enabled, was);
+    assert.equal(g.run('rules_toggle', { id: 'toolbars', enabled: 'maybe' }).code, 'invalid'); assert.equal(g.run('rules_toggle', { id: 'nope' }).code, 'not_found');
+    const typed = g.run('rules_set', { id: 'merge-queue-only', settings: { depth: '5', autoLand: 'on' } }).rule.settings;
+    assert.equal(typed.depth, 5); assert.equal(typed.autoLand, true);
+    assert.deepEqual(g.run('rules_set', { id: 'ui-review', settings: { holdOn: 'waiting, rejected' } }).rule.settings.holdOn, ['waiting', 'rejected']);
+    assert.deepEqual(g.run('rules_set', { id: 'tests', settings: { commands: '[["node","x.mjs"]]' } }).rule.settings.commands, [['node', 'x.mjs']]);
+    assert.match(g.run('rules_set', { id: 'merge-queue-only', settings: { depth: 'deep' } }).message, /settings\.depth is a number/);
+    assert.match(g.run('rules_set', { id: 'tests', settings: { commands: '[oops' } }).message, /not valid JSON/);
+    const list = g.run('rules_list'); assert.equal(list.counts.total, list.rules.length); assert.ok(list.counts.on <= list.counts.total); assert.ok(list.enums.severities.includes('block'));
+  });
   t('reset is two-step and puts the defaults back', () => {
     const a = g.run('rules_reset', { id: 'theme' }); assert.equal(a.code, 'confirmation_required'); assert.deepEqual(a.affects, ['theme']);
     const b = g.run('rules_reset', { id: 'theme', confirm: a.confirm }); assert.equal(b.ok, true);
@@ -158,10 +170,11 @@ try {
     const v = g.run('check_pr', { pr: 704 }); assert.equal(v.pass, false); assert.equal(v.blockedBy, 'clash');
     const byBranch = g.run('check_pr', { branch: 'claude/help-gate' }); assert.equal(byBranch.pr, 702); assert.equal(byBranch.held, true); assert.ok(byBranch.reasons.some((x) => x.startsWith('ui-review:')));
     const u = g.run('check_pr', { pr: 5 }); assert.equal(u.known, false); assert.equal(u.pass, false);
+    assert.ok(v.summary.endsWith('704 needs a fix.')); assert.ok(byBranch.summary.endsWith('702 waits.')); assert.match(u.summary, /doesn't know this PR yet/);
     assert.equal(g.run('check_pr', { snapshot: { number: 9, ci: 'success' } }).pass, true);
   });
   t('settings: defaults, validation, saved', () => {
-    assert.deepEqual(g.run('settings_get').settings, { refreshSec: 30, historySize: 2000, defaultTab: 'rules' });
+    assert.deepEqual(g.run('settings_get').settings, { refreshSec: 30, historySize: 2000, defaultTab: 'overview' });
     assert.equal(g.run('settings_set', { settings: { refreshSec: 2 } }).code, 'invalid');
     assert.equal(g.run('settings_set', { refreshSec: '60' }).settings.refreshSec, 60);
   });

@@ -156,6 +156,18 @@ t('command checks never run at launch: a before / after command rule runs at the
 
 // ------------------------------------------------------------------ the dispatcher's brief
 
+t('the server fills in a new rule and drops a fixer nobody would run', () => {
+  reset();
+  const g = createGate();
+  const bare = g.run('build_rules_add', { rule: { id: 'bare-rule', title: 'Bare', text: 'Bare.' }, by: 'test' });
+  assert.equal(bare.ok, true, bare.message); assert.equal(bare.rule.doer, 'session'); assert.equal(bare.rule.phase, 'dispatch'); assert.equal(bare.rule.briefBlock, 'rules');
+  const withFixer = g.run('build_rules_add', { rule: { id: 'fixer-rule', title: 'F', text: 'F.', doer: 'session', kind: 'judgement', phase: 'dispatch', autofix: 'home-card' }, by: 'test' });
+  assert.equal(withFixer.ok, true, withFixer.message); assert.equal(withFixer.rule.autofix, '');
+  const vps = g.run('build_rules_add', { rule: { id: 'vps-rule', title: 'V', text: 'V.', doer: 'vps', kind: 'mechanical', phase: 'after', autofix: 'home-card' }, by: 'test' });
+  assert.equal(vps.rule.autofix, 'home-card');
+  assert.equal(g.run('build_rules_edit', { id: 'vps-rule', patch: { doer: 'session', phase: 'dispatch' }, by: 'test' }).rule.autofix, '');
+});
+
 t("the dispatcher's brief carries the store's session rules and never a VPS rule", async () => {
   reset();
   const g = createGate();
