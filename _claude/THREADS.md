@@ -840,38 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 12:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:04 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · lander
-- 2026-11-20 12:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:05 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 12:07 UTC · `ci-speed-ci-failure-reports-lean` added (0 steps) (all) · plan-studio-2
-- 2026-11-20 12:07 UTC · `ci-speed-ci-failure-reports-lean` → splitting (all) · orchestrator
-- 2026-11-20 12:08 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · orchestrator
-- 2026-11-20 12:09 UTC · `pipeline-2-0-fully-autonomous-buil` note (all) · watchdog
-- 2026-11-20 12:09 UTC · `ci-speed-ci-failure-reports-lean` note (all) · orchestrator
-- 2026-11-20 12:10 UTC · `pipeline-2-0-fully-autonomous-buil` → failed, note (all) · watchdog
-- 2026-11-20 12:11 UTC · `pipeline-2-0-fully-autonomous-buil` → split, note (all) · watchdog
-- 2026-11-20 12:11 UTC · `pipeline-2-0-fully-autonomous-buil` → archived (all) · cli
-- 2026-11-20 12:12 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci, note (all) · lander
-- 2026-11-20 12:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` → failed, note (all) · lander
-- 2026-11-20 12:17 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:19 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 12:23 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 12:24 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
-- 2026-11-20 12:25 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
-- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr, note (all) · lander
-- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` PR 861 (all) · lander
-- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
-- 2026-11-20 12:34 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
-- 2026-11-20 12:35 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:42 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:52 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 12:55 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 12:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 13:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 13:02 UTC · `fable-full-audit-ui-overhaul-conso` → merging-main (all) · lander
@@ -1240,6 +1208,38 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
 - 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
 - 2026-11-21 22:06 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · builds-live
+- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
+- 2026-11-21 22:06 UTC · `phone-connect-open-straight-phone-no-tap` → running, note (all) · builds-live
+- 2026-11-21 22:06 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
+- 2026-11-21 22:07 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
+- 2026-11-21 22:07 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · pipeline
+- 2026-11-21 22:08 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
+- 2026-11-21 22:09 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · pipeline
+- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
+- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
+- 2026-11-21 22:19 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · pipeline
+- 2026-11-21 22:25 UTC · `icon-picker-every-banner-settings-widget` → fixing, note (all) · watchdog
+- 2026-11-21 22:25 UTC · `rip-out-plan-studio-1-keep-only-plan` → landing, note (all) · watchdog
+- 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` added (3 steps) (all) · amber-voice
+- 2026-11-21 22:28 UTC · `approval-rules-save-apply-default-don-t` → queued (all) · amber-voice
+- 2026-11-21 22:29 UTC · `approval-rules-save-apply-default-don-t` → running, note (all) · pipeline
+- 2026-11-21 22:29 UTC · `approval-rules-save-apply-default-don-t` branch claude/approval-rules-save-apply-default-don-t (all) · pipeline
+- 2026-11-21 22:30 UTC · `approval-rules-save-apply-default-don-t` note (all) · orchestrator
+- 2026-11-21 22:31 UTC · `approval-rules-save-apply-default-don-t` note (all) · amber-voice
+- 2026-11-21 22:31 UTC · `rename-gate-rules-to-vps-configuration` note (all) · orchestrator
+- 2026-11-21 22:31 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
+- 2026-11-21 22:31 UTC · `approval-rules-vps-configuration-veto` note (all) · orchestrator
+- 2026-11-21 22:33 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · orchestrator
+- 2026-11-21 22:38 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
+- 2026-11-21 22:46 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
+- 2026-11-21 22:46 UTC · `one-true-source-get-redundant-settings` note (all) · pipeline
+- 2026-11-21 22:47 UTC · `one-true-source-get-redundant-settings` note (all) · orchestrator
+- 2026-11-21 22:48 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
+- 2026-11-21 22:48 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
+- 2026-11-21 22:58 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · reconciler
+- 2026-11-21 22:58 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
+- 2026-11-21 23:05 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · watchdog
+- 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
