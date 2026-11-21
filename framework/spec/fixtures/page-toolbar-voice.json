@@ -473,49 +473,49 @@
       "asset": "feature-matrix"
     },
     {
-      "phrase": "press land now on the gate toolbar",
+      "phrase": "press land now on the vps configuration toolbar",
       "toolbar": "gate",
       "button": "land-now",
       "address": "toolbar:gate/button:land-now",
       "asset": "gate"
     },
     {
-      "phrase": "press pause lander on the gate toolbar",
+      "phrase": "press pause lander on the vps configuration toolbar",
       "toolbar": "gate",
       "button": "pause",
       "address": "toolbar:gate/button:pause",
       "asset": "gate"
     },
     {
-      "phrase": "press resume lander on the gate toolbar",
+      "phrase": "press resume lander on the vps configuration toolbar",
       "toolbar": "gate",
       "button": "resume",
       "address": "toolbar:gate/button:resume",
       "asset": "gate"
     },
     {
-      "phrase": "press run auto-lander on the gate toolbar",
+      "phrase": "press run auto-lander on the vps configuration toolbar",
       "toolbar": "gate",
       "button": "auto",
       "address": "toolbar:gate/button:auto",
       "asset": "gate"
     },
     {
-      "phrase": "press build rules on the gate toolbar",
+      "phrase": "press build rules on the vps configuration toolbar",
       "toolbar": "gate",
       "button": "build-rules",
       "address": "toolbar:gate/button:build-rules",
       "asset": "gate"
     },
     {
-      "phrase": "press history on the gate toolbar",
+      "phrase": "press history on the vps configuration toolbar",
       "toolbar": "gate",
       "button": "history",
       "address": "toolbar:gate/button:history",
       "asset": "gate"
     },
     {
-      "phrase": "press reset rules on the gate toolbar",
+      "phrase": "press reset rules on the vps configuration toolbar",
       "toolbar": "gate",
       "button": "reset",
       "address": "toolbar:gate/button:reset",

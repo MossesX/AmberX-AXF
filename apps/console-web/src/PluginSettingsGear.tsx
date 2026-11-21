@@ -39,7 +39,7 @@ export const pluginSettingsAddress = (tab: string) => `view:settings/tab:setting
 export interface PluginSettingsGearProps {
   /** plugin folder (apps/console-web/plugins/<folder>) */
   folder: string;
-  /** plugin display name, for the label ("Gate & rules settings") */
+  /** plugin display name, for the label ("VPS Configuration settings") */
   name: string;
   /** the plugin's Settings → Plugins sub-tab id (its settingsTabs[0].id; the folder when it uses the default tab) */
   tab: string;

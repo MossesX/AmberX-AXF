@@ -1,5 +1,5 @@
 /**
- * Gate → Auto-lander: two tabs in one framework TabGroup (settings id `gate.auto-lander.tabs`):
+ * VPS Configuration → Auto-lander: two tabs in one framework TabGroup (settings id `gate.auto-lander.tabs`):
  *   Server       the lander (lander@1, deploy/lander/run.mjs on the VPS): service status, the build landing, every build
  *                waiting to land, read from the builds store (`grid:gate.auto-lander`, one row a build:
  *                `grid:gate.auto-lander/row:<build>`) with its live status (failed shows the attempt), its PRs, and its

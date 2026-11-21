@@ -93,7 +93,7 @@ def ensure(services: Any, status: Callable[[], dict[str, Any]], fix: Callable[[s
                       "breaks": "Builds the server couldn't fix stop: their PRs don't land until someone looks.",
                       "autoFix": {"label": "Reset and fix now", "mode": "ask", "run": lambda: fix_all(status(), fix)},
                       "instructions": ["Press Fix (Reset and fix now): the attempts are reset and a fix session starts on the next tick.",
-                                       "Or open Builds → Gate & rules → Auto-lander, read the attempt log, and Retry one build.",
+                                       "Or open Builds → VPS Configuration → Auto-lander, read the attempt log, and Retry one build.",
                                        "CLI: node deploy/lander/run.mjs status · fix <build>; MCP gate-auto-lander_retry."]}, OWNER)
     except Exception:  # noqa: BLE001 — the plugin works without its check
         return False
