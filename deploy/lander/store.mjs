@@ -4,9 +4,13 @@
  * it changes, with `at` and `by`, and read back so a refused write is never silent.
  *
  * Fields the lander writes (Pipeline 2.0 contract; the builds@1 schema itself belongs to p2-status-core):
- *   build  status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, why? }], attempt, failure, pr,
- *          landing { split, merged[pr], closed[pr], reruns { head, n }, rules { head, ok, failing }, ciKick { head, at },
- *                    mainPull { head, at } (main pulled again before the merge) }
+ *   build  status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, why?, reset? }], failure, pr,
+ *          attempt (while landing: the landing run's count, because the contract's attempt ceiling reads this field),
+ *          landing { attempt (this landing run's failures: the lander's own count, whatever the dispatcher counted
+ *                    before the build was complete), split, merged[pr], closed[pr], reruns { head, n }, rules { head, ok, failing | error },
+ *                    ciKick { head, at }, fullKick { head, at }, mainPull { head, at } (main pulled again before the
+ *                    merge), green { head, at } (the head CI and the rules passed on), fixes { pr, n } (fix sessions
+ *                    this PR has had), lastMerge { pr, sha, head, at, byHand?, ci? } }
  *   step   status, prNumber, statusAt, statusBy, statusLog[…]
  *          mergedAt, landed { pr, sha, mergedAt, ci, ciAt } with `landed` (done-means-merged@1 evidence); failedFrom with `failed`
  * applyChange() is pure; makeStore() binds it to the real store, memoryStore() to a list (tests, dry runs).
@@ -19,24 +23,28 @@ const str = (v, n = 300) => (typeof v === 'string' ? v.slice(0, n) : v == null ?
 const clone = (v) => JSON.parse(JSON.stringify(v));
 
 /**
- * One change to a build → { build, refused: [why] }. `ch` = { status, group, attempt, failure (null clears), landing
+ * One change to a build → { build, refused: [why] }. `ch` = { status, group, reset, attempt, failure (null clears), landing
  * (merged into), pr, note, steps: [{ id, status, prNumber }] }. A backward move is refused (forward-only), the rest of
  * the change still applies.
  */
 export function applyChange(build, ch = {}, { at = new Date().toISOString(), by = 'lander' } = {}) {
   const b = clone(build || {}); const refused = [];
   const log = (list, entry, max) => [...(Array.isArray(list) ? list : []), entry].slice(-max);
+  // every status change has its own moment: two changes in one millisecond (or one tick of a test clock) would carry
+  // the same statusAt, which the store's guard reads as "not stamped" and stamps over (the attempt with it)
+  const stamp = b.statusAt && at <= b.statusAt ? new Date(Date.parse(b.statusAt) + 1).toISOString() : at;
   if (ch.status && ch.status !== b.status) {
     if (L.canMove(b.status, ch.status, { group: ch.group === true })) {
       // pipeline-2@1: a failed build records the status it failed in (failedFrom), so it keeps the one active place and
       // the watchdog and the table see where; it is dropped once the build leaves failed
       if (ch.status === 'failed') b.failedFrom = b.status; else delete b.failedFrom;
-      b.status = ch.status; b.statusAt = at; b.statusBy = by;
-      b.statusLog = log(b.statusLog, { status: ch.status, at, by, ...(ch.status === 'failed' ? { attempt: ch.attempt ?? b.attempt ?? 0 } : {}), ...(ch.note ? { why: str(ch.note, 300) } : {}) }, LOG_MAX);
+      b.status = ch.status; b.statusAt = stamp; b.statusBy = by;
+      // a marked reset (a stopped build goes on, with its reason): the one move the contract lets out of `failed` at the attempt ceiling
+      b.statusLog = log(b.statusLog, { status: ch.status, at: stamp, by, ...(ch.status === 'failed' ? { attempt: ch.landing?.attempt ?? ch.attempt ?? b.landing?.attempt ?? 0 } : {}), ...(ch.note ? { why: str(ch.note, 300) } : {}), ...(ch.reset === true && ch.note ? { reset: true } : {}) }, LOG_MAX);
       if (ch.status === 'landed') b.landedAt = at;
     } else refused.push(`${b.id}: ${b.status} → ${ch.status} goes back`);
   } else if (ch.status && ch.group === true && ch.status === b.status) {
-    b.statusAt = at; b.statusBy = by; b.statusLog = log(b.statusLog, { status: ch.status, at, by, why: str(ch.note || 'next PR', 300) }, LOG_MAX);
+    b.statusAt = stamp; b.statusBy = by; b.statusLog = log(b.statusLog, { status: ch.status, at: stamp, by, why: str(ch.note || 'next PR', 300) }, LOG_MAX);
   }
   if (ch.attempt !== undefined) b.attempt = Math.max(0, Number(ch.attempt) || 0);
   if (ch.failure !== undefined) { if (ch.failure) b.failure = clone(ch.failure); else delete b.failure; }
@@ -108,7 +116,7 @@ export async function makeStore({ by = 'lander', repo } = {}) {
           const r = applyChange(x.builds[i], ch, { by }); refused = r.refused;
           x.builds[i] = r.build; // whole record: a cleared field (failure: null, failedFrom) must go, not linger
           return x;
-        }, { by, action: 'lander', note: `${id}${ch.status ? ` → ${ch.status}` : ''}${ch.attempt ? ` (attempt ${ch.attempt})` : ''}` });
+        }, { by, action: 'lander', note: `${id}${ch.status ? ` → ${ch.status}` : ''}${ch.landing?.attempt ? ` (landing attempt ${ch.landing.attempt})` : ''}` });
       } catch (e) { return { ok: false, why: `store write failed: ${str(e.message, 300)}`, refused }; }
       if (missing) return { ok: false, why: `no build ${id}`, refused };
       const after = find(S.readStoreNow(), id);

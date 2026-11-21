@@ -332,7 +332,7 @@ def health_probe(live: dict[str, Any] | None = None, report: dict[str, Any] | No
         return {"status": "warn", "summary": "The builds reconciler hasn't run lately: PRs and branches may not be linked to their builds.", "details": details + [
             "It runs at session start and every 10 min (cron axf-builds-reconcile). Run it: `node framework/cli/builds-reconcile.mjs --apply`."]}
     if report.get("error"):
-        return {"status": "warn", "summary": f"The builds reconciler couldn't read GitHub: {str(report.get('error'))[:200]}", "details": details}
+        return {"status": "warn", "summary": f"The builds reconciler has a problem: {str(report.get('error'))[:200]}", "details": details}
     if prs or branches:
         lines = [f"PR #{p.get('number')} {p.get('branch')}: {p.get('title')}" for p in prs[:12]] + [f"branch {b.get('branch')} ({b.get('ahead')} commits, no PR)" for b in branches[:12]]
         return {"status": "warn", "summary": f"{len(prs)} open PR(s) and {len(branches)} branch(es) belong to no build.", "details": details + lines + [

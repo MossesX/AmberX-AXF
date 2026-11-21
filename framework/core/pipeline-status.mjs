@@ -237,37 +237,68 @@ const strs = (v, n = 120, max = 20) => (Array.isArray(v) ? v.map((x) => str(x, n
 const headAt = (v) => { const x = obj(v); return x ? { head: str(x.head, 64), at: str(x.at, 40) } : null; };
 
 /**
- * A Pipeline 2.0 build's landing record (deploy/lander): { split, merged[pr], closed[pr], reruns { head, n },
- * rules { head, ok, failing, fixed, skipped, at }, ciKick { head, at }, fullKick { head, at }, mainPull { head, at } (main
- * moved after CI went green: the newest main was pulled into the PR again and CI runs on that head), lastMerge { pr, sha,
- * head, at } (the last PR merged: the evidence `landed` carries) }. A cleared part (null)
- * is left out. → the record, or null when there is nothing to keep.
+ * A Pipeline 2.0 build's landing record (deploy/lander): { attempt (failures of this landing run: the lander's own
+ * count, never the build's `attempt`, which is the dispatcher's), split, merged[pr], closed[pr], reruns { head, n },
+ * rules { head, ok, failing, fixed, skipped, at } (skipped: true or the reason; rules that could not run carry `error`,
+ * `tail` and `tries`, a failing run its `detail`), ciKick { head, at }, fullKick { head, at }, mainPull { head, at } (main
+ * moved after CI went green: the newest main was pulled into the PR again and CI runs on that head), green { head, at }
+ * (the head CI and the rules passed on: the only head that merges), fixes { pr, n } (fix sessions the PR in flight has
+ * had), lastMerge { pr, sha, head, at } (the last PR merged: the evidence `landed` carries; a PR merged by hand also
+ * has `byHand`, `by` and what GitHub says about its CI, `ci`) }. A cleared part (null) is left out.
+ * → the record, or null when there is nothing to keep.
  */
 export function normLanding(l) {
   const x = obj(l); if (!x) return null;
   const out = {};
+  const count = (v) => Math.max(0, Math.floor(Number(v) || 0));
+  if (count(x.attempt)) out.attempt = count(x.attempt);
   if (x.split === true) out.split = true;
   for (const k of ['merged', 'closed']) { const v = nums(x[k]); if (v.length) out[k] = v; }
-  const rr = obj(x.reruns); if (rr && str(rr.head)) out.reruns = { head: str(rr.head, 64), n: Math.max(0, Math.floor(Number(rr.n) || 0)) };
-  const ru = obj(x.rules); if (ru && str(ru.head)) out.rules = { head: str(ru.head, 64), ok: ru.ok === true, failing: strs(ru.failing), fixed: strs(ru.fixed), ...(ru.skipped === true ? { skipped: true } : {}), at: str(ru.at, 40) };
-  for (const k of ['ciKick', 'fullKick', 'mainPull']) { const v = headAt(x[k]); if (v?.head) out[k] = v; }
-  const lm = obj(x.lastMerge); if (lm && str(lm.sha)) out.lastMerge = { pr: nums([lm.pr])[0] ?? 0, sha: str(lm.sha, 64), head: str(lm.head, 64), at: str(lm.at, 40) };
+  const rr = obj(x.reruns); if (rr && str(rr.head)) out.reruns = { head: str(rr.head, 64), n: count(rr.n) };
+  const ru = obj(x.rules);
+  if (ru && str(ru.head)) {
+    out.rules = {
+      head: str(ru.head, 64), ok: ru.ok === true, failing: strs(ru.failing), fixed: strs(ru.fixed),
+      ...(ru.skipped === true ? { skipped: true } : str(ru.skipped) ? { skipped: str(ru.skipped, 120) } : {}),
+      ...(str(ru.error) ? { error: str(ru.error, 300), tail: str(ru.tail, 600), tries: count(ru.tries) || 1 } : {}),
+      ...(str(ru.detail) ? { detail: str(ru.detail, LAND_LOG_MAX) } : {}),
+      at: str(ru.at, 40),
+    };
+  }
+  for (const k of ['ciKick', 'fullKick', 'mainPull', 'green']) { const v = headAt(x[k]); if (v?.head) out[k] = v; }
+  const fx = obj(x.fixes); if (fx && nums([fx.pr]).length && count(fx.n)) out.fixes = { pr: nums([fx.pr])[0], n: count(fx.n) };
+  const lm = obj(x.lastMerge);
+  if (lm && str(lm.sha)) out.lastMerge = { pr: nums([lm.pr])[0] ?? 0, sha: str(lm.sha, 64), head: str(lm.head, 64), at: str(lm.at, 40), ...(lm.byHand === true ? { byHand: true, ci: LAND_CI.includes(lm.ci) ? lm.ci : 'unknown', by: str(lm.by, 80) } : {}) };
   return Object.keys(out).length ? out : null;
 }
+/** What GitHub says about CI on a PR merged by hand (the done-means-merged@1 `landed.ci` words). */
+const LAND_CI = Object.freeze(['success', 'failure', 'running', 'none', 'unknown']);
+/** Characters of a failing log the lander's records keep (the fix brief's tail). */
+const LAND_LOG_MAX = 3000;
 
 /**
  * The lander's failure record on a Pipeline 2.0 build: { kind, status (the phase it failed in), why, head, pr, at,
- * retry, notBefore, failing?, runIds?, fix? { at, head, session, exit, why } }. builds@1 builds keep their
- * done-means-merged failure record instead (framework/core/build-pipeline.mjs normFailure). → the record or null.
+ * attempt (the landing run's), retry, notBefore, failing?, runIds?, jobIds?, log? (the failing log's tail), tiedStep?,
+ * of? { kind, why, failing, jobIds, log } (the failure a fix session was working on),
+ * fix? { at, head, session, n, model, queued } (a fix session that started), fixStart? { n, at, why } (one that did
+ * not), and for a build that stopped at the ladder's top (retry `hold`): needsBrett, stopped (why), resume (the retry
+ * a release starts with) }. builds@1 builds keep their done-means-merged failure record instead
+ * (framework/core/build-pipeline.mjs normFailure). → the record or null.
  */
 export function normLandFailure(f) {
   const x = obj(f); if (!x || !str(x.kind)) return null;
-  const fix = obj(x.fix);
+  const fix = obj(x.fix); const of = obj(x.of); const fs = obj(x.fixStart);
+  const count = (v) => Math.max(0, Math.floor(Number(v) || 0));
+  const part = (y) => ({ ...(strs(y.failing).length ? { failing: strs(y.failing, 120, 10) } : {}), ...(nums(y.jobIds, 10).length ? { jobIds: nums(y.jobIds, 10) } : {}), ...(str(y.log) ? { log: str(y.log, LAND_LOG_MAX) } : {}) });
   return {
     kind: str(x.kind, 40), status: isStatus(x.status, 'build') ? x.status : '', why: str(x.why, 600), head: str(x.head, 64),
-    pr: Number.isInteger(Number(x.pr)) && Number(x.pr) > 0 ? Number(x.pr) : 0, at: str(x.at, 40), retry: str(x.retry, 40), notBefore: str(x.notBefore, 40),
-    ...(strs(x.failing).length ? { failing: strs(x.failing, 120, 10) } : {}), ...(nums(x.runIds, 10).length ? { runIds: nums(x.runIds, 10) } : {}),
-    ...(fix ? { fix: { at: str(fix.at, 40), head: str(fix.head, 64), session: str(fix.session, 120), exit: Number.isInteger(fix.exit) ? fix.exit : null, why: str(fix.why, 300) } } : {}),
+    pr: Number.isInteger(Number(x.pr)) && Number(x.pr) > 0 ? Number(x.pr) : 0, at: str(x.at, 40), ...(count(x.attempt) ? { attempt: count(x.attempt) } : {}), retry: str(x.retry, 40), notBefore: str(x.notBefore, 40),
+    ...(x.needsBrett === true ? { needsBrett: true, stopped: str(x.stopped, 200), resume: str(x.resume, 40) } : {}),
+    ...part(x), ...(nums(x.runIds, 10).length ? { runIds: nums(x.runIds, 10) } : {}),
+    ...(str(x.tiedStep) ? { tiedStep: str(x.tiedStep, 80) } : {}),
+    ...(of && str(of.kind) ? { of: { kind: str(of.kind, 40), why: str(of.why, 600), ...part(of) } } : {}),
+    ...(fs && count(fs.n) ? { fixStart: { n: count(fs.n), at: str(fs.at, 40), why: str(fs.why, 300) } } : {}),
+    ...(fix ? { fix: { at: str(fix.at, 40), head: str(fix.head, 64), session: str(fix.session, 120), ...(count(fix.n) ? { n: count(fix.n) } : {}), ...(str(fix.model) ? { model: str(fix.model, 20) } : {}), ...(fix.queued === true ? { queued: true } : {}), exit: Number.isInteger(fix.exit) ? fix.exit : null, why: str(fix.why, 300) } } : {}),
   };
 }
 
