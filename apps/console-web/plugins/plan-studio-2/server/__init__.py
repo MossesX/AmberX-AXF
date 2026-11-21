@@ -11,6 +11,10 @@ page, the CLI, claude.ai sessions and AmberX share one set of rules (web/tree-co
   POST   add | rename | edit | move | nudge | indent | outdent | duplicate | undo | link | unlink | collapse | import | build | say
   POST   emergency        send an item as an EMERGENCY build: Brett's own signed-in console only (403 for the console
                           token, MCP, voice and sessions)
+  POST   hand-build       start a HAND build of an item on the model picked ({id, model, buildId}): no dispatcher, no
+                          slot, at most 2 at once. Brett's own signed-in console only, like emergency (403 otherwise)
+  GET    hand-builds      the hand builds (id = one item's) with their status, the cap and the models to pick from
+  GET    hand-log/{id}    the end of one hand build's log
   DELETE item/{id}        to the trash (undo brings it back)
   DELETE all              everything gone, the trash too (confirm)
 
@@ -88,7 +92,8 @@ def _answer(r: dict[str, Any]) -> dict[str, Any]:
     if r.get("ok") or r.get("understood") is False:
         return r
     code = str(r.get("code") or "")
-    raise HTTPException(404 if code == "not_found" else 409 if code == "confirm" else 403 if code == "forbidden" else 400, str(r.get("error") or "Plan Studio 2.0 refused"))
+    status = {"not_found": 404, "confirm": 409, "cap": 409, "forbidden": 403, "launch": 502}.get(code, 400)
+    raise HTTPException(status, str(r.get("error") or "Plan Studio 2.0 refused"))
 
 
 def _write(op: str, request: Request, body: dict[str, Any]) -> dict[str, Any]:
@@ -228,6 +233,32 @@ async def emergency(request: Request) -> dict[str, Any]:
     body = await _body(request)
     body.pop("preview", None)
     return _answer(run({**body, "op": "build", "emergency": True, "by": who}, approver=who))
+
+
+@router.post("/hand-build")
+async def hand_build(request: Request) -> dict[str, Any]:
+    """Start a hand build of an item: {id, model (fable | opus, required), buildId}. Brett only, from his own signed-in
+    console session (403 for the console token, MCP, the CLI, voice and sessions). The build is recorded first, then
+    launched straight on the VPS headless launcher: no dispatcher, no split, no queue, no slot; at most 2 run at once
+    (409 names the two running)."""
+    who = brett_click(request)
+    if not who:
+        raise HTTPException(403, "Only Brett starts a hand build, from his own signed-in console. The console token, MCP, the CLI, voice and sessions cannot: ask Brett to press Hand build on the item.")
+    body = await _body(request)
+    return _answer(run({"op": "hand-build", "id": body.get("id", ""), "model": body.get("model", ""), "buildId": body.get("buildId", ""), "by": who}, timeout=300, approver=who))
+
+
+@router.get("/hand-builds")
+def hand_builds(id: str = "") -> dict[str, Any]:
+    """The hand builds (`id` = one item's), newest first, each with its state (launched, building, PR, CI, merged,
+    ended), model, session and log; plus the cap, how many run now and the models a hand build may pick."""
+    return _answer(run({"op": "hand-builds", "id": id}))
+
+
+@router.get("/hand-log/{id}")
+def hand_log(id: str, lines: int = 200) -> dict[str, Any]:
+    """The last `lines` lines of a hand build's log (its worktree's <id>.log)."""
+    return _answer(run({"op": "hand-log", "id": id, "lines": max(1, min(lines, 2000))}))
 
 
 @router.post("/say")

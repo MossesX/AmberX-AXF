@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). The original Plan Studio is untouched.",
+  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator, hand build). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). The original Plan Studio is untouched.",
   "targets": [
     "axf-console"
   ],
@@ -17,6 +17,8 @@
     "dialog:plan-studio-2.move",
     "dialog:plan-studio-2.link",
     "dialog:plan-studio-2.build",
+    "dialog:plan-studio-2.hand",
+    "dialog:plan-studio-2.hand-log",
     "service:plan-tree@1"
   ],
   "scopes": [
@@ -70,6 +72,9 @@
       { "route": "POST /import", "id": "import", "title": "Import items", "description": "A plan-tree-export@1 (or a list of items) under `parent`; ids are made new." },
       { "route": "POST /build", "id": "build", "title": "Send to the build orchestrator", "description": "The item becomes one pending Pipeline 2.0 build (its open steps kept as planning notes; the orchestrator's splitting stage designs the build steps); `preview: true` shows it without writing it." },
       { "route": "POST /emergency", "id": "emergency", "title": "Send as an emergency build", "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Like Send to the build orchestrator, and the build is tagged emergency: it skips the line, builds in the 2 emergency slots and lands first." },
+      { "route": "POST /hand-build", "id": "hand-build", "title": "Start a hand build", "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Records the build (mode hand, the `model` picked: fable or opus, required), then launches it straight on the VPS headless launcher: no dispatcher, no split, no queue, no slot. At most 2 hand builds run at once; a third is refused with 409 naming the two." },
+      { "route": "GET /hand-builds", "id": "hand-builds", "title": "Hand builds and their status", "description": "Every hand build (`id` = one item's), newest first: launched, building, PR, CI, merged or ended, with its model, tmux session and log; plus the cap, how many run now and the models to pick from.", "readOnly": true },
+      { "route": "GET /hand-log/{id}", "id": "hand-log", "title": "A hand build's log", "description": "The last `lines` lines (default 200) of a hand build's log.", "readOnly": true },
       { "route": "POST /say", "id": "say", "title": "Say a plan command", "description": "One spoken sentence (new plan X, add a step Y to X, rename X to Y, delete X, undo, move X into Y, mark X done, send X to the build orchestrator, find X, open X) → the matching change, with what to say back." },
       { "route": "DELETE /all", "id": "clear", "title": "Clear everything (the trash too)", "description": "Deletes every item and empties the trash. This cannot be undone.", "destructive": true, "confirm": true }
     ]

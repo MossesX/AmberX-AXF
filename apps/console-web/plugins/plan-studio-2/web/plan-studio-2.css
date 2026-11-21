@@ -86,3 +86,7 @@
 .axp-plan-studio-2__dpane.is-drop-bottom::after { top: 50%; }
 .axp-plan-studio-2__dpane.is-drop-header::after { bottom: auto; height: calc(var(--fx-font-size) * 2.4); }
 @container axp-ps2 (max-width: 600px) { .axp-plan-studio-2__dock { height: auto; flex-direction: column; } .axp-plan-studio-2__split { flex-direction: column; } .axp-plan-studio-2__splitter { display: none; } .axp-plan-studio-2__cell { flex-basis: auto; } }
+/* hand builds of the selected item (status chip, PR, live session, log) and the log dialog's text */
+.axp-plan-studio-2__hands { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0; }
+.axp-plan-studio-2__log-text { margin: 0; max-height: calc(var(--fx-font-size) * 30); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere; padding: var(--fx-dens-gap-md); border: var(--axp-ps2-hair); border-radius: var(--fx-radius-sm); }
+.axp-plan-studio-2__hands li { flex-wrap: wrap; }

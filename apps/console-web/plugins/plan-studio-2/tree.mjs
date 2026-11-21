@@ -25,6 +25,10 @@
  *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; ONE Pipeline 2.0
  *                                                                 build (flow pipeline-2, pending, its steps kept as planning) in the
  *                                                                 builds store; the orchestrator's splitting stage designs the build steps
+ *   … hand <item> --model fable|opus [--id build-id]              Hand build (hand-build.mjs): record + launch, no dispatcher, no
+ *                                                                 slot, at most 2 at once. Brett's signed-in console only
+ *   … hands [<item>]                                              the hand builds and their status (launched, building, PR, CI, merged)
+ *   … hand-log <build> [--lines n]                                the end of a hand build's log
  *   … say "<spoken sentence>"                                     one voice command (what AmberX and the page's mic send)
  *   … clear --yes                                                 everything gone (the trash too)
  *   … api '<json {op,…}>'                                         what the server calls (also reads stdin)
@@ -44,6 +48,7 @@ import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { projectDataDir } from '../../../../framework/cli/projects.mjs';
 import { ownerFrom, sendToEmergency } from '../../../../framework/cli/emergency-builds.mjs';
+import * as hand from './hand-build.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -145,7 +150,8 @@ export function stateView(s) {
 /**
  * Run one operation on the store and save. `r` = { op, … }. Returns { ok, … } with the changed item when there is one.
  * Reads: state · tree · get · find · export · trash. Writes: add · rename · edit · move · nudge · indent · outdent ·
- * duplicate · delete · undo · link · unlink · collapse · import · build · say · clear.
+ * duplicate · delete · undo · link · unlink · collapse · import · build · hand-build · say · clear. Hand builds: hand-builds ·
+ * hand-log (reads) and hand-build (Brett's signed-in console only, checked in hand-build.mjs before anything is written).
  */
 export function api(r, { by = '' } = {}) {
   const s = load();
@@ -174,6 +180,18 @@ export function api(r, { by = '' } = {}) {
     case 'import': { const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
     case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
     case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
+    case 'hand-builds': return hand.listHand({ item: r.id ? tc.resolve(s, r.id)?.id ?? r.id : '' });
+    case 'hand-log': return hand.handLog(r.id, { lines: r.lines });
+    case 'hand-build': {
+      try {
+        const res = hand.launchHand(s, r.id, { model: r.model, buildId: r.buildId });
+        const st = save(res.state);
+        return { ok: true, rev: st.rev, build: res.build, session: res.session, model: res.model, worktree: res.worktree, log: res.log, waiting: res.waiting, say: res.say };
+      } catch (e) {
+        if (e.state) save(e.state); // recorded, then the launch failed: the item keeps its link to the failed record
+        throw e;
+      }
+    }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
@@ -234,10 +252,13 @@ export async function main(argv = process.argv.slice(2)) {
       case 'import': { const data = JSON.parse(readFileSync(a[0] === '-' ? 0 : a[0], 'utf8')); return out(api({ op: 'import', data, parent: flags.in }), 'imported'); }
       case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
       case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
+      case 'hand': { const r = api({ op: 'hand-build', id: a[0], model: flags.model === true ? '' : flags.model, buildId: flags.id }); return out(r, r.say); }
+      case 'hands': { const r = api({ op: 'hand-builds', id: a[0] }); return out(r, [`hand builds running: ${r.running.length}/${r.cap}${r.running.length ? ` (${r.running.join(', ')})` : ''}`, ...r.builds.map((b) => `${b.id.padEnd(40)} ${b.label.padEnd(24)} ${b.modelLabel}${b.session ? `  ${b.session}` : ''}`)].join('\n')); }
+      case 'hand-log': { const r = api({ op: 'hand-log', id: a[0], lines: flags.lines }); return out(r, r.missing ? `no log yet at ${r.file}` : r.text); }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }
       case 'api': { const raw = a[0] ?? readFileSync(0, 'utf8'); const r = api(JSON.parse(raw)); return console.log(JSON.stringify(r)); }
-      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|say|clear|api|where'); process.exitCode = 2;
+      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|hand|hands|hand-log|say|clear|api|where'); process.exitCode = 2;
     }
   } catch (e) {
     const err = { ok: false, error: e.message, code: e.code ?? 'error' };

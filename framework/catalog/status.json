@@ -2283,6 +2283,12 @@
     "module": "app-console",
     "notes": "Build emergency-slots (Nov 20 2026, Brett). build-limit.mjs + agent-slots.mjs: a second pool (emergencySlots, default 2) counted apart from maxBuilds; a session is in it when its build holds an emergency grant (owner only). framework/cli/emergency-builds.mjs: send only with Brett's signed-in console click (AXF_APPROVER via console); sessions, agents, the console token, MCP and voice refused. pipeline-status.mjs: emergency tag, activeBuild leaves it out, emergencyBuilds; pipeline2.mjs emergency lane. Lander: emergency builds first; before any merge a head without main's newest code pulls main, conflicts go to Fable, CI runs again. Console: Send to emergency in Plan Studio 2.0 and the builds table, Emergency badge, Agent cap shows and sizes the pool. Tests: check-build-limit, check-agent-slots, check-pipeline-2, test/emergency.test.mjs, server/test_emergency.py, deploy/lander/test. Kotlin twin deferred (PORTING.md)."
   },
+  "cx.buildengine.handbuilds": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build hand-build-lane-v2 (Nov 21 2026, Brett). apps/console-web/plugins/plan-studio-2/hand-build.mjs: Brett's signed-in console only (emergency-builds.mjs ownerFrom), model required from model-policy ALLOWED_MODELS, builds-store record first (source hand, running, planRef + item link), own cap of 2 from records + live tmux, worktree claude/<id> from /opt/axf, the whole item (nested bodies) as the brief, deploy/claude-headless.sh with a dispatch-gate token, AXF_SLOTS=off and AXF_BUILD_LIMIT=off. Plan Studio 2.0: Hand build button + right-click entry, model picker dialog, status chip, PR / Watch live / Log. REST + MCP + CLI (tree.mjs hand / hands / hand-log) through the same route. Tests in plan-studio-2/test.mjs. Host-only: no Kotlin twin."
+  },
   "cx.buildengine.sectionowners": {
     "status": "built",
     "wave": 1,

@@ -2538,6 +2538,10 @@
                   "title": "Emergency builds: two emergency slots counted apart from the hard limit, started from Brett's signed-in console only, past the one-active-build line, first in the merge line; every merge on main's newest code"
                 },
                 {
+                  "id": "cx.buildengine.handbuilds",
+                  "title": "Hand build lane: Brett starts a build straight from a Plan Studio 2.0 item on the model he picks, recorded first, launched on the VPS headless launcher with no dispatcher, slot or queue, at most 2 at once, live status on the item"
+                },
+                {
                   "id": "cx.buildengine.buildids",
                   "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept"
                 },
