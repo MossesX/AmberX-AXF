@@ -34,7 +34,7 @@ const LAND = join(TMP, 'lander');
 mkdirSync(LAND, { recursive: true });
 const NOW = new Date().toISOString();
 const ago = (min) => new Date(Date.now() - min * 60000).toISOString();
-const json = (f, v) => writeFileSync(f, `${JSON.stringify(v, null, 1)}\n`);
+const json = (f, v) => writeFileSync(f, `${JSON.stringify(v, null, 1)}\n`); // axf-data: not data (a temp fixture for the screenshots)
 json(join(LAND, 'config.json'), { $axf: 'push-banner-config@1', repos: ['o/r'], autoLand: true, autoMerge: false, landWaitUi: true, mergeQueue: true, queueMode: 'stack' });
 json(join(LAND, 'merge-queue.json'), {
   $axf: 'merge-queue@1', at: NOW,
