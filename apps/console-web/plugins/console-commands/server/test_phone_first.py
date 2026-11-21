@@ -338,5 +338,17 @@ rp = Page("pc-refresh", phone=True)
 r = client.post("/api/console/refresh", json={"by": "claude"}).json()
 ok(r["status"] == "delivered" and [m["op"] for m in rp.got] == ["refresh"], f"console_refresh: one reload on the console on the phone ({r})")
 
+rp.beat(front=False)
+cc._left.clear()
+n_sent = len(phone.sent)
+r = client.post("/api/console/refresh", json={"by": "claude"}).json()
+ok(r["status"] == "delivered" and [m["op"] for m in rp.got] == ["refresh", "refresh"] and len(phone.sent) == n_sent,
+   f"the console on the phone is hidden: reloaded down its own stream, never brought forward on a fresh page that would lose its place ({r})")
+with cc._lock:
+    for c in cc._clients.values():
+        c["lastSeen"] = 0.0
+r = client.post("/api/console/back", json={"by": "claude"}).json()
+ok(r["ok"] and r["status"] == "held" and len(phone.sent) == n_sent, f"nothing open on the phone: back has nothing to move and brings nothing forward ({r})")
+
 plugin_services.withdraw("phone-under-test")
 print(f"✓ console commands with the phone first — {checks} checks", flush=True)

@@ -817,14 +817,19 @@ def _on_phone(command: dict[str, Any], grants: list[str], by: str, audience: str
     message = d.get("message") or {}
     r["sent"] = message
     tried: list[str] = []
-    if pc is not None and (pc.get("front") is not False or shot):
+    # refresh, back, home and close move the page that is open; bringing the console forward would load a fresh page
+    # and lose the very place they act on, so they only ever go down the phone's own stream
+    in_place = command.get("target") == "console.nav"
+    if pc is None and in_place:
+        return _held(r, "held: the console isn't open on the phone, so there is nothing to reload or move (the next open brings it up)")
+    if pc is not None and (pc.get("front") is not False or shot or in_place):
         tried, acks = try_in_turn([pc["id"]], message, audience, work=SHOT_WORK_S if shot else 0.0)
         if acks:
             r["delivered"] = [acks[pc["id"]]]
             r["delivery"] = {"how": "live", "tried": tried, "client": pc["id"], "phone": True}
             r["status"] = _status_of(r)
             return r
-        if shot or not _navigates(command, r):
+        if shot or in_place or not _navigates(command, r):
             return {**r, "ok": False, "code": "not_found", "status": "failed", "delivered": [{"client": pc["id"], "ok": False, "pending": True, "message": "didn't answer (asleep?)"}],
                     "delivery": {"how": "pending", "tried": tried, "phone": True},
                     "message": "the console on the phone didn't answer; it was not re-sent because it changes data or only reads. Open the console on the phone and send it again"}
@@ -1026,7 +1031,8 @@ def _control_answer(command: dict[str, Any], a: dict[str, Any], who: str, delive
 
 
 CONTROL_READS = ("state", "search", "list")   # read only: never bring the console on the phone to the front
-CONTROL_MOVES = ("open", "focus", "scroll")   # only move the console: safe to carry to the phone's console as it opens
+CONTROL_MOVES = ("open", "focus")            # only move the console: safe to carry to the phone's console as it opens
+CONTROL_IN_PLACE = ("scroll",)               # acts on the page that is open: never brings a fresh one forward
 CONTROL_PHONE_WAIT_S = 20.0
 
 
@@ -1041,7 +1047,10 @@ def _control_on_phone(command: dict[str, Any], message: dict[str, Any], by: str,
     pc = _phone_client(audience)
     if pc is None and verb in CONTROL_READS:
         return None
-    if pc is not None and (pc.get("front") is not False or verb in CONTROL_READS):
+    if pc is None and verb in CONTROL_IN_PLACE:
+        return {"$axf": "console-control@1", "ok": True, "verb": verb, "status": "held", "delivery": {"how": "held", "phone": True},
+                "message": "held: the console isn't open on the phone, so there is nothing to scroll"}
+    if pc is not None and (pc.get("front") is not False or verb in CONTROL_READS or verb in CONTROL_IN_PLACE):
         tried, acks = try_in_turn([pc["id"]], message, audience)
         with _lock:
             _late.pop(mid, None)
