@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T22:06:02.903Z",
+ "updatedAt": "2026-11-21T22:06:18.597Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -213785,14 +213785,14 @@
    "title": "Phone Connect: open straight on the phone, no tap-to-open notification",
    "category": "Phone Connect",
    "detail": "Brett, Nov 21: \"I get the notification, it says tap to open on your phone. Why can't it just open? That's what the overlay is for.\" He has the overlay (draw over other apps) permission granted. When Amber sends a screen or an approval (console_show / console_open wake), the Phone Connect app must come to the front by itself at that screen. Today it posts a 'Tap Open on your phone' notification instead.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/phone-connect-open-straight-phone-no-tap",
    "pr": "#886",
    "createdAt": "2026-11-21T19:47:33.297Z",
-   "updatedAt": "2026-11-21T22:01:03.174Z",
+   "updatedAt": "2026-11-21T22:06:03.826Z",
    "builtAt": "",
    "notes": [
     {
@@ -213810,6 +213810,10 @@
     {
      "text": "Reconciler: PR #886",
      "at": "2026-11-21T21:20:33.219Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 1 step left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:06:03.826Z"
     },
     {
      "text": "Session on hulu0241 ended (exit 1) with 1 step left: back in the Queue (run 1).",
@@ -213902,7 +213906,7 @@
    "branch": "claude/one-true-source-get-redundant-settings",
    "pr": "",
    "createdAt": "2026-11-21T20:04:08.140Z",
-   "updatedAt": "2026-11-21T22:01:05.643Z",
+   "updatedAt": "2026-11-21T22:06:06.301Z",
    "builtAt": "",
    "notes": [
     {
@@ -213912,6 +213916,10 @@
     {
      "text": "Claude account: hulu0241 (axf-one-true-source-get-redundant-settings--earl, shared account login)",
      "at": "2026-11-21T21:08:54.087Z"
+    },
+    {
+     "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-21T22:06:06.301Z"
     },
     {
      "text": "Session on hulu0241 ended (exit 1) with 4 steps left: back in the Queue (run 1).",
