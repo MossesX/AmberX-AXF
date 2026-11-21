@@ -23,6 +23,11 @@
  * (screen, tabs, dialog, selection, scroll), so a Claude session sees what Brett sees. It tells the server it is working
  * on it first (a capture takes seconds), works in a background tab too, and always answers within CAPTURE_TIMEOUT_MS.
  *
+ * The console on the phone (console jump-around fix, Nov 21 2026): a console inside the Android console app, or a page
+ * the phone opened (`?axf-via=phone`), says so on every beat, and the server sends it every command for the console
+ * Brett is using while the phone is paired. A page back from a reload says where it was on its first hello and runs
+ * the server's `restore` (screen, focused item, tabs, selection), so a refresh or a deploy lands on the same screen.
+ *
  * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
@@ -85,6 +90,56 @@ function pickedCommand(): string {
     window.history.replaceState(window.history.state, '', u.toString());
     return /^[A-Za-z0-9_-]{1,40}$/.test(id) ? id : '';
   } catch { return ''; }
+}
+
+/**
+ * Does this console run on Brett's phone? Inside the Android console app (its bridge is on the page), or a page the
+ * phone opened (`?axf-via=phone` on every page the console server asks the phone to open; kept for the tab, taken off
+ * the address). The server sends every command for "the console Brett is using" here when the phone is paired.
+ */
+const VIA_KEY = 'axf.console-commands.via';
+function onPhone(): boolean {
+  try {
+    const u = new URL(window.location.href);
+    if (u.searchParams.get('axf-via') === 'phone') {
+      sessionStorage.setItem(VIA_KEY, 'phone');
+      u.searchParams.delete('axf-via');
+      window.history.replaceState(window.history.state, '', u.toString());
+    }
+    return !!(window as { axfNativeHost?: unknown }).axfNativeHost || sessionStorage.getItem(VIA_KEY) === 'phone';
+  } catch { return !!(window as { axfNativeHost?: unknown }).axfNativeHost; }
+}
+
+/**
+ * Where this console was, kept for the tab: what it last told the server (screen, tabs, selection) and the item a
+ * command last focused on a screen. After a reload the first hello carries it, and the server answers with what puts
+ * the page back (`restore`).
+ */
+const PLACE_KEY = 'axf.console-commands.place';
+const FOCUS_KEY = 'axf.console-commands.focus';
+function keepPlace(here: ConsoleHere) { try { sessionStorage.setItem(PLACE_KEY, JSON.stringify(here)); } catch { /* storage off: the server's own copy is used */ } }
+function keepFocus(screen: string, focus: string) { try { sessionStorage.setItem(FOCUS_KEY, JSON.stringify({ screen, focus })); } catch { /* storage off */ } }
+function lastPlace(): Record<string, unknown> | null {
+  try {
+    const here = JSON.parse(sessionStorage.getItem(PLACE_KEY) ?? 'null') as Record<string, unknown> | null;
+    if (!here) return null;
+    const focus = JSON.parse(sessionStorage.getItem(FOCUS_KEY) ?? 'null') as { screen?: string } | null;
+    return focus && focus.screen === here.screen ? { ...here, focus } : here;
+  } catch { return null; }
+}
+
+/** Did this page come back from a reload (console_refresh, a deploy, the phone app reloading it)? A hard refresh marks its address. */
+function reloaded(): boolean {
+  try {
+    const u = new URL(window.location.href);
+    if (u.searchParams.has('axf-refresh')) {
+      u.searchParams.delete('axf-refresh');
+      window.history.replaceState(window.history.state, '', u.toString());
+      return true;
+    }
+    const nav = performance.getEntriesByType?.('navigation')[0] as PerformanceNavigationTiming | undefined;
+    return nav?.type === 'reload';
+  } catch { return false; }
 }
 
 /** Who the toast names: the session's name when it gave one, else Amber. */
@@ -200,6 +255,7 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
         const act = `${m.target}.focus`;
         if (!rt.actions.list().some((a) => a.id === act)) return [opened, `opened ${label}; it has no way to focus "${m.focus}"`];
         const ran = rt.dispatch(`${act}:${encodeURIComponent(m.focus)}`);
+        if (ran) keepFocus(m.target!, m.focus);
         return [opened && ran, ran ? `opened ${label} on ${m.focus}` : `opened ${label}; focusing "${m.focus}" didn't run here`];
       }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
@@ -254,24 +310,42 @@ function ConsoleCommandsClient() {
     // (`front`), so a command for "the console Brett is using" comes here only while he can see it.
     const host = rt.embedded?.host ?? '';
     const app = host ? `${host}/console-web` : 'console-web';
-    const where = () => ({ front: rt.inFront(), ...(host ? { host } : {}) });
+    const phone = onPhone();
+    const where = () => ({ front: rt.inFront(), ...(host ? { host } : {}), ...(phone ? { phone: true } : {}) });
     const history: string[] = [rt.getState().view];
     let catalogKey = '';
     let pick = pickedCommand();
+    // the first hello of a page that came back from a reload says where it was; the server answers how to get back
+    const was = lastPlace();
+    let back: { reloaded: true; was?: Record<string, unknown> } | null = reloaded() ? { reloaded: true, ...(was ? { was } : {}) } : null;
     /** A beat; the server answers `hello: true` when it holds no catalog for this tab (it restarted): say hello now. */
-    const seen = (body: Record<string, unknown>): Promise<unknown> => post('seen', { client: id, ...body }).then(async (r) => {
+    const seen = (body: Record<string, unknown>): Promise<unknown> => { if (body.here) keepPlace(body.here as ConsoleHere); return post('seen', { client: id, ...body }).then(async (r) => {
       const j = (await r.json().catch(() => ({}))) as { hello?: boolean };
       if (j.hello) { catalogKey = ''; await announce(document.visibilityState === 'visible' && rt.inFront()); }
-    }).catch(() => undefined);
+    }).catch(() => undefined); };
     const announce = (used = false): Promise<unknown> => {
       const catalog = catalogOf(rt);
       // values count: a changed setting re-sends the catalog so `get` reads what the screen shows
       const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}:${hashText(JSON.stringify(catalog.items.filter((i) => i.kind === 'field').map((i) => i.value)))}`;
       if (key === catalogKey && !used) return seen({ here: catalog.here, ...where() });
       catalogKey = key;
-      const body = { client: id, app, title: document.title, device: device(), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}) };
+      const body = { client: id, app, title: document.title, device: device(), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}), ...(back ?? {}) };
       pick = '';
-      return post('hello', body).catch(() => undefined);
+      back = null;
+      return post('hello', body).then(async (r) => {
+        const j = (await r.json().catch(() => ({}))) as { restore?: ConsoleMessage[] };
+        if (Array.isArray(j.restore) && j.restore.length) await restore(j.restore);
+      }).catch(() => undefined);
+    };
+    /** Back where it was after a reload: the server's messages, in order, each on the screen the one before opened. */
+    const restore = async (ms: ConsoleMessage[]) => {
+      for (const m of ms) {
+        if (consoleMessageErrors(m).length) continue;
+        if (m.op === 'control') { await executeControl(rt, m.command); continue; }
+        try { runMessage(rt, m, history); } catch { /* the next one still runs */ }
+        await new Promise((r) => setTimeout(r, 120));
+      }
+      keepPlace(hereOf(rt));
     };
     void announce(document.hasFocus());
     let lastView = rt.getState().view;
@@ -301,7 +375,7 @@ function ConsoleCommandsClient() {
     const offSettings = rt.settings.onAnyChange(() => { clearTimeout(soon); soon = setTimeout(() => void announce(false), 800); });
     // Only when the page really goes away (not into the back/forward cache, not a React re-render): a bye makes the
     // server stop sending here at once.
-    const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id }, true).catch(() => undefined); };
+    const bye = (e: PageTransitionEvent) => { if (!e.persisted) { keepPlace(hereOf(rt)); void post('bye', { client: id }, true).catch(() => undefined); } };
     window.addEventListener('pagehide', bye);
     stream = followSse(
       (signal) => pluginFetch(FOLDER, `stream?client=${encodeURIComponent(id)}`, { signal }),
