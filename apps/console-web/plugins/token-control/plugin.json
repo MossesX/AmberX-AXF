@@ -47,6 +47,9 @@
     ],
     "mentions": [
       "apps/console-web/plugins/gate/web/passesState.ts",
+      "apps/console-web/plugins/gate/README.md",
+      "apps/console-web/plugins/gate/test.mjs",
+      "apps/console-web/scripts/vps-config-shots.mjs",
       "CLAUDE.md",
       "_claude/memory/STATUS.md",
       "_claude/THREADS.md",

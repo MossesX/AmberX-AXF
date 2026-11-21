@@ -66,7 +66,6 @@ function VetoPasses() {
   const cols: GridColumn<ScopeRow>[] = [
     { id: 'scope', label: 'Scope', width: 'calc(var(--fx-space) * 48)', fixed: true, sortable: true, sortValue: (r) => r.label, render: (r) => <span className="axp-gate__cell"><strong>{r.label}</strong><span className="axp-gate__sub">{r.id}</span></span> },
     { id: 'state', label: 'Now', width: 'calc(var(--fx-space) * 28)', render: (r) => (r.active ? <Chip tone="success">{countdown(r.active.expiresAt, now)} left</Chip> : r.pending ? <Chip tone="warning">waiting</Chip> : <span className="axp-gate__sub">off</span>) },
-    { id: 'text', label: 'What', width: 'calc(var(--fx-space) * 100)', render: (r) => <span className="axp-gate__cell">{r.text}{r.pending && <span className="axp-gate__sub">{r.pending.requestedBy} asks for {r.pending.minutes} min{r.pending.reason ? `: ${r.pending.reason}` : ''}</span>}</span> },
     { id: 'act', label: '', width: 'calc(var(--fx-space) * 76)', render: (r) => (
       <span className="axp-gate__bar">
         {r.pending && <Button size="sm" id={`vps-pass-approve-${slug(r.id)}`} tone="primary" icon="check" disabled={!!busy} onClick={() => void act('a', () => passCalls.approve(r.id, r.pending!.id))}>Approve</Button>}
@@ -75,6 +74,7 @@ function VetoPasses() {
         {(r.active || r.pending) && <Button size="sm" id={`vps-pass-revoke-${slug(r.id)}`} icon="x" disabled={!!busy} onClick={() => void act('r', () => passCalls.revoke(r.id))}>Revoke</Button>}
       </span>
     ) },
+    { id: 'text', label: 'What', width: 'calc(var(--fx-space) * 100)', render: (r) => <span className="axp-gate__cell">{r.text}{r.pending && <span className="axp-gate__sub">{r.pending.requestedBy} asks for {r.pending.minutes} min{r.pending.reason ? `: ${r.pending.reason}` : ''}</span>}</span> },
   ];
   const recentCols: GridColumn<PassView>[] = [
     { id: 'scope', label: 'Scope', width: 'calc(var(--fx-space) * 40)', fixed: true, render: (p) => <span className="axp-gate__cell"><strong>{p.label ?? p.scope}</strong><span className="axp-gate__sub">{p.id}</span></span> },

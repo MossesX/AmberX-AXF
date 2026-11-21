@@ -14,8 +14,8 @@ export interface BuildCap {
   ranges: Record<CapKey, [number, number]>; ownerOnly: CapKey[];
 }
 export const CAP_FIELDS: { key: CapKey; label: string; hint: string; read: (c: BuildCap) => number | null }[] = [
-  { key: 'maxBuilds', label: 'Hard cap (builds at once)', hint: 'The most builds the VPS ever runs at once. Only Brett changes it.', read: (c) => c.hardCap },
-  { key: 'emergencySlots', label: 'Emergency slots', hint: 'Extra places only an emergency build may take, counted apart from the hard cap. Only Brett changes it.', read: (c) => c.emergencySlots },
+  { key: 'maxBuilds', label: 'Hard cap (builds at once)', hint: 'The most builds the VPS ever runs at once.', read: (c) => c.hardCap },
+  { key: 'emergencySlots', label: 'Emergency slots', hint: 'Extra places only an emergency build may take, counted apart from the hard cap.', read: (c) => c.emergencySlots },
   { key: 'stepsInParallel', label: 'Steps in parallel', hint: 'How many steps of one build the orchestrator sends at once.', read: (c) => c.stepsInParallel },
 ];
 export const OWNER_ONLY = 'Only Brett changes this, from his own signed-in console.';

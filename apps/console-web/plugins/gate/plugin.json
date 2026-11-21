@@ -54,6 +54,7 @@
       "_claude/memory/decisions.md",
       "_claude/memory/docs/auto-lander.md",
       "apps/console-web/scripts/auto-lander-shots.mjs",
+      "apps/console-web/scripts/vps-config-shots.mjs",
       "deploy/install-console.sh",
       "framework/spec/AUTO-LANDER.md",
       "framework/spec/DONE-MEANS-MERGED.md",

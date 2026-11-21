@@ -216,6 +216,22 @@ try {
     const r = spawnSync(process.execPath, [join(HERE, 'build-cap.mjs'), 'set', 'maxBuilds', '9', '--json'], { encoding: 'utf8' });
     assert.equal(r.status, 1); assert.equal(JSON.parse(r.stdout).code, 'forbidden');
   });
+  t('passes have one home: the Passes tab is here, Token control keeps only the banner, the axHub pass pages keep their addresses', () => {
+    const web = (f) => readFileSync(join(HERE, 'web', f), 'utf8');
+    const manifest = JSON.parse(readFileSync(join(HERE, 'plugin.json'), 'utf8'));
+    assert.match(web('api.ts'), /TABS = \['rules', 'build-rules', 'auto-lander', 'build-cap', 'passes', 'history'\]/);
+    for (const v of ['view:gate', 'view:vps-configuration', 'view:axhub-passes', 'view:axhub-go-pass', 'action:axhub-passes.open', 'action:axhub-go-pass.open']) assert.ok(manifest.provides.includes(v), `provides ${v}`);
+    const state = web('passesState.ts');
+    for (const a of ['vps.passes.open', 'vps.passes.status', 'vps.passes.grant', 'vps.passes.revoke', 'vps.passes.max', 'axhub-passes.open', 'axhub-go-pass.open']) assert.ok(state.includes(`'${a}'`), `action ${a}`);
+    for (const k of ['maxMinutes', 'timeZone']) assert.ok(state.includes(`setting:vps.passes.${k}`), `target ${k}`);
+    const tab = web('PassesTab.tsx');
+    for (const id of ['vps-pass-start', 'vps-pass-settings-save', 'vps-pass-approve-', 'vps-pass-deny-', 'vps-pass-undo-', 'vps-pass-revoke-']) assert.ok(tab.includes(id), `button ${id}`);
+    assert.match(tab, /clampMinutes\(minutes, longest\)/, 'a new pass is held to the longest-pass setting');
+    const tc = (f) => readFileSync(join(HERE, '../token-control/web', f), 'utf8'); // axf-plugin:token-control
+    assert.ok(!/PassesTab|PassSettings/.test(tc('index.tsx') + tc('pass.tsx')), 'Token control no longer draws the passes');
+    assert.ok(tc('index.tsx').includes('PassBanner') && tc('index.tsx').includes("vps.passes.open:veto"), 'Token control keeps the banner and links here');
+    assert.ok(web('index.tsx').includes("'vps.open'") === false && readFileSync(join(HERE, 'web/actions.ts'), 'utf8').includes("'vps.open'") && readFileSync(join(HERE, 'web/actions.ts'), 'utf8').includes("'gate.open'"), 'vps.open is the new address, gate.open still works');
+  });
   t('the CLI exits 3 when a press needs a confirm, 2 on a usage error', () => {
     seed(); assert.equal(node(['rules', 'reset']).status, 3); assert.equal(node(['rules', 'frobnicate']).status, 2);
   });
