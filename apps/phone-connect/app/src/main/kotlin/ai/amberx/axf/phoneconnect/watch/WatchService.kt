@@ -44,6 +44,7 @@ class WatchService : Service() {
 
     override fun onCreate() {
         super.onCreate()
+        running = this
         Shows.register()
         Recorder.register()
         Voice.register()
@@ -53,7 +54,7 @@ class WatchService : Service() {
         Notifier.channels(this)
         val type = if (Build.VERSION.SDK_INT >= 34) ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE else 0
         ServiceCompat.startForeground(this, Notifier.ID_LINK, Notifier.linkNotification(this, if (loop?.isActive == true) LinkState.status.value else "Connecting…"), type)
-        if (intent?.action == ACTION_DECIDE) decide(intent)
+        if (intent?.action == ACTION_DECIDE) decide(intent.getStringExtra(X_COMMAND), intent.getStringExtra(X_APPROVAL), intent.getStringExtra(X_DECISION))
         if (loop?.isActive != true) { looping = true; loop = scope.launch { try { run() } finally { looping = false; stopIfIdle() } } }
         return START_STICKY
     }
@@ -118,14 +119,15 @@ class WatchService : Service() {
         Notifier.post(this, Notifier.ID_REPAIR, Notifier.repairNotification(this, why))
     }
 
-    /** Brett tapped Approve / Deny / Shelve on an approval notification: his tap goes to the console, the outcome back onto the notification. */
-    private fun decide(intent: Intent) {
-        val command = intent.getStringExtra(X_COMMAND)
-        val approval = intent.getStringExtra(X_APPROVAL)
-        val decision = intent.getStringExtra(X_DECISION)
+    /**
+     * Brett tapped Approve / Deny / Shelve on an approval's notification or its floating card: his tap goes to the
+     * console, the outcome back onto both.
+     */
+    private fun decide(command: String?, approval: String?, decision: String?) {
         if (!LinkRules.isUuid(command) || !LinkRules.isUuid(approval) || decision !in LinkRules.DECISIONS) return
         val nid = Notifier.idOf(approval!!)
         Notifier.post(this, nid, Notifier.approvalOutcome(this, approval, "Sending your answer…", done = false))
+        ApprovalOverlay.outcome(approval, "Sending your answer…", done = false)
         deciding.incrementAndGet()
         scope.launch {
             try {
@@ -141,6 +143,7 @@ class WatchService : Service() {
                     PhoneLink.Reply.NoContent -> LinkRules.decisionOutcome(decision!!, null)
                 }
                 Notifier.post(this@WatchService, nid, Notifier.approvalOutcome(this@WatchService, approval, text, done = true))
+                ApprovalOverlay.outcome(approval, text, done = true)
             } finally {
                 deciding.decrementAndGet()
                 stopIfIdle()
@@ -156,7 +159,7 @@ class WatchService : Service() {
         Notifier.post(this, Notifier.ID_LINK, Notifier.linkNotification(this, text))
     }
 
-    override fun onDestroy() { scope.cancel(); super.onDestroy() }
+    override fun onDestroy() { if (running === this) running = null; scope.cancel(); super.onDestroy() }
 
     companion object {
         const val ACTION_DECIDE = "ai.amberx.axf.phoneconnect.DECIDE"
@@ -168,6 +171,17 @@ class WatchService : Service() {
         fun decideIntent(ctx: Context, commandId: String, approvalId: String, decision: String): Intent =
             Intent(ctx, WatchService::class.java).setAction(ACTION_DECIDE)
                 .putExtra(X_COMMAND, commandId).putExtra(X_APPROVAL, approvalId).putExtra(X_DECISION, decision)
+
+        /** The running watch, for a tap on the floating approval card (no service start needed from the background). */
+        @Volatile private var running: WatchService? = null
+
+        /** A tap on the floating card's Approve / Deny / Shelve: the same road as the notification's action. */
+        fun decide(ctx: Context, commandId: String, approvalId: String, decision: String) {
+            val w = running
+            if (w != null) w.decide(commandId, approvalId, decision)
+            else runCatching { ContextCompat.startForegroundService(ctx, decideIntent(ctx, commandId, approvalId, decision)) }
+                .onFailure { ApprovalOverlay.outcome(approvalId, LinkRules.decisionOutcome(decision, null, "The watch is not running."), done = true) }
+        }
 
         fun start(ctx: Context) { ContextCompat.startForegroundService(ctx, Intent(ctx, WatchService::class.java)) }
         fun stop(ctx: Context) { ctx.stopService(Intent(ctx, WatchService::class.java)) }

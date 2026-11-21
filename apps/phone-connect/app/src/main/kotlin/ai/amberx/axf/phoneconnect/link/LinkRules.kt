@@ -56,6 +56,32 @@ object LinkRules {
      */
     fun wantsOverlay(where: String?): Boolean = where != "browser"
 
+    /** How long the floating approval card keeps showing the outcome ("Approved.") before it leaves. */
+    const val OUTCOME_SHOWN_MS = 4_000L
+
+    /** The words on an approval's buttons, on the notification and on the floating card alike. */
+    fun decisionLabel(decision: String): String = when (decision) { "approve" -> "Approve"; "deny" -> "Deny"; "shelve" -> "Shelve"; else -> decision }
+
+    /**
+     * Where an approval prompt shows (approval.show's ack detail): `overlay` = the floating card with Approve / Deny
+     * on top of whatever is on screen, plus the notification; `notification` = the notification alone (no "display
+     * over other apps"); null = nowhere (notifications off as well), which is a failure.
+     */
+    fun approvalShown(card: Boolean, notification: Boolean): String? = if (card) "overlay" else if (notification) "notification" else null
+
+    /** How long a start of the console app may take to show before it counts as held back by Android. */
+    const val FRONT_WAIT_MS = 2_000L
+
+    /** browser.open's `how` when the console app took the page: in its expanded overlay, or the app itself in front. */
+    fun consoleHow(inOverlay: Boolean): String = if (inOverlay) "console-overlay" else "console-app"
+
+    /**
+     * Why browser.open ended as a tap-to-open notification (the result's `why`): this app was in the background
+     * without "display over other apps" (`no-permission`), or it was allowed to start the page and nothing came up
+     * (`launch-failed`).
+     */
+    fun notifiedWhy(mayStart: Boolean): String = if (mayStart) "launch-failed" else "no-permission"
+
     /** browser.open's `browser`: "chrome" asks for Chrome (the default browser when Chrome is not installed). */
     fun wantsChrome(browser: String?): Boolean = browser == "chrome"
 

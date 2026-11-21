@@ -120,11 +120,16 @@ whatever is on screen: the same path as axHub's `amberx.open_url` (`DeviceLink.o
 urls run the verb. The answer is `{ok: true, json}` (`json` = the open answer: `url`, `verb`, `where`, `overlay`), and
 Phone Connect reports `how: "console-overlay"` in its phone-result@1.
 
-This app declines, and Phone Connect opens the page itself as before (in front: the browser; in the background: the
-full-screen notification), when: `where` is `browser` (code `browser`), the toolbar is off or "Display over other apps"
-isn't granted (`no_overlay`), the url isn't on Brett's sites (`validation`), or the open failed (`unavailable`).
+With the toolbar switched off but "Display over other apps" granted, the app itself comes to the front on the page
+(`how: "console-app"`): the permission is Android's exemption from the background-start block, so there is no
+tap-to-open notification. Android drops a blocked start without raising anything, so the provider answers `ok` only
+once the page is on screen (the overlay took it, or the activity resumed within 2 s); otherwise `unavailable`.
+
+This app declines, and Phone Connect opens the page itself, when: `where` is `browser` (code `browser`), "Display
+over other apps" isn't granted (`no_overlay`; Phone Connect then starts this app's activity itself when it holds the
+permission), the url isn't on Brett's sites (`validation`), or the page did not come up (`unavailable`).
 Only Phone Connect's package (`ai.amberx.axf.phoneconnect`) and this app may call (`denied` otherwise); Android vouches
-for the calling package. `call("state")` answers `{overlay, canDraw, on}`.
+for the calling package. `call("state")` answers `{overlay, canDraw, on, visible}` (`visible`: the app is on screen).
 
 Code: `PhoneConnectRules.java` (pure, JUnit `PhoneConnectRulesTest`, which also checks the Kotlin twin
 `apps/phone-connect/.../watch/ConsoleOverlay.kt`, Phone Connect's `<queries>` entry and its application id),

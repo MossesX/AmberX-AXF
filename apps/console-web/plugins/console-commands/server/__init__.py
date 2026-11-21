@@ -430,7 +430,7 @@ def _wake_later(entry: dict[str, Any], after: float | None = None) -> None:
             r = WAKER(f"{CONSOLE_URL}/?axf-cmd={entry['id']}", st["browser"])
         except Exception as e:  # noqa: BLE001 — a failed wake leaves the command queued; the answer says why
             r = {"ok": False, "message": str(e)[:300]}
-        entry["wake"] = {"sent": bool(r.get("ok")), "opened": r.get("opened") is True, "notified": r.get("notified") is True, "message": str(r.get("message") or "")[:300],
+        entry["wake"] = {"sent": bool(r.get("ok")), "opened": r.get("opened") is True, "notified": r.get("notified") is True, "how": str(r.get("how") or "")[:40], "message": str(r.get("message") or "")[:300],
                          "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
         if not r.get("ok"):
             with _lock:
