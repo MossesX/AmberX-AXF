@@ -410,7 +410,7 @@
       {
         "target": "notices-timer-started-s-left-running",
         "title": "Notices",
-        "text": "Which moments of a countdown push a notice to the AmberX app.",
+        "text": "Which moments of a countdown push a notice to the phone.",
         "kind": "toggle"
       },
       {

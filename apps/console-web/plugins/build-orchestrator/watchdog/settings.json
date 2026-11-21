@@ -37,7 +37,7 @@
     "notify": {
       "type": "boolean",
       "default": true,
-      "title": "Tell AmberX what was cleaned"
+      "title": "Tell the phone what was cleaned"
     }
   }
 }

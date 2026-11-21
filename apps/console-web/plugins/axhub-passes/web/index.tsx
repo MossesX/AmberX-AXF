@@ -23,5 +23,5 @@ export const plugin: AxfWebLibrary = {
     'axhub-go-pass': { title: 'Go pass', icon: 'check', keywords: ["go", "pass", "session", "rules", "threads"], render: () => <GoPass /> },
     'axhub-passes': { title: 'Passes', icon: 'clock', keywords: ["pass", "veto", "allow", "timer"], render: () => <Passes /> },
   },
-  nav: { label: 'axHub', items: [{ id: 'axhub-go-pass', label: 'Go pass', icon: 'check', view: 'axhub-go-pass' }, { id: 'axhub-passes', label: 'Passes', icon: 'clock', view: 'axhub-passes' }] },
+  nav: { label: 'System', items: [{ id: 'axhub-go-pass', label: 'Go pass', icon: 'check', view: 'axhub-go-pass' }, { id: 'axhub-passes', label: 'Passes', icon: 'clock', view: 'axhub-passes' }] },
 };

@@ -59,6 +59,7 @@ class AppCatalog:
         self.repo, self.token, self.folder, self.workflow = repo, token, folder, workflow
         self.gh = github.GitHubClient(token, user_agent="axf-console", timeout=120, max_bytes=MAX_BUNDLE, transport=transport)
         self.lock = threading.Lock()
+        self._stop = threading.Event()
         self.last: dict[str, Any] = {"state": "idle"}
 
     # ---------- reading ----------
@@ -198,8 +199,11 @@ class AppCatalog:
         if not self.folder:
             return
 
+        self._stop.clear()
+
         def loop() -> None:
-            time.sleep(30)
+            if self._stop.wait(30):
+                return
             while True:
                 if self.token():
                     try:
@@ -208,9 +212,13 @@ class AppCatalog:
                         pass
                     except Exception as e:  # noqa: BLE001 — keep the loop alive
                         self.last = {"state": "error", "at": _now(), "error": type(e).__name__}
-                time.sleep(max(60, every))
+                if self._stop.wait(max(60, every)):
+                    return
 
         threading.Thread(target=loop, name="app-catalog", daemon=True).start()
+
+    def stop(self) -> None:
+        self._stop.set()
 
 
 def _chmod(p: Path, mode: int) -> None:

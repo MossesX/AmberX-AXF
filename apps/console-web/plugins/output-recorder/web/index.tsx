@@ -189,7 +189,7 @@ function HubList() {
 function OutputRecorderView() {
   const c = controller();
   return (
-    <div className="fx-stack">
+    <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div>
           <p className="fx-eyebrow">Audio Output Recorder</p>
@@ -228,7 +228,7 @@ export const plugin: AxfWebLibrary = {
   provides: ['axf.output-recorder'],
   views: { 'output-recorder': { title: 'Audio out', icon: 'play', keywords: ['audio', 'record', 'recorder', 'phone audio', 'playback', 'axhub', 'recordings'], render: () => <OutputRecorderView /> } },
   appMenu,
-  nav: { label: 'Media', items: [{ id: 'output-recorder', label: 'Audio out', icon: 'play', view: 'output-recorder' }] },
+  nav: { label: 'Docs & media', items: [{ id: 'output-recorder', label: 'Audio out', icon: 'play', view: 'output-recorder' }] },
   settingsTabs: [{ id: 'output-recorder', label: 'Audio Output Recorder', icon: 'play', order: 41, parent: 'plugins', description: 'Quality, chunk length, what the phone keeps while offline, and where recordings go on axHub.' }],
   settings: [
     {

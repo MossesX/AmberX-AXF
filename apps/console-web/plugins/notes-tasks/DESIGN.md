@@ -4,6 +4,9 @@ Build `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx`, s
 This folder becomes the console plugin `notes-tasks` ("Notes & tasks"). Until the Opus phase lands its code, this
 document and `schema/notes-tasks.schema.json` are the contract every later step builds to.
 
+**Note (Nov 20 2026):** the AmberX Android app (`apps/amberx-droid`) this design mentions was retired on Nov 19 2026
+(code on branch `archive/amberx-droid`). Its steps here are history; the `amberx-notes@1` documents stay readable.
+
 **Changed Nov 13 2026** (build `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to`, Brett):
 notes, tasks and to-dos are **one item type**, not separate things, and any item can hold any other, **nested to any
 depth**: a note holds task lists and to-do lists, a task or to-do list holds notes, lists nest inside lists inside

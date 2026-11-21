@@ -3,7 +3,7 @@
   "type": "color-theme",
   "id": "sage-paper",
   "name": "Sage Paper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Warm off-white with sage greens: calm light theme for reading.",
   "author": "AmberX AXF",
   "tags": [
@@ -20,14 +20,14 @@
       "text": "#1d2a22",
       "muted": "#5f6e64",
       "border": "#d8ddd2",
-      "accent": "#2f7d5b",
+      "accent": "#2e7b5a",
       "accentText": "#ffffff",
-      "accentSoft": "rgba(47,125,91,0.11)",
+      "accentSoft": "rgba(46,123,90,0.11)",
       "danger": "#c2413b",
-      "success": "#2f8a4f",
-      "warning": "#b0731c",
-      "info": "#2a86a8",
-      "focus": "#2f7d5b",
+      "success": "#2a7d47",
+      "warning": "#966218",
+      "info": "#257694",
+      "focus": "#2e7b5a",
       "shadow": "rgba(30,45,35,0.12)"
     }
   }

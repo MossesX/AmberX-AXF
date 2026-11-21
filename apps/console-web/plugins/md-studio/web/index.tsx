@@ -6,7 +6,7 @@
  * (REST, MCP, `axf md-studio …`), so Amber can open and edit docs by voice.
  */
 import { useEffect } from 'react';
-import { DockHost, IconButton, Note, Segmented, useRuntime, useIsPhone } from '@console/axf/react';
+import { DockHost, Note, PageToolbar, Segmented, useRuntime, useIsPhone, useToolbarHandlers } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Column } from './Column';
@@ -35,16 +35,21 @@ function StudioView() {
   useEffect(() => { void loadListing(); openFromUrl(); }, []);
   useEffect(() => { setSidePanes(v.side && !phone); }, [v.side, phone]);
   const column = phone ? 'drawer' : v.column;
+  // the shared framework toolbar (page-toolbar@1, assets/toolbar/md-studio.json): the file buttons act on the active tab
+  useToolbarHandlers(VIEW_ID, {
+    'md-studio.save': async () => { const id = activeDocId(); if (!id) throw new Error('no Markdown file is open'); await saveDoc(id); return { saved: id }; },
+    'md-studio.toggle-edit': () => { const id = activeDocId(); if (!id) throw new Error('no Markdown file is open'); const on = !studio().editable[id]; setEditable(id, on); return { id, editing: on }; },
+    'md-studio.layouts': () => { rt.openDialog('dock-layout', { arg: rt.windows.mainWindowId }); return { opened: 'dock-layout' }; },
+    'md-studio.reload': async () => { await loadListing(); return { reloaded: true }; },
+  });
   return (
-    <div className="fx-stack axp-md-studio" data-view={view} data-column={column}>
+    <div className="fx-stack fx-stack--lg axp-md-studio" data-view={view} data-column={column}>
       <header className="fx-pagehead axp-md-studio__head">
         <div className="axp-md-studio__label"><p className="fx-eyebrow">Claude files · docs</p><h1>MD Studio</h1><p className="fx-muted axp-md-studio__hint">Every Markdown file by scope, opened as tabs you can split, float and edit safely. {v.hint}</p></div>
-        <div className="axp-md-studio__acts">
-          <Segmented label="View" size="sm" value={view} onChange={(x) => setView(x as ViewId)} options={VIEWS.map((x) => ({ value: x.id, label: x.label, icon: x.icon }))} />
-          <IconButton icon="layout" label="Pane layouts" onClick={() => rt.openDialog('dock-layout', { arg: rt.windows.mainWindowId })} />
-          <IconButton icon="refresh" label="Reload the file list" onClick={() => void loadListing()} />
-        </div>
       </header>
+      <PageToolbar view="md-studio" className="axp-md-studio__acts">
+        <Segmented label="View" size="sm" value={view} onChange={(x) => setView(x as ViewId)} options={VIEWS.map((x) => ({ value: x.id, label: x.label, icon: x.icon }))} />
+      </PageToolbar>
       <div className="axp-md-studio__cols">
         {column !== 'hidden' && (phone ? <details className="axp-md-studio__drawer"><summary className="fx-small">Files, snippets and wizards</summary><Column /></details> : <Column />)}
         <DockHost className="axp-md-studio__dock" empty={<div className="fx-empty axp-md-studio__empty"><p>Pick a file on the left to open it here.</p><p className="fx-small fx-muted">Drag a tab onto another tab header to group it, or onto a pane's edge to split.</p></div>} />
@@ -92,7 +97,7 @@ export const plugin: AxfWebLibrary = {
     'md-outline': () => <OutlinePane />,
     'md-refs': () => <RefsPane />,
   },
-  nav: { label: 'Plugins', items: [{ id: 'md-studio', label: 'MD Studio', icon: 'file', view: 'md-studio' }] }, // literal ids: scripts/menu-reach.mts reads this line
+  nav: { label: 'Docs & media', items: [{ id: 'md-studio', label: 'MD Studio', icon: 'file', view: 'md-studio' }] }, // literal ids: scripts/menu-reach.mts reads this line
   contextMenu: [{
     id: 'md-studio.file', target: 'md-studio-file', items: [
       { id: 'md-studio.ctx.open', label: 'Open', icon: 'file', action: 'md-studio.open' },

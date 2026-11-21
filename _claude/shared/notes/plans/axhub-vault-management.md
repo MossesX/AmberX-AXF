@@ -35,7 +35,8 @@ From the Dev Console and the AmberX app, Brett can:
 3. Systems check: link each axHub-backed row to this page. Decide whether the console's own HOSTINGER_API_TOKEN etc. stay separate (default: yes, separate stores, but show both statuses side by side so it's obvious).
 4. Register in Directory + help@1 pack + Shortcuts.
 
-### C. AmberX app (apps/amberx-droid)
+### C. AmberX app (apps/amberx-droid) — dropped
+The AmberX Android app was retired on Nov 19 2026 (code on branch `archive/amberx-droid`); this part is not built.
 1. Vault screen (same assets as the console plugin), reachable from Settings and from `axf://vault/<ref>` deep links.
 2. Handles the deep link from an approval/push or a Claude reply: opens straight on that one secret's Set key dialog.
 3. FLAG_SECURE on this screen only (listeners change removed it app-wide; keep it scoped here).

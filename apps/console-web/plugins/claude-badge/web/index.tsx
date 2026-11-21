@@ -100,7 +100,7 @@ function axhubAsset(rt: AxfRuntime) {
 
 function amberxAsset(rt: AxfRuntime) {
   const r = amberxLast; const st = r?.state ?? 'off';
-  return badgeAsset(rt, 'amberx', st, TONES[st], r ? `${r.text}${!r.online && r.lastSeen ? ` · last seen ${timeOf(r.lastSeen)}` : ''}` : 'Checking the AmberX phone…');
+  return badgeAsset(rt, 'amberx', st, TONES[st], r ? `${r.text}${!r.online && r.lastSeen ? ` · last seen ${timeOf(r.lastSeen)}` : ''}` : 'Checking the phone…');
 }
 
 const windowText = (name: string, w: UsageWindow | null) => (w ? `${name} ${Math.round(w.used)}% used${w.resetsAt ? `, resets ${whenOf(w.resetsAt)}` : ''}` : `${name}: no window open`);

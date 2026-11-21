@@ -440,7 +440,7 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-04' },
   appMenu,
   views: { maintenance: { title: 'Maintenance', icon: 'monitor', render: () => <MaintenanceView /> } },
-  nav: { label: 'Plugins', items: [{ id: 'maintenance', label: 'Maintenance', icon: 'monitor', view: 'maintenance' }] },
+  nav: { label: 'System', items: [{ id: 'maintenance', label: 'Maintenance', icon: 'monitor', view: 'maintenance' }] },
   settingsTabs: [{ id: FOLDER, label: 'Maintenance', icon: 'monitor', order: 47, parent: 'plugins' }],
   settings: [
     {

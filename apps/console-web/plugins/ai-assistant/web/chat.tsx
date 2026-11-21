@@ -5,7 +5,7 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
@@ -47,8 +47,9 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [archived, setArchived] = useState(false);
-  // phones start on the chat; the conversations list slides over it from the list button
-  const [showList, setShowList] = useState(!compact && !globalThis.matchMedia?.('(max-width: 760px)').matches);
+  // phones start on the chat; the conversations list slides over it from the list button (and slides away on a pick)
+  const overlay = () => compact || !!globalThis.matchMedia?.('(max-width: 760px)').matches;
+  const [showList, setShowList] = useState(!overlay());
   const [conv, setConv] = useState<Conversation | null>(null);
   const [pending, setPending] = useState<ConvSettings>({});
   const [text, setText] = useState('');
@@ -79,8 +80,8 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     convId.current = id;
     try {
       const c = await client.getConversation(id);
-      setConv(c); remember(id); setErr(''); if (compact) setShowList(false);
-      if (follow) void attach(c);
+      setConv(c); remember(id); setErr(''); if (overlay()) setShowList(false);
+      if (follow) void attach(c).catch(() => undefined); // a failed lookup only means nothing to follow
     } catch { setConv(null); remember(''); }
   };
   useEffect(() => { void loadList(); }, [archived, tag]);
@@ -92,7 +93,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
       try {
         const settings: ConvSettings = { ...(start.agentId ? { agentId: start.agentId } : {}), ...(start.profileId ? { profileId: start.profileId } : {}), ...(start.profileId && start.model ? { model: start.model } : {}) };
         const c = await client.createConversation(settings, start.title);
-        setConv(c); remember(c.id); convId.current = c.id; if (compact) setShowList(false);
+        setConv(c); remember(c.id); convId.current = c.id; if (overlay()) setShowList(false);
         const opt: Message = { id: `tmp-${Date.now()}`, role: 'user', content: start.message, createdAt: Date.now(), meta: { context: null } };
         await run({ content: start.message }, opt, c);
       } catch (e) { setErr((e as Error).message); }
@@ -155,7 +156,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     return () => { on = false; };
   }, [activeAgent?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); setPending({}); remember(''); setEditing(''); setText(''); setTimeout(() => inputRef.current?.focus(), 30); };
+  const newChat = () => { abort.current?.abort(); convId.current = ''; setConv(null); setPending({}); remember(''); setEditing(''); setText(''); if (overlay()) setShowList(false); setTimeout(() => inputRef.current?.focus(), 30); };
   const updateSettings = async (s: Partial<ConvSettings>) => {
     if (!conv) { setPending((p) => ({ ...p, ...s })); return; }
     setConv(await client.patchConversation(conv.id, { settings: s }));
@@ -189,11 +190,14 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     setLive(null);
   };
 
+  // A turn already starting (Enter pressed twice before the next render, or voice and a tap together) never starts a second.
+  const running = useRef(false);
   const run = async (body: Record<string, unknown>, optimistic?: Message, c0?: Conversation) => {
-    if (live) return;
+    if (live || running.current) return;
+    running.current = true;
     setErr('');
     let c: Conversation;
-    try { c = c0 ?? await ensureConv(); } catch (e) { setErr((e as Error).message); return; }
+    try { c = c0 ?? await ensureConv(); } catch (e) { setErr((e as Error).message); running.current = false; return; }
     if (optimistic) {
       const msgs = body.editMessageId ? c.messages.slice(0, c.messages.findIndex((m) => m.id === body.editMessageId)) : c.messages;
       setConv({ ...c, messages: [...msgs, optimistic] });
@@ -211,7 +215,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     } catch (e) {
       reply.error = (e as Error).message;
     } finally {
-      await finish(c.id, reply);
+      try { await finish(c.id, reply); } finally { running.current = false; }
     }
   };
 
@@ -254,6 +258,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
     let content = (override ?? text).trim();
     if (!content && !images.length && !files.length) return;
     if (content.startsWith('/') && !files.length && !images.length && slash(content)) { setText(''); return; }
+    if (live || running.current) return; // the reply still runs: keep the text in the composer for after it
     if (files.length) content += files.map((f) => `\n\n\`\`\`${f.name}\n${f.text}\n\`\`\``).join('');
     const body: Record<string, unknown> = { content, images, context: normalizeChatContext(ctx) ?? undefined };
     if (editing) body.editMessageId = editing;
@@ -338,7 +343,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
         <aside className="axp-ai-assistant__side">
           <div className="axp-ai-assistant__side-head">
             <Button tone="primary" icon="plus" onClick={newChat}>New chat</Button>
-            <button type="button" className="fx-iconbtn" aria-label="Hide conversations" onClick={() => setShowList(false)}><Icon name="x" size={14} /></button>
+            <IconButton icon="x" label="Hide conversations" onClick={() => setShowList(false)} />
           </div>
           <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search conversations" aria-label="Search conversations" />
           <TabGroup id="ai-assistant.chats" label="Conversations" className="axp-ai-assistant__tabs" value={archived ? 'archived' : 'chats'} onChange={(v) => setArchived(v === 'archived')} tabs={[{ value: 'chats', label: 'Chats' }, { value: 'archived', label: 'Archived' }]} />
@@ -381,7 +386,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
 
       <section className="axp-ai-assistant__main">
         <header className="axp-ai-assistant__head">
-          {!showList && <button type="button" className="fx-iconbtn" title="Conversations" onClick={() => setShowList(true)}><Icon name="list" size={16} /></button>}
+          {!showList && <IconButton icon="list" size={16} label="Conversations" onClick={() => setShowList(true)} />}
           <div className="axp-ai-assistant__title">
             <ActivityIcon icon={activeAgent?.icon || 'sparkles'} size={16} state={activity} />
             <div className="fx-stack axp-ai-assistant__title-text">
@@ -406,8 +411,8 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
               {agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
             </select>
           )}
-          <button type="button" className="fx-iconbtn" title="New chat" onClick={newChat}><Icon name="plus" size={16} /></button>
-          <button type="button" className="fx-iconbtn" title="Chat settings" onClick={() => setSheet('settings')}><Icon name="sliders" size={16} /></button>
+          <IconButton icon="plus" size={16} label="New chat" onClick={newChat} />
+          <IconButton icon="sliders" size={16} label="Chat settings" onClick={() => setSheet('settings')} />
           <MoreMenu label="More chat actions" items={[
             { label: 'Compare models', icon: 'layers', onPick: () => setSheet('compare') },
             !!conv && { label: 'Export Markdown', icon: 'download', onPick: () => void exportConv('md') },
@@ -422,12 +427,12 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             <div className="axp-ai-assistant__welcome fx-stack">
               <Icon name={activeAgent?.icon || 'sparkles'} size={28} />
               <h3>{activeAgent ? `Ask ${activeAgent.name}` : `Ask ${name} anything`}</h3>
-              <p className="fx-muted fx-small">{activeAgent?.description || 'About this framework and its code (it reads the real repository), or anything else. Type / for prompts and commands; paste or drop images and files. Replies keep running if you leave.'}</p>
-              <div className="axp-ai-assistant__suggest">{(status?.suggestions ?? []).map((s) => <button key={s} type="button" className="fx-chip" onClick={() => { setText(s); inputRef.current?.focus(); }}>{s}</button>)}</div>
+              <p className="fx-muted fx-small">{activeAgent?.description || 'Ask about the framework and its code (it reads the real repository), or say "open plan studio" or "go to settings" and the console goes there. Type / for prompts and commands; paste or drop images and files. Replies keep running if you leave.'}</p>
+              <div className="axp-ai-assistant__suggest">{(status?.suggestions ?? []).map((s) => <Button key={s} size="sm" onClick={() => { setText(s); inputRef.current?.focus(); }}>{s}</Button>)}</div>
             </div>
           )}
           {visible.map((m) => (
-            <MessageView key={m.id} m={m} name={name} isLast={m.id === lastAssistant?.id} busy={!!live} showUsage={status?.showUsage !== false}
+            <MessageView key={m.id} m={m} name={name} icon={agents.find((a) => a.id === m.meta?.agentId)?.icon || 'sparkles'} isLast={m.id === lastAssistant?.id} busy={!!live} showUsage={status?.showUsage !== false}
               onCopy={() => void navigator.clipboard?.writeText(m.content).then(() => rt.toast('Copied', 'success'))}
               onEdit={() => { setEditing(m.id); setText(m.content); inputRef.current?.focus(); }}
               onRegenerate={() => void run({ regenerate: true })}
@@ -480,11 +485,11 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
             );
           })()}
           <div className="axp-ai-assistant__inputrow">
-            <button type="button" className="fx-iconbtn" title="Attach images or text files" onClick={() => fileRef.current?.click()}><Icon name="plus" size={16} /></button>
-            <input ref={fileRef} type="file" multiple hidden onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
-            <button type="button" className="fx-iconbtn" title="Attach the current console view as context" onClick={() => setCtx({ view: axState.view, title: document.title, selection: String(globalThis.getSelection?.() ?? '').slice(0, 4000) || undefined })}><Icon name="monitor" size={16} /></button>
+            <IconButton icon="file" size={16} label="Attach images or text files" onClick={() => fileRef.current?.click()} />
+            <input ref={fileRef} type="file" multiple hidden aria-label="Attach images or text files" onChange={(e) => { if (e.target.files) void addFiles(e.target.files); e.target.value = ''; }} />
+            <IconButton icon="monitor" size={16} label="Attach the current console view as context" onClick={() => setCtx({ view: axState.view, title: document.title, selection: String(globalThis.getSelection?.() ?? '').slice(0, 4000) || undefined })} />
             <textarea ref={inputRef} className="fx-input axp-ai-assistant__textarea" rows={2} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={onKey} onPaste={onPaste}
-              placeholder={`Message ${activeAgent?.name ?? name}…  (Enter sends · Shift+Enter new line · / for prompts · ↑ edits last)`} aria-label="Message" />
+              placeholder={`Message ${activeAgent?.name ?? name}…`} title="Enter sends · Shift+Enter new line · / for prompts and commands · ↑ edits the last message" aria-label="Message" />
             {voiceSlot ? <Slot name="assistant.mic" props={voiceProps} /> : <VoiceMicStandIn agentId={activeAgent?.id ?? ''} agentName={activeAgent?.name ?? ''} />}
             {live ? <Button icon="pause" onClick={stop}>Stop</Button> : <Button tone="primary" icon="play" disabled={!text.trim() && !images.length && !files.length} onClick={() => send()}>Send</Button>}
           </div>
@@ -507,8 +512,8 @@ function ToolChip({ name, input, ok, preview, running }: { name: string; input?:
   );
 }
 
-function MessageView({ m, name, isLast, busy, showUsage, onCopy, onEdit, onRegenerate, onContinue, onFork, onDelete }: {
-  m: Message; name: string; isLast: boolean; busy: boolean; showUsage: boolean;
+function MessageView({ m, name, icon, isLast, busy, showUsage, onCopy, onEdit, onRegenerate, onContinue, onFork, onDelete }: {
+  m: Message; name: string; icon: string; isLast: boolean; busy: boolean; showUsage: boolean;
   onCopy: () => void; onEdit: () => void; onRegenerate: () => void; onContinue: () => void; onFork: () => void; onDelete: () => void;
 }) {
   const ai = m.role === 'assistant';
@@ -516,7 +521,7 @@ function MessageView({ m, name, isLast, busy, showUsage, onCopy, onEdit, onRegen
   const tools = meta.tools ?? [];
   return (
     <div className={`axp-ai-assistant__msg ${ai ? 'is-ai' : 'is-user'}${meta.interrupted ? ' is-interrupted' : ''}`}>
-      <div className="axp-ai-assistant__avatar"><Icon name={ai ? 'sparkles' : 'user'} size={14} /></div>
+      <div className="axp-ai-assistant__avatar"><Icon name={ai ? icon : 'user'} size={14} /></div>
       <div className="axp-ai-assistant__bubble">
         {ai && meta.agentName && <span className="fx-small fx-muted">{meta.agentName}</span>}
         {ai && meta.interrupted && <Chip tone="warning">interrupted</Chip>}
@@ -529,13 +534,13 @@ function MessageView({ m, name, isLast, busy, showUsage, onCopy, onEdit, onRegen
         <div className="axp-ai-assistant__meta">
           {ai && showUsage && (meta.model || meta.usage) && <span className="fx-small fx-muted">{meta.mode ? `${turnModeLabel(meta.mode)} · ` : ''}{meta.model}{meta.firstWordMs ? ` · first word ${(meta.firstWordMs / 1000).toFixed(1)}s` : ''}{meta.latencyMs ? ` · ${(meta.latencyMs / 1000).toFixed(1)}s` : ''}{meta.usage ? ` · ${fmtNum(meta.usage.input)}→${fmtNum(meta.usage.output)} tok` : ''}</span>}
           <span className="axp-ai-assistant__acts">
-            <button type="button" className="fx-iconbtn" title="Copy" onClick={onCopy}><Icon name="copy" size={12} /></button>
+            <IconButton icon="copy" size={12} label="Copy" onClick={onCopy} />
             {ai && m.content && <Slot name="assistant.reply" props={{ agentId: meta.agentId ?? '', agentName: meta.agentName ?? '', text: m.content }} />}
-            {!ai && <button type="button" className="fx-iconbtn" title="Edit and resend" disabled={busy} onClick={onEdit}><Icon name="edit" size={12} /></button>}
-            {ai && isLast && <button type="button" className="fx-iconbtn" title="Regenerate" disabled={busy} onClick={onRegenerate}><Icon name="refresh" size={12} /></button>}
-            {ai && isLast && (meta.interrupted || meta.stopped) && <button type="button" className="fx-iconbtn" title="Continue this reply" disabled={busy} onClick={onContinue}><Icon name="play" size={12} /></button>}
-            <button type="button" className="fx-iconbtn" title="Fork from here" disabled={busy} onClick={onFork}><Icon name="branch" size={12} /></button>
-            <button type="button" className="fx-iconbtn" title="Delete" disabled={busy} onClick={onDelete}><Icon name="trash" size={12} /></button>
+            {!ai && <IconButton icon="edit" size={12} label="Edit and resend" disabled={busy} onClick={onEdit} />}
+            {ai && isLast && <IconButton icon="refresh" size={12} label="Regenerate" disabled={busy} onClick={onRegenerate} />}
+            {ai && isLast && (meta.interrupted || meta.stopped) && <IconButton icon="play" size={12} label="Continue this reply" disabled={busy} onClick={onContinue} />}
+            <IconButton icon="branch" size={12} label="Fork from here" disabled={busy} onClick={onFork} />
+            <IconButton icon="trash" size={12} label="Delete" disabled={busy} onClick={onDelete} />
           </span>
         </div>
       </div>
@@ -590,7 +595,7 @@ function CompareDialog({ initial, onClose }: { initial: string; onClose: () => v
   return (
     <div className="axp-ai-assistant__sheet" role="dialog" aria-modal="true" aria-label="Compare models">
       <div className="axp-ai-assistant__sheet-panel fx-stack">
-        <header className="axp-ai-assistant__sheet-head"><Icon name="layers" size={16} /><h3>Compare models</h3><button type="button" className="fx-iconbtn" aria-label="Close" onClick={onClose}><Icon name="x" size={14} /></button></header>
+        <header className="axp-ai-assistant__sheet-head"><Icon name="layers" size={16} /><h3>Compare models</h3><IconButton icon="x" label="Close" onClick={onClose} /></header>
         <textarea className="fx-input" rows={3} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="One prompt, answered by each model side by side" aria-label="Prompt" />
         {targets.map((t, i) => (
           <div key={i} className="fx-row fx-row--wrap">
@@ -598,7 +603,7 @@ function CompareDialog({ initial, onClose }: { initial: string; onClose: () => v
               {profiles.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
             </select>
             <input className="fx-input fx-mono" value={t.model} aria-label="Model" onChange={(e) => setTargets((x) => x.map((y, j) => (j === i ? { ...y, model: e.target.value } : y)))} />
-            {targets.length > 2 && <button type="button" className="fx-iconbtn" aria-label="Remove" onClick={() => setTargets((x) => x.filter((_, j) => j !== i))}><Icon name="minus" size={12} /></button>}
+            {targets.length > 2 && <IconButton icon="minus" size={12} label="Remove this model" onClick={() => setTargets((x) => x.filter((_, j) => j !== i))} />}
           </div>
         ))}
         <div className="fx-row fx-row--wrap">

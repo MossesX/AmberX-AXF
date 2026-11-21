@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "plugin-commands",
+  "name": "Plugin commands",
+  "version": "1.0.0",
+  "description": "The Plugin commands toolbar: read every plugin's commands again. The find box and the All / Reads / Commands switch ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "plugin-commands", "plugins"],
+  "data": {
+    "scope": "view:plugin-commands",
+    "variant": "icons-labels",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "never", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "registry",
+        "label": "Registry",
+        "items": [
+          { "id": "refresh", "icon": "refresh", "label": "Refresh", "action": "handler:plugin-commands.refresh", "priority": 300, "overflow": "never" }
+        ]
+      }
+    ]
+  }
+}

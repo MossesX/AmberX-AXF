@@ -38,7 +38,7 @@ import { withDefaultSettingsTab } from './PluginDefaultSettingsTab';
 import { countingUses, loader, NewVersionNotice, useLoaderVersion } from './pluginLoader';
 
 /** Developer alerts (framework library), stored and pushed by the console server. */
-const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js' });
+const alertsLibrary = createAlertsLibrary({ transport: consoleAlertsTransport, crashWhere: 'console', serviceWorkerUrl: '/alerts-sw.js', navLabel: 'System' });
 // AshesUI (live element inspector): every bundled plugin is known by its axp-<folder> class prefix, with the model that built it
 const ashesLibrary = createAshesLibrary({
   owners: (rt) => ownersFrom(
@@ -50,7 +50,7 @@ const ashesLibrary = createAshesLibrary({
 /** Views the shell can show. The console-nav asset references these ids. */
 const views: ViewMap = {
   home: { title: 'Home', icon: 'home', render: () => <Home /> },
-  tracker: { title: 'Tracker', icon: 'check-circle', render: () => <Tracker /> },
+  tracker: { title: 'Tracker', icon: 'chart', render: () => <Tracker /> },
   plan: { title: 'Plan', icon: 'layers', render: () => <Plan /> },
   build: { title: 'Build queue', icon: 'play', render: () => <BuildManager /> },
   pending: { title: 'Pending builds', icon: 'clock', render: () => <Pending /> },
@@ -60,11 +60,11 @@ const views: ViewMap = {
   catalog: { title: 'Catalog', icon: 'list', render: () => <Catalog /> },
   libraries: { title: 'Libraries', icon: 'box', render: () => <Libraries /> },
   demos: { title: 'Demos', icon: 'smartphone', render: () => <Demos /> },
-  modules: { title: 'Modules', icon: 'package', render: () => <Modules /> },
-  boilerplates: { title: 'Boilerplates', icon: 'layout', render: () => <Boilerplates /> },
+  modules: { title: 'Modules & packages', icon: 'package', render: () => <Modules /> },
+  boilerplates: { title: 'Boilerplates', icon: 'copy', render: () => <Boilerplates /> },
   components: { title: 'Components', icon: 'grid', render: () => <Components /> },
   assets: { title: 'Assets', icon: 'palette', render: () => <AssetStudio /> },
-  account: { title: 'Account', icon: 'shield', render: () => <AccountView /> },
+  account: { title: 'Account', icon: 'user', render: () => <AccountView /> },
 };
 
 function OpenSettingsTab({ tab }: { tab: string }) {

@@ -28,7 +28,7 @@ from typing import Any
 
 import fcntl
 import pty
-import select
+import threading
 import signal
 import struct
 import termios
@@ -92,6 +92,8 @@ async def lifespan(_app: FastAPI) -> AsyncIterator[None]:
         finally:
             if hub:
                 hub.stop()
+            if cat:
+                cat.stop()
 
 
 app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
@@ -946,23 +948,27 @@ async def shell(ws: WebSocket) -> None:
         os.environ["TERM"] = "xterm-256color"
         os.execvp(os.environ.get("AXF_SHELL", "bash"), [os.environ.get("AXF_SHELL", "bash"), "-l"])
     log("shell", f"terminal session opened (pid {pid})")
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
+    out: asyncio.Queue[bytes] = asyncio.Queue()
+
+    def readable() -> None:  # event-driven: no executor thread polling the pty twice a second per open shell
+        try:
+            data = os.read(fd, 65536)
+        except OSError:
+            data = b""
+        if not data:
+            loop.remove_reader(fd)
+        out.put_nowait(data)
 
     async def pump() -> None:
         try:
-            while True:
-                r, _, _ = await loop.run_in_executor(None, select.select, [fd], [], [], 0.5)
-                if r:
-                    try:
-                        data = os.read(fd, 65536)
-                    except OSError:
-                        break
-                    if not data:
-                        break
-                    await ws.send_bytes(data)
+            while data := await out.get():
+                await ws.send_bytes(data)
+            await ws.close()  # the shell exited: end the session instead of leaving a dead socket open
         except Exception:
             pass
 
+    loop.add_reader(fd, readable)
     task = asyncio.create_task(pump())
     try:
         while True:
@@ -980,17 +986,36 @@ async def shell(ws: WebSocket) -> None:
                     os.write(fd, txt.encode())
             elif (data := msg.get("bytes")) is not None:
                 os.write(fd, data)
-    except (WebSocketDisconnect, RuntimeError):
+    except (WebSocketDisconnect, RuntimeError, OSError):
         pass
     finally:
         _shells.discard(ws)
         task.cancel()
+        loop.remove_reader(fd)
         try:
             os.kill(pid, signal.SIGHUP)
         except Exception:
             pass
         os.close(fd)
+        threading.Thread(target=_reap_shell, args=(pid,), name=f"shell-reap-{pid}", daemon=True).start()
         log("shell", "terminal session closed")
+
+
+def _reap_shell(pid: int, grace_s: float = 5.0) -> None:
+    """Collect a closed terminal's shell so it never lingers as a zombie, and kill it if it ignored the hang-up."""
+    deadline = time.monotonic() + grace_s
+    while time.monotonic() < deadline:
+        try:
+            if os.waitpid(pid, os.WNOHANG)[0]:
+                return
+        except ChildProcessError:
+            return
+        time.sleep(0.2)
+    try:
+        os.kill(pid, signal.SIGKILL)
+        os.waitpid(pid, 0)
+    except (ProcessLookupError, ChildProcessError):
+        pass
 
 
 # ---------------------------------------------------------------- releases (CI artifacts: APK, maven repo, console dist)
@@ -1870,11 +1895,25 @@ if DIST.exists():
     _DIST_ROOT = DIST.resolve()
 
     @app.get("/{path:path}")
-    def spa(path: str) -> FileResponse:
+    def spa(path: str) -> Response:
+        # An API path that no route answered is a 404 in JSON, not the console page: a caller's r.json() then fails with
+        # the real cause (a removed or mistyped route) instead of an HTML parse error.
+        if _api_path(path):
+            return JSONResponse({"detail": "Not Found"}, status_code=404)
         # Never serve anything outside dist/: the path arrives decoded, so ../ (also as %2e%2e or %2f) must be refused here.
         try:
             f = (_DIST_ROOT / path).resolve()
             is_file = bool(path) and f.is_relative_to(_DIST_ROOT) and f.is_file()
         except (OSError, ValueError, RuntimeError):  # a path too long, with a NUL byte or a symlink loop is simply not a file
             is_file = False
-        return FileResponse(f if is_file else _DIST_ROOT / "index.html")
+        if is_file and f.name != "index.html":
+            return FileResponse(f)
+        # index.html names this build's hashed entry chunk, and a deploy empties dist/assets: it must be revalidated on
+        # every load, or a heuristically cached copy asks for a bundle that no longer exists (a blank console).
+        return FileResponse(_DIST_ROOT / "index.html", headers={"cache-control": "no-cache"})
+
+
+def _api_path(path: str) -> bool:
+    """True for a path under /api or /mcp (the SPA fallback must not answer those with the console page)."""
+    head = path.lstrip("/").split("/", 1)[0]
+    return head in ("api", "mcp")

@@ -22,5 +22,5 @@ export const plugin: AxfWebLibrary = {
     'axhub-handoff': { title: 'Handoff', icon: 'package', keywords: ["claude", "handoff", "new account"], render: () => <HandoffList /> },
     'axhub-handoff-run': { title: 'Handoff run', icon: 'package', keywords: ["handoff run"], render: () => <HandoffRun /> },
   },
-  nav: { label: 'axHub', items: [{ id: 'axhub-handoff', label: 'Handoff', icon: 'package', view: 'axhub-handoff' }] },
+  nav: { label: 'System', items: [{ id: 'axhub-handoff', label: 'Handoff', icon: 'package', view: 'axhub-handoff' }] },
 };

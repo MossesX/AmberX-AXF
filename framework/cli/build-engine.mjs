@@ -316,6 +316,7 @@ export function menuItemSchema() {
       checked: { type: 'string', pattern: `^(${MENU_SPEC.checkedKinds.join('|')}):.+$`, description: MENU_SPEC.optional_fields.checked },
       order: { type: 'number', description: MENU_SPEC.optional_fields.order },
       before: { type: 'string', minLength: 1 }, after: { type: 'string', minLength: 1 },
+      place: { enum: ['toolbar'], description: MENU_SPEC.optional_fields.place },
     },
   };
 }
@@ -337,6 +338,7 @@ export function validateMenuItems(items, path, depth = 0) {
     for (const k of ['provider', 'badge', 'before', 'after']) if (k in o && (typeof o[k] !== 'string' || !o[k])) errors.push(`${p}.${k} must be a non-empty string`);
     if ('checked' in o && (typeof o.checked !== 'string' || !parseChecked(o.checked))) errors.push(`${p}.checked must be one of: ${MENU_SPEC.checkedKinds.map((k) => `${k}:<ref>`).join(', ')}`);
     if ('order' in o && (typeof o.order !== 'number' || !Number.isFinite(o.order))) errors.push(`${p}.order must be a number`);
+    if ('place' in o && o.place !== 'toolbar') errors.push(`${p}.place must be "toolbar"`);
     if ('provider' in o && 'items' in o) errors.push(`${p} has both provider and items (a live list fills its own)`);
     if ('items' in o) {
       if (depth + 1 >= MENU_SPEC.maxDepth) errors.push(`${p}.items is deeper than ${MENU_SPEC.maxDepth} levels`);

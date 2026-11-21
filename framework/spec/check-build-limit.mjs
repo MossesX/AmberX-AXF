@@ -6,7 +6,7 @@
  * incident), launch N, then the N+1st is refused by the VPS (real tmux sessions named axf-limittest-*, a fake claude).
  *   node framework/spec/check-build-limit.mjs
  */
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, readlinkSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -76,6 +76,18 @@ c = L.countLive({ ...base, reservations: res }, lim, {});
 eq(c.keep.map((r) => r.id), ['r2', 'r4', 'r8'], 'reservations: open ones kept; a launch whose launcher died with no session is not (a refused launch never holds a place)');
 eq(c.live, 5, 'run mode: session + loose claude + three reservations');
 eq(L.decide(c, lim), { ok: false, live: 5, max: 3, free: 0 }, 'over the limit: refused');
+// ghosts hold no place: a test stand-in from /tmp/axf-limit-*, a claude whose /tmp folder was deleted; a claude in a deleted build worktree still counts (the reaper judges it), and under `only` (this
+// test's own end-to-end run) the stand-ins count as builds
+const ghosts = [
+  { pid: 600, ppid: 1, comm: 'sh', argv: ['/bin/sh', '/tmp/axf-limit-q1/bin/claude', '-p', 'x'], cwd: '/tmp/axf-limit-q1/a (deleted)' },
+  { pid: 601, ppid: 1, comm: 'claude', argv: ['claude', '-p'], cwd: '/tmp/gone (deleted)' },
+  { pid: 602, ppid: 1, comm: 'claude', argv: ['claude', '-p'], cwd: '/root/axf-builds/x (deleted)' },
+];
+c = L.countLive({ procs: ghosts, tmux: new Map(), now, alive: () => true }, lim, { mode: 'launch' });
+eq(c.items.map((i) => i.pid), [602], 'ghosts: only the deleted-worktree claude counts; stand-ins and deleted /tmp folders do not');
+eq(c.ignored.map((i) => i.pid), [600, 601], 'ghosts: listed as not counted, with why');
+ok(/test stand-in/.test(c.ignored[0].why) && /deleted/.test(c.ignored[1].why), `ghosts: why ${JSON.stringify(c.ignored)}`);
+eq(L.countLive({ procs: ghosts, tmux: new Map(), now, alive: () => true }, lim, { mode: 'launch', only: /axf-limit-/ }).items.map((i) => i.pid), [600], 'under only (the test itself) its stand-ins count');
 
 // admit: N pass, N+1 refused, under one lock
 rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
@@ -180,9 +192,9 @@ if (hasTmux) {
   L.saveLimit({ maxBuilds: 2 }, { by: 'test', owner: true });
   delete process.env.AXF_SLOTS_TMUX;
   const bin = join(tmp, 'bin'); mkdirSync(bin);
-  // the stand-in ends when told (go) or when its folder is gone: one that outlived the test used to loop forever from a
-  // deleted /tmp/axf-limit-* folder, counted by the real hard limit as a running build (Nov 20 2026)
-  writeFileSync(join(bin, 'claude'), '#!/bin/sh\nwhile [ ! -f "$PWD/go" ] && [ -d "$PWD" ]; do sleep 0.2; done\necho \'{"type":"result","result":"done"}\'\n');
+  // the stand-in ends by itself once its folder is gone, this test is gone, or after 3 min: it can never outlive the run
+  // (Nov 20 2026: stand-ins waiting on a "go" file in a deleted /tmp/axf-limit-* folder held real build places for hours)
+  writeFileSync(join(bin, 'claude'), `#!/bin/sh\nd="$PWD"; n=0\nwhile [ ! -f "$d/go" ]; do\n  [ -d "$d" ] || exit 1; kill -0 ${process.pid} 2>/dev/null || exit 1\n  n=$((n + 1)); [ $n -gt 900 ] && exit 1\n  sleep 0.2\ndone\necho '{"type":"result","result":"done"}'\n`);
   chmodSync(join(bin, 'claude'), 0o755);
   const env = { ...process.env, PATH: `${bin}:${process.env.PATH}`, AXF_SLOTS: 'off', AXF_WATCH_LIVE: 'off', AXF_AGENT_BOOK: 'off', AXF_OWN_LOGIN: 'off', AXF_WORKERS: 'off', AXF_LOOK_GATE: 'off', AXF_ORIGIN: 'off', AXF_BUILD_SLICE: 'off', AXF_LOGIN_NOTE: 'off', AXF_BUILD_LIMIT_POLL: '1', AXF_BUILD_ID: '', AXF_AGENT: '', AXF_AGENT_NAME: '', HOME: join(tmp, 'home') }; // HOME: the launcher puts ~/.local/bin (the real claude) first on PATH
   mkdirSync(join(tmp, 'home'), { recursive: true });
@@ -191,6 +203,10 @@ if (hasTmux) {
   const launch = (k) => { const d = (dirs[k] = join(tmp, k)); mkdirSync(d, { recursive: true }); writeFileSync(join(d, 'brief.md'), 'hi'); return spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', `${tag}-${k}`, '--brief', 'brief.md', '--log', 'run.log', '--', '--model', 'opus'], { cwd: d, env, encoding: 'utf8', timeout: 60_000 }); };
   const until = async (fn, ms = 30_000) => { const t = Date.now() + ms; while (Date.now() < t) { if (fn()) return true; await new Promise((r) => setTimeout(r, 250)); } return false; };
   const live = () => L.usage().live;
+  const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+  // every process started from this test's sandbox: a stand-in claude (argv) or anything with its cwd there
+  const sandboxProcs = (under = tmp) => (spawnSync('ps', ['-e', '-o', 'pid=,args='], { encoding: 'utf8' }).stdout || '').split('\n').map((l) => /^\s*(\d+)\s+(.*)$/.exec(l)).filter(Boolean)
+    .map((m) => ({ pid: Number(m[1]), args: m[2] })).filter((p) => p.pid !== process.pid && (p.args.includes(under) || (() => { try { return readlinkSync(`/proc/${p.pid}/cwd`).startsWith(under); } catch { return false; } })()));
   try {
     const a = launch('a');
     ok(a.status === 0 && /^started axf-limittest-/m.test(a.stdout), `first launch starts: ${a.stdout}${a.stderr}`);
@@ -210,15 +226,24 @@ if (hasTmux) {
     ok(await until(() => live() === 1), `after it closes the count drops: ${JSON.stringify(L.usage().items)}`);
     const c4 = launch('d');
     ok(c4.status === 0 && /^started axf-limittest-/m.test(c4.stdout), `then a new launch starts: ${c4.stdout}${c4.stderr}`);
-    writeFileSync(join(dirs.b, 'go'), ''); if (dirs.d) writeFileSync(join(dirs.d, 'go'), '');
+    // the launcher fix: a killed session ends its quiet claude (bash ran its HUP trap only after the pipeline ended, and
+    // nothing in the pipeline got the HUP, so the claude, its pane and its build place stayed)
+    const dClaude = () => L.usage({ mode: 'run' }).items.find((i) => i.kind === 'session' && i.name.startsWith(`axf-${tag}-d`))?.pid;
+    ok(await until(() => dClaude()), `the fourth run's claude runs: ${JSON.stringify(L.usage().items)}`);
+    const dPid = dClaude();
+    spawnSync('tmux', ['kill-session', '-t', `=axf-${tag}-d`]);
+    ok(await until(() => !alive(dPid), 10_000), `tmux kill-session ends its claude -p (pid ${dPid}), no "go" written`);
+    ok(await until(() => !sandboxProcs(dirs.d).length, 10_000), `nothing of the killed session is left: ${JSON.stringify(sandboxProcs(dirs.d))}`);
+    writeFileSync(join(dirs.b, 'go'), '');
   } finally {
     for (const k of ['a', 'b', 'c', 'd']) { if (dirs[k] && existsSync(dirs[k])) writeFileSync(join(dirs[k], 'go'), ''); }
-    // every stand-in has ended before the folder goes (a session renamed by the launcher is still ours: by prefix)
-    const ours = () => spawnSync('pgrep', ['-f', join(tmp, 'bin', 'claude')], { encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
-    await until(() => ours().length === 0, 10_000);
-    for (const pid of ours()) { try { process.kill(Number(pid), 'SIGKILL'); } catch { /* gone */ } }
+    // a session renamed by the launcher is still ours: by prefix
     for (const n of (spawnSync('tmux', ['ls', '-F', '#S'], { encoding: 'utf8' }).stdout || '').split('\n')) if (n.startsWith(`axf-${tag}-`)) spawnSync('tmux', ['kill-session', '-t', `=${n}`]);
+    // the folder goes only once nothing runs from it any more (a process left in a deleted folder is a ghost)
+    await until(() => !sandboxProcs().length, 10_000);
+    for (const p of sandboxProcs()) { try { process.kill(p.pid, 'SIGKILL'); } catch { /* gone */ } }
   }
+  ok(!sandboxProcs().length, `no process outlives the test: ${JSON.stringify(sandboxProcs())}`);
 } else console.log('(tmux or ps missing: skipped the claude-headless.sh end-to-end checks)');
 
 rmSync(tmp, { recursive: true, force: true });

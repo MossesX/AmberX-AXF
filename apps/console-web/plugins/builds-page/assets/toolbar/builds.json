@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "builds",
+  "name": "Builds",
+  "version": "1.0.0",
+  "description": "The Builds page toolbar: reload the builds store now (the page also refreshes itself while visible). The profile pick, the Builds / Steps view and the Show filter ride on the same bar.",
+  "author": "AmberX AXF",
+  "tags": ["page", "builds-page", "builds"],
+  "data": {
+    "scope": "view:builds",
+    "variant": "icons",
+    "align": "start",
+    "showSearch": false,
+    "overflow": { "when": "never", "keep": 1, "label": "More" },
+    "groups": [
+      {
+        "id": "store",
+        "label": "Store",
+        "items": [
+          { "id": "reload", "icon": "refresh", "label": "Reload", "action": "handler:builds.reload", "priority": 300, "overflow": "never" }
+        ]
+      }
+    ]
+  }
+}

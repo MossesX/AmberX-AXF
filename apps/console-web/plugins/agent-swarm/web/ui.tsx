@@ -112,7 +112,9 @@ function useGridPrefs(key: string, initial: GridSort) {
 }
 
 const money = (u: { usd: number; tokens: number } | undefined) => (u ? <><b>{core.fmtUsd(u.usd)}</b><br /><span className="fx-muted">{core.fmtTokens(u.tokens)}</span></> : '—');
-const W = (n: number) => `calc(var(--fx-space) * ${n})`;
+/** A grid column width in text units: the columns hold text, so they follow the type size, not the spacing scale (a compact
+ *  spacing preset shrank space-based tracks until the number columns overprinted each other). n = the old space count. */
+const W = (n: number) => `calc(var(--fx-font-size) * ${Math.round((n * 8 / 14) * 100) / 100})`;
 type AgentLine = { a: Agent; as: AgentState; sp: Spend | undefined; pay: Pay | undefined };
 
 function AgentsTab({ state, act }: { state: SwarmState; act: Act }) {

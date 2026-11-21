@@ -59,7 +59,7 @@ live groups and toggles: deferred (port on hold, `framework/spec/PORTING.md`).
 | **Status Strip** `status-strip` | A status bar on top | icons · spread · compact · flat | — | — | status/ai (start), status/online (start), progress/build (end), counter/alerts (end), clock/digital-24h (end) |
 | **Power User** `power-user` | Experts who want everything | icons · start · compact · flat · folds | `views` ×6, `chrome` ×4 | badge `alerts.unread` | — |
 | **Review Flow** `review-flow` | Side-by-side review | icons-labels · start · regular · flat | `windows` ×6 | badge `alerts.unread` | — |
-| **AmberX Signature** `amberx-signature` | The AmberX brand frame | icons · start · regular · glass · folds | `views` ×6 | — | theme-switch/day-night (end), avatar/account (end), live search |
+| **AmberX Signature** `amberx-signature` | The AmberX brand frame | icons · start · regular · glass · folds | `views` ×6 | — | theme-switch/amberx-day-night (end), avatar/account (end), live search |
 
 ## Each toolbar
 

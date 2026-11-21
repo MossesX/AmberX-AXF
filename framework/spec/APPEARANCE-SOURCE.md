@@ -197,7 +197,7 @@ axhub-projects@1). Ids and small values only, never asset bodies or code:
   "slots":   { "color-theme": "arctic-daylight", "style-theme": "glass-orbit", "layout": "focus-top" },
   "spacing": "tight",
   "hidden":  { "toolbar": true },
-  "palette": { "scheme": "light", "bg": "#f2f5f8", "fg": "#14202b", "muted": "#5d6d7c", "card": "#ffffff", "line": "#d6dfe7", "accent": "#1f6feb", "danger": "#d1373f", "ok": "#1a8f5a" },
+  "palette": { "scheme": "light", "bg": "#f2f5f8", "fg": "#14202b", "muted": "#5d6d7c", "card": "#ffffff", "line": "#d6dfe7", "accent": "#1567e6", "danger": "#ce2f38", "ok": "#177e4f" },
   "updatedBy": "axf-console", "updatedAt": "2026-10-21T00:00:00Z"
 }
 ```
