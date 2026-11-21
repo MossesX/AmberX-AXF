@@ -166,7 +166,7 @@ console.log('B4-03: archive, then un-archive, through the store');
 console.log('P1-14: one dispatcher, one watchdog');
 {
   const W = await import('../../../../../framework/core/build-watchdog.mjs');
-  const RW = await import('../recovery-watchdog.mjs');
+  const RW = await import('../watchdog/sessions.mjs');
   const staleBuilds = await import('../watchdog/tables/builds.mjs');
   BS.withStore((s) => { s.builds.push(core.normBuild({ id: 'legacy-pending', title: 'An old pending build', status: 'pending', profiles: ['all'], steps: [{ id: 's1', text: 'x', model: 'Opus', estimate: '5 min' }] })); return s; }, { by: 'test' });
   eq([PL.legacyActive(BS.loadStore()), PL.legacyActive({ builds: [{ id: 'q', status: 'queued' }] }), PL.legacyActive({ builds: [{ id: 'p', flow: 'pipeline-2', status: 'building' }] })], [false, true, false], 'the builds@1 dispatcher is at work only while a builds@1 build is queued or building');

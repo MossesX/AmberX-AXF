@@ -1,5 +1,0 @@
-# Stale-row watchdog (stale-row@1): cleans builds-list rows that should have gone (PR merged / closed, build dead).
-# Installed to /etc/cron.d/axf-stale-watchdog by the Build orchestrator's install.mjs (watchdog/cron.mjs install),
-# removed by its uninstall.mjs. flock -n: a run still going makes the next one skip (the watchdog's own run.lock too).
-# __DIR__ is the console checkout (/opt/axf). The run itself skips when the watchdog is off or not due (intervalMin).
-*/5 * * * * root cd __DIR__ && flock -n /tmp/axf-stale-watchdog.lock node apps/console-web/plugins/build-orchestrator/watchdog.mjs run --cron --by watchdog >> /var/log/axf-stale-watchdog.log 2>&1

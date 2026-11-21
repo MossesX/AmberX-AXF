@@ -176,6 +176,48 @@
       "setting": "watchdog.notify",
       "push": true,
       "priority": "normal"
+    },
+    {
+      "id": "watchdog.caught",
+      "label": "FYI: the watchdog caught something",
+      "group": "builds",
+      "app": "console",
+      "source": "Build watchdog (VPS)",
+      "description": "FYI, one per pass (or one per catch, Settings → Plugins → Build orchestrator → Watchdog → Alerts): what the build watchdog caught and what it did: a stuck status pushed to the next rung of its ladder, a merge recorded, a build landed, a failure recorded. Nothing to do; the Watchdog tab lists every one.",
+      "match": {
+        "source": "watchdog",
+        "keyPrefix": "watchdog:caught"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "watchdog.fix",
+      "label": "FYI: the watchdog recovered a build session",
+      "group": "builds",
+      "app": "console",
+      "source": "Build watchdog (VPS)",
+      "description": "FYI for each build session the watchdog recovered (killed, failed, hung, a usage limit): the build, the cause, what it did (retry, requeue, another account) and the attempt. Pushed at normal priority; nothing to do.",
+      "match": {
+        "source": "watchdog",
+        "keyPrefix": "watchdog:fix"
+      },
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "watchdog.gave-up",
+      "label": "The watchdog gave up on a build",
+      "group": "builds",
+      "app": "console",
+      "source": "Build watchdog (VPS)",
+      "description": "The watchdog ran out of options on a build: past its retries, every account tried, or its retry ladder has no rung left. The build waits for you; it is on the systems check banner with Retry / Requeue.",
+      "match": {
+        "source": "watchdog",
+        "keyPrefix": "watchdog:gave-up"
+      },
+      "push": true,
+      "priority": "high"
     }
   ]
 }

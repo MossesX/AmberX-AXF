@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 /**
- * watchdog.mjs — the orchestrator's build watchdog (build-watchdog@1, IO side of framework/core/build-watchdog.mjs).
+ * The build watchdog's `sessions` watch (run by ../watchdog.mjs; this file is also its own CLI): the server watchdog
+ * for builds@1 builds (build-watchdog@1, IO side of framework/core/build-watchdog.mjs).
  *
  * Brett, Nov 13 2026: "if anything stops working, the server/orchestrator fixes it automatically with no one asking.
  * Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry
@@ -11,7 +12,7 @@
  * wrapper left on the build (pipeline.runEnd, the session-end event), and let the decision table say what to do.
  *
  * CLI: also `axf watchdog status|scan|run|set|settings|recoveries|requeue` (plugin.json "cli" names this file).
- *   node apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs scan [--json]     dry run: every stuck build, its cause and
+ *   node apps/console-web/plugins/build-orchestrator/watchdog/sessions.mjs scan [--json]     dry run: every stuck build, its cause and
  *                                                                                   the planned action; nothing changes
  *   … run [--build id] [--json]    one pass that applies the recoveries: a hung session is killed first, the build's agent
  *                                  slots, worker claim and build lock are released, the step it was on is reset, the build
@@ -33,7 +34,7 @@
  *   … cron                         what the axf-watchdog cron runs every minute: a pass when the watchdog is on and
  *                                  intervalMin has gone by since the last one, or when the console asked for one (request)
  *   … request [--by who]           ask the host for a pass now (the console container can't see tmux: the next cron pass runs it)
- *   … install-cron [--dir repo] · remove-cron    /etc/cron.d/axf-watchdog (AXF_WATCHDOG_CRON): every minute, under flock
+ *   … install-cron [--dir repo] · remove-cron    the build watchdog's one cron, /etc/cron.d/axf-build-watchdog (AXF_WATCHDOG_CRON): every minute, under flock
  *                                  /run/axf-watchdog.lock; the line removes its own file once the plugin folder is gone.
  *                                  install.mjs / uninstall.mjs and deploy/install-console.sh call these.
  *
@@ -56,14 +57,15 @@ import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writ
 import { spawnSync } from 'node:child_process';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import * as W from '../../../../framework/core/build-watchdog.mjs';
-import { loadStore } from '../../../../framework/cli/builds-store.mjs';
-import * as slots from '../../../../framework/cli/agent-slots.mjs';
-import * as buildLock from '../../../../framework/cli/build-lock.mjs';
-import { hitOf, markLimit, release as workersRelease, route as workersRoute, status as workersStatus } from '../../../../deploy/claude-workers.mjs';
-import { endRun, makeConsole, pipeDir, pipelineLock, queue as pipelineQueue, requestSelfCheck, setPipeline, slotsNow, tick, worktreeOf } from './pipeline.mjs';
-import * as BP from '../../../../framework/core/build-pipeline.mjs';
-import { withStore } from '../../../../framework/cli/builds-store.mjs';
+import * as W from '../../../../../framework/core/build-watchdog.mjs';
+import { loadStore } from '../../../../../framework/cli/builds-store.mjs';
+import * as slots from '../../../../../framework/cli/agent-slots.mjs';
+import * as buildLock from '../../../../../framework/cli/build-lock.mjs';
+import { hitOf, markLimit, release as workersRelease, route as workersRoute, status as workersStatus } from '../../../../../deploy/claude-workers.mjs';
+import { endRun, makeConsole, pipeDir, pipelineLock, queue as pipelineQueue, requestSelfCheck, setPipeline, slotsNow, tick, worktreeOf } from '../pipeline.mjs';
+import * as BP from '../../../../../framework/core/build-pipeline.mjs';
+import * as oneCron from './cron.mjs';
+import { withStore } from '../../../../../framework/cli/builds-store.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const HERE = dirname(SELF);
@@ -85,18 +87,20 @@ const KEEP_RECENT = 50;
  *   intervalMin        minutes between cron passes (1)          cooldownMin   a recovered build is left alone this long (5)
  *   retryOtherAccount  a usage limit / dead login moves the retry to the next worker (true)
  *   fyi                'batch' (one phone push per pass) | 'each' (one per fix)
+ *   fillSlots          after a pass, tick the dispatcher while slots are free and the Queue has work (false: the
+ *                      orchestrator tick fills the slots every minute; turn it on when that tick is not trusted)
  */
-export const EXTRA_DEFAULTS = Object.freeze({ intervalMin: 1, cooldownMin: 5, retryOtherAccount: true, fyi: 'batch' });
+export const EXTRA_DEFAULTS = Object.freeze({ intervalMin: 1, cooldownMin: 5, retryOtherAccount: true, fyi: 'batch', fillSlots: false });
 const EXTRA_RANGES = { intervalMin: [1, 60], cooldownMin: [0, 120] };
 export function normSettings(raw = {}) {
   const o = raw && typeof raw === 'object' ? raw : {};
   const num = (k) => { const n = Number(o[k]); const [lo, hi] = EXTRA_RANGES[k]; return o[k] == null || o[k] === '' || !Number.isFinite(n) ? EXTRA_DEFAULTS[k] : Math.min(hi, Math.max(lo, Math.round(n))); };
   const bool = (v, d) => (v === true || v === 'true' || v === 'on' ? true : v === false || v === 'false' || v === 'off' ? false : d);
-  return { ...W.normSettings({ ...o, enabled: bool(o.enabled, true) }), intervalMin: num('intervalMin'), cooldownMin: num('cooldownMin'), retryOtherAccount: bool(o.retryOtherAccount, true), fyi: o.fyi === 'each' ? 'each' : 'batch' };
+  return { ...W.normSettings({ ...o, enabled: bool(o.enabled, true) }), intervalMin: num('intervalMin'), cooldownMin: num('cooldownMin'), retryOtherAccount: bool(o.retryOtherAccount, true), fyi: o.fyi === 'each' ? 'each' : 'batch', fillSlots: bool(o.fillSlots, false) };
 }
 export const settingsFile = (env = process.env) => join(pipeDir(env), 'build-watchdog-settings.json');
 /** The keys Settings → Plugins → Build orchestrator → Watchdog edits (and `set`, PUT watchdog/settings, MCP, voice). */
-export const SETTING_KEYS = ['enabled', 'intervalMin', 'staleMin', 'graceMin', 'maxRetries', 'retryOtherAccount', 'fyi', 'cooldownMin'];
+export const SETTING_KEYS = ['enabled', 'intervalMin', 'staleMin', 'graceMin', 'maxRetries', 'retryOtherAccount', 'fyi', 'cooldownMin', 'fillSlots'];
 /** Save a patch of SETTING_KEYS (unknown keys are refused), normalized; returns the saved settings. */
 export function saveSettings(patch = {}, { by = process.env.AXF_ACTOR || 'cli', env = process.env } = {}) {
   const bad = Object.keys(patch).filter((k) => !SETTING_KEYS.includes(k));
@@ -300,7 +304,7 @@ export function runTick(env = process.env) {
     if (env.AXF_PIPELINE_LOCKED === '1' || spawnSync('flock', ['-V']).status !== 0) {
       const r = tick({ env }); return { ran: true, launched: r.launched.map((l) => l.id) };
     }
-    const r = spawnSync('flock', ['-n', pipelineLock(env), process.execPath, join(HERE, 'pipeline.mjs'), 'tick', '--json'], { encoding: 'utf8', timeout: 300e3, env: { ...env, AXF_PIPELINE_LOCKED: '1' } });
+    const r = spawnSync('flock', ['-n', pipelineLock(env), process.execPath, join(HERE, '..', 'pipeline.mjs'), 'tick', '--json'], { encoding: 'utf8', timeout: 300e3, env: { ...env, AXF_PIPELINE_LOCKED: '1' } });
     if (r.status === 1 && !r.stdout) return { ran: false, launched: [], busy: true };
     let j = null; try { j = JSON.parse(r.stdout); } catch { /* not json */ }
     return j ? { ran: true, launched: (j.launched ?? []).map((l) => l.id) } : { ran: false, launched: [], error: str(r.stderr || r.stdout, 300) };
@@ -355,7 +359,7 @@ export function run({ env = process.env, only = '', settings = loadSettings(env)
     } catch (e) { errors.push({ id: x.id, error: str(e.message, 300) }); } finally { unlock(); }
   }
   // keep every slot filled: after the recoveries (and on every pass, recoveries or not)
-  const fill = settings.enabled ? fillSlots({ env, ...fillOpts }) : { rounds: 0, launched: [], idle: null };
+  const fill = settings.enabled && (settings.fillSlots || fillOpts.force) ? fillSlots({ env, ...fillOpts }) : { rounds: 0, launched: [], idle: null };
   const at = new Date().toISOString();
   // the phone hears about every fix (batched per pass, or one per fix), the idle-slots fix included
   const toSend = [...fixes, ...(fill.idle ? [fill.idle] : [])];
@@ -442,25 +446,19 @@ export function notifyFixes(fixes, { env = process.env, settings = loadSettings(
 
 // ------------------------------------------------------------------ schedule: the axf-watchdog cron
 
-export const CRON_NAME = 'axf-watchdog';
+/** The one build-watchdog cron (./cron.mjs, deploy/cron/axf-build-watchdog) runs this watch; there is no cron of its own any more. */
+export const CRON_NAME = oneCron.NAME;
 export const cronFile = (env = process.env) => env.AXF_WATCHDOG_CRON || `/etc/cron.d/${CRON_NAME}`;
 export const requestFile = (env = process.env) => join(pipeDir(env), 'build-watchdog-request.json');
-export const CRON_LOG = '/var/log/axf-watchdog.log';
+export const CRON_LOG = '/var/log/axf-build-watchdog.log';
 
-/** The cron file: every minute, one pass at a time (flock), removes itself when the plugin is gone. */
-export function cronText(dir = resolve(HERE, '../../../..'), env = process.env) {
-  const w = join(dir, 'apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs');
-  return [
-    '# AXF build watchdog (apps/console-web/plugins/build-orchestrator/recovery-watchdog.mjs, build-watchdog@1). Removes itself when the plugin is gone.',
-    'SHELL=/bin/sh', 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', '',
-    `* * * * * root if [ -f "${w}" ]; then cd "${dir}" && flock -n /run/axf-watchdog.lock timeout 300 node "${w}" cron >> ${CRON_LOG} 2>&1; else rm -f ${cronFile(env)}; fi`, '',
-  ].join('\n');
-}
+/** The cron file: the build watchdog's one line (every minute, one pass at a time under flock, skipped once the plugin is gone). */
+export const cronText = (dir = resolve(HERE, '../../../../..')) => oneCron.render(dir);
 /** Write the cron file (0644, as cron requires). { ok, file, skipped? } — skipped where there is no cron.d to write (a container, CI). */
 export function installCron({ dir, env = process.env } = {}) {
   const f = cronFile(env);
   if (!existsSync(dirname(f))) return { ok: true, file: f, skipped: `${dirname(f)} does not exist here (not the VPS host)` };
-  try { writeFileSync(`${f}.tmp`, cronText(dir, env), { mode: 0o644 }); renameSync(`${f}.tmp`, f); return { ok: true, file: f }; }
+  try { writeFileSync(`${f}.tmp`, cronText(dir), { mode: 0o644 }); renameSync(`${f}.tmp`, f); return { ok: true, file: f }; }
   catch (e) { return { ok: false, file: f, error: str(e.message, 200) }; }
 }
 export function removeCron(env = process.env) {
@@ -487,6 +485,51 @@ export function cronPass({ env = process.env, now = Date.now() } = {}) {
   try { rmSync(requestFile(env), { force: true }); } catch { /* gone */ }
   return { ran: true, asked: asked ?? null, ...run({ env, settings: asked && !settings.enabled ? { ...settings, enabled: true } : settings, only: asked?.build || '' }) };
 }
+
+// ------------------------------------------------------------------ the watch (build-watchdogs@1, ../watchdog.mjs)
+
+/** What Settings shows for this watch: every key with its type, range and plain title. */
+export const SETTINGS_SCHEMA = Object.freeze({
+  enabled: { type: 'boolean', default: true, title: 'Watch build sessions' },
+  intervalMin: { type: 'integer', min: 1, max: 60, default: 1, title: 'Check every (minutes)' },
+  staleMin: { type: 'integer', min: 1, max: 1440, default: W.DEFAULTS.staleMin, title: 'A session with no output for this long is hung (minutes)' },
+  graceMin: { type: 'integer', min: 0, max: 120, default: W.DEFAULTS.graceMin, title: 'Leave a session that just started alone for (minutes)' },
+  maxRetries: { type: 'integer', min: 0, max: 20, default: W.DEFAULTS.maxRetries, title: 'Retries before the build goes to Pending' },
+  cooldownMin: { type: 'integer', min: 0, max: 120, default: EXTRA_DEFAULTS.cooldownMin, title: 'Leave a recovered build alone for (minutes)' },
+  retryOtherAccount: { type: 'boolean', default: true, title: 'Retry on another account after a usage limit or dead login' },
+  fillSlots: { type: 'boolean', default: false, title: 'Tick the dispatcher when slots sit idle with work queued' },
+  fyi: { type: 'choice', options: ['batch', 'each'], default: 'batch', title: 'Phone FYI: one per pass or one per fix' },
+});
+
+/** A recovery as the one caught log's record (watchdog-catch@1). */
+export const catchOf = (f) => ({ at: f.at, watch: 'sessions', build: f.buildId || '', title: str(f.title, 120), status: 'running', cause: f.cause, action: f.action,
+  attempt: f.attempt || 0, ok: true, gaveUp: f.action === 'give-up', notified: f.notified || '', note: str(f.note, 600) });
+
+/**
+ * The server watchdog as one watch of the build watchdog: build sessions that are stuck or were killed are recovered
+ * (retried, requeued, moved to another account) or, past the retry cap, handed to Brett.
+ */
+export const WATCH = Object.freeze({
+  id: 'sessions',
+  label: 'Build sessions',
+  what: 'Builds marked running whose session is stuck, was killed or failed: reset and requeued, retried, or moved to another account.',
+  schema: SETTINGS_SCHEMA,
+  hostOnly: true, // tmux and pids are only visible on the VPS host
+  settings: (env = process.env) => { const s = loadSettings(env); return Object.fromEntries(SETTING_KEYS.map((k) => [k, s[k]])); },
+  set: (patch, { by, env = process.env } = {}) => { saveSettings(patch, { by, env }); return WATCH.settings(env); },
+  /** A pass the console asked this watch for (`request`): taken once, run even when the watch is off. */
+  asked(env = process.env) { const a = readJson(requestFile(env)); if (!a) return null; try { rmSync(requestFile(env), { force: true }); } catch { /* gone */ } return { by: a.by || 'console', build: a.build || '' }; },
+  scan({ env = process.env } = {}) {
+    const sc = scan({ env });
+    return { at: sc.at, watching: sc.builds.length, items: sc.stuck.map((x) => ({ at: sc.at, watch: 'sessions', build: x.id, title: x.title, status: x.status, cause: x.decision.cause, action: x.decision.action, attempt: x.decision.attempt || 0, note: str(x.decision.note, 600) })) };
+  },
+  run({ env = process.env, only = '', force = false } = {}) {
+    const settings = loadSettings(env);
+    const r = run({ env, only, settings: force && !settings.enabled ? { ...settings, enabled: true } : settings });
+    const idle = r.fill?.idle ? [{ at: r.fill.idle.at, watch: 'sessions', build: '', title: 'Idle slots', status: '', cause: 'idle-slots', action: 'tick', attempt: 0, ok: true, gaveUp: false, notified: r.fill.idle.notified || '', note: str(r.fill.idle.note, 600) }] : [];
+    return { at: r.at, watching: r.scan.builds.length, catches: [...r.fixes.map(catchOf), ...idle], skipped: r.skipped, errors: r.errors.map((e) => `${e.id ? `${e.id}: ` : ''}${e.error}`) };
+  },
+});
 
 // ------------------------------------------------------------------ CLI
 

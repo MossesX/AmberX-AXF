@@ -100,7 +100,7 @@ export function changesLine(run) {
   const lines = (run.changes ?? []).filter((c) => c.applied).map((c) => c.line);
   const title = `Stale-row watchdog cleaned ${run.cleaned} row${run.cleaned === 1 ? '' : 's'}`;
   const call = (args) => spawnSync(process.execPath, [cli, ...args], { encoding: 'utf8', timeout: 30000 });
-  const o = call(['open', title, '--kind', 'fix', '--asked', 'VPS watchdog run (cron axf-stale-watchdog)', '--surface', 'vps', '--json']);
+  const o = call(['open', title, '--kind', 'fix', '--asked', 'VPS watchdog run (cron axf-build-watchdog)', '--surface', 'vps', '--json']);
   let id = ''; try { id = JSON.parse(o.stdout).id ?? ''; } catch { id = String(o.stdout ?? '').trim().split('\n').pop() ?? ''; }
   if (!id) return { ok: false, why: String(o.stderr ?? '').slice(0, 200) };
   call(['result', id, '--state', 'done', '--summary', lines.join('\n').slice(0, 4000)]);
