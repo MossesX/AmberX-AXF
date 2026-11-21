@@ -8,7 +8,6 @@ export const FOLDER = 'gate';
 /** The view's tabs, in order (gate.mjs TABS: the server's `defaultTab` is one of them). */
 export const TABS = ['overview', 'rules', 'build-rules', 'line', 'auto-lander', 'limits', 'triage', 'history'] as const;
 export const TAB_LABEL: Record<(typeof TABS)[number], string> = { overview: 'Overview', rules: 'Gates', 'build-rules': 'Build rules', line: 'Merge line', 'auto-lander': 'Lander', limits: 'Limits', triage: 'Model triage', history: 'History' };
-export const TAB_ICON: Record<(typeof TABS)[number], string> = { overview: 'home', rules: 'shield', 'build-rules': 'list', line: 'branch', 'auto-lander': 'monitor', limits: 'sliders', triage: 'sparkles', history: 'clock' };
 export type GateTab = (typeof TABS)[number];
 
 export interface GateRule { id: string; kind: string; enabled: boolean; severity: 'block' | 'warn' | 'info'; owner: string; title: string; description: string; settings: Record<string, unknown>; source?: string; updatedAt?: string; updatedBy?: string }

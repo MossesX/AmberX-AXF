@@ -8,7 +8,7 @@
  */
 import { useEffect, useState } from 'react';
 import { PageToolbar, SkinScope, TabGroup, usePublishPageState, useToolbarHandlers } from '@console/axf/react';
-import { gateCall, isTab, onShowTab, TAB_ICON, TAB_LABEL, TABS, takeWantedTab, type GateSettings, type GateTab } from './api';
+import { gateCall, isTab, onShowTab, takeWantedTab, type GateSettings, type GateTab } from './api';
 import { BuildRulesTab } from './BuildRulesTab';
 import { GatesTab } from './GatesTab';
 import { HistoryTab } from './HistoryTab';
@@ -48,7 +48,12 @@ export function GateView() {
     <SkinScope kind="plugin" id={PLUGIN_ID} className="axp-gate">
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Builds</p><h1>Gate &amp; rules</h1><p className="fx-muted">What a build must pass before it lands, who lands it, and everything that changed.</p></div></header>
       <PageToolbar view="gate" />
-      <TabGroup<GateTab> id={TABS_ID} label="Gate & rules" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t, label: TAB_LABEL[t], icon: TAB_ICON[t] }))}>
+      <TabGroup<GateTab> id="gate.tabs" label="Gate & rules" value={tab} onChange={setTab}
+        tabs={[
+          { value: 'overview', label: 'Overview', icon: 'home' }, { value: 'rules', label: 'Gates', icon: 'shield' }, { value: 'build-rules', label: 'Build rules', icon: 'list' },
+          { value: 'line', label: 'Merge line', icon: 'branch' }, { value: 'auto-lander', label: 'Lander', icon: 'monitor' }, { value: 'limits', label: 'Limits', icon: 'sliders' },
+          { value: 'triage', label: 'Model triage', icon: 'sparkles' }, { value: 'history', label: 'History', icon: 'clock' },
+        ]}>
         <div className="axp-gate__panel">
           {tab === 'overview' && <OverviewTab refreshSec={refreshSec} onOpen={setTab} />}
           {tab === 'rules' && <GatesTab refreshSec={refreshSec} />}
