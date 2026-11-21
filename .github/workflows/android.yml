@@ -190,7 +190,7 @@ jobs:
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
       - name: Plan Studio 2.0 plugin (plan-tree@1 nesting, moves, undo, links, export, build hand-off, voice parser, CLI on a scratch store)  # axf-plugin:plan-studio-2
         run: node apps/console-web/plugins/plan-studio-2/test.mjs  # axf-plugin:plan-studio-2
-      - name: Gate & rules plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
+      - name: VPS Configuration plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate

@@ -37,6 +37,7 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
+      "apps/console-web/plugins/gate/build-cap.mjs",
       ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/THREADS.md",

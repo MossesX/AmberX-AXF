@@ -2,9 +2,9 @@
   "$axf": "asset@1",
   "type": "toolbar",
   "id": "gate",
-  "name": "Gate",
+  "name": "VPS Configuration",
   "version": "1.0.0",
-  "description": "The Gate & rules toolbar: land the waiting builds now, pause or resume the lander, run the auto-lander once, jump to the build rules or the history, and reset the gate rules (with a confirm). Every button runs the gate plugin's own commands.",
+  "description": "The VPS Configuration toolbar: land the waiting builds now, pause or resume the lander, run the auto-lander once, jump to the build rules or the history, and reset the gate rules (with a confirm). Every button runs the gate plugin's own commands.",
   "author": "AmberX AXF",
   "tags": ["page", "gate", "lander", "rules"],
   "data": {
