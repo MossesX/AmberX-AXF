@@ -37,7 +37,7 @@ runs today (`/etc/cron.d/axf-*`, `systemctl list-units 'axf*'`).
 | Watchdog layer 2 | cron `axf-watchdog-l2`, 1 min | build-orchestrator |
 | Watchdog layer 3 | `axf-watchdog-l3.service` + timer, 2 min | build-orchestrator |
 | Store audits | cron `axf-watchdog-audits`, :17 and :47 | build-orchestrator |
-| Stale-row watchdog | cron `axf-stale-watchdog`, 5 min | build-orchestrator |
+| Build watchdog (stuck sessions, stuck statuses, stale rows; it replaced the stale-row cron on Nov 21) | cron `axf-build-watchdog`, 1 min | build-orchestrator |
 | Reaper | cron `axf-reaper`, 2 min | console |
 | Hard build limit | `axf-build-limit.service` + timer | console |
 | Builds reconcile | cron `axf-builds-reconcile`, 10 min | build-orchestrator |
@@ -49,8 +49,9 @@ runs today (`/etc/cron.d/axf-*`, `systemctl list-units 'axf*'`).
 | Data backup | cron `axf-data-backup` | data-store |
 | Molly host bridge | `axf-molly-bridge.service` | molly-guide |
 
-The two watchdogs are being reworked by `fable-rebuild-2-2-both-watchdogs-one` (running now). This build lists and
-health-checks their schedules and does not touch their code or how they are started.
+The two watchdogs were reworked by `fable-rebuild-2-2-both-watchdogs-one` (PR #883, merged while this build was in CI):
+the stale-row cron became the one `axf-build-watchdog` cron, which is what is adopted here. This build lists and
+health-checks the watchdog schedules and does not touch their code or how they are started.
 
 ### 1c. Still in the container: moves to the host in this build
 
@@ -134,7 +135,7 @@ and changed where main had moved on.
 | orchestrator-tick | cron `axf-orchestrator-tick` | cron file there, log written in the last 15 min |
 | watchdog-l2 | cron `axf-watchdog-l2` | same |
 | watchdog-audits | cron `axf-watchdog-audits` | log written in the last 2 h |
-| stale-row-watchdog | cron `axf-stale-watchdog` | log written in the last 30 min |
+| build-watchdog | cron `axf-build-watchdog` | log written in the last 15 min |
 | reaper | cron `axf-reaper` | log written in the last 15 min |
 | builds-reconcile | cron `axf-builds-reconcile` | log written in the last hour |
 | claude-token-save, console-nightly, console-update | cron | cron file there (their logs are only written when something happens) |

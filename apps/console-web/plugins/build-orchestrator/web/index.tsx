@@ -9,11 +9,11 @@ import { AccountsPanel, ApprovalsPanel, FOLDER, GroupsPanel, OrchestratorPage, R
 import { StatusTable } from './StatusTable';
 import { statusLabel, type TableRow } from './status-table-core.mjs';
 import { focusBuild } from './focus';
-import { WatchdogSettingsPanel, watchdogApi, type WatchdogStatus } from './watchdog';
 import { showAttempts } from './attempts';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 import { registerWatchdogActions } from './watchdogActions';
 import { WatchdogPanel, registerWatchdogTargets } from './WatchdogPanel';
+import { WatchdogsPanel, loadWatchdogs, passLine, registerWatchdogs, runWatchdogs, statusLine } from './Watchdogs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
 const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 'pause', release: 'play', archive: 'package', unarchive: 'undo', delete: 'trash', restore: 'undo' };
@@ -24,7 +24,8 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * cleared; a status or an old tab name: that filter), build-orchestrator.merge-queue (the read-only merge queue view),
  * build-orchestrator.start:<build>. Search: every build with its status. Context menu: Open, Retry on a failed build,
  * Hold / Archive / Delete. Accounts, Watchdog, Groups, Approvals and Rules are Settings → Plugins → Build orchestrator.
- * Build watchdog (build-watchdog@1): watchdog.status (toast + the Watchdog tab), watchdog.run[:<build>] (POST watchdog/run);
+ * Build watchdog (build-watchdogs@1, one panel for every watch: Watchdogs.tsx): watchdogs.status / watchdogs.run[:<watch>[:<build>]] /
+ * watchdogs.scan / watchdogs.set:<key>:<value> / watchdogs.open[:caught|watches|settings]; the older watchdog.status and watchdog.run[:<build>] still work;
  * deep link build-orchestrator.focus:watchdog (console_open "build-orchestrator" focus "watchdog", console_show
  * "build-orchestrator/watchdog"), with ?build=<id> for one build's row and fixes.
  * build-orchestrator.focus:<tab|build> (Nov 11 2026, console-commands-reliable): what a console command's `focus` runs
@@ -83,23 +84,17 @@ export const plugin: AxfWebLibrary = {
     };
     registerWatchdogActions(rt);
     registerWatchdogTargets(rt);
+    registerWatchdogs(rt);
     rt.actions.register('build-orchestrator.open', ([arg]) => void open(arg ?? ''), { label: 'Open the Build orchestrator (a build or a tab)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.focus', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: bring a tab or a build forward', params: true, effect: 'navigate' });
-    // the build watchdog (build-watchdog@1) for voice and console actions: the same calls as REST / MCP / `axf watchdog`
+    // the build watchdog (build-watchdogs@1) by its older action names: the same calls as watchdogs.status / watchdogs.run,
+    // REST / MCP / `axf watchdog`. watchdog.run:<build> runs every watch for that one build.
     rt.actions.register('watchdog.status', async () => {
       void open('watchdog');
-      try {
-        const s = await watchdogApi.call<WatchdogStatus>('recovery-watchdog/status');
-        const running = s.lastScan?.builds.length ?? 0; const stuck = s.lastScan?.builds.filter((b) => b.stuck).length ?? 0;
-        rt.toast(`Watchdog ${s.settings.enabled ? 'on' : 'off'}: last pass ${s.ageMin != null ? `${s.ageMin} min ago` : 'never'}, ${running} running, ${stuck} stuck, ${s.recent.length} recent fixes${s.gaveUp.length ? `, gave up on ${s.gaveUp.length}` : ''}.`, s.stale || s.gaveUp.length ? 'warning' : 'success');
-      } catch (e) { rt.toast((e as Error).message, 'danger'); }
-    }, { label: 'Build watchdog: status (last pass, stuck builds, recent fixes)' });
+      try { const s = await loadWatchdogs(); rt.toast(statusLine(s), s.stale ? 'warning' : 'info'); } catch (e) { rt.toast((e as Error).message, 'danger'); }
+    }, { label: 'Build watchdog: status (last pass, each watch, what it caught)' });
     rt.actions.register('watchdog.run', async ([arg]) => {
-      try {
-        const build = decodeURIComponent(arg ?? '').trim();
-        const r = await watchdogApi.post<{ requested?: boolean; fixes?: unknown[] }>('recovery-watchdog/run', build ? { build } : {});
-        rt.toast(r.requested ? 'Asked the VPS for a watchdog pass: it runs within a minute.' : `Watchdog pass done: ${r.fixes?.length ?? 0} fixed.`, 'success');
-      } catch (e) { rt.toast((e as Error).message, 'danger'); }
+      try { const build = decodeURIComponent(arg ?? '').trim(); rt.toast(passLine(await runWatchdogs(build ? { build } : {})), 'success'); } catch (e) { rt.toast((e as Error).message, 'danger'); }
     }, { label: 'Build watchdog: run a pass now (optionally one build)' });
     rt.actions.register('build-orchestrator.tab', ([arg]) => void open(arg ?? ''), { label: 'Build orchestrator: show builds in a status (old tab names map onto status filters)', effect: 'navigate' });
     rt.actions.register('build-orchestrator.merge-queue', () => rt.navigate('merge-queue'), { label: 'Open the merge queue (read-only)', effect: 'navigate' });
@@ -199,11 +194,11 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
   settingsPanels: [
     { id: 'build-orchestrator.accounts', tab: 'build-orchestrator', title: 'Accounts', icon: 'user', order: 10, render: () => <AccountsPanel /> },
-    { id: 'build-orchestrator.watchdog-status', tab: 'build-orchestrator', title: 'Watchdog status', icon: 'shield', order: 19, render: () => <WatchdogStatusPanel /> },
+    { id: 'build-orchestrator.watchdogs', tab: 'build-orchestrator', title: 'Watchdog', icon: 'shield', order: 19, render: () => <WatchdogsPanel /> },
+    { id: 'build-orchestrator.watchdog-status', tab: 'build-orchestrator', title: 'Watchdog: build sessions live', icon: 'shield', order: 20, render: () => <WatchdogStatusPanel /> },
     { id: 'build-orchestrator.groups', tab: 'build-orchestrator', title: 'Groups', icon: 'folder', order: 30, render: () => <GroupsPanel /> },
     { id: 'build-orchestrator.approvals', tab: 'build-orchestrator', title: 'Approvals', icon: 'check', order: 40, render: () => <ApprovalsPanel /> },
     { id: 'build-orchestrator.rules', tab: 'build-orchestrator', title: 'Rules', icon: 'settings', order: 50, render: () => <RulesPanel /> },
-    { id: 'build-orchestrator.recovery-watchdog', tab: 'build-orchestrator', title: 'Recovery watchdog', icon: 'shield', order: 21, render: () => <WatchdogSettingsPanel /> },
-    { id: 'build-orchestrator.watchdog', tab: 'build-orchestrator', title: 'Watchdog', icon: 'shield', order: 20, render: () => <WatchdogPanel /> },
+    { id: 'build-orchestrator.watchdog', tab: 'build-orchestrator', title: 'Watchdog: left-over rows, runs and cleanups log', icon: 'shield', order: 21, render: () => <WatchdogPanel /> },
     { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

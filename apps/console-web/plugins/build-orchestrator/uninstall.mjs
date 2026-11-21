@@ -5,7 +5,7 @@
  * (/etc/cron.d/axf-watchdog) goes first, so nothing runs a pass while the plugin is taken out.
  */
 import { main } from '../../../../framework/cli/plugin-lifecycle.mjs';
-import { removeCron } from './recovery-watchdog.mjs';
+import { removeCron } from './watchdog/sessions.mjs';
 
 if (!process.argv.includes('--dry-run')) {
   const r = removeCron();

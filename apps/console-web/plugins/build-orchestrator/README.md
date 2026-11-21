@@ -6,7 +6,8 @@ Pending → Queue → Building. The store is `_claude/builds/store.json`; the ru
 
 - `orchestrator.mjs`: steps, phases, briefs, notes, approvals (`next | brief | act`).
 - `pipeline.mjs`: the dispatcher on the VPS host (cron `axf-pipeline`, every minute, `flock /run/axf-pipeline.lock`).
-- `watchdog.mjs`: the build watchdog (cron `axf-watchdog`, every minute): stuck builds reset, requeued, retried; see below.
+- `watchdog.mjs`: the one build watchdog (cron `axf-build-watchdog`, every minute) and its watches in `watchdog/`: stuck or
+  killed sessions recovered, builds standing in one status pushed on, left-over rows cleaned; see below.
 - `pipeline-core.mjs`: the pure rules (plan, account pick, session end). Contract: `framework/core/build-pipeline.mjs`.
 - `server/__init__.py`: the console REST routes (`/api/plugins/build-orchestrator/…`); `plugin.json` lists the commands
   (MCP tools, voice, CLI). `web/`: the Orchestrator view and its Pipeline tabs.
@@ -61,16 +62,77 @@ Rows from `GET /pipeline` (MCP `pipeline-status`, `pipeline-tab`) carry `requeue
 queued build back after a finished phase) and `stuck` (`{ phase, next, why }`, a Pending build parked by mistake). A
 build's pipeline row opens with `console_show build-orchestrator <id>` (action `build-orchestrator.open:<id>`).
 
-## Watchdog: stuck builds fix themselves
+## The build watchdog: one watchdog, three watches
+
+`watchdog.mjs` (build-watchdogs@1) is the only watchdog entry in this plugin. It runs on the VPS host from ONE cron
+(`axf-build-watchdog`, every minute, `flock /run/axf-build-watchdog.lock`; template `deploy/cron/axf-build-watchdog`,
+installed by `install.mjs` / `deploy/install-console.sh`, which also remove the retired `axf-stale-watchdog`). Each pass
+runs every watch that is on and due, writes what each caught to one log, and sends one alert.
+
+| Watch | File | What it catches | What it does |
+|---|---|---|---|
+| `sessions` | `watchdog/sessions.mjs` (build-watchdog@1) | builds marked running whose session is stuck, was killed or failed | reset and requeue, retry, another account, give up past the cap (details in the next section) |
+| `stale` | `watchdog/stale.mjs` + `stale-core.mjs` (stale-status@1) | builds standing in `landing`, `fixing` or `merging` past their limit with nothing moving | the next action on their ladder (table below) |
+| `rows` | `watchdog/rows.mjs` (stale-row@1) | rows on Pending, the Queue, Building, the merge queue or UI Review whose PR merged or closed | completed or removed, logged in the Cleanups log |
+
+A watch is a module exporting `WATCH = { id, label, what, schema, settings(), set(patch), scan(), run() }`; the list is
+`WATCH_FILES` in `watchdog.mjs`, and `register(watch)` adds one at run time. A watch that throws or cannot load is
+recorded and never stops the others. Pipeline 2.0 builds are skipped by all three: `deploy/watchdog` is their watchdog.
+
+**The stale-status ladder** (`stale-core.mjs` `decide`, done-means-merged@1's line). "Standing" is measured from the
+build's last real progress (a failure recorded, an attempt, a ticked step, a launch, the merge), never from `updatedAt`.
+
+| Found | Action |
+|---|---|
+| its PR merged and the build never heard | `record-merge`: `mergedAt` + the merge commit on the build, a failure from before the merge cleared, status `landing` |
+| merged, CI green on the merge commit | `land`: `landed.ci = success`, status `landed` (through `guardStatus`) |
+| merged, CI on the merge commit red, cancelled or missing, but main green now with the merge in it | `land`, with `landed.ciRun = main@<sha>` naming the proof |
+| merged, CI red on the merge commit and main not green | `fail`: a `ci-red` failure at the merge commit, status `fixing` |
+| merged, CI still running or none | wait `ciWaitMin`, then `escalate` |
+| `fixing` with a failure and nothing tried | `ladder`: the retry ladder's next rung, launched now (`pipeline.mjs retryFixing`) |
+| `fixing`, the ladder ran out | `escalate`: status `escalated`, banner item, one push |
+| `fixing` with no failure on it | `to-landing` (every step done and a PR) or `requeue` |
+| `landing` / `merging`, the PR open, closed or missing | `fail`: a `stalled` (or `push-fail`) failure; the dispatcher's retry runner answers it |
+
+Never touched: a build with a live session, a lander fix agent or an attempt in flight; a build pushed less than
+`cooldownMin` ago; a build whose PR state could not be read from GitHub (nothing is pushed blind). A pass acts on the
+longest-standing builds first, at most `maxPerPass`, and starts at most `maxLaunchPerPass` sessions (default 1, so a
+backlog drains one build per pass; 0 = bookkeeping only, never start a session).
+
+**Settings** are one flat map: `enabled` (the master switch), `alerts` (`batch` / `each` / `off`; a give-up always
+alerts) and each watch's own under `<watch>.<key>`: `sessions.staleMin`, `sessions.maxRetries`, `stale.limit.landing`
+(90), `stale.limit.fixing` (60), `stale.limit.merging` (30), `stale.ciWaitMin`, `stale.cooldownMin`,
+`stale.maxLaunchPerPass`, `rows.intervalMin`, … Each watch stores its own where it always did.
+
+**Files** (the pipeline folder, shared with the console): `watchdogs.json` (last pass, each watch's last run),
+`watchdogs-caught.jsonl` (watchdog-catch@1: watch, build, status, cause, action, rung, ok, gaveUp, notified, note),
+`watchdogs-settings.json`, `watchdogs-request.json`, `watchdogs-stale.json` (the stale watch's last push per build).
+
+**Alerts and health.** Notify types `watchdog.caught` (FYI), `watchdog.fix` (a recovered session, FYI) and
+`watchdog.gave-up` (alert). Systems check item **Build watchdog runs**: red when on and no pass for 5 minutes, amber when
+a watch cannot load or its last run failed; Auto fix reinstalls the cron and runs one pass (axHub `vps.run`).
+
+| Reach it | How |
+|---|---|
+| Screen | Settings → Plugins → Build orchestrator → **Watchdog**: Caught, Watches (Run this watch, Dry run), Settings |
+| REST | `GET watchdogs`, `GET watchdogs/caught?watch=&build=&limit=`, `GET watchdogs/scan?watch=`, `POST watchdogs/run {watch?, build?}`, `GET/PUT watchdogs/settings` |
+| MCP | plugin commands `watchdogs-status`, `watchdogs-caught`, `watchdogs-scan`, `watchdogs-run`, `watchdogs-settings`, `watchdogs-settings-set` |
+| CLI | `axf watchdog status\|watches\|scan [--watch id]\|run [--watch id] [--build id]\|caught\|settings\|set key=value…\|request\|install-cron` (= `node …/watchdog.mjs …`); a watch's own commands: `axf watchdog sessions requeue <id>`, `axf watchdog rows log` |
+| Voice / actions | `watchdogs.status`, `watchdogs.run[:<watch>[:<build>]]`, `watchdogs.scan[:<watch>]`, `watchdogs.set:<key>:<value>`, `watchdogs.open[:caught\|watches\|settings]` (and the older `watchdog.status`, `watchdog.run[:<build>]`) |
+| Deep link | `build-orchestrator.focus:watchdog[?build=<id>]`; console-control `panel:build-orchestrator.watchdogs`, `setting:orchestrator.watchdogs.<key>` |
+
+The older per-watch routes and commands still answer (`watchdog/*` for the row cleaner, `recovery-watchdog/*` for the
+session watch).
+
+## The session watch: stuck builds fix themselves
+
 
 Brett, Nov 13 2026: "if anything stops working, the server/orchestrator fixes it automatically with no one asking.
 Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry
 failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice."
 
-`watchdog.mjs` (build-watchdog@1; the decision table is `framework/core/build-watchdog.mjs`, golden cases
-`framework/spec/fixtures/build-watchdog.json`) runs on the VPS host from the cron `axf-watchdog` (every minute,
-`flock /run/axf-watchdog.lock`; `install.mjs` / `deploy/install-console.sh` install it, `uninstall.mjs` removes it, the
-line removes itself once the plugin folder is gone). One pass:
+`watchdog/sessions.mjs` (build-watchdog@1; the decision table is `framework/core/build-watchdog.mjs`, golden cases
+`framework/spec/fixtures/build-watchdog.json`) is run by the build watchdog's one cron on the VPS host. One pass:
 
 1. **Evidence.** `deploy/claude-headless.sh` records every run's end the moment claude exits (or the wrapper gets HUP /
    TERM): exit code, signal, exit kind, a usage / login stop, account, time, on the build (`pipeline.runEnd`, through
@@ -88,7 +150,7 @@ line removes itself once the plugin folder is gone). One pass:
    same store write (journal action `watchdog-recover`). A per-build lock, a re-read under it and a cooldown keep it
    idempotent: a second pass does nothing. The retry count is the build's own recoveries (a give-up hands it to Brett;
    his requeue starts a fresh count).
-5. **Fill the slots:** the dispatcher tick runs while slots are free and the Queue has work; slots still idle with Queue
+5. **Fill the slots** (only with `sessions.fillSlots` on; the orchestrator tick fills them every minute): the dispatcher tick runs while slots are free and the Queue has work; slots still idle with Queue
    work are recorded as an `idle-slots` fix and the self-check is asked for.
 6. **Tell the phone:** notify types `watchdog.fix` (FYI, pushed at normal priority: `low` never leaves the banner) and
    `watchdog.gave-up` (alert), through the console's alerts API and axf.notify@1 to AmberX, with build, cause, action
@@ -137,6 +199,8 @@ everything but Brett's signed-in click).
 
 
 `node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs` (pure rules and the CLI end to end on a scratch
-store with a fake launcher), `node …/test-watchdog.mjs` (the watchdog on a temp store, fake probe), `bash
+store with a fake launcher), `node …/test-watchdog.mjs` (the session watch on a temp store, fake probe), `node …/test/watchdogs.test.mjs` (the one
+watchdog and the stale-status table), `node …/test/watchdogs-store.test.mjs` (the stale watch's writes on a scratch store),
+`python3 …/server/test_watchdogs.py` (the routes), `node …/test/watchdog.test.mjs` (the row cleaner), `bash
 …/test-watchdog-e2e.sh` (a fake claude started through the dispatcher and claude-headless.sh, killed, recovered and
 relaunched; needs tmux), `node framework/spec/check-build-watchdog.mjs`, `node framework/spec/check-build-pipeline.mjs`, `node framework/spec/check-builds-store.mjs`.

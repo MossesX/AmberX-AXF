@@ -48,7 +48,7 @@ have landed.
   (`unit` reads `cron:<file>`; the cron file is its timer, its log's last write its last run), `health.freshness:
   false` for a schedule with a quiet log.
 - Twelve adopted manifests: lander, watchdog-l3, build-limit, orchestrator-tick, watchdog-l2, watchdog-audits,
-  stale-row-watchdog, reaper, builds-reconcile, claude-token-save, console-nightly, console-update.
+  build-watchdog, reaper, builds-reconcile, claude-token-save, console-nightly, console-update.
 - The health item for a missing cron file, with an Auto fix that re-installs the host schedules.
 - Logs for a cron schedule (the tail of its log file).
 

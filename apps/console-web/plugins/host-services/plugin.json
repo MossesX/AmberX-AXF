@@ -279,7 +279,7 @@
     "watchdog-l2",
     "watchdog-l3",
     "watchdog-audits",
-    "stale-row-watchdog",
+    "build-watchdog",
     "reaper",
     "build-limit",
     "builds-reconcile",
