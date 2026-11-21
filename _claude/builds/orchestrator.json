@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T23:05:35.927Z",
+ "updatedAt": "2026-11-21T23:05:57.458Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -213160,7 +213160,7 @@
    "pr": "#881",
    "mergedAt": "2026-11-21T21:26:53Z",
    "createdAt": "2026-11-21T19:15:32.824Z",
-   "updatedAt": "2026-11-21T22:31:38Z",
+   "updatedAt": "2026-11-21T23:05:37.117Z",
    "builtAt": "2026-11-21T21:07:28.794Z",
    "notes": [
     {
@@ -213198,6 +213198,10 @@
     {
      "text": "Shipped manifest sm-rename-gate-rules-to-vps-configuration rev 1 sent to Shipped features (orchestrator): landed 466828c77, 1 file(s), 1 test line(s), 0 open.",
      "at": "2026-11-21T22:31:38Z"
+    },
+    {
+     "text": "Watchdog: PR #881 merged 2026-11-21 21:26 and the build never heard: the merge is recorded, CI on 466828c777 is next. The failure from before the merge is cleared.",
+     "at": "2026-11-21T23:05:37.117Z"
     }
    ],
    "approvals": [],
@@ -213566,7 +213570,7 @@
    "title": "Rip out Plan Studio 1, keep only Plan Studio 2.0",
    "category": "Cleanup",
    "detail": "Plan: rip-out-plan-studio-1-keep-only-plan-studio-2-0-lbrj. Archive before removal.",
-   "status": "landed",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213574,7 +213578,7 @@
    "pr": "#882",
    "mergedAt": "2026-11-21T20:28:57Z",
    "createdAt": "2026-11-21T19:29:00.740Z",
-   "updatedAt": "2026-11-21T23:05:31.351Z",
+   "updatedAt": "2026-11-21T23:05:51.041Z",
    "builtAt": "",
    "notes": [
     {
@@ -213620,6 +213624,10 @@
     {
      "text": "Watchdog: merged and CI is green on 614242f8ba: landed.",
      "at": "2026-11-21T23:05:31.351Z"
+    },
+    {
+     "text": "Verified on main (deploy): No verify command: CI green on the merge commit is the verify.. Complete: merged, CI green, verified.",
+     "at": "2026-11-21T23:05:51.041Z"
     }
    ],
    "approvals": [],
@@ -213709,7 +213717,7 @@
    "pr": "#885",
    "mergedAt": "2026-11-21T21:26:51Z",
    "createdAt": "2026-11-21T19:40:46.723Z",
-   "updatedAt": "2026-11-21T22:31:50Z",
+   "updatedAt": "2026-11-21T23:05:42.430Z",
    "builtAt": "2026-11-21T21:28:09.157Z",
    "notes": [
     {
@@ -213763,6 +213771,10 @@
     {
      "text": "Shipped manifest sm-approval-rules-vps-configuration-veto rev 1 sent to Shipped features (orchestrator): landed fd919ba82, 24 file(s), 1 test line(s), 4 open.",
      "at": "2026-11-21T22:31:50Z"
+    },
+    {
+     "text": "Watchdog: PR #885 merged 2026-11-21 21:26 and the build never heard: the merge is recorded, CI on fd919ba82d is next. The failure from before the merge is cleared.",
+     "at": "2026-11-21T23:05:42.430Z"
     }
    ],
    "approvals": [],
@@ -213863,15 +213875,16 @@
    "title": "Phone Connect: open straight on the phone, no tap-to-open notification",
    "category": "Phone Connect",
    "detail": "Brett, Nov 21: \"I get the notification, it says tap to open on your phone. Why can't it just open? That's what the overlay is for.\" He has the overlay (draw over other apps) permission granted. When Amber sends a screen or an approval (console_show / console_open wake), the Phone Connect app must come to the front by itself at that screen. Today it posts a 'Tap Open on your phone' notification instead.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/phone-connect-open-straight-phone-no-tap",
    "pr": "#886",
+   "mergedAt": "2026-11-21T22:18:48Z",
    "createdAt": "2026-11-21T19:47:33.297Z",
    "updatedAt": "2026-11-21T22:58:30.392Z",
-   "builtAt": "",
+   "builtAt": "2026-11-21T22:58:30.392Z",
    "notes": [
     {
      "text": "Narrowed down live with Brett, Nov 21: when the Phone Connect client is connected (delivery 'live') console_show opens the app straight up, no tap. The tap-to-open notification only happens when the app is asleep/disconnected (delivery 'after reconnect', wake sent). Fix the asleep path: wake and launch directly using the overlay permission.",
@@ -213900,6 +213913,38 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-21T22:58:30.392Z"
+    },
+    {
+     "text": "Self-check: phone-connect-open-straight-phone-no-tap had no session on record but axf-phone-connect-open-straight-phone-no-tap--sully is alive: kept running and tracking it.",
+     "at": "2026-11-21T22:07:25.720Z"
+    },
+    {
+     "text": "Headless run axf-phone-connect-open-straight-phone-no-tap--sully: brief only · start 17.2K tokens ($0.12) · cost $15.31 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-21T22:19:23.026Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $15.31",
+     "at": "2026-11-21T22:19:26.941Z"
+    },
+    {
+     "text": "Session axf-phone-connect-open-straight-phone-no-tap--sully on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-21T22:19:44.837Z"
+    },
+    {
+     "text": "Reconciler: PR #886 merged",
+     "at": "2026-11-21T22:30:43.135Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by reconciler): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-21T22:30:43.136Z"
+    },
+    {
+     "text": "Shipped manifest sm-phone-connect-open-straight-phone-no-tap rev 1 sent to Shipped features (orchestrator): PR #886, 26 file(s), 4 test line(s), 0 open.",
+     "at": "2026-11-21T22:33:37Z"
+    },
+    {
+     "text": "Refused landing → landed (asked by builds-live): landed needs the merge commit (landed.sha). Done means merged, CI green on main and verified (done-means-merged@1).",
+     "at": "2026-11-21T23:05:52.860Z"
     }
    ],
    "approvals": [],
@@ -213968,8 +214013,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T22:19:00.686Z",
      "note": "",
      "uid": "st-mwqtkzwh1q4k09",
      "createdAt": "2026-11-21T19:47:33.298Z"
@@ -213981,15 +214026,15 @@
    "title": "One true source: get the redundant settings out",
    "category": "Console UI",
    "detail": "Brett, Nov 21: \"I have so many redundant UIs. They can conflict with each other and we got problems.\" \"The settings can only exist in one place. They might be able to set them in multiple places, but they have to exist in one place, one true source.\" \"Unless they're worded a little bit differently and they just conflict with each other.\" \"Let's run Fable to fix all that. Get all the redundant settings out.\" Plan: one-home-per-setting-kill-the-redundant-settings-79kj. Example from today: the build cap is spread over Agent cap (VPS hard build limit, max running agents), the Build orchestrator settings (stepsInParallel, parallelPerAccount, maxRuns) and the VPS Configuration build cap section; Brett raised the hard limit to 6 and max running agents still said 4. Several screens may edit a setting, but each setting is stored once and every screen reads and writes that one value.",
-   "status": "running",
+   "status": "landing",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-true-source-get-redundant-settings",
-   "pr": "",
+   "pr": "#888",
    "createdAt": "2026-11-21T20:04:08.140Z",
    "updatedAt": "2026-11-21T22:58:30.392Z",
-   "builtAt": "",
+   "builtAt": "2026-11-21T22:58:30.392Z",
    "notes": [
     {
      "text": "Started run 1 on hulu0241 (Fable, Phase 1): axf-one-true-source-get-redundant-settings--earl.",
@@ -214010,6 +214055,26 @@
     {
      "text": "Reconciler: no live session or process runs it (worktree kept): back in the Queue for its next session; was running",
      "at": "2026-11-21T22:58:30.392Z"
+    },
+    {
+     "text": "Self-check: one-true-source-get-redundant-settings had no session on record but axf-one-true-source-get-redundant-settings--earl is alive: kept running and tracking it.",
+     "at": "2026-11-21T22:06:27.871Z"
+    },
+    {
+     "text": "Reconciler: PR #888",
+     "at": "2026-11-21T22:30:43.135Z"
+    },
+    {
+     "text": "Headless run axf-one-true-source-get-redundant-settings--earl: brief only · start 17.1K tokens ($0.12) · cost $67.26 · 151 turns · 6 tools, MCP none",
+     "at": "2026-11-21T22:46:53.466Z"
+    },
+    {
+     "text": "Session axf-one-true-source-get-redundant-settings--earl on hulu0241 ended (exit 0); the build was already landing.",
+     "at": "2026-11-21T22:46:57.142Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $67.26",
+     "at": "2026-11-21T22:47:03.948Z"
     }
    ],
    "approvals": [],
@@ -214097,8 +214162,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T22:46:22.256Z",
      "note": "",
      "uid": "st-mwqu6bgx1sy0g5",
      "createdAt": "2026-11-21T20:04:08.141Z"

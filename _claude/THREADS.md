@@ -840,11 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 12:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:02 UTC · `fable-full-audit-ui-overhaul-conso` → merging-main (all) · lander
-- 2026-11-20 13:03 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr (all) · lander
-- 2026-11-20 13:03 UTC · `fable-full-audit-ui-overhaul-conso` → failed (all) · lander
 - 2026-11-20 13:04 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 - 2026-11-20 13:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
 - 2026-11-20 13:07 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
@@ -1240,6 +1235,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 22:58 UTC · `one-true-source-get-redundant-settings` note (all) · reconciler
 - 2026-11-21 23:05 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · watchdog
 - 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → landed, note (all) · watchdog
+- 2026-11-21 23:05 UTC · `rename-gate-rules-to-vps-configuration` note (all) · watchdog
+- 2026-11-21 23:05 UTC · `approval-rules-vps-configuration-veto` note (all) · watchdog
+- 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → complete, note (all) · verify
+- 2026-11-21 23:05 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · builds-live
+- 2026-11-21 23:05 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
 
 ## Token passes (log)
 
