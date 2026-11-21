@@ -14,6 +14,7 @@
       "owner": "Brett only (his signed-in console, or the CLI at a terminal)",
       "edit": [
         "Settings → Plugins → Agent cap → Builds at once",
+        "Builds → VPS Configuration → Build cap → Builds at once (the same key; console-control setting:vps.buildCap.maxBuilds reads it, the owner-only save is never a command)",
         "Agent cap plugin API: PUT hard-limit {maxBuilds} (Brett's signed-in console only; owner-only, so never a console-control command)",
         "node framework/cli/build-limit.mjs set maxBuilds=N (at a terminal)"
       ],
@@ -35,7 +36,8 @@
         "Max running agents",
         "Hard limit: builds at once",
         "VPS hard build limit",
-        "VPS limit"
+        "VPS limit",
+        "Hard cap"
       ]
     }
   ],
@@ -44,7 +46,7 @@
       "keys": [
         "pipeline stepsInParallel"
       ],
-      "label": "Steps at once per build",
+      "label": "Steps in parallel",
       "why": "Steps of one build that run at once, under Builds at once. Nothing else does this job."
     },
     {

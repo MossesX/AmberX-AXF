@@ -29,7 +29,7 @@ if (!playwright) { console.error('playwright not found'); process.exit(2); }
 const inMin = (min) => new Date(Date.now() + min * 60000).toISOString();
 const CAP = {
   ok: true, $axf: 'build-cap@1', at: inMin(0), hardCap: 4, live: 2, free: 2, emergencySlots: 2, emergencyLive: 0, stepsInParallel: 6, effective: 4,
-  note: 'Steps in parallel is 6 but the hard cap is 4: only 4 run at once.', setBy: 'brett', setAt: '2026-11-18T08:31:18.835Z',
+  note: 'Steps in parallel is 6 but Builds at once is 4: only 4 run at once.', setBy: 'brett', setAt: '2026-11-18T08:31:18.835Z',
   ranges: { maxBuilds: [1, 64], emergencySlots: [0, 8], stepsInParallel: [1, 12] }, ownerOnly: ['maxBuilds', 'emergencySlots'], canEdit: false,
 };
 const pass = (id, scope, label, state, extra = {}) => ({ id, scope, label, state, minutes: 30, reason: 'theme pass for the skin build', requestedBy: 'claude', requestedAt: inMin(-3), changes: 3, text: `${label}: on for 30 minutes.`, ...extra });

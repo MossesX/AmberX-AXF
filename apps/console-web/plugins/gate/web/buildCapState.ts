@@ -14,8 +14,8 @@ export interface BuildCap {
   ranges: Record<CapKey, [number, number]>; ownerOnly: CapKey[];
 }
 export const CAP_FIELDS: { key: CapKey; label: string; hint: string; read: (c: BuildCap) => number | null }[] = [
-  { key: 'maxBuilds', label: 'Hard cap (builds at once)', hint: 'The most builds the VPS ever runs at once.', read: (c) => c.hardCap },
-  { key: 'emergencySlots', label: 'Emergency slots', hint: 'Extra places only an emergency build may take, counted apart from the hard cap.', read: (c) => c.emergencySlots },
+  { key: 'maxBuilds', label: 'Builds at once', hint: 'The most builds the VPS ever runs at once. The same setting as Settings → Plugins → Agent cap.', read: (c) => c.hardCap },
+  { key: 'emergencySlots', label: 'Emergency slots', hint: 'Extra places only an emergency build may take, counted apart from Builds at once.', read: (c) => c.emergencySlots },
   { key: 'stepsInParallel', label: 'Steps in parallel', hint: 'How many steps of one build the orchestrator sends at once.', read: (c) => c.stepsInParallel },
 ];
 export const OWNER_ONLY = 'Only Brett changes this, from his own signed-in console.';
@@ -27,7 +27,7 @@ export const cachedBuildCap = () => cache;
 export function onBuildCap(l: (c: BuildCap) => void): () => void { listeners.add(l); return () => { listeners.delete(l); }; }
 export async function loadBuildCap(): Promise<BuildCap> { return keep(await gateCall<BuildCap>('build-cap')); }
 export async function saveBuildCap(patch: Partial<Record<CapKey, number>>): Promise<BuildCap> { return keep(await gateCall<BuildCap>('build-cap', 'POST', patch)); }
-export const capLine = (c: BuildCap) => `Hard cap ${c.hardCap} (${c.live ?? '?'} running), emergency slots ${c.emergencySlots}, steps in parallel ${c.stepsInParallel}.${c.note ? ` ${c.note}` : ''}`;
+export const capLine = (c: BuildCap) => `Builds at once ${c.hardCap} (${c.live ?? '?'} running), emergency slots ${c.emergencySlots}, steps in parallel ${c.stepsInParallel}.${c.note ? ` ${c.note}` : ''}`;
 
 export function registerBuildCap(rt: AxfRuntime): void {
   const T = 'Build cap';

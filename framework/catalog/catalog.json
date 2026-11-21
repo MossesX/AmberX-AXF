@@ -2534,6 +2534,10 @@
                   "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)"
                 },
                 {
+                  "id": "cx.settings.onesource",
+                  "title": "One true source: every console setting is stored under one key with one wording; old keys are read aliases, a CI check stops a second copy (settings-sources@1)"
+                },
+                {
                   "id": "cx.buildengine.emergency",
                   "title": "Emergency builds: two emergency slots counted apart from the hard limit, started from Brett's signed-in console only, past the one-active-build line, first in the merge line; every merge on main's newest code"
                 },

@@ -69,7 +69,7 @@ export function BuildCapTab({ refreshSec }: { refreshSec: number }) {
           ))}
         </div>
         {cur.note && <p className="axp-gate__note" role="status">{cur.note}</p>}
-        {cur.setBy && <p className="axp-gate__sub">Hard cap last set by {cur.setBy}{cur.setAt ? ` on ${new Date(cur.setAt).toLocaleString()}` : ''}.</p>}
+        {cur.setBy && <p className="axp-gate__sub">Builds at once last set by {cur.setBy}{cur.setAt ? ` on ${new Date(cur.setAt).toLocaleString()}` : ''}.</p>}
       </Container>
     </>
   );

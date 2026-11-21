@@ -551,7 +551,7 @@ async def build_cap_set(request: Request) -> JSONResponse:
         clean[k] = n
     owner_patch = {k: v for k, v in clean.items() if k in CAP_OWNER_KEYS}
     if owner_patch and not _owner(request):
-        return _cap_answer({"ok": False, "code": "forbidden", "message": "Only Brett sets the hard cap and the emergency slots, from his own signed-in console (Builds → VPS Configuration → Build cap). Sessions, MCP and voice can read them and set stepsInParallel."}, request)
+        return _cap_answer({"ok": False, "code": "forbidden", "message": "Only Brett sets Builds at once and the emergency slots, from his own signed-in console (Builds → VPS Configuration → Build cap). Sessions, MCP and voice can read them and set stepsInParallel."}, request)
     if owner_patch:
         user = getattr(request.state, "axf_user", None)
         who = str(getattr(user, "name", "") or getattr(user, "email", "") or "brett")[:60]

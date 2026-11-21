@@ -27,8 +27,8 @@ export function capNote({ hardCap, stepsInParallel }) {
   const cap = Number(hardCap); const par = Number(stepsInParallel);
   if (!Number.isFinite(cap) || !Number.isFinite(par)) return { effective: null, note: '' };
   const effective = Math.min(cap, par);
-  if (par > cap) return { effective, note: `Steps in parallel is ${par} but the hard cap is ${cap}: only ${cap} run at once.` };
-  if (par < cap) return { effective, note: `The hard cap allows ${cap}, but one build sends at most ${par} steps at once.` };
+  if (par > cap) return { effective, note: `Steps in parallel is ${par} but Builds at once is ${cap}: only ${cap} run at once.` };
+  if (par < cap) return { effective, note: `Builds at once allows ${cap}, but one build sends at most ${par} steps at once.` };
   return { effective, note: '' };
 }
 
@@ -74,7 +74,7 @@ export function setStepsInParallel(value) {
 }
 
 export function line(c) {
-  return [`hard cap ${c.hardCap} (${c.live ?? '?'} running, ${c.free ?? '?'} free) · emergency slots ${c.emergencySlots} · steps in parallel ${c.stepsInParallel}`, c.note].filter(Boolean).join('\n');
+  return [`builds at once ${c.hardCap} (${c.live ?? '?'} running, ${c.free ?? '?'} free) · emergency slots ${c.emergencySlots} · steps in parallel ${c.stepsInParallel}`, c.note].filter(Boolean).join('\n');
 }
 
 export async function main(argv) {
