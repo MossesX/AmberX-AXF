@@ -2,6 +2,7 @@
  * Settings → Plugins → Phone Connect: pair a phone (one-time code), the paired phones (presence, watch, url policy,
  * revoke / forget: the owner's taps), per-feature switches, and the recent commands. Every value comes from the server
  * (GET status / devices / settings / commands); every button calls the same route as MCP phone_connect_* and `axf phone`.
+ * A phone whose key the console refused shows as "disconnected" with a Re-pair button (status.link, server/service.py).
  * Addresses (console-control@1): the tab row `tab-group:phone-connect.tabs`, rows `row:device/<id>` and `row:command/<id>`,
  * switches `setting:phone-connect.feature.<name>`; buttons register themselves through the framework Button.
  */
@@ -93,7 +94,7 @@ function DeviceRow({ d, reload }: { d: Device; reload: () => Promise<void> }) {
           </div>
           <div className={`${P}__line`}>
             <SelectField className={`${P}__field`} label="Pages it may open" value={d.urlPolicy.mode}
-              options={[{ value: 'own', label: 'Only the console' }, { value: 'allowlist', label: 'The console + these sites' }, { value: 'any', label: 'Any https site' }]}
+              options={[{ value: 'own', label: 'Only my own sites (amberxai.com)' }, { value: 'allowlist', label: 'My own sites + these' }, { value: 'any', label: 'Any https site' }]}
               onChange={(mode) => void act('settings', { urlPolicy: { mode } })} />
             {d.urlPolicy.mode === 'allowlist' && (
               <TextField className={`${P}__field`} label="Sites (comma separated)" value={allow} onChange={setAllow}
@@ -126,8 +127,9 @@ function PhonesPane({ reload }: { reload: () => Promise<void> }) {
 type FeatureSettings = { features: Record<string, boolean>; catalog: Record<string, Feature>; layout?: string };
 const layoutOf = (s: FeatureSettings) => s.layout ?? 'tabs';
 
-function FeaturesPane() {
+function FeaturesPane({ st }: { st: Status | null }) {
   const [s, setS] = useState<FeatureSettings | null>(null);
+  const watcher = st?.approvals;
   const load = useCallback(async () => { const r = await phone<FeatureSettings>('settings'); if (!r.error) setS(r); }, []);
   useEffect(() => { void load(); }, [load]);
   if (!s) return <p className={`${P}__muted`}>Loading…</p>;
@@ -143,7 +145,8 @@ function FeaturesPane() {
         <SelectField label="Layout of this tab" value={layoutOf(s)} options={[{ value: 'tabs', label: 'Tabs' }, { value: 'stacked', label: 'One page' }, { value: 'split', label: 'Phone on top, the rest in tabs' }]}
           onChange={async (layout) => { await phone('settings', { layout }); await load(); }} />
       </div>
-      <p className={`${P}__muted`}>Approve and Deny are never commands: an approval on the phone is decided only by your tap there.</p>
+      {s.features.approval !== false && watcher && !watcher.ok && <Note tone="warning">New approvals are not reaching the phone: {watcher.message}</Note>}
+      <p className={`${P}__muted`}>New axHub approvals and veto countdowns pop up on the phone with Approve and Deny, also while no console is open. Approve and Deny are never commands: an approval on the phone is decided only by your tap there.</p>
     </div>
   );
 }
@@ -193,7 +196,11 @@ export function PhoneConnectPanel() {
     globalThis.addEventListener(SHOW_EVENT, take);
     return () => globalThis.removeEventListener(SHOW_EVENT, take);
   }, []);
-  const pane = (t: Tab) => (t === 'pair' ? <PairPane st={st} reload={reload} /> : t === 'phones' ? <PhonesPane reload={reload} /> : t === 'features' ? <FeaturesPane /> : <ActivityPane />);
+  const pane = (t: Tab) => (t === 'pair' ? <PairPane st={st} reload={reload} /> : t === 'phones' ? <PhonesPane reload={reload} /> : t === 'features' ? <FeaturesPane st={st} /> : <ActivityPane />);
+  const link = st?.link;
+  const [repairing, setRepairing] = useState(false);
+  // "tap to re-pair": a fresh code, shown on the Pair tab; the phone's own screen says the same and waits for it
+  const repair = async () => { setRepairing(true); await phone('pair/start', {}); await reload(); setTab('pair'); setRepairing(false); };
   useEffect(() => {
     if (!focus) return;
     const t = setTimeout(() => document.querySelector(`[data-axf-target="row:device/${CSS.escape(focus)}"]`)?.scrollIntoView({ block: 'center' }), 300);
@@ -203,8 +210,17 @@ export function PhoneConnectPanel() {
     <div className={P}>
       <div className={`${P}__line`}>
         <b className={`${P}__name`}>{st?.device ? st.device.name : 'No phone paired'}</b>
-        <Chip tone={st?.online ? 'success' : st?.paired ? 'warning' : undefined}>{st?.presence ?? '…'}</Chip>
+        <Chip tone={link?.state === 'disconnected' ? 'danger' : st?.online ? 'success' : st?.paired ? 'warning' : undefined}>{link?.state === 'disconnected' ? 'disconnected' : st?.presence ?? '…'}</Chip>
       </div>
+      {link?.state === 'disconnected' && (
+        <div className={P} data-axf-target="row:link/disconnected">
+          <Note tone="danger">{link.message}</Note>
+          <div className={`${P}__line`}>
+            <Button tone="primary" icon="smartphone" busy={repairing} onClick={() => void repair()}>Re-pair</Button>
+            <span className={`${P}__meta`}>Refused {link.rejected?.count ?? 1} time(s), last {when(link.rejected?.at ?? '')}. On the phone: open Phone Connect and type the new code.</span>
+          </div>
+        </div>
+      )}
       {err && <Note tone="warning">{err}</Note>}
       {layout === 'stacked' ? (
         TABS.map((t) => <Section key={t} title={PANES[t]}>{pane(t)}</Section>)

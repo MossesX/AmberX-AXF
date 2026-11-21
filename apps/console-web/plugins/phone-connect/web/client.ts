@@ -12,8 +12,13 @@ export interface Device {
   token: { prefix: string; issuedAt: string; rotatedAt: string } | null; capabilityState: Record<string, Record<string, unknown>>;
 }
 export interface Pairing { code: string; expiresAt: string; secondsLeft: number; state: string; claimUrl: string; pairPage: string }
+/** The link in one word: `disconnected` = the console refused the phone's key, so it will not come back until it pairs again. */
+export interface Link { state: 'connected' | 'offline' | 'disconnected' | 'not-paired'; message: string; repair: string; rejected: { at: string; count: number; code: string } | null }
+/** What the approvals watcher last did (it pushes new axHub approvals to the phone, console open or not). */
+export interface Watcher { ok: boolean; watching: boolean; message: string; at: string; code?: string }
 export interface Status {
   ok: boolean; paired: boolean; presence: string; online: boolean; device: Device | null; devices: number; pairing: Pairing | null;
+  link?: Link; approvals?: Watcher; lastSeenAt?: string;
   features: Record<string, boolean>; recorder: { running?: boolean; session?: string; since?: string; parts?: number; mic?: boolean }; origin: string;
 }
 export interface Feature { label: string; description: string }
