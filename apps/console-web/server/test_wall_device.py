@@ -34,13 +34,13 @@ def t(name: str, ok: bool) -> None:
 
 
 t("no device prefix outside /api/plugins/<folder>/device/",
-  all(p.startswith("/api/plugins/") and p.endswith("/device/") for p in main._DEVICE_PREFIXES))
+  all(p.startswith("/api/plugins/") and p.endswith("/device/") for p in main.DEVICE_ROUTE_PREFIXES))
 t("a path that only starts like a device prefix is not one", not main._device_route("/api/plugins/x/devices"))
-if not main._DEVICE_PREFIXES:
+if not main.DEVICE_ROUTE_PREFIXES:
     print(f"wall-device: {n} checks passed (no plugin with device routes is loaded; route checks skipped)")
     sys.exit(0)
 
-prefix = sorted(main._DEVICE_PREFIXES)[0]
+prefix = sorted(main.DEVICE_ROUTE_PREFIXES)[0]
 base = prefix[: -len("device/")]
 c = TestClient(main.app)
 wall = {"x-auth-via": "token", "authorization": "Bearer not-the-console-token"}

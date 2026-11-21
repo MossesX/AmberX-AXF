@@ -741,7 +741,7 @@ async def pipeline_emergency(request: Request) -> dict[str, Any]:
     if not who:
         raise HTTPException(403, EMERGENCY_ONLY_BRETT)
     body = await _json_body(request)
-    _table_cache.clear()
+    readcache.invalidate("build-orchestrator:table:")
     return _emergency("send", _build_id(body.get("id")), approver=who)
 
 
@@ -749,7 +749,7 @@ async def pipeline_emergency(request: Request) -> dict[str, Any]:
 async def pipeline_emergency_clear(request: Request) -> dict[str, Any]:
     """{id}: an emergency build becomes an ordinary build again (the tag and the slot grant go; running sessions finish)."""
     body = await _json_body(request)
-    _table_cache.clear()
+    readcache.invalidate("build-orchestrator:table:")
     return _emergency("clear", _build_id(body.get("id")))
 
 
