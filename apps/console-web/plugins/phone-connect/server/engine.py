@@ -46,6 +46,8 @@ DEPRECATED_PREFIX = REG["deprecatedPrefix"]
 ERROR_CODES: dict[str, dict[str, Any]] = REG["errors"]
 DATA = REG["data"]
 LINK = REG["link"]
+LINK_VERDICTS = REG["linkVerdicts"]
+OWN_SITES: list[str] = REG["ownSites"]
 
 # JS RegExp → Python: `\d` is ASCII-only in JS, so match with re.ASCII.
 RE = {k: re.compile(v, re.ASCII) for k, v in PATTERNS.items()}
@@ -590,6 +592,12 @@ def _host(url: str) -> tuple[str, str, bool]:
     return scheme, host + (f":{port}" if port and port != default else ""), bool(u.username or u.password)
 
 
+def own_site(host: Any) -> str:
+    """The own site a host is on (`amberxai.com` for `axhub.amberxai.com`), or '' when it is on none. A port never counts."""
+    h = re.sub(r":\d+$", "", str(host or "").lower(), flags=re.ASCII)
+    return next((s for s in OWN_SITES if h == s or h.endswith(f".{s}")), "")
+
+
 def url_errors(url: Any, device: Any, origin: str) -> dict[str, Any] | None:
     if not isinstance(url, str) or not url or len(url) > LIMITS["url"]:
         return wire_error("validation", f"url is a string up to {LIMITS['url']} characters")
@@ -610,6 +618,9 @@ def url_errors(url: Any, device: Any, origin: str) -> dict[str, Any] | None:
     except (ValueError, KeyError):
         own = ""
     allowed = [own] if mode == "own" else [own, *(up.get("allowlist") or [])]
+    site = own_site(own)
+    if site and own_site(host) == site:
+        return None
     if host not in allowed:
         return wire_error("denied", f"{host} is outside this phone's url policy ({mode})", {"host": host, "mode": mode})
     return None
@@ -766,6 +777,21 @@ def rotate_token(device: Any, token: Any, at: str, random: Callable[[], float]) 
         return {"ok": False, "error": e}
     fresh = make_token(random)
     return {"ok": True, "token": fresh, "device": {**device, "token": token_at_rest(fresh, device["token"]["issuedAt"], at), "updatedAt": at}}
+
+
+def link_verdict(reply: Any = None, uncoded: int = 0) -> str:
+    """What the phone does after one hello / next reply: ok, hello (greet again), retry or rejected (never retried)."""
+    r = reply if is_obj(reply) else {}
+    status, code = r.get("status") or 0, r.get("code") or ""
+    if status == LINK["noContent"] or 200 <= status < 300:
+        return "ok"
+    if code in LINK["rejectedCodes"]:
+        return "rejected"
+    if not code and status in LINK["rejectedStatuses"]:
+        return "rejected" if uncoded + 1 >= LINK["rejectLimit"] else "retry"
+    if status == LINK["restarted"]:
+        return "hello"
+    return "retry"
 
 
 def seen(device: dict, at: str, capability_state: Any = None) -> dict:

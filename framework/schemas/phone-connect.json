@@ -130,7 +130,8 @@
     "listenMin": 1,
     "listenMax": 30,
     "listenDefault": 10,
-    "ttlMax": 3600
+    "ttlMax": 3600,
+    "revMax": 2147483647
   },
   "commands": {
     "open_url": {
@@ -228,6 +229,15 @@
         "tool": {
           "type": "string",
           "max": "tool"
+        },
+        "title": {
+          "type": "string",
+          "max": "title"
+        },
+        "rev": {
+          "type": "integer",
+          "min": 0,
+          "max": "revMax"
         },
         "summary": {
           "type": "string",
@@ -433,8 +443,27 @@
       "rotate"
     ],
     "noContent": 204,
-    "restarted": 404
+    "restarted": 404,
+    "rejectedCodes": [
+      "denied",
+      "revoked",
+      "unpaired"
+    ],
+    "rejectedStatuses": [
+      401,
+      403
+    ],
+    "rejectLimit": 3
   },
+  "linkVerdicts": [
+    "ok",
+    "hello",
+    "retry",
+    "rejected"
+  ],
+  "ownSites": [
+    "amberxai.com"
+  ],
   "required": {
     "device": [
       "$axf",
