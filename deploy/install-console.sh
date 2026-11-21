@@ -248,7 +248,7 @@ axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/
 # removed). Each watch runs only when it is on and due. Template deploy/cron/axf-build-watchdog. The older
 # axf-stale-watchdog cron (the row cleaner on its own) is retired: its work is the `rows` watch.
 rm -f /etc/cron.d/axf-stale-watchdog
-axf_cron_file axf-build-watchdog "* * * * * root W=$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs; [ -f \$W ] && cd $DIR && flock -n /run/axf-build-watchdog.lock timeout 600 node \$W cron >> /var/log/axf-build-watchdog.log 2>&1"
+axf_cron_file axf-build-watchdog "* * * * * root W=$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs; [ -f \$W ] && cd $DIR && flock -n /run/axf-build-watchdog.lock timeout 600 node \$W cron >> /var/log/axf-build-watchdog.log 2>&1"  # axf-plugin:build-orchestrator
 # VPS reaper (vps-reaper@1, Nov 18 2026: the VPS cleans up its own ghosts): every 2 minutes finished claude -p processes,
 # dead tmux axf-* sessions, ghost agent slots, ownerless heavy locks, leftover test servers and stale temp folders go.
 # One source for the line: the template deploy/cron/axf-reaper.
