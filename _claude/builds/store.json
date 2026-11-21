@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10297,
- "updatedAt": "2026-11-21T06:47:30.398Z",
+ "rev": 10298,
+ "updatedAt": "2026-11-21T06:50:11.187Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350059,7 +350059,7 @@
    "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T06:47:25.945Z",
+   "updatedAt": "2026-11-21T06:47:44.372Z",
    "builtAt": "",
    "notes": [
     {
@@ -350262,6 +350262,11 @@
      "text": "Lander: failed in running-ci, attempt 13: the fix session (agent) pushed nothing in 60 min",
      "at": "2026-11-21T05:16:28.766Z",
      "by": "lander"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 15: the fix session (agent) pushed nothing in 60 min",
+     "at": "2026-11-21T06:47:44.372Z",
+     "by": "lander"
     }
    ],
    "approvals": [],
@@ -350330,16 +350335,9 @@
     "why": "the fix session (agent) pushed nothing in 60 min",
     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
     "pr": 867,
-    "at": "2026-11-21T05:16:25.856Z",
+    "at": "2026-11-21T06:47:41.856Z",
     "retry": "fix",
-    "notBefore": "2026-11-21T05:46:25.856Z",
-    "fix": {
-     "at": "2026-11-21T05:47:13.858Z",
-     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
-     "session": "",
-     "exit": 3,
-     "why": "{\"ok\":false,\"unassigned\":false,\"why\":\"lenny: Quit · joey: Quit · 5 more can't either\",\"tried\":[{\"agent\":\"lenny\",\"why\":\"Quit\"},{\"agent\":\"joey\",\"why\":\"Quit\"},{\"agent\":\"paulie\",\"why\":\"Quit\"},{\"agent\":\"su"
-    }
+    "notBefore": "2026-11-21T07:17:41.856Z"
    },
    "landing": {
     "rules": {
@@ -350832,7 +350830,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 131,
+   "rev": 132,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
