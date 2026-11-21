@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10299,
- "updatedAt": "2026-11-21T06:57:51.357Z",
+ "rev": 10300,
+ "updatedAt": "2026-11-21T06:58:01.904Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350059,7 +350059,7 @@
    "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T06:47:44.372Z",
+   "updatedAt": "2026-11-21T06:57:52.243Z",
    "builtAt": "",
    "notes": [
     {
@@ -350830,7 +350830,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 133,
+   "rev": 134,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -350841,9 +350841,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T06:47:25.945Z",
+   "statusAt": "2026-11-21T06:57:52.243Z",
    "statusBy": "amber",
-   "attempt": 14,
+   "attempt": 16,
    "failedFrom": "running-ci",
    "statusLog": [
     {
@@ -351038,6 +351038,13 @@
      "at": "2026-11-21T06:47:25.945Z",
      "by": "amber",
      "attempt": 14,
+     "why": "Brett Nov 21: PR #867 merged, main CI green on the merge commit"
+    },
+    {
+     "status": "landed",
+     "at": "2026-11-21T06:57:52.243Z",
+     "by": "amber",
+     "attempt": 16,
      "why": "Brett Nov 21: PR #867 merged, main CI green on the merge commit"
     }
    ]
