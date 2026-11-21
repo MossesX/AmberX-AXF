@@ -8,6 +8,15 @@
  * leaves `failed` forward again: at the status it failed at or later, never earlier, as attempt N + 1.
  * Every status change records `at` and `by` (statusAt, statusBy, and one statusLog line).
  *
+ * The contract owns every limit (one place, every caller covered):
+ *   - attempts: a record failed at MAX_ATTEMPTS leaves `failed` only through a reset with a reason (Brett's retry, the
+ *     watchdog's escalation); the attempt count then starts again at 1;
+ *   - step size: STEP_MAX_MINUTES, read by the split prompt, the design check, the split and the watchdog;
+ *   - archive: an archived build remembers where it was (`archivedFrom`) and returns there, or to `failed` from it;
+ *   - steps: once a build is split its steps keep their identity (none removed, none replaced), and past `split` none
+ *     is added; every step always has a status (a new one enters at `pending`);
+ *   - refusals are whole: a write that breaks any of this changes nothing on that build (enforceFlow, strict).
+ *
  * A build follows this contract when `flow === 'pipeline-2'` (set by Plan Studio's Send to orchestrator, or by the
  * first write that gives a build a Pipeline 2.0-only status). Builds made before it keep their builds@1 statuses.
  */
@@ -36,6 +45,8 @@ export const ACTIVE = Object.freeze(BUILD_FLOW.slice(BUILD_FLOW.indexOf('pulling
 export const LANDING_GROUP = Object.freeze(BUILD_FLOW.slice(BUILD_FLOW.indexOf('merging-pr'), BUILD_FLOW.indexOf('landed')));
 /** Step statuses a step dies in while it is being sent or built: its relaunch re-enters at `ready` (watchdog layer 2). */
 export const RELAUNCH_FROM = Object.freeze(['ready', 'sending', 'building']);
+/** The statuses a build waits its turn in: failed there, it has never held the active place and may be activated again. */
+export const WAITING = Object.freeze(['split']);
 /** A build that failed while active still holds the one active place (its retry continues forward). */
 export const holdsActive = (b) => !!b && b.flow === FLOW && !b.deleted && (ACTIVE.includes(b.status) || (b.status === FAILED && ACTIVE.includes(b.failedFrom)));
 /**
@@ -58,16 +69,23 @@ export const STEP_LABELS = Object.freeze({
   pending: 'Pending', 'pulling-main': 'Pulling in main', ready: 'Ready', sending: 'Sending to slot', building: 'Building', completed: 'Completed', 'in-pr': 'In PR', failed: 'Failed',
 });
 /** The fields a build or step carries for the contract. */
-export const BUILD_FIELDS = Object.freeze(['flow', 'status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog']);
+export const BUILD_FIELDS = Object.freeze(['flow', 'status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'archivedFrom', 'statusLog']);
 export const STEP_FIELDS = Object.freeze(['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', 'model', 'account', 'slot', 'prNumber', 'worktree', 'branch', 'tmux', 'tried']);
 export const TRIED_MAX = 10;
 export const LOG_MAX = 60;
 /**
- * Attempts a step or build gets before the watchdog gives up (pipeline-watchdog@2 maxAttempts default). A give-up is
- * final: a failed record at or past it is never relaunched by the orchestrator (Nov 20 2026: a step relaunched to
- * "attempt 21" after the watchdog had given up at 5); only the watchdog's own escalation may move it on.
+ * Attempts a step or build gets, the ceiling for every writer (the dispatcher, the main pull, the lander, the watchdog;
+ * the watchdog's maxAttempts setting may lower it, never raise it). A record failed at or past it has given up: the
+ * contract refuses every move out of `failed` (Nov 20 2026: a step relaunched to "attempt 21", a build at "attempt 9")
+ * except a reset with a reason, which starts the count again at 1.
  */
 export const MAX_ATTEMPTS = 5;
+/**
+ * The one step-size cap, in minutes (Brett: a build step is 15 minutes or less). The split prompt asks for it, normDesign
+ * refuses a design over it, splitParts never joins steps past it, and the watchdog calls a `building` step hung at twice
+ * its estimate with a silent log (stepBudgetMinutes). The builds@1 rules default (maxStepMinutes) reads it too.
+ */
+export const STEP_MAX_MINUTES = 15;
 
 const str = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
 const flowOf = (kind) => (kind === 'step' ? STEP_FLOW : BUILD_FLOW);
@@ -86,33 +104,56 @@ export function labelOf(status, attempt = 1, kind = 'build') {
   return (kind === 'step' ? STEP_LABELS : BUILD_LABELS)[status] ?? str(status, 40);
 }
 
+const lastOf = (list) => (Array.isArray(list) && list.length ? list[list.length - 1] : null);
+/** The last status of the flow a record's log shows (what it was before its status was lost or it was archived). */
+const lastLogged = (rec, kind) => { const l = (Array.isArray(rec?.statusLog) ? rec.statusLog : []).filter((x) => isStatus(x?.status, kind)); return l.length ? l[l.length - 1].status : ''; };
+/** Where an archived build returns to: the status it was archived from (recorded, else the last one its log shows). */
+export const archivedFromOf = (rec) => (isStatus(rec?.archivedFrom, 'build') ? rec.archivedFrom : lastLogged(rec, 'build'));
+
 /**
- * May `rec` move from its status to `to`? → { ok, why, retry }. `rec` = { status, failedFrom }.
+ * May `rec` move from its status to `to`? → { ok, why, retry }. `rec` = { status, failedFrom, attempt, archivedFrom,
+ * statusLog }.
  *  - the same status is a no-op (ok);
  *  - a status outside the contract is refused;
- *  - a record not yet in the contract (no status, or a builds@1 status) may enter it anywhere;
+ *  - a build may be archived from anywhere; an archived build returns only to the status it was archived from, or to
+ *    `failed` from it (never anywhere else: archive is not a way back);
+ *  - a record not yet in the contract (a builds@1 status, or none, and no status log) may enter it anywhere; one that
+ *    is in it but lost its status continues from the last status its log shows;
  *  - `failed` from anything but the last status of the flow;
- *  - out of `failed`: to the status it failed at or later (retry = true, attempt + 1); two named re-entries:
- *    a step that failed at ready / sending / building may relaunch at `ready` (RELAUNCH_FROM), and a build that failed
- *    in a PR group's landing run may retry at any status of that run (LANDING_GROUP: re-run CI, split, pull main);
+ *  - out of `failed`: refused once the attempts are used up (attempt >= `max`) unless `reset` is given; otherwise to the
+ *    status it failed at or later (retry = true, attempt + 1, or 1 on a reset); two named re-entries: a step that
+ *    failed at ready / sending / building may relaunch at `ready` (RELAUNCH_FROM), and a build that failed in a PR
+ *    group's landing run may retry at any status of that run (LANDING_GROUP: re-run CI, split, pull main);
  *  - otherwise forward only (skips allowed), never back, except that a build in a landing run may start the next PR
  *    group at `merging-pr` (the lander's size cap and splits).
  */
-export function checkTransition(rec, to, kind = 'build') {
-  const cur = str(rec?.status, 40);
+export function checkTransition(rec, to, kind = 'build', { reset = false, max = MAX_ATTEMPTS } = {}) {
+  let cur = str(rec?.status, 40);
   if (cur === to) return { ok: true, why: '', retry: false, same: true };
-  if (kind === 'build' && to === EXIT) return { ok: true, why: '', retry: false };
+  if (kind === 'build' && to === EXIT) return { ok: true, why: '', retry: false, archive: true };
   if (!isStatus(to, kind)) return { ok: false, why: `"${to}" is not a ${kind} status of ${SCHEMA} (${statusesOf(kind).join(', ')})` };
-  if (!isStatus(cur, kind)) return { ok: true, why: '', retry: false, entered: true };
   const flow = flowOf(kind); const last = flow[flow.length - 1];
+  if (kind === 'build' && cur === EXIT) {
+    const back = archivedFromOf(rec);
+    if (!back) return rec?.flow === FLOW ? (to === flow[0] ? { ok: true, why: '', retry: false, unarchive: true } : { ok: false, why: `an archived build returns to the status it was archived from: nothing is recorded for this one, so only ${flow[0]}` }) : { ok: true, why: '', retry: false, entered: true };
+    if (to === back || (to === FAILED && back !== last)) return { ok: true, why: '', retry: false, unarchive: true, back };
+    return { ok: false, why: `an archived build returns to the status it was archived from (${back}), or to failed from it: not ${to}` };
+  }
+  if (!isStatus(cur, kind)) {
+    cur = lastLogged(rec, kind);
+    if (!cur) return { ok: true, why: '', retry: false, entered: true };
+    if (cur === to) return { ok: true, why: '', retry: false };
+  }
   if (to === FAILED) return cur === last ? { ok: false, why: `${cur} is final: it cannot fail any more` } : { ok: true, why: '', retry: false };
   if (cur === FAILED) {
+    const cap = Math.max(1, Number(max) || MAX_ATTEMPTS);
+    if (!reset && gaveUp(rec, cap)) return { ok: false, gaveUp: true, why: `attempts used up: ${kind} failed at attempt ${Math.max(1, Number(rec?.attempt) || 1)} of ${cap}, so only a reset with a reason (Brett's retry, the watchdog's escalation) moves it on` };
     const ff = str(rec?.failedFrom, 40);
     const from = rank(ff, kind);
     const relaunch = kind === 'step' && to === 'ready' && RELAUNCH_FROM.includes(ff);
     const regroup = kind === 'build' && LANDING_GROUP.includes(ff) && LANDING_GROUP.includes(to);
     if (from >= 0 && rank(to, kind) < from && !relaunch && !regroup) return { ok: false, why: `a retry continues forward: ${kind} failed at ${rec.failedFrom}, so it cannot go back to ${to}` };
-    return { ok: true, why: '', retry: true };
+    return { ok: true, why: '', retry: true, reset: !!reset };
   }
   if (kind === 'build' && to === 'merging-pr' && LANDING_GROUP.includes(cur)) return { ok: true, why: '', retry: false, group: true };
   if (rank(to, kind) < rank(cur, kind)) return { ok: false, why: `forward-only: ${cur} → ${to} goes back` };
@@ -123,21 +164,36 @@ export function checkTransition(rec, to, kind = 'build') {
  * Move one record (a build, or a step with kind 'step'), pure: → { ok, why, rec } (rec is a copy; unchanged when
  * refused). Records at / by, the attempt (failed keeps the attempt it failed on; a retry is attempt + 1), the status it
  * failed at, and one statusLog line. `extra` is merged into the record on success (account, slot, prNumber…).
+ *   reset: true   leave `failed` whatever the attempt count, as attempt 1. Needs `why` (the log line carries both: the
+ *                 store's guard lets a reset through only with them).
+ *   resplit: true a build waiting at `split` whose steps are all still pending is split again: same status, one log
+ *                 line marked `resplit` (the guard then lets that write replace the steps). Needs `why`.
+ *   max           the attempt ceiling (never above MAX_ATTEMPTS).
  */
-export function transition(rec, to, { at, by = 'pipeline', why = '', kind = 'build', extra = null } = {}) {
+export function transition(rec, to, { at, by = 'pipeline', why = '', kind = 'build', extra = null, reset = false, resplit = false, max = MAX_ATTEMPTS } = {}) {
   const r = { ...(rec ?? {}) };
-  const c = checkTransition(r, to, kind);
-  if (!c.ok) return { ok: false, why: c.why, rec: r };
-  if (c.same) { if (extra) Object.assign(r, extra); return { ok: true, why: '', rec: r, same: true }; }
+  if ((reset || resplit) && !str(why).trim()) return { ok: false, why: `a ${reset ? 'reset' : 're-split'} needs a reason`, rec: r };
   const when = str(at, 40) || new Date().toISOString();
+  const line = (o = {}) => { r.statusLog = [...(Array.isArray(r.statusLog) ? r.statusLog : []), { status: r.status, at: when, by: r.statusBy, attempt: r.attempt, ...(why ? { why: str(why, 300) } : {}), ...o }].slice(-LOG_MAX); };
+  if (resplit) {
+    if (kind !== 'build' || to !== 'split' || !canResplit(r)) return { ok: false, why: 'a re-split is only for a build waiting at split with no step past pending', rec: r };
+    r.statusAt = when; r.statusBy = str(by, 80) || 'pipeline'; r.attempt = Math.max(1, Number(r.attempt) || 1); line({ resplit: true });
+    if (extra) Object.assign(r, extra);
+    return { ok: true, why: '', rec: r };
+  }
+  const c = checkTransition(r, to, kind, { reset, max: Math.min(MAX_ATTEMPTS, Math.max(1, Number(max) || MAX_ATTEMPTS)) });
+  if (!c.ok) return { ok: false, why: c.why, rec: r, ...(c.gaveUp ? { gaveUp: true } : {}) };
+  if (c.same) { if (extra) Object.assign(r, extra); return { ok: true, why: '', rec: r, same: true }; }
   const attempt = Math.max(1, Number(r.attempt) || 1);
-  if (to === FAILED) { r.failedFrom = r.status && isStatus(r.status, kind) ? r.status : (r.failedFrom || ''); r.attempt = attempt; }
-  else if (c.retry) { r.attempt = attempt + 1; }
+  if (c.archive) { const from = isStatus(r.status, kind) ? r.status : archivedFromOf(r); if (from) r.archivedFrom = from; else delete r.archivedFrom; r.attempt = attempt; } // failedFrom stays: it returns as it left
+  else if (c.unarchive) { if (to === FAILED && c.back !== FAILED) r.failedFrom = c.back; else if (to !== FAILED) delete r.failedFrom; delete r.archivedFrom; r.attempt = attempt; }
+  else if (to === FAILED) { r.failedFrom = r.status && isStatus(r.status, kind) ? r.status : (r.failedFrom || lastLogged(r, kind)); r.attempt = attempt; }
+  else if (c.retry) { r.attempt = c.reset ? 1 : attempt + 1; }
   else if (!r.attempt) r.attempt = 1;
-  if (to !== FAILED) delete r.failedFrom; // only meaningful while failed (the log keeps the history)
+  if (to !== FAILED && !c.archive) delete r.failedFrom; // only meaningful while failed (the log keeps the history)
   r.status = to; r.statusAt = when; r.statusBy = str(by, 80) || 'pipeline';
   if (kind === 'build') r.flow = FLOW;
-  r.statusLog = [...(Array.isArray(r.statusLog) ? r.statusLog : []), { status: to, at: when, by: r.statusBy, attempt: r.attempt, ...(why ? { why: str(why, 300) } : {}) }].slice(-LOG_MAX);
+  line(c.reset ? { reset: true } : {});
   if (kind === 'step') r.done = to === 'completed' || to === 'in-pr';
   if (extra) Object.assign(r, extra);
   return { ok: true, why: '', rec: r };
@@ -147,7 +203,7 @@ export function transition(rec, to, { at, by = 'pipeline', why = '', kind = 'bui
 export function normLogLine(l) {
   if (!l || typeof l !== 'object') return null;
   const status = str(l.status, 40); if (!status) return null;
-  return { status, at: str(l.at, 40), by: str(l.by, 80), attempt: Math.max(1, Number(l.attempt) || 1), ...(str(l.why) ? { why: str(l.why, 300) } : {}) };
+  return { status, at: str(l.at, 40), by: str(l.by, 80), attempt: Math.max(1, Number(l.attempt) || 1), ...(str(l.why) ? { why: str(l.why, 300) } : {}), ...(l.reset === true ? { reset: true } : {}), ...(l.resplit === true ? { resplit: true } : {}) };
 }
 
 /** The contract's fields of a record, normalised (kept only when set, so builds@1 records stay as they were). */
@@ -159,6 +215,7 @@ export function normFields(o, kind = 'build') {
   if (str(x.statusBy)) out.statusBy = str(x.statusBy, 80);
   if (Number(x.attempt) >= 1) out.attempt = Math.floor(Number(x.attempt));
   if (str(x.failedFrom) && isStatus(x.failedFrom, kind)) out.failedFrom = x.failedFrom;
+  if (kind === 'build' && x.status === EXIT && isStatus(x.archivedFrom, 'build')) out.archivedFrom = x.archivedFrom;
   const log = (Array.isArray(x.statusLog) ? x.statusLog : []).map(normLogLine).filter(Boolean).slice(-LOG_MAX);
   if (log.length) out.statusLog = log;
   if (kind === 'step') {
@@ -247,42 +304,108 @@ export function normLandFailure(f) {
 
 const sameStatus = (a, b) => (a?.status ?? '') === (b?.status ?? '');
 
+/** Has the build reached status `s` (a failed build counts where it failed, an archived one where it was archived from)? */
+function reached(b, s) {
+  const st = b?.status === EXIT ? archivedFromOf(b) : str(b?.status, 40);
+  return rank(st === FAILED ? str(b?.failedFrom, 40) : st) >= rank(s);
+}
+/** Split or later: the build's steps keep their identity (none removed, none replaced by another). */
+export const stepsLocked = (b) => isP2(b) && reached(b, 'split');
+/** Past `split` (active or later): no step is added either. A build still waiting at `split` may take a new one. */
+export const stepsFrozen = (b) => isP2(b) && reached(b, 'pulling-main');
+/** May the build be split again: waiting at `split`, no step past `pending`. */
+export const canResplit = (b) => !!b && b.flow === FLOW && b.status === 'split' && (b.steps ?? []).every((s) => !s.status || s.status === 'pending');
+/** The steps a build's "every step" tests count: skipped steps never block it. */
+export const liveSteps = (b) => (Array.isArray(b?.steps) ? b.steps : []).filter((s) => s && !s.skip);
+/** Is every counted step at one of `statuses` (and is there one)? */
+export const everyStep = (b, ...statuses) => { const l = liveSteps(b); return l.length > 0 && l.every((s) => statuses.includes(s.status)); };
+/** Why a build's steps may not be edited (add, remove, divide, harvest, restore), or '' when they may. */
+export function stepsEditRefusal(b, { add = false } = {}) {
+  if (add ? !stepsFrozen(b) : !stepsLocked(b)) return '';
+  const label = labelOf(b.status, b.attempt);
+  return add ? `${b.id} is past the split (${label}): no step is added to a build that is being built` : `${b.id} is split (${label}): its steps are fixed, none is removed or replaced`;
+}
+
+/** Did this write add a marked line (reset, resplit) with a reason to the record's log: the explicit actions the guard lets through. */
+function marked(prev, cur, flag) {
+  const l = lastOf(cur?.statusLog); const pl = lastOf(prev?.statusLog);
+  return !!l && l[flag] === true && !!str(l.why).trim() && l.status === cur.status && !(pl && pl.at === l.at && pl.status === l.status && pl[flag] === true);
+}
+
 /**
  * The store's guard (builds-store withStore runs it on every write): for every Pipeline 2.0 build, and every step of
- * one, a status change that breaks the contract is refused (the record keeps its old status and status fields), and a
- * legal change a writer made by hand gets its at / by / log line stamped. Pure. → { store, refused: [{ id, step?, from, to, why }] }
+ * one, a change that breaks the contract is refused, and a legal status change a writer made by hand gets its at / by /
+ * log line stamped. Pure. → { store, refused: [{ id, step?, from, to, why }] }
+ *
+ * Checked on each build: the status move (forward-only, the attempt ceiling unless the write is a marked reset, the
+ * archive rule; an archived build never returns into the active place while another build holds it); its steps (once
+ * split none is removed or swapped for another uid unless the write is a marked re-split, past `split` none is added);
+ * every step's status move. A step that arrives with no status keeps the one it had, and a new one enters at `pending`.
+ *
+ * strict (the default): one refusal on a build throws away the whole of that write for that build (the record stays as
+ * it was, plus one note saying what was refused), so a stale writer never lands its content while its status change is
+ * dropped. `strict: false` keeps the old behaviour (only the status fields are put back).
  */
-export function enforceFlow(before, after, { at, by = 'store' } = {}) {
+export function enforceFlow(before, after, { at, by = 'store', strict = true } = {}) {
   const old = new Map((before?.builds ?? []).map((b) => [b.id, b]));
   const when = str(at, 40) || new Date().toISOString();
   const refused = [];
-  const keep = (prev, cur, kind) => { const out = { ...cur }; for (const k of ['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', ...(kind === 'step' ? ['done', 'doneAt'] : [])]) { if (prev && k in prev) out[k] = prev[k]; else delete out[k]; } return out; };
+  const keep = (prev, cur, kind) => { const out = { ...cur }; for (const k of ['status', 'statusAt', 'statusBy', 'attempt', 'failedFrom', 'statusLog', ...(kind === 'build' ? ['archivedFrom'] : ['done', 'doneAt'])]) { if (prev && k in prev) out[k] = prev[k]; else delete out[k]; } return out; };
   const stamp = (prev, cur, kind) => {
-    const t = transition({ ...cur, status: prev?.status ?? '', attempt: prev?.attempt ?? cur.attempt, failedFrom: prev?.failedFrom ?? '', statusLog: prev?.statusLog ?? cur.statusLog }, cur.status, { at: when, by, kind });
-    return { ...cur, ...t.rec, ...(kind === 'step' ? { done: cur.done === true || t.rec.done === true } : {}) };
+    const t = transition({ ...cur, status: prev?.status ?? '', attempt: prev?.attempt ?? cur.attempt, failedFrom: prev?.failedFrom ?? '', archivedFrom: prev?.archivedFrom, statusLog: prev?.statusLog ?? cur.statusLog }, cur.status, { at: when, by, kind });
+    const out = { ...cur, ...t.rec, ...(kind === 'step' ? { done: cur.done === true || t.rec.done === true } : {}) };
+    for (const k of ['failedFrom', 'archivedFrom']) if (!(k in t.rec)) delete out[k]; // cleared by the move: never left over from the writer's copy
+    return out;
   };
+  const holder = (id) => (after?.builds ?? []).find((x) => x.id !== id && holdsActive(x) && !isEmergency(x)) ?? null;
   const builds = (after?.builds ?? []).map((b) => {
     const prev = old.get(b.id);
     if (!isP2(b) && !isP2(prev)) return b;
+    const bad = [];
     let next = b;
     if (prev && !sameStatus(prev, b)) {
-      const c = checkTransition(prev, b.status, 'build');
-      if (!c.ok) { refused.push({ id: b.id, from: prev.status, to: b.status, why: c.why }); next = keep(prev, b, 'build'); }
+      let c = checkTransition(prev, b.status, 'build', { reset: marked(prev, b, 'reset') });
+      if (c.ok && c.unarchive && holdsActive({ ...b, flow: FLOW }) && !isEmergency(b) && holder(b.id)) c = { ok: false, why: `${holder(b.id).id} holds the active place: an archived build returns into it only when no other build is active` };
+      if (!c.ok) { bad.push({ id: b.id, from: prev.status, to: b.status, why: c.why }); next = keep(prev, b, 'build'); }
       else if (b.statusAt === prev.statusAt || !b.statusAt) next = stamp(prev, b, 'build');
     } else if (!prev && b.status && !b.statusAt) next = stamp(null, b, 'build');
     if (isP2(next) && next.flow !== FLOW) next = { ...next, flow: FLOW };
-    const oldSteps = new Map((prev?.steps ?? []).map((s) => [s.uid || s.id, s]));
+    const prevSteps = prev?.steps ?? [];
+    const byUid = new Map(prevSteps.filter((s) => s.uid).map((s) => [s.uid, s]));
+    const byId = new Map(prevSteps.map((s) => [s.id, s]));
+    const locked = !!prev && stepsLocked(prev) && !(canResplit(prev) && marked(prev, b, 'resplit'));
+    const frozen = !!prev && stepsFrozen(prev);
+    const over = [EXIT, BUILD_FLOW[BUILD_FLOW.length - 1]].includes(next.status);
+    const seen = new Set();
     let stepsChanged = false;
     const steps = (next.steps ?? []).map((s) => {
-      const ps = oldSteps.get(s.uid || s.id);
-      if (!s.status && !ps?.status) return s;
+      const ps = (s.uid && byUid.get(s.uid)) || (!seen.has(byId.get(s.id)) && byId.get(s.id)) || null;
+      if (ps) seen.add(ps);
+      if (locked && ps && ps.uid && s.uid && ps.uid !== s.uid) bad.push({ id: b.id, step: s.id, from: ps.status || '', to: s.status || '', why: `step ${s.id} was replaced by another (${stepsEditRefusal(prev)})` });
+      if (!ps && frozen) bad.push({ id: b.id, step: s.id, from: '', to: s.status || '', why: `step ${s.id} was added: ${stepsEditRefusal(prev, { add: true })}` });
+      if (!isP2(next)) return s;
+      // the status is never optional: a step that arrives without one keeps the one it had, a new one enters at pending
+      // (the old steps of a build that is already landed or archived are left as they are)
+      if (!s.status) {
+        if (ps?.status) { stepsChanged = true; return keep(ps, s, 'step'); }
+        if (ps && over) return s;
+        stepsChanged = true; return stamp(null, { ...s, status: flowOf('step')[0] }, 'step');
+      }
       if (ps && !sameStatus(ps, s)) {
-        const c = checkTransition(ps, s.status, 'step');
-        if (!c.ok) { refused.push({ id: b.id, step: s.id, from: ps.status || '', to: s.status || '', why: c.why }); stepsChanged = true; return keep(ps, s, 'step'); }
+        const c = checkTransition(ps, s.status, 'step', { reset: marked(ps, s, 'reset') });
+        if (!c.ok) { bad.push({ id: b.id, step: s.id, from: ps.status || '', to: s.status || '', why: c.why }); stepsChanged = true; return keep(ps, s, 'step'); }
         if (s.statusAt === ps.statusAt || !s.statusAt) { stepsChanged = true; return stamp(ps, s, 'step'); }
       } else if (!ps && s.status && !s.statusAt) { stepsChanged = true; return stamp(null, s, 'step'); }
       return s;
     });
+    if (locked) for (const ps of prevSteps) if (!seen.has(ps)) bad.push({ id: b.id, step: ps.id, from: ps.status || '', to: '', why: `step ${ps.id} was removed: ${stepsEditRefusal(prev)}` });
+    refused.push(...bad);
+    if (bad.length && strict && prev) {
+      // the whole write is thrown away for this build; one note says so (never the same note twice in a row)
+      const text = `Store: refused a write by ${str(by, 80) || 'store'}, nothing of it was kept: ${str(bad.map((x) => `${x.step ? `${x.step} ` : ''}${x.why}`).join('; '), 600)}`;
+      const notes = Array.isArray(prev.notes) ? prev.notes : [];
+      return lastOf(notes)?.text === text ? prev : { ...prev, notes: [...notes, { text, at: when, by: 'store' }] };
+    }
     return stepsChanged ? { ...next, steps } : next;
   });
   return { store: { ...after, builds }, refused };
@@ -300,22 +423,34 @@ export function filesOverlap(a = [], b = []) {
 /**
  * Split a build's steps into at most `slots` parts that never touch the same files (Brett: "as many as there are
  * slots, without the parts stepping on each other"). Steps are kept in order; each goes to the first part it does not
- * clash with, the least loaded first; a step that clashes with every part joins the part it clashes with (one session
- * then does both). Pure → [[step…]…], never more parts than steps or slots, at least one when there are steps.
+ * clash with, the least loaded first; a step that clashes with a part joins it (one session then does both).
+ * A part never passes the step cap (`maxMinutes`, STEP_MAX_MINUTES): a step that would push every part it may join over
+ * it gets a part of its own, so there can be more parts than slots (the dispatcher sends them out as slots free). A step
+ * with no estimate counts as 0 minutes. Pure → [[step…]…], at least one part when there are steps.
  */
-export function splitParts(steps = [], slots = 1) {
+export function splitParts(steps = [], slots = 1, { maxMinutes = STEP_MAX_MINUTES } = {}) {
   const n = Math.max(1, Math.min(Number(slots) || 1, steps.length || 1));
+  const cap = Number(maxMinutes) > 0 ? Number(maxMinutes) : Infinity;
+  const minutes = (p) => p.reduce((m, x) => m + minutesHint(x), 0);
   const parts = [];
   for (const s of steps) {
     const files = Array.isArray(s.files) ? s.files : [];
+    const fits = (c) => minutes(parts[c.i]) + minutesHint(s) <= cap;
     const clash = parts.map((p, i) => ({ i, hit: p.some((x) => filesOverlap(x.files, files)), load: p.length }));
     const hits = clash.filter((c) => c.hit);
-    if (hits.length) { parts[hits[0].i].push(s); continue; }
+    if (hits.length) { const h = hits.find(fits); if (h) parts[h.i].push(s); else parts.push([s]); continue; }
     if (parts.length < n) { parts.push([s]); continue; }
-    parts[clash.sort((a, b) => a.load - b.load || a.i - b.i)[0].i].push(s);
+    const open = clash.filter(fits).sort((a, b) => a.load - b.load || a.i - b.i)[0];
+    if (open) parts[open.i].push(s); else parts.push([s]);
   }
   return parts;
 }
+
+/**
+ * Minutes a `building` step may run before the watchdog looks at its log: twice its estimate (the cap when it has
+ * none). Past that with a silent log the step is hung.
+ */
+export const stepBudgetMinutes = (step) => 2 * (minutesHint(step) || STEP_MAX_MINUTES);
 
 /** Words that mark a step as Fable work (schemas, asset types, contracts, engines / kernel, cross-app protocols). */
 export const FABLE_WORDS = /\b(schemas?|asset types?|contracts?|engines?|kernel|cross-app|protocols?|spec(?:ification)?s?)\b/i;
@@ -357,10 +492,12 @@ export function activeBuild(builds = []) {
 
 /**
  * The emergency builds the dispatcher works on now, oldest tag first: split and waiting (activated at once, whatever
- * else is active), or already past the main pull. Before `split` an emergency build is split like any other.
+ * else is active; one that failed while it waited too, while it has attempts left), or already past the main pull.
+ * Before `split` an emergency build is split like any other.
  */
 export function emergencyBuilds(builds = []) {
-  return builds.filter((b) => isEmergency(b) && b.flow === FLOW && !b.deleted && !b.hidden && (b.status === 'split' || holdsActive(b)))
+  const waits = (b) => WAITING.includes(b.status) || (b.status === FAILED && WAITING.includes(b.failedFrom) && !gaveUp(b));
+  return builds.filter((b) => isEmergency(b) && b.flow === FLOW && !b.deleted && !b.hidden && (waits(b) || holdsActive(b)))
     .sort((a, b) => str(a.emergency.at).localeCompare(str(b.emergency.at)) || str(a.id).localeCompare(str(b.id)));
 }
 
@@ -374,7 +511,6 @@ export function emergencyBuilds(builds = []) {
 export const PLAN_SCHEMA = 'plan-build@1';
 export const PLAN_ID_RE = /^[a-z0-9][a-z0-9-]{0,39}$/; // build-id@1
 export const PLAN_MODELS = Object.freeze(['Fable', 'Opus']);
-export const STEP_MAX_MINUTES = 30;
 export const PLANNING_MAX = 100;
 export const DESIGN_MAX_STEPS = 40;
 

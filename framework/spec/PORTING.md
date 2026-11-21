@@ -396,6 +396,16 @@ statuses, forward-only `transition` / `checkTransition`, `enforceFlow` (the stor
 Android work): AmberX reads build rows through the console's REST and shows the status string it is given; a Kotlin
 `PipelineStatus.kt` answering the fixture's transitions is needed only once an Android surface writes build statuses.
 
+Pipeline repair part A (Nov 21 2026, the Fable deep audit): the contract now owns every limit. `checkTransition` /
+`transition` take `reset` and `max` (the attempt ceiling `MAX_ATTEMPTS`: out of `failed` past it only as a reset with a
+reason, attempt 1 again) and `resplit`; archive records `archivedFrom` and an archived build returns only there or to
+`failed` from it; `enforceFlow` is strict (one refusal drops the whole write for that build, with a note), keeps a split
+build's steps (none removed or replaced, none added past `split`) and never leaves a step without a status; new helpers
+`stepsLocked`, `stepsFrozen`, `canResplit`, `liveSteps`, `everyStep`, `stepsEditRefusal`, `archivedFromOf`,
+`stepBudgetMinutes`, `WAITING`; `STEP_MAX_MINUTES` is 15 and `splitParts` never joins steps past it. The fixture carries
+the new transition cases (with `opts`), split cases, `stepMaxMinutes`, `stepBudgets` and `stepsLocked`.
+**Kotlin twin still deferred**, same reason: when `PipelineStatus.kt` is written it must answer these cases too.
+
 Lander repair (Nov 21 2026, audit findings L2-01..12): `normLanding` and `normLandFailure` keep the lander's new record
 fields (`landing.attempt`, `green`, `fixes`, a hand merge's `lastMerge.byHand` / `ci`, rules that could not run;
 `failure.attempt`, `needsBrett` / `stopped` / `resume`, `jobIds`, `log`, `of`, `fixStart`). No status, transition or

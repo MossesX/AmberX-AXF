@@ -17,6 +17,7 @@ export const TABLE = Object.freeze({ id: 'builds', label: 'Builds store (Pending
 /** One builds@1 record → a classifier row, or null when the build is no row to watch. */
 export function rowOf(b) {
   if (!b || typeof b !== 'object' || !b.id || b.deleted) return null;
+  if (b.flow === 'pipeline-2') return null; // pipeline-2@1: the flow owns a Pipeline 2.0 build's status; its rows are never cleaned here
   const kind = kindOfBuild(b);
   if (!kind) return null;
   return { kind, id: String(b.id), build: String(b.id), pr: prNumber(b.pr), branch: String(b.branch ?? ''), status: String(b.status ?? ''), title: String(b.title ?? '') };

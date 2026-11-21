@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import * as cron from './cron.mjs';
+import * as L2 from './layer2.mjs';
 import * as L3 from './layer3.mjs';
 
 const HERE = new URL('.', import.meta.url).pathname;
@@ -74,4 +75,25 @@ test('layer 2 probe names: a step without a recorded tmux is looked up as axf-<b
   const p = L.placeOf({ id: 'b' }, { id: 's6' }, { AXF_PIPELINE_WORKTREES: '/w' });
   assert.deepEqual([p.session, p.prefix, p.worktree], ['', 'axf-b--s6', '/w/b--s6']);
   assert.equal(L.placeOf({ id: 'b' }, { id: 's6', tmux: 'axf-b--s6--earl' }).session, 'axf-b--s6--earl');
+});
+
+test('layer 2 run, the dead builds of Nov 21: waiting builds behind a failed active build are left alone; a given-up one is ONE alert with the retry command', () => {
+  const d = tmp(); const store = join(d, 'store.json');
+  const old = new Date(Date.now() - 180 * 60_000).toISOString();
+  const waiting = ['w1', 'w2'].map((id) => ({ id, flow: 'pipeline-2', status: 'split', statusAt: old, attempt: 1, notes: [], steps: [{ id: 's1', status: 'pending', statusAt: old }] }));
+  const builds = [
+    { id: 'act', flow: 'pipeline-2', status: 'failed', failedFrom: 'running-ci', attempt: 3, statusAt: old, notes: [], steps: [] },
+    ...waiting,
+    { id: 'dead', flow: 'pipeline-2', status: 'failed', failedFrom: 'split', attempt: 5, statusAt: old, notes: [], steps: [{ id: 's1', status: 'pending', statusAt: old }] },
+  ];
+  writeFileSync(store, JSON.stringify({ builds }));
+  const env = { ...process.env, AXF_WATCHDOG2_STORE: store, AXF_WATCHDOG2_DIR: join(d, 'wd'), AXF_WATCHDOG2_DRY_EXEC: '1', AXF_WATCHDOG_NOTIFY_LOG: join(d, 'al'), AXF_WATCHDOG2_PROBES: '{}', AXF_WATCHDOG2_ACCOUNTS: '[]' };
+  for (let i = 0; i < 3; i += 1) assert.equal(spawnSync('node', [join(HERE, 'layer2.mjs'), 'run'], { env, encoding: 'utf8' }).status, 0);
+  const after = JSON.parse(readFileSync(store, 'utf8')).builds;
+  assert.deepEqual(after.filter((b) => b.id.startsWith('w')).map((b) => [b.status, b.attempt, b.notes.length]), [['split', 1, 0], ['split', 1, 0]], 'three hours at split behind a failed build: not failed, not nudged, not noted');
+  assert.deepEqual([after[3].status, after[3].attempt], ['failed', 5], 'the given-up build is not retried past the ceiling');
+  const alerts = readFileSync(join(d, 'al'), 'utf8').trim().split('\n').map((l) => JSON.parse(l));
+  assert.equal(alerts.length, 1, 'one alert, however many passes');
+  assert.match(alerts[0].title, /could not heal dead/);
+  assert.ok(alerts[0].body.includes(L2.retryCommand('dead')) && / retry dead$/.test(L2.retryCommand('dead')), 'the alert carries the exact retry command');
 });

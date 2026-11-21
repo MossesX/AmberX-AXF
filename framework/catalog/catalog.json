@@ -2538,6 +2538,10 @@
                   "title": "Emergency builds: two emergency slots counted apart from the hard limit, started from Brett's signed-in console only, past the one-active-build line, first in the merge line; every merge on main's newest code"
                 },
                 {
+                  "id": "cx.buildengine.statuscontract",
+                  "title": "Pipeline 2.0 status contract owns every limit: the attempt ceiling, the 15 minute step cap, the archive rule, fixed steps and whole refusals; one watchdog and one dispatcher read it"
+                },
+                {
                   "id": "cx.buildengine.buildids",
                   "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept"
                 },
@@ -2696,6 +2700,14 @@
               "id": "cx.axhubpages",
               "title": "axHub's pages in the console: module axHub, one removable plugin per hub feature (approvals + held calls + log, passes, apps, users, handoff, account) over a hub-pages relay that takes only a wall admin's browser",
               "note": "apps/console-web/plugins/axhub-* + src/hubPages + server/hub_pages.py (Nov 20 2026, fold of apps/axhub-web, which is archived); axHub server unchanged",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.statusstyles",
+              "title": "Status styles: animations and styling for every status (whole row or text only, a preset library, own presets, a style per status, moving or still badges)",
+              "note": "apps/console-web/plugins/status-styles (Nov 21 2026): display only, a generated token-only stylesheet keyed on data-status; off under reduced motion",
               "tag": "",
               "recommended": true,
               "suggests": []

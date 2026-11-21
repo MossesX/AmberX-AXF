@@ -48,7 +48,7 @@ let n = 0; let failed = 0;
 const ok = (c, what) => { n++; if (!c) { failed++; console.error(`✗ ${what}`); } else console.log(`  ✓ ${what}`); };
 const eq = (a, b, what) => ok(JSON.stringify(a) === JSON.stringify(b), `${what}${JSON.stringify(a) === JSON.stringify(b) ? '' : `: ${JSON.stringify(a)} != ${JSON.stringify(b)}`}`);
 const get = (id) => BS.loadStore().builds.find((b) => b.id === id);
-const send = (id, steps) => BS.withStore((s) => { s.builds.push(core.normBuild(P2.transition({ id, title: id, flow: P2.FLOW, steps: steps.map((x, i) => P2.transition({ id: `s${i + 1}`, model: 'Opus', estimate: '20 min', ...x }, 'pending', { kind: 'step', by: 'test' }).rec) }, 'pending', { by: 'test' }).rec)); return s; }, { by: 'test' });
+const send = (id, steps) => BS.withStore((s) => { s.builds.push(core.normBuild(P2.transition({ id, title: id, flow: P2.FLOW, steps: steps.map((x, i) => P2.transition({ id: `s${i + 1}`, model: 'Opus', estimate: '5 min', ...x }, 'pending', { kind: 'step', by: 'test' }).rec) }, 'pending', { by: 'test' }).rec)); return s; }, { by: 'test' });
 
 console.log('one pass: split, one active, main into each step, models, steps out to free slots');
 send('alpha', [{ text: 'Write the store schema', files: ['framework/x'] }, { text: 'UI tweak', files: ['apps/ui'] }, { text: 'Fix the store helper', files: ['framework/x/y.mjs'] }]);
@@ -146,14 +146,14 @@ console.log('a plan sent as one build (planning steps, no build steps): Fable de
   const fable = join(tmp, 'fable.sh');
   writeFileSync(fable, `#!/bin/bash
 p="$(cat)"; echo "$p" > "${tmp}/fable-prompt"
-echo 'Here you go: {"steps":[{"text":"Add the plan-build schema field","model":"Fable","minutes":20,"files":["framework/schemas"]},{"text":"Wire the console dialog","model":"Opus","minutes":15,"files":["apps/ui"]},{"text":"Tests and report","model":"Opus","minutes":10,"files":["apps/ui"]}]}'
+echo 'Here you go: {"steps":[{"text":"Add the plan-build schema field","model":"Fable","minutes":10,"files":["framework/schemas"]},{"text":"Wire the console dialog","model":"Opus","minutes":8,"files":["apps/ui"]},{"text":"Tests and report","model":"Opus","minutes":7,"files":["apps/ui"]}]}'
 `); chmodSync(fable, 0o755);
   sendPlan('plan-fable', [{ text: 'Schema field' }, { text: 'Dialog', model: 'Opus', minutes: 45 }]);
   eq([get('plan-fable').steps.length, get('plan-fable').planning.length], [0, 2], 'sent: no build steps, the plan steps kept as planning');
   F.advance({ build: 'plan-fable', env: { ...process.env, AXF_PIPELINE_SPLITTER: fable } });
   let P = get('plan-fable');
   eq(P.statusLog.map((l) => l.status), ['pending', 'splitting', 'split'], 'pending → splitting → split');
-  eq(P.steps.map((s) => [s.model, s.estimate]), [['Fable', '20 min'], ['Opus', '25 min']], 'Fable designed the steps with minutes and models (the two sharing files run as one)');
+  eq(P.steps.map((s) => [s.model, s.estimate]), [['Fable', '10 min'], ['Opus', '15 min']], 'Fable designed the steps with minutes and models (the two sharing files run as one, inside the 15 minute cap)');
   ok(P.steps.every((s) => s.status === 'pending'), 'every designed step row exists (pending)');
   ok(/Split by Fable into 3 steps/.test(P.notes.at(-1)?.text ?? ''), 'the build says Fable split it');
   const prompt = readFileSync(join(tmp, 'fable-prompt'), 'utf8');
@@ -181,14 +181,14 @@ echo 'Here you go: {"steps":[{"text":"Add the plan-build schema field","model":"
   sendPlan('plan-nocredit', [{ text: 'Write the engine contract' }, { text: 'Toolbar button', minutes: 10 }]);
   F.advance({ build: 'plan-nocredit', env: { ...process.env, AXF_PIPELINE_SPLITTER: broke } });
   P = get('plan-nocredit');
-  eq([P.status, P.steps.map((s) => [s.text, s.model, s.estimate])], ['split', [['Write the engine contract', 'Fable', '30 min'], ['Toolbar button', 'Opus', '10 min']]], 'no Fable credits: one step per planning step, model by modelFor, minutes noted or the cap');
+  eq([P.status, P.steps.map((s) => [s.text, s.model, s.estimate])], ['split', [['Write the engine contract', 'Fable', '15 min'], ['Toolbar button', 'Opus', '10 min']]], 'no Fable credits: one step per planning step, model by modelFor, minutes noted or the cap');
   ok(/Fable could not split it \(splitter exit 1: Credit balance is too low\)/.test(P.notes.at(-1)?.text ?? ''), 'the build says why it fell back');
 
   const junk = join(tmp, 'junk.sh'); writeFileSync(junk, '#!/bin/bash\ncat >/dev/null; echo \'{"steps":[{"text":"x","model":"Sonnet","minutes":90}]}\'\n'); chmodSync(junk, 0o755);
   sendPlan('plan-body', [], 'Only a body: do the thing.');
   F.advance({ build: 'plan-body', env: { ...process.env, AXF_PIPELINE_SPLITTER: junk } });
   P = get('plan-body');
-  eq([P.steps.length, P.steps[0]?.estimate], [1, '30 min'], 'an answer that does not pass (Sonnet, 90 min) is not used: the whole plan is one step');
+  eq([P.steps.length, P.steps[0]?.estimate], [1, '15 min'], 'an answer that does not pass (Sonnet, 90 min) is not used: the whole plan is one step');
   ok(/did not pass/.test(P.notes.at(-1)?.text ?? ''), '… and the note says so');
 
   sendPlan('plan-container', [{ text: 'Anything' }]);

@@ -537,7 +537,7 @@ export function rulesSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
  * plan (title, body, planning steps; no build steps). Steps run at the same time, each in its own worktree cut from
  * main, so they never share files. The answer is JSON only and must pass pipeline-status normDesign.
  */
-export function p2SplitPrompt(b, { slots = 1, maxStepMinutes = 30 } = {}) {
+export function p2SplitPrompt(b, { slots = 1, maxStepMinutes = STEP_MINUTES } = {}) {
   const planning = list(b.planning);
   const said = str(b.origin?.said, 6000).trim();
   return [

@@ -2283,6 +2283,12 @@
     "module": "app-console",
     "notes": "Build emergency-slots (Nov 20 2026, Brett). build-limit.mjs + agent-slots.mjs: a second pool (emergencySlots, default 2) counted apart from maxBuilds; a session is in it when its build holds an emergency grant (owner only). framework/cli/emergency-builds.mjs: send only with Brett's signed-in console click (AXF_APPROVER via console); sessions, agents, the console token, MCP and voice refused. pipeline-status.mjs: emergency tag, activeBuild leaves it out, emergencyBuilds; pipeline2.mjs emergency lane. Lander: emergency builds first; before any merge a head without main's newest code pulls main, conflicts go to Fable, CI runs again. Console: Send to emergency in Plan Studio 2.0 and the builds table, Emergency badge, Agent cap shows and sizes the pool. Tests: check-build-limit, check-agent-slots, check-pipeline-2, test/emergency.test.mjs, server/test_emergency.py, deploy/lander/test. Kotlin twin deferred (PORTING.md)."
   },
+  "cx.buildengine.statuscontract": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Hand build pipe-a-status-watchdog (Nov 21 2026, Brett; the Fable deep audit part A: P1-01, P1-02, P1-05, P1-09, P1-14, B4-02..05, S5-05). framework/core/pipeline-status.mjs: MAX_ATTEMPTS is a ceiling for every writer (out of failed past it only as a reset with a reason, attempt 1 again), STEP_MAX_MINUTES 15 is the one step cap (split prompt, normDesign, splitParts, the watchdog's 2 x estimate, the builds@1 rules default), archive keeps archivedFrom and returns only there, enforceFlow is strict (one refusal drops the whole write for that build, with a note) and keeps a split build's steps and every step's status. framework/plan/builds-store-core.mjs ownsStatus: no builds@1 status derived on a Pipeline 2.0 build. deploy/watchdog/core.mjs imports the contract (holdsActive: a build waiting at split is never stuck while a failed build holds the place). pipeline2.mjs: a build that failed while waiting is activated again, retryBuild (orchestrator.mjs retry, REST retry) resets a given-up build, steps with no status get main and a slot. Tests: framework/spec/check-pipeline-2.mjs (now in CI), deploy/watchdog/core.test.mjs, build-orchestrator test/p2-status-contract.test.mjs."
+  },
   "cx.buildengine.sectionowners": {
     "status": "built",
     "wave": 1,
@@ -2450,5 +2456,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Build fable-full-audit-ui-overhaul-conso s16 (Nov 20 2026; Brett Nov 19: fold the axHub web UI into the console). Six console plugins in module axHub (nav section axHub + app menu Apps → axHub): axhub-approvals (Approvals grid with held calls, Request page, Approvals log, hub.review:<id>), axhub-passes (Go pass, Passes), axhub-apps (catalog), axhub-users, axhub-handoff (runs + live progress), axhub-account (hub session + account). Shared kit src/hubPages (relay client, HubGate, routes axhub-<page>, old #/<route> addresses); console server relay server/hub_pages.py to the hub's /auth/api/* + /apps.json: wall admin browser only (its axhub_session, else owner sign-in AXF_HUB_RELAY_USER/PASSWORD), writes same-origin JSON, CSRF read server-side and never sent to the page, writes logged. apps/axhub-web archived (ARCHIVED.md, project status archived), off CI, its catalog app-plugin kind and plugin-commands home retired; VPS clean-up is systems check host item host-axhub-web-retired. Tests: server/test_hub_pages.py (22), src/hubPages/test.mjs (234). Deleting the folder itself is a follow-up (≈60 framework references: schemas' app lists, shared assets, fixtures, Kotlin test)."
+  },
+  "cx.statusstyles": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build status-styles-plugin (Nov 21 2026; Brett: animations and styling states for every status level, for builds and every step). Console plugin status-styles (Settings → Plugins → Status styles; REST /api/plugins/status-styles, control@1 status-styles.*): a row style, a badge style and an animated-badge switch per status (Pipeline 2.0 builds and steps, Scoring risk, Fast merge, Post-merge CI, Rolling back, Rolled back, Plan Studio, own ids); 66 presets (whole row or text only) in assets/status-style/library.json plus own saved presets; web/core.ts builds one token-only stylesheet keyed on data-status (innermost row via :has), stopped under reduced motion; badge packs read data-status-animated and data-badge-animated / data-badge-static. Tests: test.mts, test.py."
   }
 }

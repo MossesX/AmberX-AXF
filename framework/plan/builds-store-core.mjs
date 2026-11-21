@@ -85,7 +85,7 @@ export const LEGACY_STATUSES = ['pending', 'queued', 'running', 'waiting', 'fixi
 export const STATUSES = [...LEGACY_STATUSES, ...P2.P2_ONLY];
 /** Statuses that count as finished work (progress, Pending list): every step done, whatever the PR is doing. */
 export const FINISHED = ['built', 'landing', 'landed', 'complete'];
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 }; // ≤ 10 min (Nov 13 2026; was 30)
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: P2.STEP_MAX_MINUTES }; // the one step cap (pipeline-2@1 STEP_MAX_MINUTES)
 /**
  * One work profile (Brett, Nov 7 2026: merge every build profile into one). The profiles below were folded into
  * `all`; a record that still names one of them (an older checkout, a live merge from a session on older code, a hub
@@ -478,6 +478,15 @@ export function diffStores(before, after, now = nowIso()) {
 
 // ------------------------------------------------------------------ status helpers
 
+/**
+ * Does the builds@1 store derive this build's status (from its steps, the Pending list, the plan)? Never for a
+ * Pipeline 2.0 build: its flow owns the status (pipeline-2@1), and a derived `running` / `landing` / `landed` there was
+ * only ever refused by the guard. Every derivation site in this file asks here first.
+ */
+export const ownsStatus = (b) => !!b && !P2.isP2(b);
+/** Refuse a step edit (divide, harvest, restore default) on a Pipeline 2.0 build whose steps are fixed, with the reason. */
+function stepsEditable(b) { const why = P2.stepsEditRefusal(b); if (why) throw Object.assign(new Error(why), { code: 'steps-locked' }); }
+
 /** Pending status for a build. */
 export function pendingStatusOf(b) {
   const own = b.pending?.status;
@@ -698,7 +707,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     b.title = str(it.title, 300) || b.title;
     b.detail = str(it.detail, 8000);
     { const og = mergeOrigin(it.origin, b.origin); if (og) b.origin = og; }
-    if (it.status !== shownItem.status) { // only a real status change on the Pending side moves the build
+    if (it.status !== shownItem.status && ownsStatus(b)) { // only a real status change on the Pending side moves the build
       const st = orchStatusOfPending(it.status);
       if (st) { if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? it.builtAt || now : ''; } }
       else if (['built', 'landing', 'landed', 'complete', 'failed', 'escalated', 'blocked', 'archived'].includes(b.status) && it.status === 'pending') { b.status = b.steps.some((x) => x.done) ? 'running' : 'pending'; b.builtAt = ''; }
@@ -718,7 +727,7 @@ export function absorbPending(store, profile, pending, change = null, { now = no
     if (it.status === shownItem.status && b.pending?.status) meta.status = b.pending.status;
     b.pending = { ...(b.pending ?? {}), ...meta };
     b.updatedAt = it.updatedAt || now;
-    if (['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = str(b.mergedAt) ? 'landed' : 'landing'; b.builtAt = b.builtAt || now; } // done-means-merged@1
+    if (ownsStatus(b) && ['pending', 'queued', 'running', 'waiting'].includes(b.status) && b.steps.length && b.steps.every((x) => x.done || x.skip) && b.steps.some((x) => x.done)) { b.status = str(b.mergedAt) ? 'landed' : 'landing'; b.builtAt = b.builtAt || now; } // done-means-merged@1
   }
   if (!newerOnly) for (const [id, b] of shown) if (!seen.has(id)) {
     if (b.profiles.length > 1) { b.profiles = b.profiles.filter((p) => p !== profile); delete b.order[profile]; }
@@ -783,7 +792,7 @@ export function absorbQueue(store, profile, q, features = [], { now = nowIso() }
     const incoming = (small ?? []).map((x, k) => ({ ...(b.steps[k] ?? {}), id: b.steps[k]?.id ?? `s${k + 1}`, text: str(x.text), estimate: str(x.estimate), done: x.done === true, doneAt: x.done ? x.doneAt || now : '', skip: x.skip === true, fm: x.fm }));
     if (JSON.stringify(incoming.map((x) => [x.text, x.estimate, x.done, x.skip])) !== JSON.stringify(b.steps.map((x) => [x.text, x.estimate, x.done, x.skip]))) { mergeSteps(b, incoming, now, 'build-queue', 'removed in the build queue'); followDefault(b, now); }
     const f = fById.get(key);
-    if (f && b.kind === 'epic' && b.status !== 'archived') { const st = statusOfPlan(f.status); if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? (r.completedAt && !r.completedAt.startsWith('1970') ? r.completedAt : now) : ''; } }
+    if (f && b.kind === 'epic' && b.status !== 'archived' && ownsStatus(b)) { const st = statusOfPlan(f.status); if (st !== b.status) { b.status = st; b.builtAt = st === 'complete' ? (r.completedAt && !r.completedAt.startsWith('1970') ? r.completedAt : now) : ''; } }
   }
   renumber(s, profile);
   s.updatedAt = now;
@@ -1045,7 +1054,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       case 'step-done': {
         const b = get(op.build); const st = b.steps.find((x) => x.uid === op.uid); if (!st) throw new Error(`no step ${op.uid} in ${b.id}`);
         st.done = op.done !== false; st.doneAt = st.done ? now : ''; st.updatedAt = now; touched.add(b.id);
-        if (b.status !== 'complete' && b.steps.every((x) => x.skip || x.done)) b.builtAt = now; // the status itself follows below, like every op
+        if (ownsStatus(b) && b.status !== 'complete' && b.steps.every((x) => x.skip || x.done)) b.builtAt = now; // the status itself follows below, like every op
         log.push(`${b.id} ${st.id} ${st.done ? 'done' : 'not done'}`); break;
       }
       case 'reorder-steps': {
@@ -1072,6 +1081,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       case 'rename-profile': profileName = { id: str(op.id, 40), name: str(op.name, 80).trim() }; log.push(`profile ${op.id}: renamed "${profileName.name}"`); break;
       case 'divide-step': {
         const b = get(op.build); const k = b.steps.findIndex((x) => x.uid === op.uid); if (k < 0) throw new Error(`no step ${op.uid} in ${b.id}`);
+        stepsEditable(b);
         const st = b.steps[k];
         const parts = op.parts.map((p, i) => normStep({ id: i === 0 ? st.id : stepIdIn({ steps: [...b.steps, ...op.parts.slice(0, i).map((_, j) => ({ id: j === 0 ? st.id : `${st.id}.${j + 1}` }))] }, `${st.id}.${i + 1}`), text: str(p.text, 2000).trim(), estimate: str(p.estimate, 20), model: MODELS.includes(p.model) ? p.model : st.model, phase: st.phase, group: st.group, files: st.files, checks: st.checks, session: st.session, agent: st.agent, origin: { build: b.id, step: st.uid, how: 'divided' }, createdAt: now }, i, { now }));
         b.steps.splice(k, 1, ...parts);
@@ -1080,7 +1090,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
         log.push(`${b.id} ${st.id}: divided into ${parts.length}`); break;
       }
       case 'harvest': {
-        const picked = op.from.map((f) => { const b = get(f.build); const st = b.steps.find((x) => x.uid === f.uid); if (!st) throw new Error(`no step ${f.uid} in ${f.build}`); return { b, st }; });
+        const picked = op.from.map((f) => { const b = get(f.build); const st = b.steps.find((x) => x.uid === f.uid); if (!st) throw new Error(`no step ${f.uid} in ${f.build}`); stepsEditable(b); return { b, st }; });
         const made = [];
         for (const t of op.into) {
           const id = uniqueBuildId(t.id || t.title, new Set(s.builds.flatMap(namesOf)));
@@ -1104,6 +1114,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
       case 'restore-default': {
         const b = get(op.id);
         if (!b.defaultSteps.length) throw new Error(`${b.id} has no default breakdown`);
+        stepsEditable(b);
         const live = new Map(); // where each default step is now
         for (const x of s.builds) for (const st of x.steps) live.set(st.uid, { b: x, st });
         const restored = b.defaultSteps.map((d) => {
@@ -1123,7 +1134,7 @@ function applyOps(s, profile, ops, { now = nowIso(), by = 'console', dry = false
     }
   }
   // done-means-merged@1: every step done = landing (landed when merged; complete stays complete only while merged), never complete from the steps alone
-  for (const id of touched) { const b = s.builds.find((x) => x.id === id); if (!b) continue; if (!dry) b.updatedAt = now; if (!['archived', 'blocked', 'failed', 'fixing', 'escalated'].includes(b.status) && b.steps.length) { const d = b.steps.filter((x) => !x.skip); const allDone = d.length && d.every((x) => x.done); b.status = allDone ? (str(b.mergedAt) ? (b.status === 'complete' ? 'complete' : 'landed') : 'landing') : d.some((x) => x.done) ? 'running' : FINISHED.includes(b.status) ? 'running' : b.status; } }
+  for (const id of touched) { const b = s.builds.find((x) => x.id === id); if (!b) continue; if (!dry) b.updatedAt = now; if (ownsStatus(b) && !['archived', 'blocked', 'failed', 'fixing', 'escalated'].includes(b.status) && b.steps.length) { const d = b.steps.filter((x) => !x.skip); const allDone = d.length && d.every((x) => x.done); b.status = allDone ? (str(b.mergedAt) ? (b.status === 'complete' ? 'complete' : 'landed') : 'landing') : d.some((x) => x.done) ? 'running' : FINISHED.includes(b.status) ? 'running' : b.status; } }
   renumber(s, profile);
   return { store: s, log, profileName };
 }

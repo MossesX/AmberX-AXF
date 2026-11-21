@@ -2,44 +2,46 @@
  * Pipeline 2.0 watchdog, the pure part (pipeline-watchdog@2). No IO: the layer-2 pass (layer2.mjs) gathers the facts
  * (the builds store, tmux, step logs, Claude accounts, the clock) and this module says what is stuck and what to do.
  *
- * Shared contract (Pipeline 2.0, Nov 19 2026), forward-only:
- *   build: pending → splitting → split ("Pending") → pulling-main → assigning-models → ready → sending → building →
- *          build-complete → merging-pr → pr-pulling-main → running-ci → merging-main → landed, plus failed (attempt N)
- *   step:  pending → pulling-main → ready → sending → building → completed → in-pr, plus failed (attempt N)
- * A retry continues forward: a failed record goes back into the status it failed in (failedFrom) as attempt N+1, never
- * to an earlier status. Every change records `at` and `by` (here always `by: watchdog`).
+ * This is the one Pipeline 2.0 watchdog, and it has no status rules of its own: the flows, who holds the active place
+ * (holdsActive), the attempt ceiling (MAX_ATTEMPTS), the step cap and every status change (transition) come from the
+ * contract, framework/core/pipeline-status.mjs. A retry continues forward: a failed record goes back into the status
+ * it failed in (failedFrom) as attempt N+1, never to an earlier status. Every change records `at` and `by: watchdog`.
  *
  * Layer 1 (the orchestrator tick) does the normal work. This layer finds work that did not move and fixes it:
  *   - a build or step whose status is older than its time budget      → re-run the transition (nudge the tick), then
  *                                                                        after `nudges` tries mark it failed
+ *   - a build waiting its turn at `split`                              → nothing, however long, while any build holds
+ *                                                                        the active place (a failed one holds it too)
+ *   - a `building` step past twice its estimate with a silent log      → hung: session killed, failed, relaunched
  *   - a `building` step whose tmux session is gone                     → failed, retried as attempt N+1
  *   - a `building` step whose log shows a usage limit                  → the account is marked out, the step failed and
  *                                                                        retried on another account with usage left
  *   - a failed build or step under maxAttempts                         → retried forward (attempt N+1)
  *   - a build in a landing status (LANDER_OWNED)                       → the lander's: nudged with a lander tick only
  *   - an Opus step failed in its slot at maxAttempts                   → raised to Fable once (the switch is noted on
- *                                                                        the build) and relaunched as attempt N+1
+ *                                                                        the build) and relaunched with a fresh
+ *                                                                        attempt count (a reset, with the reason)
  *   - a failed record at maxAttempts                                   → left failed, one give-up alert; final: the
- *                                                                        orchestrator never relaunches it (P2.sendable)
+ *                                                                        contract refuses every move out of it but a
+ *                                                                        reset (Brett's retry: orchestrator.mjs retry)
  */
-import { MAX_ATTEMPTS } from '../../framework/core/pipeline-status.mjs';
+import * as P2 from '../../framework/core/pipeline-status.mjs';
+
+const { MAX_ATTEMPTS, FAILED, BUILD_FLOW, STEP_FLOW, BUILD_STATUSES, STEP_STATUSES } = P2;
+export { FAILED, BUILD_FLOW, STEP_FLOW, BUILD_STATUSES, STEP_STATUSES };
 
 export const SCHEMA = 'pipeline-watchdog@2';
 export const BY = 'watchdog';
 
-export const BUILD_FLOW = Object.freeze(['pending', 'splitting', 'split', 'pulling-main', 'assigning-models', 'ready', 'sending', 'building', 'build-complete', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed']);
-export const STEP_FLOW = Object.freeze(['pending', 'pulling-main', 'ready', 'sending', 'building', 'completed', 'in-pr']);
-export const FAILED = 'failed';
-export const BUILD_STATUSES = Object.freeze([...BUILD_FLOW, FAILED]);
-export const STEP_STATUSES = Object.freeze([...STEP_FLOW, FAILED]);
 /** The build holding the box: from pulling-main to merging-main. Only one at a time; nothing else touches main. */
-export const ACTIVE_BUILD = Object.freeze(BUILD_FLOW.slice(BUILD_FLOW.indexOf('pulling-main'), BUILD_FLOW.indexOf('landed')));
-/** Statuses that legitimately wait while another build is active (the one-active-build rule): never stuck then. */
-export const WAITING_BUILD = Object.freeze(['split']);
+export const ACTIVE_BUILD = P2.ACTIVE;
+/** Statuses that legitimately wait while another build holds the active place (the one-active-build rule): never stuck then. */
+export const WAITING_BUILD = P2.WAITING;
 /**
  * The lander's statuses (deploy/lander, lander@1): from build-complete to merging-main, and failed in one of them. The
- * lander retries its own failures with its own backoff and never gives up, so the watchdog never fails or retries
- * these: a stuck one is nudged by running one lander tick for that build.
+ * lander retries its own failures with its own backoff, so the watchdog never fails or retries these: a stuck one is
+ * nudged by running one lander tick for that build. Once the attempts are used up (the contract's ceiling stops the
+ * lander too) the watchdog gives up on it like on any other record: one alert.
  */
 export const LANDER_OWNED = Object.freeze(BUILD_FLOW.slice(BUILD_FLOW.indexOf('build-complete'), BUILD_FLOW.indexOf('landed')));
 export const landerOwned = (b) => LANDER_OWNED.includes(b?.status) || (b?.status === FAILED && LANDER_OWNED.includes(b?.failedFrom));
@@ -47,16 +49,20 @@ export const landerOwned = (b) => LANDER_OWNED.includes(b?.status) || (b?.status
 export const BUILD_DONE = Object.freeze(['landed']);
 export const STEP_DONE = Object.freeze(['in-pr']);
 
-/** Minutes a status may stand before the watchdog acts (settings.budgets overrides any of them). */
+/**
+ * Minutes a status may stand before the watchdog acts (settings.budgets overrides any of them). `split` only counts
+ * while no build holds the active place. A `building` step has no fixed budget: twice its own estimate
+ * (P2.stepBudgetMinutes, from the one step cap), unless settings.budgets.step.building sets one.
+ */
 export const BUILD_BUDGET_MIN = Object.freeze({
   pending: 10, splitting: 15, split: 10, 'pulling-main': 20, 'assigning-models': 10, ready: 5, sending: 15,
   building: 300, 'build-complete': 10, 'merging-pr': 20, 'pr-pulling-main': 20, 'running-ci': 60, 'merging-main': 20,
 });
-export const STEP_BUDGET_MIN = Object.freeze({ pending: 30, 'pulling-main': 15, ready: 60, sending: 10, building: 150, completed: 30 });
+export const STEP_BUDGET_MIN = Object.freeze({ pending: 30, 'pulling-main': 15, ready: 60, sending: 10, completed: 30 });
 
 export const DEFAULTS = Object.freeze({
   enabled: true,
-  maxAttempts: MAX_ATTEMPTS, // attempts per build or step before the watchdog stops retrying and alerts (layer 1 reads it too)
+  maxAttempts: MAX_ATTEMPTS, // attempts per build or step before the watchdog stops retrying and alerts (layer 1 reads it too); never above the contract's ceiling
   nudges: 2,           // re-runs of a stuck transition before it is marked failed
   nudgeEveryMin: 3,    // minutes between two nudges of the same stuck status
   retryAfterMin: 1,    // minutes a failed record stands before it is retried (lets layer 1 retry first)
@@ -76,6 +82,7 @@ export function normSettings(raw = {}) {
   const r = raw && typeof raw === 'object' ? raw : {};
   const out = { ...DEFAULTS, budgets: { build: { ...BUILD_BUDGET_MIN }, step: { ...STEP_BUDGET_MIN } } };
   for (const k of ['maxAttempts', 'nudges', 'nudgeEveryMin', 'retryAfterMin', 'logIdleMin', 'graceMin']) out[k] = num(r[k], DEFAULTS[k]);
+  out.maxAttempts = Math.max(1, Math.min(MAX_ATTEMPTS, Math.floor(out.maxAttempts) || MAX_ATTEMPTS));
   if (typeof r.enabled === 'boolean') out.enabled = r.enabled;
   for (const side of ['build', 'step']) for (const [s, m] of Object.entries(r.budgets?.[side] ?? {})) if (Number(m) > 0) out.budgets[side][s] = Number(m);
   return out;
@@ -92,35 +99,17 @@ export function sinceOf(rec) {
 
 export const attemptOf = (rec) => Math.max(1, Math.floor(Number(rec?.attempt) || 1));
 
-/**
- * Forward-only: `to` must come after `from` in the flow; `failed` may follow anything not done; a failed record may
- * only go back into the status it failed in (failedFrom), as the next attempt.
- */
-export function forwardOk(flow, from, to, failedFrom = '') {
-  if (to === FAILED) return from !== flow[flow.length - 1];
-  if (from === FAILED) return !!failedFrom && to === failedFrom;
-  const a = flow.indexOf(from); const b = flow.indexOf(to);
-  return a >= 0 && b > a;
-}
-
-/** One stamped status change: the fields the contract carries, plus a statusLog line. Pure: returns the patch. */
-export function stamp(rec, flow, to, { at, why = '', attempt, failedFrom, extra = {} } = {}) {
-  const from = rec.status;
-  if (!forwardOk(flow, from, to, rec.failedFrom)) throw new Error(`not forward: ${from} → ${to}`);
-  const next = { status: to, statusAt: at, statusBy: BY, attempt: attempt ?? attemptOf(rec), ...extra };
-  if (to === FAILED) next.failedFrom = failedFrom || from;
-  else next.failedFrom = undefined;
-  // the contract's log (pipeline-2@1 statusLog, last 60 lines): the store keeps it, the table and the lander read it
-  next.statusLog = [...(Array.isArray(rec.statusLog) ? rec.statusLog : []), { status: to, at, by: BY, attempt: next.attempt, ...(why ? { why: str(why, 300) } : {}) }].slice(-60);
-  return next;
-}
-
-export const isActive = (b) => ACTIVE_BUILD.includes(b?.status) || (b?.status === FAILED && ACTIVE_BUILD.includes(b?.failedFrom));
+/** Does the build hold the active place (the contract's one definition: a build that failed while active still does)? */
+export const isActive = (b) => P2.holdsActive(b);
+/** The build every waiting build waits for, or null: the contract's activeBuild over every build in the store. */
+export const placeHolder = (store) => P2.activeBuild(store?.builds ?? []).active;
 const live = (b) => b && !b.deleted && !b.hidden && !b.demo && BUILD_STATUSES.includes(b.status);
 const stepName = (b, s) => `${b.id}/${s.id}`;
 
 /** The minutes past budget of a status, or a negative number when inside it. */
 const over = (rec, budgets, now) => (now - sinceOf(rec)) / MIN - (budgets[rec.status] ?? Infinity);
+/** A building step's budget: the setting when one is set, else twice the step's own estimate. */
+const buildingBudget = (s, budgets) => (Number(budgets.building) > 0 ? Number(budgets.building) : P2.stepBudgetMinutes(s));
 
 /**
  * Every problem in the store. `probes` maps "<build>/<step>" → { tmux: true|false|null, logTail: '', logAgeMin: n|null };
@@ -130,11 +119,13 @@ const over = (rec, budgets, now) => (now - sinceOf(rec)) / MIN - (budgets[rec.st
 export function findIssues(store, { probes = {}, now = Date.now(), settings = normSettings() } = {}) {
   const S = settings;
   const builds = (store?.builds ?? []).filter(live);
-  const anyActive = builds.some((b) => isActive(b) && b.status !== FAILED);
+  const holder = placeHolder(store);
   const out = [];
   for (const b of builds) {
     if (BUILD_DONE.includes(b.status)) continue;
-    if (b.status === FAILED && landerOwned(b)) continue; // the lander retries it (its own backoff, never a person)
+    // the lander retries its own failures (its own backoff); once the attempts are used up the contract stops it too,
+    // and that is a give-up like any other (one alert: only a reset moves the build on)
+    if (b.status === FAILED && landerOwned(b) && !P2.gaveUp(b, S.maxAttempts)) continue;
     if (b.status === FAILED) { out.push({ kind: 'build-failed', build: b.id, status: FAILED, failedFrom: b.failedFrom || '', attempt: attemptOf(b), minutes: Math.round((now - sinceOf(b)) / MIN) }); continue; }
     // steps of this build first: a dead or limited step is the cause of a stuck `building` build
     for (const s of Array.isArray(b.steps) ? b.steps : []) {
@@ -146,7 +137,7 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
         const age = (now - sinceOf(s)) / MIN;
         if (p.logTail && LIMIT_RE.test(p.logTail)) { out.push({ kind: 'step-limit', build: b.id, step: s.id, status: s.status, cause: 'usage-limit', account: s.account || '', attempt: attemptOf(s), evidence: str((p.logTail.match(LIMIT_RE) || [''])[0], 120) }); continue; }
         if (p.tmux === false && age >= S.graceMin) { out.push({ kind: 'step-dead', build: b.id, step: s.id, status: s.status, cause: 'tmux-dead', account: s.account || '', attempt: attemptOf(s), session: p.session || '' }); continue; }
-        const late = over(s, S.budgets.step, now);
+        const late = age - buildingBudget(s, S.budgets.step);
         if (late > 0 && (p.logAgeMin == null || p.logAgeMin >= S.logIdleMin)) { out.push({ kind: 'step-hung', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), account: s.account || '', attempt: attemptOf(s), session: p.session || '' }); continue; }
         continue;
       }
@@ -161,7 +152,9 @@ export function findIssues(store, { probes = {}, now = Date.now(), settings = no
       const late = over(s, S.budgets.step, now);
       if (late > 0) out.push({ kind: 'step-stuck', build: b.id, step: s.id, status: s.status, cause: 'over-budget', minutes: Math.round(late), attempt: attemptOf(s), ...(s.status === 'completed' ? { lander: true } : {}) });
     }
-    if (WAITING_BUILD.includes(b.status) && anyActive) continue;
+    // waiting its turn is never stuck, however long: a build holds the active place (failed ones too), so this one
+    // cannot move. Emergency builds never wait for the place.
+    if (WAITING_BUILD.includes(b.status) && holder && holder.id !== b.id && !P2.isEmergency(b)) continue;
     const late = over(b, S.budgets.build, now);
     if (late > 0) out.push({ kind: 'build-stuck', build: b.id, status: b.status, cause: 'over-budget', minutes: Math.round(late), attempt: attemptOf(b), ...(landerOwned(b) ? { lander: true } : {}) });
   }
@@ -220,7 +213,7 @@ export function plan(issue, { memory = {}, settings = normSettings(), now = Date
     case 'step-failed': {
       // a step failed after its session ended cleanly (failedFrom completed: older passes failed finished steps as
       // "stuck"): its work is done, so it goes back to completed whatever its attempt count or alert
-      if (issue.kind === 'step-failed' && issue.failedFrom === 'completed') return { action: 'retry', key: k, attempt: issue.attempt + 1, to: 'completed', why: 'its session had ended cleanly: back to completed' };
+      if (issue.kind === 'step-failed' && issue.failedFrom === 'completed') return { action: 'retry', key: k, attempt: issue.attempt + 1, to: 'completed', reset: issue.attempt >= S.maxAttempts, why: 'its session had ended cleanly: back to completed' };
       if (memory.alerted?.[k]) return { action: 'wait', key: k, why: 'gave up already (alerted)' };
       if (!issue.failedFrom) return { action: 'give-up', key: k, why: 'failed with no failedFrom: the watchdog cannot tell where to continue' };
       const inSlot = issue.kind === 'step-failed' && STEP_FLOW.indexOf(issue.failedFrom) >= STEP_FLOW.indexOf('ready') && STEP_FLOW.indexOf(issue.failedFrom) <= STEP_FLOW.indexOf('building');
@@ -228,17 +221,16 @@ export function plan(issue, { memory = {}, settings = normSettings(), now = Date
         // the Fable path (Brett, Nov 4 2026: "If it needs Fable, set it to be Fable"): one more go on the stronger model
         if (inSlot && issue.model && issue.model !== 'Fable') {
           const acct = pickAccount(accounts, [issue.account, ...(issue.tried ?? [])]) || pickAccount(accounts, []);
-          if (acct) return { action: 'escalate', key: k, attempt: issue.attempt + 1, to: 'ready', account: acct, model: 'Fable', why: `attempt ${issue.attempt} of ${S.maxAttempts} failed on ${issue.model} at ${issue.failedFrom}: raised to Fable for one more go` };
+          if (acct) return { action: 'escalate', key: k, attempt: 1, to: 'ready', account: acct, model: 'Fable', reset: true, why: `attempt ${issue.attempt} of ${S.maxAttempts} failed on ${issue.model} at ${issue.failedFrom}: raised to Fable with a fresh attempt count` };
         }
         return { action: 'give-up', key: k, why: `attempt ${issue.attempt} of ${S.maxAttempts} failed at ${issue.failedFrom}${issue.model === 'Fable' && inSlot ? ' (Fable included)' : ''}` };
       }
       if (issue.minutes < S.retryAfterMin) return { action: 'wait', key: k, why: 'retry not due yet' };
       if (issue.kind === 'build-failed' && ACTIVE_BUILD.includes(issue.failedFrom)) {
         // emergency builds run beside the active build: one never waits for the active place, and is never the build waited for
-        const emergency = (b) => !!b?.emergency?.at;
         const mine = (store?.builds ?? []).find((b) => b.id === issue.build);
-        const other = emergency(mine) ? null : (store?.builds ?? []).find((b) => live(b) && b.id !== issue.build && b.status !== FAILED && ACTIVE_BUILD.includes(b.status) && !emergency(b));
-        if (other) return { action: 'wait', key: k, why: `${other.id} is the active build` };
+        const other = P2.isEmergency(mine) ? null : placeHolder(store);
+        if (other && other.id !== issue.build) return { action: 'wait', key: k, why: `${other.id} is the active build` };
       }
       const r = { action: 'retry', key: k, attempt: issue.attempt + 1, to: issue.failedFrom, why: `retry forward at ${issue.failedFrom}, attempt ${issue.attempt + 1}` };
       if (inSlot) {
@@ -260,7 +252,9 @@ export const retryTarget = (failedFrom) => (STEP_FLOW.indexOf(failedFrom) >= STE
 
 /**
  * Apply one decision to a store (mutates the build record in place; pure of IO). Returns the note text written, or ''.
- * `ready` after a failed `building` step is the relaunch path, so the step's forward check accepts it as its retry.
+ * Every status change goes through the contract's transition (P2.transition): the attempt count, failedFrom and the
+ * log line are its; a move it refuses changes nothing. `ready` after a step died in its slot is the contract's relaunch
+ * path; an escalation and a finished step going back to completed past the ceiling are resets with their reason.
  */
 export function applyDecision(store, issue, d, { now = Date.now() } = {}) {
   const at = new Date(now).toISOString();
@@ -268,24 +262,21 @@ export function applyDecision(store, issue, d, { now = Date.now() } = {}) {
   if (!b) return '';
   const rec = issue.step ? (b.steps ?? []).find((s) => s.id === issue.step) : b;
   if (!rec || rec.status !== issue.status) return ''; // moved since the scan: layer 1 got there first
-  const flow = issue.step ? STEP_FLOW : BUILD_FLOW;
+  const kind = issue.step ? 'step' : 'build';
   const what = issue.step ? `step ${issue.step}` : 'build';
+  const move = (to, opts = {}) => { const t = P2.transition(rec, to, { at, by: BY, why: d.why, kind, ...opts }); if (t.ok) { for (const k of Object.keys(rec)) if (!(k in t.rec)) delete rec[k]; Object.assign(rec, t.rec); } return t.ok; };
   let text = '';
   if (d.action === 'fail' || d.action === 'fail-limit' || d.action === 'fail-dead') {
-    const extra = issue.step ? { tried: [...new Set([...(rec.tried ?? []), rec.account].filter(Boolean))].slice(-10) } : {};
-    Object.assign(rec, stamp(rec, flow, FAILED, { at, why: d.why, failedFrom: rec.status, extra }));
-    text = `Watchdog: ${what} failed at ${rec.failedFrom}, attempt ${attemptOf(rec)}: ${d.why}.`;
+    const extra = issue.step ? { tried: [...new Set([...(rec.tried ?? []), rec.account].filter(Boolean))].slice(-10) } : null;
+    if (move(FAILED, { extra })) text = `Watchdog: ${what} failed at ${rec.failedFrom}, attempt ${attemptOf(rec)}: ${d.why}.`;
   } else if (d.action === 'escalate' && issue.step) {
-    const from = rec.model || 'Opus';
-    Object.assign(rec, stamp({ ...rec, failedFrom: 'ready' }, flow, 'ready', { at, why: d.why, attempt: d.attempt, extra: { model: 'Fable', account: d.account, slot: undefined, tmux: undefined } }));
-    text = `Watchdog: step ${issue.step} raised ${from} → Fable after ${d.attempt - 1} failed attempts; relaunched at ready, attempt ${d.attempt} on ${d.account}.`;
+    const from = rec.model || 'Opus'; const tries = attemptOf(rec);
+    if (move('ready', { reset: true, extra: { model: 'Fable', account: d.account, slot: undefined, tmux: undefined } })) text = `Watchdog: step ${issue.step} raised ${from} → Fable after ${tries} failed attempts; relaunched at ready, attempt ${attemptOf(rec)} on ${d.account}.`;
   } else if (d.action === 'retry') {
     const to = issue.step ? retryTarget(rec.failedFrom) : rec.failedFrom;
-    const fake = issue.step && to !== rec.failedFrom ? { ...rec, failedFrom: to } : rec;
     // the pinned account for the relaunch (the orchestrator honours it unless it is out); the old slot and tmux go
-    const extra = d.account ? { account: d.account, slot: undefined, tmux: undefined } : {};
-    Object.assign(rec, stamp(fake, flow, to, { at, why: d.why, attempt: d.attempt, extra }));
-    text = `Watchdog: ${what} retried at ${to}, attempt ${d.attempt}${d.account ? ` on ${d.account}` : ''}.`;
+    const extra = d.account ? { account: d.account, slot: undefined, tmux: undefined } : null;
+    if (move(to, { reset: d.reset === true, extra })) text = `Watchdog: ${what} retried at ${to}, attempt ${attemptOf(rec)}${d.account ? ` on ${d.account}` : ''}.`;
   } else if (d.action === 'nudge') {
     text = `Watchdog: ${what} stuck at ${issue.status} (${issue.minutes} min past budget): re-ran the transition (${d.n}).`;
   } else if (d.action === 'give-up') {
