@@ -17,7 +17,7 @@ import { randomUUID } from 'node:crypto';
 
 const SELF = fileURLToPath(import.meta.url);
 const ROOT = resolve(SELF, '../../../..');
-const JOBS = join(ROOT, 'apps/console-web/plugins/agent-swarm/jobs.mjs');
+const JOBS = join(ROOT, 'apps/console-web/plugins/agent-swarm/jobs.mjs'); // axf-plugin:agent-swarm
 const ID = /^[A-Za-z0-9._-]{1,80}$/;
 const INPUT_KEY = /^[a-z][a-zA-Z0-9]{0,29}$/;
 

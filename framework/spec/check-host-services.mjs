@@ -74,7 +74,7 @@ const maintenance = {
   health: { intervalSec: 30, timeoutMs: 5000 },
   actions: [{ id: 'clear-docker-cache', title: 'Clear Docker cache', confirm: true, timeoutMs: 600000, args: { restartDocker: { type: 'boolean' } } }, { id: 'measure', title: 'Measure disk now', modes: ['shadow', 'host'] }],
   settings: { diskAlertPct: { type: 'integer', default: 85, min: 50, max: 99, title: 'Disk alert at %' }, nightlyAt: { type: 'string', default: '03:30' } },
-  replaces: [{ kind: 'thread', name: '_loop', where: 'apps/console-web/plugins/maintenance/server/routes.py' }],
+  replaces: [{ kind: 'thread', name: '_loop', where: 'the maintenance plugin: server/__init__.py' }],
 };
 const lander = { $axf: 'host-service@1', id: 'auto-lander', title: 'Auto-lander', kind: 'tick', unit: 'axf-auto-lander.service', plugin: 'gate', runner: 'deploy/auto-lander/auto-lander.mjs', health: { staleSec: 180 }, replaces: [{ kind: 'cron', name: 'axf-auto-land' }, { kind: 'cron', name: 'axf-pipeline' }] };
 const out = {};

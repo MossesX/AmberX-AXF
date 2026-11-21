@@ -25,6 +25,6 @@
     "pushEachPass": { "type": "boolean", "default": true, "title": "Seed missing shared files on each pass" }
   },
   "replaces": [
-    { "kind": "loop", "name": "f_shared_data", "where": "apps/console-web/plugins/systems-check/server/checks.py (the shared data Auto fix runs persist push)" }
+    { "kind": "loop", "name": "f_shared_data", "where": "the systems-check plugin: server/checks.py (the shared data Auto fix runs persist push)" }
   ]
 }

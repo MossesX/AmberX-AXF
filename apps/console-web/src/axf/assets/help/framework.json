@@ -1706,18 +1706,6 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
-      },
-      {
-        "target": "reset-this",
-        "title": "Reset this",
-        "text": "Puts this tab row, toolbar, banner or menu back to its asset's defaults: every override made here goes (the count says how many). Other ones of the same kind keep theirs.",
-        "kind": "button"
-      },
-      {
-        "target": "this-settings-window-every",
-        "title": "This settings window",
-        "text": "Opens the settings for the settings window itself (its own look, shared by every window of this kind). The changes above change the bar; these change the window you are reading.",
-        "kind": "button"
       }
     ],
     "intros": [

@@ -8,7 +8,7 @@
   "plugin": "shipped-features",
   "runner": "deploy/host-services/workers/shipped-features.mjs",
   "sudo": [
-    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task shipped-sync", "why": "ledger sync: writes .axf-console/plugins/shipped-features/ledger.sqlite in the root-owned checkout" },
+    { "cmd": "/opt/axf/deploy/host-services/bin/axf-task shipped-sync", "why": "ledger sync: writes the plugin's ledger.sqlite in the root-owned checkout" },
     { "cmd": "/opt/axf/deploy/host-services/bin/axf-task shipped-landed", "why": "ship manifests of newly landed builds through the builds store" }
   ],
   "health": { "intervalSec": 120, "timeoutMs": 5000, "staleSec": 1800 },
@@ -21,7 +21,7 @@
     "shipLanded": { "type": "boolean", "default": true, "title": "Ship manifests for landed builds on each pass" }
   },
   "replaces": [
-    { "kind": "loop", "name": "_maybe_sync", "where": "apps/console-web/plugins/shipped-features/server/__init__.py" }
+    { "kind": "loop", "name": "_maybe_sync", "where": "the shipped-features plugin: server/__init__.py" }
   ],
   "after": ["builds-live"]
 }

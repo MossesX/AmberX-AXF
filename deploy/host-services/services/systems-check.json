@@ -29,7 +29,7 @@
   },
   "replaces": [
     { "kind": "cron", "name": "axf-doctor", "where": "deploy/install-console.sh (console-doctor.sh --report every 15 minutes)" },
-    { "kind": "thread", "name": "Jobs._run", "where": "apps/console-web/plugins/systems-check/server/hostfix.py (Auto fix through Mosses and vps.run for the fixes listed in HOST_FIXES)" }
+    { "kind": "thread", "name": "Jobs._run", "where": "the systems-check plugin: server/hostfix.py (Auto fix through Mosses and vps.run for the fixes listed in HOST_FIXES)" }
   ],
   "after": ["hub-sync"]
 }

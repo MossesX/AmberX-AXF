@@ -2,6 +2,7 @@
 .axp-host-services { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
 .axp-host-services__name { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0; }
 .axp-host-services__name > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.axp-host-services__cron { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .axp-host-services__actions { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; }
 .axp-host-services__detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl); }
 .axp-host-services__logs { font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm); max-height: calc(var(--fx-space) * 24); overflow: auto; white-space: pre-wrap; margin: 0; padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); }

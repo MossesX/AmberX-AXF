@@ -372,10 +372,11 @@ class SysCheck:
         root = self.persist_root()
         if not root:
             raise HTTPException(400, "no shared data folder is mounted here; run deploy/install-console.sh on the VPS")
-        if not host_mode.container_runs("hub-sync"):
+        hub = "hub-sync"  # the host service id (axf-not-plugin:hub-sync)
+        if not host_mode.container_runs(hub):
             # host-service hub-sync (HOST-SERVICES.md): the host owns the push; ask it instead of running a second copy
             import host_services  # noqa: PLC0415 — the console server's host client (s17), loaded only in host mode
-            r = host_services.client().action("hub-sync", "persist-push", {}, by="systems-check", reason={"title": "Seed the shared data folder", "description": "Shared data fix: copy the repo snapshot to the hub for files it does not have."})
+            r = host_services.client().action(hub, "persist-push", {}, by="systems-check", reason={"title": "Seed the shared data folder", "description": "Shared data fix: copy the repo snapshot to the hub for files it does not have."})
             return f"the host copied the repo's snapshot to the hub: {r.get('result', {}).get('output', '')[-200:]}"
         r = subprocess.run(["node", str(self.root / "framework/cli/persist.mjs"), "push"], cwd=self.root, capture_output=True, text=True, timeout=120)
         if r.returncode != 0:

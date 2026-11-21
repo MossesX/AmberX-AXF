@@ -494,6 +494,7 @@ export function makeHostApi(apiManifest, { manifestsFn = () => loadManifests(), 
   }
   async function rollback(id, body) {
     const m = find(id);
+    if (m.adopted) throw new H.HostServiceError('unknown_action', `${m.id} is adopted: it already runs on the host, there is no console copy to roll back to`, { service: m.id, action: 'rollback' });
     const to = body.to === 'shadow' ? 'shadow' : 'container';
     const plan = H.rollbackSteps(m, { to, by: body.by || 'svc:host-api', why: body.why || '' });
     const cur = readModeState();

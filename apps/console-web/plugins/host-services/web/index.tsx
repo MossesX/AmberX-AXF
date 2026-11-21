@@ -4,7 +4,9 @@
  * that touch Docker, disk or git, run on the VPS as systemd units; this is where they are seen and driven.
  *
  * - Settings → Plugins → Host services: the page toolbar (page-toolbar asset assets/toolbar/host-services.json), one
- *   DataGrid row per service (status chip with since, mode, unit, heartbeat, last run, Restart / Start / Stop / Run),
+ *   DataGrid row per service in two groups (moved from the console; already on the host, adopted), each with a status
+ *   chip with since, mode, unit or cron file, heartbeat, last run, Restart / Start / Stop / Run; a "Host service down"
+ *   note names what is down, why and since when,
  *   expanded: description, actions, logs tail, and the mode / rollback control (container → shadow → host, Roll back).
  * - Settings → Plugins → Systems check → Host services: the same list, compact, next to the rest of the checks.
  * - HostServiceGate (src/hostServices.tsx) gives each moved plugin's own UI the "Host service down" state.
@@ -42,6 +44,8 @@ function Row({ s }: { s: HostServiceState }) {
   };
   const id = encodeURIComponent(s.id);
   const tick = s.kind === 'tick';
+  // cron starts it: there is no unit to restart or run; its Auto fix (the systems check item) writes the schedule again
+  if (s.cron) return <span className="fx-small fx-muted axp-host-services__cron" title={`/etc/cron.d/${s.cron}`} data-axf-target={`host:${s.id}/cron`}>cron {s.cron}</span>;
   return (
     <span className="axp-host-services__actions" role="toolbar" aria-label={`${s.id} actions`} data-axf-toolbar={`host-services.row.${s.id}`}>
       <Button size="sm" icon="refresh" busy={busy === 'restart'} confirm={`Restart ${s.unit}?`} onClick={() => void go('restart', `${id}/unit/restart`, { confirm: true })} data-axf-target={`host:${s.id}/unit:restart`}>Restart</Button>
@@ -82,13 +86,18 @@ function Detail({ s }: { s: HostServiceState }) {
             ))}
           </div>
         )}
-        <div className="axp-host-services__mode" data-axf-target={`host:${s.id}/mode`}>
+        {s.adopted && (
+          <p className="fx-small fx-muted" data-axf-target={`host:${s.id}/adopted`}>
+            Already on the host: {s.cron ? `cron starts it (/etc/cron.d/${s.cron})` : `${s.unit} and its timer start it`}. Its own installer and the {s.plugin === 'console' ? 'console' : `${s.plugin} plugin`} own it; here it is listed and health-checked.
+          </p>
+        )}
+        {!s.adopted && <div className="axp-host-services__mode" data-axf-target={`host:${s.id}/mode`}>
           <SelectField label="Where it runs" value={to} onChange={setTo} options={MODES.map((m) => ({ value: m, label: MODE_LABEL[m] ?? m, disabled: m === s.mode }))} />
           <Button size="sm" icon="arrow-right" busy={busy === 'mode'} confirm={back ? `Move ${s.id} back to ${to}?` : undefined}
             onClick={() => void run('mode', () => press(`${id}/mode`, { to, confirm: back }, 'PUT'))} data-axf-target={`host:${s.id}/set-mode`}>Move</Button>
           <Button size="sm" tone="danger" icon="undo" busy={busy === 'rollback'} disabled={s.mode === 'container'} confirm={`Roll ${s.id} back to the console's copy? The host unit stops; the container loop runs again.`}
             onClick={() => void run('rollback', () => press(`${id}/rollback`, { to: 'container', confirm: true, why: 'rolled back from the Host services view' }))} data-axf-target={`host:${s.id}/rollback`}>Roll back</Button>
-        </div>
+        </div>}
         {msg && <p className="fx-small fx-muted" role="status">{msg}</p>}
       </div>
       <div className="fx-stack">
@@ -103,13 +112,13 @@ function Detail({ s }: { s: HostServiceState }) {
 function useColumns(narrow = false): GridColumn<HostServiceState>[] {
   const w = (wide: number, phone: number) => `calc(var(--fx-font-size) * ${narrow ? phone : wide})`;
   return [
-    { id: 'name', label: 'Service', width: w(16, 8), fixed: true, sortable: true, sortValue: (s) => s.id,
-      render: (s) => <span className="axp-host-services__name"><b>{s.manifest?.title || s.id}</b><span className="fx-small fx-muted">{s.id} · {s.unit}</span></span> },
+    { id: 'name', label: 'Service', width: w(14, 8), fixed: true, sortable: true, sortValue: (s) => s.id,
+      render: (s) => <span className="axp-host-services__name"><b>{s.manifest?.title || s.id}</b><span className="fx-small fx-muted">{s.id} · {s.cron ? `cron ${s.cron}` : s.unit}</span></span> },
     { id: 'status', label: 'Status', width: w(6, 5), sortable: true, sortValue: (s) => s.status,
       render: (s) => <span className="axp-host-services__name"><HostStatusChip s={s} /><span className="fx-small fx-muted">{s.since ? `for ${since(s.since)}` : ''}</span></span> },
-    { id: 'mode', label: 'Mode', width: w(5, 4), sortable: true, sortValue: (s) => s.mode ?? '', render: (s) => <span className="fx-small">{s.mode ?? 'container'}</span> },
-    { id: 'heartbeat', label: 'Heartbeat', width: w(6, 6), render: (s) => <span className="fx-small fx-muted">{s.heartbeat?.at ? `${since(s.heartbeat.at)} ago` : s.kind === 'tick' ? 'tick' : '—'}</span> },
-    { id: 'last', label: 'Last run', width: w(9, 9), render: (s) => <span className="fx-small fx-muted" title={s.lastRun?.message}>{s.lastRun ? `${s.lastRun.result} · ${since(s.lastRun.at)} ago` : '—'}</span> },
+    { id: 'mode', label: 'Mode', width: w(5, 4), sortable: true, sortValue: (s) => s.mode ?? '', render: (s) => <span className="fx-small">{s.adopted ? 'host' : s.mode ?? 'container'}</span> },
+    { id: 'heartbeat', label: 'Heartbeat', width: w(5, 5), render: (s) => <span className="fx-small fx-muted">{s.heartbeat?.at ? `${since(s.heartbeat.at)} ago` : s.kind === 'tick' ? 'tick' : '—'}</span> },
+    { id: 'last', label: 'Last run', width: w(8, 8), render: (s) => <span className="fx-small fx-muted" title={s.lastRun?.message}>{s.lastRun ? `${s.lastRun.result} · ${since(s.lastRun.at)} ago` : '—'}</span> },
     { id: 'actions', label: 'Actions', width: w(10, 6), render: (s) => <Row s={s} /> },
   ];
 }
@@ -128,17 +137,27 @@ export function HostServicesView({ compact = false }: { compact?: boolean }) {
     'host-services.refresh': async () => { await refreshHostServices(true); return { services: rows.length }; },
     'host-services.expand-all': () => { setExpanded(expanded.length ? [] : rows.map((r) => r.id)); return null; },
     'host-services.restart-down': async () => {
-      const down = rows.filter((r) => r.mode !== 'container' && (r.status === 'down' || r.status === 'degraded'));
+      const down = rows.filter((r) => !r.cron && r.mode !== 'container' && (r.status === 'down' || r.status === 'degraded'));
       for (const r of down) { try { await press(`${encodeURIComponent(r.id)}/unit/restart`, { confirm: true }); } catch { /* the row says why */ } }
       return { restarted: down.map((r) => r.id) };
     },
   });
   const cols = useColumns(phone);
+  // what is down on the host right now (container mode is not down: the console still runs that part)
+  const downNow = list?.down ? [] : rows.filter((r) => r.status === 'down' && (r.adopted || r.mode !== 'container'));
+  const moved = rows.filter((r) => !r.adopted);
+  const adopted = rows.filter((r) => r.adopted);
+  const n = (k: number) => `${k} service${k === 1 ? '' : 's'}`;
   return (
     <div className="axp-host-services" data-axf-target={compact ? 'panel:host-services.syscheck' : 'view:host-services'}>
       {!compact && <PageToolbar view={VIEW} />}
       {list?.down && (
         <Note tone="danger"><b>Host service down: the host API</b>{list.downSince ? ` (for ${since(list.downSince)})` : ''}. {list.down.message} Every row shows unknown until it answers; the units on the host keep running.</Note>
+      )}
+      {downNow.length > 0 && (
+        <Note tone="danger" data-axf-target="host-services.down">
+          <b>Host service down: {downNow.map((r) => r.manifest?.title || r.id).join(', ')}</b>. {downNow.map((r) => `${r.id}: ${r.reason || 'not running'}${r.since ? ` (for ${since(r.since)})` : ''}`).join('; ')}. What {downNow.length === 1 ? 'it does' : 'they do'} on the host is not happening until {downNow.length === 1 ? 'it is' : 'they are'} back: Restart down services, or the row's own button.
+        </Note>
       )}
       {error && !list && <Note tone="warning">{error}</Note>}
       <div className="axp-host-services__counts" aria-label="Host services by status">
@@ -146,7 +165,10 @@ export function HostServicesView({ compact = false }: { compact?: boolean }) {
       </div>
       <DataGrid<HostServiceState>
         id="host-services.grid" label="Host services" compact={narrow}
-        groups={[{ id: 'all', title: `${rows.length} service${rows.length === 1 ? '' : 's'}`, rows, groups: [], fixed: true }]}
+        groups={[
+          { id: 'moved', title: `Moved from the console · ${n(moved.length)}`, rows: moved, groups: [], fixed: true },
+          ...(adopted.length ? [{ id: 'adopted', title: `Already on the host · ${n(adopted.length)}`, rows: adopted, groups: [], fixed: true }] : []),
+        ]}
         columns={narrow ? cols.filter((c) => ['name', 'status', 'mode', 'actions'].includes(c.id)) : cols}
         rowId={(s) => s.id} rowLabel={(s) => s.manifest?.title || s.id} hidden={[]}
         rowCtx={(s) => ({ target: `row:${s.id}` })}
@@ -161,7 +183,7 @@ export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.host-services',
   label: 'Host services',
   version: '0.1.0',
-  builtWith: { model: 'opus', builtAt: '2026-11-18' },
+  builtWith: { model: 'fable', builtAt: '2026-11-21' },
   settingsTabs: [{ id: FOLDER, label: 'Host services', icon: 'server', order: 7, parent: 'plugins', description: 'The console parts that run on the VPS host: status, actions, mode and rollback.' }],
   settingsPanels: [
     { id: 'host-services.list', tab: FOLDER, title: 'Host services', icon: 'server', order: 10, render: () => <HostServicesView /> },

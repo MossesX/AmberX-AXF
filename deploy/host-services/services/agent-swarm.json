@@ -27,7 +27,7 @@
     "intervalSec": { "type": "integer", "default": 60, "min": 30, "max": 3600, "title": "Check for due jobs every (s)" }
   },
   "replaces": [
-    { "kind": "loop", "name": "jobs_run", "where": "apps/console-web/plugins/agent-swarm/server/__init__.py (/jobs/run, /jobs/hire launch from the container)" },
+    { "kind": "loop", "name": "jobs_run", "where": "the agent-swarm plugin: server/__init__.py (/jobs/run, /jobs/hire launch from the container)" },
     { "kind": "cron", "name": "axf-agent-jobs", "where": "scheduled job types (jobs.mjs due --run) when a cron line runs them" }
   ]
 }

@@ -62,7 +62,7 @@
     {
      "kind": "thread",
      "name": "_loop",
-     "where": "apps/console-web/plugins/maintenance/server/routes.py"
+     "where": "the maintenance plugin: server/__init__.py"
     }
    ]
   },
@@ -230,7 +230,7 @@
      {
       "kind": "thread",
       "name": "_loop",
-      "where": "apps/console-web/plugins/maintenance/server/routes.py"
+      "where": "the maintenance plugin: server/__init__.py"
      }
     ],
     "after": [],
@@ -2020,7 +2020,7 @@
        {
         "kind": "thread",
         "name": "_loop",
-        "where": "apps/console-web/plugins/maintenance/server/routes.py",
+        "where": "the maintenance plugin: server/__init__.py",
         "runs": true
        }
       ],
@@ -2077,7 +2077,7 @@
        {
         "kind": "thread",
         "name": "_loop",
-        "where": "apps/console-web/plugins/maintenance/server/routes.py",
+        "where": "the maintenance plugin: server/__init__.py",
         "runs": true
        }
       ],
@@ -2136,7 +2136,7 @@
        {
         "kind": "thread",
         "name": "_loop",
-        "where": "apps/console-web/plugins/maintenance/server/routes.py",
+        "where": "the maintenance plugin: server/__init__.py",
         "runs": false
        }
       ],

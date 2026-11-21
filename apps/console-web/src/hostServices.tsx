@@ -18,6 +18,8 @@ import './hostServices.css';
 export type HostStatus = 'up' | 'degraded' | 'down' | 'unknown';
 export interface HostServiceState {
   id: string; unit?: string; kind?: 'tick' | 'daemon'; plugin?: string; status: HostStatus; since?: string; at?: string; reason?: string; code?: string;
+  /** Adopted schedules (HOST-SERVICES.md → Adopted schedules): already on the host; `cron` is the /etc/cron.d file that starts it. */
+  adopted?: boolean; cron?: string;
   unitState?: string; timerState?: string; mode?: 'container' | 'shadow' | 'host'; reachable?: boolean; pid?: number; restarts?: number;
   health?: { ok: boolean; at: string; message?: string; latencyMs?: number } | null;
   lastRun?: { at: string; result: string; durationMs?: number; message?: string } | null;

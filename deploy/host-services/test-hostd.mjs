@@ -97,6 +97,7 @@ try {
   const c2 = await call(API, 'POST', '/v1/services/reaper/unit/restart', { by: 'test', confirm: true }); assert.equal(c2.body.code, 'unknown_action'); ok('a cron schedule has no unit verbs');
   const c3 = await call(API, 'GET', '/v1/services/reaper/logs?lines=1'); assert.deepEqual(c3.body.lines.map((l) => l.line), ['reaped 1']); ok('its logs come from the log file');
   const c4 = await call(API, 'PUT', '/v1/services/reaper/mode', { to: 'shadow', by: 'test' }); assert.notEqual(c4.status, 200); ok('an adopted schedule has no mode to change');
+  const c5 = await call(API, 'POST', '/v1/services/reaper/rollback', { by: 'test', confirm: true }); assert.equal(c5.body.code, 'unknown_action'); ok('and nothing to roll back to');
   const cli = (...a) => execFileSync(process.execPath, [join(REPO, 'framework/cli/host-services.mjs'), ...a], { env: { ...process.env, AXF_HOST_API: `unix:${API}`, AXF_HOST_API_FALLBACK: '', AXF_CONSOLE_URL: '', AXF_TOKEN: '' }, encoding: 'utf8' });
   assert.match(cli('list'), /^demo\s+down\s+container/m); ok('CLI list over the socket');
   assert.equal(JSON.parse(cli('status', 'demo', '--json')).id, 'demo'); ok('CLI status --json');

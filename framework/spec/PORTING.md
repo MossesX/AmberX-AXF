@@ -460,9 +460,9 @@ skin@1 data only, no engine change) and baked into the web apps' shared set. The
 `apps/phone-connect/app/src/main/assets/axf/assets/skin` is not refreshed (no new Android work): until it is, the phone
 app's Skin picker does not list AmberX, and a look naming `amberx-house` falls back to the app's own look there.
 
-## Deferred: host-services@1 (Nov 17 2026)
+## Deferred: host-services@1 (Nov 21 2026)
 
-Build move-server-side-console-parts-onto-vps adds `framework/core/host-services.mjs` (host-service@1 manifests with
+Build fable-rebuild-1-2-vps-host-services-move (a redo on main of move-server-side-console-parts-onto-vps) adds `framework/core/host-services.mjs` (host-service@1 manifests with
 defaults and errors, `resolveEndpoints` for the unix socket and the loopback fallback, `serviceState` → up / degraded /
 down / unknown with `since`, `toHostError` turning transport failures and host-error@1 bodies into `host_service_down`
 and the other codes, `healthItem`, `controlTargets`, `sudoersLines`; the migration machine `canChangeMode` / `changeMode` /
@@ -470,4 +470,5 @@ and the other codes, `healthItem`, `controlTargets`, `sudoersLines`; the migrati
 (`spec/check-host-services.mjs`) and the spec `framework/spec/HOST-SERVICES.md`. Kotlin twin deferred (no new Android
 work): no Android app talks to the VPS host directly; AmberX only receives the health@1 pushes the console sends. When a
 Kotlin reader is needed (a Host services card in AmberX), it ports `serviceState`, `toHostError` and `summary` and replays
-the `states`, `calls` and `healthItems` blocks of the fixture.
+the `states`, `calls`, `healthItems` and `adopted` blocks of the fixture (adopted schedules: `adopted`, `cron`,
+`health.freshness`).

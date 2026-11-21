@@ -89,7 +89,7 @@
     {
       "kind": "cron",
       "name": "axf-maintenance",
-      "where": "apps/console-web/plugins/maintenance/deploy/host.sh (maint.py snapshot every 10 minutes)"
+      "where": "the maintenance plugin: deploy/host.sh (maint.py snapshot every 10 minutes)"
     }
   ]
 }

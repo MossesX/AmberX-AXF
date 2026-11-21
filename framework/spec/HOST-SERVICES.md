@@ -61,7 +61,7 @@ start and on `SIGHUP`; `node framework/spec/check-host-services.mjs` validates e
   "settings": {
     "diskAlertPct": { "type": "integer", "default": 85, "min": 50, "max": 99, "title": "Disk alert at %" }
   },
-  "replaces": [ { "kind": "thread", "name": "_loop", "where": "apps/console-web/plugins/maintenance/server/routes.py" } ],
+  "replaces": [ { "kind": "thread", "name": "_loop", "where": "the maintenance plugin: server/__init__.py" } ],
   "dataDir": "_data/host-services/maintenance",  // default
   "log": "/var/log/axf-maintenance.log"           // default
 }
