@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10245,
- "updatedAt": "2026-11-21T01:19:10.551Z",
+ "rev": 10246,
+ "updatedAt": "2026-11-21T01:20:17.274Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349305,14 +349305,14 @@
    "title": "Nov 20 fix list + voice console control",
    "category": "",
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-21T01:19:01.722Z",
+   "updatedAt": "2026-11-21T01:20:01.918Z",
    "builtAt": "",
    "notes": [
     {
@@ -349388,6 +349388,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 3: split did not move after 2 re-run(s) of the transition (5 min past its budget).",
      "at": "2026-11-21T01:19:01.722Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 4.",
+     "at": "2026-11-21T01:20:01.918Z",
      "by": "watchdog"
     }
    ],
@@ -349830,7 +349835,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349841,10 +349846,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T01:19:01.722Z",
+   "statusAt": "2026-11-21T01:20:01.918Z",
    "statusBy": "watchdog",
-   "attempt": 3,
-   "failedFrom": "split",
+   "attempt": 4,
    "statusLog": [
     {
      "status": "pending",
@@ -349901,6 +349905,13 @@
      "by": "watchdog",
      "attempt": 3,
      "why": "split did not move after 2 re-run(s) of the transition (5 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T01:20:01.918Z",
+     "by": "watchdog",
+     "attempt": 4,
+     "why": "retry forward at split, attempt 4"
     }
    ]
   },
