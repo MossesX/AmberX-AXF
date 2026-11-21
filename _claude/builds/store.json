@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10251,
- "updatedAt": "2026-11-21T01:26:13.349Z",
+ "rev": 10252,
+ "updatedAt": "2026-11-21T01:27:37.126Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351619,6 +351619,11 @@
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T01:23:02.170Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T01:27:02.143Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -352226,7 +352231,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
