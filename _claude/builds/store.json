@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10200,
- "updatedAt": "2026-11-21T00:10:40.332Z",
+ "rev": 10201,
+ "updatedAt": "2026-11-21T00:10:52.922Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T00:10:34.345Z",
+   "updatedAt": "2026-11-21T00:10:45.400Z",
    "builtAt": "",
    "notes": [
     {
@@ -344839,6 +344839,10 @@
     {
      "text": "s2: builds-store verify was also red on main (windows-terminal s7 text got U+FFFD in the bulk publish dfa865375). Restored the record to journal rev 10101 (published 6e87241b9); verify green on main. Open: the writer on the publish path that produces U+FFFD (3 more fields carry it). Steps s1-s5 all fixed the same checks; s2 merged them all into one tree.",
      "at": "2026-11-21T00:09:59.928Z"
+    },
+    {
+     "text": "Headless run axf-fix-main-ci-red-after-s16-s7-hand---s2--lenny: brief only · start 11.2K tokens ($0.04) · cost $12.87 · 129 turns · 6 tools, MCP none",
+     "at": "2026-11-21T00:10:45.400Z"
     }
    ],
    "approvals": [],
@@ -345328,7 +345332,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 107,
+   "rev": 108,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
