@@ -404,7 +404,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
-    if (free <= 0) { waits.push({ id: b.id, why: slots?.hard?.max && Number(slots.hard.free) <= 0 ? `VPS hard build limit reached (${slots.hard.live ?? '?'}/${slots.hard.max} running)` : `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)` }); continue; }
+    if (free <= 0) { waits.push({ id: b.id, why: slots?.hard?.max && Number(slots.hard.free) <= 0 ? `Builds at once reached (${slots.hard.live ?? '?'}/${slots.hard.max} running on the VPS)` : `Builds at once reached (${slots?.used ?? '?'}/${slots?.cap ?? '?'} booked)` }); continue; }
     const r = routeFor(b, acc, model, settings);
     const a = r.account ? acc.find((x) => x.name === r.account) : null;
     if (!a) { waits.push({ id: b.id, why: r.why }); continue; }

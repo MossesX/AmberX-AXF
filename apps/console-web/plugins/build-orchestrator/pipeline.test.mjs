@@ -98,7 +98,7 @@ t('plan: one launch per free slot in Queue order, Fable to a Fable account, the 
   assert.deepEqual(r.queue, ['q1', 'q2', 'q3', 'q4']);
   assert.deepEqual(r.launches.map((l) => [l.id, l.account, l.model]), [['q1', 'w-max', 'Fable'], ['q2', 'w-pro', 'Opus']], 'Opus work keeps the Fable account free');
   assert.deepEqual(r.waits.map((w) => w.id), ['q3', 'q4']);
-  assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /no free agent slot/);
+  assert.match(r.waits[0].why, /no steps yet/); assert.match(r.waits[1].why, /Builds at once reached \(1\/3 booked\)/);
   assert.equal(r.idle, null);
 });
 t('plan: account caps hold a launch even with slots free; Fable work waits when no Fable account is free', () => {

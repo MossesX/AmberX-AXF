@@ -79,15 +79,15 @@
         "kind": "button"
       },
       {
-        "target": "more-parallel",
-        "title": "More parallel",
-        "text": "Lets one more build run on this account at once.",
+        "target": "more-sessions",
+        "title": "More sessions",
+        "text": "Raises this account's Sessions per account by one (its own number, saved with Job routing's).",
         "kind": "button"
       },
       {
-        "target": "less-parallel",
-        "title": "Less parallel",
-        "text": "One fewer build at once on this account.",
+        "target": "fewer-sessions",
+        "title": "Fewer sessions",
+        "text": "Lowers this account's Sessions per account by one.",
         "kind": "button"
       },
       {

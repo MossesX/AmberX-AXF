@@ -58,7 +58,7 @@
   "distinct": [
     { "keys": ["pipeline stepsInParallel"], "label": "Steps at once per build", "why": "Steps of one build that run at once, under Builds at once. Nothing else does this job." },
     { "keys": ["pipeline maxRuns"], "label": "Sessions per build before it stops", "why": "Counts every session a build has had. The recovery watchdog's count restarts at each ticked step; Pipeline 2.0, the lander and the retry ladder count attempts of their own units." },
-    { "keys": ["recovery watchdog maxRetries"], "label": "Retries since the last ticked step", "why": "See pipeline maxRuns." },
+    { "keys": ["recovery watchdog maxRetries"], "label": "Max retries", "why": "See pipeline maxRuns." },
     { "keys": ["agent-slots maxHeavy"], "label": "Heavy steps at once", "why": "Vite builds, docker test runs and Playwright: a different resource from builds." },
     { "keys": ["build-limit emergencySlots"], "label": "Emergency slots", "why": "A second pool, counted apart from Builds at once." }
   ]

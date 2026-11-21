@@ -855,7 +855,8 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
 
 @router.post("/pipeline/account")
 async def pipeline_account(request: Request) -> dict[str, Any]:
-    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential)."""
+    """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential).
+    `parallel` is the account's Sessions per account: saved as its one key, claude-workers perAccount.<name>.building."""
     body = await _json_body(request)
     name = str(body.get("name") or "").strip()
     if not re.match(r"^[a-z0-9][a-z0-9-]{0,31}$", name):
@@ -863,7 +864,7 @@ async def pipeline_account(request: Request) -> dict[str, Any]:
     args = ["account", name]
     if body.get("fable") in ("on", "off", "auto"):
         args += ["--fable", str(body["fable"])]
-    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 12:
+    if isinstance(body.get("parallel"), int) and 1 <= body["parallel"] <= 20:
         args += ["--parallel", str(body["parallel"])]
     if body.get("use") in ("on", "off"):
         args += ["--use", str(body["use"])]
@@ -879,11 +880,12 @@ def pipeline_settings() -> dict[str, Any]:
 
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
-    """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
+    """{key: value…} for pipeline-settings@1 (parallelPerAccount, stepsInParallel, fablePlans, useConsoleAccount, maxRuns, idleAfterMin,
+    probeDays, splitProvider, apiOverflow, apiAccounts). parallelPerAccount is Sessions per account: saved as its one key,
+    claude-workers limits.building (settings-sources@1); autoQueue and briefMaxBytes are Claude settings and are refused here. Turning the API overflow rule on spends money per token: only Brett's own click
     does that (a session, MCP or voice may turn it off)."""
     body = await _json_body(request)
-    allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
+    allowed = {"parallelPerAccount", "stepsInParallel", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
 

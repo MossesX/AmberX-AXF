@@ -686,13 +686,16 @@
               }
             },
             "parallelPerAccount": {
-              "type": "integer"
+              "type": "integer",
+              "description": "Sessions per account (1-20). Saved as its one key: claude-workers limits.building."
             },
             "stepsInParallel": {
-              "type": "integer"
+              "type": "integer",
+              "description": "Steps at once per build (1-12), under Builds at once."
             },
             "maxRuns": {
-              "type": "integer"
+              "type": "integer",
+              "description": "Sessions per build before it stops (1-10): a build that crashed or was cut off this many times goes back to Pending."
             },
             "idleAfterMin": {
               "type": "integer"
