@@ -20,6 +20,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { findRefs, normalizeRefTarget, refIndex, refTargetFromBuild, resolveRef } from '../../../../framework/core/engines/refs.mjs';
 import { loadStore } from '../../../../framework/cli/builds-store.mjs';
+import { readText } from '../../../../framework/core/clip.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(process.env.AXF_REPO_ROOT || resolve(HERE, '../../../..'));
@@ -113,7 +114,7 @@ async function main(argv) {
   const pos = argv.filter((a, i) => !a.startsWith('--') && !(i > 0 && /^--(touches|how|to)$/.test(argv[i - 1])));
   const [cmd, ...rest] = pos;
   const say = (r, text) => { console.log(json ? JSON.stringify(r) : text); if (!r.ok) process.exitCode = r.code === 'not_found' ? 4 : 1; };
-  if (cmd === 'run') { let s = ''; for await (const c of process.stdin) s += c; let req = {}; try { req = JSON.parse(s || '{}'); } catch { /* empty */ } console.log(JSON.stringify(run(req))); return; }
+  if (cmd === 'run') { const s = await readText(process.stdin); let req = {}; try { req = JSON.parse(s || '{}'); } catch { /* empty */ } console.log(JSON.stringify(run(req))); return; }
   if (cmd === 'targets') { const r = run({ op: 'targets' }); return say(r, r.targets.map((t) => `${t.id.padEnd(48)} ${t.label}`).join('\n')); }
   if (cmd === 'find') {
     const r = run({ op: 'find', text: rest.join(' '), touches: opt('touches') });

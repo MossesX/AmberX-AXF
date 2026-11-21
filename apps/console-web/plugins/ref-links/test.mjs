@@ -59,5 +59,12 @@ check('CLI find --json', c1.status === 0 && JSON.parse(c1.stdout).spans.length =
 check('CLI resolve: not found exits 4', cli('resolve', 'zzz nothing').status === 4);
 check('CLI usage exits 2', cli().status === 2 && cli('open').status === 2);
 
+// B4-01: a request far over 64 KB on stdin keeps its multi-byte characters (stdin is decoded once, not chunk by chunk)
+{
+  const q = `nothing-called-this ${'a→é…“”🙂·'.repeat(12000)}`;
+  const r = spawnSync(process.execPath, [fileURLToPath(new URL('./refs.mjs', import.meta.url)), 'run'], { env: { ...process.env, AXF_REPO_ROOT: root }, encoding: 'utf8', input: JSON.stringify({ op: 'resolve', query: q, extra: catalog }), maxBuffer: 1 << 26 });
+  const j = JSON.parse(r.stdout.trim().split('\n').pop());
+  check('run: a big request on stdin comes through without U+FFFD', j.query === q && !r.stdout.includes('\uFFFD'));
+}
 console.log(`${fails ? '✗' : '✓'} ref-links: ${n - fails}/${n} checks`);
 process.exit(fails ? 1 : 0);

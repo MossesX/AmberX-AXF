@@ -11,9 +11,10 @@
  */
 import { DataStoreError } from '../core/data-store.mjs';
 import { remoteStore } from '../core/data-files.mjs';
+import { readText } from '../core/clip.mjs';
 
-let input = '';
-for await (const chunk of process.stdin) input += chunk;
+// decoded once: `input += chunk` split a multi-byte character at every 64 KB pipe boundary into U+FFFD (B4-01)
+const input = await readText(process.stdin);
 let req;
 try { req = JSON.parse(input); } catch { req = {}; }
 const out = (v) => process.stdout.write(`${JSON.stringify(v)}\n`);
