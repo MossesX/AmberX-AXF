@@ -3,7 +3,7 @@
  * Store transport and encoding (deep audit, repair part B). One check per finding; each fails when its fix is undone.
  *
  *   B4-01  a multi-byte character that straddles a chunk boundary stays whole: readText, data-call.mjs over a real
- *          pipe (a write far over 64 KB), serve.mjs request bodies, ref-links `run`; clip() never cuts an emoji in half;
+ *          pipe (a write far over 64 KB), serve.mjs request bodies (a plugin's stdin reader: its own test); clip() never cuts an emoji in half;
  *          the one-off repair puts lost characters back from the journal
  *   S5-01  a field this checkout's code does not know survives a read-change-write (store, build, step), and a
  *          checkout older than the store is refused
@@ -98,18 +98,8 @@ try {
     } finally { server.close(); }
   });
 
-  await t('B4-01 ref-links run: a big request on stdin keeps its characters', async () => {
-    const q = `nothing-called-this ${big(200 * 1024)}`;
-    const out = await run(join(ROOT, 'apps/console-web/plugins/ref-links/refs.mjs'), ['run'], JSON.stringify({ op: 'resolve', query: q }), { AXF_BUILDS_STORE: join(dir, 'refs-store.json') });
-    const r = JSON.parse(out.trim().split('\n').pop());
-    assert.ok(!JSON.stringify(r).includes(BAD), 'no U+FFFD in the answer');
-    if (r.query !== undefined) assert.ok(r.query === q, 'the query came through whole');
-  });
-
-  await t('B4-01 session-checkin and the test helpers read stdin as text, not chunk by chunk', () => {
-    const checkin = readFileSync(join(ROOT, 'apps/console-web/plugins/session-checkin/checkin.mjs'), 'utf8');
-    assert.ok(checkin.includes("process.stdin.setEncoding('utf8')"), 'checkin.mjs sets the stdin encoding before reading');
-    for (const f of ['framework/cli/data-call.mjs', 'apps/console-web/plugins/ref-links/refs.mjs', 'framework/spec/check-builds-store-data.mjs']) {
+  await t('B4-01 framework stdin readers decode once, never chunk by chunk', () => {
+    for (const f of ['framework/cli/data-call.mjs', 'framework/spec/check-builds-store-data.mjs']) {
       assert.ok(!/for await \(const \w+ of process\.stdin\) \w+ \+= \w+/.test(readFileSync(join(ROOT, f), 'utf8')), `${f}: no \`text += chunk\` on stdin`);
     }
   });
