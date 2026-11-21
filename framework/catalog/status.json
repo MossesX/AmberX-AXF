@@ -2287,7 +2287,7 @@
     "status": "built",
     "wave": 1,
     "module": "app-console",
-    "notes": "Build hand-build-lane-v2 (Nov 21 2026, Brett). apps/console-web/plugins/plan-studio-2/hand-build.mjs: Brett's signed-in console only (emergency-builds.mjs ownerFrom), model required from model-policy ALLOWED_MODELS, builds-store record first (source hand, running, planRef + item link), own cap of 2 from records + live tmux, worktree claude/<id> from /opt/axf, the whole item (nested bodies) as the brief, deploy/claude-headless.sh with a dispatch-gate token, AXF_SLOTS=off and AXF_BUILD_LIMIT=off. Plan Studio 2.0: Hand build button + right-click entry, model picker dialog, status chip, PR / Watch live / Log. REST + MCP + CLI (tree.mjs hand / hands / hand-log) through the same route. Tests in plan-studio-2/test.mjs. Host-only: no Kotlin twin."
+    "notes": "Build hand-build-lane-v2 (Nov 21 2026, Brett). Plan Studio 2.0's hand build module: Brett's signed-in console only (emergency-builds.mjs ownerFrom), model required from model-policy ALLOWED_MODELS, builds-store record first (source hand, running, planRef + item link), own cap of 2 from records + live tmux, worktree claude/<id> from /opt/axf, the whole item (nested bodies) as the brief, deploy/claude-headless.sh with a dispatch-gate token, AXF_SLOTS=off and AXF_BUILD_LIMIT=off. Console: Hand build button + right-click entry, model picker dialog, status chip, PR / Watch live / Log, Systems check item hand-build-launch. REST + MCP + CLI through the same route. Tests in the plugin's self-test. Host-only: no Kotlin twin."
   },
   "cx.buildengine.sectionowners": {
     "status": "built",
