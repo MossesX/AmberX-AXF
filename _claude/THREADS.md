@@ -840,48 +840,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 13:04 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 13:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 13:07 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 13:08 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
-- 2026-11-20 13:09 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
-- 2026-11-20 13:20 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 13:24 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 13:25 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
-- 2026-11-20 13:26 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
-- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr (all) · lander
-- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` PR 862 (all) · lander
-- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 13:32 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
-- 2026-11-20 13:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:33 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
-- 2026-11-20 13:37 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:41 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:49 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:53 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 13:56 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:00 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:01 UTC · `fable-full-audit-ui-overhaul-conso` → merging-main (all) · lander
-- 2026-11-20 14:01 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr (all) · lander
-- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` PR 863 (all) · lander
-- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
-- 2026-11-20 14:02 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
-- 2026-11-20 14:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:08 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:12 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:15 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:19 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:22 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` → failed (all) · lander
-- 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
-- 2026-11-20 14:25 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 14:26 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 14:29 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
-- 2026-11-20 14:30 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
-- 2026-11-20 14:31 UTC · `ci-speed-ci-failure-reports-lean` → split, note (all) · watchdog
-- 2026-11-20 14:41 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 - 2026-11-20 14:44 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 - 2026-11-20 14:45 UTC · `ci-speed-ci-failure-reports-lean` → failed, note (all) · watchdog
 - 2026-11-20 14:46 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
@@ -1240,6 +1198,48 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 23:05 UTC · `rip-out-plan-studio-1-keep-only-plan` → complete, note (all) · verify
 - 2026-11-21 23:05 UTC · `phone-connect-open-straight-phone-no-tap` note (all) · builds-live
 - 2026-11-21 23:05 UTC · `one-true-source-get-redundant-settings` note (all) · builds-live
+- 2026-11-21 23:06 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
+- 2026-11-21 23:06 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-21 23:07 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-21 23:11 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
+- 2026-11-21 23:15 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
+- 2026-11-21 23:15 UTC · `fable-rebuild-1-2-vps-host-services-move` note (all) · orchestrator
+- 2026-11-21 23:15 UTC · `pass-approval-hook-deep-link-amberx-notification` → queued, note (all) · watchdog
+- 2026-11-21 23:16 UTC · `pass-approval-hook-deep-link-amberx-notification` → running, note (all) · pipeline
+- 2026-11-21 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
+- 2026-11-21 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
+- 2026-11-21 23:21 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
+- 2026-11-21 23:25 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · watchdog
+- 2026-11-21 23:26 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
+- 2026-11-21 23:26 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
+- 2026-11-21 23:27 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-21 23:27 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-21 23:28 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:29 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
+- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
+- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · pipeline
+- 2026-11-21 23:29 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
+- 2026-11-21 23:30 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:31 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:32 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:33 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:34 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:35 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:35 UTC · `context-menus-plugin-one-true-source` s10 undone, → queued (all) · foreign-write
+- 2026-11-21 23:35 UTC · `group-chat-audio-hear-agents-talk-while` → queued, note (all) · watchdog
+- 2026-11-21 23:36 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
+- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
+- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-21 23:38 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
+- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · pipeline
+- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
+- 2026-11-21 23:38 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
+- 2026-11-21 23:41 UTC · `approval-rules-save-apply-default-don-t` → queued, note (all) · pipeline
+- 2026-11-21 23:45 UTC · `terminal-main-tab-streaming-console-s` → fixing, note (all) · watchdog
+- 2026-11-21 23:45 UTC · `rename-gate-rules-to-vps-configuration` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
