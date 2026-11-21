@@ -4,7 +4,7 @@
 // (the repo, the hub and the original Plan Studio are never read or written), the manifest and the plugin's web part.
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { chmodSync, existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as tc from './web/tree-core.mjs';
@@ -311,6 +311,111 @@ await t('page layouts: open registry, words resolve, nav is the default', () => 
     assert.equal(lc.closeTab(one, 'tree', ['tree']), one, 'the last open section stays');
     assert.equal(lc.dropZone(0.05, 0.5, false), 'left'); assert.equal(lc.dropZone(0.5, 0.5, false), 'centre'); assert.equal(lc.dropZone(0.5, 0.5, true), 'header');
   });
+}
+
+// ---------------------------------------------------------------- hand builds (hand-build@1, no dispatcher)
+{
+  const hd = mkdtempSync(join(tmpdir(), 'ps2-hand-'));
+  const repo = join(here, '../../../..');
+  // a fake launcher: records what the store and the emergency grants held at the moment of launch, and the pool its
+  // session would count in, then answers like deploy/claude-headless.sh
+  const launcher = join(hd, 'launcher.sh');
+  writeFileSync(launcher, `#!/usr/bin/env bash
+node --input-type=module -e '
+import { readFileSync, writeFileSync } from "node:fs";
+import { emergencyIds, poolOf } from "${repo}/framework/cli/build-limit.mjs";
+const store = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, "utf8"));
+const b = store.builds.find((x) => x.id === process.env.AXF_BUILD_ID);
+writeFileSync("launch-seen.json", JSON.stringify({ args: process.argv.slice(1), recorded: !!b && b.mode === "hand" && b.hand.state === "launching", model: process.env.AXF_MODEL,
+  token: !!process.env.AXF_DISPATCH_TOKEN, approver: process.env.AXF_APPROVER ?? "", pool: poolOf("axf-" + process.env.AXF_BUILD_ID + "--gina", emergencyIds()), brief: readFileSync(".brief.md", "utf8") }));
+' -- "$@"
+echo "started axf-$2--gina in $(pwd)"
+`);
+  chmodSync(launcher, 0o755);
+  const base = { ...process.env, AXF_PLAN_TREE_DIR: hd, AXF_BUILDS_STORE: join(hd, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILD_HOOKS: 'off', AXF_BUILDS_EXPORT: '0',
+    AXF_SLOTS_DIR: join(hd, 'slots'), AXF_DISPATCH_DIR: join(hd, 'dispatch'), AXF_HAND_WORKTREES: join(hd, 'wt'), AXF_HAND_WORKTREE_MODE: 'mkdir', AXF_HAND_LAUNCHER: launcher, AXF_HAND_LAUNCH: 'here' };
+  for (const k of ['AXF_APPROVER', 'AXF_APPROVER_VIA', 'CLAUDECODE', 'CLAUDE_CODE_ENTRYPOINT', 'AI_AGENT', 'AXF_SURFACE', 'AXF_SESSION', 'AXF_BUILD_ID', 'AXF_DISPATCH_TOKEN']) delete base[k];
+  const BRETT = { AXF_APPROVER: 'Brett', AXF_APPROVER_VIA: 'console' };
+  const run = (extra, ...a) => { try { return { ok: true, out: JSON.parse(execFileSync('node', [join(here, 'tree.mjs'), ...a, '--json'], { env: { ...base, ...extra }, encoding: 'utf8' }).trim().split('\n').pop()) }; } catch (e) { if (!e.stdout) throw e; return { ok: false, out: JSON.parse(String(e.stdout).trim().split('\n').pop()) }; } };
+  const store = () => (existsSync(join(hd, 'store.json')) ? JSON.parse(readFileSync(join(hd, 'store.json'), 'utf8')).builds : []);
+  const grants = () => { try { return JSON.parse(readFileSync(join(hd, 'slots', 'build-limit-emergency.json'), 'utf8')).builds.map((g) => g.id); } catch { return []; } };
+  run({}, 'add', 'plan', 'Hand lane', '--body', 'Top body: the whole job.');
+  run({}, 'add', 'section', 'Part one', '--in', 'Hand lane', '--body', 'Section body.');
+  run({}, 'add', 'step', 'Deep step', '--in', 'Part one', '--body', 'Nested body, two levels down.');
+  run({}, 'add', 'step', 'Second step', '--in', 'Hand lane', '--body', 'Last body.');
+
+  await t('hand build: console-only, refused before anything is written', () => {
+    for (const [who, extra] of [['the console token / MCP / CLI', {}], ['a Claude session', { ...BRETT, CLAUDECODE: '1' }], ['an axHub approval', { AXF_APPROVER: 'Brett', AXF_APPROVER_VIA: 'axhub' }], ['a headless run', { ...BRETT, AXF_SURFACE: 'headless' }]]) {
+      const r = run(extra, 'hand', 'Hand lane', '--model', 'Fable');
+      assert.equal(r.ok, false, `${who} is refused`); assert.equal(r.out.code, 'forbidden', who);
+    }
+    assert.equal(store().length, 0, 'no build record'); assert.deepEqual(grants(), [], 'no emergency grant');
+    const srv = readFileSync(join(here, 'server/__init__.py'), 'utf8');
+    assert.match(srv, /@router\.post\("\/hand"\)[\s\S]{0,800}who = brett_click\(request\)\s+if not who:\s+raise HTTPException\(403, HAND_ONLY_BRETT\)/, 'POST /hand refuses everyone but Brett\'s signed-in click');
+    assert.match(readFileSync(join(here, 'web/api.ts'), 'utf8'), /startHand = [^\n]*ownerPost<HandResult>\('hand'/, 'the page starts it with Brett\'s session, never the console token');
+    assert.match(readFileSync(join(here, 'web/ui.tsx'), 'utf8'), /onClick=\{start\}><span>/, 'the Start button is no console-control target');
+  });
+
+  await t('hand build: the model is picked every time (no default, never Sonnet)', () => {
+    for (const m of [[], ['--model', ''], ['--model', 'Sonnet'], ['--model', 'gpt']]) {
+      const r = run(BRETT, 'hand', 'Hand lane', ...m);
+      assert.equal(r.ok, false, `model ${JSON.stringify(m)} refused`); assert.equal(r.out.code, 'validation'); assert.match(r.out.error, /model/i);
+    }
+    assert.equal(store().length, 0, 'no record without a model');
+    const srv = readFileSync(join(here, 'server/__init__.py'), 'utf8');
+    assert.match(srv, /if not str\(body\.get\("model"\) or ""\)\.strip\(\):\s+raise HTTPException\(400/, 'the route refuses a missing model');
+  });
+
+  await t('hand build: record first (mode hand, emergency), then launch on the chosen model in one emergency slot', () => {
+    const r = run(BRETT, 'hand', 'Hand lane', '--model', 'Fable', '--id', 'hand-lane');
+    assert.equal(r.ok, true, JSON.stringify(r.out)); assert.equal(r.out.build.id, 'hand-lane'); assert.equal(r.out.launch.ok, true);
+    const seen = JSON.parse(readFileSync(join(hd, 'wt', 'hand-lane', 'launch-seen.json'), 'utf8'));
+    assert.equal(seen.recorded, true, 'the build record was in the store when the launcher ran');
+    assert.equal(seen.pool, 'emergency', 'its session counts in the emergency slot pool');
+    assert.equal(seen.token, true, 'it carries a one-build dispatch token, so the launch gate takes it');
+    assert.equal(seen.approver, '', 'the session never inherits Brett\'s approver variables');
+    assert.equal(seen.model, 'fable'); assert.ok(seen.args.includes('claude-fable-5-2'), 'launched on the chosen model');
+    const b = store().find((x) => x.id === 'hand-lane');
+    assert.equal(b.mode, 'hand'); assert.equal(b.status, 'running'); assert.equal(b.hand.model, 'Fable'); assert.equal(b.hand.by, 'Brett');
+    assert.ok(b.hand.emergency?.at, 'signed as emergency'); assert.equal(b.hand.state, 'launched'); assert.equal(b.hand.session, 'axf-hand-lane--gina');
+    assert.equal(b.branch, 'claude/hand-lane'); assert.ok(b.flow !== 'pipeline-2', 'never a Pipeline 2.0 build: the dispatcher never touches it');
+    assert.deepEqual(b.steps.map((x) => x.model), ['Fable'], 'one step, pinned to the chosen model');
+    assert.ok(grants().includes('hand-lane'), 'the emergency grant is on file');
+    const item = run({}, 'show', 'Hand lane').out.item;
+    assert.equal(b.planRef, item.id, 'linked to the plan item'); assert.ok(item.links.some((l) => l.type === 'build' && l.ref.endsWith(':hand-lane') && l.label.startsWith('Hand build: ')));
+    const again = run(BRETT, 'hand', 'Hand lane', '--model', 'Opus');
+    assert.equal(again.ok, false); assert.match(again.out.error, /already has an open hand build/);
+    const st = run({}, 'hand-status', 'Hand lane').out;
+    assert.equal(st.builds[0].live.state, 'launched'); assert.equal(st.builds[0].brief, undefined, 'readers never get the brief');
+    assert.deepEqual(st.models.map((m) => m.name), ['Fable', 'Opus'], 'the picker offers the live model policy');
+  });
+
+  await t('hand build: the brief is the whole item, every nested child with its body, in order, plus the rules', () => {
+    const brief = JSON.parse(readFileSync(join(hd, 'wt', 'hand-lane', 'launch-seen.json'), 'utf8')).brief;
+    const at = (x) => { const i = brief.indexOf(x); assert.ok(i >= 0, `the brief has "${x}"`); return i; };
+    const order = ['# Hand lane', 'Top body: the whole job.', '### Part one', 'Section body.', '#### Deep step', 'Nested body, two levels down.', '### Second step', 'Last body.', '## Rules'].map(at);
+    assert.deepEqual([...order].sort((a, b) => a - b), order, 'in tree order');
+    for (const r of ['Open a PR', 'CI must go green', 'Do not merge the PR yourself', 'Tests', 'Clean code']) at(r);
+    at('builds-live.mjs link hand-lane --branch claude/hand-lane');
+  });
+
+  await t('hand build: emergency grants stay while it is open (the dispatcher\'s sync never takes it back)', async () => {
+    const EB = await import('../../../../framework/cli/emergency-builds.mjs');
+    const open = { id: 'x', mode: 'hand', status: 'running', hand: { emergency: { at: '2026-11-21T00:00:00Z', by: 'Brett' }, state: 'launched', live: { state: 'pr' } } };
+    assert.equal(EB.isOpenHandEmergency(open), true);
+    assert.equal(EB.isOpenHandEmergency({ ...open, hand: { ...open.hand, live: { state: 'merged' } } }), false, 'merged: the grant goes');
+    assert.equal(EB.isOpenHandEmergency({ ...open, hand: { ...open.hand, state: 'failed' } }), false, 'a failed launch holds no slot');
+    assert.equal(EB.isOpenHandEmergency({ ...open, mode: '' }), false);
+    const HB = await import('../../../../framework/cli/hand-build.mjs');
+    const b = { hand: { state: 'launched', session: 'axf-x--a', live: { state: 'launched' } } };
+    assert.equal(HB.liveState(b, { alive: true }).state, 'building');
+    assert.deepEqual([HB.liveState(b, { alive: true, pr: { number: 9, state: 'open', ci: 'red' } })].map((l) => [l.state, l.pr, l.ci])[0], ['pr', 9, 'red']);
+    assert.equal(HB.liveState(b, { alive: false, pr: { number: 9, state: 'closed', merged: true, ci: 'green' } }).state, 'merged');
+    assert.equal(HB.ciOf([{ status: 'completed', conclusion: 'success' }, { status: 'in_progress' }]), 'pending');
+    assert.equal(HB.ciOf([{ status: 'completed', conclusion: 'failure' }]), 'red');
+    assert.equal(HB.ciOf([{ status: 'completed', conclusion: 'success' }]), 'green');
+  });
+  rmSync(hd, { recursive: true, force: true });
 }
 
 console.log(`plan-studio-2: ${n} checks passed`);

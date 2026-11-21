@@ -25,6 +25,11 @@
  *   … build <item> [--profile p] [--id build-id] [--preview]      send to the build orchestrator: must pass plan-build@1; ONE Pipeline 2.0
  *                                                                 build (flow pipeline-2, pending, its steps kept as planning) in the
  *                                                                 builds store; the orchestrator's splitting stage designs the build steps
+ *   … hand <item> --model Opus|Fable [--id build-id]              hand build (hand-build@1): the whole item to ONE build, recorded,
+ *                                                                 signed as emergency and launched on the VPS without the dispatcher.
+ *                                                                 Brett's signed-in console only (the CLI and MCP are refused); the
+ *                                                                 same through the server: `axf plan-studio-2 hand --id … --model …`
+ *   … hand-status <item>                                          the item's hand builds: launched, building, PR #, CI, merged
  *   … say "<spoken sentence>"                                     one voice command (what AmberX and the page's mic send)
  *   … clear --yes                                                 everything gone (the trash too)
  *   … api '<json {op,…}>'                                         what the server calls (also reads stdin)
@@ -44,6 +49,7 @@ import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { projectDataDir } from '../../../../framework/cli/projects.mjs';
 import { ownerFrom, sendToEmergency } from '../../../../framework/cli/emergency-builds.mjs';
+import * as HB from '../../../../framework/cli/hand-build.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -134,6 +140,61 @@ export function sendToBuild(state, ref, { profile = '', id = '', preview = false
   return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan, emergency: !!emergency };
 }
 
+/* ------------------------------------------------------------------ hand builds (hand-build@1, no dispatcher) */
+
+/** Every item under `id`, in tree order, with its depth below it (1 = a direct child), title, body and kind. */
+export function nestedOf(state, id, depth = 1, out = []) {
+  for (const c of tc.children(state, id)) {
+    out.push({ id: c.id, depth, title: c.title, body: c.body, kind: c.kind, done: tc.CHECKABLE.has(c.kind) && !!c.done });
+    nestedOf(state, c.id, depth + 1, out);
+  }
+  return out;
+}
+
+/** The brief of a hand build of this item: its title, full body and every nested child with its body, then the rules. */
+export function handBriefOf(state, ref, { id, model, by = 'Brett' }) {
+  const it = tc.resolve(state, ref);
+  if (!it) throw new tc.TreeError('not_found', `no item "${ref}"`);
+  return HB.handBrief({ id, model, by, item: { title: it.title, body: it.body }, children: nestedOf(state, it.id) });
+}
+
+/** The item's open hand build, or null (one at a time per item). */
+const openHand = (builds, itemId) => builds.find((b) => HB.isOpenHand(b) && b.planRef === itemId) ?? null;
+
+/**
+ * Hand build: the item (all of it) goes to ONE hand build on the model Brett picked, recorded in the builds store
+ * first, signed as emergency, then launched on the VPS without the dispatcher (framework/cli/hand-build.mjs). Brett's
+ * signed-in console only: who asks is read from `env` and checked before anything is written. No model, no build.
+ * The item gets a `build` link to it.
+ */
+export function startHand(state, ref, { model = '', id = '', profile = '', env = process.env, start = HB.startHandBuild } = {}) {
+  const who = ownerFrom(env);
+  if (!who.ok) throw new tc.TreeError('forbidden', who.why.replace('sends a build to emergency', 'starts a hand build'));
+  try { HB.requireHandModel(model); } catch (e) { throw new tc.TreeError('validation', e.message); }
+  const it = tc.resolve(state, ref);
+  if (!it) throw new tc.TreeError('not_found', `no item "${ref}"`);
+  const builds = BS.loadStore().builds;
+  const open = openHand(builds, it.id);
+  if (open) throw new tc.TreeError('validation', `"${it.title}" already has an open hand build: ${open.id} (${open.hand.live?.state ?? open.hand.state})`);
+  const taken = new Set(builds.flatMap((b) => [b.id, b.alias].filter(Boolean)));
+  const bid = id || buildId(it.title, taken);
+  if (id && taken.has(id)) throw new tc.TreeError('validation', `"${id}" is already a build: pick another build id`);
+  const prof = profile || activeProfile().id;
+  let r;
+  try {
+    r = start({ id: bid, title: it.title, brief: handBriefOf(state, it.id, { id: bid, model, by: who.by }), model, item: { id: it.id, title: it.title, path: tc.pathOf(state, it.id) }, source: FOLDER, profile: prof, env });
+  } catch (e) { if (e instanceof HB.HandRefused) throw new tc.TreeError(e.code === 3 ? 'forbidden' : 'validation', e.message); throw e; }
+  const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${bid}`, label: `Hand build: ${it.title}` });
+  return { ok: true, state: linked.state, build: { profile: prof, id: bid }, model: HB.status(bid)?.model ?? model, launch: r.launch };
+}
+
+/** The hand builds of an item (newest first), as readers see them (never the brief). */
+export function handOf(state, ref) {
+  const it = tc.resolve(state, ref);
+  if (!it) throw new tc.TreeError('not_found', `no item "${ref}"`);
+  return BS.loadStore().builds.filter((b) => HB.isHand(b) && !b.deleted && b.planRef === it.id).map(HB.view).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+}
+
 /* ------------------------------------------------------------------ one op → one change (the server, the CLI, voice) */
 
 const view = (s, it) => (it ? { ...it, path: tc.pathOf(s, it.id), depth: tc.depthOf(s, it.id), progress: tc.progress(s, it.id), children: tc.children(s, it.id).length } : null);
@@ -174,6 +235,10 @@ export function api(r, { by = '' } = {}) {
     case 'import': { const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
     case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
     case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
+    case 'hand': { const res = startHand(s, r.id, { model: r.model, id: r.buildId, profile: r.profile }); const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, model: res.model, launch: res.launch, say: `Hand build ${res.build.id} recorded on ${res.model}${res.launch?.pending ? ': the VPS launches it in a few seconds' : res.launch?.ok ? `, launched ${res.launch.session || '(waiting for its emergency slot)'}` : `, but it did not launch: ${res.launch?.error}`}.` }; }
+    case 'hand-status': { const builds = handOf(s, r.id); return { ok: true, builds, models: HB.modelChoices() }; }
+    case 'hand-models': return { ok: true, models: HB.modelChoices() };
+    case 'hand-log': { try { return HB.logTail(r.build, { lines: r.lines }); } catch (e) { throw new tc.TreeError('not_found', e.message); } }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };
@@ -234,10 +299,12 @@ export async function main(argv = process.argv.slice(2)) {
       case 'import': { const data = JSON.parse(readFileSync(a[0] === '-' ? 0 : a[0], 'utf8')); return out(api({ op: 'import', data, parent: flags.in }), 'imported'); }
       case 'validate': { const r = api({ op: 'validate', id: a[0], buildId: flags.id, said: flags.said }); if (!r.ok) process.exitCode = 1; return out(r, r.ok ? `ok: plan-build@1, build id ${r.plan.id}, ${r.plan.steps.length} planning steps` : `not valid (plan-build@1):\n${r.errors.map((e) => `  ${e.path}: ${e.why}`).join('\n')}`); }
       case 'build': { const r = api({ op: 'build', id: a[0], profile: flags.profile, buildId: flags.id, preview: !!flags.preview, said: flags.said }); return out(r, r.preview ? `preview: build ${r.build.id} (${r.change.steps.length} steps, ${r.minutes} min)\n${r.change.steps.map((s) => `  - ${s.text} [${s.model}${s.estimate ? `, ${s.estimate}` : ''}]`).join('\n')}` : r.say); }
+      case 'hand': { const r = api({ op: 'hand', id: a[0], model: flags.model === true ? '' : flags.model, buildId: flags.id }); return out(r, r.say); }
+      case 'hand-status': { const r = api({ op: 'hand-status', id: a[0] }); return out(r, r.builds.map((b) => `${b.id} · ${b.live.state}${b.live.pr ? ` · PR #${b.live.pr}${b.live.ci ? ` CI ${b.live.ci}` : ''}` : ''} · ${b.model}`).join('\n') || 'no hand builds on this item'); }
       case 'say': { const r = api({ op: 'say', text: a.join(' ') }); return out(r, r.say); }
       case 'clear': { if (!flags.yes) throw new tc.TreeError('confirm', 'add --yes to clear everything'); return out(api({ op: 'clear', yes: true }), 'cleared'); }
       case 'api': { const raw = a[0] ?? readFileSync(0, 'utf8'); const r = api(JSON.parse(raw)); return console.log(JSON.stringify(r)); }
-      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|say|clear|api|where'); process.exitCode = 2;
+      default: console.error('usage: tree.mjs tree|list|show|find|add|rename|edit|move|up|down|indent|outdent|duplicate|delete|undo|trash|link|unlink|collapse|expand|export|import|build|hand|hand-status|say|clear|api|where'); process.exitCode = 2;
     }
   } catch (e) {
     const err = { ok: false, error: e.message, code: e.code ?? 'error' };

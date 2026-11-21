@@ -2283,6 +2283,12 @@
     "module": "app-console",
     "notes": "Build emergency-slots (Nov 20 2026, Brett). build-limit.mjs + agent-slots.mjs: a second pool (emergencySlots, default 2) counted apart from maxBuilds; a session is in it when its build holds an emergency grant (owner only). framework/cli/emergency-builds.mjs: send only with Brett's signed-in console click (AXF_APPROVER via console); sessions, agents, the console token, MCP and voice refused. pipeline-status.mjs: emergency tag, activeBuild leaves it out, emergencyBuilds; pipeline2.mjs emergency lane. Lander: emergency builds first; before any merge a head without main's newest code pulls main, conflicts go to Fable, CI runs again. Console: Send to emergency in Plan Studio 2.0 and the builds table, Emergency badge, Agent cap shows and sizes the pool. Tests: check-build-limit, check-agent-slots, check-pipeline-2, test/emergency.test.mjs, server/test_emergency.py, deploy/lander/test. Kotlin twin deferred (PORTING.md)."
   },
+  "cx.buildengine.handbuild": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build hand-build-lane (Nov 21 2026, Brett). framework/cli/hand-build.mjs: Brett's signed-in console only (emergency-builds ownerFrom), model required from the live model policy (no default), the build record (mode hand, status running, one step on the model, hand block with the brief) written before anything launches, emergency grant (one emergency slot), dispatch token so the launch gate takes it, worktree from /opt/axf on claude/<id> and deploy/claude-headless.sh in tmux; the console container leaves the launch to the host timer (deploy/install-hand-build.sh, every 10 s), which also keeps live state (launched, building, PR #, CI, merged). emergency-builds.mjs keeps an open hand build's grant. Plan Studio 2.0: Hand build button, right-click entry, model picker dialog, live status and log on the item; POST /hand, GET /hand, GET /hand/log (REST, MCP, axf CLI). Tests: plan-studio-2/test.mjs. Host-only: no Kotlin twin."
+  },
   "cx.buildengine.sectionowners": {
     "status": "built",
     "wave": 1,

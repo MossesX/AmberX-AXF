@@ -34,6 +34,9 @@ _claude/builds/store.json.tmp-*
 
 # Per-build Claude login copies (deploy/claude-login.mjs): private, deleted when the build ends, never committed
 .axf-claude/
+# Hand builds (framework/cli/hand-build.mjs): the launch record and the GitHub check mark in each worktree
+/.axf-hand-build.json
+/.axf-hand-checked
 _claude/builds/store.json.live-outbox.jsonl*
 _claude/builds/store.json.live.json
 

@@ -4,7 +4,7 @@
  * tree is reloaded; collapse toggles apply locally first so folding feels instant.
  */
 import { useEffect, useSyncExternalStore } from 'react';
-import { pluginApi } from '@console/plugins';
+import { ownerFetch, pluginApi } from '@console/plugins';
 import * as tc from './tree-core.mjs';
 import type { Item, Link, State } from './tree-core.mjs';
 
@@ -14,7 +14,7 @@ export const ID = 'ai.amberx.axf.console.plan-studio-2';
 export const CTX_TARGET = 'axp-plan-studio-2-item';
 export const DND_ZONE = 'axp-plan-studio-2';
 export const TOP = '__top__';
-export const DIALOGS = { item: 'plan-studio-2.item', move: 'plan-studio-2.move', link: 'plan-studio-2.link', build: 'plan-studio-2.build' } as const;
+export const DIALOGS = { item: 'plan-studio-2.item', move: 'plan-studio-2.move', link: 'plan-studio-2.link', build: 'plan-studio-2.build', hand: 'plan-studio-2.hand', handLog: 'plan-studio-2.hand-log' } as const;
 export const KEYS = {
   showDone: 'plan-studio-2.showDone', voiceLang: 'plan-studio-2.voiceLang', voiceOut: 'plan-studio-2.voiceOut', defaultModel: 'plan-studio-2.defaultModel', meta: 'plan-studio-2.meta',
   pageLayout: 'plan-studio-2.pageLayout', dock: 'plan-studio-2.dock', tab: 'plan-studio-2.tab',
@@ -60,7 +60,7 @@ export const tookFocus = () => set({ focus: null });
 
 /* ---------------------------------------------------------------- writes */
 
-type Op = 'add' | 'rename' | 'edit' | 'move' | 'nudge' | 'indent' | 'outdent' | 'duplicate' | 'undo' | 'link' | 'unlink' | 'collapse' | 'import' | 'build' | 'emergency' | 'say';
+type Op = 'add' | 'rename' | 'edit' | 'move' | 'nudge' | 'indent' | 'outdent' | 'duplicate' | 'undo' | 'link' | 'unlink' | 'collapse' | 'import' | 'build' | 'emergency' | 'hand' | 'say';
 async function post(op: Op, body: Record<string, unknown>, { quiet = false } = {}): Promise<OpResult> {
   set({ busy: true });
   try {
@@ -82,8 +82,45 @@ export const linkItem = (id: string, l: Partial<Link>) => post('link', { id, ...
 export const unlinkItem = (id: string, l: { type: string; ref: string }) => post('unlink', { id, ...l });
 export const importItems = (data: unknown, parent: string | null) => post('import', { data, parent });
 export const sendToBuild = (id: string, o: { preview?: boolean; buildId?: string; said?: string } = {}) => post('build', { id, ...o }, { quiet: !!o.preview }) as Promise<OpResult | BuildPreview>;
+/**
+ * An owner-only write (Send to emergency, Hand build): Brett's signed-in session, never the console token, so the
+ * server's console-only check can see him (ownerFetch). Then the tree reloads, like every other write.
+ */
+async function ownerPost<T extends OpResult>(op: Op, body: Record<string, unknown>): Promise<T> {
+  set({ busy: true });
+  try {
+    const r = await ownerFetch(FOLDER, op, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = (await r.json().catch(() => ({}))) as T & { detail?: string };
+    await reload();
+    return r.ok ? j : ({ ...j, ok: false, error: String(j.detail ?? j.error ?? `refused (${r.status})`) } as T);
+  } finally { set({ busy: false }); }
+}
 /** Send as an emergency build: the server takes it from Brett's own signed-in console only (403 otherwise). */
-export const sendToEmergency = (id: string, o: { buildId?: string; said?: string } = {}) => post('emergency', { id, ...o });
+export const sendToEmergency = (id: string, o: { buildId?: string; said?: string } = {}) => ownerPost('emergency', { id, ...o });
+/* ---------------------------------------------------------------- hand builds (hand-build@1, no dispatcher) */
+
+/** A model the hand build picker offers (the live model policy). */
+export interface HandModel { key: string; name: string; label: string; id: string }
+/** What the item shows of one hand build: launched → building → PR # → CI → merged. */
+export type HandLiveState = 'recorded' | 'launched' | 'building' | 'ended' | 'pr' | 'merged' | 'closed' | 'failed';
+export interface HandBuild {
+  id: string; title: string; model: string; by: string; at: string; status: string; branch: string; pr: string; session: string; log: string; error: string;
+  emergency: { at: string; by: string } | null;
+  live: { state: HandLiveState; at?: string; pr?: number; ci?: '' | 'pending' | 'green' | 'red'; url?: string; why?: string };
+}
+export interface HandStatus { ok: boolean; builds: HandBuild[]; models: HandModel[]; canStart: boolean; error?: string }
+export interface HandResult extends OpResult { model?: string; launch?: { ok?: boolean; pending?: boolean; session?: string; error?: string } }
+/** Start a hand build: the server takes it from Brett's own signed-in console only (403 otherwise); `model` is required. */
+export const startHand = (id: string, model: string, buildId = '') => ownerPost<HandResult>('hand', { id, model, ...(buildId ? { buildId } : {}) });
+/** Read with Brett's session too, so `canStart` says whether this page may start one. */
+export async function handStatus(id: string): Promise<HandStatus> {
+  const r = await ownerFetch(FOLDER, `hand?id=${encodeURIComponent(id)}`);
+  const j = (await r.json().catch(() => ({}))) as HandStatus & { detail?: string };
+  if (!r.ok) throw new Error(String(j.detail ?? `Plan Studio 2.0 refused (${r.status})`));
+  return j;
+}
+export const handLog = (build: string, lines = 200) => api.call<{ ok: boolean; lines: string[]; log: string; why?: string; error?: string }>(`hand/log?build=${encodeURIComponent(build)}&lines=${lines}`);
+
 export const sayCommand = (text: string) => post('say', { text });
 export async function deleteItem(id: string): Promise<OpResult> {
   set({ busy: true });
