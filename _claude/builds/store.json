@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10193,
- "updatedAt": "2026-11-20T23:52:58.846Z",
+ "rev": 10194,
+ "updatedAt": "2026-11-21T00:07:23.201Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -35201,7 +35201,7 @@
      "id": "s7",
      "uid": "st-8vwk3v",
      "title": "",
-     "text": "Window engine: snapping ��� screen edges, half/quarter snap zones, window-to-window snap, no-overlap option, drop a window on another to split; fixture",
+     "text": "Window engine: snapping — screen edges, half/quarter snap zones, window-to-window snap, no-overlap option, drop a window on another to split; fixture",
      "model": "Fable",
      "why": "",
      "phase": "Windows + levels",
@@ -35215,9 +35215,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 5,
+     "rev": 6,
      "createdAt": "2026-10-31T23:41:15.585Z",
-     "updatedAt": "2026-11-07T10:46:39.420Z"
+     "updatedAt": "2026-11-21T00:07:19.536Z"
     },
     {
      "id": "s8",
@@ -35334,11 +35334,11 @@
     "all"
    ],
    "order": {
-    "all": 314
+    "all": 312
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
