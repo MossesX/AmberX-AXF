@@ -45,6 +45,16 @@ ID = "0123abcd-0123-4abc-8def-0123456789ab"
 EXPIRED = "0123abcd-0123-4abc-8def-0000000000e0"
 DECIDED = "0123abcd-0123-4abc-8def-0000000000d0"
 seen: list[httpx.Request] = []
+HELD = "0123abcd-0123-4abc-8def-00000000be1d"
+# What the hub's approvals feed answers (lib-hub HUB_PATHS.feed): one plain approval, one held veto call (listed twice,
+# as the hub does), one entry with a bad id.
+FEED = {"signedIn": True, "admin": True, "count": 2, "pending": [
+    {"id": ID, "tool": "github.merge_pr", "title": "Merge PR 870\u0007", "summary": "x" * 900, "status": "pending", "actions": ["approve", "decline", "postpone"], "revision": 4,
+     "createdAt": "2026-11-21T10:00:00Z", "expiresAt": "2026-11-21T11:00:00Z"},
+    {"id": HELD, "tool": "vps.run", "title": "Restart the console", "summary": "docker restart axf-console", "status": "held", "revision": 2,
+     "veto": {"runsAt": "2026-11-21T10:01:30Z", "secondsLeft": 61.4, "countdownSeconds": 90, "actions": ["deny", "approve-now", "shelve", "nuke"]}},
+    {"id": "../../evil", "tool": "x"}, "junk"],
+    "held": [{"id": HELD, "tool": "vps.run", "status": "held", "veto": {"secondsLeft": 61}}]}
 # The owner account the console signs in with (AXF_HUB_RELAY_USER / _PASSWORD) and the sessions the hub takes now.
 hub_state = {"sessions": {"good"}, "signins": 0, "first": False, "busy": False}
 
@@ -69,6 +79,8 @@ def hub(req: httpx.Request) -> httpx.Response:
         return httpx.Response(401, json={"signedIn": False})
     if req.url.path == "/auth/api/session":
         return httpx.Response(200, json={"csrf": "c" * 12})
+    if req.url.path == "/auth/admin/approvals.json":
+        return httpx.Response(200, json=FEED)
     if req.headers.get("origin") != "https://hub.example.test" or req.headers.get("x-axhub-csrf") != "c" * 12:
         return httpx.Response(403, json={"error": {"code": "denied", "message": "Only from the hub's own pages."}})
     if EXPIRED in req.url.path:
@@ -266,6 +278,32 @@ srv.OWNER.cookie = ""
 srv.httpx.Client = lambda **kw: real_client(transport=httpx.MockTransport(down), **kw)
 r = tap({"id": ID, "action": "approve"}, None).json()
 ok(r["ok"] is False and r["code"] == "unreachable" and "Nothing was decided" in r["message"], f"owner path, hub down {r}")
+
+# approvals-relay@1 pending(): what waits on the hub, read with the owner sign-in (Phone Connect's watcher shows it on the phone)
+srv.httpx.Client = HubClient
+srv.OWNER.cookie = ""
+n = len(seen)
+p = srv.PhoneTapRelay().pending("brett")
+ok(p["ok"] and [i["id"] for i in p["items"]] == [ID, HELD], f"pending: the two real entries, once each {p}")
+a, v = p["items"]
+ok(a["kind"] == "approval" and a["actions"] == ["approve", "decline"] and a["rev"] == 4 and a["title"] == "Merge PR 870" and len(a["summary"]) == 600, f"pending: a plain approval, capped and cleaned {a}")
+ok(v["kind"] == "veto" and v["secondsLeft"] == 61 and v["actions"] == ["deny", "approve-now", "shelve"] and v["shelved"] is False, f"pending: a held call with its countdown and actions {v}")
+feed_calls = [r for r in seen[n:] if r.url.path == "/auth/admin/approvals.json"]
+ok(len(feed_calls) == 1 and feed_calls[0].method == "GET", "pending: one GET of the feed, nothing posted")
+ok(not any(r.method == "POST" and "/approvals" in r.url.path for r in seen[n:]), "pending never decides")
+hub_state["sessions"].clear()
+p = srv.PhoneTapRelay().pending("brett")
+ok(p["ok"] and hub_state["signins"] >= 1, "pending: a session the hub dropped is signed in again")
+os.environ["AXF_HUB_RELAY_OWNERS"] = "someone-else"
+ok(srv.PhoneTapRelay().pending("brett")["code"] == "no_credential", "pending: only for a named owner's phone")
+del os.environ["AXF_HUB_RELAY_OWNERS"]
+srv.httpx.Client = lambda **kw: real_client(transport=httpx.MockTransport(down), **kw)
+srv.OWNER.cookie = ""
+ok(srv.PhoneTapRelay().pending("brett")["code"] == "unreachable", "pending: hub down says so")
+user_env = os.environ.pop("AXF_HUB_RELAY_USER")
+ok(srv.PhoneTapRelay().pending("brett")["code"] == "no_credential", "pending: nothing without the owner sign-in")
+os.environ["AXF_HUB_RELAY_USER"] = user_env
+ok(not any(getattr(rt, "path", "").endswith(("pending", "feed")) for rt in srv.router.routes), "pending is not a route")
 
 log = (Path(DATA) / "relay.jsonl").read_text()
 ok("s3cret" not in log and "owner1" not in log, "neither the password nor the owner session reaches the log")
