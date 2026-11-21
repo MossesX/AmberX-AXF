@@ -30,14 +30,63 @@
       "apps/console-web/plugins/README.md"
     ]
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true, "items": [
-    { "route": "GET /config", "id": "config", "title": "Status styles: saved styles and own presets", "readOnly": true },
-    { "route": "PUT /config", "id": "set-config", "title": "Status styles: save the style of each status" },
-    { "route": "GET /presets", "id": "presets", "title": "Status styles: own presets", "readOnly": true },
-    { "route": "POST /presets", "id": "save-preset", "title": "Status styles: save an own preset" }
-  ] },
-  "tokens": { "$axf": "token-registry@1", "uses": [], "defines": [] },
-  "builtWith": { "model": "fable", "builtAt": "2026-11-21" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /config",
+        "id": "config",
+        "title": "Status styles: saved styles and own presets",
+        "readOnly": true,
+        "description": "Reads what is saved over the shipped status styles (the switches and each changed status's row preset, badge preset and animated flag) together with your own presets."
+      },
+      {
+        "route": "PUT /config",
+        "id": "set-config",
+        "title": "Status styles: save the style of each status",
+        "description": "Saves the switches and the style picked for each status: its row preset, badge preset and whether its badge is animated. Send {\"reset\": true} to go back to the shipped styles."
+      },
+      {
+        "route": "GET /presets",
+        "id": "presets",
+        "title": "Status styles: own presets",
+        "readOnly": true,
+        "description": "Lists the presets you made and saved, and how many built-in presets ship with the plugin."
+      },
+      {
+        "route": "POST /presets",
+        "id": "save-preset",
+        "title": "Status styles: save an own preset",
+        "description": "Saves one of your own presets (effect, colour, speed, strength, direction and still look); saving again under the same id replaces it. Built-in presets cannot be overwritten."
+      },
+      {
+        "route": "DELETE /presets/{preset_id}",
+        "id": "delete-preset",
+        "title": "Status styles: remove an own preset",
+        "description": "Removes one of your own presets by id. Statuses still using it go back to no style."
+      }
+    ]
+  },
+  "tokens": {
+    "$axf": "token-registry@1",
+    "uses": [
+      "--fx-anim-sweep-dur",
+      "--fx-border",
+      "--fx-border-w",
+      "--fx-dens-gap-md",
+      "--fx-dens-gap-sm",
+      "--fx-dens-gap-xl",
+      "--fx-radius-md",
+      "--fx-space",
+      "--fx-surface"
+    ],
+    "defines": []
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-21"
+  },
   "help": "help.json",
   "opens": false
 }
