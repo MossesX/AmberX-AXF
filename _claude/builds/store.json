@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10194,
- "updatedAt": "2026-11-21T00:07:23.201Z",
+ "rev": 10195,
+ "updatedAt": "2026-11-21T00:08:16.188Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -34747,11 +34747,11 @@
     "all"
    ],
    "order": {
-    "all": 312
+    "all": 313
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -34987,11 +34987,11 @@
     "all"
    ],
    "order": {
-    "all": 313
+    "all": 314
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:52:55.208Z",
+   "updatedAt": "2026-11-21T00:08:11.808Z",
    "builtAt": "",
    "notes": [
     {
@@ -345065,12 +345065,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-21T00:08:11.808Z",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:57:42.829Z",
+     "updatedAt": "2026-11-21T00:08:12.194Z",
      "statusAt": "2026-11-20T22:57:42.780Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -345309,7 +345309,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 100,
+   "rev": 101,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
