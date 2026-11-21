@@ -47,6 +47,8 @@ export const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES |
 let orchTickCmd = '';
 orchTickCmd = 'node apps/console-web/plugins/build-orchestrator/orchestrator.mjs tick'; // axf-plugin:build-orchestrator
 export const DEFAULT_TICK = orchTickCmd;
+/** The hand retry of a given-up build (the orchestrator's CLI, next to its tick): the one way on once the attempts are used up. */
+export const retryCommand = (build) => (DEFAULT_TICK ? `${DEFAULT_TICK.replace(/ tick$/, '')} retry ${build}` : '');
 /** The lander's statuses are nudged with one lander tick for that build (deploy/lander/run.mjs, under its own lock). */
 export const DEFAULT_LANDER_TICK = 'node deploy/lander/run.mjs tick';
 
@@ -210,7 +212,7 @@ export async function run({ env = process.env, now = Date.now() } = {}) {
   }
   // the one page: attempts used up
   for (const a of actions.filter((x) => x.action === 'give-up')) {
-    sendAlert({ source: C.BY, key: `watchdog:gave-up:${a.build}:${a.step}`, severity: 'error', title: `Watchdog could not heal ${a.build}${a.step ? ` / ${a.step}` : ''}`, body: `${a.note}\nFix: look at the build's notes; \`node deploy/watchdog/layer2.mjs scan\` shows what the watchdog sees.`, link: 'build-orchestrator.focus:watchdog', meta: { build: a.build, step: a.step } }, env);
+    sendAlert({ source: C.BY, key: `watchdog:gave-up:${a.build}:${a.step}`, severity: 'error', title: `Watchdog could not heal ${a.build}${a.step ? ` / ${a.step}` : ''}`, body: `${a.note}\nIt stays failed until you retry it: the attempts are used up and the status contract refuses every other move.\nFix: read the build's notes for why it failed, then ${retryCommand(a.build) ? `\`${retryCommand(a.build)}\` (or Retry in the console)` : 'retry it'}: the build and its failed steps start again with fresh attempt counts. \`node deploy/watchdog/layer2.mjs scan\` shows what the watchdog sees.`, link: 'build-orchestrator.focus:watchdog', meta: { build: a.build, step: a.step } }, env);
   }
   // the watchers watch each other: a layer-3 heartbeat older than 10 min restarts its timer
   const l3 = readJson(join(f.dir, 'l3-heartbeat.json'), null);
