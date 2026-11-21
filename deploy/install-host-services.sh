@@ -23,6 +23,7 @@
 #   5. writes /etc/sudoers.d/axf-host from the manifests (gen-sudoers.mjs, checked with visudo -c)
 #   6. daemon-reload, enable --now (host-api first, then the cut-over order); every service starts in the mode the mode
 #      file gives it (container by default: installed and idle until the migration moves it)
+# Env: AXF_HOST_STATE (where the units see their state folder, default /var/lib/axf-host/data),
 # Env: DIR (checkout, default this repo), AXF_HOST_DATA (shared data folder; default the axhub-projects volume's
 #      amberx-axf/_data, else $DIR/_data), AXF_HOST_PREFIX (root for written files, tests), AXF_SYSTEMD_DIR.
 set -euo pipefail
@@ -74,6 +75,7 @@ if [ -z "${AXF_HOST_DATA:-}" ]; then
   MP=""; [ -n "$VOL" ] && MP="$(docker volume inspect -f '{{.Mountpoint}}' "$VOL" 2>/dev/null || true)"
   if [ -n "$MP" ] && [ -d "$MP/amberx-axf/_data" ]; then AXF_HOST_DATA="$MP/amberx-axf/_data"; else AXF_HOST_DATA="$DIR/_data"; fi
 fi
+AXF_HOST_STATE="${AXF_HOST_STATE:-/var/lib/axf-host/data}"
 say "checkout $DIR, data $AXF_HOST_DATA${DRY:+ (dry run, files under $PREFIX)}"
 
 # ---- uninstall
@@ -111,6 +113,10 @@ DATA_GID="$(stat -c %g "$AXF_HOST_DATA" 2>/dev/null || echo 0)"
 run mkdir -p "$AXF_HOST_DATA/host-services"
 run chown axf-host:axf-host "$AXF_HOST_DATA/host-services"
 run chmod 2775 "$AXF_HOST_DATA/host-services"
+# Where the units see that folder (bound by systemd: axf-host cannot walk into a Docker volume by its real path).
+run mkdir -p "$AXF_HOST_STATE/host-services"
+run chown axf-host:axf-host "$AXF_HOST_STATE"
+run chmod 750 "$AXF_HOST_STATE"
 
 # ---- 3. env files (token kept across runs)
 mkdir -p "$ETC"
@@ -130,7 +136,7 @@ ENABLE=()
 while IFS=$'\t' read -r id unit nnp render _kind; do
   [ -n "$id" ] || continue
   if [ "$render" = yes ]; then
-    sed -e "s|%i|$id|g" -e "s|@DIR@|$DIR|g" -e "s|@DATA@|$AXF_HOST_DATA|g" -e "s|@NNP@|$nnp|g" "$TEMPLATE" > "$UNITS/$unit"
+    sed -e "s|%i|$id|g" -e "s|@DIR@|$DIR|g" -e "s|@DATA@|$AXF_HOST_DATA|g" -e "s|@STATE@|$AXF_HOST_STATE|g" -e "s|@NNP@|$nnp|g" "$TEMPLATE" > "$UNITS/$unit"
     chmod 644 "$UNITS/$unit"
     grep -q '@[A-Z]*@' "$UNITS/$unit" && { echo "$unit: placeholder left" >&2; exit 1; }
     ENABLE+=("$unit")
@@ -148,7 +154,8 @@ node "$DIR/deploy/host-services/gen-sudoers.mjs" ${ONLY:+--only "$ONLY"} --root 
 
 # ---- 6. start
 run systemctl daemon-reload
-for u in "${ENABLE[@]}"; do run systemctl enable --now "$u"; run systemctl restart "$u"; done
+# reset-failed first: a unit that hit its start limit refuses a restart until the limit is cleared
+for u in "${ENABLE[@]}"; do run systemctl reset-failed "$u" || true; run systemctl enable --now "$u"; run systemctl restart "$u"; done
 [ -z "$DRY" ] && axf_deploy_log "$AXF_HOST_DATA/deploys/deploy-log.jsonl" "host:services" "$(git -C "$DIR" rev-parse HEAD 2>/dev/null || echo 0)" >/dev/null 2>&1 || true
 say "installed ${#ENABLE[@]} unit(s): ${ENABLE[*]}"
 say "status: node $DIR/framework/cli/host-services.mjs list   (or the console: Settings → Plugins → Host services)"

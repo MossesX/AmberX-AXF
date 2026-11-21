@@ -332,7 +332,7 @@ export function manifestErrors(m, path = 'manifest') {
   if (m.kind === 'tick' && m.socket !== undefined) e('socket', 'a tick serves no socket');
   if (m.kind === 'daemon' && m.timer !== undefined) e('timer', 'a daemon has no timer');
   if (typeof m.plugin !== 'string' || !re(PLUGIN_PATTERN).test(m.plugin)) e('plugin', 'the owning plugin folder, or console');
-  if (!(m.adopted === true && m.runner === undefined) && (typeof m.runner !== 'string' || !m.runner || m.runner.length > 200 || m.runner.startsWith('/') || m.runner.includes('..'))) e('runner', 'repo-relative path (deploy/<service>/…); only an adopted schedule may leave it out');
+  if (!(m.adopted === true && (m.runner === undefined || m.runner === '')) && (typeof m.runner !== 'string' || !m.runner || m.runner.length > 200 || m.runner.startsWith('/') || m.runner.includes('..'))) e('runner', 'repo-relative path (deploy/<service>/…); only an adopted schedule may leave it out');
   if (m.user !== undefined && (typeof m.user !== 'string' || !/^[a-z_][a-z0-9_-]{0,31}$/.test(m.user))) e('user', 'a unix account name');
   if (m.user === 'root') e('user', 'never root: the sudo whitelist is the only way up');
   if (m.socket !== undefined && (typeof m.socket !== 'string' || !re(PATH_PATTERN).test(m.socket) || !m.socket.startsWith(`${DEFAULTS.socketDir}/`))) e('socket', `an absolute path under ${DEFAULTS.socketDir}/`);
