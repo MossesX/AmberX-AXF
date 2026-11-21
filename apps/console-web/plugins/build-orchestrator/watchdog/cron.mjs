@@ -26,7 +26,9 @@ export const render = (dir = runDir()) => readFileSync(TEMPLATE, 'utf8').replace
 export function status() {
   const f = cronFile();
   const text = existsSync(f) ? readFileSync(f, 'utf8') : '';
-  return { file: f, installed: !!text, current: !!text && text === render(), dir: runDir() };
+  // the deploy script writes the schedule line alone, the plugin installer the whole template: the same schedule either way
+  const lines = (t) => t.split('\n').map((l) => l.trim()).filter((l) => l && !l.startsWith('#')).join('\n');
+  return { file: f, installed: !!text, current: !!text && lines(text) === lines(render()), dir: runDir() };
 }
 
 export function install({ force = false } = {}) {

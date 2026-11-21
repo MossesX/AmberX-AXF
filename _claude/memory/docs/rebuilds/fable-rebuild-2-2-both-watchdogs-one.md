@@ -90,6 +90,9 @@ Build report: `_claude/builds/reports/fable-rebuild-2-2-both-watchdogs-one.md`.
 
 ## Known gaps
 
+- Found and fixed the day it went live (follow-up PR): a merged build was failed while main's own CI was still
+  running (it now waits for main's result), and staleness was judged on the last pass instead of a per-minute heartbeat.
+
 - `ladder` and `escalate` are covered through the decision table and fake appliers, not against a real launcher.
 - `merging` is watched but no builds@1 writer sets it today; it is there for the flow that does.
 - A `landing` build whose PR is open gets a `stalled` failure rather than a lander nudge: the builds@1 lander has no

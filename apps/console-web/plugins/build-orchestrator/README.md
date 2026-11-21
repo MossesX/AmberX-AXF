@@ -87,7 +87,8 @@ build's last real progress (a failure recorded, an attempt, a ticked step, a lau
 | its PR merged and the build never heard | `record-merge`: `mergedAt` + the merge commit on the build, a failure from before the merge cleared, status `landing` |
 | merged, CI green on the merge commit | `land`: `landed.ci = success`, status `landed` (through `guardStatus`) |
 | merged, CI on the merge commit red, cancelled or missing, but main green now with the merge in it | `land`, with `landed.ciRun = main@<sha>` naming the proof |
-| merged, CI red on the merge commit and main not green | `fail`: a `ci-red` failure at the merge commit, status `fixing` |
+| merged, CI red on the merge commit and main red too (or the merge commit is main's newest) | `fail`: a `ci-red` failure at the merge commit, status `fixing` |
+| merged, CI on the merge commit not green, CI on main's newest commit still running or unreadable | wait: main's result decides |
 | merged, CI still running or none | wait `ciWaitMin`, then `escalate` |
 | `fixing` with a failure and nothing tried | `ladder`: the retry ladder's next rung, launched now (`pipeline.mjs retryFixing`) |
 | `fixing`, the ladder ran out | `escalate`: status `escalated`, banner item, one push |
@@ -104,12 +105,13 @@ alerts) and each watch's own under `<watch>.<key>`: `sessions.staleMin`, `sessio
 (90), `stale.limit.fixing` (60), `stale.limit.merging` (30), `stale.ciWaitMin`, `stale.cooldownMin`,
 `stale.maxLaunchPerPass`, `rows.intervalMin`, … Each watch stores its own where it always did.
 
-**Files** (the pipeline folder, shared with the console): `watchdogs.json` (last pass, each watch's last run),
+**Files** (the pipeline folder, shared with the console): `watchdogs.json` (`lastTick`, the heartbeat of every cron
+minute; `lastPass`, the last time a watch ran; each watch's last run),
 `watchdogs-caught.jsonl` (watchdog-catch@1: watch, build, status, cause, action, rung, ok, gaveUp, notified, note),
 `watchdogs-settings.json`, `watchdogs-request.json`, `watchdogs-stale.json` (the stale watch's last push per build).
 
 **Alerts and health.** Notify types `watchdog.caught` (FYI), `watchdog.fix` (a recovered session, FYI) and
-`watchdog.gave-up` (alert). Systems check item **Build watchdog runs**: red when on and no pass for 5 minutes, amber when
+`watchdog.gave-up` (alert). Systems check item **Build watchdog runs**: red when on and no heartbeat for 5 minutes, amber when
 a watch cannot load or its last run failed; Auto fix reinstalls the cron and runs one pass (axHub `vps.run`).
 
 | Reach it | How |

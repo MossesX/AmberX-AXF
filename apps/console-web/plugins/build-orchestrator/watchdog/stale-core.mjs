@@ -11,6 +11,7 @@
  *   merged, CI green on the merge commit                 → land           landed.ci success; status landed
  *   merged, CI red on the merge commit                   → fail           a ci-red failure at the merge commit: fixing
  *                                                          or land        when main is green now with the merge in it
+ *                                                          or wait        while CI on main's newest commit is undecided
  *   merged, CI still running or none                     → wait           until ciWaitMin; then land when main is green
  *                                                                         now with the merge in it, else escalate (no
  *                                                                         rung is left that this watch can take)
@@ -133,12 +134,20 @@ export function decide(b, facts = {}, { now = Date.now(), settings = DEFAULTS, p
     const viaMain = facts.mainCi === 'success' && facts.mainHead && facts.mainHead !== sha
       ? { ...base, action: 'land', sha, via: 'main', mainHead: str(facts.mainHead, 64), why: `merged, and main is green at ${str(facts.mainHead, 10)} with ${sha.slice(0, 10)} in it (CI on the merge commit itself: ${facts.ci === 'failure' ? 'red, fixed on main since' : 'no finished run'}): landed` }
       : null;
-    if (facts.ci === 'failure') return viaMain ?? { ...base, action: 'fail', kind: 'ci-red', head: sha, why: `CI is red on main at ${sha.slice(0, 10)} after its merge` };
+    // main has moved past the merge commit and its own CI has not finished (or could not be read): main's result decides
+    // whether this is landed or a failure, so nothing is failed or escalated on the old commit's CI alone
+    const mainUndecided = !!facts.mainHead && facts.mainHead !== sha && facts.mainCi !== 'success' && facts.mainCi !== 'failure';
+    if (facts.ci === 'failure') {
+      if (viaMain) return viaMain;
+      if (mainUndecided) return wait(`CI was red on ${sha.slice(0, 10)}, and CI on main's newest commit ${str(facts.mainHead, 10)} is ${facts.mainCi === 'pending' ? 'still running' : 'not known yet'}: that result decides`);
+      return { ...base, action: 'fail', kind: 'ci-red', head: sha, why: `CI is red on main at ${sha.slice(0, 10)} after its merge${facts.mainCi === 'failure' ? `, and main is still red at ${str(facts.mainHead, 10)}` : ''}` };
+    }
     if (b.status === 'fixing' && b.failure) return ladder(b, base, next); // a failure recorded after the merge: the ladder's
     const sinceMerge = (now - ms(at)) / MIN;
     if (facts.ci == null) return wait(`CI on ${sha.slice(0, 10)} could not be read`);
     if (sinceMerge < S.ciWaitMin) return wait(`CI on ${sha.slice(0, 10)} is ${facts.ci === 'pending' ? 'still running' : 'not there yet'} (${human(Math.round(sinceMerge))} since the merge)`);
     if (viaMain) return viaMain;
+    if (mainUndecided) return wait(`no finished CI on ${sha.slice(0, 10)}, and CI on main's newest commit ${str(facts.mainHead, 10)} is ${facts.mainCi === 'pending' ? 'still running' : 'not known yet'}: that result decides`);
     return { ...base, action: 'escalate', kind: 'ci-red', head: sha, why: `merged ${human(Math.round(sinceMerge))} ago and CI on ${sha.slice(0, 10)} ${facts.ci === 'pending' ? 'never finished' : 'never ran'}: it cannot be proved landed` };
   }
 

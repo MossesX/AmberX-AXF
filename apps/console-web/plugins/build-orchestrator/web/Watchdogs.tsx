@@ -44,7 +44,7 @@ export function passLine(r: Pass): string {
 /** One line for the status (toasts, voice). */
 export function statusLine(s: WatchdogsStatus): string {
   const on = s.watches.filter((w) => w.enabled).map((w) => w.label);
-  return `Watchdog ${s.enabled ? 'on' : 'off'}${s.stale ? ' but not running' : ''}: last pass ${s.ageMin != null ? `${s.ageMin} min ago` : 'never'}, watching ${on.join(', ') || 'nothing'}, ${s.caught.length} caught lately${s.gaveUp.length ? `, gave up on ${s.gaveUp.length}` : ''}.`;
+  return `Watchdog ${s.enabled ? 'on' : 'off'}${s.stale ? ' but not running' : ''}: checked ${s.ageMin != null ? `${s.ageMin} min ago` : 'never'}, watching ${on.join(', ') || 'nothing'}, ${s.caught.length} caught lately${s.gaveUp.length ? `, gave up on ${s.gaveUp.length}` : ''}.`;
 }
 const truthy = (v: unknown) => v === true || ['on', 'true', '1', 'yes'].includes(String(v).toLowerCase());
 /** A spoken or typed value as the setting's type. */
@@ -130,7 +130,7 @@ export function WatchdogsPanel() {
   return (
     <div className="axp-build-orchestrator__wd">
       <p className={status.stale ? 'axp-build-orchestrator__wd-err' : 'axp-build-orchestrator__wd-muted'} role={status.stale ? 'alert' : undefined}>
-        {status.enabled ? (status.stale ? 'On, but the VPS has not run it' : 'On') : 'Off'} · last pass {status.ageMin != null ? `${status.ageMin} min ago` : 'never'}
+        {status.enabled ? (status.stale ? 'On, but the VPS has not run it' : 'On') : 'Off'} · checked {status.ageMin != null ? `${status.ageMin} min ago` : 'never'} · a watch last ran {when(status.lastPass)}
         {status.request ? ` · a pass was asked for ${when(status.request.at)}` : ''}{status.gaveUp.length ? ` · gave up on ${status.gaveUp.length}` : ''}
       </p>
       <div role="toolbar" aria-label="Watchdog actions" className="axp-build-orchestrator__wd-bar">

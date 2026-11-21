@@ -83,6 +83,21 @@ So it starts sessions: at most one per pass (every 10 minutes), longest-standing
 - **No new framework/core engine.** The stale-status table is plugin-local, so no fixture and no baked copies; the
   Kotlin twin is recorded as a deferred gap in `framework/spec/PORTING.md`.
 
+## After it went live (same day, follow-up PR)
+
+PR #883 merged 21:17 UTC; the VPS deployed it and the first pass ran at 21:25: 26 builds watched, 3 caught (the
+merges of #851 and #867 recorded, a `stalled` failure on the oldest landing build, PR #824), one alert. Reading that
+first pass against the live state showed two things, fixed in a follow-up:
+
+- **Main's CI still running.** A merged build whose own merge commit has red (or no) CI was failed or escalated
+  whenever CI on main's newest commit had not finished, which is most of the time on a busy day. It now waits:
+  main's result decides (green: landed; red: a `ci-red` failure). No build was failed by this before the fix: the one
+  launch per pass had gone to the older build.
+- **Heartbeat.** "Last pass" only moved when a watch was due, so with the row cleaner at 5 minutes the systems check
+  item could flap red at the 5-minute limit. The cron now writes `lastTick` every minute and staleness is judged on it.
+- The CLI's "cron installed, out of date" was wrong: the deploy script writes the schedule line alone, the plugin
+  installer the whole template. Both now count as current.
+
 ## Queue clashes
 
 Older rows for the same work, all Failed, superseded by this build (a note was added to each):

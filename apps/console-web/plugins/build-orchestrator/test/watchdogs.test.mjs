@@ -70,6 +70,15 @@ await t('merged, CI on the merge commit red or missing, main green now: landed w
   }
   assert.equal(C.decide(b, { pr: { state: 'merged' }, ci: 'failure', mainCi: 'failure', mainHead: 'b'.repeat(40) }, { now: NOW, settings: SET }).action, 'fail');
 });
+await t('merged, CI on the merge commit red or missing, CI on main still running or unreadable: wait for main`s result', () => {
+  const b = build({ mergedAt: ago(300), landed: { pr: 10, sha: 'a'.repeat(40), mergedAt: ago(300) } });
+  for (const ci of ['failure', 'none', 'pending']) for (const mainCi of ['pending', 'none', null, undefined]) {
+    const d = C.decide(b, { pr: { state: 'merged' }, ci, mainCi, mainHead: 'b'.repeat(40) }, { now: NOW, settings: SET });
+    assert.equal(d.action, 'wait', `${ci} / ${mainCi}`); assert.match(d.why, /that result decides/);
+  }
+  assert.equal(C.decide(b, { pr: { state: 'merged' }, ci: 'failure', mainCi: 'pending', mainHead: 'a'.repeat(40) }, { now: NOW, settings: SET }).action, 'fail', 'the merge commit IS main`s newest: its own red CI decides');
+  assert.equal(C.decide(b, { pr: { state: 'merged' }, ci: 'none' }, { now: NOW, settings: SET }).action, 'escalate', 'main unknown altogether: no rung left');
+});
 await t('fixing: the ladder`s next rung, its escalation, and no failure at all', () => {
   const b = build({ status: 'fixing', failure: { kind: 'ci-red', at: ago(500), why: 'CI is red' } });
   const f = { pr: { state: 'open' } };
@@ -203,12 +212,32 @@ await t('a requested pass runs on the next cron minute, for that watch and build
   assert.equal(runs.wa, before + 1); assert.equal(r.asked.by, 'console'); assert.equal(r.catches[0].build, 'asked-build');
   assert.equal((await H.status()).request, null);
 });
+await t('the cron file written by the deploy script (the line alone) counts as current', async () => {
+  const cron = await import('../watchdog/cron.mjs');
+  const { mkdirSync, writeFileSync } = await import('node:fs');
+  const dir = join(tmp, 'cron.d'); mkdirSync(dir, { recursive: true });
+  const keep = { d: process.env.AXF_CRON_DIR, w: process.env.AXF_WATCHDOG_CRON };
+  process.env.AXF_CRON_DIR = dir; delete process.env.AXF_WATCHDOG_CRON;
+  try {
+    assert.equal(cron.status().installed, false);
+    writeFileSync(join(dir, cron.NAME), `${cron.render().split('\n').filter((l) => l && !l.startsWith('#')).join('\n')}\n`);
+    assert.equal(cron.status().current, true, 'the schedule line alone');
+    writeFileSync(join(dir, cron.NAME), '*/5 * * * * root echo old\n'); assert.equal(cron.status().current, false, 'another schedule is out of date');
+    writeFileSync(join(dir, 'axf-stale-watchdog'), 'old\n');
+    const r = cron.install(); assert.ok(r.installed); assert.deepEqual(r.retired, ['axf-stale-watchdog']); assert.equal(cron.status().current, true);
+  } finally { if (keep.d === undefined) delete process.env.AXF_CRON_DIR; else process.env.AXF_CRON_DIR = keep.d; if (keep.w !== undefined) process.env.AXF_WATCHDOG_CRON = keep.w; }
+});
 await t('status: per watch on/off, last run, caught, last error; stale without a pass', async () => {
   const s = await H.status();
   const a = s.watches.find((w) => w.id === 'wa'); const b = s.watches.find((w) => w.id === 'wb');
   assert.equal(s.stale, false); assert.ok(a.lastRun && a.caught >= 2 && a.enabled); assert.equal(b.lastError, 'boom');
   assert.ok(s.caught.length >= 2); assert.equal(s.caught[0].watch, 'wa');
-  assert.equal((await H.status({ now: Date.now() + 30 * 60000 })).stale, true, 'no pass for half an hour while on');
+  assert.equal((await H.status({ now: Date.now() + 30 * 60000 })).stale, true, 'no heartbeat for half an hour while on');
+  // a cron minute with nothing due still beats: alive is judged on the heartbeat, not on a watch happening to be due
+  const before = (await H.status()).lastPass;
+  const idle = await H.pass({ only: 'wa' });
+  assert.equal(idle.ran.length, 0); const after = await H.status();
+  assert.equal(after.lastPass, before, 'lastPass is the last time a watch ran'); assert.ok(after.lastTick >= before && after.stale === false);
   assert.ok(alerts().length >= 2, 'alerts were written');
 });
 await t('scan: every watch`s dry run in one answer; a watch without one says so', async () => {
