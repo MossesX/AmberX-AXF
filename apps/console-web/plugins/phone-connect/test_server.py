@@ -1,6 +1,7 @@
 """Server part of the Phone Connect self-test (run by test.py, which supplies check / ok / E / FX / TMP)."""
 # ruff: noqa: F821 — check, ok, E, FX, TMP come from test.py
 import importlib.util
+import json
 import os
 import sys
 import types
@@ -269,8 +270,199 @@ check("recorder_start never goes around the hub's approval", cap2.hub_tool("ambe
 cl.post(f"{P}/device/hello", json={}, headers=DEVH2)
 r = cap2.hub_tool("amberx.recorder_status", {}, wait_s=0)
 ok("amberx.recorder_status is answered by the paired phone", r is not None and r["ok"] and r["command"]["command"] == "recorder.status")
+r = cap2.hub_tool("amberx.open_url", {"url": "https://console.amberxai.com/x", "browser": "chrome"}, wait_s=0)
+ok("amberx.open_url with a browser opens in that browser", r is not None and r["ok"] and {k: r["command"]["arguments"][k] for k in ("where", "browser")} == {"where": "browser", "browser": "chrome"})
 r = cap2.hub_tool("amberx.open_url", {"url": "https://intent.example/"}, wait_s=0)
 ok("amberx.open_url keeps the phone's url policy", r is not None and not r["ok"] and r["error"]["code"] == "denied")
 for d in S.paired():
     svc.revoke(d["deviceId"], {"kind": "person", "who": "brett"})
 check("no phone: the caller goes to axHub as before", cap2.hub_tool("amberx.open_url", {"url": "https://console.test/"}), None)
+
+# ---- token rejection stops the retry loop (Fable audit F8): the console says "re-pair", once, machine-readable
+from axf_console_plugins.phone_connect import approvals as AP  # noqa: E402
+
+
+def pair_again() -> dict:
+    svc.pair_start({"kind": "person", "who": "brett"})
+    j = cl.post(f"{P}/pair/confirm", json={"code": S.pending_pairing()["code"], "device": DEV}, headers=PERSON).json()
+    h = {"authorization": f"Bearer {j['token']}", "x-axpp": "axpp@1"}
+    cl.post(f"{P}/device/hello", json={}, headers=h)
+    return h
+
+
+DEVH3 = pair_again()
+check("a paired phone that greeted is connected", cl.get(f"{P}/status").json()["link"]["state"], "connected")
+raised.clear()
+svc.revoke("phone-0123456789abcdef", {"kind": "person", "who": "brett"})
+r = cl.post(f"{P}/device/hello", json={}, headers=DEVH3)
+e = r.json()["error"]
+check("a revoked key is answered revoked, with the reason to pair", (r.status_code, e["code"], e["retryable"], e["detail"]["reason"]), (410, "revoked", False, "pair"))
+check("the phone's verdict on that reply: rejected, never retried", E.link_verdict({"status": r.status_code, "code": e["code"]}), "rejected")
+r = cl.get(f"{P}/device/next", headers=DEVH3)
+check("next with the dead key is rejected too", E.link_verdict({"status": r.status_code, "code": r.json()["error"]["code"]}), "rejected")
+st = cl.get(f"{P}/status").json()
+ok("status says disconnected, tap to re-pair", st["link"]["state"] == "disconnected" and "re-pair" in st["link"]["message"] and st["link"]["repair"].endswith("tab:phone-connect.tabs=pair"))
+ok("the rejection is counted, never the key itself", st["link"]["rejected"]["count"] == 2 and st["link"]["rejected"]["prefix"] == DEVH3["authorization"][7:15]
+   and DEVH3["authorization"][7:] not in (Path(TMP) / "plugins/phone-connect/link.json").read_text())
+check("one banner alert for it, not one per retry", [a["key"] for a in raised if a["key"].startswith("phone-connect:rejected:")], [f"phone-connect:rejected:{DEVH3['authorization'][7:15]}"])
+hp = svc.health_probe()
+ok("the systems check turns red and says re-pair", hp["status"] == "error" and "old key" in hp["summary"] and hp["link"].endswith("tab:phone-connect.tabs=pair"))
+check("its auto fix makes a pairing code", svc.health_fix()["state"], "done")
+r = cl.post(f"{P}/device/hello", json={}, headers={"authorization": "Bearer not-a-device-key", "x-axpp": "axpp@1"})
+ok("a caller that is no phone at all is refused without being counted", r.json()["error"]["code"] == "denied" and cl.get(f"{P}/status").json()["link"]["rejected"]["count"] == 2)
+r = cl.post(f"{P}/device/hello", json={}, headers={"authorization": "Bearer tok_" + "q" * 32, "x-axpp": "axpp@1"}).json()
+check("an unknown key: denied, reason pair", (r["error"]["code"], r["error"]["detail"]["reason"]), ("denied", "pair"))
+check("the phone's verdict on a bare 401 (a proxy): retry twice, then rejected", [E.link_verdict({"status": 401, "code": ""}, n) for n in range(3)], ["retry", "retry", "rejected"])
+DEVH4 = pair_again()
+st = cl.get(f"{P}/status").json()
+ok("pairing again clears it", st["link"]["state"] == "connected" and st["link"]["rejected"] is None and svc.health_probe()["status"] == "ok")
+
+# ---- presence (MCP phone_status)
+pr = cl.get(f"{P}/presence").json()
+ok("presence: paired, online, when it last checked in", pr["ok"] and pr["paired"] and pr["online"] and pr["presence"] == "online" and E.is_timestamp(pr["lastSeenAt"])
+   and pr["lastSeenAgo"].endswith("s ago") and pr["device"]["name"] == DEV["name"] and pr["canOpenPages"] is True and pr["link"]["state"] == "connected")
+ok("presence never shows a key", "token" not in json.dumps(pr) and "hash" not in json.dumps(pr))
+later = E.iso(E.ms(E.now_iso()) + 12 * 60_000)
+pr = svc.presence(later)
+check("presence 12 min later: offline, last seen 12 min ago", (pr["online"], pr["presence"], pr["lastSeenAgo"], pr["canOpenPages"], pr["link"]["state"]), (False, "offline: last seen 12 min ago", "12 min ago", False, "offline"))
+check("presence over the capability", plugin_services.get("axf.phone@1").presence()["paired"], True)
+ok("an app at the current version is not outdated", DEV["appVersion"] == "1.0.0" and svc.presence()["appOutdated"] is False and svc.health_probe()["status"] == "ok")
+S.save_device({**S.device(DEV["deviceId"]), "appVersion": "0.1.0"})
+hp = svc.health_probe()
+ok("an old app turns the systems check amber with where to get the new one", svc.presence()["appOutdated"] is True and hp["status"] == "warn" and "axHub → Apps" in hp["details"][0])
+check("version compare is by number, and an unknown version counts as old", [svc.app_outdated({"appVersion": v}) for v in ("0.2.0", "0.10.0", "0.1.9", "", "dev")], [False, False, True, True, True])
+S.save_device({**S.device(DEV["deviceId"]), "appVersion": "1.0.0"})
+
+# ---- open a page and bring it to the front (MCP phone_open_url)
+import threading  # noqa: E402
+import time as _time  # noqa: E402
+
+
+def phone_answers(payload: dict, tries: int = 40) -> threading.Thread:
+    """A phone on the link: takes the next call, acks it and answers with `payload`."""
+    def run() -> None:
+        for _ in range(tries):
+            w = cl.get(f"{P}/device/next", headers=DEVH4)
+            if w.status_code == 200:
+                cid = w.json()["id"]
+                got.append(w.json())
+                cl.post(f"{P}/device/ack", json={"protocol": "axpp@1", "correlationId": cid, "status": "shown"}, headers=DEVH4)
+                cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": cid, "payload": payload}, headers=DEVH4)
+                return
+            _time.sleep(0.05)
+    t = threading.Thread(target=run, daemon=True)
+    t.start()
+    return t
+
+
+got: list = []
+t = phone_answers({"opened": True, "how": "direct", "browser": "chrome"})
+r = cl.post(f"{P}/open-url", json={"url": "https://axhub.amberxai.com/auth/admin/approvals"}, headers=SESSION).json()
+t.join(5)
+ok("open-url: the phone opened it in front", r["ok"] and r["opened"] and r["how"] == "direct" and r["status"] == "done" and "in front" in r["message"])
+check("open-url: Chrome by default, straight to the browser", got[-1]["payload"], {"tool": "browser.open", "arguments": {"url": "https://axhub.amberxai.com/auth/admin/approvals", "where": "browser", "browser": "chrome"}})
+t = phone_answers({"opened": True, "how": "notification"})
+r = cl.post(f"{P}/open-url", json={"url": "https://console.amberxai.com/?x=1", "browser": "default"}, headers=SESSION).json()
+t.join(5)
+ok("open-url: a blocked background start says a notification is waiting, one tap", r["ok"] and r["how"] == "notification" and "one tap" in r["message"] and got[-1]["payload"]["arguments"]["browser"] == "default")
+for bad, code in (("https://github.com/MossesX", "denied"), ("https://evilamberxai.com/", "denied"), ("http://console.amberxai.com/", "denied"),
+                  ("intent://scan/#Intent;end", "denied"), ("https://brett:pw@console.amberxai.com/", "denied"), ("", "validation")):
+    check(f"open-url refuses {bad or 'an empty url'}", cl.post(f"{P}/open-url", json={"url": bad}, headers=SESSION).json()["error"]["code"], code)
+check("open-url: only chrome or default", cl.post(f"{P}/open-url", json={"url": "https://console.amberxai.com/", "browser": "firefox"}, headers=SESSION).json()["error"]["code"], "validation")
+r = svc.open_page("https://console.amberxai.com/", "chrome", {"kind": "session", "who": "t", "via": "mcp"}, wait_s=0)
+ok("open-url: a phone that has not answered yet is said so, not called opened", r["ok"] and r["opened"] is False and r["status"] == "queued")
+cl.get(f"{P}/device/next", headers=DEVH4)
+cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "error", "correlationId": r["id"], "error": {"code": "consent_required", "message": "Notifications are off for Phone Connect."}}, headers=DEVH4)
+cl.post(f"{P}/settings", json={"features": {"open_url": False}}, headers=PERSON)
+check("open-url: the Open pages switch off refuses it", cl.post(f"{P}/open-url", json={"url": "https://console.amberxai.com/"}, headers=SESSION).json()["error"]["code"], "denied")
+cl.post(f"{P}/settings", json={"features": {"open_url": True}}, headers=PERSON)
+try:
+    S.save_device({**S.device(DEV["deviceId"]), "lastSeenAt": E.iso(E.ms(E.now_iso()) - 600_000)})
+    svc.open_page("https://console.amberxai.com/", wait_s=0)
+    check("open-url: an offline phone is an error", "sent", "offline")
+except svc.PhoneError as e:
+    check("open-url: an offline phone is an error", (e.err["code"], e.err["retryable"]), ("offline", True))
+cl.post(f"{P}/device/hello", json={}, headers=DEVH4)
+
+# ---- Follow Amber on the phone (axf.phone@1 follow)
+capf = plugin_services.get("axf.phone@1")
+r = capf.follow("view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect", by={"kind": "agent", "who": "amber (mcp)", "via": "console"})
+c = S.command(r["id"])
+ok("follow: the console opens on the phone at that screen", r["shown"] and c["command"] == "open_url" and c["from"]["who"] == "amber (mcp)"
+   and c["arguments"]["url"] == "https://console.amberxai.com/?axf-open=view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=phone-connect")
+ok("follow: the address can't smuggle a second parameter", "&" not in S.command(capf.follow("view:x&evil=1#y")["id"])["arguments"]["url"].split("?", 1)[1])
+check("follow: on by default", S.settings()["features"]["follow"], True)
+cl.post(f"{P}/settings", json={"features": {"follow": False}}, headers=PERSON)
+n = len(S.commands(limit=500))
+r = capf.follow("view:builds")
+ok("follow: its switch off sends nothing", r["ok"] and r["shown"] is False and len(S.commands(limit=500)) == n)
+cl.post(f"{P}/settings", json={"features": {"follow": True}}, headers=PERSON)
+check("follow: nothing to show", capf.follow("")["shown"], False)
+
+# ---- approvals pop up on the phone, console closed (the watcher's tick; approvals-relay@1 pending + phone tap)
+A1, A2 = "11111111-1111-4111-8111-111111111111", "22222222-2222-4222-8222-222222222222"
+feed = {"ok": True, "items": [
+    {"id": A1, "kind": "approval", "tool": "github.merge_pr", "title": "Merge PR 870", "summary": "squash into main", "actions": ["approve", "decline"], "rev": 4, "expiresAt": E.iso(E.ms(E.now_iso()) + 1800_000)},
+    {"id": A2, "kind": "veto", "tool": "vps.run", "title": "Restart the console", "summary": "docker restart axf-console", "secondsLeft": 61, "shelved": False, "actions": ["deny", "approve-now", "shelve"], "rev": 2}]}
+asked: list = []
+
+
+class FeedRelay(FakeRelay):
+    def pending(self, owner=""):
+        asked.append(owner)
+        return feed
+
+
+plugin_services.withdraw("approvals-banner")
+plugin_services.provide("approvals-relay@1", FeedRelay(), folder="approvals-banner")
+relayed.clear()
+while cl.get(f"{P}/device/next", headers=DEVH4).status_code == 200:
+    pass
+t1 = AP.tick()
+ok("tick: both new approvals are pushed, read as the phone's owner", t1["ok"] and t1["watching"] and t1["pushed"] == [A1, A2] and asked == ["brett"])
+calls = {w["payload"]["arguments"]["approvalId"]: w for w in (cl.get(f"{P}/device/next", headers=DEVH4).json() for _ in range(2))}
+w1, w2 = calls[A1], calls[A2]
+check("the phone gets approval.show with Approve and Deny", (w1["payload"]["tool"], w1["payload"]["arguments"]),
+      ("approval.show", {"actions": ["approve", "deny"], "approvalId": A1, "kind": "approval", "tool": "github.merge_pr", "title": "Merge PR 870", "summary": "squash into main", "rev": 4}))
+check("a veto countdown carries its seconds and its actions", {k: w2["payload"]["arguments"][k] for k in ("approvalId", "kind", "secondsLeft", "actions")},
+      {"approvalId": A2, "kind": "veto", "secondsLeft": 61, "actions": ["deny", "approve", "shelve"]})
+c1 = S.command(w1["id"])
+ok("the prompt may be answered until the approval expires; the countdown until it runs", 1700 <= c1["ttl"] <= 1800 and S.command(w2["id"])["ttl"] == 61)
+ok("the pushed command never carries a decision", c1["policy"] == "allow" and not any(k in c1["arguments"] for k in ("decision", "decide")) and c1["from"] == {"kind": "service", "who": "approvals", "via": "hub"})
+check("tick again: nothing is pushed twice", AP.tick()["pushed"], [])
+cl.post(f"{P}/device/ack", json={"protocol": "axpp@1", "correlationId": w1["id"], "status": "shown"}, headers=DEVH4)
+r = cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": w1["id"], "payload": {"decision": "approve"}}, headers=DEVH4)
+check("the app can't approve by itself (no tap)", r.json()["error"]["code"], "denied")
+r = cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": w1["id"], "payload": {"decision": "approve"}, "by": {"kind": "person", "tap": TAP}}, headers=DEVH4).json()
+ok("Brett's Approve tap on the notification is relayed with the hub's revision", r["relay"]["ok"] and relayed[-1]["approvalId"] == A1 and relayed[-1]["decision"] == "approve" and relayed[-1]["rev"] == 4 and relayed[-1]["auth"] == "device")
+r = cl.post(f"{P}/device/answer", json={"protocol": "axpp@1", "kind": "result", "correlationId": w2["id"], "payload": {"decision": "deny"}, "by": {"kind": "person", "tap": TAP}}, headers=DEVH4).json()
+ok("Deny on a veto countdown is relayed as a veto deny", r["relay"]["ok"] and relayed[-1]["prompt"] == "veto" and relayed[-1]["decision"] == "deny")
+feed["items"] = [{"id": "33333333-3333-4333-8333-333333333333", "kind": "approval", "tool": "vps.run", "summary": "x", "actions": ["approve", "decline"]}]
+S.save_device({**S.device(DEV["deviceId"]), "lastSeenAt": E.iso(E.ms(E.now_iso()) - 600_000)})
+n = len(asked)
+t3 = AP.tick()
+ok("phone offline: the hub is not even asked, nothing is marked pushed", t3["watching"] is False and len(asked) == n and "33333333-3333-4333-8333-333333333333" not in S.approvals()["pushed"])
+cl.post(f"{P}/device/hello", json={}, headers=DEVH4)
+check("back online: the waiting approval is pushed then", AP.tick()["pushed"], ["33333333-3333-4333-8333-333333333333"])
+w3 = cl.get(f"{P}/device/next", headers=DEVH4).json()
+svc._finish(S.command(w3["id"]), E.wire_error("timeout", "no answer"), E.now_iso())
+cl.post(f"{P}/device/hello", json={}, headers=DEVH4)
+check("a prompt that timed out unanswered is shown again while it still waits", AP.tick()["pushed"], ["33333333-3333-4333-8333-333333333333"])
+for _ in range(AP.MAX_PUSHES):
+    c = S.command(S.approvals()["pushed"]["33333333-3333-4333-8333-333333333333"]["commandId"])
+    if c["status"] != "failed":
+        svc._finish(c, E.wire_error("timeout", "no answer"), E.now_iso())
+    AP.tick()
+check("but never more than the cap", S.approvals()["pushed"]["33333333-3333-4333-8333-333333333333"]["pushes"], AP.MAX_PUSHES)
+cl.post(f"{P}/settings", json={"features": {"approval": False}}, headers=PERSON)
+feed["items"] = [{"id": "44444444-4444-4444-8444-444444444444", "kind": "approval", "tool": "x", "actions": ["approve", "decline"]}]
+ok("Approval prompts switched off: nothing is read or pushed", AP.tick()["watching"] is False and "44444444-4444-4444-8444-444444444444" not in S.approvals()["pushed"])
+cl.post(f"{P}/settings", json={"features": {"approval": True}}, headers=PERSON)
+feed.clear()
+feed.update({"ok": False, "code": "no_credential", "message": "The console has no axHub owner sign-in."})
+t5 = AP.tick()
+ok("no hub sign-in: the watcher says why, status carries it", t5["ok"] is False and t5["code"] == "no_credential" and cl.get(f"{P}/status").json()["approvals"]["code"] == "no_credential")
+plugin_services.withdraw("approvals-banner")
+check("no relay plugin: unavailable, said plainly", AP.tick()["code"], "unavailable")
+ok("the watcher stays off in the self-test", AP.start() is False)
+check("feed items map to prompt actions", (AP.arguments({"id": A1, "kind": "veto", "actions": []})["actions"], AP.arguments({"id": A1, "kind": "approval", "actions": ["decline"]})["actions"]), (["deny"], ["deny"]))

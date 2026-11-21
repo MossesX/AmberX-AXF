@@ -16,7 +16,10 @@ Console routes (console token or the wall's signed-in admin; `person` = the wall
   POST   open {url, where?} · notify {kind, title, body?, url?, notifyId?} · voice {mode, text?, timeoutSeconds?}
   POST   recorder/start {session, group?, note?, approvalId} · recorder/stop · GET recorder/status
   GET    commands?deviceId= · commands/{id}?wait=<s>   a command with its ack and result
-  GET    status                     presence, pairing, features, recorder (what the UI, MCP, CLI and voice read)
+  POST   open-url {url, browser?}    an https amberxai.com page in Chrome (or the default browser), in front; waits
+                                    for the phone's answer: `how` = direct, or notification (one tap opens it)
+  GET    presence                   is a phone paired and online, when did it last check in (MCP phone_status)
+  GET    status                     presence, link, pairing, features, recorder, the approvals watcher
   GET    state                      status + devices + settings + recent commands + the console-control addresses
   GET    settings · POST settings {features: {open_url|notify|approval|recorder|voice: bool}}
 
@@ -26,8 +29,12 @@ Device routes (device_router, /api/plugins/phone-connect/device/…, no console 
   POST voice-in {text}   a phrase spoken on the phone → the console runs it (console action phone.voice)
   WS   ws   the same loop over one socket: the server sends calls, the phone sends ack / result / error messages
 
-Capability axf.phone@1 (plugin_services): status(), available(), send(), open_url(), notify(), approval(), command().
-Approve / deny / shelve are on none of these: an approval prompt is decided only by Brett's tap on the phone.
+A device token the console refuses is answered with a wire error whose `detail.reason` is "pair": the phone stops
+retrying with it (engine `linkVerdict`) and shows "Disconnected: tap to re-pair"; `status.link` says the same here.
+
+Capability axf.phone@1 (plugin_services): status(), presence(), available(), send(), open_url(), notify(), approval(),
+follow(), command(). Approve / deny / shelve are on none of these: an approval prompt is decided only by Brett's tap
+on the phone. New axHub approvals reach the phone from approvals.py (a watcher in this server, console open or not).
 """
 from __future__ import annotations
 
@@ -41,6 +48,7 @@ from fastapi.responses import JSONResponse
 
 import plugin_services
 
+from . import approvals
 from . import engine as E
 from . import service as svc
 
@@ -157,6 +165,23 @@ async def post_open(request: Request) -> Any:
     return answer(svc.send, "open_url", args, actor(request), str(b.get("deviceId") or ""))
 
 
+@router.post("/open-url")
+async def post_open_url(request: Request) -> Any:
+    """Open an https amberxai.com page on the paired phone in Chrome (or the default browser) and bring it to the front."""
+    b = await body(request)
+    who = actor(request)
+    try:
+        return await run_in_threadpool(svc.open_page, b.get("url"), b.get("browser") or "chrome", who, str(b.get("deviceId") or ""))
+    except svc.PhoneError as e:
+        return JSONResponse({"ok": False, "error": e.err}, status_code=HTTP.get(e.err["code"], 400))
+
+
+@router.get("/presence")
+def get_presence() -> dict[str, Any]:
+    """Whether a phone is paired and online and when it last checked in."""
+    return svc.presence()
+
+
 @router.post("/notify")
 async def post_notify(request: Request) -> Any:
     b = await body(request)
@@ -250,7 +275,7 @@ def _token(headers: Any) -> str:
 def device_of(request: Request) -> dict:
     if (request.headers.get(E.LINK["header"]) or "") != E.LINK["protocol"]:
         svc.fail("invalid", f"send {E.LINK['header']}: {E.LINK['protocol']}")
-    return svc.device_by_token(_token(request.headers))
+    return svc.device_for(_token(request.headers))
 
 
 @device_router.post("/hello")
@@ -303,7 +328,7 @@ def device_rotate(request: Request) -> Any:
 async def device_ws(ws: WebSocket) -> None:
     """The same loop over one socket. The device token comes in the Authorization header of the upgrade."""
     try:
-        d = await run_in_threadpool(svc.device_by_token, _token(ws.headers))
+        d = await run_in_threadpool(svc.device_for, _token(ws.headers))
     except svc.PhoneError as e:
         await ws.close(code=4401, reason=e.err["code"])
         return
@@ -336,4 +361,4 @@ async def device_ws(ws: WebSocket) -> None:
 
 plugin_services.provide("axf.phone@1", svc.PhoneCapability(), folder="phone-connect")
 svc.ensure_health()
-
+approvals.start()

@@ -98,11 +98,21 @@ app = FastAPI(title="GizmoX AI Studio API", version="0.2.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 
+# Route prefixes of paired devices (plugin.json "deviceRoutes": true), filled when plugins load. A device holds no
+# console token: its own bearer (a device token) is checked by the route itself, so the wall's token gate lets these
+# paths through. Nothing else is exempt, and a disabled plugin's device routes still answer 404 (_plugin_guard).
+DEVICE_ROUTE_PREFIXES: set[str] = set()
+
+
+def _device_route(path: str) -> bool:
+    return any(path.startswith(p) for p in DEVICE_ROUTE_PREFIXES)
+
+
 @app.middleware("http")
 async def _wall_token_gate(request: Request, call_next):  # type: ignore[no-untyped-def]
     """Behind axHub's sign-in wall, a request let through on a bearer header (X-Auth-Via: token, set by the hub; the
     proxy strips any client copy) must carry the real console token on every route, reads included."""
-    if request.headers.get("x-auth-via") == "token":
+    if request.headers.get("x-auth-via") == "token" and not _device_route(request.url.path):
         tok = current_token()
         got = request.headers.get("authorization", "")
         if not tok or not _hmac.compare_digest(got.encode(), f"Bearer {tok}".encode()):
@@ -1330,6 +1340,7 @@ def load_plugins() -> None:
                 device_router = getattr(module, "device_router", None)
                 if device_router is not None and m.get("deviceRoutes") is True:
                     app.include_router(device_router, prefix=f"/api/plugins/{folder.name}/device", dependencies=[Depends(_plugin_guard(folder.name))])
+                    DEVICE_ROUTE_PREFIXES.add(f"/api/plugins/{folder.name}/device/")
                 info["server"] = "loaded"
             log("plugins", f"{info.get('name', folder.name)} {info.get('version', '')} loaded ({info['server']} server)")
         except Exception as e:  # noqa: BLE001 — one bad plugin must not stop the console

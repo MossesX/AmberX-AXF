@@ -1,8 +1,6 @@
 package ai.amberx.axf.phoneconnect.watch
 
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -37,24 +35,25 @@ object Commands {
 
     init {
         // browser.open: the AXF Console app's floating overlay first when the command asks for it (where: overlay, the
-        // default) and the console app takes it; else straight away while this app is in front; otherwise a
-        // high-priority notification with a full-screen intent (Android blocks activity starts from the background).
+        // default) and the console app takes it. Otherwise the page opens in the browser (Chrome when `browser: chrome`)
+        // and comes to the front: straight away while this app is in front or may start over other apps, else through a
+        // high-priority notification that opens it with one tap (Android blocks activity starts from the background).
+        // The result's `how` says which: console-overlay, direct or notification.
         register("browser.open") { ctx, id, args ->
             val url = args.optString("url")
             if (!LinkRules.openable(url)) return@register Outcome.Failed("denied", "Only https pages open on the phone.")
             val where = args.optString("where", "overlay")
             if (LinkRules.wantsOverlay(where)) ConsoleOverlay.open(ctx, url, where)?.let { return@register Outcome.Done(it) }
-            if (foreground()) {
-                ctx.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-                Outcome.Done(JSONObject().put("opened", true).put("how", "direct"))
-            } else {
-                val pi = Notifier.viewIntent(ctx, url, Notifier.idOf(id))
-                val n = NotificationCompat.Builder(ctx, Notifier.CH_OPEN).setSmallIcon(android.R.drawable.ic_menu_view)
-                    .setContentTitle("Open on your phone").setContentText(url.take(120)).setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_CALL).setFullScreenIntent(pi, true).setContentIntent(pi).setAutoCancel(true).build()
-                if (Notifier.post(ctx, Notifier.idOf(id), n)) Outcome.Done(JSONObject().put("opened", true).put("how", "full-screen-intent"))
-                else Outcome.Failed("consent_required", "Notifications are off for Phone Connect, so it can't open pages from the background.")
+            val chrome = LinkRules.wantsChrome(args.optString("browser"))
+            if (foreground() || Pages.mayStartFromBackground(ctx)) {
+                Pages.open(ctx, url, chrome)?.let { return@register Outcome.Done(JSONObject().put("opened", true).put("how", "direct").put("browser", it)) }
             }
+            val pi = Notifier.viewIntent(ctx, url, Notifier.idOf(id), chrome)
+            val n = NotificationCompat.Builder(ctx, Notifier.CH_OPEN).setSmallIcon(android.R.drawable.ic_menu_view)
+                .setContentTitle("Tap to open on your phone").setContentText(url.take(120)).setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_CALL).setFullScreenIntent(pi, true).setContentIntent(pi).setAutoCancel(true).build()
+            if (Notifier.post(ctx, Notifier.idOf(id), n)) Outcome.Done(JSONObject().put("opened", true).put("how", "notification"))
+            else Outcome.Failed("consent_required", "Notifications are off for Phone Connect, so it can't open pages from the background.")
         }
     }
 }
