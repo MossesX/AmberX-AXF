@@ -138,7 +138,7 @@
             }
           }
         },
-        "output": "{ok, opened, how: direct|notification|console-overlay, status, id, message}",
+        "output": "{ok, opened (true only when the phone says it is on screen), notified (only the tap-to-open notification), how: direct|console-overlay|console-app|notification, why: no-permission|launch-failed, status, id, message}",
         "navigate": true
       },
       {

@@ -35,6 +35,14 @@ class LinkRulesTest {
         assertEquals("launch-failed", LinkRules.notifiedWhy(true))
     }
 
+    @Test fun whereAnApprovalShows() {
+        assertEquals("overlay", LinkRules.approvalShown(card = true, notification = true))
+        assertEquals("overlay", LinkRules.approvalShown(card = true, notification = false))
+        assertEquals("notification", LinkRules.approvalShown(card = false, notification = true))
+        assertNull(LinkRules.approvalShown(card = false, notification = false))
+        assertEquals(listOf("Approve", "Deny", "Shelve"), LinkRules.DECISIONS.map { LinkRules.decisionLabel(it) })
+    }
+
     @Test fun openable() {
         assertTrue(LinkRules.openable("https://console.amberxai.com/?x=1"))
         assertFalse(LinkRules.openable("intent://scan/#Intent;end"))

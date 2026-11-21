@@ -20,9 +20,9 @@ LOCK = threading.RLock()
 
 # Per-feature switches; every one on by default. Open: a later feature adds its key here (the UI lists them all).
 FEATURES: dict[str, dict[str, Any]] = {
-    "open_url": {"label": "Open pages", "description": "The console and agents may open a page on the phone (inside its url policy)."},
+    "open_url": {"label": "Open pages", "description": "The console and agents may open a page on the phone (inside its url policy). It opens by itself; a notification to tap is only the fallback."},
     "notify": {"label": "Notifications", "description": "FYIs, fix updates and alerts that pass the Notifications panel reach the phone."},
-    "approval": {"label": "Approval prompts", "description": "Approvals and veto countdowns show on the phone; only your tap there decides."},
+    "approval": {"label": "Approval prompts", "description": "Approvals and veto countdowns float over whatever is on the phone's screen with Approve and Deny on them (and as a notification); only your tap there decides."},
     "recorder": {"label": "Audio recorder", "description": "Start, stop and read the phone's audio-output recorder (a start always asks you first)."},
     "voice": {"label": "Voice line", "description": "The console assistant may say a line or listen once through the phone."},
     "follow": {"label": "Follow Amber on the phone", "description": "When Follow Amber is on and Amber shows a screen, the console also comes to the front on the phone at that screen."},

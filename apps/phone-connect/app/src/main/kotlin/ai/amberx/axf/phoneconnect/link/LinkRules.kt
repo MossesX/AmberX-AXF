@@ -56,6 +56,19 @@ object LinkRules {
      */
     fun wantsOverlay(where: String?): Boolean = where != "browser"
 
+    /** How long the floating approval card keeps showing the outcome ("Approved.") before it leaves. */
+    const val OUTCOME_SHOWN_MS = 4_000L
+
+    /** The words on an approval's buttons, on the notification and on the floating card alike. */
+    fun decisionLabel(decision: String): String = when (decision) { "approve" -> "Approve"; "deny" -> "Deny"; "shelve" -> "Shelve"; else -> decision }
+
+    /**
+     * Where an approval prompt shows (approval.show's ack detail): `overlay` = the floating card with Approve / Deny
+     * on top of whatever is on screen, plus the notification; `notification` = the notification alone (no "display
+     * over other apps"); null = nowhere (notifications off as well), which is a failure.
+     */
+    fun approvalShown(card: Boolean, notification: Boolean): String? = if (card) "overlay" else if (notification) "notification" else null
+
     /** How long a start of the console app may take to show before it counts as held back by Android. */
     const val FRONT_WAIT_MS = 2_000L
 

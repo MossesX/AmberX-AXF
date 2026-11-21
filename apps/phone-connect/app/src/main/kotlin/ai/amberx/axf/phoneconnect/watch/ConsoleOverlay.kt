@@ -47,7 +47,8 @@ object ConsoleOverlay {
             return Answer(null, r.getString("code") ?: "")
         }
         val json = runCatching { JSONObject(r.getString("json") ?: "{}") }.getOrNull() ?: return Answer(null, "")
-        return Answer(json.put("opened", true).put("how", LinkRules.consoleHow(json.optBoolean("overlay", false))), "")
+        // `opened` is the console app's own word (false for a collapse verb, which opens nothing)
+        return Answer(json.put("how", LinkRules.consoleHow(json.optBoolean("overlay", false))), "")
     }
 
     /** Whether the console app is on screen right now; null when it can't say (not installed, an older build). */

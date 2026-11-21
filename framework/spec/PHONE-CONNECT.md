@@ -148,8 +148,18 @@ so a closed console opens in the console app without a tap.
 (`approvals.py` in the plugin, through approvals-relay@1 `pending()`: the console's owner sign-in, read only), so it
 works with no console open. Each new approval or veto countdown is queued once as an `approval` command while a paired
 phone is online; one that failed before Brett answered is sent again while it still waits (at most 3 times). The phone
-shows a high-priority notification with the command's `actions` on it. A tap on an action is the decision (below); a
-tap on the body opens that approval in the console (`<origin>/?axf-open=hub.review:<id>`, rebuilt from the id).
+shows it twice, with the command's `actions` on both: a **floating card over whatever is on screen** (build
+`phone-connect-open-straight-phone-no-tap`, Nov 21 2026; needs "display over other apps"; Approve, Deny, Shelve
+where offered, and Hide, which only takes the card away) and a high-priority notification (the lock screen's
+"Approval waiting", and the only prompt without the permission). A tap on an action is the decision (below), with
+no console to open first; a tap on the words opens that approval in the console
+(`<origin>/?axf-open=hub.review:<id>`, rebuilt from the id). The outcome replaces both, and the card leaves by itself.
+
+**An open says what really happened.** `open` / `open-url` / the wake report `opened: true` only when the phone
+answered that the page is on screen (`how: direct · console-overlay · console-app`), `notified: true` when it only
+posted the tap-to-open notification (`how: notification`, with `why`), and neither while the phone has not answered
+(`opened_how()` in the plugin; an app before 0.3.0 said `opened: true` for a notification, so `how` decides). The
+console wake raises its console alert when the page was neither opened nor notified.
 
 **Follow Amber on the phone.** A Follow Amber show of a screen or settings tab also queues `open_url` for
 `<origin>/?axf-open=<console-control@1 address>` (capability `axf.phone@1` `follow()`; the plugin's `follow` switch,
@@ -204,8 +214,10 @@ An approval is decided only by Brett's own tap on the phone. The engine's `decis
 uuid, `auth.kind` is `device` (it arrived over the device token) and `data.decision` is one of the command's `actions`.
 Otherwise `denied`, and the decision is dropped: a session, an agent, a console action, an MCP tool, the CLI or a
 voice phrase cannot approve, deny or shelve, and neither can the device on its own. The console relays the decision to
-the hub's approval api as the owner; the hub keeps its own guard. On the phone the tap is an action button on the
-approval notification (Approve · Deny · Shelve): Android asks for the phone to be unlocked first, the lock screen says
+the hub's approval api as the owner; the hub keeps its own guard. On the phone the tap is a button on the floating
+approval card or an action on the approval notification (Approve · Deny · Shelve), both the same road: Android asks
+for the phone to be unlocked first (the card is never drawn over the lock screen and ignores a tap while locked, and
+drops a tap that reaches it through another app's window), the lock screen says
 only "Approval waiting", and the outcome ("Approved.", or why nothing was decided) replaces the prompt. Auto-approval rules on the phone never cover
 `recorder.start`, `vps.run` or any destructive tool (`NEVER_AUTO`, `NOT_IN_ALL`, as AmberX's `HubRules`).
 
