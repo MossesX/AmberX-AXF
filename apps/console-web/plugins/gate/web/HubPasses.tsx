@@ -1,4 +1,5 @@
 /**
+ * VPS Configuration → Passes → axHub passes (moved from the axhub-passes plugin, Nov 21 2026).
  * Timed passes (axHub decision 112, docs/veto-pass.md in the axHub repo): "allow theme changes for the next 30 minutes".
  * While a pass is on, calls it covers run at once instead of waiting on the veto countdown; destructive tools never do.
  * Active passes with their countdown first (Revoke, Extend), then a form to switch one on, then the ones that ended.

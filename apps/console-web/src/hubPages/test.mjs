@@ -116,10 +116,11 @@ ok(statusNote('not-admin', '').includes('users page'), 'no permission points at 
 eq(statusNote('unreachable', 'Boom.'), 'Boom.', 'unreachable shows why');
 eq(statusNote('ok', ''), '', 'nothing to say when it worked');
 
-// Where each page's source lives now: one console plugin per hub feature (module axHub, Nov 20 2026).
-const PLUGIN_OF = { Approvals: 'axhub-approvals', ApprovalDetail: 'axhub-approvals', ApprovalLog: 'axhub-approvals', ApprovalParts: 'axhub-approvals', HeldCall: 'axhub-approvals', GoPass: 'axhub-passes', Passes: 'axhub-passes', Apps: 'axhub-apps', Users: 'axhub-users', Handoff: 'axhub-handoff', HubAccount: 'axhub-account', HubView: 'axhub-account' };
+// Where each page's source lives now: one console plugin per hub feature (module axHub, Nov 20 2026). The two pass
+// pages live in VPS Configuration → Passes (the gate plugin, Nov 21 2026), which keeps their view addresses.
+const PLUGIN_OF = { Approvals: 'axhub-approvals', ApprovalDetail: 'axhub-approvals', ApprovalLog: 'axhub-approvals', ApprovalParts: 'axhub-approvals', HeldCall: 'axhub-approvals', GoPass: 'gate/web/HubGoPass.tsx', Passes: 'gate/web/HubPasses.tsx', Apps: 'axhub-apps', Users: 'axhub-users', Handoff: 'axhub-handoff', HubAccount: 'axhub-account', HubView: 'axhub-account' };
 const pageSrc = new URL('../../plugins/', import.meta.url);
-const view = (name) => new URL(`${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
+const view = (name) => new URL(PLUGIN_OF[name].includes('/') ? PLUGIN_OF[name] : `${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
 
 /* ---------------------------------------------------------------- the hub's pages (decision #96) */
 {
@@ -129,7 +130,7 @@ const view = (name) => new URL(`${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
   eq(parseRoute('#/approvals'), { view: 'home', params: {} }, '#/approvals is home');
   eq(parseRoute('#/go-pass'), { view: 'go-pass', params: {} }, '#/go-pass opens the Go pass page (axHub decision #99)');
   const readText = (await import('node:fs')).readFileSync;
-  ok(readText(new URL('axhub-passes/web/index.tsx', pageSrc), 'utf8').includes("view: 'axhub-go-pass'"), 'the nav menu reaches the Go pass page');
+  ok(readText(new URL('gate/web/menu.ts', pageSrc), 'utf8').includes("action: 'axhub-go-pass.open'") && readText(new URL('gate/web/index.tsx', pageSrc), 'utf8').includes("'axhub-go-pass':"), 'the axHub menu reaches the Go pass page (VPS Configuration → Passes)');
   {
     const parts = readText(view('ApprovalParts'), 'utf8');
     ok(/title="The code that runs"[^>]*collapsible/.test(parts), 'the code that runs has its own collapsible section');
@@ -225,8 +226,9 @@ const view = (name) => new URL(`${PLUGIN_OF[name]}/web/${name}.tsx`, pageSrc);
   const actionsAt = detail.indexOf('approval-actions'), whatAt = detail.indexOf('<WhatItDoes'), codeAt = detail.indexOf('<CodeSection');
   ok(actionsAt > 0 && actionsAt < detail.indexOf('</header>') && actionsAt < whatAt && actionsAt < codeAt, 'Approve is in the page head, above the description and the code');
   ok(/orderActions\(item\.actions\)/.test(detail) && /filter\(\(a\) => a === 'approve'\)/.test(detail), 'Approve comes first among the actions');
-  const navSrc = ['axhub-approvals', 'axhub-passes', 'axhub-apps', 'axhub-users', 'axhub-handoff', 'axhub-account'].map((p) => readFileSync(new URL(`${p}/web/index.tsx`, pageSrc), 'utf8')).join('\n');
-  for (const v of ['axhub-approvals', 'axhub-approvals-log', 'axhub-passes', 'axhub-users', 'axhub-handoff', 'axhub-account', 'axhub-apps']) ok(navSrc.includes(`view: '${v}' }`), `the axHub nav section reaches ${v}`);
+  const navSrc = ['axhub-approvals', 'axhub-apps', 'axhub-users', 'axhub-handoff', 'axhub-account'].map((p) => readFileSync(new URL(`${p}/web/index.tsx`, pageSrc), 'utf8')).join('\n');
+  ok(readFileSync(new URL('gate/web/menu.ts', pageSrc), 'utf8').includes("action: 'axhub-passes.open'"), 'the axHub menu reaches the passes (VPS Configuration → Passes)');
+  for (const v of ['axhub-approvals', 'axhub-approvals-log', 'axhub-users', 'axhub-handoff', 'axhub-account', 'axhub-apps']) ok(navSrc.includes(`view: '${v}' }`), `the axHub nav section reaches ${v}`);
 }
 
 /* ---------------------------------------------------------------- Approve now on every waiting row (Oct 31 2026) */

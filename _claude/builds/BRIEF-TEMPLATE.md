@@ -22,12 +22,12 @@ Needs tools: none
 ## Rules for this job
 <!-- Brief only (Nov 8 2026): a headless run loads NO CLAUDE.md, rules files, memory or settings-injected context. This
      block is all the standing rules it gets. Since Nov 15 2026 it comes from the build rules store (build-rules@1,
-     Builds → Gate & rules → Build rules): the dispatcher and `orchestrator.mjs brief <id>` write the session rules
+     Builds → VPS Configuration → Build rules): the dispatcher and `orchestrator.mjs brief <id>` write the session rules
      that apply to this build (briefBlocks: Look / API / Checkpoints lines + these bullets); VPS rules (home card,
      help stub, Shipped features, API-parity scaffolding, CI checks, THREADS rows, PR open + link, landing) never
      appear: the VPS does them. Don't hand-write rule text here; change the rule in the tab. Size budget: Claude
      settings headless.briefBudgetChars (default 24000 characters, brief and rules together). -->
-<!-- Build rules tab: Builds → Gate & rules → Build rules. --> <!-- axf-plugin:gate -->
+<!-- Build rules tab: Builds → VPS Configuration → Build rules. --> <!-- axf-plugin:gate -->
 
 ## Addendum 1 (Brett, Nov 4 2026 (voice))
 > A later change he asked for, verbatim. Each one is its own block, numbered, oldest first. Also:

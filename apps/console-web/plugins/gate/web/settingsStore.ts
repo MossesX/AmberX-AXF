@@ -57,7 +57,7 @@ export function registerSettingTargets(rt: AxfRuntime): void {
   void loadAutoLanderSettings().catch(() => { /* the auto-lander may not be installed: the targets answer null */ });
   rt.actions.register('gate.setting', ([key = '', value = '']) => {
     const k = KEYS.find((x) => x.key === key);
-    if (!k) { rt.toast(`Gate settings are ${KEYS.map((x) => x.key).join(', ')}.`, 'warning', 'Gate'); return; }
-    void saveSettings({ [k.key]: k.parse(value) } as Partial<GateSettings>).then((s) => rt.toast(`${k.label}: ${String(s[k.key])}.`, 'success', 'Gate'), (e: Error) => rt.toast(e.message, 'danger', 'Gate'));
-  }, { label: 'Change a Gate & rules setting', params: true, effect: 'write' });
+    if (!k) { rt.toast(`Gate settings are ${KEYS.map((x) => x.key).join(', ')}.`, 'warning', 'VPS Configuration'); return; }
+    void saveSettings({ [k.key]: k.parse(value) } as Partial<GateSettings>).then((s) => rt.toast(`${k.label}: ${String(s[k.key])}.`, 'success', 'VPS Configuration'), (e: Error) => rt.toast(e.message, 'danger', 'Gate'));
+  }, { label: 'Change a VPS Configuration setting', params: true, effect: 'write' });
 }

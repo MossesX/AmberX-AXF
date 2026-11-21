@@ -242,9 +242,13 @@ axf_cron_file axf-console "*/5 * * * * root flock -n /run/axf-console-update.loc
 # Builds reconciler (orch-live-sync, Nov 3 2026): links open PRs and claude/* branches to their builds, records merges,
 # lists orphans for the systems check; its store writes go live to main as status-only commits (builds-live.mjs).
 axf_cron_file axf-builds-reconcile "*/10 * * * * root cd $DIR && node framework/cli/builds-reconcile.mjs --apply --brief >> /var/log/axf-builds-reconcile.log 2>&1"
-# Stale-row watchdog (Brett, Nov 16 2026: "I want a server fucking watchdog on the VPS to do that."): every 5 minutes,
-# rows left on the builds lists after their PR merged or closed are completed or removed (template deploy/cron/axf-stale-watchdog).
-axf_cron_file axf-stale-watchdog "*/5 * * * * root cd $DIR && flock -n /tmp/axf-stale-watchdog.lock node apps/console-web/plugins/build-orchestrator/watchdog.mjs run --cron --by watchdog >> /var/log/axf-stale-watchdog.log 2>&1"  # axf-plugin:build-orchestrator
+# Build watchdog (build-watchdogs@1): ONE cron for every watch of the Build orchestrator's watchdog.mjs, every minute:
+# build sessions that are stuck or were killed (recovered or requeued), builds standing in landing / fixing / merging too
+# long (pushed to the next action on their ladder), rows left on a list after their PR merged or closed (completed or
+# removed). Each watch runs only when it is on and due. Template deploy/cron/axf-build-watchdog. The older
+# axf-stale-watchdog cron (the row cleaner on its own) is retired: its work is the `rows` watch.
+rm -f /etc/cron.d/axf-stale-watchdog
+axf_cron_file axf-build-watchdog "* * * * * root W=$DIR/apps/console-web/plugins/build-orchestrator/watchdog.mjs; [ -f \$W ] && cd $DIR && flock -n /run/axf-build-watchdog.lock timeout 600 node \$W cron >> /var/log/axf-build-watchdog.log 2>&1"  # axf-plugin:build-orchestrator
 # VPS reaper (vps-reaper@1, Nov 18 2026: the VPS cleans up its own ghosts): every 2 minutes finished claude -p processes,
 # dead tmux axf-* sessions, ghost agent slots, ownerless heavy locks, leftover test servers and stale temp folders go.
 # One source for the line: the template deploy/cron/axf-reaper.
