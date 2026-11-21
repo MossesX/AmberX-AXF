@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10237,
- "updatedAt": "2026-11-21T01:10:14.808Z",
+ "rev": 10238,
+ "updatedAt": "2026-11-21T01:11:11.185Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350821,14 +350821,14 @@
    "title": "Plan Studio live progress: one store, steps check off in place",
    "category": "",
    "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:38:20.767Z",
-   "updatedAt": "2026-11-21T01:10:02.346Z",
+   "updatedAt": "2026-11-21T01:11:01.292Z",
    "builtAt": "",
    "notes": [
     {
@@ -350880,6 +350880,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 2: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
      "at": "2026-11-21T01:10:02.346Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build retried at split, attempt 3.",
+     "at": "2026-11-21T01:11:01.292Z",
      "by": "watchdog"
     }
    ],
@@ -351398,7 +351403,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351409,10 +351414,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T01:10:02.346Z",
+   "statusAt": "2026-11-21T01:11:01.292Z",
    "statusBy": "watchdog",
-   "attempt": 2,
-   "failedFrom": "split",
+   "attempt": 3,
    "statusLog": [
     {
      "status": "pending",
@@ -351455,6 +351459,13 @@
      "by": "watchdog",
      "attempt": 2,
      "why": "split did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T01:11:01.292Z",
+     "by": "watchdog",
+     "attempt": 3,
+     "why": "retry forward at split, attempt 3"
     }
    ]
   },
