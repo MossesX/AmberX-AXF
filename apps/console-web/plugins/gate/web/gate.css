@@ -39,3 +39,4 @@
 .axp-gate__arule-end { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }
 :where([data-fx-narrow]) .axp-gate__arule { grid-template-columns: auto minmax(0, 1fr); }
 :where([data-fx-narrow]) .axp-gate__arule-field, :where([data-fx-narrow]) .axp-gate__arule-end, :where([data-fx-narrow]) .axp-gate__arule-wide { grid-column: 2 / -1; }
+.axp-gate__ask { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; overflow-wrap: anywhere; }
