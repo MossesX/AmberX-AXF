@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10290,
- "updatedAt": "2026-11-21T05:15:48.587Z",
+ "rev": 10291,
+ "updatedAt": "2026-11-21T05:19:44.423Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -348915,6 +348915,11 @@
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T05:15:02.508Z",
      "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:19:01.189Z",
+     "by": "watchdog"
     }
    ],
    "approvals": [],
@@ -349203,7 +349208,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349450,6 +349455,11 @@
     {
      "text": "Watchdog: build stuck at split (0 min past budget): re-ran the transition (1).",
      "at": "2026-11-21T05:15:02.508Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (4 min past budget): re-ran the transition (2).",
+     "at": "2026-11-21T05:19:01.189Z",
      "by": "watchdog"
     }
    ],
@@ -349892,7 +349902,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -350015,7 +350025,7 @@
    "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T05:09:28.601Z",
+   "updatedAt": "2026-11-21T05:16:28.766Z",
    "builtAt": "",
    "notes": [
     {
@@ -350213,6 +350223,11 @@
     {
      "text": "Refused failed → landed (asked by amber): landed needs CI green on the merge commit: landed.ci is none. Done means merged, CI green on main and verified (done-means-merged@1).",
      "at": "2026-11-21T05:09:28.602Z"
+    },
+    {
+     "text": "Lander: failed in running-ci, attempt 13: the fix session (agent) pushed nothing in 60 min",
+     "at": "2026-11-21T05:16:28.766Z",
+     "by": "lander"
     }
    ],
    "approvals": [],
@@ -350281,16 +350296,9 @@
     "why": "the fix session (agent) pushed nothing in 60 min",
     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
     "pr": 867,
-    "at": "2026-11-21T03:45:06.830Z",
+    "at": "2026-11-21T05:16:25.856Z",
     "retry": "fix",
-    "notBefore": "2026-11-21T04:15:06.830Z",
-    "fix": {
-     "at": "2026-11-21T04:15:55.861Z",
-     "head": "b8d010c71e52bb4d8cb04ae10e6197899d2e273d",
-     "session": "",
-     "exit": 3,
-     "why": "{\"ok\":false,\"unassigned\":false,\"why\":\"lenny: Quit · joey: Quit · 5 more can't either\",\"tried\":[{\"agent\":\"lenny\",\"why\":\"Quit\"},{\"agent\":\"joey\",\"why\":\"Quit\"},{\"agent\":\"paulie\",\"why\":\"Quit\"},{\"agent\":\"su"
-    }
+    "notBefore": "2026-11-21T05:46:25.856Z"
    },
    "landing": {
     "rules": {
@@ -350783,7 +350791,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 128,
+   "rev": 129,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351117,6 +351125,11 @@
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
      "at": "2026-11-21T01:59:01.652Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T05:16:01.451Z",
      "by": "watchdog"
     }
    ],
@@ -351635,7 +351648,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351873,6 +351886,11 @@
     {
      "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
      "at": "2026-11-21T02:02:01.702Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build stuck at split (1 min past budget): re-ran the transition (1).",
+     "at": "2026-11-21T05:16:01.451Z",
      "by": "watchdog"
     }
    ],
@@ -352481,7 +352499,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

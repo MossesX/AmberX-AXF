@@ -837,11 +837,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 07:59 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:02 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:03 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:04 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 08:05 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 08:07 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 08:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 08:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · builds-live
@@ -1237,6 +1232,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 05:09 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · amber
 - 2026-11-21 05:15 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
 - 2026-11-21 05:15 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
+- 2026-11-21 05:16 UTC · `fix-main-ci-red-after-s16-s7-hand-` note (all) · lander
+- 2026-11-21 05:16 UTC · `plan-studio-live-progress-one-stor` note (all) · watchdog
+- 2026-11-21 05:16 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
+- 2026-11-21 05:19 UTC · `ci-speed-ci-failure-reports-lean` note (all) · watchdog
+- 2026-11-21 05:19 UTC · `nov-20-fix-list-voice-console-cont` note (all) · watchdog
 
 ## Token passes (log)
 
