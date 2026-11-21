@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10269,
- "updatedAt": "2026-11-21T01:52:10.235Z",
+ "rev": 10270,
+ "updatedAt": "2026-11-21T01:53:09.730Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349312,7 +349312,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-21T01:52:01.292Z",
+   "updatedAt": "2026-11-21T01:53:02.223Z",
    "builtAt": "",
    "notes": [
     {
@@ -349428,6 +349428,11 @@
     {
      "text": "Watchdog: build failed at split, attempt 5: split did not move after 2 re-run(s) of the transition (6 min past its budget).",
      "at": "2026-11-21T01:52:01.292Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build gave up: attempt 5 of 5 failed at split. Alerted Brett.",
+     "at": "2026-11-21T01:53:02.223Z",
      "by": "watchdog"
     }
    ],
@@ -349870,7 +349875,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
