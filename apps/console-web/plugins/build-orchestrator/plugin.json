@@ -1221,7 +1221,8 @@
   },
   "opens": "main",
   "cli": {
-    "recovery-watchdog": "recovery-watchdog.mjs"
+    "watchdog": "watchdog.mjs",
+    "recovery-watchdog": "watchdog/sessions.mjs"
   },
   "buildHooks": "pipeline2-hook.mjs"
 }
