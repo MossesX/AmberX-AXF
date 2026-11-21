@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10197,
- "updatedAt": "2026-11-21T00:08:55.015Z",
+ "rev": 10198,
+ "updatedAt": "2026-11-21T00:09:08.259Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344681,7 +344681,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T00:08:47.687Z",
+   "updatedAt": "2026-11-21T00:08:57.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -344831,6 +344831,10 @@
     {
      "text": "Headless run axf-fix-main-ci-red-after-s16-s7-hand---s3--joey: brief only · start 11.2K tokens ($0.04) · cost $11.07 · 120 turns · 6 tools, MCP none",
      "at": "2026-11-21T00:08:47.687Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $11.07",
+     "at": "2026-11-21T00:08:51.824Z"
     }
    ],
    "approvals": [],
@@ -345072,11 +345076,11 @@
      "done": true,
      "doneAt": "2026-11-21T00:08:11.808Z",
      "note": "",
-     "rev": 7,
+     "rev": 8,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-21T00:08:12.194Z",
-     "statusAt": "2026-11-20T22:57:42.780Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-21T00:08:57.166Z",
+     "statusAt": "2026-11-21T00:08:57.121Z",
+     "statusBy": "headless",
      "attempt": 1,
      "statusLog": [
       {
@@ -345112,9 +345116,16 @@
        "by": "orchestrator",
        "attempt": 1,
        "why": "axf-fix-main-ci-red-after-s16-s7-hand---s3--joey on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-21T00:08:57.121Z",
+       "by": "headless",
+       "attempt": 1,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s3",
      "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s3",
@@ -345313,7 +345324,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 103,
+   "rev": 105,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
