@@ -111,7 +111,30 @@ cron and runs one pass, through axHub `vps.run`) and **Builds the watchdog gave 
 | Voice / actions | `watchdog.status`, `watchdog.run[:<build>]` |
 | Deep link | `build-orchestrator.focus:watchdog[?build=<id>]` (console_open `build-orchestrator` focus `watchdog`; console_show `build-orchestrator/watchdog`) |
 
+## Emergency builds
+
+Two emergency slots beside the orchestrator's (Brett, Nov 20 2026), for work he rams through by hand.
+
+- **Start.** Only from Brett's own signed-in console: **Send to emergency** on a build's expanded row in the builds
+  table (`POST pipeline/emergency {id}`), or in Plan Studio 2.0's Send dialog. The server takes it from a signed-in hub
+  admin's session only; the console token (REST commands, MCP, the CLI, voice) and every session get 403. The button is
+  never a toolbar button, a registered action or a console-control target, so nothing can press it for him.
+- **What it does.** The build is tagged `emergency: { at, by }` and gets an emergency grant on the VPS hard limit. It
+  skips the one-active-build line (`pipeline2.mjs` emergency lane) and its steps go out to the emergency slot pool:
+  `emergencySlots` places (default 2), counted apart from `maxBuilds` (Settings → Plugins → Agent cap). The orchestrator
+  never uses those slots for an ordinary build.
+- **Landing.** The lander takes emergency builds first. Any build about to merge on a head that lacks main's newest
+  code pulls main again and re-runs CI first (`framework/spec/PIPELINE-2.md` rules 8 and 9).
+- **Table.** An Emergency badge on the row; emergency builds in flight sort to the top.
+- `GET pipeline/emergency` lists them; `POST pipeline/emergency/clear {id}` makes one ordinary again.
+  CLI: `node framework/cli/emergency-builds.mjs list | clear <build>` (`send` works only with Brett's console click).
+
 ## Tests
+
+`node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs` (emergency builds: the console-only start,
+the emergency lane beside the active build, the two pools) and `python3 …/server/test_emergency.py` (the routes: 403 for
+everything but Brett's signed-in click).
+
 
 `node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs` (pure rules and the CLI end to end on a scratch
 store with a fake launcher), `node …/test-watchdog.mjs` (the watchdog on a temp store, fake probe), `bash

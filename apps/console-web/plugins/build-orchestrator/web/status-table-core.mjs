@@ -37,6 +37,11 @@ export const LEGACY_BUILD = Object.freeze({ running: 'building', waiting: 'build
 const str = (v) => (typeof v === 'string' ? v : '');
 const num = (v) => (Number.isFinite(Number(v)) && Number(v) > 0 ? Math.floor(Number(v)) : 0);
 
+/** Sent to emergency by Brett (pipeline-2@1 `emergency: { at, by }`): the row carries the Emergency badge. */
+export const isEmergency = (b) => !!b && !!b.emergency && typeof b.emergency === 'object' && !!str(b.emergency.at);
+/** May this row still be sent to emergency: a Pipeline 2.0 build that has not landed and is not one already. */
+export const canSendEmergency = (r) => !!r && r.flow === 'pipeline-2' && !r.emergency && r.status !== 'landed';
+
 /** A status's label; failed carries its attempt ("failed, attempt 2"). */
 export function statusLabel(status, attempt = 0) {
   if (status === 'failed') return num(attempt) ? `failed, attempt ${num(attempt)}` : 'failed';
@@ -115,6 +120,7 @@ export function buildRow(b) {
   const pipe = b.pipeline && typeof b.pipeline === 'object' ? b.pipeline : {};
   return {
     id: str(b.id), title: str(b.title) || str(b.id), status, attempt: status === 'failed' ? attemptOf(b) : 0,
+    flow: str(b.flow), emergency: isEmergency(b), emergencyBy: isEmergency(b) ? str(b.emergency.by) : '',
     steps, done, total: steps.length,
     model: common(steps.map((s) => s.model)) || str(pipe.model) || str(pipe.planned?.model),
     account: common(steps.map((s) => s.account)) || str(pipe.account) || str(pipe.planned?.account),
@@ -124,10 +130,11 @@ export function buildRow(b) {
   };
 }
 
-/** Every table row of a store (builds@1 or orchestrator@1 state): newest change first. */
+/** Every table row of a store (builds@1 or orchestrator@1 state): emergency builds still in flight first, then newest change first. */
 export function tableRows(store) {
   const rows = (store?.builds ?? []).map(buildRow).filter(Boolean);
-  return rows.sort((a, c) => (c.updatedAt || c.at).localeCompare(a.updatedAt || a.at));
+  const urgent = (r) => (r.emergency && r.status !== 'landed' ? 1 : 0);
+  return rows.sort((a, c) => urgent(c) - urgent(a) || (c.updatedAt || c.at).localeCompare(a.updatedAt || a.at));
 }
 
 /** The values each toolbar filter offers, from the rows (accounts and models as seen on builds and steps). */

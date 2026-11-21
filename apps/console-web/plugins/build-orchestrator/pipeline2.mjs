@@ -23,6 +23,12 @@
  *                                        setting, default P2.MAX_ATTEMPTS) the give-up is final: the step stays failed
  *                                        and only the watchdog (its Fable escalation, or Brett) moves it on
  *
+ * Emergency builds (Brett, Nov 20 2026): a build Brett sent to emergency from his signed-in console (`emergency` on
+ * the build, framework/cli/emergency-builds.mjs) skips the line. It is split like any other, then goes straight to
+ * pulling-main whatever else is active, and its steps go out to the EMERGENCY slot pool (2 places, counted apart from
+ * the orchestrator's slots by the VPS hard limit and the slot queue). The orchestrator never puts an ordinary build's
+ * step in an emergency slot, and an emergency build never takes or waits for the one active place.
+ *
  * Triggers (more than one, so ready can never sit): the orchestrator tick (cron, every minute: orchestrator.mjs tick
  * runs pipeline.mjs tick, which calls advance(); `tick --build <id>` runs advance() for one build), the store change
  * event (build-hook@1 listener pipeline2-hook.mjs runs `advance` as soon as a Pipeline 2.0 build changes status or a
@@ -35,7 +41,8 @@
  * Environment (tests): AXF_PIPELINE_LAUNCHER, AXF_PIPELINE_WORKTREES, AXF_PIPELINE_WORKTREE_MODE=mkdir, AXF_P2_SLOTS
  * (slot count instead of agent-slots), AXF_P2_ACCOUNTS (JSON rows instead of the logins), AXF_P2_ALIVE (comma list of
  * live tmux sessions instead of tmux), AXF_P2_PARALLEL (steps at once instead of the stepsInParallel setting),
- * AXF_P2_MAX_ATTEMPTS (instead of the watchdog's maxAttempts).
+ * AXF_P2_MAX_ATTEMPTS (instead of the watchdog's maxAttempts), AXF_P2_EMERGENCY_SLOTS (emergency slot count, with
+ * AXF_P2_SLOTS).
  */
 import { spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -50,6 +57,7 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
+import { syncGrants } from '../../../../framework/cli/emergency-builds.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const REPO_ROOT = resolve(HERE, '../../../..');
@@ -153,10 +161,10 @@ function splitAll(store, env, out, only = '') {
 
 /* ------------------------------------------------------------------ one active build, then main into each step */
 
-/** The next build to become active: P0 first, then the oldest. Only when no build is active. */
+/** The next build to become active: P0 first, then the oldest. Only when no build is active. Emergency builds have their own lane. */
 function nextToActivate(builds) {
   const pr = (b) => ({ P0: 0, P1: 1, P2: 2, P3: 3 }[b.priority] ?? 2);
-  return builds.filter((b) => b.status === 'split' && !b.hidden).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
+  return builds.filter((b) => b.status === 'split' && !b.hidden && !P2.isEmergency(b)).sort((a, b) => pr(a) - pr(b) || String(a.createdAt).localeCompare(String(b.createdAt)))[0] ?? null;
 }
 
 /** Cut a step's worktree from fresh origin/main (or pull main into the one already there). Outside any launch. */
@@ -227,12 +235,16 @@ export function attemptCap(env = process.env) {
   try { const j = JSON.parse(readFileSync(join(env.AXF_WATCHDOG2_DIR || join(PL.pipeDir(), 'watchdog2'), 'settings.json'), 'utf8')); const n = Number(j?.maxAttempts); return Number.isFinite(n) && n >= 1 ? Math.floor(n) : P2.MAX_ATTEMPTS; } catch { return P2.MAX_ATTEMPTS; }
 }
 const inSlot = (s) => ['sending', 'building'].includes(s.status);
-function freeSlots(env) {
+/** The slot pool a build's steps go to: `emergency` for an emergency build, else the orchestrator's `builds` pool. */
+export const poolOf = (b) => (P2.isEmergency(b) ? 'emergency' : 'builds');
+/** Free slots in one pool. The pools never lend: an ordinary step never gets an emergency slot, nor the other way round. */
+function freeSlots(env, pool = 'builds') {
   if (env.AXF_P2_SLOTS) {
-    const used = p2Builds(loadStore()).flatMap((b) => b.steps).filter((s) => ['sending', 'building'].includes(s.status)).length;
-    return Math.max(0, Number(env.AXF_P2_SLOTS) - used);
+    const used = p2Builds(loadStore()).filter((b) => poolOf(b) === pool).flatMap((b) => b.steps).filter(inSlot).length;
+    const cap = pool === 'emergency' ? Number(env.AXF_P2_EMERGENCY_SLOTS ?? 2) || 0 : Number(env.AXF_P2_SLOTS);
+    return Math.max(0, cap - used);
   }
-  try { return Math.max(0, PL.slotsNow().free); } catch { return 0; }
+  try { const sl = PL.slotsNow(); return Math.max(0, (pool === 'emergency' ? sl.emergency?.free : sl.free) ?? 0); } catch { return 0; }
 }
 
 function briefOf(b, s) {
@@ -290,9 +302,10 @@ const failedOn = (s) => (s.statusLog ?? []).filter((l) => l.status === P2.FAILED
 function dispatch(b, env, out, { launch = launchStep } = {}) {
   const cap = parallelCap(env); const maxAttempts = attemptCap(env);
   const running = b.steps.filter(inSlot).length;
-  let free = Math.min(freeSlots(env), cap - running);
+  const pool = poolOf(b);
+  let free = Math.min(freeSlots(env, pool), cap - running);
   for (const s of b.steps.filter((x) => P2.gaveUp(x, maxAttempts) && ['ready', 'sending', 'building'].includes(x.failedFrom))) out.waits.push({ id: b.id, step: s.id, why: `gave up after attempt ${s.attempt} of ${maxAttempts}: the watchdog escalates it or Brett decides; never relaunched here` });
-  if (free <= 0) { out.waits.push({ id: b.id, why: running >= cap ? `${running} of ${cap} steps already running (stepsInParallel)` : 'no free slot: the next step goes out when one frees' }); return; }
+  if (free <= 0) { out.waits.push({ id: b.id, why: running >= cap ? `${running} of ${cap} steps already running (stepsInParallel)` : pool === 'emergency' ? 'no free emergency slot: the next step goes out when one frees' : 'no free slot: the next step goes out when one frees' }); return; }
   let accounts = accountRows(env);
   const refusedNow = new Set(); // an account that refused a launch in this pass gets no other step of it
   for (const s0 of b.steps) {
@@ -410,9 +423,10 @@ function sweepEnded(b, env, out) {
  */
 export function advance({ env = process.env, launch = launchStep, build = '' } = {}) {
   if (!PL) throw new Error('pipeline2: pipeline.mjs is not bound (import it, or call ready() first)');
-  const out = { split: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', ...(build ? { build } : {}) };
+  const out = { split: [], pulled: [], ready: [], launched: [], failed: [], ended: [], waits: [], active: '', emergency: [], ...(build ? { build } : {}) };
   let store = loadStore();
   splitAll(store, env, out, build);
+  advanceEmergency(env, out, { launch, build });
   store = loadStore();
   let { active, others } = P2.activeBuild(p2Builds(store));
   for (const o of others) { out.waits.push({ id: o.id, why: `one active build at a time: ${active.id} is active (this one is a breach, left for the watchdog)` }); logLine({ event: 'active-breach', build: o.id, active: active.id }); }
@@ -426,20 +440,47 @@ export function advance({ env = process.env, launch = launchStep, build = '' } =
   if (build && active.id !== build) return out;
   // worktrees, tmux and the logins are on the VPS host: elsewhere (the console's container) the pass stops after the split
   if (!env.AXF_P2_ACCOUNTS && PL.seesAccounts && !PL.seesAccounts(env)) { out.waits.push({ id: active.id, why: 'main pulls and launches run on the VPS host (the next host tick)' }); return out; }
-  if (at(active, 'pulling-main', 'assigning-models')) prepare(active, env, out);
-  active = loadStore().builds.find((x) => x.id === active.id);
-  sweepEnded(active, env, out);
-  active = loadStore().builds.find((x) => x.id === active.id);
-  if (at(active, 'ready', 'sending', 'building')) dispatch(active, env, out, { launch });
-  const fin = loadStore().builds.find((x) => x.id === active.id);
-  if (at(fin, 'building', 'sending') && fin.steps.length && fin.steps.every((s) => s.status === 'completed')) move(fin.id, 'build-complete', { why: 'every step completed' });
+  work(active, env, out, { launch });
   return out;
+}
+
+/** One build past the line: main into its steps, ended sessions swept, steps out to its slot pool, build-complete. */
+function work(b0, env, out, { launch }) {
+  let b = b0;
+  if (at(b, 'pulling-main', 'assigning-models')) prepare(b, env, out);
+  b = loadStore().builds.find((x) => x.id === b.id);
+  sweepEnded(b, env, out);
+  b = loadStore().builds.find((x) => x.id === b.id);
+  if (at(b, 'ready', 'sending', 'building')) dispatch(b, env, out, { launch });
+  const fin = loadStore().builds.find((x) => x.id === b.id);
+  if (at(fin, 'building', 'sending') && fin.steps.length && fin.steps.every((s) => s.status === 'completed')) move(fin.id, 'build-complete', { why: 'every step completed' });
+}
+
+/**
+ * The emergency lane: every emergency build that is split goes to pulling-main at once (no waiting for the active
+ * place) and is worked on beside the active build, its steps in the emergency slot pool. Grants of builds that are no
+ * longer live emergency builds are taken back first. From build-complete on the lander has it (front of its line).
+ */
+function advanceEmergency(env, out, { launch, build = '' }) {
+  try { syncGrants(loadStore()); } catch (e) { logLine({ event: 'emergency-grants', error: str(e.message) }); }
+  for (const e0 of P2.emergencyBuilds(p2Builds(loadStore()))) {
+    if (build && e0.id !== build) continue;
+    let e = e0;
+    if (e.status === 'split') {
+      if (!move(e.id, 'pulling-main', { why: 'emergency build: skips the line' })) continue;
+      logLine({ event: 'emergency-activated', build: e.id }); say('orchestrator', 'done', `${e.id} is an emergency build: it skips the line and builds in the emergency slots.`, e.id);
+      e = loadStore().builds.find((x) => x.id === e.id);
+    }
+    out.emergency.push(e.id);
+    if (!env.AXF_P2_ACCOUNTS && PL.seesAccounts && !PL.seesAccounts(env)) { out.waits.push({ id: e.id, why: 'main pulls and launches run on the VPS host (the next host tick)' }); continue; }
+    work(e, env, out, { launch });
+  }
 }
 
 /** The table's view: every Pipeline 2.0 build with its label and steps. */
 export function statusView(store = loadStore()) {
   const builds = p2Builds(store);
-  return { active: P2.activeBuild(builds).active?.id ?? '', builds: builds.map((b) => ({ id: b.id, title: b.title, status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
+  return { active: P2.activeBuild(builds).active?.id ?? '', emergency: P2.emergencyBuilds(builds).map((b) => b.id), builds: builds.map((b) => ({ id: b.id, title: b.title, ...(P2.isEmergency(b) ? { emergency: true } : {}), status: b.status, label: P2.labelOf(b.status, b.attempt), at: b.statusAt, by: b.statusBy,
     steps: b.steps.map((s) => ({ id: s.id, status: s.status ?? '', label: P2.labelOf(s.status, s.attempt, 'step'), model: s.model, account: s.account ?? '', slot: s.slot ?? '', prNumber: s.prNumber ?? null })) })) };
 }
 

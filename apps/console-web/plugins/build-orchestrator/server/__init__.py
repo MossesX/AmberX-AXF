@@ -707,6 +707,55 @@ async def pipeline_unqueue(request: Request) -> dict[str, Any]:
     return _pipeline("unqueue", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80])
 
 
+EMERGENCY_CLI = ROOT / "framework" / "cli" / "emergency-builds.mjs"
+EMERGENCY_ONLY_BRETT = ("Only Brett sends a build to emergency, from his own signed-in console (Build orchestrator or Plan Studio 2.0). "
+                        "The console token, MCP, voice and sessions cannot.")
+
+
+def _emergency(*args: str, approver: str = "") -> dict[str, Any]:
+    """Run framework/cli/emergency-builds.mjs. `approver` (Brett's click) is the only way AXF_APPROVER is ever set."""
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if approver:
+        env.update(AXF_APPROVER=approver, AXF_APPROVER_VIA="console")
+    proc = subprocess.run(["node", str(EMERGENCY_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=60, env=env)
+    out = proc.stdout.strip().splitlines()
+    try:
+        res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        res = {"ok": False, "error": (proc.stderr or proc.stdout).strip()[-600:]}
+    if not res.get("ok"):
+        raise HTTPException(403 if proc.returncode == 3 else 400 if proc.returncode == 2 else 500, str(res.get("error") or "emergency failed")[:400])
+    return res
+
+
+@router.get("/pipeline/emergency")
+def pipeline_emergency_list(request: Request) -> dict[str, Any]:
+    """The emergency builds (sent by Brett: they skip the line, build in the 2 emergency slots and land first), each
+    with its status and whether its slot grant is on file. `canSend` = this request is Brett's own signed-in console."""
+    return {**_emergency("list"), "canSend": bool(brett_click(request))}
+
+
+@router.post("/pipeline/emergency")
+async def pipeline_emergency(request: Request) -> dict[str, Any]:
+    """{id}: send a Pipeline 2.0 build to emergency. Brett only, from his own signed-in console session: the console
+    token (MCP, REST commands, voice) and every session are refused with 403. The build is tagged emergency, skips the
+    one-active-build line, builds in the emergency slot pool (2 places beside the orchestrator's) and lands first."""
+    who = brett_click(request)
+    if not who:
+        raise HTTPException(403, EMERGENCY_ONLY_BRETT)
+    body = await _json_body(request)
+    _table_cache.clear()
+    return _emergency("send", _build_id(body.get("id")), approver=who)
+
+
+@router.post("/pipeline/emergency/clear")
+async def pipeline_emergency_clear(request: Request) -> dict[str, Any]:
+    """{id}: an emergency build becomes an ordinary build again (the tag and the slot grant go; running sessions finish)."""
+    body = await _json_body(request)
+    _table_cache.clear()
+    return _emergency("clear", _build_id(body.get("id")))
+
+
 BUILD_ACTIONS = ("unqueue", "hold", "release", "archive", "unarchive", "delete", "restore")
 
 

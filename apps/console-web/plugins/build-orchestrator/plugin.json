@@ -486,6 +486,52 @@
         "output": "{ id, status }"
       },
       {
+        "id": "pipeline-emergency-list",
+        "route": "GET /pipeline/emergency",
+        "title": "Emergency builds",
+        "description": "The builds Brett sent to emergency (they skip the line, build in the 2 emergency slots and land first), each with its status and whether its slot grant is on file.",
+        "readOnly": true,
+        "output": "{ builds: [{ id, title, status, emergency: { at, by }, granted }], canSend }"
+      },
+      {
+        "id": "pipeline-emergency",
+        "route": "POST /pipeline/emergency",
+        "title": "Send a build to emergency",
+        "description": "Brett only, from his own signed-in console session: the console token (this command through REST, MCP, the CLI or voice) is refused with 403. Tags a Pipeline 2.0 build as emergency: it skips the one-active-build line, builds in the emergency slot pool and lands first.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, emergency: { at, by }, already }"
+      },
+      {
+        "id": "pipeline-emergency-clear",
+        "route": "POST /pipeline/emergency/clear",
+        "title": "Make an emergency build ordinary again",
+        "description": "Removes the emergency tag and the emergency slot grant. Sessions already running finish; the build waits its turn like any other.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "id"
+          ]
+        },
+        "output": "{ id, cleared }"
+      },
+      {
         "id": "pipeline-build-action",
         "route": "POST /pipeline/action",
         "title": "Hold, archive, delete or restore builds",
