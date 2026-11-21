@@ -131,13 +131,18 @@ unpaired ──issue──▶ pending ──claim──▶ paired ──revoke�
 ways, Brett Nov 8 2026). `ttl` defaults per command (`TTL`: open_url 60 s, notify 60 s, approval = `secondsLeft` or
 600 s, recorder.start 120 s, recorder.stop/status 30 s, voice = `timeoutSeconds` + 10 s).
 
-`open_url` with `where: overlay` (the default) goes to the AXF Console app's floating overlay first when that app is
-installed with its toolbar on (console-overlay@1, `apps/console-droid/OVERLAY.md` → "With Phone Connect"); the result
-then says `how: "console-overlay"`. Otherwise, and always for `where: browser`, the phone opens the page itself, in
-Chrome for `browser: chrome` (the default browser when Chrome is not installed), and brings it to the front:
-`how: "direct"` when Android lets the app start it (the app is in front, or Brett allowed it to display over other
-apps), else `how: "notification"`: a high-priority notification that opens the page with one tap (Android blocks
-activity starts from the background).
+`open_url` with `where: overlay` (the default) goes to the AXF Console app first when that app is installed
+(console-overlay@1, `apps/console-droid/OVERLAY.md` → "With Phone Connect"): `how: "console-overlay"` when its
+floating toolbar took the page, `how: "console-app"` when the console app itself came to the front on it, started
+from the background. "Display over other apps" on either app is enough for that (Android's exemption from the
+background-start block), and the console app answers only once the page is on screen. Otherwise, and always for
+`where: browser`, the phone opens the page itself, in Chrome for `browser: chrome` (the default browser when Chrome
+is not installed), and brings it to the front: `how: "direct"` when Android lets the app start it (the app is in
+front, or Brett allowed it to display over other apps). The tap-to-open notification is only the fallback
+(Nov 21 2026, build `phone-connect-open-straight-phone-no-tap`): `how: "notification"` with `opened: false`,
+`notified: true` and `why: "no-permission"` (no app may start from the background) or `why: "launch-failed"` (a
+start was allowed and nothing came up). The console wake (`console-commands` `wake.py`) asks for `where: overlay`,
+so a closed console opens in the console app without a tap.
 
 **Approvals pop up on the phone** (Nov 21 2026). The console server watches the hub's approvals feed itself
 (`approvals.py` in the plugin, through approvals-relay@1 `pending()`: the console's owner sign-in, read only), so it

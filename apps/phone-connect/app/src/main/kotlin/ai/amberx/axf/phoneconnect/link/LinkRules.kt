@@ -56,6 +56,19 @@ object LinkRules {
      */
     fun wantsOverlay(where: String?): Boolean = where != "browser"
 
+    /** How long a start of the console app may take to show before it counts as held back by Android. */
+    const val FRONT_WAIT_MS = 2_000L
+
+    /** browser.open's `how` when the console app took the page: in its expanded overlay, or the app itself in front. */
+    fun consoleHow(inOverlay: Boolean): String = if (inOverlay) "console-overlay" else "console-app"
+
+    /**
+     * Why browser.open ended as a tap-to-open notification (the result's `why`): this app was in the background
+     * without "display over other apps" (`no-permission`), or it was allowed to start the page and nothing came up
+     * (`launch-failed`).
+     */
+    fun notifiedWhy(mayStart: Boolean): String = if (mayStart) "launch-failed" else "no-permission"
+
     /** browser.open's `browser`: "chrome" asks for Chrome (the default browser when Chrome is not installed). */
     fun wantsChrome(browser: String?): Boolean = browser == "chrome"
 

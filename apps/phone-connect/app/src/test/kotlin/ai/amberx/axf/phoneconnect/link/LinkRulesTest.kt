@@ -27,6 +27,14 @@ class LinkRulesTest {
         assertFalse(LinkRules.wantsOverlay("browser"))
     }
 
+    @Test fun howAPageOpened() {
+        assertEquals("console-overlay", LinkRules.consoleHow(true))
+        assertEquals("console-app", LinkRules.consoleHow(false))
+        // the tap-to-open notification is only the fallback, and it says why
+        assertEquals("no-permission", LinkRules.notifiedWhy(false))
+        assertEquals("launch-failed", LinkRules.notifiedWhy(true))
+    }
+
     @Test fun openable() {
         assertTrue(LinkRules.openable("https://console.amberxai.com/?x=1"))
         assertFalse(LinkRules.openable("intent://scan/#Intent;end"))

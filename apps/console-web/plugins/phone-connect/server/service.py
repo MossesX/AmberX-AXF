@@ -558,6 +558,7 @@ def presence(at: str = "") -> dict[str, Any]:
 # ---- open a page and bring it to the front (MCP `phone_open_url`)
 
 BROWSERS = E.COMMANDS["open_url"]["arguments"]["browser"]["enum"]
+WHERES = E.COMMANDS["open_url"]["arguments"]["where"]["enum"]
 OPEN_WAIT_S = 8.0
 HOW_WORDS = {"direct": "It is open and in front.", "console-overlay": "It is open in the console app's overlay.",
              "notification": "Android would not let it open by itself, so a high-priority notification is on the phone: one tap opens it.",
@@ -695,8 +696,10 @@ class PhoneCapability:
             return None
         args = dict(arguments or {})
         if cmd == "open_url":
-            # a caller that names a browser wants the page in that browser (chrome | default), in front; else the overlay first
-            args = {"url": str(args.get("url") or ""), "where": "browser" if args.get("browser") else "overlay",
+            # a caller that names only a browser wants the page in that browser (chrome | default), in front; one that
+            # says where: overlay gets the console app first (its overlay, or the app in front), the browser after it
+            where = args.get("where") if args.get("where") in WHERES else "browser" if args.get("browser") else "overlay"
+            args = {"url": str(args.get("url") or ""), "where": where,
                     **({"browser": args["browser"]} if args.get("browser") in BROWSERS else {})}
         else:
             args = {}
