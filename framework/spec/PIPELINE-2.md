@@ -85,6 +85,23 @@ status it failed in, retry, notBefore…; builds@1 builds keep done-means-merged
 5. **Status, never location.** The watchdog, lander, rules and gates read and act on these statuses, never on tabs,
    queues or which file a build is in.
 6. **Leaving the flow.** `archived` (or a soft delete) removes a build from the table; that is the only way out.
+8. **Emergency builds** (Brett, Nov 20 2026). A build carrying `emergency: { at, by }` was sent to emergency by Brett
+   from his own signed-in console (`framework/cli/emergency-builds.mjs`: the console server's `AXF_APPROVER` +
+   `AXF_APPROVER_VIA=console` for his click; a session, an agent, the console token, MCP, voice and an axHub approval
+   are refused). It is the one exception to rule 4:
+   - **The line.** It never waits for the active place and never holds it: once `split` it goes to `pulling-main` at
+     once and runs beside the active build (`emergencyBuilds`; `activeBuild` leaves it out, so it is never a breach).
+   - **Slots.** Its steps go to the emergency slot pool: `emergencySlots` places (default 2) counted apart from the hard
+     limit's `maxBuilds` by `framework/cli/build-limit.mjs` and the slot queue (`framework/cli/agent-slots.mjs`). A
+     session is in that pool when its name is `axf-<build>--<step>` of a build holding an emergency grant
+     (`grantEmergency`, owner only). The pools never lend: the orchestrator never uses an emergency slot, an emergency
+     build never takes an orchestrator slot. The host runs at most `maxBuilds + emergencySlots` builds.
+   - **The merge line.** The lander picks emergency builds first (oldest tag first), ahead of a build already landing.
+9. **Never merge a stale head.** Right before any merge, emergency or not, the PR must hold main's newest code: when
+   main moved after CI went green (an emergency build landed, anything else merged; status-only commits do not count),
+   the lander pulls the newest main into the PR (`landing.mainPull { head, at }`), a code conflict goes to a fix
+   session on Fable, CI runs again on that head, and only then it merges. So every build that finishes after an
+   emergency landing re-pulls main and re-runs CI before its own merge.
 
 ## Orchestrator flow (status core)
 

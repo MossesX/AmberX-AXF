@@ -5,7 +5,8 @@
  *
  * Fields the lander writes (Pipeline 2.0 contract; the builds@1 schema itself belongs to p2-status-core):
  *   build  status, statusAt, statusBy, statusLog[{ status, at, by, attempt?, why? }], attempt, failure, pr,
- *          landing { split, merged[pr], closed[pr], reruns { head, n }, rules { head, ok, failing }, ciKick { head, at } }
+ *          landing { split, merged[pr], closed[pr], reruns { head, n }, rules { head, ok, failing }, ciKick { head, at },
+ *                    mainPull { head, at } (main pulled again before the merge) }
  *   step   status, prNumber, statusAt, statusBy, statusLog[…]
  *          mergedAt, landed { pr, sha, mergedAt, ci, ciAt } with `landed` (done-means-merged@1 evidence); failedFrom with `failed`
  * applyChange() is pure; makeStore() binds it to the real store, memoryStore() to a list (tests, dry runs).

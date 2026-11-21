@@ -234,7 +234,10 @@ export function plan(issue, { memory = {}, settings = normSettings(), now = Date
       }
       if (issue.minutes < S.retryAfterMin) return { action: 'wait', key: k, why: 'retry not due yet' };
       if (issue.kind === 'build-failed' && ACTIVE_BUILD.includes(issue.failedFrom)) {
-        const other = (store?.builds ?? []).find((b) => live(b) && b.id !== issue.build && b.status !== FAILED && ACTIVE_BUILD.includes(b.status));
+        // emergency builds run beside the active build: one never waits for the active place, and is never the build waited for
+        const emergency = (b) => !!b?.emergency?.at;
+        const mine = (store?.builds ?? []).find((b) => b.id === issue.build);
+        const other = emergency(mine) ? null : (store?.builds ?? []).find((b) => live(b) && b.id !== issue.build && b.status !== FAILED && ACTIVE_BUILD.includes(b.status) && !emergency(b));
         if (other) return { action: 'wait', key: k, why: `${other.id} is the active build` };
       }
       const r = { action: 'retry', key: k, attempt: issue.attempt + 1, to: issue.failedFrom, why: `retry forward at ${issue.failedFrom}, attempt ${issue.attempt + 1}` };

@@ -38,6 +38,14 @@ export const LANDING_GROUP = Object.freeze(BUILD_FLOW.slice(BUILD_FLOW.indexOf('
 export const RELAUNCH_FROM = Object.freeze(['ready', 'sending', 'building']);
 /** A build that failed while active still holds the one active place (its retry continues forward). */
 export const holdsActive = (b) => !!b && b.flow === FLOW && !b.deleted && (ACTIVE.includes(b.status) || (b.status === FAILED && ACTIVE.includes(b.failedFrom)));
+/**
+ * Emergency builds (Brett, Nov 20 2026): a build Brett sent to emergency from his signed-in console carries
+ * `emergency: { at, by }`. It skips the line: it never waits for the active place and never holds it (so it runs beside
+ * the active build, in the emergency slot pool), and the lander takes it before every other build.
+ */
+export const isEmergency = (b) => !!b && !!b.emergency && typeof b.emergency === 'object' && !!str(b.emergency.at);
+/** The tag as stored: { at, by } or null. */
+export const normEmergency = (e) => (e && typeof e === 'object' && !Array.isArray(e) && str(e.at) ? { at: str(e.at, 40), by: str(e.by, 80) } : null);
 /** A Pipeline 2.0 build may also be archived (removed from the table); that is the one way out of the flow. */
 export const EXIT = 'archived';
 
@@ -173,8 +181,9 @@ const headAt = (v) => { const x = obj(v); return x ? { head: str(x.head, 64), at
 
 /**
  * A Pipeline 2.0 build's landing record (deploy/lander): { split, merged[pr], closed[pr], reruns { head, n },
- * rules { head, ok, failing, fixed, skipped, at }, ciKick { head, at }, fullKick { head, at }, lastMerge { pr, sha, head,
- * at } (the last PR merged: the evidence `landed` carries) }. A cleared part (null)
+ * rules { head, ok, failing, fixed, skipped, at }, ciKick { head, at }, fullKick { head, at }, mainPull { head, at } (main
+ * moved after CI went green: the newest main was pulled into the PR again and CI runs on that head), lastMerge { pr, sha,
+ * head, at } (the last PR merged: the evidence `landed` carries) }. A cleared part (null)
  * is left out. → the record, or null when there is nothing to keep.
  */
 export function normLanding(l) {
@@ -184,7 +193,7 @@ export function normLanding(l) {
   for (const k of ['merged', 'closed']) { const v = nums(x[k]); if (v.length) out[k] = v; }
   const rr = obj(x.reruns); if (rr && str(rr.head)) out.reruns = { head: str(rr.head, 64), n: Math.max(0, Math.floor(Number(rr.n) || 0)) };
   const ru = obj(x.rules); if (ru && str(ru.head)) out.rules = { head: str(ru.head, 64), ok: ru.ok === true, failing: strs(ru.failing), fixed: strs(ru.fixed), ...(ru.skipped === true ? { skipped: true } : {}), at: str(ru.at, 40) };
-  for (const k of ['ciKick', 'fullKick']) { const v = headAt(x[k]); if (v?.head) out[k] = v; }
+  for (const k of ['ciKick', 'fullKick', 'mainPull']) { const v = headAt(x[k]); if (v?.head) out[k] = v; }
   const lm = obj(x.lastMerge); if (lm && str(lm.sha)) out.lastMerge = { pr: nums([lm.pr])[0] ?? 0, sha: str(lm.sha, 64), head: str(lm.head, 64), at: str(lm.at, 40) };
   return Object.keys(out).length ? out : null;
 }
@@ -306,10 +315,22 @@ export function pinnedAccount(accounts = [], step = {}, { model = step?.model ||
   return pickAccount((accounts || []).filter((a) => a && a.name === name), { model, exclude, now });
 }
 
-/** The one build allowed to be active, or null; `others` = every other build that also holds the place (a breach). */
+/**
+ * The one build allowed to be active, or null; `others` = every other build that also holds the place (a breach).
+ * Emergency builds are left out: they run beside the active build and are never a breach (emergencyBuilds lists them).
+ */
 export function activeBuild(builds = []) {
-  const act = builds.filter(holdsActive).sort((a, b) => String(a.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? a.statusAt).localeCompare(String(b.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? b.statusAt)));
+  const act = builds.filter((b) => holdsActive(b) && !isEmergency(b)).sort((a, b) => String(a.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? a.statusAt).localeCompare(String(b.statusLog?.find((l) => ACTIVE.includes(l.status))?.at ?? b.statusAt)));
   return { active: act[0] ?? null, others: act.slice(1) };
+}
+
+/**
+ * The emergency builds the dispatcher works on now, oldest tag first: split and waiting (activated at once, whatever
+ * else is active), or already past the main pull. Before `split` an emergency build is split like any other.
+ */
+export function emergencyBuilds(builds = []) {
+  return builds.filter((b) => isEmergency(b) && b.flow === FLOW && !b.deleted && !b.hidden && (b.status === 'split' || holdsActive(b)))
+    .sort((a, b) => str(a.emergency.at).localeCompare(str(b.emergency.at)) || str(a.id).localeCompare(str(b.id)));
 }
 
 /* ------------------------------------------------------------------ plan-build@1: what Plan Studio may send */

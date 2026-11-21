@@ -10,7 +10,7 @@ import { DragLayer, registerZone, startDrag, type DropPos } from '@console/axf/l
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as tc from './tree-core.mjs';
 import type { Item, Kind, Link, State } from './tree-core.mjs';
-import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
+import { CTX_TARGET, DIALOGS, DND_ZONE, KEYS, LINK_ICON, LINK_LABEL, TOP, addItem, deleteItem, download, editItem, exportText, linkAction, linkItem, moveItem, requestFocus, reload, sayCommand, select, sendToEmergency, sendToBuild, setCollapsed, tookFocus, undoDelete, unlinkItem, useTree, type BuildPreview, type OpResult } from './api';
 import * as lc from './layout-core.mjs';
 import { LayoutSwitcher, SectionLayout, showSection, type SectionDef } from './layout';
 import { canListen, isEnd, listenOnce, micLease, speakOut } from './voice';
@@ -374,6 +374,7 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
   const [preview, setPreview] = useState<BuildPreview | null>(null);
   const [err, setErr] = useState('');
   const [buildId, setBuildId] = useState('');
+  const [armed, setArmed] = useState(false);
   useEffect(() => { if (it) void sendToBuild(it.id, { preview: true }).then((r) => { if ('preview' in r && r.preview) setPreview(r as BuildPreview); else setErr((r as OpResult).error || 'no preview'); }, (e: Error) => setErr(e.message)); }, [it?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!state || !it) return <Note tone="warning">That item is gone.</Note>;
   const send = () => void sendToBuild(it.id, { buildId: buildId.trim() || undefined }).then((r) => {
@@ -382,9 +383,21 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
     rt.toast(o.say ?? 'Sent.', 'success', 'Plan Studio 2.0'); close();
     if (o.build) rt.dispatch(`build-orchestrator.open:${o.build.id}`);
   }, (e: Error) => setErr(e.message));
+  // Send to emergency: never a registered action, and the button's words sit in a <span> so it is no console-control
+  // target either (only buttons with plain-text words are): nothing outside the page (MCP, voice, a remote press) can
+  // press it for Brett. Two clicks: the first arms it, the second sends. The server takes it from his own signed-in
+  // console session only.
+  const sendEmergency = () => {
+    if (!armed) { setArmed(true); return; }
+    void sendToEmergency(it.id, { buildId: buildId.trim() || undefined }).then((r) => {
+      if (!r.ok) { setErr(r.error || 'not sent'); setArmed(false); return; }
+      rt.toast(r.say ?? 'Sent to emergency.', 'success', 'Plan Studio 2.0'); close();
+      if (r.build) rt.dispatch(`build-orchestrator.open:${r.build.id}`);
+    }, (e: Error) => { setErr(e.message); setArmed(false); });
+  };
   return (
     <div className={`${B}__dialog fx-stack`}>
-      <p className="fx-muted">“{it.title}” becomes one pending build in the Build orchestrator. Its open steps (any depth) go along as planning notes: Fable designs the real build steps, each with its minutes and model. The item gets a link back to the build.</p>
+      <p className="fx-muted">“{it.title}” becomes one pending build in the Build orchestrator. Its open steps (any depth) go along as planning notes: Fable designs the real build steps, each with its minutes and model. The item gets a link back to the build. Send to emergency (Brett only) sends the same build past the line: it builds in the 2 emergency slots and lands first.</p>
       {err && <Note tone="danger">{err}</Note>}
       {preview && (
         <>
@@ -396,6 +409,7 @@ export function BuildDialog({ props, close }: { props: Record<string, unknown>; 
       )}
       <div className={`${B}__editrow`}>
         <Button tone="primary" icon="rocket" disabled={!preview} onClick={send}>Send to the orchestrator</Button>
+        <Button tone={armed ? 'danger' : undefined} icon="zap" disabled={!preview || !!preview.errors?.length} onClick={sendEmergency}><span>{armed ? 'Confirm: send to emergency' : 'Send to emergency'}</span></Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
       </div>
     </div>

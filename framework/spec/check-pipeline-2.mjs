@@ -69,6 +69,20 @@ const fixture = {
     { status: 'failed', failedFrom: 'building', attempt: 5 }, { status: 'failed', failedFrom: 'sending', attempt: 21 },
     { status: 'failed', failedFrom: 'pulling-main', attempt: 1 }, { status: 'building' }, { status: 'completed' },
   ].map((step) => ({ step, sendable: P.sendable(step), gaveUp: P.gaveUp(step) })),
+  // emergency builds: beside the one active build (never the active one, never a breach), oldest tag first
+  emergency: (() => {
+    const tag = (at) => ({ at, by: 'Brett' });
+    const builds = [
+      { id: 'active', flow: 'pipeline-2', status: 'building', statusAt: '2' },
+      { id: 'e-late', flow: 'pipeline-2', status: 'split', statusAt: '3', emergency: tag('2026-11-20T10:05:00.000Z') },
+      { id: 'e-first', flow: 'pipeline-2', status: 'failed', failedFrom: 'running-ci', statusAt: '4', emergency: tag('2026-11-20T10:00:00.000Z') },
+      { id: 'e-unsplit', flow: 'pipeline-2', status: 'pending', statusAt: '5', emergency: tag('2026-11-20T10:01:00.000Z') },
+      { id: 'e-landed', flow: 'pipeline-2', status: 'landed', statusAt: '6', emergency: tag('2026-11-20T09:00:00.000Z') },
+      { id: 'untagged', flow: 'pipeline-2', status: 'split', statusAt: '1', emergency: { by: 'someone' } },
+    ];
+    const a = P.activeBuild(builds);
+    return { builds, active: a.active?.id ?? null, others: a.others.map((b) => b.id), emergency: P.emergencyBuilds(builds).map((b) => b.id), tags: builds.map((b) => P.normEmergency(b.emergency)) };
+  })(),
 };
 if (process.argv.includes('--write')) { writeFileSync(FIX, `${JSON.stringify(fixture, null, 1)}\n`); console.log(`wrote ${FIX}`); process.exit(0); }
 let fx = null; try { fx = JSON.parse(readFileSync(FIX, 'utf8')); } catch { ok(false, `fixture ${FIX} missing: run with --write`); }
@@ -109,6 +123,12 @@ eq([out.store.builds[0].status, out.refused.length], ['building', 1], 'store: a 
 const act = P.activeBuild([{ id: 'a', flow: 'pipeline-2', status: 'building', statusAt: '2' }, { id: 'b', flow: 'pipeline-2', status: 'split', statusAt: '1' }, { id: 'c', flow: 'pipeline-2', status: 'failed', failedFrom: 'running-ci', statusAt: '3' }]);
 eq([act.active?.id, act.others.map((x) => x.id)], ['a', ['c']], 'active: the first active one, the breach listed');
 ok(!P.holdsActive({ flow: 'pipeline-2', status: 'failed', failedFrom: 'splitting' }), 'a build failed before main pull is not active');
+
+// ---- emergency builds run beside the active one
+eq([fixture.emergency.active, fixture.emergency.others], ['active', []], 'emergency: an emergency build is never the active one and never a breach');
+eq(fixture.emergency.emergency, ['e-first', 'e-late'], 'emergency: split or past the main pull, oldest tag first; pending and landed ones left out');
+ok(!P.isEmergency({ emergency: { by: 'someone' } }) && !P.isEmergency({ emergency: true }) && P.isEmergency({ emergency: { at: 'T', by: 'Brett' } }), 'emergency: the tag needs its at');
+eq(P.normLanding({ mainPull: { head: 'abc', at: 'T' }, bogus: 1 }), { mainPull: { head: 'abc', at: 'T' } }, 'landing: the re-pull of main before a merge is kept');
 
 // ---- the account pick
 const now = Date.parse('2026-11-19T12:00:00Z');

@@ -49,6 +49,39 @@ export function StatusBadge({ status, attempt = 0 }: { status: string; attempt?:
   return <span className={`pd-badge st-badge is-${status}`} data-status={status}>{T.statusLabel(status, attempt)}</span>;
 }
 
+/** The Emergency badge: Brett sent this build to the emergency slots (it skips the line and lands first). */
+export function EmergencyBadge({ by = '' }: { by?: string }) {
+  return <span className="pd-badge st-badge is-emergency" data-emergency="true" title={`Emergency build${by ? `, sent by ${by}` : ''}: skips the line, builds in the emergency slots, lands first`}>Emergency</span>;
+}
+
+/**
+ * Send to emergency: Brett's own signed-in console only (the server refuses the console token, MCP, voice and sessions).
+ * Never a toolbar button or a registered action, and its words sit in a <span> so the button is no console-control
+ * target either (react/controlTargets.ts only registers buttons with plain-text words): nothing outside the page (MCP,
+ * voice, a remote press) can press it for him. Two clicks: the first arms it, the second sends.
+ */
+function SendToEmergency({ api, id, onSent }: { api: Api; id: string; onSent: () => void }) {
+  const rt = useRuntime();
+  const [armed, setArmed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const send = async () => {
+    if (!armed) { setArmed(true); return; }
+    setBusy(true);
+    try {
+      const r = await api.post<{ ok: boolean; error?: string; already?: boolean }>('pipeline/emergency', { id });
+      if (!r.ok) throw new Error(r.error ?? 'not sent');
+      rt.toast(r.already ? `${id} is already an emergency build` : `${id} sent to emergency`, 'success', 'Build orchestrator'); onSent();
+    } catch (e) { rt.toast((e as Error).message, 'danger', 'Build orchestrator'); } finally { setBusy(false); setArmed(false); }
+  };
+  return (
+    <p className="st-emergency fx-small">
+      <Button size="sm" tone={armed ? 'danger' : undefined} icon="zap" disabled={busy} onClick={() => void send()}><span>{armed ? 'Confirm: send to emergency' : 'Send to emergency'}</span></Button>
+      {armed && <Button size="sm" tone="quiet" onClick={() => setArmed(false)}>Cancel</Button>}
+      <span className="fx-muted">Skips the line, builds in the 2 emergency slots and lands first.</span>
+    </p>
+  );
+}
+
 /** Time in the current status and total time, ticking from the row's `at`. */
 function Timer({ row }: { row: { status: string; at: string; createdAt: string } }) {
   const now = useNow();
@@ -171,7 +204,8 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
       render: (r) => (
         <span className="oc-cell-title" title={r.title}>
           <strong>{r.title}</strong>
-          {phone ? <span className="st-meta"><StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
+          {r.emergency && !phone && <EmergencyBadge by={r.emergencyBy} />}
+          {phone ? <span className="st-meta">{r.emergency && <EmergencyBadge by={r.emergencyBy} />}<StatusBadge status={r.status} attempt={r.attempt} /><span className="fx-small fx-mono">{r.done}/{r.total}</span><Timer row={r} /><PrLink n={r.prNumber} href={r.pr} /></span>
             : <span className="fx-small fx-muted fx-mono">{r.id}</span>}
         </span>
       ) },
@@ -210,7 +244,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
             onRowClick={(r) => { setPicked(r.id); setOpen((o) => toggleIn(o, r.id)); }}
             rowCtx={(r) => ({ target: 'axf-orchestrator-build', payload: r.id })} rowRef={(r) => ({ kind: 'orchestrator', id: r.id })}
             empty={<div className="fx-empty">{filtered ? 'No builds match these filters.' : queue ? 'Nothing is waiting to merge.' : 'No builds yet. Plan Studio sends them here.'}</div>}
-            renderDetail={(r) => <BuildDetail r={r} phone={phone} />} key={phone ? 'phone' : 'wide'} />
+            renderDetail={(r) => <BuildDetail r={r} phone={phone} api={api} canSend={!queue} onChanged={() => void reload()} />} key={phone ? 'phone' : 'wide'} />
         </div>
       )}
     </div>
@@ -218,7 +252,7 @@ export function StatusTable({ api, mode = 'all' }: { api: Api; mode?: 'all' | 'q
 }
 
 /** An expanded row: what the phone hides, then every step with its own status, model, account, slot and timer. */
-function BuildDetail({ r, phone }: { r: TableRow; phone: boolean }) {
+function BuildDetail({ r, phone, api, canSend, onChanged }: { r: TableRow; phone: boolean; api: Api; canSend: boolean; onChanged: () => void }) {
   const cols: GridColumn<StepRow>[] = [
     { id: 'id', label: '#', width: 'calc(var(--fx-font-size) * 3)', render: (s) => <span className="fx-small fx-mono">{s.id}</span> },
     { id: 'title', label: 'Step', width: phone ? 'calc(var(--fx-font-size) * 18)' : 'minmax(calc(var(--fx-font-size) * 12), calc(var(--fx-font-size) * 22))', fixed: true,
@@ -241,8 +275,10 @@ function BuildDetail({ r, phone }: { r: TableRow; phone: boolean }) {
       <dl className="st-facts fx-small">
         {phone && <><dt>Model</dt><dd>{dash(r.model)}</dd><dt>Account</dt><dd>{dash(r.account)}</dd><dt>Slot</dt><dd>{dash(r.slot)}</dd></>}
         <dt>Status by</dt><dd>{dash(r.by)}</dd>
+        {r.emergency && <><dt>Emergency</dt><dd>sent by {dash(r.emergencyBy)}</dd></>}
         {r.branch && <><dt>Branch</dt><dd className="fx-mono">{r.branch}</dd></>}
       </dl>
+      {canSend && T.canSendEmergency(r) && <SendToEmergency api={api} id={r.id} onSent={onChanged} />}
       {rows.length ? (
         <div className="oc-subgrid">
           <DataGrid id={`orch-status-steps-${r.id.replace(/[^a-z0-9-]/gi, '-')}`} rowKind="step" label={`Steps of ${r.title}`} compact dataset={false}

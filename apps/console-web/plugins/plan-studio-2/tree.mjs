@@ -43,6 +43,7 @@ import * as core from '../../../../framework/plan/builds-store-core.mjs';
 import * as dataFiles from '../../../../framework/core/data-files.mjs';
 import { persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { projectDataDir } from '../../../../framework/cli/projects.mjs';
+import { ownerFrom, sendToEmergency } from '../../../../framework/cli/emergency-builds.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -101,8 +102,13 @@ export function planOf(state, ref, { id = '', said = '' } = {}) {
  * (`flow: pipeline-2`, status `pending`, no build steps; the plan's steps kept as `planning`). The orchestrator flow
  * takes it from there: splitting (Fable designs the build steps, each with minutes and a model) → split → pulling-main
  * → assigning-models → ready. The item gets a `build` link back.
+ *
+ * `emergency` (Send to emergency): the same build, tagged emergency once it is in the store, so it skips the line,
+ * builds in the emergency slots and lands first. Brett's signed-in console only: who is asking is read from `env`
+ * (framework/cli/emergency-builds.mjs ownerFrom) and checked before anything is written, so a refused ask sends nothing.
  */
-export function sendToBuild(state, ref, { profile = '', id = '', preview = false, by = '', said = '' } = {}) {
+export function sendToBuild(state, ref, { profile = '', id = '', preview = false, by = '', said = '', emergency = false, env = process.env } = {}) {
+  if (emergency && !preview) { const o = ownerFrom(env); if (!o.ok) throw new tc.TreeError('forbidden', o.why); }
   const prof = profile || activeProfile().id;
   const { item: it, plan, errors } = planOf(state, ref, { id, said });
   const change = tc.toBuild(state, it.id, { said });
@@ -123,8 +129,9 @@ export function sendToBuild(state, ref, { profile = '', id = '', preview = false
     s.builds.push(core.normBuild(b, { now, profile: prof }));
     return s;
   }, { by: who, action: 'plan-studio-2:send', note: `${plan.id}: ${plan.steps.length} planning steps` });
+  if (emergency) sendToEmergency(plan.id, { env });
   const linked = tc.link(state, it.id, { type: 'build', ref: `${prof}:${plan.id}`, label: plan.title });
-  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan };
+  return { ok: true, state: linked.state, build: { profile: prof, id: plan.id }, planning: plan.steps.length, plan, emergency: !!emergency };
 }
 
 /* ------------------------------------------------------------------ one op → one change (the server, the CLI, voice) */
@@ -166,7 +173,7 @@ export function api(r, { by = '' } = {}) {
     case 'collapse': { const ids = r.all ? null : [tc.resolve(s, r.id)?.id].filter(Boolean); if (!r.all && !ids.length) throw new tc.TreeError('not_found', `no item "${r.id}"`); const res = tc.setCollapsed(s, ids, r.collapsed !== false); return done(res, `${r.collapsed === false ? 'Expanded' : 'Collapsed'} ${r.all ? 'everything' : 'it'}.`); }
     case 'import': { const res = tc.importItems(s, r.data, { parent: r.parent ?? r.in ?? null, by: who }); return done(res, `Imported ${res.imported} items.`); }
     case 'validate': { const { plan, errors } = planOf(s, r.id, { id: r.buildId, said: r.said }); return { ok: !errors.length, plan, errors, say: errors.length ? `Not ready to send: ${errors.map((e) => `${e.path} ${e.why}`).join('; ')}.` : `Ready to send as ${plan.id}.` }; }
-    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, say: `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
+    case 'build': { const res = sendToBuild(s, r.id, { profile: r.profile, id: r.buildId, preview: !!r.preview, by: who, said: r.said, emergency: r.emergency === true }); if (res.preview) return res; const st = save(res.state); return { ok: true, rev: st.rev, build: res.build, planning: res.planning, emergency: res.emergency, say: res.emergency ? `Sent it as the emergency build ${res.build.id}. It skips the line, builds in the emergency slots and lands first.` : `Sent it to the build orchestrator as ${res.build.id}. Fable splits it into build steps.` }; }
     case 'say': {
       const cmd = tc.parseVoice(r.text ?? '');
       if (!cmd) return { ok: false, understood: false, say: "I didn't catch a plan command. Try: new plan Launch, add a step Deploy to Launch, rename it, delete it, undo." };

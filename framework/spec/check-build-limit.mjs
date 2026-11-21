@@ -86,6 +86,54 @@ ok(L.release(got[0].id), 'release a reservation');
 ok(L.admit({ mode: 'launch', session: 'axf-limittest-x5', facts: { ...empty, now: Date.now() } }).ok, 'a released place is free again');
 rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
 
+// emergency slots: a second pool, counted apart from maxBuilds (orchestrator N + emergency 2), Brett only
+{
+  eq([L.DEFAULTS.emergencySlots, L.normLimit({}).emergencySlots, L.normLimit({ emergencySlots: 99 }).emergencySlots, L.normLimit({ emergencySlots: 0 }).emergencySlots], [2, 2, 8, 0], 'emergency slots: default 2, clamped, 0 switches the pool off');
+  eq(L.normLimit({ emergencySlots: 2, maxBuilds: 4 }).maxBuilds, 4, 'emergency slots never change maxBuilds');
+  eq(['axf-limittest-rush--s1', 'rush--s2', 'axf-rush', 'axf-limittest-rush2--s1', 'axf-limittest-other--s1', 'axf-limittest-rushed', ''].map((nm) => L.poolOf(nm, ['rush'])),
+    ['emergency', 'emergency', 'emergency', 'builds', 'builds', 'builds', 'builds'], 'pool: a granted build\'s own sessions only (<build> or <build>--<step>)');
+  eq(L.poolOf('axf-limittest-rush--s1', []), 'builds', 'pool: no grant, no emergency place');
+  throws(() => L.grantEmergency('rush', { by: 'claude' }), /only Brett/, 'a session (no owner) cannot grant an emergency place');
+  throws(() => L.grantEmergency('Bad Id', { by: 'brett', owner: true }), /not a build id/, 'a grant needs a build id');
+  eq(L.loadEmergency(), [], 'nothing granted after the refusals');
+  eq(L.grantEmergency('rush', { by: 'brett', owner: true }).map((g) => [g.id, g.by]), [['rush', 'brett']], 'Brett grants it');
+  eq(L.grantEmergency('rush', { by: 'brett', owner: true }).length, 1, 'granting twice keeps one grant');
+  ok(readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit.log.jsonl'), 'utf8').includes('"granted":"rush"'), 'the grant is journalled');
+  // counting: 3 ordinary sessions fill maxBuilds 3; emergency sessions are counted in their own pool
+  const t0 = Date.now();
+  const tmE = new Map([['axf-limittest-n1', { pid: 100, created: t0 - 3600e3 }], ['axf-limittest-n2', { pid: 200, created: t0 - 3600e3 }], ['axf-limittest-n3', { pid: 300, created: t0 - 3600e3 }], ['axf-limittest-rush--s1', { pid: 400, created: t0 - 3600e3 }]]);
+  const prE = [sh(100, 1), claude(101, 100), sh(200, 1), claude(201, 200), sh(300, 1), claude(301, 300), sh(400, 1), claude(401, 400)];
+  const fxE = { procs: prE, tmux: tmE, finished: () => false, now: t0, alive: (p) => prE.some((x) => x.pid === p), emergency: ['rush'] };
+  const cE = L.countLive(fxE, lim, {});
+  eq([cE.live, cE.emergency, cE.items.map((i) => i.pool)], [3, 1, ['builds', 'builds', 'builds', 'emergency']], 'counted apart: 3 in the builds pool, 1 in the emergency pool');
+  eq([L.decide(cE, lim).ok, L.decide(cE, lim, 'emergency')], [false, { ok: true, live: 1, max: 2, free: 1 }], 'the builds pool is full, the emergency pool has a place');
+  eq(L.countLive({ ...fxE, emergency: [] }, lim, {}).live, 4, 'without the grant the same session counts against maxBuilds');
+  // admit: the pool follows the session name; neither pool lends to the other
+  rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
+  const fresh = () => ({ ...fxE, now: Date.now(), alive: () => true }); // the launcher of a reservation is this test: alive
+  const refusedOrdinary = L.admit({ mode: 'launch', session: 'axf-limittest-n4', pid: process.pid, facts: fresh() });
+  eq([refusedOrdinary.ok, refusedOrdinary.pool, refusedOrdinary.live, refusedOrdinary.max], [false, 'builds', 3, 3], 'orchestrator slots busy: an ordinary launch is refused, it never takes an emergency place');
+  const e2 = L.admit({ mode: 'launch', session: 'axf-limittest-rush--s2', pid: process.pid, facts: fresh() });
+  eq([e2.ok, e2.pool, e2.live, e2.max], [true, 'emergency', 1, 2], 'the emergency build starts anyway, in the emergency pool');
+  const e3 = L.admit({ mode: 'launch', session: 'axf-limittest-rush--s3', pid: process.pid, facts: fresh() });
+  eq([e3.ok, e3.pool, e3.live, e3.max], [false, 'emergency', 2, 2], 'emergency 2 of 2: the third emergency launch is refused');
+  // the ordinary pool empties: an emergency build still may not take one of the orchestrator's places
+  const idle = { procs: [sh(400, 1), claude(401, 400)], tmux: new Map([['axf-limittest-rush--s1', { pid: 400, created: t0 - 3600e3 }]]), finished: () => false, now: Date.now(), alive: () => true, emergency: ['rush'] };
+  const lent = L.admit({ mode: 'launch', session: 'axf-limittest-rush--s3', pid: process.pid, facts: idle });
+  eq([lent.ok, lent.pool, lent.live], [false, 'emergency', 2], 'emergency full with the orchestrator idle: still refused (the pools never lend)');
+  rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
+  const u = L.usage({ facts: fresh() });
+  eq([u.live, u.max, u.free, u.emergency], [3, 3, 0, { live: 1, max: 2, free: 1 }], 'usage: both pools, each with its own cap');
+  eq(JSON.parse(readFileSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-live.json'), 'utf8')).emergency, { live: 1, max: 2 }, 'the snapshot the console reads carries the emergency pool');
+  eq(L.saveLimit({ emergencySlots: 0 }, { by: 'brett', owner: true }).emergencySlots, 0, 'Brett can switch the pool off');
+  eq(L.admit({ mode: 'launch', session: 'axf-limittest-rush--s2', pid: process.pid, facts: fresh() }).ok, false, 'pool off: no emergency place');
+  L.saveLimit({ emergencySlots: 2 }, { by: 'brett', owner: true });
+  throws(() => L.saveLimit({ emergencySlots: 6 }, { by: 'claude' }), /only Brett/, 'a session cannot resize the emergency pool');
+  ok(L.revokeEmergency('rush', { by: 'test' }) && !L.revokeEmergency('rush'), 'a grant is taken back once');
+  eq(L.poolOf('axf-limittest-rush--s1', L.emergencyIds()), 'builds', 'after the revoke its sessions are ordinary again');
+  rmSync(join(process.env.AXF_SLOTS_DIR, 'build-limit-res.json'), { force: true });
+}
+
 // docker and the slice
 eq(L.dockerArgs('node:22', L.normLimit({ dockerCpus: 1.5, dockerMemoryGb: 3 })), ['--cpus=1.5', '--memory=3g', '--memory-swap=3g', '--cgroup-parent=axf-builds.slice'], 'node:22 gets limits and the slice');
 eq(L.dockerArgs('mcr.microsoft.com/playwright:v1.48.0', lim).length, 4, 'Playwright too');

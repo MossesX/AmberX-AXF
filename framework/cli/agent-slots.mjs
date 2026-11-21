@@ -40,12 +40,19 @@
  * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
  * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
  */
+
+/*
+ * Emergency slots (Brett, Nov 20 2026): a second pool beside the cap. An entry of a build that holds an emergency grant
+ * (build-limit.mjs grantEmergency: Brett's signed-in console only) queues and starts in the emergency pool
+ * (`emergencySlots` places, default 2): it never waits behind the ordinary line and never takes one of its slots, and
+ * ordinary entries never take an emergency place. Status carries `emergency` { used, cap, free, queued }.
+ */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { loadLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
+import { emergencyIds, loadLimit, poolOf, scopePrefix, usage as hardUsage } from './build-limit.mjs';
 import { buildMayTakeSlot } from './dispatch-gate.mjs';
 import { claudePids, readLock, sessionOf, tmuxSessions as buildTmux } from './build-lock.mjs';
 import * as dataFiles from '../core/data-files.mjs';
@@ -112,18 +119,38 @@ export function ordered(queue) {
     .sort((a, b) => LEVELS.indexOf(a.priority) - LEVELS.indexOf(b.priority) || a.seq - b.seq);
 }
 
-/** Sessions holding a slot (finished ones only wait to close and don't count). */
-export const holding = (state) => state.running.filter((r) => r.state === 'running' || r.state === 'starting');
+/**
+ * The pool an entry (waiting or running) belongs to: `emergency` when its build holds an emergency grant
+ * (settings.emergencyBuilds, from build-limit.mjs), else `builds`. Worked out from the grants on every call, never
+ * trusted from the entry, so a grant that is taken back moves the entry to the ordinary pool at once.
+ */
+export function poolOfEntry(e, settings = DEFAULTS) {
+  const ids = settings?.emergencyBuilds ?? [];
+  if (!ids.length || !e) return 'builds';
+  return (e.build && ids.includes(e.build)) || poolOf(e.session || e.name, ids) === 'emergency' ? 'emergency' : 'builds';
+}
+/** The cap of a pool: maxAgents, or emergencySlots for the emergency pool. */
+const poolCap = (settings, pool) => (pool === 'emergency' ? Math.max(0, Number(settings.emergencySlots) || 0) : settings.maxAgents);
 
 /**
- * May queue entry <id> start now? { go, position (1-based), reason: '' | 'cap' | 'memory' | 'gone', free }.
- * The first `free` entries in line may start; the memory guard holds everyone while available memory is under the floor.
+ * Sessions holding a slot (finished ones only wait to close and don't count). With `settings`: the ones of one pool
+ * (`builds` unless `pool` says emergency); without: every pool together.
+ */
+export const holding = (state, settings = null, pool = 'builds') => state.running.filter((r) => (r.state === 'running' || r.state === 'starting') && (!settings || poolOfEntry(r, settings) === pool));
+
+/**
+ * May queue entry <id> start now? { go, position (1-based), reason: '' | 'cap' | 'memory' | 'gone', free, pool }.
+ * Each pool has its own line and its own cap: the first `free` entries of the entry's pool may start. The memory
+ * guard holds everyone, emergency entries too, while available memory is under the floor (it protects the host).
  */
 export function decide(state, settings, id, memAvailBytes = null) {
-  const line = ordered(state.queue);
+  const all = ordered(state.queue);
+  const me = all.find((q) => q.id === id);
+  if (!me) return { go: false, position: 0, reason: 'gone', free: 0 };
+  const pool = poolOfEntry(me, settings);
+  const line = all.filter((q) => poolOfEntry(q, settings) === pool);
   const i = line.findIndex((q) => q.id === id);
-  if (i < 0) return { go: false, position: 0, reason: 'gone', free: 0 };
-  const free = Math.max(0, settings.maxAgents - holding(state).length);
+  const free = Math.max(0, poolCap(settings, pool) - holding(state, settings, pool).length);
   if (i >= free) return { go: false, position: i + 1, reason: 'cap', free };
   if (memAvailBytes != null && settings.minFreeGb > 0 && memAvailBytes < settings.minFreeGb * GIB) return { go: false, position: i + 1, reason: 'memory', free };
   return { go: true, position: i + 1, reason: '', free };
@@ -154,15 +181,21 @@ export function applyPriority(state, build, level) {
 }
 
 export function summary(state, settings, mem = {}, now = Date.now()) {
-  const line = ordered(state.queue);
-  const used = holding(state).length;
+  const all = ordered(state.queue);
+  const line = all.filter((q) => poolOfEntry(q, settings) === 'builds');
+  const used = holding(state, settings).length;
+  const eUsed = holding(state, settings, 'emergency').length; const eCap = poolCap(settings, 'emergency');
+  const tag = (e) => (poolOfEntry(e, settings) === 'emergency' ? { ...e, pool: 'emergency' } : e);
+  const eLine = all.filter((q) => poolOfEntry(q, settings) === 'emergency');
   return {
     $axf: 'agent-slots-status@1',
     used, cap: settings.maxAgents, free: Math.max(0, settings.maxAgents - used),
     queued: line.length,
+    /** The emergency pool, counted apart: never part of used / cap / free above. */
+    emergency: { used: eUsed, cap: eCap, free: Math.max(0, eCap - eUsed), queued: eLine.length },
     heavy: { used: state.heavy.length, cap: settings.maxHeavy, items: state.heavy },
-    running: state.running,
-    queue: line.map((q, n) => ({ ...q, position: n + 1 })),
+    running: state.running.map(tag),
+    queue: [...eLine.map((q, n) => ({ ...q, pool: 'emergency', position: n + 1 })), ...line.map((q, n) => ({ ...q, position: n + 1 }))],
     done: state.done.slice(-20),
     memory: { availGb: mem.avail != null ? Math.round((mem.avail / GIB) * 10) / 10 : null, swapMb: mem.swapMb ?? null, floorGb: settings.minFreeGb },
     guard: { tripsLastHour: state.guard.trips.filter((t) => now - t < 3600_000).length, lastTripAt: state.guard.trips.at(-1) ?? null },
@@ -186,8 +219,9 @@ function writeJson(f, v) { const tmp = `${f}.${process.pid}.tmp`; writeFileSync(
 /** Read fresh on every call: a change in the console applies to the next check, nothing to restart. */
 export function loadSettings() {
   const s = normSettings(readJson(files().settings, {}));
-  let hard = null; try { hard = loadLimit().maxBuilds; } catch { /* no limit file: defaults */ }
+  let hard = null; try { const l = loadLimit(); hard = l.maxBuilds; s.emergencySlots = l.emergencySlots; s.emergencyBuilds = emergencyIds(); } catch { /* no limit file: defaults */ }
   if (hard != null) { s.hardMax = hard; if (s.maxAgents > hard) { s.maxAgentsSet = s.maxAgents; s.maxAgents = hard; } }
+  s.emergencySlots ??= 0; s.emergencyBuilds ??= [];
   return s;
 }
 
@@ -198,6 +232,7 @@ export function withHard(sum, facts = {}) {
     const h = facts.hard ?? hardUsage();
     sum.hard = { max: h.max, live: h.live, free: h.free, source: h.source, at: h.at, items: h.items ?? [] };
     if (h.free != null) sum.free = Math.min(sum.free, h.free);
+    if (h.emergency) { sum.hard.emergency = h.emergency; if (h.emergency.free != null && sum.emergency) sum.emergency.free = Math.min(sum.emergency.free, h.emergency.free); }
   } catch (e) { sum.hard = { error: String(e.message).slice(0, 200) }; }
   return sum;
 }
@@ -416,16 +451,17 @@ function tryStart(st, settings, id, avail, facts = {}) {
   if (q0?.build && !mayTake(q0.build)) {
     st.queue = st.queue.filter((x) => x.id !== id);
     st.done = [...st.done, { ...q0, state: 'cancelled', cancelledBy: 'not-queued', closedAt: new Date(now).toISOString() }].slice(-KEEP_DONE);
-    return { started: false, gone: true, position: 0, reason: 'notqueued', used: holding(st).length, cap: settings.maxAgents };
+    return { started: false, gone: true, position: 0, reason: 'notqueued', used: holding(st, settings).length, cap: settings.maxAgents };
   }
   const d = decide(st, settings, id, avail);
+  const pool = poolOfEntry(q0, settings); const cap = poolCap(settings, pool);
   if (d.reason === 'memory' && now - (st.guard.trips.at(-1) ?? 0) > 60_000) st.guard.trips.push(now);
-  if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st).length, cap: settings.maxAgents };
+  if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st, settings, pool).length, cap };
   const q = st.queue.find((x) => x.id === id);
   st.queue = st.queue.filter((x) => x.id !== id);
-  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
+  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), ...(pool === 'emergency' ? { pool } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
     enqueuedAt: q.enqueuedAt, startedAt: new Date(now).toISOString(), waitedMs: now - Date.parse(q.enqueuedAt) });
-  return { started: true, position: 0, reason: '', used: holding(st).length, cap: settings.maxAgents };
+  return { started: true, position: 0, reason: '', used: holding(st, settings, pool).length, cap };
 }
 
 /** One try for a waiting entry: { started } | { started:false, position, reason } | { gone:true }. */
@@ -674,9 +710,9 @@ async function cli(argv) {
       if (!f['no-sweep']) sweep();
       const s = status();
       if (f.json) return json(s);
-      console.log(`slots ${s.used}/${s.cap}${s.hard?.max ? ` · hard limit ${s.hard.live ?? '?'}/${s.hard.max} running on the VPS` : ''} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
-      for (const r of s.running) console.log(`  ${r.state.padEnd(9)} ${r.name} (${r.kind}, ${r.priority}) ${r.session || `pid ${r.pid}`} · ${ago(r.startedAt)}`);
-      for (const q of s.queue) console.log(`  #${q.position} waiting ${q.name} (${q.priority}) since ${ago(q.enqueuedAt)} · ${q.id}`);
+      console.log(`slots ${s.used}/${s.cap} · emergency ${s.emergency.used}/${s.emergency.cap}${s.hard?.max ? ` · hard limit ${s.hard.live ?? '?'}/${s.hard.max} running on the VPS` : ''} · ${s.queued} queued · heavy ${s.heavy.used}/${s.heavy.cap} · memory ${s.memory.availGb ?? '?'} GB free (floor ${s.memory.floorGb})${s.memory.swapMb ? ` · swap ${s.memory.swapMb} MB` : ''}`);
+      for (const r of s.running) console.log(`  ${r.state.padEnd(9)} ${r.name} (${r.kind}, ${r.pool === 'emergency' ? 'emergency' : r.priority}) ${r.session || `pid ${r.pid}`} · ${ago(r.startedAt)}`);
+      for (const q of s.queue) console.log(`  #${q.position} waiting ${q.name} (${q.pool === 'emergency' ? 'emergency' : q.priority}) since ${ago(q.enqueuedAt)} · ${q.id}`);
       return;
     }
     case 'enqueue': {

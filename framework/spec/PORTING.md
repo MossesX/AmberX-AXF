@@ -405,6 +405,12 @@ Final give-ups (Nov 20 2026, build ops-slots-watchdog-cleanup): the engine adds 
 maxAttempts default), `gaveUp` (failed at attempt >= max) and `sendable` (ready, or failed in a slot status with attempts
 left), with fixture cases `maxAttempts` and `sendable`. **Kotlin twin deferred**: no Android surface dispatches steps.
 
+Emergency builds (Nov 20 2026, build emergency-slots): the engine adds `isEmergency`, `normEmergency` (the
+`emergency: { at, by }` tag), `emergencyBuilds` (the dispatcher's emergency lane, oldest tag first) and
+`landing.mainPull` (the re-pull of main before a merge); `activeBuild` leaves emergency builds out. Fixture case
+`emergency`. **Kotlin twin deferred**: no Android surface dispatches or lands builds; AmberX shows the `emergency`
+flag it is given on a build row.
+
 ## Deferred: status-table@1 (Nov 19 2026)
 
 Pipeline 2.0 part 4 (p2-ui) adds the one status-driven builds table: the rules in

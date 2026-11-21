@@ -17,6 +17,9 @@
 .st-badge.is-merging-main { --st-c: color-mix(in srgb, var(--fx-warning), var(--fx-success)) }
 .st-badge.is-landed { --st-c: var(--fx-success) }
 .st-badge.is-failed { --st-c: var(--fx-danger) }
+/* an emergency build (Brett sent it to the emergency slots): filled, so it stands out from the status badges */
+.st-badge.is-emergency { --st-c: var(--fx-danger); background: color-mix(in srgb, var(--fx-danger) calc(var(--fx-opacity-tint) * 100%), transparent) }
+.st-emergency { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); margin: 0 }
 
 /* phone first: the filters wrap two to a row, the find field takes a whole row; wider screens put them on one line */
 .st-toolbar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }

@@ -14,6 +14,11 @@
  * merging-pr → … → merging-main before the next group starts. The build status always shows the phase of the group in
  * flight; per group it only moves forward.
  *
+ * The merge line (Brett, Nov 20 2026): an emergency build (`emergency` on the build) goes to the front, ahead of a
+ * build already landing. And no build merges on a stale head: right before the merge, when main has code the PR lacks
+ * (an emergency build landed, or anything else did), the newest main is pulled into the PR, a code conflict goes to a
+ * Fable fix session, CI runs again on that head, and only then it merges.
+ *
  * Failures (ported from the retired auto-land rules: push-banner land.mjs + deploy/auto-lander decide()): the build goes
  * `failed` with `attempt: N` and a `failure` record, and the next tick retries forward by itself after a backoff:
  *   clash-steps  two steps of the group conflict in code          → split: the group's steps land one PR each
@@ -114,17 +119,24 @@ export function isLanding(b) {
   return LANDING.includes(s) && s !== 'landed';
 }
 
+/** Sent to emergency by Brett (pipeline-2@1 `emergency: { at, by }`): front of the merge line. */
+export const isEmergency = (b) => !!b && !!b.emergency && typeof b.emergency === 'object' && !!str(b.emergency.at);
+
 /**
- * The one build the lander works on: the one already in a landing phase (only one build is active at a time), else the
- * oldest at build-complete. Returns { build, others } (others = more builds the lander would own: a contract breach
- * the runner reports, never works on in parallel).
+ * The one build the lander works on. Emergency builds go first (oldest tag first), ahead of a build already landing:
+ * that one waits where it is and, once the emergency build is on main, pulls main and runs CI again before its own
+ * merge. Then the build already in a landing phase, else the oldest at build-complete. Returns { build, others }
+ * (others = the rest of the line, in order: the runner reports them and never works on two at once).
  */
 export function pickBuild(builds) {
   const list = (Array.isArray(builds) ? builds : []).filter(isLanding);
   const age = (b) => str(b.completedAt || b.builtAt || b.updatedAt || b.createdAt) || '9';
-  const inFlight = list.filter((b) => failedIn(b) !== 'build-complete').sort((x, y) => age(x).localeCompare(age(y)));
-  const ready = list.filter((b) => failedIn(b) === 'build-complete').sort((x, y) => age(x).localeCompare(age(y)));
-  const all = [...inFlight, ...ready];
+  const line = (xs) => [
+    ...xs.filter((b) => failedIn(b) !== 'build-complete').sort((x, y) => age(x).localeCompare(age(y))),
+    ...xs.filter((b) => failedIn(b) === 'build-complete').sort((x, y) => age(x).localeCompare(age(y))),
+  ];
+  const urgent = list.filter(isEmergency).sort((x, y) => str(x.emergency.at).localeCompare(str(y.emergency.at)) || age(x).localeCompare(age(y)));
+  const all = [...urgent, ...line(list.filter((b) => !isEmergency(b)))];
   return { build: all[0] || null, others: all.slice(1).map((b) => b.id) };
 }
 
@@ -298,13 +310,13 @@ export const ciTimedOut = (since, at, cfg = DEFAULTS) => !!since && minutesBetwe
 
 /**
  * The job a fix hands to an agent (agent-job.mjs land-build, the all-rounder router picks who): the PR branch, the
- * build, what to fix.
+ * build, what to fix. A code conflict with main is resolved on Fable (`model`); the other fixes run on the job's own model.
  */
 export function fixJob(b, f, branch) {
   const what = f.kind === 'clash-main' ? `merging main into ${branch} conflicts in code: merge origin/main, resolve, push`
     : f.kind === 'rules' ? `the build rules fail at the gate (${(f.failing || []).join(', ') || 'see Builds → Gate & rules'}); fix them on ${branch} and push`
       : `CI is red on ${branch}${f.failing?.length ? ` (${f.failing.join(', ')})` : ''}; fix it and push`;
-  return { type: 'land-build', input: { branch, build: b.id, checks: what } };
+  return { type: 'land-build', input: { branch, build: b.id, checks: what }, ...(f.kind === 'clash-main' ? { model: 'fable' } : {}) };
 }
 
 /** Plain words for one tick's outcome (logs, the crew chat). */
@@ -328,8 +340,8 @@ export function queueRows(builds) {
       if (!prs.has(n)) prs.set(n, { pr: n, steps: [], state: l.merged.includes(n) ? 'merged' : l.closed.includes(n) ? 'closed' : 'open' });
       prs.get(n).steps.push(st.id);
     }
-    rows.push({ build: b.id, title: str(b.title || b.id, 200), status: b.status, attempt: num(b.attempt) || 0, failure: b.status === 'failed' ? b.failure || null : null, statusAt: str(b.statusAt, 40), prs: [...prs.values()], waiting: g.waiting.map((x) => x.id), steps: landSteps(b).map((x) => ({ id: x.id, status: x.status || '', prNumber: num(x.prNumber) || null, model: x.model || '', slot: x.slot ?? null })) });
+    rows.push({ build: b.id, title: str(b.title || b.id, 200), ...(isEmergency(b) ? { emergency: true } : {}), status: b.status, attempt: num(b.attempt) || 0, failure: b.status === 'failed' ? b.failure || null : null, statusAt: str(b.statusAt, 40), prs: [...prs.values()], waiting: g.waiting.map((x) => x.id), steps: landSteps(b).map((x) => ({ id: x.id, status: x.status || '', prNumber: num(x.prNumber) || null, model: x.model || '', slot: x.slot ?? null })) });
   }
   const order = (r) => (r.status === 'failed' ? buildIndex(r.failure?.status || 'build-complete') : buildIndex(r.status));
-  return rows.sort((a, b) => order(b) - order(a) || a.build.localeCompare(b.build));
+  return rows.sort((a, b) => Number(!!b.emergency) - Number(!!a.emergency) || order(b) - order(a) || a.build.localeCompare(b.build));
 }
