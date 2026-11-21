@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10279,
- "updatedAt": "2026-11-21T02:20:12.382Z",
+ "rev": 10280,
+ "updatedAt": "2026-11-21T02:25:36.878Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -349988,9 +349988,10 @@
    "pendingId": "",
    "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
    "pr": "867",
+   "mergedAt": "2026-11-21T02:24:10Z",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-21T02:13:43.553Z",
+   "updatedAt": "2026-11-21T02:25:32.979Z",
    "builtAt": "",
    "notes": [
     {
@@ -350171,6 +350172,10 @@
      "text": "Lander: failed in running-ci, attempt 9: the fix session (agent) pushed nothing in 60 min",
      "at": "2026-11-21T02:13:43.553Z",
      "by": "lander"
+    },
+    {
+     "text": "Reconciler: PR #867 merged",
+     "at": "2026-11-21T02:25:32.979Z"
     }
    ],
    "approvals": [],
@@ -350723,7 +350728,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 121,
+   "rev": 122,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
