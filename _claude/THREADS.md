@@ -836,7 +836,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 07:06 UTC · `pipeline-2-0-fully-autonomous-buil` → pending, note (all) · foreign-write
 - 2026-11-20 07:07 UTC · `pipeline-2-0-fully-autonomous-buil` → split, note (all) · orchestrator
 - 2026-11-20 07:08 UTC · `fable-full-audit-ui-overhaul-conso` s6 done (all) · orchestrator
 - 2026-11-20 07:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
@@ -1236,6 +1235,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 01:26 UTC · `plan-studio-live-progress-one-stor` → split, note (all) · watchdog
 - 2026-11-21 01:27 UTC · `console-tabs-plugins-open-in-tabs-` note (all) · watchdog
 - 2026-11-21 01:28 UTC · `console-tabs-plugins-open-in-tabs-` → failed, note (all) · watchdog
+- 2026-11-21 01:29 UTC · `console-tabs-plugins-open-in-tabs-` → split, note (all) · watchdog
 
 ## Token passes (log)
 
