@@ -51,7 +51,7 @@ const { createGate } = await import('./gate.mjs');
 const gate = createGate();
 gate.run('lander_mode', { mergeQueue: true, by: 'Brett', reason: 'Stack the ready PRs' });
 // a little history, so the audit lists have rows
-gate.run('rules_set', { id: 'ui-review', severity: 'warn', by: 'Brett', reason: 'Let small UI fixes land while their shots wait' });
+gate.run('rules_set', { id: 'ui-review', severity: 'warn', by: 'Brett', reason: 'Let small UI fixes land while their shots wait' }); // axf-not-plugin:ui-review (a gate rule id)
 gate.run('rules_toggle', { id: 'toolbars', enabled: false, by: 'Brett', reason: 'Toolbar check is being rebuilt' });
 gate.run('build_rules_toggle', { id: gate.run('build_rules_list').rules[0]?.id, by: 'Brett', reason: 'Trying the build without it' });
 
