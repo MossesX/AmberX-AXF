@@ -135,6 +135,7 @@ jobs:
       - run: node apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs     # launch-retry: a launch crash is requeued with a backoff outside maxRuns, the plan waits it out, the cap stops with a banner alert  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs       # land-clash bounce: a done build that clashes gets one merge-main step and goes back to the Queue, once per head  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-flow.test.mjs          # pipeline-2@1 flow: split, one active build, worktrees before launch, accounts by usage left, retries forward  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs       # emergency builds: started from Brett's signed-in console only, past the one-active-build line, the 2 emergency slots counted apart, grants taken back  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-parallel.test.mjs      # pipeline-2@1: up to stepsInParallel (4) steps at once, a give-up at maxAttempts is final, act step keeps the flow status  # axf-plugin:build-orchestrator
       - run: bash deploy/test/claude-headless-brief.test.sh                                  # the launch prompt goes on stdin (a 300 KB brief, no E2BIG; tmux part skipped without tmux), brief size cap keeps Brett's words
       - run: (git fetch -q --unshallow origin || true) && git fetch -q origin +refs/heads/main:refs/remotes/origin/main && node framework/cli/check-tracking-files.mjs   # tracking-paths@1: a PR branch never changes the builds store, orchestrator / origins / pending / queue exports or journal parts (builds-live status commits excepted); names the file
@@ -411,6 +412,7 @@ jobs:
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
+            python apps/console-web/plugins/build-orchestrator/server/test_emergency.py  # send to emergency: 403 for the console token, agents and sessions; Brett's signed-in click tags the build and grants the emergency slots (orchestrator + Plan Studio 2.0 routes)  # axf-plugin:build-orchestrator
             python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue
