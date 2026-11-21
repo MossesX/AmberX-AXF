@@ -106,6 +106,7 @@ jobs:
       - run: node --test 'deploy/watchdog/*.test.mjs'              # pipeline-watchdog@2: stuck statuses, dead tmux, usage limits → failed + retried forward on another account; layer 3 heals and alerts once; schedules retire the old crons
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
+      - run: node deploy/branch-protection.test.mjs                 # L2-09: the main ruleset (required checks = this workflow's job names, deploy-key-only bypass); nothing is applied without --yes
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
