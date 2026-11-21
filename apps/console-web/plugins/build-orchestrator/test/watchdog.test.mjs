@@ -13,7 +13,7 @@ Object.assign(process.env, {
 });
 const core = await import('../../../../../framework/plan/builds-store-core.mjs');
 const { buildFacts } = await import('../../../../../framework/cli/stale-facts.mjs');
-const W = await import('../watchdog.mjs');
+const W = await import('../watchdog/rows.mjs');
 const builds = await import('../watchdog/tables/builds.mjs');
 const mq = await import('../watchdog/tables/merge-queue.mjs');
 const ur = await import('../watchdog/tables/ui-review.mjs');

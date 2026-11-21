@@ -19,7 +19,7 @@ export const consoleView = (page: string): string => `axhub-${page === 'home' ? 
 export const pageOf = (view: string): string => (view === 'axhub-approvals' ? 'home' : view.startsWith('axhub-') ? view.slice(6) : '');
 
 const PAGE_LABEL: Record<string, string> = {
-  home: 'axHub approvals', approval: 'axHub approvals', 'approvals-log': 'axHub approvals', 'go-pass': 'axHub passes', passes: 'axHub passes',
+  home: 'axHub approvals', approval: 'axHub approvals', 'approvals-log': 'axHub approvals', 'go-pass': 'VPS Configuration', passes: 'VPS Configuration',
   apps: 'axHub apps', users: 'axHub users', handoff: 'axHub handoff', 'handoff-run': 'axHub handoff', account: 'axHub account', hub: 'axHub account',
 };
 

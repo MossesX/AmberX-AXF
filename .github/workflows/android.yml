@@ -134,6 +134,8 @@ jobs:
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-stale-rows.mjs               # stale-row@1: the VPS watchdog's classifier (landed via merge queue / direct merge commit / build complete → complete; closed PR / dead build → remove; live session / missing facts → keep), cleanup log record + schema; fixtures/stale-rows.json
       - run: node apps/console-web/plugins/build-orchestrator/test/watchdog.test.mjs   # stale-row watchdog: table readers + apply against a temp store, merge-queue and UI Review fixtures (dry run writes nothing, running builds untouched, open PRs never completed, second run a no-op)  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/watchdogs.test.mjs   # build-watchdogs@1: the one watchdog (registry, pass, caught log, alerts, settings, requests) and stale-status@1 (the decision table, a pass on fake sources)  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/watchdogs-store.test.mjs   # stale-status watch: its real writes on a scratch builds store (merge recorded, landed under the guard, failure recorded)  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/resplit-dedupe.test.mjs   # step-dedupe: re-split never grows a build, re-uided copies merge into one step, save guard, done copy wins, dedupe-steps cleanup  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/launch-retry.test.mjs     # launch-retry: a launch crash is requeued with a backoff outside maxRuns, the plan waits it out, the cap stops with a banner alert  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/land-clash.test.mjs       # land-clash bounce: a done build that clashes gets one merge-main step and goes back to the Queue, once per head  # axf-plugin:build-orchestrator
@@ -192,7 +194,7 @@ jobs:
         run: node apps/console-web/plugins/shipped-features/test.mjs  # axf-plugin:shipped-features
       - name: Plan Studio 2.0 plugin (plan-tree@1 nesting, moves, undo, links, export, build hand-off, voice parser, CLI on a scratch store)  # axf-plugin:plan-studio-2
         run: node apps/console-web/plugins/plan-studio-2/test.mjs  # axf-plugin:plan-studio-2
-      - name: Gate & rules plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
+      - name: VPS Configuration plugin (gate rules, lander adapter, History, CLI-vs-API parity)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test.mjs  # axf-plugin:gate
       - name: Gate build rules (REST/MCP/CLI parity, home-card fixer, gate block then fix, store rules in the brief)  # axf-plugin:gate
         run: node apps/console-web/plugins/gate/test/test.build-rules.mjs  # axf-plugin:gate
@@ -424,6 +426,7 @@ jobs:
             node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/console-web/plugins/build-orchestrator/server/test_emergency.py  # send to emergency: 403 for the console token, agents and sessions; Brett's signed-in click tags the build and grants the emergency slots (orchestrator + Plan Studio 2.0 routes)  # axf-plugin:build-orchestrator
+            python apps/console-web/plugins/build-orchestrator/server/test_watchdogs.py  # build-watchdogs@1 routes: status, one flat settings map (bad keys and values 400), Run asks the host, the systems check item  # axf-plugin:build-orchestrator
             python apps/console-web/plugins/gate/test_auto_lander.py   # server auto-lander: gate REST routes, MCP parity with the CLI, systems-check item  # axf-plugin:gate
           } 2>&1 | tee /tmp/web-tests.log
       - name: Report web/Python test failures to the "CI build errors" issue

@@ -37,6 +37,7 @@
     "dataDir": ".axf-console/plugins/build-orchestrator",
     "env": [],
     "mentions": [
+      "apps/console-web/plugins/gate/build-cap.mjs",
       ".github/workflows/android.yml",
       "CLAUDE.md",
       "_claude/THREADS.md",
@@ -973,6 +974,106 @@
         "output": "{ id, status, strategy, launch? }"
       },
       {
+        "id": "watchdogs-status",
+        "route": "GET /watchdogs",
+        "title": "Build watchdog status",
+        "readOnly": true,
+        "description": "The one build watchdog and every watch it runs (build sessions, stuck statuses, left-over rows): on or off, the cron, the last pass and how long ago, each watch's last run, what it caught and its last error, and the newest catches. Say 'what did the watchdog catch' or 'is the watchdog running'.",
+        "input": {
+          "type": "object",
+          "properties": {}
+        },
+        "output": "watchdogs-status@1 { enabled, alerts, cron, lastPass, ageMin, stale, watches[], caught[], gaveUp[] }"
+      },
+      {
+        "id": "watchdogs-caught",
+        "route": "GET /watchdogs/caught",
+        "title": "What the watchdog caught",
+        "readOnly": true,
+        "description": "Everything the build watchdog caught, newest first: the watch, the build, the status it stood in, the cause, the action taken (retry, requeue, record-merge, land, fail, ladder rung, escalate, complete, remove), whether it worked and whether the phone was told. Filter by watch (sessions, stale, rows) or build.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "watch": {
+              "type": "string",
+              "description": "sessions, stale or rows"
+            },
+            "build": {
+              "type": "string",
+              "description": "a build id"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "description": "how many (default 100)"
+            }
+          }
+        },
+        "output": "{ caught: [watchdog-catch@1] }"
+      },
+      {
+        "id": "watchdogs-scan",
+        "route": "GET /watchdogs/scan",
+        "title": "Dry-run the build watchdog",
+        "readOnly": true,
+        "description": "What each watch would catch right now and what it would do about it, changing nothing. From the console container it answers with what the VPS's last pass saw.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "watch": {
+              "type": "string",
+              "description": "only this watch: sessions, stale or rows"
+            }
+          }
+        },
+        "output": "watchdogs-scan@1 { watches[], items: [watchdog-catch@1] }"
+      },
+      {
+        "id": "watchdogs-run",
+        "route": "POST /watchdogs/run",
+        "title": "Run the build watchdog now",
+        "description": "One watchdog pass now, for every watch or one, optionally for one build: stuck sessions recovered, builds standing in landing or fixing pushed to the next action on their ladder, left-over rows cleaned. From the console the VPS runs it within a minute.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "watch": {
+              "type": "string",
+              "description": "only this watch: sessions, stale or rows"
+            },
+            "build": {
+              "type": "string",
+              "description": "only this build"
+            }
+          }
+        },
+        "output": "watchdogs-pass@1 { ran[], notRun[], catches[], alerts } or { requested: true }"
+      },
+      {
+        "id": "watchdogs-settings",
+        "route": "GET /watchdogs/settings",
+        "title": "Build watchdog settings",
+        "readOnly": true,
+        "description": "Every watchdog setting in one flat map with its type, range and title: enabled (the master switch), alerts (batch, each, off), and each watch's own under <watch>.<key>, e.g. sessions.maxRetries, stale.limit.fixing, stale.maxLaunchPerPass, rows.intervalMin.",
+        "input": {
+          "type": "object",
+          "properties": {}
+        },
+        "output": "watchdogs-settings@1 { values, schema, unavailable }"
+      },
+      {
+        "id": "watchdogs-settings-set",
+        "route": "PUT /watchdogs/settings",
+        "title": "Change build watchdog settings",
+        "description": "Change any watchdog setting: switch the watchdog or one watch on or off (enabled, stale.enabled), thresholds (stale.limit.landing, stale.limit.fixing, sessions.staleMin), caps (stale.maxLaunchPerPass, sessions.maxRetries), intervals and alerts. Send {key: value}; each value is checked and unknown keys are refused.",
+        "input": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "{ '<key>': value, … } as listed by watchdogs-settings"
+        },
+        "output": "watchdogs-settings@1 { values, schema }"
+      },
+      {
         "id": "watchdog-status",
         "route": "GET /watchdog",
         "title": "Stale-row watchdog status",
@@ -1224,7 +1325,8 @@
   },
   "opens": "main",
   "cli": {
-    "recovery-watchdog": "recovery-watchdog.mjs"
+    "watchdog": "watchdog.mjs",
+    "recovery-watchdog": "watchdog/sessions.mjs"
   },
   "buildHooks": "pipeline2-hook.mjs"
 }

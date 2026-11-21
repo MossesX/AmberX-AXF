@@ -396,6 +396,36 @@
         "text": "Turns “Show landed” on or off. It takes effect straight away and is remembered. Part of Build orchestrator.",
         "kind": "toggle",
         "draft": true
+      },
+      {
+        "target": "run-this-watch",
+        "title": "Run this watch",
+        "text": "Runs this one watch now, whether or not it is due or switched on: build sessions (stuck or killed sessions recovered), stuck statuses (builds standing in landing, fixing or merging pushed to the next action on their ladder) or left-over rows (rows whose PR merged or closed cleaned). From the console the VPS runs it within a minute. Same as POST watchdogs/run {watch}, MCP watchdogs-run and axf watchdog run --watch <id>.",
+        "kind": "button"
+      },
+      {
+        "target": "show-all-builds",
+        "title": "Show all builds",
+        "text": "The Caught list is showing one build only because you came here from that build. This shows what the watchdog caught for every build again.",
+        "kind": "button"
+      },
+      {
+        "target": "caught",
+        "title": "Caught",
+        "text": "Everything the build watchdog caught, newest first: which watch, which build, the status it stood in and for how long, the cause, what the watchdog did (retry, requeue, merge recorded, landed, failure recorded, a ladder rung, escalated, row completed or removed), whether it worked and whether the phone was told. Filter by watch. A dry run's plan shows on top.",
+        "kind": "tab"
+      },
+      {
+        "target": "watches",
+        "title": "Watches",
+        "text": "The watches the one build watchdog runs: build sessions, stuck statuses and left-over rows. For each: what it does, on or off, how often it runs, its last run, how many builds it watches and how many it caught, its last error, Run this watch and Dry run.",
+        "kind": "tab"
+      },
+      {
+        "target": "watchdog-on-every-watch",
+        "title": "Watchdog on (every watch)",
+        "text": "The master switch. Off: no watch runs, whatever its own switch says; the systems check shows the watchdog amber. On: each watch runs when its own switch is on and its interval has passed. Same as axf watchdog set enabled=on|off and PUT watchdogs/settings {enabled}.",
+        "kind": "toggle"
       }
     ],
     "intros": []

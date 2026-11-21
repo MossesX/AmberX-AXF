@@ -6,7 +6,7 @@ Brett, Nov 19 2026: fold the axHub web UI into the console. Every page this app 
 | This app's page | Console plugin | Console view |
 | --- | --- | --- |
 | Approvals, Request, Approvals log (held calls, auto-approve) | `axhub-approvals` | `axhub-approvals`, `axhub-approval`, `axhub-approvals-log` |
-| Go pass, Passes | `axhub-passes` | `axhub-go-pass`, `axhub-passes` |
+| Go pass, Passes | `gate` (VPS Configuration → Passes; was `axhub-passes` until Nov 21 2026) | `axhub-go-pass`, `axhub-passes` |
 | Apps | `axhub-apps` | `axhub-apps` |
 | Users | `axhub-users` | `axhub-users` |
 | Handoff, Handoff run | `axhub-handoff` | `axhub-handoff`, `axhub-handoff-run` |

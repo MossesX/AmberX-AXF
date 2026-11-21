@@ -1,5 +1,5 @@
 /**
- * Settings → Plugins → Gate (a sub-tab: the settings library draws the tab's level toolbar above it). The plugin's own
+ * Settings → Plugins → VPS Configuration (a sub-tab: the settings library draws the tab's level toolbar above it). The plugin's own
  * settings live on the server (GET / PUT settings), so the CLI (`axf gate settings set refreshSec 60`), MCP
  * (gate_settings, gate_settings_set), voice (`gate.setting:refreshSec:60`, "set the gate refresh to 60") and this panel
  * read and write the same values. console-control@1: `setting:gate.refreshSec | gate.historySize | gate.defaultTab`.
@@ -22,7 +22,7 @@ export function GateSettings() {
   const changed = !!cur && (refresh !== String(cur.refreshSec) || size !== String(cur.historySize) || tab !== cur.defaultTab);
   const save = async () => {
     setBusy(true); setError('');
-    try { fill(await saveSettings({ refreshSec: Number(refresh), historySize: Number(size), defaultTab: tab as Settings['defaultTab'] })); rt.toast('Gate settings saved.', 'success', 'Gate'); }
+    try { fill(await saveSettings({ refreshSec: Number(refresh), historySize: Number(size), defaultTab: tab as Settings['defaultTab'] })); rt.toast('Gate settings saved.', 'success', 'VPS Configuration'); }
     catch (e) { setError((e as Error).message); } finally { setBusy(false); }
   };
   if (!cur && !error) return <p className="axp-gate__sub">Loading…</p>;
@@ -30,7 +30,7 @@ export function GateSettings() {
     <div className="axp-gate__fields">
       <TextField label="Refresh every (seconds)" type="number" value={refresh} onChange={setRefresh} hint="How often the open tab asks the lander again (5 to 600)." />
       <TextField label="History size (entries kept)" type="number" value={size} onChange={setSize} hint="The oldest entries go once History holds more than this (50 to 20000)." />
-      <SelectField label="Tab it opens on" value={tab} onChange={setTab} options={[{ value: 'rules', label: 'Rules' }, { value: 'auto-lander', label: 'Auto-lander' }, { value: 'history', label: 'History' }]} hint="Unless you were on another tab last time (the tab row remembers it)." />
+      <SelectField label="Tab it opens on" value={tab} onChange={setTab} options={[{ value: 'rules', label: 'Rules' }, { value: 'build-rules', label: 'Build rules' }, { value: 'auto-lander', label: 'Auto-lander' }, { value: 'build-cap', label: 'Build cap' }, { value: 'approvals', label: 'Approval rules' }, { value: 'passes', label: 'Passes' }, { value: 'history', label: 'History' }]} hint="Unless you were on another tab last time (the tab row remembers it)." />
       {error && <p className="axp-gate__err" role="alert">{error}</p>}
       <div className="axp-gate__bar"><Button id="gate-settings-save" tone="primary" icon="save" busy={busy} disabled={!changed} onClick={() => void save()}>Save</Button></div>
     </div>
@@ -39,7 +39,7 @@ export function GateSettings() {
 
 
 
-/** Links from Settings → Plugins → Gate into the Gate screen's own tabs (build rules and the auto-lander stay there). */
+/** Links from Settings → Plugins → VPS Configuration into the VPS Configuration screen's own tabs (build rules and the auto-lander stay there). */
 export function GateScreenLinks() {
   const rt = useRuntime();
   const open = (tab: string) => { rt.closeDialog(); rt.dispatch(`gate.open:${tab}`); };
