@@ -208,7 +208,9 @@ class Store:
 
     # ── low level ──
     def _row(self, ns: str, path: str) -> dict | None:
-        r = self.db.execute('SELECT * FROM keys WHERE ns=? AND path=?', (ns, path)).fetchone()
+        # one connection for every thread: a read while another thread writes raised "bad parameter or other API misuse"
+        with self.lock:
+            r = self.db.execute('SELECT * FROM keys WHERE ns=? AND path=?', (ns, path)).fetchone()
         return dict(r) if r else None
 
     def blob_path(self, digest: str) -> Path:
@@ -547,11 +549,13 @@ class Store:
         return p
 
     def meta_get(self, k: str, default: str = '') -> str:
-        r = self.db.execute('SELECT v FROM meta WHERE k=?', (k,)).fetchone()
+        with self.lock:
+            r = self.db.execute('SELECT v FROM meta WHERE k=?', (k,)).fetchone()
         return r[0] if r else default
 
     def meta_set(self, k: str, v: str) -> None:
-        self.db.execute('INSERT OR REPLACE INTO meta (k, v) VALUES (?,?)', (k, v))
+        with self.lock:
+            self.db.execute('INSERT OR REPLACE INTO meta (k, v) VALUES (?,?)', (k, v))
 
     def purge(self, now: datetime | None = None) -> dict:
         """Drop tombstones and change-feed lines older than the retention window; never a journal line."""
