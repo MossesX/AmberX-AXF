@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T00:40:36.502Z",
+ "updatedAt": "2026-11-21T00:40:57.464Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -67,17 +67,101 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T00:39:43.516Z",
+   "updatedAt": "2026-11-21T00:40:52.877Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Plan Studio 2.0 item: console-tabs-plugins-open-in-tab-u6cs (Console tabs: plugins open in tabs inside one console). Passed plan-build@1; sent as one Pipeline 2.0 build with 9 planning steps. The splitting stage designs its build steps.",
      "at": "2026-11-21T00:39:43.516Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-21T00:40:52.877Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomcnh0508sj",
+     "createdAt": "2026-11-21T00:40:52.877Z"
+    },
+    {
+     "id": "s2",
+     "text": "One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomcnh06sgge",
+     "createdAt": "2026-11-21T00:40:52.877Z"
+    },
+    {
+     "id": "s3",
+     "text": "Every step on Fable.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomcnh07oxkp",
+     "createdAt": "2026-11-21T00:40:52.877Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/console-tabs-plugins-open-in-tabs-.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-tabs-plugins-open-in-tabs-.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomcnh086gmn",
+     "createdAt": "2026-11-21T00:40:52.877Z"
+    }
+   ]
   },
   {
    "id": "plan-studio-live-progress-one-stor",
@@ -92,17 +176,101 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:38:20.767Z",
-   "updatedAt": "2026-11-21T00:38:30.526Z",
+   "updatedAt": "2026-11-21T00:40:50.110Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Plan Studio 2.0 item: plan-studio-live-progress-one-st-6z4z (Plan Studio live progress: one store, steps check off in place). Passed plan-build@1; sent as one Pipeline 2.0 build with 7 planning steps. The splitting stage designs its build steps.",
      "at": "2026-11-21T00:38:20.767Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
+     "at": "2026-11-21T00:40:50.110Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomaim01tlzd",
+     "createdAt": "2026-11-21T00:40:50.110Z"
+    },
+    {
+     "id": "s2",
+     "text": "Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomaim02n60o",
+     "createdAt": "2026-11-21T00:40:50.110Z"
+    },
+    {
+     "id": "s3",
+     "text": "Every step on Fable.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomaim03kehd",
+     "createdAt": "2026-11-21T00:40:50.110Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/plan-studio-live-progress-one-stor.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/plan-studio-live-progress-one-stor.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwpomaim04h8kd",
+     "createdAt": "2026-11-21T00:40:50.110Z"
+    }
+   ]
   },
   {
    "id": "fix-main-ci-red-after-s16-s7-hand-",
