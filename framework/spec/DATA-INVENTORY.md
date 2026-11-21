@@ -109,8 +109,8 @@ Row counts below are live `keys` rows in axf-data (not deleted); sizes are the s
 | `framework/schemas/project-rules.json` | 8 kB | project rules | console Build rules | `project_rules` (new) | s4.3 |
 | `sessions/` (repo) + hub `_data/sessions/archive`, `archive-inbox` | 4.2 MB repo; 5 703 records | session@1 | claude-sync, chat archiver | `sessions` (new), `session_messages` (new) | s4.6 |
 | `changes/` (repo) + hub `_data/changes/<yyyy>/<mm>/<id>.json` | 9.7 MB repo; 1 962 records; `changes` table already 16 803 rows | codebase-changes | `apps/console-web/plugins/codebase-changes/changes-core.mjs` | `changes` (exists as a change-feed; rename the codebase log to `codebase_changes`, new) | s4.6 |
-| hub `_data/plan-studio/**` (history, plans, projects, categories, deleted, blueprints, catalog-seen) + `shipped-log.jsonl` | 275 files, 7.4 MB | plan-studio | plan-studio server | `planner_items` (exists, plans only); `planner_history`, `planner_categories`, `planner_shipped` (new) | s4.2 |
-| hub `_data/plan-studio-2/tree.json` | 8 kB | plan-studio | plan-studio server | `planner_tree` (new) | s4.2 |
+| hub `_data/plan-studio/**` (history, plans, projects, categories, deleted, blueprints, catalog-seen) + `shipped-log.jsonl` | 275 files, 7.4 MB | none (archive: the plugin was removed Nov 21 2026, its 8 plans moved into the Plan Studio 2.0 tree) | none | `planner_items` (exists, plans only); `planner_history`, `planner_categories`, `planner_shipped` (new) | s4.2 |
+| hub `_data/plan-studio-2/tree.json` | 570 kB | plan-studio-2 | plan-studio-2 server, `tree.mjs`, `plans.mjs` (plans@1) | `planner_tree` (new) | s4.2 |
 | hub `_data/framework/{catalog,plan,schemas}` | 14 MB | persist.mjs | persist.mjs (hub copies of the above) | goes away: same rows as above | s4.1–s4.3 |
 | hub `_data/project.manifest.json`, `/projects/<p>/_data/project.manifest.json` (21 projects) | ~0.5–1.5 kB each | project wizard | console projects | `projects` (new; one row per project) | s4.2 |
 

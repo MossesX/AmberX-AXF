@@ -62,7 +62,7 @@ MCP: \`amberx_find\`, \`amberx_add\`, \`amberx_update\`, \`amberx_done\`, \`ambe
   {
     id: 'planner',
     title: 'The planner: plans and builds',
-    body: `\`planner.plans\` are Plan Studio plans; \`planner.builds\` are Build orchestrator builds (the one builds store; Pending, the queue and the Build manager follow every change).
+    body: `\`planner.plans\` are Plan Studio 2.0 plans (the planning tree's items of kind plan; a removed one is in the tree's trash and \`act restore\` brings the newest back); \`planner.builds\` are Build orchestrator builds (the one builds store; Pending, the queue and the Build manager follow every change).
 
 \`\`\`sh
 axf plan add "Voice macros" --field category="Apps > AmberX"     # parked: "put it in a plan for later"

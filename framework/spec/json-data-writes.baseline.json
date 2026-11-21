@@ -42,7 +42,6 @@
   "apps/console-web/plugins/output-recorder/server/__init__.py": 1,
   "apps/console-web/plugins/output-recorder/server/transcripts.py": 1,
   "apps/console-web/plugins/plan-studio-2/tree.mjs": 2,
-  "apps/console-web/plugins/plan-studio/catalog.mjs": 1,
   "apps/console-web/plugins/plugin-commands/commands.mjs": 1,
   "apps/console-web/plugins/plugin-commands/server/__init__.py": 1,
   "apps/console-web/plugins/plugin-manager/server/lazy.py": 2,

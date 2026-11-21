@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). The original Plan Studio is untouched.",
+  "description": "A clean planning tree (plan-tree@1): plans, sections, steps, notes and lists nested inside each other to any depth, dragged to move or reorder at any level, every item with a full context menu (new inside, rename, edit, duplicate, move, delete with undo, export, send to the build orchestrator). Starts empty and nothing is synced into it: the to-do manager, the orchestrator, notes and Shipped features are reached only through links a person or a command adds. Every action is the same through REST, MCP (plugin commands), the CLI (tree.mjs) and AmberX voice (say). It is the one Plan Studio: it provides plans@1 (plans.mjs), so control@1 planner.plans, \"put it in a plan for later\" and the orchestrator read and write this tree.",
   "targets": [
     "axf-console"
   ],
@@ -17,7 +17,8 @@
     "dialog:plan-studio-2.move",
     "dialog:plan-studio-2.link",
     "dialog:plan-studio-2.build",
-    "service:plan-tree@1"
+    "service:plan-tree@1",
+    "service:plans@1"
   ],
   "scopes": [
     "ROUTES"
@@ -41,6 +42,9 @@
     "mentions": [
       "apps/console-web/plugins/README.md",
       "apps/console-web/plugins/wake-listener/catalog.mjs",
+      "framework/cli/project-seed.mjs",
+      "framework/spec/CONTROL.md",
+      "_claude/shared/rules/RULES.md",
       ".github/workflows/android.yml",
       "_claude/memory/docs/rebuilds/fable-rebuild-plan-studio-cleared-out.md"
     ]
