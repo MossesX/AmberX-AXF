@@ -200,6 +200,22 @@ try {
     same(['settings'], 'settings_get');
     same(['settings', 'set', 'defaultTab', 'history'], 'settings_set');
   });
+  t('build cap: the three numbers side by side, the note when they disagree, ranges, owner-only keys', async () => {
+    const C = await import('./build-cap.mjs');
+    assert.deepEqual(C.capNote({ hardCap: 4, stepsInParallel: 6 }), { effective: 4, note: 'Steps in parallel is 6 but the hard cap is 4: only 4 run at once.' });
+    assert.equal(C.capNote({ hardCap: 4, stepsInParallel: 4 }).note, '');
+    assert.equal(C.capNote({ hardCap: 4, stepsInParallel: 2 }).effective, 2);
+    assert.deepEqual(C.capNote({ hardCap: null, stepsInParallel: undefined }), { effective: null, note: '' });
+    const c = C.buildCap({ max: 4, live: 1, free: 3, emergency: { max: 2, live: 0 }, limit: { maxBuilds: 4, emergencySlots: 2, setBy: 'brett', setAt: '2026-11-18T00:00:00Z' } }, { stepsInParallel: 6 });
+    assert.equal(c.$axf, 'build-cap@1'); assert.equal(c.hardCap, 4); assert.equal(c.emergencySlots, 2); assert.equal(c.stepsInParallel, 6); assert.equal(c.effective, 4); assert.equal(c.setBy, 'brett');
+    assert.deepEqual(c.ownerOnly, ['maxBuilds', 'emergencySlots']);
+    assert.equal(C.checkValue('stepsInParallel', '3'), 3);
+    assert.throws(() => C.checkValue('stepsInParallel', 13), /1 to 12/); assert.throws(() => C.checkValue('stepsInParallel', '2.5'), /whole number/); assert.throws(() => C.checkValue('nope', 1), /unknown setting/);
+    assert.match(C.line(c), /hard cap 4 .* emergency slots 2 .* steps in parallel 6\nSteps in parallel is 6/);
+    // the CLI never writes an owner-only key, and says who can
+    const r = spawnSync(process.execPath, [join(HERE, 'build-cap.mjs'), 'set', 'maxBuilds', '9', '--json'], { encoding: 'utf8' });
+    assert.equal(r.status, 1); assert.equal(JSON.parse(r.stdout).code, 'forbidden');
+  });
   t('the CLI exits 3 when a press needs a confirm, 2 on a usage error', () => {
     seed(); assert.equal(node(['rules', 'reset']).status, 3); assert.equal(node(['rules', 'frobnicate']).status, 2);
   });

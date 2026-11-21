@@ -290,6 +290,32 @@
         "description": "Change the lander's settings (deploy/lander/run.mjs): enabled, sizeCapLines (the one-PR size cap), flakyReruns, backoffBaseMin/Factor/MaxMin, ciNoneKickMin, ciTimeoutMin, fixTimeoutMin, notifyAfterAttempts, workflow, mergeMethod; {key: value, …} or {key, value}."
       },
       {
+        "id": "build-cap",
+        "route": "GET /build-cap",
+        "title": "Build cap: status",
+        "readOnly": true,
+        "tool": "vps_build_cap",
+        "description": "The build cap (build-cap@1): the host hard cap (maxBuilds), emergency slots and the orchestrator's stepsInParallel side by side, what runs now, how many really run at once and the note when the numbers disagree."
+      },
+      {
+        "id": "build-cap-set",
+        "route": "POST /build-cap",
+        "title": "Build cap: change",
+        "tool": "vps_build_cap_set",
+        "input": {
+          "type": "object",
+          "properties": {
+            "stepsInParallel": { "type": "integer", "minimum": 1, "maximum": 12, "description": "steps of one build sent at once" },
+            "maxBuilds": { "type": "integer", "minimum": 1, "maximum": 64, "description": "the host hard cap; Brett's signed-in console only" },
+            "emergencySlots": { "type": "integer", "minimum": 0, "maximum": 8, "description": "the emergency pool; Brett's signed-in console only" },
+            "key": { "type": "string", "description": "one setting by name (with value)" },
+            "value": { "description": "the value for key" }
+          },
+          "additionalProperties": false
+        },
+        "description": "Change the build cap: stepsInParallel (1-12) from anywhere; maxBuilds (1-64) and emergencySlots (0-8) only from Brett's own signed-in console (a session, MCP or voice is refused with 403)."
+      },
+      {
         "id": "settings",
         "route": "GET /settings",
         "title": "Gate: plugin settings",
@@ -300,7 +326,7 @@
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, build-cap, history)."
       },
       {
         "id": "build-rules-list",

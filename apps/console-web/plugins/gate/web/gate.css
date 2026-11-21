@@ -13,6 +13,7 @@
 .axp-gate__pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-sm); }
 .axp-gate__fields { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: calc(var(--fx-space) * 34); }
 .axp-gate__list { margin: 0; padding-left: var(--fx-dens-gap-lg); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); }
+.axp-gate__note { color: var(--fx-warning); margin: 0; }
 .axp-gate__err { color: var(--fx-danger); margin: 0; }
 .axp-gate__cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--fx-space) * 90)), 1fr)); gap: var(--fx-dens-gap-md); }
 .axp-gate__cards > .axp-gate__label { grid-column: 1 / -1; margin: 0; }

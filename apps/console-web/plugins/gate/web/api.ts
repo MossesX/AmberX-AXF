@@ -5,7 +5,7 @@
 import { pluginFetch } from '@console/plugins';
 
 export const FOLDER = 'gate';
-export const TABS = ['rules', 'build-rules', 'auto-lander', 'history'] as const;
+export const TABS = ['rules', 'build-rules', 'auto-lander', 'build-cap', 'history'] as const;
 export type GateTab = (typeof TABS)[number];
 
 export interface GateRule { id: string; kind: string; enabled: boolean; severity: 'block' | 'warn' | 'info'; owner: string; title: string; description: string; settings: Record<string, unknown>; source?: string; updatedAt?: string; updatedBy?: string }

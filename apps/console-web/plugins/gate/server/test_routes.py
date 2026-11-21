@@ -82,6 +82,14 @@ try:
     ok(c.put(f"{B}/settings", json={"refreshSec": 3}).status_code == 400, "PUT settings validates")
     ok(c.put(f"{B}/settings", json={"defaultTab": "history"}).json()["settings"]["defaultTab"] == "history", "PUT settings")
 
+    # the build cap: every value is checked and the owner-only keys refused before anything runs or is saved
+    ok(c.post(f"{B}/build-cap", json={"nope": 1}).status_code == 400, "POST build-cap needs a known key")
+    ok(c.post(f"{B}/build-cap", json={"stepsInParallel": 99}).status_code == 400, "POST build-cap checks the range")
+    ok(c.post(f"{B}/build-cap", json={"key": "stepsInParallel", "value": "x"}).status_code == 400, "POST build-cap wants a whole number")
+    r = c.post(f"{B}/build-cap", json={"maxBuilds": 9})
+    ok(r.status_code == 403 and "Only Brett" in r.json()["message"], "POST build-cap: the hard cap is the owner's own session only")
+    ok(c.post(f"{B}/build-cap", json={"emergencySlots": 1, "stepsInParallel": 3}).status_code == 403, "an owner-only key refuses the whole call")
+
     hl = routes.health
     now = time.time() * 1000
     ok(hl.lander_check({"ok": True, "status": "running", "landing": {"pr": 5, "since": "2020-01-01T00:00:00Z"}}, now)["status"] == "error", "a PR landing for hours is stuck")

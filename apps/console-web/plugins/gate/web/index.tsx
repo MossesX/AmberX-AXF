@@ -14,6 +14,7 @@ import { GateAlias, GateView, PLUGIN_ID, VIEW_ALIAS } from './GateView';
 import { appMenu } from './menu';
 import { VIEW_KEY } from './rows';
 import { registerSettingTargets } from './settingsStore';
+import { registerBuildCap } from './buildCapState';
 
 export const plugin: AxfWebLibrary = {
   id: PLUGIN_ID, // must equal plugin.json "id"
@@ -44,5 +45,5 @@ export const plugin: AxfWebLibrary = {
     { id: 'gate.screen-links', tab: FOLDER, title: 'On the VPS Configuration screen', icon: 'link', order: 30, render: () => <GateScreenLinks /> },
     { id: 'gate.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
-  register(rt) { registerGateActions(rt); registerSettingTargets(rt); },
+  register(rt) { registerGateActions(rt); registerSettingTargets(rt); registerBuildCap(rt); },
 };

@@ -237,6 +237,48 @@
         "kind": "control"
       },
       {
+        "target": "build-cap",
+        "title": "Build cap",
+        "text": "How many builds the VPS runs at once: the hard cap, the emergency slots and the orchestrator's steps in parallel side by side, with what runs now. A note says so when the numbers disagree. Same values as `axf gate build-cap`, the vps_build_cap MCP tools and “what is the build cap”."
+      },
+      {
+        "target": "view:gate/tab:build-cap",
+        "title": "Build cap",
+        "text": "The hard cap and the emergency slots are the host's limit (only Brett changes them, from his own signed-in console). Steps in parallel is the orchestrator's setting and can be changed from anywhere. The smaller of hard cap and steps in parallel is what really runs at once.",
+        "kind": "screen"
+      },
+      {
+        "target": "hard-cap-builds-at-once",
+        "title": "Hard cap",
+        "text": "The most builds the VPS ever runs at once (1 to 64). Sessions, MCP and voice can read it; only Brett's signed-in console can change it."
+      },
+      {
+        "target": "emergency-slots",
+        "title": "Emergency slots",
+        "text": "Extra places only an emergency build may take, counted apart from the hard cap (0 to 8, 0 = off). Only Brett's signed-in console can change it."
+      },
+      {
+        "target": "steps-in-parallel",
+        "title": "Steps in parallel",
+        "text": "How many steps of one build the orchestrator sends at once (1 to 12). Above the hard cap it changes nothing: only the hard cap's number run."
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the numbers again now. The tab also refreshes by itself."
+      },
+      {
+        "target": "undo-edits",
+        "title": "Undo edits",
+        "text": "Puts the fields back to the saved values. Nothing is saved."
+      },
+      {
+        "target": "cli:gate/build-cap",
+        "title": "axf gate build-cap",
+        "text": "`axf gate build-cap` shows the three numbers and the note; `axf gate build-cap set stepsInParallel 4` changes steps in parallel. The hard cap and emergency slots are not settable from the CLI.",
+        "kind": "control"
+      },
+      {
         "target": "auto-lander-server",
         "title": "Server auto-lander",
         "text": "The VPS fixes and lands finished builds by itself, every minute: merges main into a clash, starts a fix session for red CI, sends green PRs to the merge queue. After 3 failed tries of one kind it stops and puts a red item in the systems check with Fix.",

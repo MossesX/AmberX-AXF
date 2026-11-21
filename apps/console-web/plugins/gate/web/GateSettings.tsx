@@ -30,7 +30,7 @@ export function GateSettings() {
     <div className="axp-gate__fields">
       <TextField label="Refresh every (seconds)" type="number" value={refresh} onChange={setRefresh} hint="How often the open tab asks the lander again (5 to 600)." />
       <TextField label="History size (entries kept)" type="number" value={size} onChange={setSize} hint="The oldest entries go once History holds more than this (50 to 20000)." />
-      <SelectField label="Tab it opens on" value={tab} onChange={setTab} options={[{ value: 'rules', label: 'Rules' }, { value: 'auto-lander', label: 'Auto-lander' }, { value: 'history', label: 'History' }]} hint="Unless you were on another tab last time (the tab row remembers it)." />
+      <SelectField label="Tab it opens on" value={tab} onChange={setTab} options={[{ value: 'rules', label: 'Rules' }, { value: 'build-rules', label: 'Build rules' }, { value: 'auto-lander', label: 'Auto-lander' }, { value: 'build-cap', label: 'Build cap' }, { value: 'history', label: 'History' }]} hint="Unless you were on another tab last time (the tab row remembers it)." />
       {error && <p className="axp-gate__err" role="alert">{error}</p>}
       <div className="axp-gate__bar"><Button id="gate-settings-save" tone="primary" icon="save" busy={busy} disabled={!changed} onClick={() => void save()}>Save</Button></div>
     </div>

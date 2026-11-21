@@ -63,3 +63,19 @@ node apps/console-web/plugins/gate/uninstall.mjs            # data only (backed 
 node apps/console-web/plugins/gate/uninstall.mjs --all      # + code + doc lines; --publish pushes the removal
 node apps/console-web/plugins/gate/test.mjs                 # self-test
 ```
+
+## Build cap (build-cap@1)
+
+**Build cap** tab (`tab:gate.tabs=build-cap`): the host hard cap (`maxBuilds`) and emergency slots
+(`framework/cli/build-limit.mjs`) next to the orchestrator's `stepsInParallel` (its pipeline settings), with what runs
+now and a note when the numbers disagree (`build-cap.mjs` → `capNote`). The hard cap and the emergency slots are
+written only from Brett's own signed-in console (the route answers 403 to a session, MCP or voice, and the fields are
+disabled with the reason); `stepsInParallel` is open.
+
+| Reach | Read | Change |
+| --- | --- | --- |
+| REST | `GET /api/plugins/gate/build-cap` | `POST /api/plugins/gate/build-cap {stepsInParallel?, maxBuilds?, emergencySlots?}` |
+| MCP | `vps_build_cap` | `vps_build_cap_set` |
+| CLI | `axf gate build-cap` | `axf gate build-cap set stepsInParallel <n>` |
+| Voice / actions | `vps.build-cap.status`, `vps.build-cap.open` | `vps.build-cap.set:<key>:<n>` |
+| console-control@1 | `setting:vps.buildCap.maxBuilds \| emergencySlots \| stepsInParallel` | the same, `set` |
