@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10287,
- "updatedAt": "2026-11-21T05:05:10.724Z",
+ "rev": 10288,
+ "updatedAt": "2026-11-21T05:05:29.355Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350961,14 +350961,14 @@
    "title": "Plan Studio live progress: one store, steps check off in place",
    "category": "",
    "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:38:20.767Z",
-   "updatedAt": "2026-11-21T01:59:01.652Z",
+   "updatedAt": "2026-11-21T05:05:09.668Z",
    "builtAt": "",
    "notes": [
     {
@@ -351603,7 +351603,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351614,9 +351614,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T01:58:01.819Z",
-   "statusBy": "watchdog",
-   "attempt": 5,
+   "statusAt": "2026-11-21T05:05:09.668Z",
+   "statusBy": "amber",
+   "attempt": 6,
    "failedFrom": "split",
    "statusLog": [
     {
@@ -351702,6 +351702,13 @@
      "by": "watchdog",
      "attempt": 5,
      "why": "split did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T05:05:09.668Z",
+     "by": "amber",
+     "attempt": 6,
+     "why": "Brett Nov 21: unstick per fable-deep-audit 0.2"
     }
    ]
   },
@@ -351710,14 +351717,14 @@
    "title": "Console tabs: plugins open in tabs inside one console",
    "category": "",
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T02:02:01.702Z",
+   "updatedAt": "2026-11-21T05:05:16.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -352442,7 +352449,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -352453,9 +352460,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T02:01:02.038Z",
-   "statusBy": "watchdog",
-   "attempt": 5,
+   "statusAt": "2026-11-21T05:05:16.504Z",
+   "statusBy": "amber",
+   "attempt": 6,
    "failedFrom": "split",
    "statusLog": [
     {
@@ -352541,6 +352548,13 @@
      "by": "watchdog",
      "attempt": 5,
      "why": "split did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T05:05:16.504Z",
+     "by": "amber",
+     "attempt": 6,
+     "why": "Brett Nov 21: unstick per fable-deep-audit 0.2"
     }
    ]
   },
