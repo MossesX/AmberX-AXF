@@ -24,3 +24,6 @@ export declare const UNSEEN_MS: number;
 export declare const DIALOG_UNSEEN: string;
 export declare function dialogUnseen(answer: unknown, ms: number): boolean;
 export declare function hasDialogs(info: unknown): boolean;
+export declare const DIALOG_ALERT_KEY: string;
+export declare const DIALOG_MIN_APP: string;
+export declare function dialogAlert(version: unknown): { source: string; severity: 'warning'; key: string; title: string; body: string; link: string };

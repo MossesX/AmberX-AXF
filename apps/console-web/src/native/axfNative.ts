@@ -24,9 +24,10 @@ import type { AxfRuntime } from '../axf/core';
 import { executeControl, describeAnswer } from '../control/executor';
 import { controlRegistry } from '../axf/react';
 import { loader } from '../pluginLoader';
+import { consoleAlertsTransport } from '../alertsTransport';
 import {
   APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
-  DIALOG_UNSEEN, PHONE_APP_ADDRESS, dialogUnseen, hasDialogs, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  DIALOG_ALERT_KEY, DIALOG_UNSEEN, PHONE_APP_ADDRESS, dialogAlert, dialogUnseen, hasDialogs, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
 /** The shell's Java bridge (`NativeBridge`): every method answers a JSON string. */
@@ -136,7 +137,11 @@ export function installNative(rt: AxfRuntime): () => void {
   offs.push(() => { delete window.axfNative; });
 
   // a shell that can't draw the page's questions in the overlay: an unseen "no" is said out loud, never silent
-  if (!hasDialogs(callNative('info'))) {
+  const shell = callNative('info');
+  if (hasDialogs(shell)) void consoleAlertsTransport.resolve([DIALOG_ALERT_KEY]).catch(() => { /* offline: the next load resolves it */ });
+  else {
+    // said once where Brett sees it (the bell and a phone push; one alert per key), gone once the app is updated
+    void consoleAlertsTransport.raise(dialogAlert(shell.version)).catch(() => { /* offline: the next load raises it */ });
     const guard = <A extends unknown[], R>(ask: ((...a: A) => R) | undefined) => (ask ? (...a: A): R => {
       const t = performance.now();
       const answer = ask.apply(window, a);

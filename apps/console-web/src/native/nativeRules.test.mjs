@@ -99,6 +99,9 @@ t('an unseen "no" from confirm() is told apart from a person\'s answer', () => {
   assert.equal(R.hasDialogs({ features: ['overlay', 'dialogs'] }), true);
   assert.equal(R.hasDialogs({ features: ['overlay'] }), false); assert.equal(R.hasDialogs({ ok: false }), false);
   assert.ok(java('NativeBridge.java').includes('DialogRules.FEATURE') && java('DialogRules.java').includes(`FEATURE = "${R.DIALOG_FEATURE}"`), 'the shell announces the same feature name');
+  const a = R.dialogAlert('0.1.0');
+  assert.equal(a.key, R.DIALOG_ALERT_KEY); assert.equal(a.severity, 'warning'); assert.match(a.title, /0\.2\.0/); assert.match(a.body, /AXF Console 0\.1\.0/);
+  assert.ok(readFileSync(join(ROOT, 'apps/console-droid/app/build.gradle'), 'utf8').includes(`versionName "${R.DIALOG_MIN_APP}"`), 'the app version that first has dialogs');
   for (const m of ['onJsAlert', 'onJsConfirm', 'onJsPrompt']) assert.ok(java('WebHost.java').includes(`public boolean ${m}(`), `WebHost answers ${m}`);
 });
 

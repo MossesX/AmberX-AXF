@@ -85,3 +85,51 @@ then the question: that is the standing toolbar behaviour, not part of this bug.
 | Save, Apply the default, the answer | `button:vps-approvals-save`, `-default`, `-confirm`, `-cancel` are addressable; a remote press opens or cancels the question | never a command (owner-only, as before) |
 | Sign in | `button:vps-approvals-signin` | a browser navigation to the hub; signing in is Brett's |
 | Does the phone app draw questions | `panel:phone-app` state → `native.features` has `dialogs` | `native.state` on all four |
+
+## Tests and checks (s3)
+
+- **WebView-style browser run**, `node apps/console-web/scripts/approval-rules-webview.mjs [out-dir]` against the built
+  console: a phone-sized touch page whose `confirm()` answers false without showing (what the overlay WebView does),
+  real taps, the console routes and the hub's policy route answered from a fixture. Five scenarios, all pass:
+  - `signed-in`: Apply the default stages the default and one PUT reaches the hub with both services; a rule staged
+    through console-control is then saved by Brett's taps (second PUT carries it).
+  - `no-session`: the tab says Save is off here, both buttons are off, **Sign in to axHub** goes to
+    `<hub>/auth/login?rd=<the console page>`; nothing reaches the policy route.
+  - `expired`: the hub answers 401 → the reason and Sign in show on the tab, the draft is kept.
+  - `hub-down`: the PUT cannot connect → "Not saved: Can't reach axHub from this browser." on the tab, the default
+    stays staged.
+  - `remote`: console-control presses of Save and of the answer → "Only Brett saves approval rules…", no hub request.
+  - Every scenario also fails if the tab calls `confirm()` at all.
+- `node apps/console-web/plugins/gate/test.mjs` (25), `python3 apps/console-web/plugins/gate/server/test_routes.py`
+  (53), `node apps/console-web/src/native/nativeRules.test.mjs` (unseen answers, the `dialogs` feature name on both
+  sides, the app version), `DialogRulesTest` (JUnit, run by CI with the console app build).
+- `check-theme`, `check-controls`, `check-toolbars`, `check-console-control`, `check-chrome-assets`,
+  `plugin-lifecycle check gate`, `help-coverage` (100%), `tsc --noEmit` + `vite build`: all pass.
+- `scripts/vps-config-shots.mjs` (approvals): the remote press of the answer is refused, 0 hub requests.
+- Screenshots: UI Review → Screenshots, group "Approval rules: Save and Apply the default from the phone app".
+- Help: `plugins/gate/help.json` (Yes, apply the default · Yes, save · Sign in to axHub). Docs: `plugins/gate/README.md`,
+  `apps/console-droid/README.md`.
+
+## For Brett
+
+1. Once the console deploy is live: open Approval rules from the phone, tap **Apply the default** (twice: the usual
+   toolbar tap-to-confirm), then **Yes, apply the default**. No app update is needed for this.
+2. If it says the page is not on your axHub sign-in, tap **Sign in to axHub**; it comes back to the tab.
+3. The console app 0.2.0 (built by CI on main, axHub → Apps → AXF Console) fixes every other "Sure?" button in the
+   floating console. Until it is installed the console raises one alert, "Update the AXF Console app to 0.2.0"
+   (bell and phone push, raised from inside the old app, cleared by the new one), and says so on any such press.
+
+## Gaps
+
+- **Not run on the phone.** No device or Android toolchain here. The cause is from the code of both apps and the
+  WebView's behaviour; the fix on the tab does not depend on that reading being right, because the tab no longer
+  uses a browser dialog at all and every failure path now shows its reason. `JsDialogs` (the overlay dialog) is
+  compiled and unit-tested by CI but was not seen on a screen.
+- The app-update notice is an alert raised by the page inside the old app, not a systems check item: the console
+  server does not know the console app's version (only Phone Connect reports one). A server-side check needs the
+  shell to report its version to the console.
+- The overlay dialog uses Android's system dialog look, not the console's tokens (like the app's existing
+  permission dialog).
+- The other 26 direct `confirm()` calls in plugins still depend on a dialog; they work in the app's activity and in
+  the overlay from 0.2.0. Moving them to on-page questions was left out.
+- No UI Review choices: the question and the sign-in note use the tab's existing look (framework `Note` + `Button`).
