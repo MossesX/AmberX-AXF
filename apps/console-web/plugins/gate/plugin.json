@@ -2,11 +2,11 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.gate",
   "name": "Gate & rules",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "The gate a PR must pass before it lands, and the auto-lander that lands it, in one place (gate-rules@1, framework/spec/GATE.md). Rules tab: every gate rule (CI green, tests, theme, controls, toolbars, UI Review, code clash, merge-queue policy) with its on/off switch, severity and settings, Reset to defaults and Check a PR. Auto-lander tab: one mode switch Merge queue on/off (on = PRs go through the stacked merge queue; off, the default = the auto-lander lands each finished build one at a time), status, waiting PRs with the rule that holds each one and why, last runs, Land now, Pause and Resume. History tab: every rule change and lander action (who, when, before/after). The same calls through REST (/api/plugins/gate), MCP (gate_* and lander_*), the CLI (axf gate …) and voice. Rules and history live in the plugin's data folder; the lander settings are mirrored into the merge-queue provider's config so one switch is the switch the lander obeys. Two adapters (gate-store.mjs, lander.mjs) are the only files a later axf-molly backend replaces.",
+  "description": "The gates a build must pass before it lands, the build rules, the merge line, the lander and its limits, in one place (gate-rules@1, framework/spec/GATE.md). Eight tabs: Overview (the pipeline at a glance), Gates (every gate rule with its on/off switch, severity and settings, Reset and Check a PR), Build rules (who does each rule, run a build's rules, preview a session's brief), Merge line (the Merge queue switch, waiting PRs with the rule that holds each one, last runs, Land next, Pause and Resume), Lander (the VPS lander's service and builds, Retry and Fix), Limits (size cap, retries, timeouts, merge method), Model triage (kept for the VPS model triage gate) and History (every change and run). The screen is display only: it shows what the server answers and sends taps to it. The same calls through REST (/api/plugins/gate), MCP (gate_* and lander_*), the CLI (axf gate …) and voice. Rules and history live in the plugin's data folder; the lander settings are mirrored into the merge-queue provider's config so one switch is the switch the lander obeys. Two adapters (gate-store.mjs, lander.mjs) are the only files a later axf-molly backend replaces.",
   "targets": [
     "axf-console"
   ],
@@ -64,7 +64,7 @@
         "route": "GET /rules",
         "title": "Gate rules: list",
         "readOnly": true,
-        "description": "The gate rule set (gate-rule-set@1): every rule a PR must pass before it lands, with on/off, severity, who runs it and its settings. Filter by kind, enabled or owner."
+        "description": "The gate rule set (gate-rule-set@1): every rule a PR must pass before it lands, with on/off, severity, who runs it and its settings, plus counts (total, on, blocking). Filter by kind, enabled or owner."
       },
       {
         "id": "rules-get",
@@ -77,13 +77,13 @@
         "id": "rules-set",
         "route": "PUT /rules/{rule_id}",
         "title": "Gate rules: change a rule",
-        "description": "Change one gate rule: enabled, severity (block, warn, info), owner, settings (merged), title or description. Logged in History with before and after."
+        "description": "Change one gate rule: enabled, severity (block, warn, info), owner, settings (merged; a value sent as text takes the type the rule holds), title or description. Logged in History with before and after."
       },
       {
         "id": "rules-toggle",
         "route": "POST /rules/{rule_id}/toggle",
         "title": "Gate rules: switch a rule on or off",
-        "description": "Switch one gate rule on or off ({enabled}). Logged in History."
+        "description": "Switch one gate rule on or off ({enabled}; none = flip). Logged in History."
       },
       {
         "id": "rules-reset",
@@ -96,7 +96,7 @@
         "route": "GET /check",
         "title": "Gate: can this PR land?",
         "readOnly": true,
-        "description": "Can this PR land? The gate verdict (gate-verdict@1) for one PR (pr or branch) from what the lander knows, rule by rule. Changes nothing."
+        "description": "Can this PR land? The gate verdict (gate-verdict@1) for one PR (pr or branch) from what the lander knows, rule by rule, with a one-line summary. Changes nothing."
       },
       {
         "id": "history",
@@ -170,7 +170,7 @@
         "route": "GET /auto-lander",
         "title": "Server auto-lander: status",
         "readOnly": true,
-        "description": "The lander (lander@1, deploy/lander/run.mjs on the VPS): service up, the build landing, every build waiting to land with its live status from the builds store (merging-pr, pr-pulling-main, running-ci, merging-main, failed with attempt N), the builds failing repeatedly, settings."
+        "description": "The lander (lander@1, deploy/lander/run.mjs on the VPS): the service's state (up, down, paused) and what may be pressed (can), the build landing, every build waiting to land with its live status from the builds store (merging-pr, pr-pulling-main, running-ci, merging-main, failed with attempt N) and whether it can be retried or fixed, the builds failing repeatedly, settings."
       },
       {
         "id": "auto-lander-build",
@@ -298,7 +298,7 @@
         "id": "settings-set",
         "route": "PUT /settings",
         "title": "Gate: change plugin settings",
-        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (rules, build-rules, auto-lander, history)."
+        "description": "Change the plugin's settings: refreshSec (5-600), historySize (50-20000), defaultTab (overview, rules, build-rules, line, auto-lander, limits, triage, history)."
       },
       {
         "id": "build-rules-list",
@@ -389,22 +389,34 @@
       "--fx-border",
       "--fx-border-w",
       "--fx-danger",
+      "--fx-dens-gap-2xl",
+      "--fx-dens-gap-2xs",
+      "--fx-dens-gap-3xl",
+      "--fx-dens-gap-4xl",
       "--fx-dens-gap-lg",
       "--fx-dens-gap-md",
       "--fx-dens-gap-sm",
+      "--fx-dens-gap-xl",
       "--fx-dens-gap-xs",
       "--fx-font-mono",
       "--fx-muted",
+      "--fx-opacity-muted",
       "--fx-radius-md",
+      "--fx-radius-sm",
+      "--fx-row-h",
       "--fx-space",
+      "--fx-success",
+      "--fx-surface",
+      "--fx-surface2",
+      "--fx-type-scale-lg",
       "--fx-type-scale-sm",
       "--fx-warning"
     ],
     "defines": []
   },
   "builtWith": {
-    "model": "opus",
-    "builtAt": "2026-11-15"
+    "model": "fable",
+    "builtAt": "2026-11-21"
   },
   "help": "help.json",
   "opens": "main",

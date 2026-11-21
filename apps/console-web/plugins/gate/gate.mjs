@@ -42,17 +42,40 @@ export function buildRulesVerdict(build, { dir } = {}) {
 
 export const OPS = Object.freeze(['rules_list', 'rules_get', 'rules_set', 'rules_toggle', 'rules_reset', 'check_pr', 'history', 'lander_status', 'lander_waiting', 'lander_runs', 'lander_mode', 'lander_land_now', 'lander_pause', 'lander_resume', 'settings_get', 'settings_set', ...BUILD_RULE_OPS]);
 
+/** The tabs of Builds → Gate & rules, in order (the view's tab row; `defaultTab` is one of them). */
+export const TABS = Object.freeze(['overview', 'rules', 'build-rules', 'line', 'auto-lander', 'limits', 'triage', 'history']);
+
 /** The plugin's own settings (Settings → Plugins → Gate): key → { type, default, … }. */
 export const SETTINGS = Object.freeze({
   refreshSec: { type: 'integer', min: 5, max: 600, default: 30, title: 'Refresh every (seconds)' },
   historySize: { type: 'integer', min: 50, max: history.HISTORY_MAX, default: history.HISTORY_DEFAULT, title: 'History size (entries kept)' },
-  defaultTab: { type: 'enum', values: ['rules', 'build-rules', 'auto-lander', 'history'], default: 'rules', title: 'Tab it opens on' },
+  defaultTab: { type: 'enum', values: TABS, default: 'overview', title: 'Tab it opens on' },
 });
 
 const fail = (code, message, extra = {}) => ({ ok: false, code, message, ...extra });
 const by = (i) => (typeof i.by === 'string' && i.by.trim() ? i.by.trim().slice(0, 80) : 'console');
 const prOf = (v) => { const n = Number(String(v ?? '').replace(/^#/, '')); return Number.isInteger(n) && n > 0 ? n : 0; };
 const boolOf = (v) => (typeof v === 'boolean' ? v : v === 'true' || v === 'on' ? true : v === 'false' || v === 'off' ? false : undefined);
+
+/**
+ * A rule setting sent as text (a form field, voice, the CLI) becomes the type the rule already holds: a number, on/off,
+ * a comma separated list of words, or JSON for a list or object. Any other value passes as sent.
+ */
+export function settingValue(cur, v) {
+  if (typeof v !== 'string') return { value: v };
+  const text = v.trim();
+  if (typeof cur === 'number') { const n = Number(text); return text !== '' && Number.isFinite(n) ? { value: n } : { error: 'is a number' }; }
+  if (typeof cur === 'boolean') { const b = boolOf(text); return b === undefined ? { error: 'is on or off' } : { value: b }; }
+  if (Array.isArray(cur) && cur.every((x) => typeof x === 'string') && !text.startsWith('[')) return { value: text.split(',').map((x) => x.trim()).filter(Boolean) };
+  if (cur && typeof cur === 'object') { try { return { value: JSON.parse(text) }; } catch { return { error: 'is not valid JSON' }; } }
+  return { value: v };
+}
+
+/** The verdict in one plain line, the same on every surface. */
+export function verdictSummary(v, known) {
+  const head = v.pass ? `#${v.pr} can land: every rule passes.` : v.held ? `#${v.pr} waits.` : `#${v.pr} needs a fix.`;
+  return known ? head : `${head} The lander doesn't know this PR yet, so its checks count as not run.`;
+}
 
 /** Settings with defaults filled in. */
 export function settingsOf(store) {
@@ -77,7 +100,8 @@ export function createGate(opts = {}) {
   const ops = {
     rules_list(i = {}) {
       const set = store.readRules(); const en = boolOf(i.enabled);
-      return { ok: true, ...set, rules: set.rules.filter((r) => (!i.kind || r.kind === i.kind) && (en === undefined || r.enabled === en) && (!i.owner || r.owner === i.owner)) };
+      const counts = { total: set.rules.length, on: set.rules.filter((r) => r.enabled).length, blocking: set.rules.filter((r) => r.enabled && r.severity === 'block').length };
+      return { ok: true, ...set, counts, rules: set.rules.filter((r) => (!i.kind || r.kind === i.kind) && (en === undefined || r.enabled === en) && (!i.owner || r.owner === i.owner)), enums: { kinds: gate.KINDS, severities: gate.SEVERITIES, owners: gate.OWNERS } };
     },
     rules_get(i = {}) {
       const r = findRule(store.readRules(), String(i.id || ''));
@@ -93,7 +117,12 @@ export function createGate(opts = {}) {
       if (i.enabled !== undefined) { const b = boolOf(i.enabled); if (b === undefined) return fail('invalid', 'enabled is true or false'); patch.enabled = b; }
       if (i.severity !== undefined) { if (!gate.SEVERITIES.includes(i.severity)) return fail('invalid', `severity is one of ${gate.SEVERITIES.join(', ')}`); patch.severity = i.severity; }
       if (i.owner !== undefined) { if (!gate.OWNERS.includes(i.owner)) return fail('invalid', `owner is one of ${gate.OWNERS.join(', ')}`); patch.owner = i.owner; }
-      if (i.settings !== undefined) { if (!i.settings || typeof i.settings !== 'object' || Array.isArray(i.settings)) return fail('invalid', 'settings is an object'); patch.settings = { ...(cur?.settings || {}), ...i.settings }; }
+      if (i.settings !== undefined) {
+        if (!i.settings || typeof i.settings !== 'object' || Array.isArray(i.settings)) return fail('invalid', 'settings is an object');
+        const typed = {};
+        for (const [k, v] of Object.entries(i.settings)) { const c = settingValue(cur?.settings?.[k], v); if (c.error) return fail('invalid', `settings.${k} ${c.error}`); typed[k] = c.value; }
+        patch.settings = { ...(cur?.settings || {}), ...typed };
+      }
       for (const k of ['title', 'description']) if (typeof i[k] === 'string') patch[k] = i[k];
       if (!cur && (i.kind !== undefined && i.kind !== 'custom')) return fail('invalid', 'a new rule is kind custom');
       if (!cur && !patch.title) return fail('not_found', `no rule ${id} (a new custom rule needs a title)`);
@@ -107,8 +136,9 @@ export function createGate(opts = {}) {
       return { ok: true, rule, before, rev: saved.rev };
     },
     rules_toggle(i = {}) {
-      const b = boolOf(i.enabled);
-      if (b === undefined) return fail('invalid', 'enabled is true or false');
+      let b = boolOf(i.enabled);
+      if (b === undefined && i.enabled !== undefined && i.enabled !== '') return fail('invalid', 'enabled is true or false (leave it out to flip the rule)');
+      if (b === undefined) { const cur = findRule(store.readRules(), String(i.id || '')); if (!cur) return fail('not_found', `no rule ${i.id}`); b = !cur.enabled; }
       const r = ops.rules_set({ id: i.id, enabled: b, by: i.by, reason: i.reason }, 'toggle');
       return r.ok ? { ok: true, rule: r.rule, rev: r.rev } : r;
     },
@@ -144,9 +174,10 @@ export function createGate(opts = {}) {
       const br = i.build || i.branch ? buildRulesVerdict(build, { dir: i.rulesDir }) : null;
       if (br?.failing.length) {
         const reason = `build-rules: ${br.failing.join(', ')} failed at the gate (Builds → Gate & rules → Build rules).`;
-        return { ok: true, ...v, pass: false, held: false, blockedBy: v.blockedBy || 'build-rules', reasons: [...(v.reasons || []), reason], buildRules: br, known };
+        const out = { ...v, pass: false, held: false, blockedBy: v.blockedBy || 'build-rules', reasons: [...(v.reasons || []), reason] };
+        return { ok: true, ...out, buildRules: br, known, summary: verdictSummary(out, known) };
       }
-      return { ok: true, ...v, ...(br ? { buildRules: br } : {}), known };
+      return { ok: true, ...v, ...(br ? { buildRules: br } : {}), known, summary: verdictSummary(v, known) };
     },
     history(i = {}) { return { ok: true, ...history.read(store, i) }; },
     lander_status() { return { ok: true, ...lander.status() }; },

@@ -1,63 +1,88 @@
 /**
- * History tab: every rule change and lander action, newest first (`grid:gate.history`, one or two lines a row), filtered
- * by kind (All / Rules / Lander: `setting:gate.history.kind`), and the row's detail with what it was before and after.
- * Same records as GET history, `axf gate history` and MCP gate_history.
+ * History tab: the audit trail, newest first, in three lists picked from one dropdown (`setting:gate.history.source`):
+ *   changes   every gate rule change and merge line action (GET history; filters kind, rule, pr, action, since;
+ *             `setting:gate.history.kind`), with what it was before and after
+ *   build     every change to a build rule (GET build-rules/history; filters id, action, since)
+ *   runs      every check and fix the VPS ran (GET build-rules/runs; filters id, build, result, since)
+ * Every filter is a query the server answers. Same records as `axf gate history`, MCP gate_history and
+ * gate_build_rules_history / _runs. The list is `grid:gate.history`.
  */
 import { useMemo, useState } from 'react';
-import { Chip, Segmented, useControlTargets, type ControlTargetDef } from '@console/axf/react';
-import type { GridColumn } from '@console/axf/libs/datagrid';
-import { GateList } from './GateList';
-import type { HistoryEntry } from './api';
-import { useGridRows } from './rows';
+import { Chip, SelectField, TextField, useControlTargets, type ControlTargetDef } from '@console/axf/react';
+import type { BuildRuleHistory, BuildRuleRun, HistoryEntry } from './api';
+import { Bar, Err, Facts, Fold, RowList, when, type Tone } from './ui';
 import { usePoll } from './usePoll';
 
-type Kind = '' | 'rule' | 'lander';
-const KINDS: { value: Kind; label: string }[] = [{ value: '', label: 'All' }, { value: 'rule', label: 'Rules' }, { value: 'lander', label: 'Lander' }];
-const when = (iso: string) => new Date(iso).toLocaleString(undefined, { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-const reasonText = (r: HistoryEntry['reason']) => (typeof r === 'string' ? r : [r.title, r.description].filter(Boolean).join(': '));
-const keyOf = (e: HistoryEntry) => `${e.at}|${e.kind}|${e.action}|${e.id ?? ''}|${e.pr ?? ''}`;
-const what = (e: HistoryEntry) => (e.kind === 'lander' ? `${e.action}${e.pr ? ` #${e.pr}` : ''}` : `${e.action} ${e.id ?? 'every rule'}`);
+type Source = 'changes' | 'build' | 'runs';
+const SOURCES: { value: Source; label: string }[] = [{ value: 'changes', label: 'Gate and merge line changes' }, { value: 'build', label: 'Build rule changes' }, { value: 'runs', label: 'Build rule runs' }];
+const isSource = (v: unknown): v is Source => SOURCES.some((s) => s.value === v);
+const reasonText = (r: HistoryEntry['reason'] | undefined) => (!r ? '' : typeof r === 'string' ? r : [r.title, r.description].filter(Boolean).join(': '));
 const show = (v: unknown) => (v === undefined || v === null ? 'nothing' : JSON.stringify(v, null, 1));
+const resultTone = (r: string): Tone => (r === 'pass' || r === 'fixed' ? 'success' : r === 'fail' ? 'danger' : undefined);
+const qs = (o: Record<string, string>) => { const p = new URLSearchParams(); for (const [k, v] of Object.entries(o)) if (v) p.set(k, v); return p.toString(); };
+
+interface Row { key: string; title: string; sub: string; chip: string; tone: Tone; facts: [string, string][]; before?: unknown; after?: unknown; diff: boolean; detail?: string }
 
 export function HistoryTab({ refreshSec }: { refreshSec: number }) {
-  const rows = useGridRows();
-  const [kind, setKind] = useState<Kind>('');
-  const [open, setOpen] = useState<string[]>([]);
-  const { data, error } = usePoll<{ items: HistoryEntry[] }>(`history?limit=300${kind ? `&kind=${kind}` : ''}`, refreshSec);
-  const items = data?.items ?? [];
+  const [source, setSource] = useState<Source>('changes');
+  const [kind, setKind] = useState('');
+  const [rule, setRule] = useState('');
+  const [pr, setPr] = useState('');
+  const [action, setAction] = useState('');
+  const [build, setBuild] = useState('');
+  const [result, setResult] = useState('');
+  const [since, setSince] = useState('');
+  const [open, setOpen] = useState<string | null>(null);
+  const path = source === 'changes' ? `history?${qs({ limit: '300', kind, rule, pr, action, since })}`
+    : source === 'build' ? `build-rules/history?${qs({ limit: '300', id: rule, action, since })}`
+      : `build-rules/runs?${qs({ limit: '300', id: rule, build, result, since })}`;
+  const { data, error } = usePoll<{ items?: HistoryEntry[]; entries?: BuildRuleHistory[]; runs?: BuildRuleRun[] }>(path, refreshSec);
 
   const targets = useMemo<ControlTargetDef[]>(() => [
-    { address: 'setting:gate.history.kind', kind: 'setting', label: 'History: show', keywords: ['gate', 'history', 'filter'], get: () => kind || 'all', set: (v: unknown) => setKind(v === 'rule' || v === 'lander' ? v : '') },
-  ], [kind]);
-  useControlTargets(targets, kind);
+    { address: 'setting:gate.history.source', kind: 'setting', label: 'History: which list', keywords: ['gate', 'history', 'audit'], get: () => source, set: (v: unknown) => setSource(isSource(v) ? v : 'changes') },
+    { address: 'setting:gate.history.kind', kind: 'setting', label: 'History: show', keywords: ['gate', 'history', 'filter'], get: () => kind || 'all', set: (v: unknown) => { setSource('changes'); setKind(v === 'rule' || v === 'lander' ? v : ''); } },
+  ], [kind, source]);
+  useControlTargets(targets, `${source}|${kind}`);
 
-  const columns: GridColumn<HistoryEntry>[] = [
-    { id: 'at', label: 'When', width: 'calc(var(--fx-space) * 36)', fixed: true, sortable: true, sortValue: (e) => e.at, render: (e) => <span>{when(e.at)}</span> },
-    { id: 'kind', label: 'Kind', width: 'calc(var(--fx-space) * 20)', render: (e) => <Chip tone={e.kind === 'lander' ? 'accent' : undefined}>{e.kind}</Chip> },
-    { id: 'what', label: 'What', width: 'calc(var(--fx-space) * 112)', render: (e) => <span className="axp-gate__cell"><strong>{what(e)}</strong>{rows === 2 && reasonText(e.reason) && <span className="axp-gate__sub">{reasonText(e.reason)}</span>}</span> },
-    { id: 'by', label: 'Who', width: 'calc(var(--fx-space) * 40)', sortable: true, sortValue: (e) => e.by, render: (e) => <span className="axp-gate__sub">{e.by}</span> },
-  ];
+  const rows: Row[] = source === 'changes'
+    ? (data?.items ?? []).map((e) => ({ key: `${e.at}|${e.kind}|${e.action}|${e.id ?? ''}|${e.pr ?? ''}`, title: e.kind === 'lander' ? `${e.action}${e.pr ? ` #${e.pr}` : ''}` : `${e.action} ${e.id ?? 'every rule'}`, sub: `${when(e.at)} · ${e.by}${reasonText(e.reason) ? ` · ${reasonText(e.reason)}` : ''}`, chip: e.kind === 'lander' ? 'merge line' : 'gate', tone: e.kind === 'lander' ? 'accent' : undefined, facts: [['When', when(e.at)], ['Who', e.by], ['Why', reasonText(e.reason)]], before: e.before, after: e.after, diff: true }))
+    : source === 'build'
+      ? (data?.entries ?? []).map((e) => ({ key: `${e.at}|${e.rev}|${e.id ?? ''}`, title: `${e.action} ${e.id ?? ''}`, sub: `${when(e.at)} · ${e.by}${reasonText(e.reason) ? ` · ${reasonText(e.reason)}` : ''}`, chip: `rev ${e.rev}`, tone: undefined, facts: [['When', when(e.at)], ['Who', e.by], ['Why', reasonText(e.reason)]], before: e.before, after: e.after, diff: true }))
+      : (data?.runs ?? []).map((r, i) => ({ key: `${r.at}|${r.id ?? r.rule ?? ''}|${r.build}|${r.phase}|${i}`, title: `${r.id ?? r.rule ?? 'rule'}${r.build ? ` on ${r.build}` : ''}`, sub: `${when(r.at)} · ${r.phase}${r.dryRun ? ' (dry run)' : ''} · ${r.by ?? ''}`, chip: r.result, tone: resultTone(r.result), facts: [['When', when(r.at)], ['Build', r.build], ['Phase', r.phase], ['Who', r.by ?? ''], ['Fixer', r.fix ? `${r.fix.fixer}: ${r.fix.detail}` : ''], ['Files changed', (r.fix?.changed ?? []).join(', ')]], diff: false, detail: r.detail }));
 
   return (
     <>
-      <div className="axp-gate__bar" role="toolbar" aria-label="History filter" data-axf-toolbar="gate.history">
-        <Segmented<Kind> label="Show" value={kind} options={KINDS} onChange={setKind} />
-      </div>
-      {error && <p className="axp-gate__err" role="alert">{error}</p>}
-      <GateList<HistoryEntry>
-        id="gate.history" label="Gate history" title={`History (${items.length})`} rows={items} columns={columns}
-        rowId={keyOf} rowLabel={what}
-        expanded={open} onToggleExpand={(id) => setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id]))}
-        onRowClick={(e) => { const id = keyOf(e); setOpen((o) => (o.includes(id) ? o.filter((x) => x !== id) : [...o, id])); }}
-        rowTone={(e) => (e.kind === 'lander' ? 'accent' : 'info')}
-        renderDetail={(e) => (
-          <div className="axp-gate__detail">
-            <div className="axp-gate__stat"><span className="axp-gate__label">Before</span><pre className="axp-gate__pre">{show(e.before)}</pre></div>
-            <div className="axp-gate__stat"><span className="axp-gate__label">After</span><pre className="axp-gate__pre">{show(e.after)}</pre></div>
-            {reasonText(e.reason) && <div className="axp-gate__stat"><span className="axp-gate__label">Why</span><span>{reasonText(e.reason)}</span></div>}
+      <Bar id="gate.history" label="History filter">
+        <SelectField label="Show" value={source} onChange={(v) => { setSource(isSource(v) ? v : 'changes'); setOpen(null); }} options={SOURCES} />
+        {source === 'changes' && <SelectField label="Kind" value={kind} onChange={setKind} empty="Rules and merge line" options={[{ value: 'rule', label: 'Gate rules' }, { value: 'lander', label: 'Merge line' }]} />}
+        {source === 'runs' && <SelectField label="Result" value={result} onChange={setResult} empty="Every result" options={['pass', 'fixed', 'fail', 'skipped'].map((v) => ({ value: v, label: v }))} />}
+      </Bar>
+      <Fold title="More filters" icon="sliders" open={false}>
+        <Bar id="gate.history.more" label="More history filters">
+          <TextField label="Rule" value={rule} onChange={setRule} mono placeholder="rule id" />
+          {source === 'changes' && <TextField label="PR number" value={pr} onChange={setPr} placeholder="705" />}
+          {source !== 'runs' && <TextField label="Action" value={action} onChange={setAction} placeholder="toggle" />}
+          {source === 'runs' && <TextField label="Build id" value={build} onChange={setBuild} mono placeholder="build id" />}
+          <TextField label="Since" type="date" value={since} onChange={setSince} />
+        </Bar>
+      </Fold>
+      <Err text={error} />
+      <RowList<Row>
+        id="gate.history" label="History" rows={rows} rowId={(r) => r.key}
+        title={(r) => r.title} sub={(r) => r.sub} chips={(r) => <Chip tone={r.tone}>{r.chip}</Chip>} tone={(r) => r.tone}
+        open={open} onOpen={setOpen}
+        detail={(r) => (
+          <div className="axp-gate__form">
+            <div className="axp-gate__fields"><Facts items={r.facts} />{r.detail && <pre className="axp-gate__pre">{r.detail}</pre>}</div>
+            {r.diff && (
+              <div className="axp-gate__fields">
+                <p className="axp-gate__label">Before</p><pre className="axp-gate__pre">{show(r.before)}</pre>
+                <p className="axp-gate__label">After</p><pre className="axp-gate__pre">{show(r.after)}</pre>
+              </div>
+            )}
           </div>
         )}
-        empty={<p className="axp-gate__sub">{data ? 'Nothing changed yet.' : 'Loading the history…'}</p>}
+        empty={data ? 'Nothing here yet.' : 'Loading the history…'}
       />
     </>
   );

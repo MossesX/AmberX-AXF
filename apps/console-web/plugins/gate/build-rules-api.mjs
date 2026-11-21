@@ -68,10 +68,12 @@ export function createBuildRulesOps({ confirms } = {}) {
     build_rules_add(i = {}) {
       const rule = objOf(i.rule) || Object.fromEntries(['id', 'title', 'text', 'doer', 'kind', 'phase', 'enabled', 'check', 'autofix', 'briefBlock', 'applies', 'when', 'note'].filter((k) => i[k] !== undefined).map((k) => [k, k === 'enabled' ? boolOf(i[k]) ?? true : k === 'when' ? objOf(i[k]) || {} : i[k]]));
       if (!rule.id) return fail('invalid', 'send rule {id, title, text, doer, kind, phase, …}');
+      if (rule.doer !== 'vps') rule.autofix = ''; // only the VPS runs a fixer
       return write(i, { action: 'add', rule: { enabled: true, ...rule }, reason: reasonOf(i, `Add build rule ${rule.id}`) });
     },
     build_rules_edit(i = {}) {
       const patch = objOf(i.patch) || Object.fromEntries(['title', 'text', 'doer', 'kind', 'phase', 'check', 'autofix', 'briefBlock', 'applies', 'when', 'note'].filter((k) => i[k] !== undefined).map((k) => [k, k === 'when' ? objOf(i[k]) || {} : i[k]]));
+      if (patch.doer !== undefined && patch.doer !== 'vps') patch.autofix = ''; // a rule handed to the session drops its fixer
       if (!Object.keys(patch).length) return fail('invalid', 'nothing to change: send patch or title, text, doer, kind, phase, check, autofix, briefBlock, applies, when, note');
       return write(i, { action: 'edit', id: String(i.id || ''), patch, reason: reasonOf(i, `Edit build rule ${i.id}`) });
     },

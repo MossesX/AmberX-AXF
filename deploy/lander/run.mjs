@@ -382,7 +382,10 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
 
 // ------------------------------------------------------------------ CLI
 
-/** Status for the console (gate plugin's Auto-lander tab and systems check): service, the build landing, the queue. */
+/** No tick for this many minutes = the service is down (the systems check item uses the same line). */
+export const SERVICE_DOWN_MIN = 5;
+
+/** Status for the console (gate plugin's Lander tab and systems check): service, the build landing, the queue, what may be pressed. */
 export async function status(s = settings(), { store } = {}) {
   store ??= await makeStore({ repo: s.repo });
   const svc = G.readJson(files(s).service, {}) || {};
@@ -390,10 +393,14 @@ export async function status(s = settings(), { store } = {}) {
   const rows = L.queueRows(store.read());
   const current = rows.find((r) => L.LANDING.includes(r.status === 'failed' ? r.failure?.status : r.status)) || null;
   const cfg = readConfig(s);
+  const paused = ctl.paused === true;
+  // the service's state and what may be pressed are decided here, so every surface (console, CLI, MCP, voice) shows the same
+  const up = !!svc.at && Date.now() - Date.parse(svc.at) < SERVICE_DOWN_MIN * 60000;
   return {
     ok: true, $axf: 'lander-status@1',
-    service: { lastTick: svc.at || '', result: svc.result || '', build: svc.build || '', error: svc.error || '', paused: ctl.paused === true, pausedAt: ctl.pausedAt || '', pausedBy: ctl.pausedBy || '' },
-    current: current?.build || '', queue: rows.map((r) => r.build), builds: rows,
+    service: { lastTick: svc.at || '', result: svc.result || '', build: svc.build || '', error: svc.error || '', paused, pausedAt: ctl.pausedAt || '', pausedBy: ctl.pausedBy || '', up, state: paused ? 'paused' : up ? 'up' : 'down' },
+    can: { run: !paused, pause: !paused, resume: paused },
+    current: current?.build || '', queue: rows.map((r) => r.build), builds: rows.map((r) => ({ ...r, can: { retry: r.status === 'failed', fix: r.status === 'failed' } })),
     failing: rows.filter((r) => r.status === 'failed' && r.attempt >= cfg.notifyAfterAttempts).map((r) => ({ build: r.build, attempt: r.attempt, kind: r.failure?.kind || '', why: r.failure?.why || '', since: r.statusAt, pr: r.prs.at(-1)?.pr || null })),
     escalations: [], settings: cfg,
   };

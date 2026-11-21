@@ -11,7 +11,7 @@ rules plugin, open it on my screen"). Reference engine: `framework/core/gate-rul
 
 | Side | Now (console phase of this build) | Later (`move-build-orchestrator-to-axhub`, re-planned) |
 | --- | --- | --- |
-| **Console** (`apps/console-web/plugins/gate/`) | Runs every tool below. Rules live in the plugin's `lifecycle.dataDir` and are mirrored into the push banner's `config.json` keys the cron lander reads (`landWaitUi`, `queueMode`, `autoLander.*`), so one switch in the Rules tab is the switch the lander obeys. The lander tools call the push banner's `auto-lander@1` / land commands through capability services (never a direct merge). | Keeps the screens (Rules, Auto-lander, History tabs) and its REST, CLI, MCP and voice surface. Its two adapters (`gate-store.mjs`, `lander.mjs`) call `axf-molly` over the internal Docker network instead of the local files. Nothing else changes. | <!-- axf-plugin:gate -->
+| **Console** (`apps/console-web/plugins/gate/`) | Runs every tool below. Rules live in the plugin's `lifecycle.dataDir` and are mirrored into the push banner's `config.json` keys the cron lander reads (`landWaitUi`, `queueMode`, `autoLander.*`), so one switch in the Gates tab is the switch the lander obeys. The lander tools call the push banner's `auto-lander@1` / land commands through capability services (never a direct merge). | Keeps the screens (Rules, Auto-lander, History tabs) and its REST, CLI, MCP and voice surface. Its two adapters (`gate-store.mjs`, `lander.mjs`) call `axf-molly` over the internal Docker network instead of the local files. Nothing else changes. | <!-- axf-plugin:gate -->
 | **axf-molly** (private container, no public port) | Nothing yet. | Owns the rule set and `lander-state@1`, evaluates `gate.check_pr`, runs the lander and the merge queue, writes `gate.history`. Each rule's `owner` field says when it moved; a rule is never evaluated by both sides. |
 | **axHub** | Routes: exposes the tools to Claude sessions with its veto / confirm policy and the caller's credentials, and forwards each call to the side that owns it (the console today, molly later). Never evaluates a rule, never lands anything, has no gate screen. | Same. |
 
@@ -34,7 +34,7 @@ confirm call on axHub (Brett's one tap, or his standing pass); `confirm` means t
 
 `gate-history@1` (append-only JSONL in the plugin's `dataDir`): `{ at, by, kind: rule \| lander, action, id?, pr?,
 before?, after?, reason }`. `gate.check_pr` with a PR number builds the snapshot from what the lander knows (PR checks,
-UI Review hold through `ui-review@1`, conflicts, hand holds) and never changes anything; it is what the Rules tab's
+UI Review hold through `ui-review@1`, conflicts, hand holds) and never changes anything; it is what the Gates tab's
 "Check a PR" and the voice line "can 705 land?" call.
 
 Rule ids are fixed by the default set (`merge-queue-only`, `ci-green`, `tests`, `theme`, `controls`, `toolbars`,
@@ -67,7 +67,7 @@ Both are written to History.
 
 | Transport | Where | Names |
 | --- | --- | --- |
-| Deep link | console-control addresses `view:gate`, `tab:gate.tabs=rules \| auto-lander \| history`, `row:<rule>` / `row:<pr>`, `setting:gate.<key>`; `console_show` / `console_open` take them | `console_open view:gate` |
+| Deep link | console-control addresses `view:gate`, `tab:gate.tabs=overview \| rules \| build-rules \| line \| auto-lander \| limits \| triage \| history`, `row:<rule>` / `row:<pr>`, `setting:gate.<key>`; `console_show` / `console_open` take them | `console_open view:gate` |
 | REST | `/api/plugins/gate/…` on the console server | `GET rules`, `GET rules/<id>`, `PUT rules/<id>`, `POST rules/<id>/toggle`, `POST rules/reset`, `GET check?pr=`, `GET history`, `GET lander`, `GET lander/waiting`, `GET lander/runs`, `POST lander/land-now`, `POST lander/pause`, `POST lander/resume` | <!-- axf-plugin:gate -->
 | MCP | the console MCP server through `plugin-commands@1` (and through axHub) | `gate_rules_list`, `gate_rules_get`, `gate_rules_set`, `gate_rules_toggle`, `gate_rules_reset`, `gate_check_pr`, `gate_history`, `lander_status`, `lander_waiting`, `lander_runs`, `lander_land_now`, `lander_pause`, `lander_resume` (the dotted names above with `_`) |
 | CLI | `axf gate …` (plugin.json `cli: { "gate": "gate.mjs" }`) | `axf gate rules list \| get <id> \| set <id> <field> <value> \| on <id> \| off <id> \| reset [id]`, `axf gate check <pr>`, `axf gate history [--kind …] [--since …] [--pr …]`, `axf gate lander status \| waiting \| runs \| land-now <pr> \| pause --why … \| resume` |
