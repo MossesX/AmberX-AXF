@@ -232,3 +232,23 @@ and mode or rollback on any adopted schedule answer `unknown_action` with the re
 - **Deep link in list layout**: opening the sub-tab address answers ok but the settings page in list layout stays on
   its section list (shared console-control settings opener, not this plugin's code).
 - Kotlin twin of the engine: deferred (PORTING.md).
+
+## 8. After the merge: installed on the VPS, one fix
+
+PR #884 merged on Nov 21 2026 (22:26 UTC). The console's self-update pulled it and ran the installer: user `axf-host`,
+the sudo whitelist and seven units were in place seven minutes later, with the host API up and listing 19 services.
+
+**What broke:** the six worker units went into a restart loop (`EACCES … mkdir …/_data/host-services/<id>`). The shared
+data folder is inside a Docker volume and `/var/lib/docker` lets only root through, so `axf-host` could not reach its
+own state folder. Nothing stopped working: every service was in `container` mode, so the console was still doing the
+work. Cost: six units restarting every 5 s for the time it took to land the fix.
+
+**Fix (follow-up PR):** the unit template binds `<shared data>/host-services` to `/var/lib/axf-host/data/host-services`
+(systemd sets it up as root) and the runner uses that path; the installer creates the mount point and clears a unit's
+start limit before restarting it. Proven on the VPS before the PR: a real `builds-live` pass ran as `axf-host` with
+the bind and wrote its folder. CI cannot catch this class of fault (no systemd, no Docker volume there).
+
+**Still to watch at cut-over (shadow mode is the net for it):** root tasks started through sudo run inside the unit's
+sandbox (`ProtectSystem=strict`, `ProtectHome=read-only`). `hub-sync` runs `claude-sync` with `HOME=/root`; if it
+writes under `/root` it will fail there and the unit needs that path opened. It shows up as a failed shadow run, not
+as lost work.

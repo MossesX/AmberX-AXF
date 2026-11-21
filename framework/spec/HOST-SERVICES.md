@@ -91,6 +91,15 @@ Rules:
   one may cut over (→ Migration).
 - The host API itself is a service (`id: host-api`, `plugin: console`, daemon) and is the only one the console must find.
 
+### Where a unit sees its state
+
+A service's state folder (`_data/host-services/<id>/`) is in the shared data folder, so the console sees the mode file
+and the root tasks see the spool. On the VPS that folder is inside a Docker volume, and `/var/lib/docker` lets only
+root through: `axf-host` cannot reach it by its real path. The unit template therefore binds it
+(`BindPaths=<shared data>/host-services:/var/lib/axf-host/data/host-services`, set up by systemd as root) and gives the
+runner `AXF_HOST_DATA=/var/lib/axf-host/data`. Root tasks and the console keep using the real path; all three see the
+same files. `AXF_HOST_STATE` moves the unit-side path (the installer creates it).
+
 ### Adopted schedules
 
 Parts that already run on the host from their own installer (the lander, the orchestrator tick, the watchdog layers,

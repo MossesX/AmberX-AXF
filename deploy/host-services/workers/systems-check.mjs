@@ -22,7 +22,8 @@ function diskItem(path, label, s) {
 
 export async function measure(ctx) {
   const items = [diskItem('/', '', ctx.settings)];
-  if (ctx.data) items.push(diskItem(ctx.data, 'data', ctx.settings));
+  // the service's own folder is bound from the shared data folder, so it measures that disk
+  if (ctx.dataDir) items.push(diskItem(ctx.dataDir, 'data', ctx.settings));
   const df = await ctx.sudo(['/usr/bin/docker', 'system', 'df'], { timeoutMs: 60000 }).catch((e) => ({ ok: false, stderr: e.message, stdout: '' }));
   const reclaim = (df.stdout.match(/Build Cache.*?(\d+(?:\.\d+)?[kMGT]?B)\s*\(?\d*%?\)?\s*$/m) || [])[1] || '';
   items.push({ id: 'host-docker-space', status: df.ok ? 'ok' : 'warn', title: 'Docker space', message: df.ok ? df.stdout.trim().split('\n').slice(1).map((l) => l.replace(/\s{2,}/g, ' ')).join('; ').slice(0, 400) : `docker system df: ${(df.stderr || '').trim().slice(0, 200)}`, ...(reclaim ? { reclaimable: reclaim } : {}) });
