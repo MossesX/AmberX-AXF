@@ -153,7 +153,7 @@
       {
         "target": "pass",
         "title": "Pass",
-        "text": "Narrows the log to calls that ran under a pass, or shows every call. Opened from a pass's Its calls button, it shows that one pass only.",
+        "text": "Filter the log by veto passes: every call that ran under any pass, or only the calls of one pass when you came here from it. With or without shows them all.",
         "kind": "field"
       }
     ]

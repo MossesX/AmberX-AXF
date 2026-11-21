@@ -178,9 +178,8 @@ def router_for(state_dir: Path, client_factory: Callable[[], httpx.Client] | Non
     make = client_factory or (lambda: httpx.Client(timeout=TIMEOUT_S, follow_redirects=False))
 
     def log(entry: dict[str, Any]) -> None:
-        # no-json-data@1: the write goes through the data layer (a journal), never a bare file append
+        # no-json-data@1: through the data store (local file today, Postgres once the namespace moves), never a bare write
         try:
-            state_dir.mkdir(parents=True, exist_ok=True)
             data_store.append_jsonl(state_dir / "hub-pages.jsonl", {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), **entry})
         except (OSError, data_store.DataStoreError):
             pass

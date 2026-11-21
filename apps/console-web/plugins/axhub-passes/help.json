@@ -39,37 +39,34 @@
       {
         "target": "ran-under-a-pass",
         "title": "Ran under a pass",
-        "text": "Opens the approvals log narrowed to the calls that ran under any pass.",
-        "kind": "button"
+        "text": "Opens the approvals log filtered to every call that ran under a pass instead of waiting on the veto countdown."
       },
       {
         "target": "min-from-now",
-        "title": "min from now",
-        "text": "Extends the pass so it ends that many minutes from now.",
-        "kind": "button"
+        "title": "Extend",
+        "text": "Keeps the pass on for that many minutes from now. The calls it covers keep running at once until the new end."
       },
       {
         "target": "its-calls",
         "title": "Its calls",
-        "text": "Opens the approvals log narrowed to the calls that ran under this pass.",
-        "kind": "button"
+        "text": "Opens the approvals log filtered to the calls that ran under this pass."
       },
       {
         "target": "service",
         "title": "Service",
-        "text": "The service the pass covers, for example axf-console. Calls from other services still wait for approval.",
+        "text": "Which service the pass covers, for example axf-console. Only calls from that service run under it.",
         "kind": "field"
       },
       {
         "target": "scope-control-target-matches-anything",
-        "title": "Scope (control@1 target; * matches anything)",
-        "text": "The control@1 target the pass covers, for example tokens.theme or tokens.*. A star matches anything.",
+        "title": "Scope",
+        "text": "The control@1 targets the pass covers, comma separated; * matches anything, so tokens.* covers every token. Leave it empty when you list tools instead.",
         "kind": "field"
       },
       {
         "target": "tools-empty-every-tool-in-the-scope",
-        "title": "Tools (empty = every tool in the scope)",
-        "text": "The tools the pass covers, comma separated. Leave it empty to cover every tool in the scope.",
+        "title": "Tools",
+        "text": "The tools the pass covers, comma separated. Empty means every tool inside the scope. Destructive tools never run under a pass.",
         "kind": "field"
       }
     ]

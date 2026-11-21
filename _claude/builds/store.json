@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10172,
- "updatedAt": "2026-11-20T23:15:14.444Z",
+ "rev": 10187,
+ "updatedAt": "2026-11-20T23:44:24.044Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -344677,11 +344677,11 @@
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
-   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s2",
+   "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s4",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-20T19:54:07.251Z",
-   "updatedAt": "2026-11-20T23:14:49.474Z",
+   "updatedAt": "2026-11-20T23:44:14.690Z",
    "builtAt": "",
    "notes": [
     {
@@ -344795,6 +344795,26 @@
     {
      "text": "Watchdog: step s5 retried at ready, attempt 3 on hulu0241.",
      "at": "2026-11-20T23:00:02.234Z"
+    },
+    {
+     "text": "s1 (Fable): main was red because the axHub fold (module axHub, apps/axhub-web retired) left seven checks behind and both CI jobs stop at the first failure, so later checks had not run since 6154cac83. Fixed on claude/fix-main-ci-red-after-s16-s7-hand---s1: check-plugin-catalog (axhub kind has no app folder; app-install path on a scratch kind), token-registry block for axhub-approvals, settings-iface defaults for the six axhub-* plugins, help for 8 new controls (coverage back to 100%), hub-pages relay log via data_store.append_jsonl (no-json-data@1), request page head description (check-plugin-pages), '#104/#105' decision numbers in src/hubPages/test.mjs read as hex colours (check-theme). Both CI jobs replayed locally (Node 22 parts in docker node:22, axf-data Postgres test on a throwaway container): green. Follow-up, not from this landing: apps/console-web/plugins/ai-assistant/test.py is timing-dependent (the auto-title thread's CLI call can overwrite the fake's argv.json before the test reads it); green in CI so far.",
+     "at": "2026-11-20T23:36:36.966Z"
+    },
+    {
+     "text": "Headless run axf-fix-main-ci-red-after-s16-s7-hand---s1--gina: brief only · start 11.2K tokens ($0.08) · cost $11.20 · 170 turns · 6 tools, MCP none",
+     "at": "2026-11-20T23:37:21.583Z"
+    },
+    {
+     "text": "Worker accounts: hulu0241: 1 run, $11.20",
+     "at": "2026-11-20T23:37:27.991Z"
+    },
+    {
+     "text": "Claude account: hulu0241 (axf-fix-main-ci-red-after-s16-s7-hand---s5--earl, shared account login)",
+     "at": "2026-11-20T23:41:23.318Z"
+    },
+    {
+     "text": "Headless run axf-fix-main-ci-red-after-s16-s7-hand---s4--paulie: brief only · start 11.2K tokens ($0.04) · cost $7.18 · 109 turns · 6 tools, MCP none",
+     "at": "2026-11-20T23:44:14.690Z"
     }
    ],
    "approvals": [],
@@ -344835,17 +344855,27 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-20T19:55:57.622Z",
+     "at": "2026-11-20T23:25:49.343Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": ""
+    "heldWhy": "",
+    "runEnd": {
+     "at": "2026-11-20T23:44:02.325Z",
+     "exit": 0,
+     "signal": "",
+     "kind": "phase-done",
+     "limit": "",
+     "account": "hulu0241",
+     "session": "axf-fix-main-ci-red-after-s16-s7-hand---s4--paulie",
+     "phase": ""
+    }
    },
    "steps": [
     {
@@ -344863,14 +344893,14 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T23:36:29.276Z",
      "note": "",
-     "rev": 9,
+     "rev": 11,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:56:55.668Z",
-     "statusAt": "2026-11-20T22:56:55.617Z",
-     "statusBy": "orchestrator",
+     "updatedAt": "2026-11-20T23:37:46.164Z",
+     "statusAt": "2026-11-20T23:37:46.102Z",
+     "statusBy": "headless",
      "attempt": 3,
      "statusLog": [
       {
@@ -344927,9 +344957,16 @@
        "by": "orchestrator",
        "attempt": 3,
        "why": "axf-fix-main-ci-red-after-s16-s7-hand---s1--gina on hulu0241"
+      },
+      {
+       "status": "completed",
+       "at": "2026-11-20T23:37:46.102Z",
+       "by": "headless",
+       "attempt": 3,
+       "why": "session ended cleanly"
       }
      ],
-     "status": "building",
+     "status": "completed",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s1",
      "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s1",
@@ -345082,12 +345119,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-20T23:43:32.724Z",
      "note": "",
-     "rev": 6,
+     "rev": 7,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T22:58:28.762Z",
+     "updatedAt": "2026-11-20T23:43:33.376Z",
      "statusAt": "2026-11-20T22:58:28.710Z",
      "statusBy": "orchestrator",
      "attempt": 1,
@@ -345154,11 +345191,11 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 9,
+     "rev": 11,
      "createdAt": "2026-11-20T19:55:54.728Z",
-     "updatedAt": "2026-11-20T23:00:15.477Z",
-     "statusAt": "2026-11-20T23:00:02.234Z",
-     "statusBy": "watchdog",
+     "updatedAt": "2026-11-20T23:41:16.307Z",
+     "statusAt": "2026-11-20T23:41:16.257Z",
+     "statusBy": "orchestrator",
      "attempt": 3,
      "statusLog": [
       {
@@ -345215,12 +345252,27 @@
        "by": "watchdog",
        "attempt": 3,
        "why": "retry forward at sending, attempt 3"
+      },
+      {
+       "status": "sending",
+       "at": "2026-11-20T23:40:48.348Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "to hulu0241"
+      },
+      {
+       "status": "building",
+       "at": "2026-11-20T23:41:16.257Z",
+       "by": "orchestrator",
+       "attempt": 3,
+       "why": "axf-fix-main-ci-red-after-s16-s7-hand---s5--earl on hulu0241"
       }
      ],
-     "status": "ready",
+     "status": "building",
      "account": "hulu0241",
      "worktree": "/root/axf-builds/fix-main-ci-red-after-s16-s7-hand---s5",
-     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5"
+     "branch": "claude/fix-main-ci-red-after-s16-s7-hand---s5",
+     "tmux": "axf-fix-main-ci-red-after-s16-s7-hand---s5--earl"
     }
    ],
    "profiles": [
@@ -345231,7 +345283,7 @@
    },
    "kind": "build",
    "planRef": "fix-main-ci-red-after-s16-s7-han-6nk9",
-   "rev": 77,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
