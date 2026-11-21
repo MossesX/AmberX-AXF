@@ -142,4 +142,22 @@ ok(h.ensure({"axf.health@1": reg}, lambda: up, lambda b: {"ok": True}), "registe
 ok(reg.spec["id"] == "gate-auto-lander" and reg.spec["push"] is False, "the runner's own chat post, never a second push")
 ok(reg.spec["run"]()["status"] == "ok", "the registered check runs")
 
+# the systems-check item for branch protection on main (L2-09): read-only, no Fix button, the exact steps for Brett
+mp = routes.mp_health
+want = {"rules": [{"type": "required_status_checks", "parameters": {"required_status_checks": [{"context": "Build engine sweep (Node)"}, {"context": "CI scope (what changed)"}]}}]}
+off = mp.check({"ok": True, "ruleset": want, "current": None, "error": ""})
+ok(off["status"] == "warn" and "not protected" in off["summary"], "no ruleset on GitHub is amber")
+ok(any("branch-protection.mjs apply --yes" in d for d in off["details"]) and any("status-key --yes" in d for d in off["details"]), "with the exact steps")
+ok(mp.check({"ok": True, "ruleset": want, "current": {"enforcement": "disabled", "rules": want["rules"]}})["status"] == "warn", "a ruleset that is switched off is amber")
+ok(mp.check({"ok": True, "ruleset": want, "current": {"enforcement": "active", "rules": want["rules"]}})["status"] == "ok", "the ruleset on and complete is green")
+part = mp.check({"ok": True, "ruleset": want, "current": {"enforcement": "active", "rules": [{"type": "required_status_checks", "parameters": {"required_status_checks": [{"context": "CI scope (what changed)"}]}}]}})
+ok(part["status"] == "warn" and "Build engine sweep (Node)" in part["summary"], "a required check missing on GitHub is named")
+ok(mp.check({"ok": True, "ruleset": want, "current": None, "error": "GitHub GET /rulesets: 403"})["status"] == "unknown", "GitHub not read is unknown, never a guess")
+ok(mp.check({"ok": False, "message": "x"})["status"] == "unknown", "no answer is unknown")
+reg2 = Reg()
+ok(mp.ensure({"axf.health@1": reg2}, lambda: {"ok": True, "ruleset": want, "current": None}), "registers with the systems check")
+ok(reg2.spec["id"] == "gate-main-protection" and "autoFix" not in reg2.spec and reg2.spec["push"] is False, "no Fix button: applying it is Brett's call")
+ok(reg2.spec["run"]()["status"] == "warn", "the registered check runs")
+ok(not any(w in (HERE / "server" / "main_protection_health.py").read_text() for w in ("import subprocess", "import requests", "import urllib", "import httpx")), "the check itself calls nothing: routes.py runs the read-only CLI")
+
 print(f"✓ gate lander routes — {n} checks")

@@ -123,7 +123,7 @@
   },
   {
    "$axf": "agent@1", "id": "lenny", "name": "Landin' Lenny", "role": "Lander", "skill": "landing", "jobsOnly": true, "skills": ["*"], "home": "land-build",
-   "specialty": "Lands finished builds: merge main, retest, push; settles bookkeeping clashes, reports code clashes",
+   "specialty": "Fixes pull requests so they can land: merge conflicts with main, red CI, failing build rules; pushes to the PR branch only, never to main",
    "keywords": [], "paths": [],
    "models": ["opus", "fable"], "tools": ["Read", "Edit", "Grep", "Glob", "Bash(git:*)", "Bash(node:*)"],
    "maxTurns": 50, "tokenBudget": 400000, "salary": 20, "hiredAt": "2026-11-01",

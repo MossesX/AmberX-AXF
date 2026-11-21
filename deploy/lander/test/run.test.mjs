@@ -3,77 +3,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
-import { dirname } from 'node:path';
-import { tmpdir } from 'node:os';
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { sh, repo, github, build, clock, onMain, statuses, base, one, byId, holds, pushMain } from './helpers.mjs';
 
-process.env.AXF_CREW_SAY = 'off';
 const { tick, status } = await import('../run.mjs');
-const { makeGit } = await import('../git.mjs');
 const { memoryStore } = await import('../store.mjs');
 const L = await import('../lander-core.mjs');
-
-const sh = (cwd, ...args) => { const r = spawnSync('git', args, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(`git ${args.join(' ')}: ${r.stderr}`); return r.stdout.trim(); };
-
-/** A bare origin with main and one branch per step; a working clone the lander runs in. */
-function repo(steps) {
-  const dir = mkdtempSync(join(tmpdir(), 'lander-run-'));
-  const origin = join(dir, 'origin.git'); const work = join(dir, 'work');
-  sh(dir, 'init', '-q', '--bare', '-b', 'main', origin);
-  sh(dir, 'clone', '-q', origin, work);
-  for (const [k, v] of [['user.name', 't'], ['user.email', 't@t'], ['commit.gpgsign', 'false']]) sh(work, 'config', k, v);
-  writeFileSync(join(work, 'base.txt'), 'base\n'); writeFileSync(join(work, 'shared.txt'), 'one\ntwo\nthree\n');
-  sh(work, 'add', '-A'); sh(work, 'commit', '-q', '-m', 'base'); sh(work, 'push', '-q', 'origin', 'HEAD:main');
-  for (const [branch, files] of Object.entries(steps)) {
-    sh(work, 'checkout', '-q', '-B', branch, 'origin/main');
-    for (const [f, t] of Object.entries(files)) { mkdirSync(dirname(join(work, f)), { recursive: true }); writeFileSync(join(work, f), t); }
-    sh(work, 'add', '-A'); sh(work, 'commit', '-q', '-m', `${branch} work`); sh(work, 'push', '-q', 'origin', `HEAD:${branch}`);
-  }
-  sh(work, 'checkout', '-q', '--detach', 'origin/main');
-  sh(work, 'fetch', '-q', 'origin');
-  return { dir, origin, work, s: { repo: work, slug: 'o/r', dataDir: join(dir, 'data'), api: '', remote: 'origin', base: 'main' } };
-}
-
-/** A fake GitHub: PRs, check runs per head (ci(head) → 'success' | 'failure' | 'running' | 'none'), merges done in git. */
-function github(r, ci = () => 'success') {
-  const prs = new Map(); let next = 1; const calls = [];
-  const gh = async (method, path, body) => {
-    calls.push(`${method} ${path.replace(/^\/repos\/o\/r/, '')}`);
-    let m;
-    if (method === 'GET' && (m = path.match(/\/pulls\?state=open&head=[^:]+%3A(.+)$/))) { const h = decodeURIComponent(m[1]); return [...prs.values()].filter((p) => p.head.ref === h && p.state === 'open'); }
-    if (method === 'POST' && path.endsWith('/pulls')) { const p = { number: next++, state: 'open', head: { ref: body.head }, title: body.title, body: body.body, mergeable: true }; prs.set(p.number, p); return p; }
-    if (method === 'GET' && (m = path.match(/\/pulls\/(\d+)$/))) return prs.get(Number(m[1])) || null;
-    if (method === 'PATCH' && (m = path.match(/\/pulls\/(\d+)$/))) { const p = prs.get(Number(m[1])); Object.assign(p, body); return p; }
-    if (method === 'GET' && (m = path.match(/\/commits\/([0-9a-f]+)\/check-runs/))) {
-      const c = ci(m[1]);
-      if (c === 'none') return { check_runs: [] };
-      if (c === 'running') return { check_runs: [{ status: 'in_progress', name: 'tests' }] };
-      if (c === 'light') return { check_runs: [{ status: 'completed', conclusion: 'success', name: 'scope' }, { status: 'completed', conclusion: 'success', name: 'Light PR checks (full run happens once, in the merge queue)' }] };
-      return { check_runs: [{ status: 'completed', conclusion: c, name: 'tests', details_url: 'https://github.com/o/r/actions/runs/42/job/1' }] };
-    }
-    if (method === 'PUT' && (m = path.match(/\/pulls\/(\d+)\/merge$/))) {
-      const p = prs.get(Number(m[1]));
-      sh(r.work, 'fetch', '-q', 'origin');
-      assert.equal(sh(r.work, 'rev-parse', `origin/${p.head.ref}`), body.sha, 'the merge is pinned to the tested head');
-      sh(r.work, 'checkout', '-q', '--detach', 'origin/main');
-      sh(r.work, 'merge', '-q', '--no-ff', '-m', `Merge #${p.number}`, `origin/${p.head.ref}`);
-      sh(r.work, 'push', '-q', 'origin', 'HEAD:main'); sh(r.work, 'fetch', '-q', 'origin');
-      p.state = 'closed'; p.merged = true; p.merged_at = '2026-11-19T12:00:00Z';
-      return { merged: true };
-    }
-    if (method === 'POST' && /rerun-failed-jobs|dispatches/.test(path)) return null;
-    throw new Error(`fake GitHub: ${method} ${path}`);
-  };
-  gh.prs = prs; gh.calls = calls;
-  return gh;
-}
-
-const build = (steps, extra = {}) => ({ id: 'b', title: 'Build B', status: 'build-complete', steps: steps.map(([id, branch]) => ({ id, status: 'completed', branch, title: id })), ...extra });
-const clock = (start = Date.parse('2026-11-19T12:00:00Z')) => { let t = start; const f = () => new Date(t).toISOString(); f.add = (min) => { t += min * 60000; }; return f; };
-const onMain = (r, f) => { sh(r.work, 'fetch', '-q', 'origin'); return spawnSync('git', ['cat-file', '-e', `origin/main:${f}`], { cwd: r.work }).status === 0; };
-const statuses = (b) => (b.statusLog || []).map((x) => x.status);
-const base = (r, gh, store, now, more = {}) => ({ s: r.s, git: makeGit(r.work), gh, store, now, cfg: L.normConfig({}), buildRules: () => ({ ok: true, failing: [], fixed: [] }), agentJob: () => ({ exit: 0, session: 'fixer' }), say: () => {}, ...more });
 
 test('every step lands in ONE PR: merging-pr → pr-pulling-main → running-ci → merging-main → landed', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' }, 'claude/b-s2': { 'b.txt': 'b\n' }, 'claude/b-s3': { 'c.txt': 'c\n' } });
@@ -104,41 +40,54 @@ test('over the size cap: steps grouped in order into 2 PRs that land one at a ti
   assert.deepEqual(statuses(b), ['merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'merging-pr', 'pr-pulling-main', 'running-ci', 'merging-main', 'landed']);
 });
 
-test('CI red: failed attempt 1 → flaky re-run; red again: attempt 2 → split, steps land one PR each', async () => {
+test('CI red: attempt 1 → flaky re-run; red again: attempt 2 → a fix session on the PR as it is; its push lands the ONE PR', async () => {
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' }, 'claude/b-s2': { 'b.txt': 'b\n' } });
   let red = true; const gh = github(r, () => (red ? 'failure' : 'success'));
-  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1'], ['s2', 'claude/b-s2']])], { now });
-  const opts = base(r, gh, store, now);
+  gh.logs[7] = 'FAIL tests: expected 1, got 2';
+  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1'], ['s2', 'claude/b-s2']], { attempt: 7 })], { now });
+  const fixes = [];
+  const fixSession = (job) => {
+    fixes.push(job);
+    sh(r.work, 'fetch', '-q', 'origin'); sh(r.work, 'checkout', '-q', '--detach', `origin/${job.branch}`);
+    writeFileSync(join(r.work, 'fix.txt'), 'fixed\n'); sh(r.work, 'add', '-A'); sh(r.work, 'commit', '-q', '-m', 'fix'); sh(r.work, 'push', '-q', 'origin', `HEAD:${job.branch}`);
+    sh(r.work, 'checkout', '-q', '--detach', 'origin/main'); red = false;
+    return { exit: 0, session: 'axf-lander-fix-pr1-1' };
+  };
+  const opts = base(r, gh, store, now, { fixSession });
   await tick(opts);
   let b = store.list[0];
-  assert.equal(b.status, 'failed'); assert.equal(b.attempt, 1); assert.equal(b.failure.kind, 'ci-red'); assert.equal(b.failure.retry, 'rerun');
-  assert.deepEqual(b.failure.runIds, [42]);
+  assert.equal(b.status, 'failed'); assert.equal(b.landing.attempt, 1, 'the landing run counts from 1, whatever the dispatcher counted'); assert.equal(b.attempt, 1, 'and the build shows the landing run\'s count while it lands');
+  assert.equal(b.failure.kind, 'ci-red'); assert.equal(b.failure.retry, 'rerun');
+  assert.deepEqual(b.failure.runIds, [42]); assert.deepEqual(b.failure.jobIds, [7]);
   await tick(opts); // the re-run goes at once
   b = store.list[0];
   assert.equal(b.status, 'running-ci');
   assert.ok(gh.calls.includes('POST /actions/runs/42/rerun-failed-jobs'));
   await tick(opts); // still red on the same head
   b = store.list[0];
-  assert.equal(b.attempt, 2); assert.equal(b.failure.retry, 'split');
+  assert.equal(b.landing.attempt, 2); assert.equal(b.failure.retry, 'fix', 'a combined PR is fixed first, not split');
   const wait = await tick(opts);
-  assert.match(wait.waiting, /split at/, 'the split waits its backoff');
-  red = false; now.add(L.backoffMinutes(2) + 1);
-  await tick(opts);
+  assert.match(wait.waiting, /fix at/, 'the fix waits its backoff');
+  now.add(L.backoffMinutes(2) + 1);
+  await tick(opts); // the fix session starts (and pushes, in the fake)
+  assert.equal(fixes.length, 1); assert.equal(fixes[0].branch, 'lander/b'); assert.equal(fixes[0].pr, 1); assert.equal(fixes[0].n, 1);
+  assert.equal(fixes[0].log, 'FAIL tests: expected 1, got 2', 'the failing job\'s log tail goes to the fix session');
+  b = store.list[0];
+  assert.equal(b.failure.fix.session, 'axf-lander-fix-pr1-1'); assert.equal(b.failure.fix.model, 'fable'); assert.deepEqual(b.landing.fixes, { pr: 1, n: 1 });
+  await tick(opts); // its push is a new head: CI green, merged
   b = store.list[0];
   assert.equal(b.status, 'landed');
-  assert.equal(gh.prs.get(1).state, 'closed'); assert.ok(!gh.prs.get(1).merged);
-  assert.deepEqual(b.steps.map((s) => s.prNumber), [2, 3], 'one PR per step after the split');
-  assert.deepEqual(b.landing.closed, [1]); assert.deepEqual(b.landing.merged, [2, 3]);
-  assert.ok(onMain(r, 'a.txt') && onMain(r, 'b.txt'));
+  assert.equal(gh.prs.size, 1, 'still one PR'); assert.deepEqual(b.landing.merged, [1]); assert.deepEqual(b.landing.closed ?? [], []);
+  assert.ok(onMain(r, 'a.txt') && onMain(r, 'b.txt') && onMain(r, 'fix.txt'));
 });
 
 test('two steps clash in code: split; then main clashes with the second: a fix session, CI on its push, landed', async () => {
   const r = repo({ 'claude/b-s1': { 'shared.txt': 'one\nTWO by s1\nthree\n' }, 'claude/b-s2': { 'shared.txt': 'one\nTWO by s2\nthree\n' } });
   const gh = github(r); const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1'], ['s2', 'claude/b-s2']])], { now });
   let fixes = 0;
-  const agentJob = (job) => {
+  const fixSession = (job) => {
     fixes++;
-    assert.equal(job.type, 'land-build'); assert.equal(job.input.branch, 'lander/b-2');
+    assert.equal(job.f.kind, 'clash-main'); assert.equal(job.branch, 'lander/b-2'); assert.equal(job.pr, 2);
     // the fixer: merge main, take both lines, push
     sh(r.work, 'fetch', '-q', 'origin'); sh(r.work, 'checkout', '-q', '--detach', 'origin/lander/b-2');
     spawnSync('git', ['merge', 'origin/main'], { cwd: r.work });
@@ -147,7 +96,7 @@ test('two steps clash in code: split; then main clashes with the second: a fix s
     sh(r.work, 'checkout', '-q', '--detach', 'origin/main');
     return { exit: 0, session: 'fixer-1' };
   };
-  const opts = base(r, gh, store, now, { agentJob });
+  const opts = base(r, gh, store, now, { fixSession });
   await tick(opts);
   let b = store.list[0];
   assert.equal(b.status, 'failed'); assert.equal(b.failure.kind, 'clash-steps'); assert.equal(b.failure.retry, 'split');
@@ -155,7 +104,7 @@ test('two steps clash in code: split; then main clashes with the second: a fix s
   await tick(opts); // split: s1 lands as its own PR, s2's PR clashes with the new main
   b = store.list[0];
   assert.ok(onMain(r, 'shared.txt'));
-  assert.equal(b.failure.kind, 'clash-main'); assert.equal(b.failure.retry, 'fix'); assert.equal(b.attempt, 2);
+  assert.equal(b.failure.kind, 'clash-main'); assert.equal(b.failure.retry, 'fix'); assert.equal(b.landing.attempt, 2);
   now.add(L.backoffMinutes(2) + 1);
   await tick(opts); // the fix session starts (and pushes, in the fake)
   assert.equal(fixes, 1);
@@ -207,7 +156,7 @@ test('gate build rules run in running-ci on the green head; a failing rule is a 
   const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
   const gh = github(r); const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
   let ruleRuns = 0; let jobs = 0;
-  const opts = base(r, gh, store, now, { buildRules: ({ root }) => { ruleRuns++; assert.ok(existsSync(join(root, 'a.txt')), 'rules run in a worktree of the PR branch'); return { ok: false, failing: ['home-card'], fixed: [] }; }, agentJob: () => { jobs++; return { exit: 0, session: 'f' }; } });
+  const opts = base(r, gh, store, now, { buildRules: ({ root }) => { ruleRuns++; assert.ok(existsSync(join(root, 'a.txt')), 'rules run in a worktree of the PR branch'); return { ok: false, failing: ['home-card'], fixed: [], detail: 'home-card: no card for the build' }; }, fixSession: (job) => { jobs++; assert.equal(job.log, 'home-card: no card for the build', 'the failing rule\'s own words go to the fix session'); return { exit: 0, session: 'f' }; } });
   await tick(opts);
   const b = store.list[0];
   assert.equal(b.status, 'failed'); assert.equal(b.failure.kind, 'rules'); assert.deepEqual(b.failure.failing, ['home-card']);
@@ -236,17 +185,6 @@ test('status: the merge queue rows are the store rows (read-only)', async () => 
 });
 
 // ------------------------------------------------------------------ the merge line: emergency builds first, never a stale head
-
-const one = (id, branch, extra = {}) => ({ id, title: `Build ${id}`, status: 'build-complete', steps: [{ id: 's1', status: 'completed', branch, title: 's1' }], ...extra });
-const byId = (store, id) => store.list.find((b) => b.id === id);
-const holds = (r, ref, older) => spawnSync('git', ['merge-base', '--is-ancestor', older, ref], { cwd: r.work }).status === 0;
-/** A commit straight onto main (someone else's landing). */
-function pushMain(r, files, msg = 'other work lands') {
-  sh(r.work, 'fetch', '-q', 'origin'); sh(r.work, 'checkout', '-q', '--detach', 'origin/main');
-  for (const [f, t] of Object.entries(files)) writeFileSync(join(r.work, f), t);
-  sh(r.work, 'add', '-A'); sh(r.work, 'commit', '-q', '-m', msg); sh(r.work, 'push', '-q', 'origin', 'HEAD:main'); sh(r.work, 'fetch', '-q', 'origin');
-  return sh(r.work, 'rev-parse', 'origin/main');
-}
 
 test('an emergency build cuts to the front of the merge line; the build already landing pulls main again and re-runs CI before its own merge', async () => {
   const r = repo({ 'claude/n-s1': { 'n.txt': 'n\n' }, 'claude/e-s1': { 'e.txt': 'e\n' } });
@@ -318,7 +256,7 @@ test('main moved and conflicts in code: a Fable fix session resolves it, CI runs
   let hold = true; const gh = github(r, () => (hold ? 'running' : 'success'));
   const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
   const jobs = [];
-  const opts = base(r, gh, store, now, { agentJob: (job) => { jobs.push(job); return { exit: 0, session: 'fixer' }; } });
+  const opts = base(r, gh, store, now, { fixSession: (job) => { jobs.push(job); return { exit: 0, session: 'fixer' }; } });
   await tick(opts);
   pushMain(r, { 'shared.txt': 'one\nTWO from main\nthree\n' }, 'main changes the same line');
   hold = false; now.add(1);
@@ -329,8 +267,8 @@ test('main moved and conflicts in code: a Fable fix session resolves it, CI runs
   assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 0, 'never merged with the conflict open');
   now.add(L.backoffMinutes(1) + 1);
   await tick(opts);
-  assert.equal(jobs.length, 1); assert.equal(jobs[0].type, 'land-build'); assert.equal(jobs[0].model, 'fable', 'the conflict goes to Fable');
-  assert.match(jobs[0].input.checks, /merge origin\/main, resolve, push/);
+  assert.equal(jobs.length, 1); assert.equal(jobs[0].f.kind, 'clash-main'); assert.equal(jobs[0].branch, 'lander/b');
+  assert.equal(store.list[0].failure.fix.model, 'fable', 'the conflict goes to Fable');
   // the fix session resolves the conflict on the PR branch and pushes
   sh(r.work, 'fetch', '-q', 'origin'); sh(r.work, 'checkout', '-q', '--detach', 'origin/lander/b');
   spawnSync('git', ['merge', '-q', 'origin/main'], { cwd: r.work });
@@ -342,24 +280,4 @@ test('main moved and conflicts in code: a Fable fix session resolves it, CI runs
   assert.equal(b.status, 'landed');
   sh(r.work, 'fetch', '-q', 'origin');
   assert.equal(sh(r.work, 'show', 'origin/main:shared.txt'), 'one\nTWO from both\nthree');
-});
-
-test('a tick that starts at merging-main never merges a stale head: back through the main pull and CI', async () => {
-  const r = repo({ 'claude/b-s1': { 'a.txt': 'a\n' } });
-  let hold = true; const gh = github(r, () => (hold ? 'running' : 'success'));
-  const now = clock(); const store = memoryStore([build([['s1', 'claude/b-s1']])], { now });
-  const opts = base(r, gh, store, now);
-  await tick(opts);
-  store.write('b', { status: 'merging-main' }); // the tick before died right after CI went green
-  const moved = pushMain(r, { 'other.txt': 'other\n' });
-  hold = false; now.add(1);
-  await tick(opts);
-  let b = store.list[0];
-  assert.equal(b.status, 'failed'); assert.equal(b.failure.kind, 'merge'); assert.equal(b.failure.retry, 'pull-main');
-  assert.equal(gh.calls.filter((c) => c.startsWith('PUT')).length, 0);
-  now.add(L.backoffMinutes(1) + 1);
-  await tick(opts);
-  b = store.list[0];
-  assert.equal(b.status, 'landed');
-  assert.ok(holds(r, b.landing.lastMerge.head, moved), 'the head it merged holds the newest main');
 });

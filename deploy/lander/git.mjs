@@ -58,6 +58,22 @@ export function makeGitHub(s, token = () => brokerToken(s)) {
     if (get && etag) { cache[path] = { etag, data, at: Date.now() }; dirty = true; }
     return data;
   };
+  /**
+   * A text resource behind a redirect (a job's log): the API call carries the token and is never followed; the
+   * signed URL it points at is fetched without the token. → the last `tail` characters, '' when it can't be read.
+   */
+  gh.text = async (path, tail = 4000) => {
+    tok ??= token() || '';
+    if (!tok) return '';
+    try {
+      let r = await fetch(`${s.api}${path}`, { redirect: 'manual', headers: { Authorization: `Bearer ${tok}`, Accept: 'application/vnd.github+json', 'User-Agent': 'axf-lander' }, signal: AbortSignal.timeout(20000) });
+      gh.calls++;
+      const to = r.status >= 300 && r.status < 400 ? r.headers.get('location') : '';
+      if (to) { if (!/^https:\/\//.test(to)) return ''; r = await fetch(to, { redirect: 'error', headers: { 'User-Agent': 'axf-lander' }, signal: AbortSignal.timeout(30000) }); }
+      if (!r.ok) return '';
+      return (await r.text()).slice(-tail);
+    } catch { return ''; }
+  };
   gh.calls = 0; gh.cached = 0; gh.save = save; gh.left = () => remaining;
   return gh;
 }
@@ -76,12 +92,25 @@ export function diffLines({ s, git, br }) {
   return r.code ? -1 : numstatLines(r.out, R.trackingPath);
 }
 
+/** The files `br` changes against main (merge-base diff, tracking files left out). */
+export function changedFiles({ s, git, br }) {
+  const r = git(['diff', '--name-only', `${s.remote}/${s.base}...${s.remote}/${br}`]);
+  return r.code ? [] : r.out.split('\n').filter((p) => p && !R.trackingPath(p));
+}
+
 /** Does the branch lack code from main (anything but status-only commits)? */
 export function codeBehind({ s, git, br }) {
   const msgs = git(['log', '--format=%s', `${s.remote}/${br}..${s.remote}/${s.base}`]).out.split('\n').filter(Boolean);
   if (!msgs.length) return false;
   const files = git(['diff', '--name-only', `${s.remote}/${br}...${s.remote}/${s.base}`]).out.split('\n').filter(Boolean);
   return !R.statusOnly(msgs, files);
+}
+
+/** The newest main and PR branch from the remote, right now (the tick's own fetch may be minutes old). → '' or the error. */
+export function fetchFresh({ s, git, branch }) {
+  const refs = [s.base, branch].filter(Boolean).map((b) => `+refs/heads/${b}:refs/remotes/${s.remote}/${b}`);
+  const r = git(['fetch', '-q', s.remote, ...refs], { timeout: 180000 });
+  return r.code ? (r.err.slice(-200) || 'fetch failed') : '';
 }
 
 /** A temporary detached worktree at `ref`, handed to fn(g, wt, dir); always removed. */
@@ -112,7 +141,8 @@ function mergeIn({ s, g, wt, dir, ref, message, mainSide, buildsSide, log }) {
 /**
  * merging-pr: every branch of the group merged into one PR branch, starting from the first. Step-into-step data
  * conflicts resolve by the merge rules (tracking files: the first branch's copy, they never land anyway); a code
- * conflict between two steps stops it ({ conflicts, between }). The PR branch is the lander's own: it is rebuilt and
+ * conflict between two steps stops it ({ conflicts, between }: the incoming branch and the earlier branch it really
+ * clashes with, found by merging the two alone). The PR branch is the lander's own: it is rebuilt and
  * force-pushed (lease on what the lander last saw) until its PR exists, never after.
  * → { ok, sha, branch } | { ok: false, conflicts, between } | { ok: false, error }
  */
@@ -123,7 +153,7 @@ export function combineSteps({ s, git, branch, branches, dry = false, log = () =
   return inWorktree({ git, ref: `${s.remote}/${list[0]}` }, (g, wt, dir) => {
     for (const br of list.slice(1)) {
       const r = mergeIn({ s, g, wt, dir, ref: `${s.remote}/${br}`, message: `Merge ${br} into ${branch} (lander: one PR for the build)`, mainSide: 'ours', buildsSide: 'theirs', log });
-      if (r.conflicts) return { ok: false, conflicts: r.conflicts, between: [list[0], br] };
+      if (r.conflicts) return { ok: false, conflicts: r.conflicts, between: clashPair({ s, git, incoming: br, earlier: list.slice(0, list.indexOf(br)), log }) };
       if (!r.ok) return r;
     }
     const sha = g(['rev-parse', 'HEAD']).out;
@@ -133,6 +163,60 @@ export function combineSteps({ s, git, branch, branches, dry = false, log = () =
     git(['fetch', '-q', s.remote, `+refs/heads/${branch}:refs/remotes/${s.remote}/${branch}`]);
     return { ok: true, sha, branch };
   });
+}
+
+/**
+ * Which earlier branch does `incoming` clash with in code? Each earlier one is merged with it alone (newest first: the
+ * nearest clash is named). → [earlier, incoming]; when no single pair clashes (only the combination does), every
+ * earlier branch is named.
+ */
+export function clashPair({ s, git, incoming, earlier, log = () => {} }) {
+  for (const br of [...earlier].reverse()) {
+    const r = inWorktree({ git, ref: `${s.remote}/${br}` }, (g, wt, dir) => mergeIn({ s, g, wt, dir, ref: `${s.remote}/${incoming}`, message: `probe ${incoming} into ${br}`, mainSide: 'ours', buildsSide: 'theirs', log }));
+    if (r.conflicts) return [br, incoming];
+  }
+  return [earlier.join(' + '), incoming];
+}
+
+/**
+ * After a landing: the build's merged step branches go (local and on the remote), their worktrees are removed and the
+ * worktree list is pruned. Only what is fully on main is touched: a branch (or a worktree's HEAD) with a commit main
+ * lacks stays, and is reported. `extra` = folders the lander made itself (its fix worktree): removed as they are.
+ * → { worktrees: [path], branches: [name], kept: [{ branch, why }] }
+ */
+export function cleanupLanded({ s, git, branches = [], extra = [], log = () => {} }) {
+  const out = { worktrees: [], branches: [], kept: [] };
+  const main = `${s.remote}/${s.base}`;
+  const onMain = (ref) => git(['merge-base', '--is-ancestor', ref, main]).code === 0;
+  const has = (ref) => git(['rev-parse', '-q', '--verify', ref]).code === 0;
+  const trees = () => {
+    const list = []; let cur = null;
+    for (const line of git(['worktree', 'list', '--porcelain']).out.split('\n')) {
+      if (line.startsWith('worktree ')) { cur = { path: line.slice(9), branch: '', head: '' }; list.push(cur); }
+      else if (cur && line.startsWith('HEAD ')) cur.head = line.slice(5);
+      else if (cur && line.startsWith('branch refs/heads/')) cur.branch = line.slice(18);
+    }
+    return list;
+  };
+  const top = git(['rev-parse', '--show-toplevel']).out;
+  const drop = (path) => { const r = git(['worktree', 'remove', '--force', path]); if (!r.code) out.worktrees.push(path); else log(`worktree ${path}: ${r.err.slice(-160)}`); return !r.code; };
+  for (const path of extra) if (path && path !== top && trees().some((w) => w.path === path)) drop(path);
+  for (const br of [...new Set(branches.filter(Boolean))]) {
+    if (br === s.base || br === 'HEAD') continue;
+    const remoteRef = `refs/remotes/${s.remote}/${br}`; const localRef = `refs/heads/${br}`;
+    if (has(remoteRef) && !onMain(remoteRef)) { out.kept.push({ branch: br, why: 'it has commits main lacks' }); continue; }
+    let busy = false;
+    for (const w of trees().filter((x) => x.branch === br)) {
+      if (w.path === top || !w.head || !onMain(w.head)) { busy = true; out.kept.push({ branch: br, why: `its worktree ${w.path} ${w.path === top ? 'is the checkout the lander runs in' : 'has commits main lacks'}` }); continue; }
+      if (!drop(w.path)) busy = true;
+    }
+    if (busy) continue;
+    if (has(localRef)) { if (onMain(localRef)) git(['branch', '-D', br]); else { out.kept.push({ branch: br, why: 'the local branch has commits main lacks' }); continue; } }
+    if (has(remoteRef)) { const p = git(['push', '-q', s.remote, '--delete', br], { timeout: 90000 }); if (p.code && !/remote ref does not exist/.test(p.err)) { log(`delete ${br}: ${p.err.slice(-160)}`); continue; } git(['update-ref', '-d', remoteRef]); }
+    out.branches.push(br);
+  }
+  git(['worktree', 'prune']);
+  return out;
 }
 
 /**

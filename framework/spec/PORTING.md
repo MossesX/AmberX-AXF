@@ -406,6 +406,11 @@ build's steps (none removed or replaced, none added past `split`) and never leav
 the new transition cases (with `opts`), split cases, `stepMaxMinutes`, `stepBudgets` and `stepsLocked`.
 **Kotlin twin still deferred**, same reason: when `PipelineStatus.kt` is written it must answer these cases too.
 
+Lander repair (Nov 21 2026, audit findings L2-01..12): `normLanding` and `normLandFailure` keep the lander's new record
+fields (`landing.attempt`, `green`, `fixes`, a hand merge's `lastMerge.byHand` / `ci`, rules that could not run;
+`failure.attempt`, `needsBrett` / `stopped` / `resume`, `jobIds`, `log`, `of`, `fixStart`). No status, transition or
+fixture changed. **Kotlin twin deferred** with the rest of the contract: nothing on Android reads these records.
+
 Plan Studio Send fix (Nov 19 2026): plan-build@1 steps are planning only (no minutes or model needed); the engine adds
 `normPlanning`, `normDesign` (the splitting stage's check of Fable's build steps) and `fallbackDesign`, with fixture
 cases `normPlan`, `designs` and `fallbacks`. **Kotlin twin deferred** for the same reason: no Android surface sends
