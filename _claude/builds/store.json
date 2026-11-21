@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10206,
- "updatedAt": "2026-11-21T00:15:11.316Z",
+ "rev": 10207,
+ "updatedAt": "2026-11-21T00:38:26.103Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -345563,6 +345563,91 @@
      "at": "2026-11-21T00:12:01.867Z",
      "by": "lander",
      "attempt": 1
+    }
+   ]
+  },
+  {
+   "id": "plan-studio-live-progress-one-stor",
+   "title": "Plan Studio live progress: one store, steps check off in place",
+   "category": "",
+   "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
+   "status": "pending",
+   "hidden": false,
+   "source": "plan-studio-2",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-21T00:38:20.767Z",
+   "updatedAt": "2026-11-21T00:38:20.767Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Plan Studio 2.0 item: plan-studio-live-progress-one-st-6z4z (Plan Studio live progress: one store, steps check off in place). Passed plan-build@1; sent as one Pipeline 2.0 build with 7 planning steps. The splitting stage designs its build steps.",
+     "at": "2026-11-21T00:38:20.767Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "planning": [
+    {
+     "text": "One source of truth: a sent plan's steps and statuses live in the build store; Plan Studio reads them from there (no copy), so as the orchestrator moves a step it checks off / crosses out in place in Plan Studio live, with its status badge",
+     "model": "Fable"
+    },
+    {
+     "text": "Plan Studio settings for how states look: check marks, check boxes, icons or badges (from a badge pack), strike-through, or any combination; background colour, foreground colour, font, weight and style per state; set through tokens so skins work",
+     "model": "Fable"
+    },
+    {
+     "text": "States shown in Plan Studio, each with its own look: sent to orchestrator, building, merging, recompiling the single build, running CI, waiting for merge, done/landed, failed",
+     "model": "Fable"
+    },
+    {
+     "text": "Plan Studio context menu (and its dynamic area/toolbar) can do the orchestrator actions on a plan or step: send, queue, hold/release, retry, rebuild/recompile, run CI, land/merge, cancel, open in the orchestrator; each through the gate and the console-signed ID",
+     "model": "Fable"
+    },
+    {
+     "text": "Bug: a plan sent from Plan Studio stops at status 'split' and never reaches Pending or the Queue (fix-main-ci-red-after-s16-s7-hand-, Nov 20: split, 0 runs; queue refused 'only a Pending build can be queued'). The split must move it on by itself",
+     "model": "Fable"
+    },
+    {
+     "text": "Sent plans are locked (Brett, Nov 20): once a plan is sent to the orchestrator it is completely locked in Plan Studio: no reordering, editing, adding or deleting items (order matters: steps build and land in order and lean on each other), with a lock shown on the plan. Each item shows a temporary no",
+     "model": "Fable"
+    },
+    {
+     "text": "Plan Studio splits, the orchestrator runs (Brett, Nov 20; replaces 'the orchestrator defines the steps'): Plan Studio uses Fable to split a plan into steps as smart as the orchestrator's splitter, with no overlapping files or duplicated work between steps (never one line per step). The steps are sen",
+     "model": "Fable"
+    }
+   ],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 0
+   },
+   "kind": "build",
+   "planRef": "plan-studio-live-progress-one-st-6z4z",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": [],
+   "flow": "pipeline-2",
+   "statusAt": "2026-11-21T00:38:20.767Z",
+   "statusBy": "plan-studio-2",
+   "attempt": 1,
+   "statusLog": [
+    {
+     "status": "pending",
+     "at": "2026-11-21T00:38:20.767Z",
+     "by": "plan-studio-2",
+     "attempt": 1,
+     "why": "Send to orchestrator"
     }
    ]
   }
