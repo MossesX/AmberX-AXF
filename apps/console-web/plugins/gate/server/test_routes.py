@@ -101,6 +101,20 @@ try:
     ok(r.status_code == 503 and "nothing was staged" in r.json()["message"], "nothing is staged while axHub can't be read")
     ok(c.put(f"{B}/approval-rules", json={}).status_code in (404, 405) and c.post(f"{B}/approval-rules", json={}).status_code in (404, 405), "no route writes the policy")
 
+    ad = routes.ad_health
+    svc = lambda veto: [{"service": "axf-console", "counts": {"veto": veto}}, {"service": "github", "counts": {"veto": 9}}]  # noqa: E731
+    r = ad.check({"ok": True, "available": True, "default": {"applied": False}, "pending": 0, "services": svc(212)})
+    ok(r["status"] == "warn" and "212 console and VPS tools" in r["summary"] and "Apply the default" in " ".join(r["details"]), "the default not applied is a banner item with the steps")
+    ok(ad.check({"ok": True, "available": True, "default": {"applied": True}, "pending": 0, "services": svc(2)})["status"] == "ok", "applied and nothing staged is green")
+    r = ad.check({"ok": True, "available": True, "default": {"applied": True}, "pending": 1, "draft": {"by": "paulie"}, "services": svc(2)})
+    ok(r["status"] == "warn" and "staged by paulie" in r["summary"] and "Brett's Save" in r["summary"], "staged edits wait for Brett, and the item says so")
+    ok(ad.check({"ok": True, "available": False, "message": "axHub answered 404."})["status"] == "warn", "a hub without the policy API is said plainly")
+    ok(ad.check({"ok": False, "message": "boom"})["status"] == "unknown", "an unreadable answer is unknown, never green")
+    got = {}
+    ok(ad.ensure(type("S", (), {"get": staticmethod(lambda cap: type("R", (), {"register": staticmethod(lambda item, owner: got.update(item=item, owner=owner))})())})(), lambda: {"ok": False}) is True, "the check registers with axf.health@1")
+    ok(got["item"]["id"] == "vps-approval-default" and got["owner"] == "gate" and "fix" not in got["item"] and "autofix" not in got["item"], "it has no Fix: only Brett's click applies it")
+    ok(ad.ensure(None, lambda: {}) is False, "no systems check yet: try again later")
+
     hl = routes.health
     now = time.time() * 1000
     ok(hl.lander_check({"ok": True, "status": "running", "landing": {"pr": 5, "since": "2020-01-01T00:00:00Z"}}, now)["status"] == "error", "a PR landing for hours is stuck")

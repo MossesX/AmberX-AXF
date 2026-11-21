@@ -64,6 +64,37 @@ node apps/console-web/plugins/gate/uninstall.mjs --all      # + code + doc lines
 node apps/console-web/plugins/gate/test.mjs                 # self-test
 ```
 
+## Approval rules (approval-rules@1)
+
+**Approval rules** tab (`tab:gate.tabs=approvals`): axHub's match-pattern policy rules, live (axHub decisions 119 and
+121, `framework/spec/AXHUB-POLICY-API.md`). Per service an ordered list of `{ match, policy, vetoSeconds }`: `match`
+is a tool name or a pattern (`*` = any run of characters), `policy` is allow, veto, confirm or deny, `vetoSeconds` is
+how long a veto holds (10 to 1800). The first matching rule decides a tool; a tool's own entry beats every rule until
+**Let the rules decide** clears it; an allow pattern never opens a destructive tool. A rule also covers tools the
+service adds later.
+
+Every edit is staged in one draft (`approval-rules-draft.json` in the plugin's data folder) and changes nothing on
+axHub. **Save** and **Apply the default** take Brett's own click and are sent from his browser on his own hub session
+(`web/approvalRulesState.ts` → `saveApprovals`: a console-control press, an action or a script is refused before any
+request is made; axHub refuses a bearer token anyway). The console server has no route that writes the policy.
+
+**Apply the default** is Brett's rule (Nov 12 2026, again Nov 21 2026): a veto countdown only on shell commands on the
+VPS (`vps.run`, `vps.launch`, `console_terminal_sessions_run`, `agent_manager_vinny_commands_by_cid_run`); every other
+`axf-console` tool runs at once (`*` = allow, so screen opens, overlays and navigation are never held, new tools
+included); `orchestrator_upgrade_approve` keeps confirm; deletes keep the hub's approval. The rule set is `DEFAULT` in
+`web/approval-core.mjs`. While it is not applied, the systems check shows `vps-approval-default`
+(`server/approval_default_health.py`) with the steps.
+
+| Reach | Read | Stage an edit | Save |
+| --- | --- | --- | --- |
+| REST | `GET /api/plugins/gate/approval-rules` | `POST /api/plugins/gate/approval-rules/draft {op, service, index, to, rule, rules, clearOwn, on}` | never |
+| MCP | `vps_approval_rules` | `vps_approval_rules_stage` | never |
+| CLI | `axf gate approvals` | `axf gate approvals add \| edit \| remove \| move \| clear-own \| default \| discard` | never (`save` answers forbidden) |
+| Voice / actions | `vps.approvals.status`, `vps.approvals.open` | `vps.approvals.add \| edit \| remove \| move \| clear-own \| discard` | never |
+| console-control@1 | `setting:vps.approvals.<service>.rules \| clearOwn \| <n>.match \| <n>.policy \| <n>.vetoSeconds` (get) | the same addresses (set stages) | `button:vps-approvals-save`, `button:vps-approvals-default`: Brett's own click only |
+
+Deep link: `console_show view:gate/tab:gate.tabs=approvals` (also `vps.open:approvals`).
+
 ## Build cap (build-cap@1)
 
 **Build cap** tab (`tab:gate.tabs=build-cap`): the host hard cap (`maxBuilds`) and emergency slots

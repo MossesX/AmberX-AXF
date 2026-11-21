@@ -284,6 +284,43 @@
         "kind": "control"
       },
       {
+        "target": "approvals",
+        "title": "Approval rules",
+        "text": "The rules axHub uses to decide each call: which tools run at once, which hold on the veto countdown and for how long, which wait for Brett's confirm and which never run. Same rules as `axf gate approvals`, the vps_approval_rules MCP tools and “what are the approval rules”."
+      },
+      {
+        "target": "view:gate/tab:approvals",
+        "title": "Approval rules",
+        "text": "Each service has an ordered list of rules. A rule names tools (one name, or a pattern where * is anything, like build_* or *), a decision and a hold length. The first rule that matches a tool decides it; a tool with its own entry ignores the rules until Let the rules decide clears it. Edits are a draft: nothing changes on axHub until Brett presses Save.",
+        "kind": "screen"
+      },
+      {
+        "target": "apply-the-default",
+        "title": "Apply the default",
+        "text": "Sets Brett's rule in one go: only shell commands on the VPS hold on the veto countdown (vps run and launch, the console terminal run, Vinny command run). Everything else in the console and the orchestrator runs at once, model upgrades keep their confirm and deletes keep their approval. It takes Brett's own click: a session, MCP, the CLI and voice cannot press it."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Sends the draft to axHub from this browser, on Brett's own hub session. Only Brett's own click saves: everything else can read the rules and stage edits."
+      },
+      {
+        "target": "discard-draft",
+        "title": "Discard draft",
+        "text": "Drops every staged edit. axHub was never changed, so nothing is undone there."
+      },
+      {
+        "target": "let-the-rules-decide",
+        "title": "Let the rules decide",
+        "text": "A tool with an entry of its own ignores every rule. On: Save clears those entries for this service so the rules decide. Denied tools and deletes keep theirs."
+      },
+      {
+        "target": "cli:gate/approvals",
+        "title": "axf gate approvals",
+        "text": "`axf gate approvals` shows the rules. `axf gate approvals add vps run veto 60`, `edit vps 1 vetoSeconds 30`, `remove vps 2`, `move vps 3 1`, `clear-own axf-console`, `default` and `discard` stage edits in the draft. Nothing is saved from the CLI: Brett saves from his console.",
+        "kind": "control"
+      },
+      {
         "target": "passes",
         "title": "Passes",
         "text": "The one home for passes: veto passes (start one, approve or deny a request, revoke, undo, the longest pass), the hub's timed passes and the Go pass. Same calls as the pass MCP tools, `axf pass …` and “start a pass for 30 minutes”."

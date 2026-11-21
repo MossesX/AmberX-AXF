@@ -69,6 +69,9 @@ AL_CLI = ROOT / "deploy" / "lander" / "run.mjs"  # the Pipeline 2.0 lander (repl
 _spec_mp = importlib.util.spec_from_file_location("axf_gate_main_protection_health", Path(__file__).resolve().parent / "main_protection_health.py")
 mp_health = importlib.util.module_from_spec(_spec_mp)  # "is main protected on GitHub": a read-only systems-check item (pure)
 _spec_mp.loader.exec_module(mp_health)  # type: ignore[union-attr]
+_spec_ad = importlib.util.spec_from_file_location("axf_gate_approval_default_health", Path(__file__).resolve().parent / "approval_default_health.py")
+ad_health = importlib.util.module_from_spec(_spec_ad)  # "is Brett's approval default applied": a read-only systems-check item (pure)
+_spec_ad.loader.exec_module(ad_health)  # type: ignore[union-attr]
 BP_CLI = ROOT / "deploy" / "branch-protection.mjs"
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
@@ -224,7 +227,8 @@ def ensure_health() -> None:
         lander = health.ensure(plugin_services, _status_for_health)
         server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))  # axf-not-plugin:systems-check (actor name)
         main = mp_health.ensure(plugin_services, bp_show)
-        _health_on["done"] = lander and server and main
+        approvals = ad_health.ensure(plugin_services, lambda: _node(PLUGIN_DIR / "approval-rules.mjs", ["status"]))
+        _health_on["done"] = lander and server and main and approvals
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
