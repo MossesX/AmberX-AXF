@@ -26,6 +26,18 @@ export function reloadFrame(id: string) {
   notify();
 }
 
+/**
+ * Where each app's frame starts (a deep link on load) and the frames themselves, so a deep link that arrives later
+ * (#/console/pass/<id> while Molly is open) moves the live frame to that route: a fragment change, no reload.
+ */
+const starts = new Map<string, string>();
+const frameEls = new Map<string, HTMLIFrameElement>();
+export function routeFrame(id: string, src: string) {
+  const el = frameEls.get(id);
+  if (el) el.src = src;
+  else starts.set(id, src);
+}
+
 /** The box a view (or a pane, `fill="self"`) gives its app's frame. */
 export function AppSlot({ id, fill = 'main' }: { id: string; fill?: 'main' | 'self' }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -91,10 +103,9 @@ export function FrameDeck() {
   const { frameUrl, onFrame, warm } = mollyHooks();
   // First address per app: a deep link on load (#/<app>/<route>), else the app's own start page.
   const [srcs] = useState(() => {
-    const m = new Map<string, string>();
     const link = deepLink(window.location.hash);
-    if (link) m.set(link.app.id, link.src);
-    return m;
+    if (link) starts.set(link.app.id, link.src);
+    return starts;
   });
   const [opened, setOpened] = useState<string[]>(() => (active ? [active] : []));
   useEffect(() => {
@@ -110,7 +121,7 @@ export function FrameDeck() {
         return (
           <iframe
             key={`${a.id}:${reloads.get(a.id) ?? 0}`}
-            ref={(el) => onFrame?.(a.id, el)}
+            ref={(el) => { if (el) frameEls.set(a.id, el); else frameEls.delete(a.id); onFrame?.(a.id, el); }}
             title={a.label}
             className="molly-frame"
             data-app={a.id}

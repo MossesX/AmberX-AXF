@@ -183,6 +183,12 @@
         "kind": "field"
       },
       {
+        "target": "all-passes",
+        "title": "All passes",
+        "text": "Leaves this pass request and goes back to the list of veto passes.",
+        "kind": "button"
+      },
+      {
         "target": "veto-passes-are-in-vps-configuration",
         "title": "Veto passes are in VPS Configuration",
         "text": "Opens Builds → VPS Configuration → Passes, where passes are started, approved, revoked and undone, and the longest pass is set. The pass banner still shows here while a pass is on."

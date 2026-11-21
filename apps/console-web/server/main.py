@@ -1435,6 +1435,10 @@ _prune_plugin_state()
 # console-commands@1 = /api/console (open screens, dialogs, settings, run actions in the open console).
 CAPABILITY_MOUNTS = {"control@1": "/api/control"}
 CAPABILITY_MOUNTS["console-commands@1"] = "/api/console"  # the Console commands plugin  axf-plugin:console-commands
+# pass-approval@1 = docs/contracts/pass-approval.md's /api/passes routes (one veto pass by id: read, approve, deny). A
+# provider's `public_router` is mounted without the console's auth: a route there carries its own proof (POST
+# /api/passes/action: a signed, single-use pass action token from a device notification).
+CAPABILITY_MOUNTS["pass-approval@1"] = "/api/passes"
 
 
 def _capability_guard(name: str):
@@ -1446,6 +1450,8 @@ def _capability_guard(name: str):
 
 for _cap, _prefix in CAPABILITY_MOUNTS.items():
     _svc = plugin_services.get(_cap)
+    if _svc is not None and getattr(_svc, "public_router", None) is not None:
+        app.include_router(_svc.public_router, prefix=_prefix, dependencies=[Depends(_capability_guard(_cap))])
     if _svc is not None and getattr(_svc, "router", None) is not None:
         app.include_router(_svc.router, prefix=_prefix, dependencies=[Depends(auth), Depends(_capability_guard(_cap))])
         log("plugins", f"{_cap} served at {_prefix}")

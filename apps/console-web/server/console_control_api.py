@@ -318,10 +318,19 @@ def command(b: dict[str, Any], by: str = "", audience: str = OWNER, grants: set[
     return guarded(cmd, str(b.get("by") or by or "api")[:80], audience, grants if grants is not None else {"*"}, str(b.get("to") or "recent"))
 
 
-def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent") -> dict[str, Any]:
+def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent", extra: dict[str, Any] | None = None) -> dict[str, Any]:
     """A spoken phrase → its command (console_control.voice_intent), words resolved by the same search, then run with the
     same guards. The answer carries `heard`, `intent`, `command` and `say` (the line to speak back)."""
     g = grants if grants is not None else {"*"}
+    # phrases a plugin answers itself (voice-intents@1: `handle(text, extra)` → an answer with `say`, or None)
+    import plugin_services
+    for p in plugin_services.get_all("voice-intents@1") if hasattr(plugin_services, "get_all") else []:
+        try:
+            own = p.handle(text, extra or {})
+        except Exception:  # noqa: BLE001 — a broken provider never stops the console's own phrases
+            own = None
+        if isinstance(own, dict):
+            return {"$axf": cc.FRAME, "heard": text, **own}
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
@@ -405,7 +414,9 @@ def router_for(auth: Any) -> APIRouter:
         text = str(b.get("text") or "").strip()[:300]
         if not text:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
-        return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
+        # `token`: a pass action token the AmberX notification holds ("approve the pass" decides with it)
+        extra = {"token": str(b["token"])[:400]} if isinstance(b.get("token"), str) else {}
+        return answer(await run_in_threadpool(lambda: voice(text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent"), extra)))
 
     @r.get("/toolbars")
     async def toolbars_list(request: Request, view: str = "") -> JSONResponse:

@@ -598,19 +598,32 @@ def _focus_provider() -> Any | None:
     return plugin_services.get("console-focus@1")
 
 
+def _focus_providers() -> list[Any]:
+    """Every console-focus@1 provider (`console-focus@1/<part>` too: a pass, a build…), first answer wins."""
+    get_all = getattr(plugin_services, "get_all", None)
+    if get_all is None:
+        p = _focus_provider()
+        return [p] if p is not None else []
+    return list(get_all("console-focus@1"))
+
+
 def focus_rewrite(command: dict[str, Any], audience: str) -> dict[str, Any]:
     """`build:<id>` (or a bare build id that is no screen's id) on console.screens → the screen that lists it, focused on
     it: the console opens its tab, scrolls the row into view, expands and highlights it."""
     if command.get("target") != "console.screens" or command.get("op") not in ("act", "get"):
         return command
-    svc = _focus_provider()
+    providers = _focus_providers()
     path = str(command.get("path") or "").strip()
-    if svc is None or not path:
+    if not providers or not path:
         return command
-    try:
-        hit = svc.resolve(path)
-    except Exception:  # noqa: BLE001 — a broken provider never stops a plain screen command
-        hit = None
+    hit = None
+    for svc in providers:
+        try:
+            hit = svc.resolve(path)
+        except Exception:  # noqa: BLE001 — a broken provider never stops a plain screen command
+            hit = None
+        if isinstance(hit, dict) and hit.get("screen") and hit.get("focus"):
+            break
     if not isinstance(hit, dict) or not hit.get("screen") or not hit.get("focus"):
         return command
     if not hit.get("explicit"):

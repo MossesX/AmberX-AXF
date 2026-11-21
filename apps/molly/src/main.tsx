@@ -6,6 +6,7 @@ import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { App } from './App';
 import { deepLink } from './molly/apps';
+import { routeFrame } from './molly/FrameDeck';
 import './axf/ui/axf.css';
 import './molly/molly.css';
 
@@ -22,7 +23,9 @@ const axf = createAxf({
   assets: Object.values({ ...sharedAssets, ...ownAssets, ...overrideAssets }),
 });
 registerActions(axf);
-window.addEventListener('hashchange', () => { const l = deepLink(window.location.hash); if (l) axf.navigate(l.app.id); });
+// A link that arrives while Molly is open (#/console/pass/<id>: the AmberX notification, a link Claude handed over)
+// opens the app and moves its live frame to the route.
+window.addEventListener('hashchange', () => { const l = deepLink(window.location.hash); if (l) { axf.navigate(l.app.id); if (l.route) routeFrame(l.app.id, l.src); } });
 
 // The look comes from axHub only (Brett, Nov 1 2026): Molly reads and writes the one shared look on axHub's data server.
 axf.attachAppearanceSource(new HubAppearanceSource({ hub: manifest.developer?.hub ?? DEFAULT_HUB, appId: manifest.app.id }));

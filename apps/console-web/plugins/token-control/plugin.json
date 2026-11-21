@@ -59,7 +59,8 @@
       "framework/cli/reaper.mjs",
       "apps/console-web/server/mcp_server.py",
       ".github/workflows/android.yml",
-      "apps/console-web/server/test_mcp_tools.py"
+      "apps/console-web/server/test_mcp_tools.py",
+      "docs/contracts/pass-approval.md"
     ]
   },
   "commands": { "$axf": "plugin-commands@1", "auto": true },

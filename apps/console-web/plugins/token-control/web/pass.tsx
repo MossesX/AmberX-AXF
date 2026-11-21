@@ -12,6 +12,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Icon, useRuntime } from '@console/axf/react';
 import { ownerFetch, pluginFetch } from '@console/plugins';
+import { openPass } from './pass-approval';
 
 const FOLDER = 'token-control';
 const POLL_MS = 5_000;
@@ -108,6 +109,7 @@ const scopeWord = (p: { scope: string; label?: string }) => p.label ?? SCOPE_WOR
 const askWord = (p: PassView) => `${p.scope === 'all' ? 'everything' : `${scopeWord(p).toLowerCase()} changes`}${p.include_irreversible ? ' (irreversible deletes too)' : ''}`;
 
 export function PassBanner() {
+  const rt = useRuntime();
   const { status } = usePasses();
   const rows = status?.items ?? [];
   const active = rows.filter((r) => r.active).map((r) => r.active!);
@@ -137,6 +139,7 @@ export function PassBanner() {
             <span><b>{p.requestedBy}</b> asks: {askWord(p)} without veto for {p.minutes} min</span>
             <Button size="sm" tone="primary" icon="check" disabled={!!busy} onClick={() => void act(`a${p.id}`, () => passCalls.approve(p.scope, p.id))}>Approve</Button>
             <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act(`d${p.id}`, () => passCalls.deny(p.scope, p.id))}>Deny</Button>
+            <Button size="sm" tone="ghost" icon="shield" title="Open this pass (its own page: who asks, scope, veto window)" onClick={() => { openPass(p.id); rt.navigate('token-control'); }}>Open</Button>
           </span>
         ))}
       </div>

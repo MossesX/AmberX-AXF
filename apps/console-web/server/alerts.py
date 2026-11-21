@@ -375,6 +375,12 @@ class AlertHub:
             self.items, alert, event = apply_alert(self.items, inp, _now())
             self._changed()
             targets = delivery_targets(alert, event, self.config()["rules"])
+        if inp.get("push") is True and event != "repeat":
+            # an approval waiting for Brett (a veto pass request): reaches every push channel that is set up, whatever
+            # the channel's minimum severity; the notify gate below still has the last word
+            cfg = self.config()
+            on_ch = {"ntfy": cfg["ntfy"]["enabled"] and bool(cfg["ntfy"]["topic"]), "webpush": cfg["webpush"]["enabled"]}
+            targets = [*targets, *[ch for ch, ok in on_ch.items() if ok and ch not in targets]]
         if verdict:
             on = verdict["channels"]
             targets = [t for t in targets if on.get("banner" if t == "bell" else "webpush")]
@@ -454,6 +460,9 @@ class AlertHub:
         click = self._click_url(alert)
         if click:
             body["click"] = click
+        acts = ntfy_actions(delivery_actions(alert), self.config()["publicUrl"])
+        if acts:
+            body["actions"] = acts
         headers = {"Content-Type": "application/json"}
         tok = self._secrets().get("ntfyToken")
         if tok:
@@ -513,7 +522,7 @@ class AlertHub:
         if not subs:
             return False, "no device has turned on web push"
         self.vapid_public_key()  # makes the key on first use
-        payload = _push_payload(alert, self._click_url(alert) or "/")
+        payload = _push_payload(alert, self._click_url(alert) or "/", delivery_actions(alert))
         urgency = "high" if alert["severity"] in ("error", "critical") else "normal"
         sent, gone, errors = 0, [], []
         for s in subs:
@@ -778,10 +787,49 @@ def vapid_header(endpoint: str, key_file: Path, sub: str, ttl: int = 12 * 3600) 
 PUSH_MAX = 3000  # payload bytes before encryption (push services take 4096 minus the record overhead)
 
 
-def _push_payload(alert: dict[str, Any], url: str) -> bytes:
-    """UTF-8 JSON (not \\u-escaped) that always fits a push message: the body is shortened first, then the title."""
+def delivery_actions(alert: dict[str, Any]) -> list[dict[str, Any]]:
+    """Buttons for ONE device delivery of an alert (capability alert-actions@1: a plugin's `actions(alert)` answers
+    `[{id, label, post, body}]` for a background POST to this console, or `[{id, label, url}]` to open a page). Made at
+    send time and never stored: a signed one-use token in a body lives only in that push."""
+    for p in plugin_services.get_all("alert-actions@1") if hasattr(plugin_services, "get_all") else []:
+        try:
+            acts = p.actions(alert)
+        except Exception:  # noqa: BLE001 — a broken provider only loses its buttons
+            continue
+        if acts:
+            out = []
+            for a in acts[:3]:
+                if not isinstance(a, dict) or not isinstance(a.get("id"), str) or not isinstance(a.get("label"), str):
+                    continue
+                if isinstance(a.get("post"), str) and a["post"].startswith("/api/"):
+                    out.append({"id": a["id"][:40], "label": a["label"][:30], "post": a["post"][:200], "body": a.get("body") if isinstance(a.get("body"), dict) else {}})
+                elif isinstance(a.get("url"), str) and re.match(r"^https?://", a["url"]):
+                    out.append({"id": a["id"][:40], "label": a["label"][:30], "url": a["url"][:300]})
+            return out
+    return []
+
+
+def ntfy_actions(acts: list[dict[str, Any]], public_url: str) -> list[dict[str, Any]]:
+    """The same buttons as ntfy actions: `http` (ntfy POSTs in the background, the app is not opened) and `view`."""
+    out: list[dict[str, Any]] = []
+    base = (public_url or "").rstrip("/")
+    for a in acts:
+        if a.get("post") and base.startswith("https://"):
+            out.append({"action": "http", "label": a["label"], "url": base + a["post"], "method": "POST",
+                        "headers": {"Content-Type": "application/json"}, "body": json.dumps(a.get("body") or {}), "clear": True})
+        elif a.get("url"):
+            out.append({"action": "view", "label": a["label"], "url": a["url"]})
+    return out[:3]
+
+
+def _push_payload(alert: dict[str, Any], url: str, actions: list[dict[str, Any]] | None = None) -> bytes:
+    """UTF-8 JSON (not \\u-escaped) that always fits a push message: the body is shortened first, then the title.
+    `actions` (alert-actions@1) ride along for the service worker: a `post` one runs in the background."""
     def enc(title: str, body: str) -> bytes:
-        return json.dumps({"title": title, "body": body, "url": url[:300], "tag": alert["key"][:120], "severity": alert["severity"]}, ensure_ascii=False).encode()
+        d: dict[str, Any] = {"title": title, "body": body, "url": url[:300], "tag": alert["key"][:120], "severity": alert["severity"]}
+        if actions:
+            d["actions"] = actions
+        return json.dumps(d, ensure_ascii=False).encode()
     title, body = alert["title"][:120], (alert.get("body") or "")[:400]
     out = enc(title, body)
     while len(out) > PUSH_MAX and body:

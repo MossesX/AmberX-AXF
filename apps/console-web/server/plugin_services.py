@@ -46,5 +46,20 @@ def get(name: str) -> Any | None:
         return None
 
 
+def get_all(name: str) -> list[Any]:
+    """Every enabled provider of a capability that many plugins can serve at once: `name` itself and `name/<part>`
+    (``console-focus@1/pass`` next to ``console-focus@1``), in name order."""
+    out = []
+    for n, (folder, impl) in sorted(_services.items()):
+        if n != name and not n.startswith(f"{name}/"):
+            continue
+        try:
+            if _is_enabled(folder):
+                out.append(impl)
+        except Exception:  # noqa: BLE001
+            continue
+    return out
+
+
 def available() -> list[dict[str, Any]]:
     return [{"name": n, "folder": f, "enabled": bool(_is_enabled(f))} for n, (f, _) in sorted(_services.items())]

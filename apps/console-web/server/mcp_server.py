@@ -919,8 +919,11 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         theme / style / layout / tokens = only token set / reset there. Irreversible deletes (AmberX hard deletes, tools
         axHub marks irreversible) still confirm unless include_irreversible (all only). This only files a request:
         Brett approves it once (console banner → Pass, or axHub's approval), never this tool. Minutes 1-240 (default
-        30). Asking again for a scope with an active pass replaces it from the approval on. Tell Brett in one line that
-        it is waiting."""
+        30). Asking again for a scope with an active pass replaces it from the approval on. A waiting request's result
+        carries the hook to it (pass-approval@1): `deep_link` (opens the pass with Approve / Deny), `approve_url` /
+        `deny_url` (open it with that decision primed: Brett's own session decides, the link alone never does),
+        `molly_url`, `target` ("pass:<id>" for console_show) and `hand_over`. Hand Brett the link in one line ("Approve
+        here: <deep_link>") and console_show the target; his AmberX also gets a notification with Approve / Deny."""
         inp: dict[str, Any] = {"minutes": minutes, **({"reason": reason} if reason else {}), **({"include_irreversible": True} if include_irreversible else {})}
         return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "grant", "input": inp, "by": by, "reason": reason})
 
@@ -940,6 +943,80 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         before the pass first touched it) and list what can't (`notUndoable`: AmberX, planner and other commands, each
         named). The pass itself stays as it is."""
         return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "undo", "input": {}, "by": by, "reason": reason})
+
+    # pass-approval@1 (docs/contracts/pass-approval.md): one pass by id. MCP never carries an approval: pass_approve /
+    # pass_deny answer approval_required with the links Brett opens (his session, a terminal or his notification decides).
+    class _RemotePasses:
+        """stdio mode (a local clone): the console's /api/passes routes (AXF_CONSOLE_URL + AXF_TOKEN)."""
+
+        def _get(self, path: str) -> dict[str, Any]:
+            import urllib.error
+            import urllib.request
+            base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/")
+            req = urllib.request.Request(f"{base}/api/passes{path}", headers={"Authorization": f"Bearer {os.environ.get('AXF_TOKEN', '')}"})
+            try:
+                with urllib.request.urlopen(req, timeout=20) as r:  # noqa: S310 — the console's own https URL
+                    return json.loads(r.read())
+            except urllib.error.HTTPError as e:
+                try:
+                    return json.loads(e.read())
+                except ValueError:
+                    return {"ok": False, "code": "unexpected", "message": f"HTTP {e.code}"}
+            except (OSError, ValueError) as e:
+                return {"ok": False, "code": "unexpected", "message": f"could not reach {base}: {str(e)[:200]}"}
+
+        def pending(self) -> dict[str, Any]:
+            return self._get("/pending")
+
+        def get(self, pass_id: str) -> dict[str, Any]:
+            return self._get(f"/{pass_id}")
+
+    def _passes() -> Any:
+        try:
+            import plugin_services  # present only inside the console process
+        except ImportError:
+            return _RemotePasses()
+        svc = plugin_services.get("pass-approval@1")
+        if svc is None:
+            raise ToolError("not_implemented: no enabled plugin provides pass-approval@1 (Token control)")
+        return svc
+
+    @mcp.tool(annotations=READ)
+    async def pass_list_pending() -> dict[str, Any]:
+        """Every veto pass request waiting for Brett, newest first, each with deep_link / approve_url / deny_url /
+        molly_url / target ("pass:<id>" for console_show). Never a token."""
+        return await anyio.to_thread.run_sync(lambda: _passes().pending())
+
+    @mcp.tool(annotations=READ)
+    async def pass_get(id: str) -> dict[str, Any]:
+        """One veto pass by id ("pass-…" or "pass:pass-…"): state (pending, active, denied, lapsed, revoked, expired), who
+        asked, scope, minutes, the veto window, and its links."""
+        r = await anyio.to_thread.run_sync(lambda: _passes().get(id.removeprefix("pass:")))
+        if not r.get("ok"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
+
+    async def _ask(id: str, decision: str) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _passes().get(id.removeprefix("pass:")))
+        if not r.get("ok"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        p = r.get("pass") or {}
+        url = p.get("approve_url" if decision == "approve" else "deny_url") or p.get("deep_link")
+        return {"ok": False, "code": "approval_required", "decision": decision, "pass": p, "url": url, "deep_link": p.get("deep_link"),
+                "target": p.get("target"), "message": f"Only Brett can {decision} a pass: hand him {url} (or console_show {p.get('target')}); "
+                f"his console session, a terminal (axf pass {decision} {p.get('id')}) or his notification's {decision.title()} decides."}
+
+    @mcp.tool(annotations=READ)
+    async def pass_approve(id: str) -> dict[str, Any]:
+        """Ask Brett to approve a waiting veto pass. Never approves it (MCP never carries an approval): answers
+        approval_required with `url` (opens the pass with Approve ready) and `target` for console_show. Hand him the link."""
+        return await _ask(id, "approve")
+
+    @mcp.tool(annotations=READ)
+    async def pass_deny(id: str) -> dict[str, Any]:
+        """Ask Brett to deny a waiting veto pass. Like pass_approve: answers approval_required with the deny link; to
+        withdraw your own request use pass_revoke."""
+        return await _ask(id, "deny")
 
     for fn, ann in ((pass_grant, WRITE), (pass_status, READ), (pass_revoke, IDEMPOTENT), (pass_undo, WRITE)):
         mcp.tool(annotations=ann)(fn)
@@ -1086,7 +1163,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         it right away, focused and highlighted, with `say` as a note; when it's off this does nothing (shown: false).
         `target` = a screen, settings tab, dialog or navigation-only action by id, title or words ("plan studio",
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
-        axHub approval). A build: "build:<build id>" (or the bare id) opens the Build orchestrator on that build's tab,
+        axHub approval, pass:<id> opens a veto pass with Approve / Deny). A build: "build:<build id>" (or the bare id) opens the Build orchestrator on that build's tab,
         scrolled into view, expanded and highlighted. A tab: "build-orchestrator pending", or `focus` = the tab or item.
         `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
         whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed.

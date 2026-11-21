@@ -10,6 +10,7 @@
  *   node control.mjs <op> <target> [path] …     list | get | set | reset | add | remove | act (see `help`)
  *   node control.mjs targets | tools | routes | schema | registry | audit [n] | where | help
  *   node control.mjs pass-publication | pass-check <target> [op] | pass-settings [json]   (veto passes: lib/pass.mjs)
+ *   node control.mjs pass-pending | pass-get <id> | pass-decide <json> | pass-tokens <id> | pass-alert <id>   (pass-approval@1)
  *   --remote [url]   send it to a console instead (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN)
  *   --json           print the raw answer
  *
@@ -27,6 +28,7 @@ import { appearanceFile, runTokens } from './lib/tokens.mjs';
 import { notesDir, runAmberx } from './lib/amberx.mjs';
 import { runPlanner } from './lib/planner.mjs';
 import { coveringCall, coveringPass, passSettings, publication, recordPassChanges, recordPassCommand, runPass, savePassSettings } from './lib/pass.mjs';
+import { alertFor, decidePass, getPass, listPending, tokensFor } from './lib/pass-approval.mjs';
 import { PASS_DEFAULT_SCOPE, PASS_SCOPE_IDS, PASS_TARGET, passScopeId, passScopeOf, passScopeWord } from '../../../../framework/core/engines/control-pass.mjs';
 
 /** The token rows a write may change, by id (what a covered write records as before / after). */
@@ -53,7 +55,7 @@ function recordTitle(c) {
  * with before / after, for undo; every other command as a record undo lists). A delete an `all` pass covers runs
  * without the confirm token (`confirmSkipped`), except an irreversible one unless the pass includes irreversible.
  */
-export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now(), approver = null, proof = null } = {}) {
+export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now(), approver = null, proof = null, decidedBy = null } = {}) {
   const c = normalizeControl(raw);
   if (!c.by && by) c.by = by;
   // an alias preset (kind) is a filter on list and a default on add
@@ -77,7 +79,7 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
     const tokenWrite = !!pass && domain === 'tokens' && ['set', 'reset'].includes(c.op);
     const before = tokenWrite ? tokenStateOrNull(c) : null;
     const title = pass && !before ? recordTitle(c) : '';
-    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : domain === 'pass' ? runPass(c, { approver, proof, now, runTokens }) : await runPlanner(c);
+    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : domain === 'pass' ? runPass(c, { approver, proof, now, runTokens, decidedBy }) : await runPlanner(c);
     const at = new Date(now).toISOString();
     if (pass && before) recordPassChanges(pass.id, c, before, tokenState(c), now);
     else if (pass) recordPassCommand(pass.id, c, `${c.op}${c.action ? ` ${c.action}` : ''} ${c.target}${c.path ? ` ${c.path}` : data?.item?.id ? ` ${data.item.id}` : ''}${title ? ` ("${title}")` : ''}`, now);
@@ -246,6 +248,8 @@ function help() {
     '  axf pass grant 30 --scope theme   (only theme changes)',
     '  axf pass grant 30 --include-irreversible   (hard deletes too, no confirm)',
     '  axf pass status · axf pass revoke · axf pass undo   (undo lists what it can\'t roll back)',
+    '  axf pass list · axf pass show <id> · axf pass link <id>   (waiting passes, one pass, its links)',
+    '  axf pass approve <id> · axf pass deny <id>   (at a terminal; anywhere else it answers with the link)',
     '  axf token layout get navWidth',
     '  axf token theme set accent "#ff8800" --reason "warmer accent"',  // theme-ok: an example value in the help text
     '  axf token layout reset navWidth',
@@ -277,6 +281,47 @@ async function terminalApproval(command) {
     const typed = (await rl.question(`${command.action} the ${command.path === 'all' ? 'everything' : command.path}${irr} veto pass as Brett? Type "${word}" to confirm (anything else files a request): `)).trim().toLowerCase();
     return typed === word ? { via: 'cli-tty', name: process.env.AXF_OWNER || 'brett' } : null;
   } finally { rl.close(); }
+}
+
+/**
+ * axf pass list | show <id> | link <id> | approve <id> | deny <id>. Local: lib/pass-approval.mjs; --remote [url]: the
+ * console's /api/passes routes with AXF_TOKEN (a bearer token reads, and can only ask: approve / deny answer
+ * owner_required there). A local approve / deny decides only at a real terminal once Brett types the scope back.
+ */
+async function passCli(words, json, out) {
+  const remoteAt = words.indexOf('--remote');
+  const remote = remoteAt >= 0 ? (/^https?:/.test(words[remoteAt + 1] || '') ? words[remoteAt + 1] : process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com') : '';
+  const [verb, rawId = ''] = words.filter((w, i) => w !== '--remote' && !(remoteAt >= 0 && i === remoteAt + 1 && /^https?:/.test(w)));
+  const id = rawId.replace(/^pass:/i, '');
+  const call = async (method, path) => {
+    const r = await fetch(`${remote.replace(/\/+$/, '')}/api/passes${path}`, { method, headers: { 'Content-Type': 'application/json', ...(process.env.AXF_TOKEN ? { Authorization: `Bearer ${process.env.AXF_TOKEN}` } : {}) }, ...(method === 'POST' ? { body: '{}' } : {}) });
+    return r.json().catch(() => ({ ok: false, code: 'unexpected', message: `HTTP ${r.status}` }));
+  };
+  if (verb === 'list' || verb === 'pending') {
+    const r = remote ? await call('GET', '/pending') : listPending();
+    out(r, r.ok ? (r.items?.length ? r.items.map((x) => `${x.id}  ${x.requestedBy} asks: ${x.label} for ${x.minutes} min\n  ${x.deep_link}`).join('\n') : r.text) : `${r.code}: ${r.message}`);
+    return r.ok ? 0 : 1;
+  }
+  if (!id) { console.error(`usage: axf pass ${verb} <pass id>   (axf pass list shows the waiting ones)`); return 2; }
+  if (verb === 'show' || verb === 'link') {
+    const r = remote ? await call('GET', `/${encodeURIComponent(id)}`) : getPass(id);
+    if (!r.ok) { out(r, `${r.code}: ${r.message}`); return 1; }
+    const p = r.pass;
+    out(verb === 'link' ? { ok: true, id: p.id, deep_link: p.deep_link, approve_url: p.approve_url, deny_url: p.deny_url, molly_url: p.molly_url, target: p.target } : r,
+      verb === 'link' ? [`open     ${p.deep_link}`, `approve  ${p.approve_url}`, `deny     ${p.deny_url}`, `molly    ${p.molly_url}`, `show     console_show ${p.target}`].join('\n')
+        : [`${p.id} · ${p.state} · ${p.label} for ${p.minutes} min${p.include_irreversible ? ' (irreversible included)' : ''}`, `requested by ${p.requestedBy} at ${p.requestedAt}${p.reason ? ` — ${p.reason}` : ''}`, p.text, p.deep_link].join('\n'));
+    return 0;
+  }
+  // approve | deny
+  let r;
+  if (remote) r = await call('POST', `/${encodeURIComponent(id)}/${verb}`);
+  else {
+    const g = getPass(id);
+    const approver = g.ok ? await terminalApproval({ target: PASS_TARGET, action: verb, path: g.pass.scope, input: { include_irreversible: g.pass.include_irreversible === true } }) : null;
+    r = await decidePass(id, verb, { approver, by: process.env.AXF_ACTOR || `cli:${process.env.USER || 'user'}` }, runControl);
+  }
+  out(r, r.ok ? r.text : `${r.code}: ${r.message}${r.pass?.deep_link ? `\nopen it: ${r.pass.deep_link}` : ''}`);
+  return r.ok ? 0 : 1;
 }
 
 /** Shell-quote a word for the "repeat this" line. */
@@ -318,9 +363,23 @@ export async function main(argv) {
     out({ ok: true, target: c.target, op: c.op, scope, irreversible: irr, covered: !!p, ...(p ? { pass: { id: p.id, scope: p.scope, expiresAt: p.expiresAt } } : {}) }, p ? `covered by ${p.id} until ${p.expiresAt}` : scope ? `not covered (needs ${scope === 'all' ? 'an' : 'a'} ${scope} pass${irr ? ' with include_irreversible' : ''})` : 'no pass can cover this');
     return 0;
   }
+  // pass-approval@1 (lib/pass-approval.mjs): read and decide one pass by id. pass-decide reads {id, decision,
+  // approver?, token?, by?} on stdin: approver is set by the console server from the request, never by a body.
+  if (cmd === 'pass-pending') { const r = listPending(); out(r, r.items.length ? r.items.map((x) => `${x.id}  ${x.text}\n  ${x.deep_link}`).join('\n') : r.text); return 0; }
+  if (cmd === 'pass-get') { const r = getPass(argv[1]); out(r, r.ok ? `${r.pass.text}\n${r.pass.deep_link}` : `${r.code}: ${r.message}`); return r.ok ? 0 : 1; }
+  if (cmd === 'pass-decide') {
+    const b = JSON.parse(argv[1] && argv[1].startsWith('{') ? argv[1] : readFileSync(0, 'utf8'));
+    const r = await decidePass(b.id, b.decision, { approver: b.approver ?? null, proof: b.proof ?? null, token: b.token ?? '', by: b.by ?? '' }, runControl);
+    console.log(JSON.stringify(r));
+    return r.ok ? 0 : 1;
+  }
+  if (cmd === 'pass-alert') { console.log(JSON.stringify(alertFor(argv[1]) ?? { ok: false, code: 'unknown_pass' })); return 0; }
+  if (cmd === 'pass-tokens') { console.log(JSON.stringify(tokensFor(argv[1]) ?? { ok: false, code: 'not_pending' })); return 0; }
   if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone}`); return 0; }
   if (cmd === 'where') { out({ appearance: appearanceFile(), amberx: notesDir() }, `look: ${appearanceFile()}\nAmberX notes: ${notesDir()}`); return 0; }
 
+  // pass-approval@1: axf pass list | show <id> | link <id> | approve <id> | deny <id> (one pass by id; scopes: axf pass status)
+  if (argv[0] === 'pass' && (['list', 'pending', 'show', 'link'].includes(argv[1]) || (['approve', 'deny'].includes(argv[1]) && /^pass[:-]/.test(argv[2] || '')))) return passCli(argv.slice(1).filter((a) => a !== '--json'), json, out);
   const parsed = commandFromArgv(argv);
   if (parsed.error) { console.error(parsed.error); return 2; }
   const { command, preset, remote } = parsed;

@@ -16,7 +16,11 @@ import {
   passCoveringCall, passMinutes, passNotUndoable, passPending, passPublic, passPublication, passScopeOf, passSentence, passStateAt, passUndoPlan, passWithChange,
 } from '../../../../../framework/core/engines/control-pass.mjs';
 import { controlIrreversible } from '../../../../../framework/core/engines/control-rules.mjs';
+import { passGrantResultFields } from '../../../../../packages/shared/pass-approval/index.mjs';
 import { ControlError, DATA_DIR, ROOT, audit } from './common.mjs';
+
+/** Base URLs pass links are built on (pass-approval@1): the console's public URL and Molly's; empty = the defaults. */
+export const linkOpts = () => ({ consoleUrl: process.env.AXF_CONSOLE_URL || '', mollyUrl: process.env.AXF_MOLLY_URL || '' });
 
 const FILE = () => join(DATA_DIR, 'passes.json');
 const SETTINGS = () => join(DATA_DIR, 'pass-settings.json');
@@ -163,10 +167,11 @@ function activate(d, req, owner, now) {
  * Run one pass.scopes command (already through the gate). `approver` / `proof` come from the transport only.
  * list → every scope with its pass now · get <scope> → that scope's pass · act grant | approve | deny | revoke | undo.
  */
-export function runPass(c, { approver = null, proof = null, now = Date.now(), runTokens } = {}) {
+export function runPass(c, { approver = null, proof = null, now = Date.now(), runTokens, decidedBy = null } = {}) {
   const { maxMinutes, timeZone } = passSettings();
   const d = loadPasses(now);
-  const view = (p) => (p ? passPublic(p, now, timeZone) : null);
+  // every pass view carries its links (pass-approval@1: deep_link, approve_url, deny_url, molly_url, target; never a token)
+  const view = (p) => { if (!p) return null; const v = passPublic(p, now, timeZone); return { ...v, ...passGrantResultFields(v, linkOpts()) }; };
   const scopeRow = (id) => {
     const active = latest(d, id, ['active']);
     const pending = d.passes.find((p) => p.scope === id && passPending(p, now));
@@ -198,9 +203,11 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       }
       writeStore(d);
       logLine(req, `requested ${minutes} min${irr ? ' (irreversible included)' : ''} by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
+      // pass-approval@1 grant result fields: the link Claude hands Brett (opens the pass with Approve / Deny; his session decides)
+      const links = passGrantResultFields(view(req), linkOpts());
       return {
-        changed: true, item: view(req), text: passSentence(req, now, timeZone),
-        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or in Builds → VPS Configuration → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
+        changed: true, item: view(req), ...links, text: `${passSentence(req, now, timeZone)} ${links.hand_over}`,
+        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), ...links, how: [`Brett opens ${links.deep_link} and taps Approve (or the console banner → Token pass, Builds → VPS Configuration → Passes, the AmberX notification)`, 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
       };
     }
     case 'approve': case 'deny': {
@@ -208,15 +215,17 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       if (!req || !passPending(req, now)) throw new ControlError('not_found', `no waiting pass request ${String(input.request)} for ${c.path}`);
       const owner = ownerOf(approver, proof, req, now);
       if (!owner) throw new ControlError('denied', `only Brett can ${c.action} a veto pass: from his console session (banner → Token pass) or with axHub's signed approval`);
+      // pass-approval@1: the action token that decided it (nonce + decision), so the same token again answers already
+      if (decidedBy && typeof decidedBy === 'object') req.decidedBy = { nonce: String(decidedBy.nonce || ''), decision: c.action };
       if (c.action === 'deny') {
         req.state = 'denied'; req.endedAt = new Date(now).toISOString(); req.endedBy = owner.name;
         writeStore(d);
-        logLine(req, `denied by ${owner.name}`, { by: owner.name, action: 'deny' });
+        logLine(req, `denied by ${owner.name} (${owner.via})${req.decidedBy ? ` with action token ${req.decidedBy.nonce}` : ''}`, { by: owner.name, action: 'deny' });
         return { changed: true, item: view(req), text: passSentence(req, now, timeZone) };
       }
       activate(d, req, owner, now);
       writeStore(d);
-      logLine(req, `approved ${req.minutes} min by ${owner.name} (${owner.via}), requested by ${req.requestedBy}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'approve' });
+      logLine(req, `approved ${req.minutes} min by ${owner.name} (${owner.via})${req.decidedBy ? ` with action token ${req.decidedBy.nonce}` : ''}, requested by ${req.requestedBy}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'approve' });
       return { changed: true, item: view(req), text: passSentence(req, now, timeZone) };
     }
     case 'revoke': {

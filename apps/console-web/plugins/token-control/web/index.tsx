@@ -7,6 +7,7 @@ import { controlClient, controlForms, type ControlAnswer, type ControlCommand } 
 import { GUIDES } from './docs';
 import { appMenu } from './menu';
 import { PassBanner } from './pass';
+import { PassApprovalView, openPass, passFromHash, usePassFocus } from './pass-approval';
 import './token-control.css';
 
 /** The folder name under plugins/: the routes live at /api/plugins/token-control/ (and /api/control/). */
@@ -219,6 +220,7 @@ type Tab = 'tokens' | 'try' | 'docs' | 'audit';
 
 function TokenControlView() {
   const { reg, err } = useRegistry();
+  const passFocus = usePassFocus();
   const [tab, setTab] = useState<Tab>('tokens');
   const [preset, setPreset] = useState<Partial<ControlCommand> | null>(null);
   const tryIt = (c: Partial<ControlCommand>) => { setPreset({ ...c }); setTab('try'); };
@@ -233,6 +235,8 @@ function TokenControlView() {
         { value: 'audit', label: <span data-help="tc-tab-audit">Audit</span>, icon: 'list' },
       ]} />
       {err && <Note tone="danger">{err}</Note>}
+      {/* a pass opened from its link, console_show pass:<id>, the banner or an action: that pass, with Approve / Deny */}
+      {passFocus && <PassApprovalView key={`${passFocus.id}-${passFocus.at}`} id={passFocus.id} decision={passFocus.decision} />}
       <div className="fx-row"><Button id="tc-open-passes" icon="key" tone="ghost" onClick={() => rt.dispatch('vps.passes.open:veto')}>Veto passes are in VPS Configuration</Button></div>
       {tab === 'tokens' && <TokensTab />}
       {tab === 'try' && reg && <TryTab reg={reg} preset={preset} />}
@@ -247,6 +251,22 @@ export const plugin: AxfWebLibrary = {
   label: 'Token control',
   version: '0.2.0',
   appMenu,
+  register(rt) {
+    // pass-approval@1: the deep link #/pass/<id>[/approve|/deny], console_show / console_open pass:<id> (the server
+    // turns it into this screen's focus "pass:<id>"), and token-control.pass:<id>[/decision] all open one pass.
+    const open = (id: string, decision?: string) => { if (!openPass(id, decision)) { rt.toast(`No pass ${id}`, 'warning'); return; } rt.navigate('token-control'); };
+    const arg = (a?: string) => { try { return decodeURIComponent(a ?? '').trim(); } catch { return (a ?? '').trim(); } };
+    rt.actions.register('token-control.pass', ([a]) => { const [id, d] = arg(a).split('/'); open(id ?? '', d); }, { label: 'Token control: open a veto pass (pass:<id>, Approve / Deny)', params: true, effect: 'navigate' });
+    rt.actions.register('token-control.focus', ([a]) => {
+      const v = arg(a);
+      if (/^pass[:-]/i.test(v)) { const [id, d] = v.split('/'); open(id ?? '', d); return; }
+      rt.navigate('token-control');
+    }, { label: 'Token control: bring a pass forward', params: true, effect: 'navigate' });
+    const fromHash = () => { const r = passFromHash(); if (r) open(r.id, r.decision); };
+    window.addEventListener('hashchange', fromHash);
+    // the link that opened this console: once the views are registered
+    setTimeout(fromHash, 0);
+  },
   views: { 'token-control': { title: 'Token control', icon: 'sliders', render: () => <TokenControlView /> } },
   nav: { label: 'Design', items: [{ id: 'token-control', label: 'Token control', icon: 'sliders', view: 'token-control' }] },
   settingsTabs: [{ id: 'token-control', label: 'Token control', icon: 'sliders', order: 90, parent: 'plugins' }],

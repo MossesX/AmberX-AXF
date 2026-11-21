@@ -517,6 +517,18 @@ eq((awake_got[-1]["target"], awake_got[-1].get("focus"), j.get("focus")), ("buil
 j = svc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open", "input": {"focus": "queue"}}, ["*"], "mcp")
 eq(awake_got[-1].get("focus"), "queue", "input.focus")
 
+
+# a second focus provider (console-focus@1/<part>) answers what the first doesn't: pass:<id> → its screen, focused
+class FakePassFocus:  # what Token control provides as console-focus@1/pass (pass-approval@1)
+    def resolve(self, path: str):  # type: ignore[no-untyped-def]
+        return {"screen": "plan-studio", "focus": path, "explicit": True} if path.startswith("pass:") else None  # a screen this catalog has
+
+
+plugin_services.provide("console-focus@1/pass", FakePassFocus(), folder="token-control")
+j = client.post("/api/console/open", json={"screen": "pass:pass-mwgzzamc-9844d6"}).json()
+eq((awake_got[-1]["target"], awake_got[-1].get("focus")), ("plan-studio", "pass:pass-mwgzzamc-9844d6"), "pass:<id> → the screen its provider names, focused on the pass")
+j = client.post("/api/console/open", json={"screen": "build:console-commands-reliable"}).json()
+eq(awake_got[-1]["target"], "build-orchestrator", "build:<id> still reaches its own provider")
 # ---- screenshots (console.nav act screenshot): the console uploads a PNG, the answer carries it once with the screen state
 cc.SHOT_DIR = Path(tempfile.mkdtemp()) / "shots"
 PNG = b"\x89PNG\r\n\x1a\n" + b"\0" * 32
