@@ -551,7 +551,7 @@ def presence(at: str = "") -> dict[str, Any]:
             "presence": E.presence(d, at) if d else "not paired", "lastSeenAt": seen_at,
             "lastSeenAgo": E.ago(seen_at, at) if E.is_timestamp(seen_at) else "",
             "device": {k: d.get(k) for k in ("deviceId", "name", "appVersion", "capabilities")} if d else None,
-            "link": link_state(d, at), "features": feats,
+            "link": link_state(d, at), "features": feats, "appOutdated": app_outdated(d),
             "canOpenPages": bool(d) and E.is_online(d, at) and feats.get("open_url", True) and "open-url@1" in (d.get("capabilities") or [])}
 
 
@@ -732,6 +732,20 @@ class PhoneCapability:
 
 HEALTH_ID = "phone-connect"
 OFFLINE_RED_S = 600  # paired and watched, but silent this long = red
+# The first app build that stops retrying a refused key, opens pages in Chrome in front and puts Approve / Deny on the
+# approval notification. An older app still works, but its approval prompt only opens axHub's page.
+MIN_APP = "0.2.0"
+APP_WHERE = "axHub → Apps → Phone Connect → Download (https://axhub.amberxai.com/apps)"
+
+
+def app_outdated(d: dict | None) -> bool:
+    """Is this phone's app older than MIN_APP? Unknown or odd versions count as old."""
+    def parts(v: Any) -> tuple[int, ...]:
+        try:
+            return tuple(int(x) for x in str(v or "").split("-")[0].split("."))
+        except ValueError:
+            return ()
+    return bool(d) and parts(d.get("appVersion")) < parts(MIN_APP)
 
 
 def health_probe(at: str = "") -> dict[str, Any]:
@@ -751,6 +765,10 @@ def health_probe(at: str = "") -> dict[str, Any]:
                 "link": SETTINGS_ADDRESS}
     d = sorted(paired, key=lambda x: x.get("lastSeenAt") or "", reverse=True)[0]
     if E.is_online(d, at):
+        if app_outdated(d):
+            return {"status": "warn", "summary": f"{d['name']} runs Phone Connect {d.get('appVersion') or '?'}: update it to {MIN_APP} or newer for Approve / Deny on the notification and pages in front.",
+                    "details": [f"On the phone: {APP_WHERE}, install it over the old one.", "Open Phone Connect once afterwards; it keeps its pairing."],
+                    "link": f"row:device/{d['deviceId']}"}
         return {"status": "ok", "summary": f"{d['name']} is online (Phone Connect).", "details": []}
     silent = (E.ms(at) - E.ms(d["lastSeenAt"])) / 1000 if E.is_timestamp(d.get("lastSeenAt")) else 1e9
     pres = E.presence(d, at)
@@ -790,7 +808,10 @@ def ensure_health() -> bool:
         reg.register({"id": HEALTH_ID, "label": "Phone Connect (phone paired and online)", "service": "phone", "order": 45, "severity": "warn",
                       "run": lambda: health_probe(),
                       "breaks": "Without a paired, online phone, notifications, approval prompts on the phone, open-a-page and the audio recorder can't reach you.",
-                      "instructions": ["Settings → Plugins → Phone Connect → New code.", "Open the Phone Connect app, type the code, sign in to axHub when it asks.", "Switch Watch on so the link stays open."],
+                      "instructions": [f"Install or update the Phone Connect app ({MIN_APP} or newer) on the phone: {APP_WHERE}.",
+                                       "Settings → Plugins → Phone Connect → New code (or Re-pair when it says disconnected).",
+                                       "Open the Phone Connect app, sign in to axHub when it asks, type the code, tap Pair.", "Switch Watch on so the link stays open.",
+                                       "For pages that come to the front by themselves: in the app, tap Allow opening pages in front."],
                       "autoFix": {"label": "Re-send the pairing notice", "run": lambda: health_fix()}}, "phone-connect")
     except Exception:  # noqa: BLE001 — the plugin works without its health item
         return False

@@ -324,6 +324,12 @@ later = E.iso(E.ms(E.now_iso()) + 12 * 60_000)
 pr = svc.presence(later)
 check("presence 12 min later: offline, last seen 12 min ago", (pr["online"], pr["presence"], pr["lastSeenAgo"], pr["canOpenPages"], pr["link"]["state"]), (False, "offline: last seen 12 min ago", "12 min ago", False, "offline"))
 check("presence over the capability", plugin_services.get("axf.phone@1").presence()["paired"], True)
+ok("an app at the current version is not outdated", DEV["appVersion"] == "1.0.0" and svc.presence()["appOutdated"] is False and svc.health_probe()["status"] == "ok")
+S.save_device({**S.device(DEV["deviceId"]), "appVersion": "0.1.0"})
+hp = svc.health_probe()
+ok("an old app turns the systems check amber with where to get the new one", svc.presence()["appOutdated"] is True and hp["status"] == "warn" and "axHub → Apps" in hp["details"][0])
+check("version compare is by number, and an unknown version counts as old", [svc.app_outdated({"appVersion": v}) for v in ("0.2.0", "0.10.0", "0.1.9", "", "dev")], [False, False, True, True, True])
+S.save_device({**S.device(DEV["deviceId"]), "appVersion": "1.0.0"})
 
 # ---- open a page and bring it to the front (MCP phone_open_url)
 import threading  # noqa: E402
