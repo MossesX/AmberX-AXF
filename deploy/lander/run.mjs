@@ -10,6 +10,9 @@
  *   Over the size cap the steps land as 2, 3 or more PRs, one at a time, in order. A failure is `failed` with attempt N
  *   and the next tick retries forward by itself (flaky re-run, split, fix session, pull main again), never a person.
  *   The gate's build rules run inside running-ci, once per green head, in a worktree of the PR branch: never at launch.
+ *   An emergency build is picked first (front of the line). No build merges on a stale head: when main has code the
+ *   green head lacks, the newest main is pulled into the PR (a code conflict goes to a Fable fix session) and CI runs
+ *   again on that head before the merge.
  *
  *   node deploy/lander/run.mjs tick [--dry-run] [--only <build>] [--json]   one tick
  *   … status [--json]                                       service, the build landing, the queue (merge-queue view rows)
@@ -124,7 +127,7 @@ export function rulesOnBranch({ s, git, b, branch, buildRules }) {
 
 export function defaultAgentJob(s) {
   return (job) => {
-    const args = [join(s.repo, 'framework/cli/agent-job.mjs'), job.type, ...Object.entries(job.input).flatMap(([k, v]) => ['--input', `${k}=${v}`]), '--json'];
+    const args = [join(s.repo, 'framework/cli/agent-job.mjs'), job.type, ...Object.entries(job.input).flatMap(([k, v]) => ['--input', `${k}=${v}`]), ...(job.model ? ['--model', job.model] : []), '--json'];
     const r = spawnSync('node', args, { cwd: s.repo, encoding: 'utf8', timeout: 120000 });
     let out = {}; try { out = JSON.parse(r.stdout || '{}'); } catch { /* plain text */ }
     return { exit: r.status ?? 1, session: str(out.session, 120), why: r.status === 0 ? '' : str(out.error || r.stdout || r.stderr, 200) };
@@ -152,7 +155,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
   const all = store.read();
   const pick = L.pickBuild(only ? all.filter((b) => b.id === only) : all);
   out.others = pick.others;
-  if (pick.others.length) log(`more than one build waits to land (${pick.others.join(', ')}): one at a time, ${pick.build.id} first`);
+  if (pick.others.length) log(`more than one build waits to land (${pick.others.join(', ')}): one at a time, ${pick.build.id} first${L.isEmergency(pick.build) ? ' (emergency build: front of the line)' : ''}`);
   let b = pick.build;
   if (!b) { out.waiting = 'nothing to land'; return out; }
   out.build = b.id;
@@ -178,6 +181,8 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
     return 'stop';
   };
   const prOf = async (n) => { try { return await gh('GET', `/repos/${s.slug}/pulls/${n}`); } catch (e) { log(`PR #${n}: ${e.message}`); return null; } };
+  /** Does main hold code the PR branch lacks (it moved since the branch last took it in)? Status-only commits don't count. */
+  const mainMoved = (branch) => G.codeBehind({ s, git, br: branch });
 
   // ---------------------------------------------------------------- the phases
   const phases = {
@@ -242,7 +247,8 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       if (!head) return fail('infra', { why: `${branch} is not on GitHub` });
       let runs = [];
       try { runs = (await gh('GET', `/repos/${s.slug}/commits/${head}/check-runs?per_page=100`))?.check_runs || []; } catch (e) { out.waiting = `CI can't be read (${e.message})`; return 'stop'; }
-      const since = b.statusAt || at;
+      // the CI clocks start at the status change, or at the last pull of main into the PR (a new head: CI starts over)
+      const since = [b.statusAt, b.landing?.mainPull?.at].filter(Boolean).sort().pop() || at;
       // light PR checks only (ci-scope: a PR while the old merge queue's repo variable is on): the one CI run must be the
       // full one, so it is dispatched once per head (workflow_dispatch is always full) and only the full run counts
       if (L.lightOnly(runs)) {
@@ -265,6 +271,17 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
         out.waiting = 'CI is running'; return 'stop';
       }
       if (ci.ci === 'failure') return fail('ci-red', { why: `CI is red on ${head.slice(0, 9)} (${ci.failing.slice(0, 3).join(', ') || 'checks failed'})`, head, pr: g.inFlight.pr, failing: ci.failing, runIds: ci.runIds });
+      // green, but on which main? Right before any merge the PR must hold main's newest code: main moved while CI ran
+      // (an emergency build cut in and landed, or anything else merged), so the newest main goes into the PR and CI
+      // runs again on that head. A code conflict is a clash-main failure: a Fable fix session resolves it, then CI.
+      if (!dry && mainMoved(branch)) {
+        const r = G.pullMain({ s, git, branch, dry, log });
+        if (r.conflicts) return fail('clash-main', { why: `main moved before the merge and conflicts with ${branch} in code (${r.conflicts.slice(0, 4).join(', ')})`, head, pr: g.inFlight.pr });
+        if (!r.ok) return fail('infra', { why: r.error, head, pr: g.inFlight.pr });
+        if (!write({ landing: { mainPull: { head: r.sha, at }, reruns: null, rules: null, ciKick: null, fullKick: null }, note: `Lander: main moved since CI ran on ${head.slice(0, 9)}; the newest main is in PR #${g.inFlight.pr} (${str(r.sha, 9)}) and CI runs again before the merge` })) return 'stop';
+        act(`main moved since CI ran on ${head.slice(0, 9)}: newest main merged into PR #${g.inFlight.pr} (${str(r.sha, 9)}), CI runs again`);
+        out.waiting = 'CI is running on the newest main'; return 'stop';
+      }
       // green: the build rules at the gate, once per head (a fixer's commit is a new head: CI again)
       let rules = b.landing?.rules?.head === head ? b.landing.rules : null;
       if (!rules && !dry) {
@@ -289,6 +306,9 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       let mergeSha = '';
       if (pr?.merged_at || pr?.merged) { mergeSha = String(pr.merge_commit_sha || ''); /* merged already (a tick that died after the merge) */ }
       else if (pr?.state === 'closed') return fail('merge', { why: `PR #${g.inFlight.pr} was closed without merging`, head, pr: g.inFlight.pr });
+      // a tick that starts here (the one before it died after CI went green): main may have moved since. Never merge a
+      // stale head: back through the main pull and CI (retry pull-main)
+      else if (mainMoved(branch)) return fail('merge', { why: `main moved after CI went green on ${head.slice(0, 9)}: pulling the newest main and running CI again before the merge`, head, pr: g.inFlight.pr });
       else {
         try { const m = await gh('PUT', `/repos/${s.slug}/pulls/${g.inFlight.pr}/merge`, { merge_method: cfg.mergeMethod, sha: head, commit_title: `Merge pull request #${g.inFlight.pr} from ${branch} (lander: ${b.id})`.slice(0, 250) }); mergeSha = String(m?.sha || ''); }
         catch (e) { return fail(e.status === 405 || e.status === 409 ? 'merge' : 'infra', { why: `merging PR #${g.inFlight.pr}: ${e.message}`, head, pr: g.inFlight.pr }); }
@@ -296,7 +316,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
       const merged = [...L.landingOf(b).merged, g.inFlight.pr];
       // the merge evidence done-means-merged@1 asks of `landed`: the PR, its merge commit and CI green on the head it merged (sha pinned)
       const lastMerge = { pr: g.inFlight.pr, sha: mergeSha || head, head, at };
-      if (!write({ landing: { merged, lastMerge, reruns: null, rules: null, ciKick: null, fullKick: null }, failure: null })) return 'stop';
+      if (!write({ landing: { merged, lastMerge, reruns: null, rules: null, ciKick: null, fullKick: null, mainPull: null }, failure: null })) return 'stop';
       act(`PR #${g.inFlight.pr} merged into main`);
       git(['push', '-q', s.remote, '--delete', branch]);
       const left = L.groupState(b).waiting.length;
@@ -325,7 +345,7 @@ export async function tick({ s = settings(), git = G.makeGit(s.repo), gh = G.mak
     if (fr.retry === 'split') {
       if (g.inFlight && !dry) { try { await gh('PATCH', `/repos/${s.slug}/pulls/${g.inFlight.pr}`, { state: 'closed' }); } catch (e) { log(`close #${g.inFlight.pr}: ${e.message}`); } }
       const closed = g.inFlight ? [...L.landingOf(b).closed, g.inFlight.pr] : L.landingOf(b).closed;
-      if (!write({ status: 'merging-pr', landing: { split: true, closed, reruns: null, rules: null, ciKick: null, fullKick: null }, note: `Lander: attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''}; its steps land one PR each` })) return 'stop';
+      if (!write({ status: 'merging-pr', landing: { split: true, closed, reruns: null, rules: null, ciKick: null, fullKick: null, mainPull: null }, note: `Lander: attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''}; its steps land one PR each` })) return 'stop';
       act(`attempt ${b.attempt}: split${g.inFlight ? ` PR #${g.inFlight.pr}` : ''} into one PR per step`); return 'merging-pr';
     }
     if (fr.retry === 'fix') {

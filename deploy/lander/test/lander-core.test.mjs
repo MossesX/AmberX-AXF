@@ -35,6 +35,31 @@ test('one build at a time: the one in flight first, else the oldest build-comple
   assert.equal(L.pickBuild([builds[2], builds[3]]).build, null);
 });
 
+test('the merge line: emergency builds first (oldest tag first), ahead of a build already landing', () => {
+  const tag = (at) => ({ at, by: 'Brett' });
+  const builds = [
+    { id: 'landing', status: 'running-ci', completedAt: '2026-11-20T09:00:00Z' },
+    { id: 'ready', status: 'build-complete', completedAt: '2026-11-20T09:30:00Z' },
+    { id: 'e2', status: 'build-complete', completedAt: '2026-11-20T10:00:00Z', emergency: tag('2026-11-20T09:50:00Z') },
+    { id: 'e1', status: 'failed', failure: { status: 'running-ci' }, completedAt: '2026-11-20T10:05:00Z', emergency: tag('2026-11-20T09:40:00Z') },
+    { id: 'e-building', status: 'building', emergency: tag('2026-11-20T09:00:00Z') },
+    { id: 'untagged', status: 'build-complete', completedAt: '2026-11-20T08:00:00Z', emergency: { by: 'someone' } },
+  ];
+  const p = L.pickBuild(builds);
+  assert.equal(p.build.id, 'e1', 'the oldest emergency tag goes first');
+  assert.deepEqual(p.others, ['e2', 'landing', 'untagged', 'ready'], 'then the other emergency build, then the ordinary line as before');
+  assert.equal(L.pickBuild(builds.filter((b) => !L.isEmergency(b))).build.id, 'landing', 'without emergency builds: the one in flight, as before');
+  assert.deepEqual(L.queueRows(builds).map((r) => r.build).slice(0, 3), ['e1', 'e2', 'e-building'], 'the merge queue view lists emergency builds on top');
+  assert.equal(L.queueRows(builds).find((r) => r.build === 'e1').emergency, true);
+});
+
+test('a code conflict with main is fixed on Fable; the other fixes keep the job\'s own model', () => {
+  const b = { id: 'x' };
+  assert.equal(L.fixJob(b, { kind: 'clash-main' }, 'lander/x').model, 'fable');
+  assert.equal(L.fixJob(b, { kind: 'ci-red' }, 'lander/x').model, undefined);
+  assert.equal(L.fixJob(b, { kind: 'rules', failing: ['home-card'] }, 'lander/x').model, undefined);
+});
+
 test('size cap: steps grouped in order into as few PRs as fit; a big step alone; split = one each', () => {
   const steps = ['s1', 's2', 's3', 's4'].map((id) => step(id));
   const sizes = { s1: 100, s2: 200, s3: 900, s4: 50 };
