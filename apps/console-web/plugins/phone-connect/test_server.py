@@ -270,6 +270,8 @@ check("recorder_start never goes around the hub's approval", cap2.hub_tool("ambe
 cl.post(f"{P}/device/hello", json={}, headers=DEVH2)
 r = cap2.hub_tool("amberx.recorder_status", {}, wait_s=0)
 ok("amberx.recorder_status is answered by the paired phone", r is not None and r["ok"] and r["command"]["command"] == "recorder.status")
+r = cap2.hub_tool("amberx.open_url", {"url": "https://console.amberxai.com/x", "browser": "chrome"}, wait_s=0)
+ok("amberx.open_url with a browser opens in that browser", r is not None and r["ok"] and {k: r["command"]["arguments"][k] for k in ("where", "browser")} == {"where": "browser", "browser": "chrome"})
 r = cap2.hub_tool("amberx.open_url", {"url": "https://intent.example/"}, wait_s=0)
 ok("amberx.open_url keeps the phone's url policy", r is not None and not r["ok"] and r["error"]["code"] == "denied")
 for d in S.paired():

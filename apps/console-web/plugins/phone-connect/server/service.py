@@ -695,7 +695,9 @@ class PhoneCapability:
             return None
         args = dict(arguments or {})
         if cmd == "open_url":
-            args = {"url": str(args.get("url") or ""), "where": "browser" if args.get("browser") else "overlay"}
+            # a caller that names a browser wants the page in that browser (chrome | default), in front; else the overlay first
+            args = {"url": str(args.get("url") or ""), "where": "browser" if args.get("browser") else "overlay",
+                    **({"browser": args["browser"]} if args.get("browser") in BROWSERS else {})}
         else:
             args = {}
         try:
