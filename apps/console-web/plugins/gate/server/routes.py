@@ -61,6 +61,10 @@ _spec_al = importlib.util.spec_from_file_location("axf_gate_auto_lander_health",
 al_health = importlib.util.module_from_spec(_spec_al)  # the server auto-lander's systems-check item (pure)
 _spec_al.loader.exec_module(al_health)  # type: ignore[union-attr]
 AL_CLI = ROOT / "deploy" / "lander" / "run.mjs"  # the Pipeline 2.0 lander (replaced deploy/auto-lander, Nov 19 2026)
+_spec_mp = importlib.util.spec_from_file_location("axf_gate_main_protection_health", Path(__file__).resolve().parent / "main_protection_health.py")
+mp_health = importlib.util.module_from_spec(_spec_mp)  # "is main protected on GitHub": a read-only systems-check item (pure)
+_spec_mp.loader.exec_module(mp_health)  # type: ignore[union-attr]
+BP_CLI = ROOT / "deploy" / "branch-protection.mjs"
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503, "failed": 502}
 MAX_BODY = 64 * 1024
 
@@ -76,6 +80,18 @@ def run(op: str, data: dict[str, Any] | None = None, timeout: int = 90) -> dict[
         return json.loads(lines[-1]) if lines else {"ok": False, "code": "failed", "message": p.stderr.strip()[-400:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "code": "failed", "message": (p.stderr or p.stdout).strip()[-400:]}
+
+
+def bp_show(timeout: int = 60) -> dict[str, Any]:
+    """What GitHub has for main's ruleset (deploy/branch-protection.mjs show --json: read-only): { ok, ruleset, current, error }."""
+    if not BP_CLI.exists():
+        return {"ok": False, "message": "deploy/branch-protection.mjs is not in this checkout"}
+    try:
+        p = subprocess.run(["node", str(BP_CLI), "show", "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout)
+        r = json.loads(p.stdout) if p.returncode == 0 else None
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        return {"ok": False, "message": str(e)[:200]}
+    return r if isinstance(r, dict) else {"ok": False, "message": (p.stderr or p.stdout).strip()[-300:] or f"exit {p.returncode}"}
 
 
 def al_run(args: list[str], timeout: int = 60) -> dict[str, Any]:
@@ -202,7 +218,8 @@ def ensure_health() -> None:
             return
         lander = health.ensure(plugin_services, _status_for_health)
         server = al_health.ensure(plugin_services, lambda: al_run(["status"]), lambda b: al_run(["fix", b, "--by", "systems-check"]))  # axf-not-plugin:systems-check (actor name)
-        _health_on["done"] = lander and server
+        main = mp_health.ensure(plugin_services, bp_show)
+        _health_on["done"] = lander and server and main
 
 
 async def _read(op: str, data: dict[str, Any]) -> JSONResponse:
