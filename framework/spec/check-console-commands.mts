@@ -172,6 +172,17 @@ eq(CONSOLE_TOOLS.length, 10, 'ten MCP shortcut tools');
   eq(consoleResolve(screens, 'screen', 'builds queue').item?.id, 'builds', 'the longest exact screen name wins, and only a whole name');
   eq(consoleResolve(screens, 'screen', 'plan studio').focus, undefined, 'a plain title has no focus');
   eq(consoleResolve(screens, 'screen', 'open the build orchestrator approvals').focus, 'approvals', 'leading words people add');
+  // a keyword of two or more words is another exact name: it beats a shorter screen name that starts the same way
+  const named = [{ kind: 'screen', id: 'plan', label: 'Plan' }, { kind: 'screen', id: 'plan-studio-2', label: 'Plan Studio 2.0', keywords: ['plans', 'plan studio'] }] as typeof screens;
+  eq(consoleResolve(named, 'screen', 'plan studio'), { item: named[1] }, 'an alias names the screen, with no focus');
+  eq(consoleResolve(named, 'screen', 'Plan-Studio').item?.id, 'plan-studio-2', 'an alias is folded like a title');
+  eq(consoleResolve(named, 'screen', 'open the plan studio / Removals'), { item: named[1], focus: 'Removals' }, 'alias + what to focus');
+  eq(consoleResolve(named, 'screen', 'plan-studio-2 Removals').focus, 'Removals', 'id + focus as before');
+  eq(consoleResolve(named, 'screen', 'go to plan studio'), { item: named[1] }, 'leading words, then a whole name: no focus is cut out of it');
+  eq(consoleResolve(named, 'screen', 'open the Plan Studio 2.0'), { item: named[1] }, 'leading words, then the title');
+  eq(consoleResolve(named, 'screen', 'plan'), { item: named[0] }, 'the shorter screen keeps its own name');
+  eq(consoleResolve(named, 'screen', 'plan roadmap'), { item: named[0], focus: 'roadmap' }, 'and its own focus');
+  eq(consoleResolve(named, 'screen', 'plans').item?.id, 'plan-studio-2', 'a one-word keyword only scores');
   eq(consoleSplitFocus(screens, 'build-orchestrator'), null, 'nothing after the name');
   eq(consoleSplitFocus(screens, 'build-orchestratorx y'), null, 'a name must end at a separator');
   const live = [{ id: 'tab', lastUsed: Date.now(), lastSeen: Date.now(), catalog: cat }];

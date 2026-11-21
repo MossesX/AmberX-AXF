@@ -1,7 +1,7 @@
 {
   "$axf": "page-toolbar-voice@1",
   "note": "One AmberX phrase per page toolbar button and the address it reaches (framework/spec/check-page-toolbar-voice.mts --write).",
-  "count": 177,
+  "count": 171,
   "phrases": [
     {
       "phrase": "press hire on the breakroom toolbar",
@@ -751,48 +751,6 @@
       "button": "reload",
       "address": "toolbar:plan-studio-2/button:reload",
       "asset": "plan-studio-2"
-    },
-    {
-      "phrase": "press new plan on the plans toolbar",
-      "toolbar": "plan-studio",
-      "button": "new",
-      "address": "toolbar:plan-studio/button:new",
-      "asset": "plan-studio-plans"
-    },
-    {
-      "phrase": "press search on the plans toolbar",
-      "toolbar": "plan-studio",
-      "button": "search",
-      "address": "toolbar:plan-studio/button:search",
-      "asset": "plan-studio-plans"
-    },
-    {
-      "phrase": "press park on the plans toolbar",
-      "toolbar": "plan-studio",
-      "button": "park",
-      "address": "toolbar:plan-studio/button:park",
-      "asset": "plan-studio-plans"
-    },
-    {
-      "phrase": "press turn into a build on the plans toolbar",
-      "toolbar": "plan-studio",
-      "button": "build",
-      "address": "toolbar:plan-studio/button:build",
-      "asset": "plan-studio-plans"
-    },
-    {
-      "phrase": "press move category on the plans toolbar",
-      "toolbar": "plan-studio",
-      "button": "category",
-      "address": "toolbar:plan-studio/button:category",
-      "asset": "plan-studio-plans"
-    },
-    {
-      "phrase": "press attach media on the plans toolbar",
-      "toolbar": "plan-studio",
-      "button": "media",
-      "address": "toolbar:plan-studio/button:media",
-      "asset": "plan-studio-plans"
     },
     {
       "phrase": "press refresh on the plugin commands toolbar",

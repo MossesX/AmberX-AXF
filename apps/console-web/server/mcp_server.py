@@ -947,7 +947,7 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
     @mcp.tool(annotations=WRITE)
     async def plan_park(title: str, summary: str = "", category: str = "", body: str = "") -> dict[str, Any]:
-        """"Put it in a plan for later": a parked Plan Studio plan (never a build; it becomes one only when Brett says)."""
+        """"Put it in a plan for later": a parked Plan Studio 2.0 plan (never a build; it becomes one only when Brett says). `category` = the item it goes inside (id or title; empty = top level)."""
         return await go({"op": "add", "target": "planner.plans", "value": {k: v for k, v in {"title": title, "summary": summary, "category": category, "body": body, "status": "parked"}.items() if v}})
 
 
@@ -1000,8 +1000,8 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
     @mcp.tool(annotations=NAVIGATE)
     async def console_open(screen: str, focus: str = "", to: Delivery = "recent") -> dict[str, Any]:
         """Open a screen in Brett's open Dev Console (the live one he used last, then the next live one if it doesn't
-        answer; to="all" for every open one, or a client id). `screen` = the view id ("plan-studio"), its title ("Plan
-        Studio") or a few words ("plan studio", "orchestrator"); plugins' screens count. Or a console-control@1 address
+        answer; to="all" for every open one, or a client id). `screen` = the view id ("plan-studio-2"), its title ("Plan
+        Studio 2.0") or a few words ("plan studio", "orchestrator"); plugins' screens count. Or a console-control@1 address
         ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "setting:<key>"): opened and focused. A tab or item on the screen:
         "build-orchestrator pending", or `focus` ("pending", a build id). A build: "build:<build id>" (or the bare id)
         opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.

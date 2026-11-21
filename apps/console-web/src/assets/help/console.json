@@ -214,10 +214,10 @@
         "kind": "screen"
       },
       {
-        "target": "view:plan-studio",
-        "title": "Plan Studio",
-        "text": "Every plan in one place. 'Put it in a plan for later' lands here, parked — it only becomes a build when you say Turn into a build.",
-        "tryIt": "Switch between Tree, Grid, Board and Roadmap at the top.",
+        "target": "view:plan-studio-2",
+        "title": "Plan Studio 2.0",
+        "text": "Every plan in one tree: plans, sections, steps, notes and lists nested to any depth. 'Put it in a plan for later' lands here, parked. It only becomes a build when you send it to the build orchestrator.",
+        "tryIt": "Right-click a row for everything you can do with it, or drag it by its grip to move it.",
         "related": [
           "view:builds"
         ],
@@ -967,11 +967,6 @@
         "text": "Opens this entry in the full log."
       },
       {
-        "target": "view:plan-studio.reader",
-        "title": "Reader",
-        "text": "Read a plan like a document."
-      },
-      {
         "target": "action:console.control.search",
         "title": "Search the console",
         "kind": "control",
@@ -1117,6 +1112,12 @@
         "title": "Sign in on axHub",
         "text": "Opens axHub so you can sign in there. The hub pages in this console use your hub session, never the console token, so until you are signed in they show nothing.",
         "tryIt": "Sign in on axHub, then tap Check again."
+      },
+      {
+        "target": "remove-link",
+        "title": "Remove link",
+        "text": "Takes this link off the item. The page it points to is not touched.",
+        "kind": "button"
       }
     ],
     "intros": [
@@ -1243,19 +1244,19 @@
         ]
       },
       {
-        "screen": "plan-studio",
-        "title": "Plan Studio",
+        "screen": "plan-studio-2",
+        "title": "Plan Studio 2.0",
         "steps": [
           {
-            "say": "Every plan in one place. 'Put it in a plan for later' lands here, parked.",
+            "say": "Every plan in one tree. 'Put it in a plan for later' lands here, parked.",
             "target": ""
           },
           {
-            "say": "Switch views at the top: Tree, Grid, Board, Roadmap, Reader.",
+            "say": "Nest plans, sections, steps, notes and lists as deep as you like. Drag a row to move it, right-click it for the rest.",
             "target": ""
           },
           {
-            "say": "A plan only becomes a build when you hit Turn into a build.",
+            "say": "A plan only becomes a build when you send it to the build orchestrator.",
             "target": ""
           }
         ]
