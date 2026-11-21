@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10286,
- "updatedAt": "2026-11-21T05:04:52.461Z",
+ "rev": 10287,
+ "updatedAt": "2026-11-21T05:05:10.724Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -348809,14 +348809,14 @@
    "title": "CI speed + CI failure reports (lean)",
    "category": "",
    "detail": "Brett, Nov 20: replaces the bloated Pipeline 2.0 re-send. Pipeline 2.0 itself is already built and live - do NOT rebuild it. Only these items. Every step on Fable.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T12:07:17.619Z",
-   "updatedAt": "2026-11-20T14:46:02.057Z",
+   "updatedAt": "2026-11-21T05:04:53.730Z",
    "builtAt": "",
    "notes": [
     {
@@ -349198,7 +349198,7 @@
    },
    "kind": "build",
    "planRef": "ci-speed-ci-failure-reports-lean-tn38",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349209,9 +349209,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-20T14:45:02.227Z",
-   "statusBy": "watchdog",
-   "attempt": 5,
+   "statusAt": "2026-11-21T05:04:53.730Z",
+   "statusBy": "amber",
+   "attempt": 6,
    "failedFrom": "split",
    "statusLog": [
     {
@@ -349297,6 +349297,13 @@
      "by": "watchdog",
      "attempt": 5,
      "why": "split did not move after 2 re-run(s) of the transition (4 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T05:04:53.730Z",
+     "by": "amber",
+     "attempt": 6,
+     "why": "Brett Nov 21: unstick per fable-deep-audit 0.2"
     }
    ]
   },
@@ -349305,14 +349312,14 @@
    "title": "Nov 20 fix list + voice console control",
    "category": "",
    "detail": "Brett, Nov 20: replaces the stopped direct builds fix-slots-lander-plans-v2 and voice-console-control (reuse their branches claude/fix-slots-lander-plans-v2 and claude/voice-console-control if useful). Goes through the orchestrator, split across every free slot. Every step on Fable. Skip any secrets lockdown.",
-   "status": "failed",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-20T19:35:44.492Z",
-   "updatedAt": "2026-11-21T01:53:02.223Z",
+   "updatedAt": "2026-11-21T05:04:59.056Z",
    "builtAt": "",
    "notes": [
     {
@@ -349875,7 +349882,7 @@
    },
    "kind": "build",
    "planRef": "nov-20-fix-list-voice-console-co-em42",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -349886,9 +349893,9 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T01:52:01.292Z",
-   "statusBy": "watchdog",
-   "attempt": 5,
+   "statusAt": "2026-11-21T05:04:59.056Z",
+   "statusBy": "amber",
+   "attempt": 6,
    "failedFrom": "split",
    "statusLog": [
     {
@@ -349974,6 +349981,13 @@
      "by": "watchdog",
      "attempt": 5,
      "why": "split did not move after 2 re-run(s) of the transition (6 min past its budget)"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T05:04:59.056Z",
+     "by": "amber",
+     "attempt": 6,
+     "why": "Brett Nov 21: unstick per fable-deep-audit 0.2"
     }
    ]
   },
