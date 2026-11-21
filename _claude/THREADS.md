@@ -839,23 +839,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-20 11:09 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` s16 done (all) · orchestrator
-- 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` branch claude/fable-full-audit-ui-overhaul-conso--s16 (all) · builds-live
-- 2026-11-20 11:13 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 11:14 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 11:33 UTC · `fable-full-audit-ui-overhaul-conso` s7 done (all) · orchestrator
-- 2026-11-20 11:33 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · orchestrator
-- 2026-11-20 11:34 UTC · `fable-full-audit-ui-overhaul-conso` → build-complete (all) · headless
-- 2026-11-20 11:34 UTC · `fable-full-audit-ui-overhaul-conso` → merging-pr, note (all) · lander
-- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` PR 860 (all) · lander
-- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` → pr-pulling-main (all) · lander
-- 2026-11-20 11:35 UTC · `fable-full-audit-ui-overhaul-conso` → running-ci (all) · lander
-- 2026-11-20 11:39 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:40 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:42 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
-- 2026-11-20 11:43 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:45 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:46 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
 - 2026-11-20 11:47 UTC · `fable-full-audit-ui-overhaul-conso` note (all) · watchdog
@@ -1239,6 +1222,23 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-21 21:35 UTC · `fix-refreshing-console-jumps-back` → fixing, note (all) · watchdog
 - 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → landed, note (all) · watchdog
 - 2026-11-21 21:35 UTC · `fix-launcher-crash-duplicate-steps-brief` → complete, note (all) · verify
+- 2026-11-21 21:40 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
+- 2026-11-21 21:41 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
+- 2026-11-21 21:41 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
+- 2026-11-21 21:45 UTC · `banner-widget-shapes-plus-change-icon` → fixing, note (all) · watchdog
+- 2026-11-21 21:46 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
+- 2026-11-21 21:46 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
+- 2026-11-21 21:46 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
+- 2026-11-21 21:50 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
+- 2026-11-21 21:51 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
+- 2026-11-21 21:51 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
+- 2026-11-21 21:55 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
+- 2026-11-21 21:56 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
+- 2026-11-21 21:56 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
+- 2026-11-21 22:01 UTC · `fable-rebuild-1-2-vps-host-services-move` → queued, note (all) · pipeline
+- 2026-11-21 22:01 UTC · `phone-connect-open-straight-phone-no-tap` → queued, note (all) · pipeline
+- 2026-11-21 22:01 UTC · `one-true-source-get-redundant-settings` → queued, note (all) · pipeline
+- 2026-11-21 22:05 UTC · `postgres-part-b-plan-plan-studio-catalog` → landed, note (all) · watchdog
 
 ## Token passes (log)
 
