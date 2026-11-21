@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10214,
- "updatedAt": "2026-11-21T00:41:30.957Z",
+ "rev": 10215,
+ "updatedAt": "2026-11-21T00:41:48.471Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351303,14 +351303,14 @@
    "title": "Console tabs: plugins open in tabs inside one console",
    "category": "",
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
-   "status": "splitting",
+   "status": "split",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T00:40:52.877Z",
+   "updatedAt": "2026-11-21T00:41:38.778Z",
    "builtAt": "",
    "notes": [
     {
@@ -351363,7 +351363,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwpomcnh0508sj",
+     "uid": "st-mwponc2j01h3c2",
      "title": "",
      "text": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs.",
      "model": "Opus",
@@ -351381,11 +351381,24 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z"
+     "updatedAt": "2026-11-21T00:40:52.877Z",
+     "statusAt": "2026-11-21T00:41:37.132Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:41:37.132Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s2",
-     "uid": "st-mwpomcnh06sgge",
+     "uid": "st-mwponc2j024dyb",
      "title": "",
      "text": "One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab).",
      "model": "Opus",
@@ -351403,11 +351416,24 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z"
+     "updatedAt": "2026-11-21T00:40:52.877Z",
+     "statusAt": "2026-11-21T00:41:37.132Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:41:37.132Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s3",
-     "uid": "st-mwpomcnh07oxkp",
+     "uid": "st-mwponc2j03ownm",
      "title": "",
      "text": "Every step on Fable.",
      "model": "Opus",
@@ -351425,11 +351451,24 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z"
+     "updatedAt": "2026-11-21T00:40:52.877Z",
+     "statusAt": "2026-11-21T00:41:37.132Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:41:37.132Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     },
     {
      "id": "s4",
-     "uid": "st-mwpomcnh086gmn",
+     "uid": "st-mwponc2j048wmm",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/console-tabs-plugins-open-in-tabs-.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -351450,7 +351489,20 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-21T00:40:52.877Z",
-     "updatedAt": "2026-11-21T00:40:52.877Z"
+     "updatedAt": "2026-11-21T00:40:52.877Z",
+     "statusAt": "2026-11-21T00:41:37.132Z",
+     "statusBy": "orchestrator",
+     "attempt": 1,
+     "statusLog": [
+      {
+       "status": "pending",
+       "at": "2026-11-21T00:41:37.132Z",
+       "by": "orchestrator",
+       "attempt": 1,
+       "why": "split"
+      }
+     ],
+     "status": "pending"
     }
    ],
    "profiles": [
@@ -351461,7 +351513,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351472,7 +351524,7 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T00:40:37.978Z",
+   "statusAt": "2026-11-21T00:41:38.778Z",
    "statusBy": "orchestrator",
    "attempt": 1,
    "statusLog": [
@@ -351489,6 +351541,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "Fable is designing its steps"
+    },
+    {
+     "status": "split",
+     "at": "2026-11-21T00:41:38.778Z",
+     "by": "orchestrator",
+     "attempt": 1,
+     "why": "4 steps for 4 slots"
     }
    ]
   }

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T00:41:30.957Z",
+ "updatedAt": "2026-11-21T00:41:48.471Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -59,7 +59,7 @@
    "title": "Console tabs: plugins open in tabs inside one console",
    "category": "",
    "detail": "Brett, Nov 20: browsers block tabs opened by a command, so the console gets its own tabs. One console runs; the console window holds a tab group and each tab runs a plugin's screen (not a whole console per tab). Every step on Fable.",
-   "status": "splitting",
+   "status": "split",
    "hidden": false,
    "flow": "pipeline-2",
    "source": "plan-studio-2",
@@ -67,7 +67,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:39:43.516Z",
-   "updatedAt": "2026-11-21T00:40:52.877Z",
+   "updatedAt": "2026-11-21T00:41:38.778Z",
    "builtAt": "",
    "notes": [
     {
@@ -98,7 +98,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpomcnh0508sj",
+     "uid": "st-mwponc2j01h3c2",
      "createdAt": "2026-11-21T00:40:52.877Z"
     },
     {
@@ -117,7 +117,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpomcnh06sgge",
+     "uid": "st-mwponc2j024dyb",
      "createdAt": "2026-11-21T00:40:52.877Z"
     },
     {
@@ -136,7 +136,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpomcnh07oxkp",
+     "uid": "st-mwponc2j03ownm",
      "createdAt": "2026-11-21T00:40:52.877Z"
     },
     {
@@ -158,7 +158,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwpomcnh086gmn",
+     "uid": "st-mwponc2j048wmm",
      "createdAt": "2026-11-21T00:40:52.877Z"
     }
    ]
