@@ -33,9 +33,10 @@
  * watchdogs-request.json (a pass the console asked for). Each watch keeps its own settings where it always did.
  * AXF_WATCHDOGS_DIR overrides the folder (tests); AXF_WATCHDOG_NOTIFY_LOG takes the alerts instead of the console.
  */
-import { appendFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { appendFileSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import * as DF from '../../../../framework/core/data-files.mjs';
 
 export const SCHEMA = 'build-watchdogs@1';
 export const CATCH = 'watchdog-catch@1';
@@ -52,8 +53,9 @@ const CAUGHT_KEPT = 2000;
 const MIN = 60_000;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
-const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.${process.pid}.tmp`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
+// the watchdog's files go through the console's data layer (data-store@1): local files or axf-data, by the namespace's mode
+const readJson = (f, d = null) => DF.readJson(f, d);
+const writeJson = (f, v) => DF.writeJson(f, v, 1);
 const nowIso = () => new Date().toISOString();
 
 // ------------------------------------------------------------------ files
@@ -122,7 +124,7 @@ export function coerce(key, value, spec) {
 }
 
 export async function hostSettings(env = process.env) {
-  const raw = readJson(await fileOf('watchdogs-settings.json', env), {}) ?? {};
+  const raw = await readJson(await fileOf('watchdogs-settings.json', env), {}) ?? {};
   const out = {};
   for (const [k, spec] of Object.entries(HOST_SCHEMA)) { try { out[k] = raw[k] === undefined ? spec.default : coerce(k, raw[k], spec); } catch { out[k] = spec.default; } }
   return out;
@@ -157,7 +159,7 @@ export async function setSettings(patch = {}, { by = process.env.AXF_ACTOR || 'c
   }
   if (Object.keys(host).length) {
     const f = await fileOf('watchdogs-settings.json', env);
-    writeJson(f, { $axf: 'watchdogs-host-settings@1', ...(await hostSettings(env)), ...host, setBy: str(by, 80), setAt: nowIso() });
+    await writeJson(f, { $axf: 'watchdogs-host-settings@1', ...(await hostSettings(env)), ...host, setBy: str(by, 80), setAt: nowIso() });
   }
   for (const [id, p] of Object.entries(perWatch)) { const w = await loadWatch(id); await w.watch.set(p, { by, env }); }
   return allSettings(env);
@@ -166,7 +168,7 @@ export async function setSettings(patch = {}, { by = process.env.AXF_ACTOR || 'c
 // ------------------------------------------------------------------ state and the caught log
 
 export async function loadState(env = process.env) {
-  return { $axf: STATE, lastPass: '', passes: 0, watches: {}, ...(readJson(await fileOf('watchdogs.json', env), {}) ?? {}) };
+  return { $axf: STATE, lastPass: '', passes: 0, watches: {}, ...(await readJson(await fileOf('watchdogs.json', env), {}) ?? {}) };
 }
 const saveState = async (s, env) => writeJson(await fileOf('watchdogs.json', env), { ...s, $axf: STATE });
 
@@ -179,16 +181,16 @@ export function normCatch(c, { at = nowIso(), watch = '' } = {}) {
 
 async function appendCaught(recs, env) {
   if (!recs.length) return;
-  const f = await fileOf('watchdogs-caught.jsonl', env); mkdirSync(dirname(f), { recursive: true });
-  appendFileSync(f, recs.map((r) => `${JSON.stringify(r)}\n`).join(''));
-  const lines = readFileSync(f, 'utf8').split('\n').filter(Boolean);
-  if (lines.length > CAUGHT_KEPT * 1.5) writeFileSync(f, `${lines.slice(-CAUGHT_KEPT).join('\n')}\n`);
+  const f = await fileOf('watchdogs-caught.jsonl', env);
+  for (const r of recs) await DF.appendJsonl(f, r);
+  const lines = String(await DF.readText(f, '') ?? '').split('\n').filter(Boolean);
+  if (lines.length > CAUGHT_KEPT * 1.5) await DF.writeText(f, `${lines.slice(-CAUGHT_KEPT).join('\n')}\n`);
 }
 
 /** What was caught, newest first. Filters: watch, build, gaveUp; `limit` (default 100). */
 export async function caught({ watch = '', build = '', gaveUp = null, limit = 100, env = process.env } = {}) {
   let lines = [];
-  try { lines = readFileSync(await fileOf('watchdogs-caught.jsonl', env), 'utf8').split('\n').filter(Boolean); } catch { /* nothing caught yet */ }
+  try { lines = String(await DF.readText(await fileOf('watchdogs-caught.jsonl', env), '') ?? '').split('\n').filter(Boolean); } catch { /* nothing caught yet */ }
   const out = [];
   for (let i = lines.length - 1; i >= 0 && out.length < Math.max(1, Math.min(1000, Number(limit) || 100)); i -= 1) {
     let r = null; try { r = JSON.parse(lines[i]); } catch { continue; }
@@ -226,6 +228,7 @@ export function alertsFor(catches, { alerts = 'batch', at = nowIso(), labels = {
 /** Send one alert: the console's alerts API, or AXF_WATCHDOG_NOTIFY_LOG (tests: one JSON line each). */
 export async function sendAlert(a, env = process.env) {
   const { catches, ...alert } = a;
+  // axf-data: not data (a test hook: the alerts go to this file instead of the console)
   if (env.AXF_WATCHDOG_NOTIFY_LOG) { try { appendFileSync(env.AXF_WATCHDOG_NOTIFY_LOG, `${JSON.stringify(alert)}\n`); return true; } catch { return false; } }
   try { return (await import('./pipeline.mjs')).makeConsole(env)('POST', '/api/alerts', alert) != null; } catch { return false; }
 }
@@ -296,15 +299,15 @@ export async function scan({ env = process.env, only = '' } = {}) {
 /** Ask the host for a pass (the console container can't see the host's processes): the next cron minute runs it. */
 export async function requestPass({ by = process.env.AXF_ACTOR || 'console', watch = '', build = '', env = process.env } = {}) {
   const r = { at: nowIso(), by: str(by, 80), watch: str(watch, 40), build: str(build, 120) };
-  writeJson(await fileOf('watchdogs-request.json', env), r);
+  await writeJson(await fileOf('watchdogs-request.json', env), r);
   return r;
 }
 
 /** The cron's minute: a pass somebody asked for (forced, for that watch / build), then every watch that is due. */
 export async function cronPass({ env = process.env } = {}) {
   const f = await fileOf('watchdogs-request.json', env);
-  const asked = readJson(f);
-  if (asked) { try { rmSync(f, { force: true }); } catch { /* gone */ } return { asked, ...(await pass({ env, only: asked.watch || '', build: asked.build || '', force: true, by: asked.by || 'console' })) }; }
+  const asked = await readJson(f);
+  if (asked) { try { DF.removeSync(f); } catch { /* gone */ } return { asked, ...(await pass({ env, only: asked.watch || '', build: asked.build || '', force: true, by: asked.by || 'console' })) }; }
   return pass({ env, by: 'cron' });
 }
 
@@ -331,7 +334,7 @@ export async function status({ env = process.env, now = Date.now(), recent = 20 
   const recentCaught = await caught({ limit: recent, env });
   return { $axf: 'watchdogs-status@1', ok: true, at: new Date(now).toISOString(), enabled: host.enabled, alerts: host.alerts, cron, lastPass: state.lastPass || '', lastBy: state.lastBy || '', ageMin,
     stale: host.enabled && (ageMin == null || ageMin > STALE_PASS_MIN), passes: state.passes ?? 0, lastCatch: state.lastCatch || '', watches,
-    caught: recentCaught, gaveUp: (await caught({ gaveUp: true, limit: 20, env })), request: readJson(await fileOf('watchdogs-request.json', env)) };
+    caught: recentCaught, gaveUp: (await caught({ gaveUp: true, limit: 20, env })), request: await readJson(await fileOf('watchdogs-request.json', env)) };
 }
 
 // ------------------------------------------------------------------ CLI

@@ -22,15 +22,16 @@
  * Files (the watchdog's folder): watchdogs-stale-settings.json, watchdogs-stale.json (the last push per build: the
  * cooldown's memory, and the last scan). A launch only works on the VPS host (the Claude logins are there).
  */
-import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as DF from '../../../../../framework/core/data-files.mjs';
 import * as C from './stale-core.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const str = (v, n = 400) => (typeof v === 'string' ? v : v == null ? '' : String(v)).slice(0, n);
-const readJson = (f, d = null) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
-function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.${process.pid}.tmp`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
+// through the console's data layer (data-store@1), like every file of the watchdog
+const readJson = (f, d = null) => DF.readJson(f, d);
+const writeJson = (f, v) => DF.writeJson(f, v, 1);
 const MAX_CI_READS = 20;
 const PUSHES_KEPT = 500;
 
@@ -58,7 +59,7 @@ const nested = (f) => { const o = { limits: {} }; for (const [k, v] of Object.en
 export async function loadSettings(env = process.env) {
   let patch = {};
   try { patch = env.AXF_WATCHDOG_STALE_SETTINGS ? JSON.parse(env.AXF_WATCHDOG_STALE_SETTINGS) : {}; } catch { /* a bad patch is ignored */ }
-  const saved = readJson(await fileOf('watchdogs-stale-settings.json', env), {}) ?? {};
+  const saved = await readJson(await fileOf('watchdogs-stale-settings.json', env), {}) ?? {};
   const a = nested(saved); const b = nested(patch);
   return C.normSettings({ ...a, ...b, limits: { ...a.limits, ...b.limits } });
 }
@@ -66,15 +67,15 @@ export async function saveSettings(patch = {}, { by = process.env.AXF_ACTOR || '
   const bad = Object.keys(patch).filter((k) => !SETTINGS_SCHEMA[k]);
   if (bad.length) throw Object.assign(new Error(`unknown setting ${bad.join(', ')} (keys: ${Object.keys(SETTINGS_SCHEMA).join(', ')})`), { code: 2 });
   const next = flat(C.normSettings(nested({ ...flat(await loadSettings({ ...env, AXF_WATCHDOG_STALE_SETTINGS: '' })), ...patch })));
-  writeJson(await fileOf('watchdogs-stale-settings.json', env), { $axf: 'stale-status-settings@1', ...next, setBy: str(by, 80), setAt: new Date().toISOString() });
+  await writeJson(await fileOf('watchdogs-stale-settings.json', env), { $axf: 'stale-status-settings@1', ...next, setBy: str(by, 80), setAt: new Date().toISOString() });
   return next;
 }
 
-const loadMemory = async (env) => ({ $axf: 'stale-status-memory@1', pushes: {}, lastScan: null, ...(readJson(await fileOf('watchdogs-stale.json', env), {}) ?? {}) });
+const loadMemory = async (env) => ({ $axf: 'stale-status-memory@1', pushes: {}, lastScan: null, ...(await readJson(await fileOf('watchdogs-stale.json', env), {}) ?? {}) });
 async function saveMemory(m, env) {
   const ids = Object.keys(m.pushes);
   if (ids.length > PUSHES_KEPT) for (const id of ids.sort((a, b) => String(m.pushes[a].at).localeCompare(String(m.pushes[b].at))).slice(0, ids.length - PUSHES_KEPT)) delete m.pushes[id];
-  writeJson(await fileOf('watchdogs-stale.json', env), m);
+  await writeJson(await fileOf('watchdogs-stale.json', env), m);
 }
 
 // ------------------------------------------------------------------ facts (every source can be handed in: tests)
