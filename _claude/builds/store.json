@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10217,
- "updatedAt": "2026-11-21T00:45:10.154Z",
+ "rev": 10218,
+ "updatedAt": "2026-11-21T00:46:26.752Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350774,13 +350774,11 @@
     },
     {
      "text": "Split by Fable into 13 steps (365 min, 13 Fable).",
-     "at": "2026-11-21T00:40:31.357Z",
-     "by": "orchestrator"
+     "at": "2026-11-21T00:40:31.357Z"
     },
     {
      "text": "Split by Fable into 12 steps (330 min, 12 Fable).",
-     "at": "2026-11-21T00:40:51.923Z",
-     "by": "orchestrator"
+     "at": "2026-11-21T00:40:51.923Z"
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
@@ -350789,36 +350787,36 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "planning": [
-    {
-     "text": "One source of truth: a sent plan's steps and statuses live in the build store; Plan Studio reads them from there (no copy), so as the orchestrator moves a step it checks off / crosses out in place in Plan Studio live, with its status badge",
-     "model": "Fable"
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "phase": "",
+    "launchedAt": "",
+    "runs": 0,
+    "crashes": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "hulu0241",
+     "kind": "subscription",
+     "at": "2026-11-21T00:45:49.587Z",
+     "why": "subscription account hulu0241"
     },
-    {
-     "text": "Plan Studio settings for how states look: check marks, check boxes, icons or badges (from a badge pack), strike-through, or any combination; background colour, foreground colour, font, weight and style per state; set through tokens so skins work",
-     "model": "Fable"
-    },
-    {
-     "text": "States shown in Plan Studio, each with its own look: sent to orchestrator, building, merging, recompiling the single build, running CI, waiting for merge, done/landed, failed",
-     "model": "Fable"
-    },
-    {
-     "text": "Plan Studio context menu (and its dynamic area/toolbar) can do the orchestrator actions on a plan or step: send, queue, hold/release, retry, rebuild/recompile, run CI, land/merge, cancel, open in the orchestrator; each through the gate and the console-signed ID",
-     "model": "Fable"
-    },
-    {
-     "text": "Bug: a plan sent from Plan Studio stops at status 'split' and never reaches Pending or the Queue (fix-main-ci-red-after-s16-s7-hand-, Nov 20: split, 0 runs; queue refused 'only a Pending build can be queued'). The split must move it on by itself",
-     "model": "Fable"
-    },
-    {
-     "text": "Sent plans are locked (Brett, Nov 20): once a plan is sent to the orchestrator it is completely locked in Plan Studio: no reordering, editing, adding or deleting items (order matters: steps build and land in order and lean on each other), with a lock shown on the plan. Each item shows a temporary no",
-     "model": "Fable"
-    },
-    {
-     "text": "Plan Studio splits, the orchestrator runs (Brett, Nov 20; replaces 'the orchestrator defines the steps'): Plan Studio uses Fable to split a plan into steps as smart as the orchestrator's splitter, with no overlapping files or duplicated work between steps (never one line per step). The steps are sen",
-     "model": "Fable"
-    }
-   ],
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -351302,7 +351300,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

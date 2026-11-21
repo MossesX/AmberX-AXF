@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-21T00:45:10.154Z",
+ "updatedAt": "2026-11-21T00:46:26.752Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -449,13 +449,11 @@
     },
     {
      "text": "Split by Fable into 13 steps (365 min, 13 Fable).",
-     "at": "2026-11-21T00:40:31.357Z",
-     "by": "orchestrator"
+     "at": "2026-11-21T00:40:31.357Z"
     },
     {
      "text": "Split by Fable into 12 steps (330 min, 12 Fable).",
-     "at": "2026-11-21T00:40:51.923Z",
-     "by": "orchestrator"
+     "at": "2026-11-21T00:40:51.923Z"
     },
     {
      "text": "Split by rules (Claude: claude not available: spawnSync claude ENOENT): one step per line of the request, review the steps.",
