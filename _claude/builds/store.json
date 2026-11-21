@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10225,
- "updatedAt": "2026-11-21T00:54:34.828Z",
+ "rev": 10226,
+ "updatedAt": "2026-11-21T00:55:12.770Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -350787,14 +350787,14 @@
    "title": "Plan Studio live progress: one store, steps check off in place",
    "category": "",
    "detail": "Brett, Nov 20: Plan Studio and the orchestrator must read the same build store. Today Send copies the plan's steps into the build store and nothing flows back, so items never get checked off in Plan Studio. Every step on Fable.",
-   "status": "split",
+   "status": "failed",
    "hidden": false,
    "source": "plan-studio-2",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-21T00:38:20.767Z",
-   "updatedAt": "2026-11-21T00:40:53.700Z",
+   "updatedAt": "2026-11-21T00:55:02.396Z",
    "builtAt": "",
    "notes": [
     {
@@ -350821,6 +350821,11 @@
     {
      "text": "Watchdog: build stuck at split (3 min past budget): re-ran the transition (2).",
      "at": "2026-11-21T00:54:01.950Z",
+     "by": "watchdog"
+    },
+    {
+     "text": "Watchdog: build failed at split, attempt 1: split did not move after 2 re-run(s) of the transition (4 min past its budget).",
+     "at": "2026-11-21T00:55:02.396Z",
      "by": "watchdog"
     }
    ],
@@ -351339,7 +351344,7 @@
    },
    "kind": "build",
    "planRef": "plan-studio-live-progress-one-st-6z4z",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -351350,9 +351355,10 @@
    "legacy": [],
    "copies": [],
    "flow": "pipeline-2",
-   "statusAt": "2026-11-21T00:40:33.152Z",
-   "statusBy": "orchestrator",
+   "statusAt": "2026-11-21T00:55:02.396Z",
+   "statusBy": "watchdog",
    "attempt": 1,
+   "failedFrom": "split",
    "statusLog": [
     {
      "status": "pending",
@@ -351374,6 +351380,13 @@
      "by": "orchestrator",
      "attempt": 1,
      "why": "12 steps for 4 slots"
+    },
+    {
+     "status": "failed",
+     "at": "2026-11-21T00:55:02.396Z",
+     "by": "watchdog",
+     "attempt": 1,
+     "why": "split did not move after 2 re-run(s) of the transition (4 min past its budget)"
     }
    ]
   },
