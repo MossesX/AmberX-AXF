@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 10221,
- "updatedAt": "2026-11-21T00:49:09.884Z",
+ "rev": 10222,
+ "updatedAt": "2026-11-21T00:51:10.340Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -351392,13 +351392,11 @@
     },
     {
      "text": "Split by Fable into 14 steps (415 min, 7 Fable).",
-     "at": "2026-11-21T00:42:47.553Z",
-     "by": "orchestrator"
+     "at": "2026-11-21T00:42:47.553Z"
     },
     {
      "text": "Split by Fable into 14 steps (400 min, 9 Fable).",
-     "at": "2026-11-21T00:43:30.956Z",
-     "by": "orchestrator"
+     "at": "2026-11-21T00:43:30.956Z"
     }
    ],
    "approvals": [],
@@ -351427,10 +351425,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "hulu0241",
      "kind": "subscription",
-     "at": "2026-11-21T00:40:54.651Z",
+     "at": "2026-11-21T00:50:49.789Z",
      "why": "subscription account hulu0241"
     },
     "tried": [],
@@ -352006,7 +352004,7 @@
    },
    "kind": "build",
    "planRef": "console-tabs-plugins-open-in-tab-u6cs",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
