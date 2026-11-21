@@ -97,6 +97,7 @@ jobs:
       - run: node framework/cli/crew-say.mjs check                 # crew-sections@1: every section that posts in the group chat has an owner on the crew (registry, events, literal ids)
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/spec/check-build-limit.mjs              # build-limit@1: hard limit counts what really runs, N+1 refused (claude-headless.sh end to end), Brett-only set, docker/slice caps, only Queued builds take slots
+      - run: node framework/spec/check-settings-sources.mjs         # settings-sources@1: one stored key and one wording per setting; the CI check fails on an alias registered or stored again, a key name in two stores, a screen keeping its own copy
       - run: node framework/spec/check-build-lock.mjs               # build-lock@1: one live session per build: tmux axf-<id>*, claude pids in the worktree, a heartbeat lock that expires; double dispatch refused
       - run: node framework/spec/check-reaper.mjs                   # vps-reaper@1: finished claude -p killed and handed to the lander, working builds never touched, dead tmux / ghost slots / ownerless heavy locks / leftover test servers / stale temp folders cleared, every kill logged + noted + one FYI
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
@@ -139,6 +140,7 @@ jobs:
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-flow.test.mjs          # pipeline-2@1 flow: split, one active build, worktrees before launch, accounts by usage left, retries forward  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/emergency.test.mjs       # emergency builds: started from Brett's signed-in console only, past the one-active-build line, the 2 emergency slots counted apart, grants taken back  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-parallel.test.mjs      # pipeline-2@1: up to stepsInParallel (4) steps at once, a give-up at maxAttempts is final, act step keeps the flow status  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/test/settings-sources.test.mjs # settings-sources@1 in the pipeline: sessions per account, launch without asking and the brief size read from their one key, never stored again, migration keeps the one saved last  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/test/p2-status-contract.test.mjs   # pipeline-2@1 status contract end to end (deep audit part A): a build that failed while waiting starts again, Brett's retry resets attempts, steps with no status never block, zero refusals from store ops, refused writes keep nothing, one dispatcher and one watchdog  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-pipeline-2.mjs               # pipeline-2@1: the engine against its fixture and schemas; the attempt ceiling, the archive rule, fixed steps, strict refusals, the 15 minute step cap
       - run: bash deploy/test/claude-headless-brief.test.sh                                  # the launch prompt goes on stdin (a 300 KB brief, no E2BIG; tmux part skipped without tmux), brief size cap keeps Brett's words
@@ -176,6 +178,8 @@ jobs:
         run: node framework/cli/check-toolbars.mjs
       - name: Console control — every view, tab row, setting, plugin, toolbar, grid and button has a console-control address (ratchet framework/spec/console-control-baseline.json only goes down)
         run: node framework/cli/check-console-control.mjs
+      - name: One true source (no setting stored or registered twice, no screen keeps its own copy)
+        run: node framework/cli/check-settings-sources.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)

@@ -3,7 +3,7 @@
  * settings-audit.mjs — the inventory behind settings-sources@1 (framework/schemas/settings-sources.json).
  *
  * Lists every console setting it can find, with where it is stored and every screen that names it:
- *   - registry   the Claude settings registry (apps/console-web/plugins/claude-settings/registry.json)
+ *   - registry   the settings registries plugins ship (a plugin's registry.json with `settings: [{ key, label }]`: the Claude settings)
  *   - framework  settings declared for the framework settings registry (`{ key: '…', kind: … }` in web code)
  *   - store      module stores: the keys of a `DEFAULTS` / `SETTING_KEYS` literal in a plugin, CLI, deploy or core module
  * and flags
@@ -21,7 +21,8 @@ import { dirname, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 export const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const SCAN_DIRS = ['apps/console-web/plugins', 'apps/console-web/server', 'apps/console-web/src', 'deploy', 'framework/cli', 'framework/core', 'framework/libs', 'framework/react'];
+const PLUGINS_DIR = 'apps/console-web/plugins';
+const SCAN_DIRS = [PLUGINS_DIR, 'apps/console-web/server', 'apps/console-web/src', 'deploy', 'framework/cli', 'framework/core', 'framework/libs', 'framework/react'];
 const SKIP = /(^|\/)(node_modules|dist|addons|fixtures|assets|__pycache__)(\/|$)|(^|\/)src\/axf\/|(^|\/)(test[^/]*|[^/]*\.test|check-[^/]*|[^/]*e2e[^/]*)\.(mjs|mts|ts|tsx|py|sh)$|\/_template\//;
 const CODE = /\.(mjs|ts|tsx|py)$/;
 
@@ -78,7 +79,7 @@ function topKeys(lit) {
 
 const STORE_DECL = /(?:^|\n)\s*(?:export\s+)?(?:const\s+)?((?:[A-Z][A-Z0-9_]*_)?DEFAULTS|DEFAULT_SETTINGS|SETTING_KEYS|SETTABLE)\s*(?::[^=\n]+)?=\s*(?:Object\.freeze\(\s*)?(?:new Set\(\s*)?([{[])/g;
 /** Engine rule tables and look defaults are assets, not settings. */
-const NOT_SETTINGS = /framework\/core\/engines\/|framework\/core\/(agents|assistant)\.ts$|status-styles|demonstration-designer|build-rules-migrate|predicted\.py|choices\.py/;
+const NOT_SETTINGS = /framework\/core\/engines\/|framework\/core\/(agents|assistant)\.ts$|build-rules-migrate|predicted\.py|choices\.py|\/engine\.mjs$/;
 
 export function scanStores(files) {
   const out = [];
@@ -105,9 +106,39 @@ export function scanFramework(files) {
   return out;
 }
 
+const PLUGINS = 'apps/console-web/plugins';
+/** `plugin:<folder>/<file>` ⇄ the repo path: how a registry names a plugin's file without tying the framework to it. */
+export const toPath = (ref) => String(ref).replace(/^plugin:/, `${PLUGINS}/`);
+export const toRef = (path) => (String(path).startsWith(`${PLUGINS}/`) ? `plugin:${String(path).slice(PLUGINS.length + 1)}` : String(path));
+const pluginFolders = () => (existsSync(join(ROOT, PLUGINS)) ? readdirSync(join(ROOT, PLUGINS)).filter((n) => !n.startsWith('_') && statSync(join(ROOT, PLUGINS, n)).isDirectory()) : []);
+
+/** Every settings registry a plugin ships (`registry.json` with `settings: [{ key, label }]`): today the Claude settings. */
 export function registry() {
-  const f = 'apps/console-web/plugins/claude-settings/registry.json';
-  return JSON.parse(readFileSync(join(ROOT, f), 'utf8')).settings.map((s) => ({ key: s.key, label: s.label, kind: s.kind, default: s.default, file: f, alias: s.alias ?? null, source: s.source ?? null }));
+  const out = [];
+  for (const folder of pluginFolders()) {
+    const f = `${PLUGINS}/${folder}/registry.json`;
+    if (!existsSync(join(ROOT, f))) continue;
+    let doc; try { doc = JSON.parse(readFileSync(join(ROOT, f), 'utf8')); } catch { continue; }
+    for (const e of Array.isArray(doc?.settings) ? doc.settings : []) if (e && typeof e.key === 'string' && typeof e.label === 'string') out.push({ key: e.key, label: e.label, kind: e.kind, default: e.default, file: f });
+  }
+  return out;
+}
+
+/** settings-sources@1: the framework's registry plus the part each plugin ships in its own folder (settings-sources.json). */
+export function loadSources(root = ROOT) {
+  const base = JSON.parse(readFileSync(join(root, 'framework/schemas/settings-sources.json'), 'utf8'));
+  const reg = { ...base, sources: [...(base.sources ?? [])], distinct: [...(base.distinct ?? [])], sameName: { oneStore: [...(base.sameName?.oneStore ?? [])], differentSettings: { ...(base.sameName?.differentSettings ?? {}) } }, files: ['framework/schemas/settings-sources.json'] };
+  for (const folder of pluginFolders()) {
+    const f = `${PLUGINS}/${folder}/settings-sources.json`;
+    if (!existsSync(join(root, f))) continue;
+    const part = JSON.parse(readFileSync(join(root, f), 'utf8'));
+    reg.sources.push(...(part.sources ?? []).map((x) => ({ ...x, from: f })));
+    reg.distinct.push(...(part.distinct ?? []));
+    reg.sameName.oneStore.push(...(part.sameName?.oneStore ?? []));
+    Object.assign(reg.sameName.differentSettings, part.sameName?.differentSettings ?? {});
+    reg.files.push(f);
+  }
+  return reg;
 }
 
 const STOP = new Set(['the', 'a', 'an', 'of', 'at', 'to', 'for', 'max', 'maximum', 'my', 'every', 'per', 'in', 'on', 'is', 'it', 'by', 'and', 'or', 'once']);
@@ -124,7 +155,7 @@ export function audit() {
   const screensOf = (key) => { const bare = key.split('.').pop(); if (bare.length < 6) return []; const re = new RegExp(`(^|[^A-Za-z0-9_])${key.replace(/[.$]/g, '\\$&')}([^A-Za-z0-9_]|$)`); return web.filter(([, s]) => re.test(s)).map(([f]) => f); };
   const byName = new Map();
   for (const s of stores) for (const k of s.keys) { if (!byName.has(k)) byName.set(k, []); byName.get(k).push(s.file); }
-  const sameName = [...byName].map(([key, where]) => ({ key, stores: [...new Set(where.map((w) => (w.startsWith('apps/console-web/plugins/') ? w.split('/').slice(0, 4).join('/') : dirname(w))))] })).filter((x) => x.stores.length > 1);
+  const sameName = [...byName].map(([key, where]) => ({ key, stores: [...new Set(where.map((w) => (w.startsWith(`${PLUGINS}/`) ? `plugin:${w.split('/')[3]}` : dirname(w))))] })).filter((x) => x.stores.length > 1);
   const byWords = new Map();
   for (const s of [...reg, ...frame]) { const w = wordKey(s.label); if (!w) continue; if (!byWords.has(w)) byWords.set(w, []); byWords.get(w).push({ key: s.key, label: s.label, file: s.file }); }
   const sameWords = [...byWords].map(([words, items]) => ({ words, items })).filter((x) => new Set(x.items.map((i) => i.key)).size > 1);
@@ -135,7 +166,7 @@ function md(a) {
   const rel = (f) => relative('.', f) || f;
   const L = [];
   L.push('| Key | Label | Default | Screens that name it |', '|---|---|---|---|');
-  for (const s of a.registry) L.push(`| \`${s.key}\`${s.alias ? ` → \`${s.alias}\`` : ''} | ${s.label} | ${JSON.stringify(s.default)} | Settings → Claude${s.screens.filter((f) => !f.includes('claude-settings')).map((f) => `, \`${rel(f)}\``).join('')} |`);
+  for (const s of a.registry) L.push(`| \`${s.key}\`${s.alias ? ` → \`${s.alias}\`` : ''} | ${s.label} | ${JSON.stringify(s.default)} | Settings → Claude${s.screens.filter((f) => !f.startsWith(dirname(s.file))).map((f) => `, \`${rel(f)}\``).join('')} |`);
   L.push('', '| Key | Label | Kind | Declared in |', '|---|---|---|---|');
   for (const s of a.framework) L.push(`| \`${s.key}\` | ${s.label} | ${s.kind} | \`${s.file}\` |`);
   L.push('', '| Store (module) | Keys | Screens that name a key |', '|---|---|---|');
