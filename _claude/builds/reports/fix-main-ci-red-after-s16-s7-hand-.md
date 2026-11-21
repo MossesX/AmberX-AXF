@@ -57,3 +57,19 @@ Not run locally: the console vite build and the full sweep; the lander's PR run 
   did not exist (the s1–s4 worktrees had theirs). Created empty like the siblings' and the link went through.
 - `tracker.mjs --check` run plainly in this worktree flags one item without a status: the local data-store copy of
   `framework/catalog/status.json` is behind the repo. With `AXF_DATA_DIR=off` (what CI sees) it passes.
+
+## Found underneath (s2): the builds store verify was red on main too
+`node framework/cli/builds-store.mjs verify` (Build engine sweep, after the catalog check) failed on main at HEAD with
+`✗ all pending windows-terminal step`: step s7 of the archived build `windows-terminal` read "snapping ��� screen edges" in
+`_claude/builds/store.json` while the pending export still had the em dash. The replacement characters arrived with the bulk
+"Builds live: 1021 build change(s)" publish (`dfa865375`, journal rev 10219, a foreign-write absorb), after `7f128689`; the
+store at `7f128689` was clean, so the hand-landed run never saw it. The same kind of damage sits in three fields verify does
+not read (two `origin.brief`s, one `removedSteps` text): the writer that produces U+FFFD on the publish path is still open.
+
+Fix: `builds-store.mjs restore windows-terminal 10101` (the last clean journal revision, build rev 32) through the live store;
+builds-live published it as `6e87241b9`. `verify` on origin/main in CI's local mode: 39874 checks, everything from the old
+files is in the store.
+
+Also seen on this VPS, not in CI: `check-builds-store.mjs` ("history reads the journal home") and `check-agent-slots.mjs`
+read the live axf-data store / the session's dispatch token through the environment; both pass with a clean environment.
+`check-build-hook.mjs` needs a larger heap under load (`--max-old-space-size=6144`, as the other sessions run it).
