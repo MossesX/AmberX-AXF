@@ -1,5 +1,11 @@
 # Plan Studio (Oct 30 2026, Opus, Angel orchestrator `plan-studio`, branch `claude/plans`)
 
+> **Removed Nov 21 2026** (build `rip-out-plan-studio-1-keep-only-plan`). The plugin is gone; its last code is the git tag
+> `archive/plan-studio-1`, its hub data (`/projects/amberx-axf/_data/plan-studio/`) stays as a read-only archive, and its 8
+> remaining plans were moved into Plan Studio 2.0 ("From Plan Studio 1"). Plan Studio 2.0 (`plan-studio-2`) is the one
+> Plan Studio and provides `plans@1`. Report: `_claude/builds/reports/rip-out-plan-studio-1-keep-only-plan.md`. What
+> follows describes the removed plugin, kept for the record.
+
 Brett (voice, Oct 30): a planning studio to store and view every plan, entered by hand, categorized; every plugin and
 app listed with its features checked off as have or planned. Plus (14:20) plain-English AI that edits plans, and
 (14:22) voice planning in AmberX "like I'm talking to you".

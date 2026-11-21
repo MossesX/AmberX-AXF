@@ -33,7 +33,7 @@
  *
  * `<item>` is an id, or the title / words in it ("the step about deploy"): tree-core resolve().
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, chownSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as tc from './web/tree-core.mjs';
@@ -65,7 +65,12 @@ export const onHub = () => !process.env.AXF_PLAN_TREE_DIR && !!persistRoot();
 const file = () => join(storeDir(), FILE);
 
 export function load() { return tc.normalize(readJson(file(), tc.emptyState())); }
-export function save(state) { const s = tc.normalize(state); writeJson(file(), s); return s; }
+export function save(state) { const s = tc.normalize(state); writeJson(file(), s); handBack(file()); return s; }
+/** Written as root (a VPS session's CLI): the file goes back to the folder's owner, group-writable, so the console can still write it. */
+function handBack(f) {
+  if (process.getuid?.() !== 0) return;
+  try { const st = statSync(dirname(f)); if (st.uid !== 0) { chownSync(f, st.uid, st.gid); chmodSync(f, 0o664); } } catch { /* best effort */ }
+}
 
 /* ------------------------------------------------------------------ the build orchestrator (explicit hand-off) */
 
