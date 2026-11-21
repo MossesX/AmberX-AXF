@@ -39,6 +39,7 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import * as R from '../../../../framework/core/engines/context-menus-rules.mjs';
 import { persistRoot } from '../../../../framework/cli/persist.mjs';
 import { projectDataDir } from '../../../../framework/cli/projects.mjs';
@@ -235,7 +236,12 @@ export function menuIndex({ app = '' } = {}) {
 
 /** The console's registered actions (control inventory: every `rt.actions.register` + every toolbar button's action). */
 export function inventoryActions(root = ROOT) {
-  const inv = readJson(join(root, 'apps/console-web/src/control/inventory.json'), {});
+  const file = join(root, 'apps/console-web/src/control/inventory.json');
+  // generated, never committed: write it from the installed plugins when it is missing (as the console server does)
+  if (!existsSync(file)) {
+    try { execFileSync('node', [join(root, 'apps/console-web/scripts/control-inventory.mjs')], { stdio: 'pipe', timeout: 120_000 }); } catch { /* no inventory: hub-registered actions only */ }
+  }
+  const inv = readJson(file, {});
   const out = new Map();
   for (const f of inv.functions ?? []) if (f?.id && R.ACTION_RE.test(f.id)) out.set(f.id, { id: f.id, label: f.label || f.id, module: f.plugin || f.source || '' });
   for (const b of inv.buttons ?? []) if (b?.action && R.ACTION_RE.test(b.action) && !out.has(b.action)) out.set(b.action, { id: b.action, label: b.label || b.action, module: b.source || '' });
